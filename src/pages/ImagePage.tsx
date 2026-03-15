@@ -113,13 +113,18 @@ const ImagePage = () => {
 
             {/* LEFT — Image */}
             <div>
-              <div className="rounded-2xl overflow-hidden bg-card border border-foreground/[0.06]">
+              <div className="rounded-2xl overflow-hidden bg-card border border-foreground/[0.06] relative">
                 <img
                   src={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
                   alt="Cosmic Dreamscape"
                   className="w-full block"
                   style={{ maxHeight: "75vh", objectFit: "cover" }}
                 />
+                {hasShop && (
+                  <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-accent text-primary-foreground text-[0.68rem] font-bold tracking-[0.08em] uppercase px-3 py-1.5 rounded-lg shadow-md">
+                    <ShoppingBag className="w-3.5 h-3.5" /> Shop the Look
+                  </div>
+                )}
               </div>
 
               {/* Action bar — Recreate dominates, Download smaller */}
