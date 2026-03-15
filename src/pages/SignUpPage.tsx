@@ -57,7 +57,33 @@ const SignUpPage = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="pt-16 min-h-screen grid grid-cols-1 lg:grid-cols-2">
-        {/* Left — Form */}
+        {/* Left — Photo Collage */}
+        <div className="hidden lg:block relative bg-foreground overflow-hidden">
+          <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">
+            {photos.map((p, i) => (
+              <img key={i} src={`https://images.unsplash.com/${p}?w=400&h=500&fit=crop&q=75`} alt="" className="w-full h-full object-cover rounded-lg" />
+            ))}
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-foreground/30" />
+          <div className="absolute bottom-0 left-0 right-0 p-12">
+            <div className="font-display text-[2.4rem] font-black text-primary-foreground tracking-[-0.03em] leading-[1.08] mb-2">
+              Everything Free.
+            </div>
+            <div className="font-display text-[2.4rem] font-black text-accent tracking-[-0.03em] leading-[1.08] mb-8">
+              Creators Paid.
+            </div>
+            <div className="flex flex-col gap-3">
+              {perks.map((perk, i) => (
+                <div key={i} className="flex items-center gap-3">
+                  <perk.icon className="w-4 h-4 text-primary-foreground/40 shrink-0" />
+                  <span className="text-[0.84rem] text-primary-foreground/70">{perk.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right — Form */}
         <div className="flex items-center justify-center px-6 py-16">
           <div className="w-full max-w-[420px]">
             {step === "email" && (
@@ -66,13 +92,13 @@ const SignUpPage = () => {
                   <span className="text-accent">Real</span>.Art
                 </div>
                 <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-[1.05] mt-6 mb-2">
-                  Join free today
+                  Join Free Today
                 </h1>
                 <p className="text-[0.88rem] text-muted mb-8">
                   Create your account and start downloading, uploading, and earning.
                 </p>
 
-                <label className="block text-[0.82rem] font-semibold mb-2">Email address</label>
+                <label className="block text-[0.82rem] font-semibold mb-2">Email Address</label>
                 <input
                   type="email" value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -106,8 +132,8 @@ const SignUpPage = () => {
                 ))}
 
                 <p className="text-center text-[0.82rem] text-muted mt-6">
-                  Already have an account?{" "}
-                  <Link to="/login" className="text-accent font-semibold hover:underline">Log in</Link>
+                  Already Have An Account?{" "}
+                  <Link to="/login" className="text-accent font-semibold hover:underline">Log In</Link>
                 </p>
               </>
             )}
@@ -118,7 +144,7 @@ const SignUpPage = () => {
                   ← Back
                 </button>
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-2">
-                  Set up your account
+                  Set Up Your Account
                 </h1>
                 <p className="text-[0.84rem] text-muted mb-8">
                   Creating account for <strong className="text-foreground">{email}</strong>
@@ -181,8 +207,8 @@ const SignUpPage = () => {
                 </button>
 
                 <p className="text-center text-[0.82rem] text-muted">
-                  Already have an account?{"  "}
-                  <Link to="/login" className="text-accent font-semibold hover:underline">Log in</Link>
+                  Already Have An Account?{" "}
+                  <Link to="/login" className="text-accent font-semibold hover:underline">Log In</Link>
                 </p>
               </>
             )}
@@ -192,7 +218,7 @@ const SignUpPage = () => {
                 <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-5">
                   <Check className="w-9 h-9 text-accent" />
                 </div>
-                <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-3">Welcome to REAL ART</h1>
+                <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-3">Welcome To REAL ART</h1>
                 <p className="text-[0.88rem] text-muted mb-8">Your account is ready. Start browsing, downloading, or upload your first image.</p>
                 <button onClick={() => navigate("/explore")} className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mb-3">
                   Start Browsing
@@ -204,32 +230,7 @@ const SignUpPage = () => {
             )}
           </div>
         </div>
-
-        {/* Right — Photo Collage */}
-        <div className="hidden lg:block relative bg-foreground overflow-hidden">
-          <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">
-            {photos.map((p, i) => (
-              <img key={i} src={`https://images.unsplash.com/${p}?w=400&h=500&fit=crop&q=75`} alt="" className="w-full h-full object-cover rounded-lg" />
-            ))}
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-foreground/30" />
-          <div className="absolute bottom-0 left-0 right-0 p-12">
-            <div className="font-display text-[2.4rem] font-black text-primary-foreground tracking-[-0.03em] leading-[1.08] mb-2">
-              Everything free.
-            </div>
-            <div className="font-display text-[2.4rem] font-black text-accent tracking-[-0.03em] leading-[1.08] mb-8">
-              Creators paid.
-            </div>
-            <div className="flex flex-col gap-3">
-              {perks.map((perk, i) => (
-                <div key={i} className="flex items-center gap-3">
-                  <perk.icon className="w-4 h-4 text-primary-foreground/40 shrink-0" />
-                  <span className="text-[0.84rem] text-primary-foreground/70">{perk.text}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+      </div>
       </div>
     </div>
   );
