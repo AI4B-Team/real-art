@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, FileText, RefreshCw, Video, Pencil, Eye, Copy, Shuffle } from "lucide-react";
+import { Download, FileText, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, Heart } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
@@ -74,6 +74,19 @@ const MasonryGrid = () => {
                 {/* Action buttons - right side vertical */}
                 <TooltipProvider>
                   <div className="flex flex-col gap-1.5 absolute right-3 top-1/2 -translate-y-1/2">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-accent hover:text-primary-foreground transition-colors"
+                        >
+                          <Heart className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="text-xs">
+                        <p>Favorite</p>
+                      </TooltipContent>
+                    </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
