@@ -2,9 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Upload, Image, X, Plus,
-  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2
+  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { getCollections, addCollection, type Collection } from "@/lib/collectionStore";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
