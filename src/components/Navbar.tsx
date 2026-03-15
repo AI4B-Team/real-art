@@ -30,6 +30,13 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; }
   });
+  const [userDisplay, setUserDisplay] = useState(() => {
+    try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; }
+  });
+  const [userHandle, setUserHandle] = useState(() => {
+    try { return localStorage.getItem("ra_username") || "aiverse"; } catch { return "aiverse"; }
+  });
+  const userInitials = userDisplay.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   const navSearchDropRef = useRef<HTMLDivElement>(null);
   const [communities, setCommunities] = useState<Community[]>([
