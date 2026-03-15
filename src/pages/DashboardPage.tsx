@@ -1111,7 +1111,10 @@ const DashboardPage = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
                   <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
                     <div className="flex items-center justify-between mb-5">
-                      <h3 className="font-semibold text-[0.9rem]">Affiliate Earnings</h3>
+                      <div>
+                        <h3 className="font-semibold text-[0.9rem]">Affiliate Earnings</h3>
+                        <div className="font-display text-[1.4rem] font-black tracking-[-0.02em] text-accent mt-0.5">${earningsData.reduce((s, d) => s + d.amount, 0).toLocaleString()}</div>
+                      </div>
                       <span className="text-[0.72rem] text-muted">Last 6 months</span>
                     </div>
                     <div className="flex items-end gap-3 h-[140px]">
