@@ -50,6 +50,8 @@ const UploadPage = () => {
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [autoTagsLoading, setAutoTagsLoading] = useState(false);
+  const [autoTagsDone, setAutoTagsDone] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [tool, setTool] = useState("");
   const [visibility, setVisibility] = useState<"public" | "private">("public");
