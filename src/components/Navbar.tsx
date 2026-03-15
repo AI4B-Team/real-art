@@ -402,6 +402,11 @@ const Navbar = () => {
                   </Link>
                 ))}
                 <div className="h-px bg-foreground/[0.06] my-1" />
+                <Link to="/upload" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-foreground hover:bg-background transition-colors no-underline">
+                  <Upload className="w-3.5 h-3.5 opacity-40 shrink-0" />
+                  Upload Art
+                </Link>
+                <div className="h-px bg-foreground/[0.06] my-1" />
                 <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors">
                   <LogOut className="w-3.5 h-3.5" /> Log Out
                 </button>
