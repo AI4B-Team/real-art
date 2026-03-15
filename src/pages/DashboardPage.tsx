@@ -500,9 +500,9 @@ const DashboardPage = () => {
             {activeSection === "galleries" && (
               <>
                 <div className="flex items-center justify-between mb-6">
-                  <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">My Galleries</h1>
+                  <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">My Collections</h1>
                   <Link to="/create-gallery" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
-                    <Plus className="w-4 h-4" /> New Gallery
+                    <Plus className="w-4 h-4" /> New Collection
                   </Link>
                 </div>
                 <div className="flex flex-col gap-4">
