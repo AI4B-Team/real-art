@@ -41,7 +41,7 @@ const ShopSection = ({ shopLink, shopSimilar = [] }: ShopSectionProps) => (
           </div>
           <div>
             <div className="font-semibold text-[0.88rem] group-hover:text-accent transition-colors">
-              {shopLink.price ? `Shop for ${shopLink.price}` : "Shop This Look"}
+              Shop This Look
             </div>
             <div className="text-[0.72rem] text-muted">via {shopLink.site}</div>
           </div>
@@ -81,7 +81,6 @@ const ShopSection = ({ shopLink, shopSimilar = [] }: ShopSectionProps) => (
               >
                 <p className="text-[0.75rem] text-primary-foreground font-semibold leading-tight">{item.title}</p>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-[0.72rem] text-primary-foreground/80 font-bold">{item.price}</span>
                   <span className="text-[0.62rem] text-primary-foreground/50">{item.site}</span>
                 </div>
               </div>
