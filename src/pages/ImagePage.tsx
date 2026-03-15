@@ -489,6 +489,54 @@ const ImagePage = () => {
                 </div>
               </div>
 
+              {/* Built With This Image */}
+              <div className="mt-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Briefcase className="w-4.5 h-4.5 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Real World Uses</span>
+                </div>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Built With This Image</h2>
+                <p className="text-[0.8rem] text-muted mb-5">
+                  Used in <span className="text-accent font-semibold">34 projects</span> across the web
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                  {[
+                    { photo: "photo-1460925895917-afdab827c52f", type: "Website Hero", creator: "@NeoPixel", icon: Monitor, views: "12K visits" },
+                    { photo: "photo-1611162617474-5b21e879e113", type: "YouTube Thumbnail", creator: "@DreamForge", icon: Youtube, views: "1.2M views" },
+                    { photo: "photo-1611262588024-d12430b98920", type: "Instagram Ad", creator: "@LuminaAI", icon: Instagram, views: "84K reach" },
+                    { photo: "photo-1523474253046-8cd2748b5fd2", type: "Shopify Store Banner", creator: "@SpectraGen", icon: Globe2, views: "5.8K visits" },
+                    { photo: "photo-1586717791821-3f44a563fa4c", type: "Product Packaging", creator: "@VoidArt", icon: Package, views: "2K units" },
+                    { photo: "photo-1551288049-bebda4e38f71", type: "Dashboard UI", creator: "@ChromaLab", icon: Monitor, views: "18K users" },
+                  ].map((project, i) => (
+                    <div key={i} className="group relative rounded-xl overflow-hidden border border-foreground/[0.06] bg-card hover:border-foreground/[0.14] transition-all cursor-pointer">
+                      <div className="aspect-[16/10] overflow-hidden">
+                        <img
+                          src={`https://images.unsplash.com/${project.photo}?w=400&h=250&fit=crop&q=78`}
+                          alt={project.type}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                        />
+                      </div>
+                      <div className="p-3.5">
+                        <div className="flex items-center gap-2 mb-1.5">
+                          <project.icon className="w-3.5 h-3.5 text-accent" />
+                          <span className="text-[0.82rem] font-semibold group-hover:text-accent transition-colors">{project.type}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-[0.72rem] text-muted">{project.creator}</span>
+                          <span className="text-[0.68rem] text-accent font-medium">{project.views}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="text-center mt-5">
+                  <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-card border border-foreground/[0.12] px-6 py-2.5 rounded-lg cursor-pointer hover:border-foreground/30 transition-colors">
+                    View All 34 Projects
+                  </button>
+                </div>
+              </div>
+
               {/* Boards Using This Image */}
               <div className="mt-10">
                 <div className="flex items-center gap-2 mb-1">
