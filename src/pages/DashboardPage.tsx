@@ -1148,7 +1148,7 @@ const DashboardPage = () => {
           <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:block">
             <div className="flex items-center gap-3 mb-8 px-3">
               {(() => {
-                const display = (() => { try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; } })();
+                const display = (() => { try { return (localStorage.getItem("ra_display") || "AI.Verse").toLowerCase(); } catch { return "aiverse"; } })();
                 const handle = (() => { try { return (localStorage.getItem("ra_username") || "aiverse").toLowerCase(); } catch { return "aiverse"; } })();
                 const initials = display.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
                 return (
