@@ -30,6 +30,13 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
     try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; }
   });
+  const [userDisplay, setUserDisplay] = useState(() => {
+    try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; }
+  });
+  const [userHandle, setUserHandle] = useState(() => {
+    try { return localStorage.getItem("ra_username") || "aiverse"; } catch { return "aiverse"; }
+  });
+  const userInitials = userDisplay.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
   const navSearchDropRef = useRef<HTMLDivElement>(null);
   const [communities, setCommunities] = useState<Community[]>([
@@ -48,6 +55,8 @@ const Navbar = () => {
   useEffect(() => {
     try {
       setIsLoggedIn(localStorage.getItem("ra_auth") === "1");
+      setUserDisplay(localStorage.getItem("ra_display") || "AI.Verse");
+      setUserHandle(localStorage.getItem("ra_username") || "aiverse");
     } catch {}
   }, [location.pathname]);
 
@@ -70,8 +79,14 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    try { localStorage.removeItem("ra_auth"); } catch {}
+    try {
+      localStorage.removeItem("ra_auth");
+      localStorage.removeItem("ra_display");
+      localStorage.removeItem("ra_username");
+    } catch {}
     setIsLoggedIn(false);
+    setUserDisplay("AI.Verse");
+    setUserHandle("aiverse");
     setUserMenuOpen(false);
     navigate("/");
   };
@@ -357,9 +372,9 @@ const Navbar = () => {
               className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full hover:bg-foreground/[0.06] transition-colors ml-1"
             >
               <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-[0.7rem] font-bold text-accent">
-                AV
+                {userInitials}
               </div>
-              <span className="text-[0.82rem] font-medium">AI.Verse</span>
+              <span className="text-[0.82rem] font-medium">{userDisplay}</span>
               <ChevronDown className={`w-3.5 h-3.5 text-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
             </button>
             {userMenuOpen && (
@@ -367,11 +382,11 @@ const Navbar = () => {
                 {/* User header */}
                 <div className="flex items-center gap-3 px-3.5 py-3 mb-1">
                   <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">
-                    AV
+                    {userInitials}
                   </div>
                   <div>
-                    <div className="text-[0.88rem] font-semibold">AI.Verse</div>
-                    <div className="text-[0.75rem] text-muted">@aiverse</div>
+                    <div className="text-[0.88rem] font-semibold">{userDisplay}</div>
+                    <div className="text-[0.75rem] text-muted">@{userHandle}</div>
                   </div>
                 </div>
                 <div className="h-px bg-foreground/[0.06] my-1" />
