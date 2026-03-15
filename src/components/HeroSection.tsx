@@ -85,8 +85,8 @@ const HeroSection = () => {
             className="flex-1 border-none outline-none font-body text-[0.97rem] font-light px-[22px] bg-transparent text-foreground placeholder:text-foreground/30"
             placeholder="Search millions of free visuals…"
           />
-          <button className="w-[50px] h-[50px] rounded-lg bg-foreground border-none cursor-pointer flex items-center justify-center mr-[9px] shrink-0 hover:bg-accent hover:scale-105 transition-all">
-            <Search className="w-4 h-4 text-primary-foreground" />
+          <button className="w-[50px] h-[50px] rounded-lg bg-card border border-foreground/[0.13] cursor-pointer flex items-center justify-center mr-[9px] shrink-0 hover:border-foreground/30 hover:scale-105 transition-all">
+            <Search className="w-4 h-4 text-foreground" />
           </button>
         </div>
       </motion.div>
