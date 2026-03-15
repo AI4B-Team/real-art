@@ -1384,8 +1384,11 @@ const DashboardPage = () => {
                 <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
                   <div className="flex flex-col">
                     {recentActivity.map((a, i) => (
-                      <div key={i} className={`flex items-center justify-between py-3.5 ${i < recentActivity.length - 1 ? "border-b border-foreground/[0.04]" : ""}`}>
-                        <span className={`text-[0.84rem] ${i < 3 ? "text-foreground font-medium" : "text-muted"}`}>{a.text}</span>
+                      <div key={i} className={`flex items-center gap-3 py-3.5 ${i < recentActivity.length - 1 ? "border-b border-foreground/[0.04]" : ""}`}>
+                        <div className="w-7 h-7 rounded-lg bg-foreground/[0.05] flex items-center justify-center shrink-0">
+                          <a.icon className="w-3.5 h-3.5 text-accent" />
+                        </div>
+                        <span className={`text-[0.84rem] flex-1 ${i < 3 ? "text-foreground font-medium" : "text-muted"}`}>{a.text}</span>
                         <span className="text-[0.72rem] text-muted/60 shrink-0 ml-4">{a.time}</span>
                       </div>
                     ))}
