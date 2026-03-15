@@ -1,19 +1,21 @@
 import { useState, useRef, useEffect } from "react";
 import { Search, Image, Video, Music, ChevronDown, Camera, Sparkles, Upload } from "lucide-react";
-import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { Link, useNavigate } from "react-router-dom";
 
 const searchTypes = [
-  { label: "Photos", icon: Image, placeholder: "Search millions of free photos…" },
-  { label: "Videos", icon: Video, placeholder: "Search millions of free videos…" },
-  { label: "Music", icon: Music, placeholder: "Search millions of free music tracks…" },
+  { label: "Photos", icon: Image },
+  { label: "Videos", icon: Video },
+  { label: "Music", icon: Music },
 ];
 
 const trendingTerms = ["avatars", "luxury homes", "cyberpunk", "podcast studio", "fitness women"];
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [selectedType, setSelectedType] = useState("Photos");
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [query, setQuery] = useState("");
   const dropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -26,11 +28,16 @@ const HeroSection = () => {
     return () => document.removeEventListener("click", handler);
   }, []);
 
+  const handleSearch = () => {
+    if (query.trim()) {
+      navigate(`/explore?q=${encodeURIComponent(query.trim())}`);
+    }
+  };
+
   const SelectedIcon = searchTypes.find(t => t.label === selectedType)?.icon || Image;
 
   return (
     <section className="pt-[140px] pb-20 px-6 md:px-12 text-center relative overflow-hidden">
-      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -84,10 +91,16 @@ const HeroSection = () => {
           </div>
           <input
             className="flex-1 border-none outline-none font-body text-[0.97rem] font-light px-[22px] bg-transparent text-foreground placeholder:text-foreground/30"
-            placeholder={searchTypes.find(t => t.label === selectedType)?.placeholder || "Search millions of free visuals…"}
+            placeholder="Search millions of free visuals…"
+            value={query}
+            onChange={e => setQuery(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && handleSearch()}
           />
-          <button className="w-[50px] h-[50px] rounded-lg bg-card border border-foreground/[0.13] cursor-pointer flex items-center justify-center mr-[9px] shrink-0 hover:border-foreground/30 hover:scale-105 transition-all">
-            <Search className="w-4 h-4 text-foreground" />
+          <button
+            onClick={handleSearch}
+            className="w-[50px] h-[50px] rounded-lg bg-accent cursor-pointer flex items-center justify-center mr-[9px] shrink-0 hover:bg-accent/85 hover:scale-105 transition-all"
+          >
+            <Search className="w-4 h-4 text-primary-foreground" />
           </button>
         </div>
       </motion.div>
@@ -100,7 +113,12 @@ const HeroSection = () => {
         <span className="text-[0.82rem] font-semibold text-muted tracking-[0.06em] uppercase">TRENDING:</span>
         {trendingTerms.map((term, i) => (
           <span key={term}>
-            <span className="mx-2 text-[0.85rem] text-foreground/70">{term}</span>
+            <span
+              className="mx-2 text-[0.85rem] text-foreground/70 cursor-pointer hover:text-accent transition-colors"
+              onClick={() => navigate(`/explore?q=${encodeURIComponent(term)}`)}
+            >
+              {term}
+            </span>
             {i < trendingTerms.length - 1 && <span className="text-foreground/20">•</span>}
           </span>
         ))}

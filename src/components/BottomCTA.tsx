@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Check } from "lucide-react";
 
 const BottomCTA = () => {
@@ -7,19 +8,23 @@ const BottomCTA = () => {
       <div>
         <div className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-primary-foreground/30 mb-5">Free Forever</div>
         <h2 className="font-display text-[clamp(2.4rem,4vw,3.8rem)] font-black tracking-[-0.03em] leading-none text-primary-foreground mb-4">
-          Turn Your Art<br />Into <em className="italic font-normal text-accent">Influence.</em>
+          Your work<br />deserves to be <em className="italic font-normal text-accent">seen.</em>
         </h2>
         <p className="text-[0.9rem] text-primary-foreground/45 font-light leading-[1.65]">
           Join 84,000+ creators sharing visuals, earning affiliate income, and building communities on REAL ART.
         </p>
       </div>
       <div className="flex flex-col gap-2.5">
-        <button className="bg-card text-foreground font-body text-[0.88rem] font-bold px-9 py-3.5 rounded-lg border-none cursor-pointer hover:bg-accent hover:text-primary-foreground transition-colors text-center">
-          Create Free Account
-        </button>
-        <button className="bg-transparent text-primary-foreground/50 font-body text-[0.88rem] font-normal px-7 py-3.5 rounded-lg border border-primary-foreground/[0.12] cursor-pointer hover:border-primary-foreground/[0.35] hover:text-primary-foreground/80 transition-colors text-center">
-          Browse As Guest
-        </button>
+        <Link to="/signup">
+          <button className="w-full bg-card text-foreground font-body text-[0.88rem] font-bold px-9 py-3.5 rounded-lg border-none cursor-pointer hover:bg-accent hover:text-primary-foreground transition-colors text-center">
+            Create Free Account
+          </button>
+        </Link>
+        <Link to="/explore">
+          <button className="w-full bg-transparent text-primary-foreground/50 font-body text-[0.88rem] font-normal px-7 py-3.5 rounded-lg border border-primary-foreground/[0.12] cursor-pointer hover:border-primary-foreground/[0.35] hover:text-primary-foreground/80 transition-colors text-center">
+            Browse As Guest
+          </button>
+        </Link>
         <div className="flex flex-col gap-2 mt-1">
           {["No credit card required", "Download and use anywhere, instantly", "Earn from every image you share"].map((perk) => (
             <div key={perk} className="flex items-center gap-2 text-[0.78rem] text-primary-foreground/[0.36]">

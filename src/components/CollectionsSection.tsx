@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const collections = [
   {
     name: "CEO / Boss Babe",
@@ -38,12 +40,11 @@ const CollectionsSection = () => {
             <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Collections</h2>
             <p className="text-[0.83rem] text-muted mt-[7px]">Hand-picked by our team — the finest in every category</p>
           </div>
-          <a href="#" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap">View All →</a>
+          <Link to="/collections" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap no-underline hover:text-accent hover:border-accent transition-colors">View All →</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {collections.map((col) => (
-            <div key={col.name} className="cursor-pointer group">
-              {/* Main image */}
+            <Link to="/collections" key={col.name} className="cursor-pointer group no-underline">
               <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-2.5">
                 <img
                   src={`https://images.unsplash.com/${col.main}?w=400&h=530&fit=crop&q=78`}
@@ -52,25 +53,19 @@ const CollectionsSection = () => {
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
               </div>
-              {/* Thumbnails row */}
               <div className="flex items-center gap-1.5">
                 {col.thumbs.map((t, i) => (
                   <div key={i} className="h-[42px] rounded-lg overflow-hidden flex-1 min-w-0">
-                    <img
-                      src={`https://images.unsplash.com/${t}?w=100&h=100&fit=crop&q=70`}
-                      alt=""
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={`https://images.unsplash.com/${t}?w=100&h=100&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
                   </div>
                 ))}
                 <div className="h-[42px] px-3 rounded-lg bg-muted-foreground/80 flex items-center justify-center flex-shrink-0">
                   <span className="text-primary-foreground font-semibold text-sm">+{col.count}</span>
                 </div>
               </div>
-              {/* Name */}
               <p className="text-foreground font-semibold text-[0.95rem] mt-2.5">{col.name}</p>
               <p className="text-muted text-[0.76rem] leading-[1.4] mt-0.5">{col.subtitle}</p>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
