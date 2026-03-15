@@ -398,17 +398,17 @@ const UploadPage = () => {
                   </div>
                 </div>
 
-                {/* Prompt */}
-                <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">AI Prompt <span className="text-muted font-normal">(optional but recommended)</span></label>
-                  <textarea
-                    className="w-full border border-foreground/[0.13] rounded-xl px-4 py-3 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors resize-none"
-                    rows={4}
-                    placeholder="Paste the prompt you used to generate this image…"
-                    value={prompt}
-                    onChange={e => setPrompt(e.target.value)}
-                  />
-                  <p className="text-[0.72rem] text-muted mt-1">Sharing your prompt helps other creators learn and gives you more affiliate clicks.</p>
+                {/* AI Prompts Summary */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-accent" />
+                    <span className="font-semibold text-[0.86rem]">AI Prompts</span>
+                    <span className="text-[0.72rem] text-accent bg-accent/10 px-2 py-0.5 rounded-md font-semibold">Auto-generated</span>
+                  </div>
+                  <p className="text-[0.78rem] text-muted mb-3">Image and video prompts were automatically generated for each image. You can edit them in the Upload step.</p>
+                  <div className="text-[0.8rem]">
+                    {Object.values(imagePrompts).filter(p => p.image_prompt).length} of {previews.length} images have prompts
+                  </div>
                 </div>
 
                 {/* AI Tool */}
