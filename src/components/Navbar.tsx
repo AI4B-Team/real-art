@@ -15,6 +15,7 @@ const Navbar = () => {
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
+  const [communitySearch, setCommunitySearch] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [communities, setCommunities] = useState<Community[]>([
     { id: "1", name: "Avatar Architects", to: "/communities/1", newPosts: 3, pinned: true },
