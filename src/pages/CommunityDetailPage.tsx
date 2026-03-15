@@ -337,6 +337,8 @@ const CommunityDetailPage = () => {
                   </div>
                 )}
               </div>
+                )}
+              </>
             )}
 
             {activeTab === "Members" && (
