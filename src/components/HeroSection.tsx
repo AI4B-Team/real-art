@@ -90,22 +90,20 @@ const HeroSection = () => {
           </button>
         </div>
       </motion.div>
-      <motion.div
+      <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.65, delay: 0.4 }}
-        className="mt-6 flex items-center justify-center gap-2 whitespace-nowrap"
+        className="mt-6 text-center"
       >
-        <span className="text-[0.75rem] font-semibold text-muted tracking-[0.06em] uppercase">Trending:</span>
+        <span className="text-[0.82rem] font-semibold text-muted tracking-[0.06em] uppercase">TRENDING:</span>
         {trendingTerms.map((term, i) => (
           <span key={term}>
-            <a href="#" className="text-[0.78rem] text-foreground/70 hover:text-accent transition-colors cursor-pointer">
-              {term}
-            </a>
-            {i < trendingTerms.length - 1 && <span className="text-foreground/20 mx-0.5">•</span>}
+            <span className="mx-2 text-[0.85rem] text-foreground/70">{term}</span>
+            {i < trendingTerms.length - 1 && <span className="text-foreground/20">•</span>}
           </span>
         ))}
-      </motion.div>
+      </motion.p>
     </section>
   );
 };
