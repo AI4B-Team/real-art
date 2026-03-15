@@ -162,14 +162,7 @@ const Navbar = () => {
           <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" /> {label}
         </Link>
       ))}
-      {isLoggedIn ? (
-        <>
-          <div className="h-px bg-foreground/[0.06] my-1.5" />
-          <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-muted hover:text-foreground hover:bg-background transition-colors w-full text-left">
-            <LogOut className="w-3.5 h-3.5 opacity-40 shrink-0" /> Log Out
-          </button>
-        </>
-      ) : (
+      {!isLoggedIn && (
         <>
           <div className="h-px bg-foreground/[0.06] my-1.5" />
           <Link to="/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
