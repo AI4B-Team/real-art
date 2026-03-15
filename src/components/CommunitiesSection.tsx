@@ -31,7 +31,7 @@ const CommunitiesSection = () => {
             <div key={com.name} className="bg-card border border-foreground/[0.08] rounded-[18px] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(0,0,0,0.1)] transition-all">
               <div className="h-[120px] relative">
                 <img src={`https://images.unsplash.com/${comPhotos[i]}?w=400&h=240&fit=crop&q=78`} alt={com.name} loading="lazy" className="w-full h-full object-cover block" />
-                <span className={`absolute bottom-2.5 left-3 text-[0.65rem] font-bold px-2.5 py-[3px] rounded-full tracking-[0.06em] uppercase ${com.free ? "bg-[rgba(15,180,90,0.9)] text-primary-foreground" : "bg-foreground/[0.72] text-primary-foreground/90"}`}>
+                <span className={`absolute bottom-2.5 left-3 text-[0.65rem] font-bold px-2.5 py-[3px] rounded-md tracking-[0.06em] uppercase ${com.free ? "bg-[rgba(15,180,90,0.9)] text-primary-foreground" : "bg-foreground/[0.72] text-primary-foreground/90"}`}>
                   {com.free ? "Free" : "Private"}
                 </span>
               </div>
