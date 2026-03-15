@@ -9,6 +9,7 @@ import {
   Edit3, ExternalLink, Video, X
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { getBoards, deleteBoard, updateBoard, createBoard, type Board } from "@/lib/boardStore";
 import { useNavigate } from "react-router-dom";
 
 const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
