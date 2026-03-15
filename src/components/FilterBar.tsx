@@ -9,7 +9,7 @@ const filters = [
 ];
 
 const FilterBar = () => {
-  const [active, setActive] = useState("Trending");
+  const [active, setActive] = useState("All");
 
   return (
     <div className="px-6 md:px-12 pt-7">
