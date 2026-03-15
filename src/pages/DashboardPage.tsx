@@ -43,8 +43,8 @@ const earningsData = [
   { month: "Mar", amount: 412 },
 ];
 
-const galleries = [
-  { name: "Main Gallery", images: 84, members: 0, free: true, code: "" },
+const collections = [
+  { name: "Main Collection", images: 84, members: 0, free: true, code: "" },
   { name: "Premium Prompts", images: 42, members: 127, free: false, code: "XK9F2M" },
   { name: "Avatar Collection", images: 31, members: 64, free: false, code: "RT7P4Q" },
 ];
