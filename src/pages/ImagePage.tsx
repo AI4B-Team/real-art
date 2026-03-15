@@ -28,7 +28,23 @@ const creators = [
 
 const samplePrompt = "A cosmic dreamscape with swirling nebula clouds and floating crystalline structures, cinematic lighting, dramatic shadows, 8k ultra-detailed, photorealistic render, deep space background with stars and aurora borealis, editorial photography style";
 
-const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
+// Shop data — some images have shop links (simulated by index)
+const shopEnabledIndices = [0, 3, 5, 7, 9];
+const shopLinks: Record<number, ShopLink> = {
+  0: { url: "https://example.com/cosmic-print", site: "ArtPrints.co", price: "$49.99" },
+  3: { url: "https://example.com/horizon-dress", site: "ZARA", price: "$89.00" },
+  5: { url: "https://example.com/alpine-canvas", site: "Society6", price: "$34.00" },
+  7: { url: "https://example.com/urban-hoodie", site: "Redbubble", price: "$44.00" },
+  9: { url: "https://example.com/bloom-poster", site: "Etsy", price: "$28.00" },
+};
+const shopSimilarItems: ShopSimilarItem[] = [
+  { photo: "photo-1558618666-fcd25c85cd64", title: "Abstract Silk Scarf", price: "$65.00", site: "Etsy", url: "#" },
+  { photo: "photo-1549880338-65ddcdfd017b", title: "Horizon Canvas Print", price: "$42.00", site: "Society6", url: "#" },
+  { photo: "photo-1576091160550-2173dba999ef", title: "Neon Art Tee", price: "$38.00", site: "Redbubble", url: "#" },
+  { photo: "photo-1518020382113-a7e8fc38eac9", title: "Cosmic Wall Art", price: "$55.00", site: "ArtPrints.co", url: "#" },
+  { photo: "photo-1547036967-23d11aacaee0", title: "Dream Poster", price: "$29.00", site: "Etsy", url: "#" },
+];
+
 
 const ImagePage = () => {
   const { id } = useParams();
