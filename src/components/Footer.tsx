@@ -1,7 +1,7 @@
 const footerCols = [
-  { title: "Explore", links: ["Photos", "Videos", "Music", "3D Art", "Trending"] },
-  { title: "Community", links: ["Galleries", "Challenges", "Leaderboard", "Creators"] },
-  { title: "Creators", links: ["Upload", "Start Gallery", "Affiliates", "Private Vaults"] },
+  { title: "Explore", links: ["Photos", "Videos", "Music", "3D Art", "Trending", "Prompt Library"] },
+  { title: "Community", links: ["Galleries", "Challenges", "Leaderboard", "Creators", "Recreations"] },
+  { title: "Creators", links: ["Upload", "Start Gallery", "Affiliates", "Private Vaults", "Prompt Packs", "Style Transfer"] },
   { title: "Company", links: ["About", "License", "Blog", "REAL CREATOR"] },
 ];
 
@@ -15,8 +15,11 @@ const Footer = () => {
               Real<span className="text-accent">.</span>Art
             </div>
             <p className="text-[0.8rem] text-primary-foreground/30 leading-[1.7] max-w-[240px]">
-              The world's largest free visual library. Download, share, and create — no strings attached.
+              The world's largest free AI-generated digital art library. Download, share, and create — no strings attached.
             </p>
+            <div className="mt-3 text-[0.65rem] text-primary-foreground/20 uppercase tracking-[0.1em]">
+              AI-Generated Digital Art
+            </div>
           </div>
           {footerCols.map((col) => (
             <div key={col.title}>
@@ -30,7 +33,7 @@ const Footer = () => {
           ))}
         </div>
         <div className="border-t border-primary-foreground/[0.07] pt-5 flex justify-between items-center flex-wrap gap-4">
-          <div className="text-[0.75rem] text-primary-foreground/20">© 2026 REAL ART — Part of the REAL CREATOR ecosystem</div>
+          <div className="text-[0.75rem] text-primary-foreground/20">© 2026 REAL ART — AI-Generated Digital Art — Part of the REAL CREATOR ecosystem</div>
           <div className="flex gap-5">
             {["Privacy", "Terms", "License"].map((l) => (
               <a key={l} href="#" className="text-[0.75rem] text-primary-foreground/20 no-underline hover:text-primary-foreground/50 transition-colors">{l}</a>

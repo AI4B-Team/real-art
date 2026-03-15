@@ -8,6 +8,8 @@ const searchTypes = [
   { label: "Music", icon: Music },
 ];
 
+const trendingTerms = ["avatars", "luxury homes", "cyberpunk", "podcast studio", "fitness women"];
+
 const HeroSection = () => {
   const [selectedType, setSelectedType] = useState("Photos");
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -34,7 +36,7 @@ const HeroSection = () => {
         transition={{ duration: 0.65 }}
         className="text-[0.72rem] font-semibold tracking-[0.2em] uppercase text-muted mb-8"
       >
-        2.4 Million Images &nbsp;·&nbsp; Always Free &nbsp;·&nbsp; Use Anywhere, No Credit Required
+        2.4 Million Images &nbsp;·&nbsp; 5,000+ Creators &nbsp;·&nbsp; Always Free
       </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
@@ -42,8 +44,8 @@ const HeroSection = () => {
         transition={{ duration: 0.65, delay: 0.1 }}
         className="font-display text-[clamp(3.2rem,7vw,6.8rem)] font-black leading-[0.93] tracking-[-0.03em] text-foreground mb-6"
       >
-        Stop Searching.<br />
-        <em className="italic font-normal text-accent">Start Creating.</em>
+        The Free<br />
+        <em className="italic font-normal text-accent">Image Library</em>
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -87,6 +89,22 @@ const HeroSection = () => {
             <Search className="w-4 h-4 text-primary-foreground" />
           </button>
         </div>
+      </motion.div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.65, delay: 0.4 }}
+        className="mt-6 flex items-center justify-center gap-1.5 flex-wrap"
+      >
+        <span className="text-[0.75rem] font-semibold text-muted tracking-[0.06em] uppercase">Trending:</span>
+        {trendingTerms.map((term, i) => (
+          <span key={term}>
+            <a href="#" className="text-[0.78rem] text-foreground/70 hover:text-accent transition-colors cursor-pointer">
+              {term}
+            </a>
+            {i < trendingTerms.length - 1 && <span className="text-foreground/20 mx-0.5">•</span>}
+          </span>
+        ))}
       </motion.div>
     </section>
   );
