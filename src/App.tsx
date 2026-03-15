@@ -41,6 +41,7 @@ import DashboardPage from "./pages/DashboardPage";
 import CreatorsPage from "./pages/CreatorsPage";
 import BoardsPage from "./pages/BoardsPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
+import TopicPage from "./pages/TopicPage";
 
 const queryClient = new QueryClient();
 
