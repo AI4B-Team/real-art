@@ -237,6 +237,17 @@ const UploadPage = () => {
         if (insertErr) throw insertErr;
       }
 
+      // Save external link to linkStore
+      if (linkUrl.trim() && collectionId) {
+        setCollectionLink({
+          collectionId,
+          defaultUrl: linkUrl.trim(),
+          defaultLabel: linkLabel.trim() || "Shop this look",
+          defaultSite: linkSite.trim() || new URL(linkUrl.trim().startsWith("http") ? linkUrl.trim() : "https://" + linkUrl.trim()).hostname.replace("www.", ""),
+          isAffiliate: linkIsAffiliate,
+        });
+      }
+
       toast({ title: "Published!", description: `${files.length} image${files.length > 1 ? "s" : ""} uploaded successfully.` });
       navigate(`/collections/${collectionId}`);
     } catch (err: any) {
