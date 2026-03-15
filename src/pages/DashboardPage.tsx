@@ -1253,6 +1253,7 @@ const DashboardPage = () => {
                             <span className="flex items-center gap-1"><Download className="w-3 h-3" /> {img.downloads} downloads</span>
                             <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3" /> {img.remixes} remixes</span>
                             <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> {img.embeds} websites</span>
+                            <span className="flex items-center gap-1"><MousePointerClick className="w-3 h-3" /> {img.affClicks} aff. clicks</span>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
