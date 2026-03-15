@@ -134,7 +134,35 @@ const ImagePage = () => {
                 </button>
               </div>
 
-              {/* Embed Modal */}
+              {/* Credit Block */}
+              <div className="mt-5 p-4 rounded-xl border border-foreground/[0.08] bg-card">
+                <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-3">
+                  <Shield className="w-3.5 h-3.5" />
+                  <span>Free to use · No attribution required · <strong className="text-foreground">AI-generated art</strong></span>
+                </div>
+                <p className="text-[0.75rem] text-muted mb-3">Credit the creator (optional)</p>
+                <div className="bg-background border border-foreground/[0.06] rounded-lg p-3 mb-3">
+                  <p className="text-[0.8rem] text-foreground/80 leading-[1.6] whitespace-pre-line font-mono">{creditText}</p>
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button
+                    onClick={handleCopyCredit}
+                    className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${creditCopied ? "bg-green-500/10 border border-green-500/30 text-green-600" : "bg-foreground text-primary-foreground hover:bg-accent"}`}
+                  >
+                    {creditCopied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy Credit</>}
+                  </button>
+                  <Link to={`/creator/${creator.id}`} className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-medium border border-foreground/[0.12] hover:border-foreground/30 transition-colors no-underline text-foreground">
+                    <Heart className="w-3.5 h-3.5" /> Follow Creator
+                  </Link>
+                  <Link to="/real-creator" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-medium border border-foreground/[0.12] hover:border-accent/30 hover:text-accent transition-colors no-underline text-foreground">
+                    <Sparkles className="w-3.5 h-3.5" /> Recreate This Image
+                  </Link>
+                </div>
+                <p className="text-[0.7rem] text-muted mt-3 flex items-center gap-1">
+                  <Globe className="w-3 h-3" /> Credited 3,482 times
+                </p>
+              </div>
+
               {showEmbed && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" onClick={() => setShowEmbed(false)}>
                   <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[560px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
