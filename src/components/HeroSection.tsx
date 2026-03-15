@@ -80,7 +80,7 @@ const HeroSection = () => {
                   <div
                     key={label}
                     onClick={(e) => { e.stopPropagation(); setSelectedType(label); setDropdownOpen(false); }}
-                    className={`flex items-center gap-[9px] px-3 py-2.5 rounded-lg cursor-pointer text-[0.85rem] font-medium hover:bg-background transition-colors ${selectedType === label ? "text-accent" : ""}`}
+                    className={`flex items-center gap-[9px] px-3 py-2.5 rounded-lg cursor-pointer text-[0.85rem] font-medium transition-colors ${selectedType === label ? "bg-accent text-primary-foreground" : "hover:bg-background"}`}
                   >
                     <Icon className="w-3 h-3" />
                     {label}
