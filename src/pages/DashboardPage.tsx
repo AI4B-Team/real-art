@@ -23,12 +23,12 @@ const navItems = [
 ];
 
 const recentActivity = [
-  { text: "Your image Cosmic Dreamscape was downloaded", time: "2 min ago" },
-  { text: "NeoPixel started following you", time: "18 min ago" },
-  { text: "You earned $12.00 from an affiliate referral", time: "1 hr ago" },
-  { text: "34 people liked Neon Boulevard today", time: "2 hr ago" },
-  { text: "Your image Abstract Mind was downloaded", time: "3 hr ago" },
-  { text: "You earned $24.00 from an affiliate referral", time: "5 hr ago" },
+  { text: "Your image Cosmic Dreamscape was downloaded", time: "2 min ago", icon: Download },
+  { text: "NeoPixel started following you", time: "18 min ago", icon: Users },
+  { text: "You earned $12.00 from an affiliate referral", time: "1 hr ago", icon: DollarSign },
+  { text: "34 people liked Neon Boulevard today", time: "2 hr ago", icon: Heart },
+  { text: "Your image Abstract Mind was downloaded", time: "3 hr ago", icon: Download },
+  { text: "You earned $24.00 from an affiliate referral", time: "5 hr ago", icon: DollarSign },
 ];
 
 const topImages = [
@@ -1134,8 +1134,11 @@ const DashboardPage = () => {
                     <h3 className="font-semibold text-[0.9rem] mb-4">Recent Activity</h3>
                     <div className="flex flex-col gap-3">
                       {recentActivity.slice(0, 5).map((a, i) => (
-                        <div key={i} className="flex items-center justify-between py-1.5 border-b border-foreground/[0.04] last:border-0">
-                          <span className="text-[0.8rem] text-muted">{a.text}</span>
+                        <div key={i} className="flex items-center gap-2.5 py-1.5 border-b border-foreground/[0.04] last:border-0">
+                          <div className="w-6 h-6 rounded-lg bg-foreground/[0.05] flex items-center justify-center shrink-0">
+                            <a.icon className="w-3 h-3 text-accent" />
+                          </div>
+                          <span className="text-[0.8rem] text-muted flex-1">{a.text}</span>
                           <span className="text-[0.7rem] text-muted/60 shrink-0 ml-3">{a.time}</span>
                         </div>
                       ))}
@@ -1381,8 +1384,11 @@ const DashboardPage = () => {
                 <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
                   <div className="flex flex-col">
                     {recentActivity.map((a, i) => (
-                      <div key={i} className={`flex items-center justify-between py-3.5 ${i < recentActivity.length - 1 ? "border-b border-foreground/[0.04]" : ""}`}>
-                        <span className={`text-[0.84rem] ${i < 3 ? "text-foreground font-medium" : "text-muted"}`}>{a.text}</span>
+                      <div key={i} className={`flex items-center gap-3 py-3.5 ${i < recentActivity.length - 1 ? "border-b border-foreground/[0.04]" : ""}`}>
+                        <div className="w-7 h-7 rounded-lg bg-foreground/[0.05] flex items-center justify-center shrink-0">
+                          <a.icon className="w-3.5 h-3.5 text-accent" />
+                        </div>
+                        <span className={`text-[0.84rem] flex-1 ${i < 3 ? "text-foreground font-medium" : "text-muted"}`}>{a.text}</span>
                         <span className="text-[0.72rem] text-muted/60 shrink-0 ml-4">{a.time}</span>
                       </div>
                     ))}
