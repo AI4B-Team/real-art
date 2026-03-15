@@ -394,12 +394,19 @@ const GalleriesSection = () => {
   const [codeError, setCodeError] = useState("");
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
+  useEffect(() => {
+    const sync = () => setGalData(getCollections());
+    window.addEventListener("ra_collections_changed", sync);
+    return () => window.removeEventListener("ra_collections_changed", sync);
+  }, []);
+
   const totalItems = galData.reduce((s, g) => s + totalMedia(g), 0);
 
   const handleChangeCode = (id: string) => {
     if (newCode.length < 4) { setCodeError("Code must be at least 4 characters"); return; }
     if (!/^[A-Z0-9]+$/.test(newCode)) { setCodeError("Only uppercase letters and numbers"); return; }
-    setGalData(prev => prev.map(g => g.id === id ? { ...g, code: newCode } : g));
+    updateCol(id, { code: newCode });
+    setGalData(getCollections());
     setChangingCode(null);
     setNewCode("");
     setCodeError("");
