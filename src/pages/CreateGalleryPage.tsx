@@ -104,7 +104,7 @@ const CreateGalleryPage = () => {
             <span className="text-foreground">Create Collection</span>
           </div>
 
-          <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] mb-2">Create your gallery</h1>
+          <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] mb-2">Create Your Collection</h1>
           <p className="text-muted text-[0.88rem] mb-10 leading-[1.65]">Build a public showcase or a private vault for your art — you control who sees it.</p>
 
           <div className="flex flex-col gap-7">
