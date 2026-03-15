@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Search } from "lucide-react";
+import { ArrowLeft, ChevronRight, Search, Plus } from "lucide-react";
 import CollectionCard from "@/components/CollectionCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
