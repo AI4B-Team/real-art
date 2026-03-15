@@ -50,6 +50,8 @@ const UploadPage = () => {
   const [selectedCats, setSelectedCats] = useState<string[]>([]);
   const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>([]);
+  const [autoTagsLoading, setAutoTagsLoading] = useState(false);
+  const [autoTagsDone, setAutoTagsDone] = useState(false);
   const [prompt, setPrompt] = useState("");
   const [tool, setTool] = useState("");
   const [visibility, setVisibility] = useState<"public" | "private">("public");
@@ -156,6 +158,30 @@ const UploadPage = () => {
     title.trim().length > 2 && selectedCats.length > 0,
     true,
   ];
+
+  const runAutoTag = async () => {
+    if (autoTagsDone || previews.length === 0) return;
+    setAutoTagsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("auto-tag", {
+        body: { imageUrl: previews[0] },
+      });
+      if (error) throw error;
+      if (data.tags?.length) setTags(data.tags.slice(0, 12));
+      if (data.title && !title) setTitle(data.title);
+      if (data.categories?.length) {
+        const validCats = categories;
+        const matched = data.categories.filter((c: string) => validCats.includes(c)).slice(0, 3);
+        if (matched.length) setSelectedCats(matched);
+      }
+      setAutoTagsDone(true);
+    } catch (e) {
+      console.error("Auto-tag failed:", e);
+    } finally {
+      setAutoTagsLoading(false);
+    }
+  };
+
   const handlePublish = async () => {
     setPublishing(true);
     try {
@@ -411,7 +437,7 @@ const UploadPage = () => {
 
               <button
                 disabled={!canProceed[0]}
-                onClick={() => setStep(1)}
+                onClick={() => { setStep(1); runAutoTag(); }}
                 className="bg-foreground text-primary-foreground px-8 py-3 rounded-lg text-[0.86rem] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent transition-colors"
               >
                 Continue
@@ -423,7 +449,29 @@ const UploadPage = () => {
           {step === 1 && (
             <div>
               <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Add details</h1>
-              <p className="text-muted text-[0.88rem] mb-8">Help people find your work. Better details = more downloads.</p>
+              <p className="text-muted text-[0.88rem] mb-4">Help people find your work. Better details = more downloads.</p>
+
+              {/* Auto-tag status */}
+              {autoTagsLoading && (
+                <div className="flex items-center gap-2 text-[0.82rem] text-accent bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  AI is analysing your image for tags, title & categories…
+                </div>
+              )}
+              {autoTagsDone && (
+                <div className="flex items-center justify-between bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
+                  <div className="flex items-center gap-2 text-[0.82rem] text-accent">
+                    <Sparkles className="w-4 h-4" />
+                    AI auto-filled title, tags & categories
+                  </div>
+                  <button
+                    onClick={() => { setAutoTagsDone(false); runAutoTag(); }}
+                    className="text-[0.76rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                  >
+                    <Sparkles className="w-3 h-3" /> Re-analyse
+                  </button>
+                </div>
+              )}
 
               <div className="flex flex-col gap-7">
                 {/* Title */}

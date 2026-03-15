@@ -11,21 +11,35 @@ const sponsoredAds = [
   { imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop&q=80", brandName: "Target", destinationUrl: "#" },
 ];
 
-const photos = [
-  "photo-1618005182384-a83a8bd57fbe","photo-1558618666-fcd25c85cd64",
-  "photo-1541701494587-cb58502866ab","photo-1549880338-65ddcdfd017b",
-  "photo-1557682250-33bd709cbe85","photo-1506905925346-21bda4d32df4",
-  "photo-1518020382113-a7e8fc38eac9","photo-1547036967-23d11aacaee0",
-  "photo-1579546929518-9e396f3cc809","photo-1604881991720-f91add269bed",
-  "photo-1501854140801-50d01698950b","photo-1576091160550-2173dba999ef",
-  "photo-1518770660439-4636190af475","photo-1462275646964-a0e3386b89fa",
-  "photo-1500462918059-b1a0cb512f1d","photo-1543722530-d2c3201371e7",
-  "photo-1533158628620-7e4d0a003147","photo-1505765050516-f72dcac9c60e",
-  "photo-1470071459604-3b5ec3a7fe05","photo-1465146344425-f00d5f5c8f07",
-  "photo-1500462918059-b1a0cb512f1d","photo-1543722530-d2c3201371e7",
-  "photo-1518770660439-4636190af475","photo-1462275646964-a0e3386b89fa",
-  "photo-1607799279861-4dd421887fb3","photo-1533158628620-7e4d0a003147",
-  "photo-1567360425618-1594206637d2","photo-1505765050516-f72dcac9c60e",
+const imageData = [
+  { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", tags: ["abstract", "cosmic", "space", "fantasy", "purple", "dark"] },
+  { photo: "photo-1558618666-fcd25c85cd64", title: "Neon Gradient", tags: ["abstract", "neon", "gradient", "minimal", "colorful"] },
+  { photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire", tags: ["abstract", "fire", "colorful", "blue", "orange", "texture"] },
+  { photo: "photo-1549880338-65ddcdfd017b", title: "Mountain Vista", tags: ["nature", "mountains", "landscape", "snow", "cold"] },
+  { photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", tags: ["cyberpunk", "neon", "city", "night", "abstract", "purple"] },
+  { photo: "photo-1506905925346-21bda4d32df4", title: "Alpine Glow", tags: ["nature", "mountains", "sunrise", "landscape", "golden"] },
+  { photo: "photo-1518020382113-a7e8fc38eac9", title: "Geometric Architecture", tags: ["architecture", "geometric", "minimal", "white", "structure"] },
+  { photo: "photo-1547036967-23d11aacaee0", title: "Night Sky", tags: ["space", "night", "stars", "dark", "galaxy", "cosmic"] },
+  { photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City Night", tags: ["cyberpunk", "city", "night", "neon", "futuristic", "sci-fi"] },
+  { photo: "photo-1604881991720-f91add269bed", title: "Digital Avatar 01", tags: ["avatars", "portraits", "digital", "face", "art"] },
+  { photo: "photo-1501854140801-50d01698950b", title: "Forest Spirit", tags: ["nature", "forest", "green", "trees", "fantasy", "landscape"] },
+  { photo: "photo-1576091160550-2173dba999ef", title: "Abstract Fluid", tags: ["abstract", "fluid", "colorful", "texture", "art", "minimal"] },
+  { photo: "photo-1518770660439-4636190af475", title: "Tech Circuit Board", tags: ["technology", "circuit", "sci-fi", "dark", "abstract"] },
+  { photo: "photo-1462275646964-a0e3386b89fa", title: "Studio Setup", tags: ["architecture", "interior", "studio", "minimal", "dark"] },
+  { photo: "photo-1500462918059-b1a0cb512f1d", title: "Sunset Haze", tags: ["nature", "sunset", "sky", "orange", "landscape", "warm"] },
+  { photo: "photo-1543722530-d2c3201371e7", title: "Luxury Interior", tags: ["luxury", "architecture", "interior", "minimal", "white"] },
+  { photo: "photo-1533158628620-7e4d0a003147", title: "Portrait Study", tags: ["portraits", "people", "face", "art", "dramatic"] },
+  { photo: "photo-1505765050516-f72dcac9c60e", title: "Tropical Shore", tags: ["nature", "beach", "travel", "tropical", "blue", "ocean"] },
+  { photo: "photo-1470071459604-3b5ec3a7fe05", title: "Golden Valley", tags: ["nature", "landscape", "hills", "golden", "travel"] },
+  { photo: "photo-1465146344425-f00d5f5c8f07", title: "Spring Blossoms", tags: ["nature", "flowers", "pink", "spring", "macro", "backgrounds"] },
+  { photo: "photo-1607799279861-4dd421887fb3", title: "Hands Clasped", tags: ["people", "hands", "connection", "portraits", "warm"] },
+  { photo: "photo-1567360425618-1594206637d2", title: "Desert Sands", tags: ["nature", "desert", "sand", "landscape", "travel", "minimal"] },
+  { photo: "photo-1549880338-65ddcdfd017b", title: "Snowy Peaks", tags: ["nature", "mountains", "snow", "winter", "landscape", "cold"] },
+  { photo: "photo-1518770660439-4636190af475", title: "Circuit Abstract", tags: ["abstract", "technology", "sci-fi", "dark", "pattern"] },
+  { photo: "photo-1501854140801-50d01698950b", title: "Ancient Forest", tags: ["nature", "forest", "green", "fantasy", "dreamy", "landscape"] },
+  { photo: "photo-1543722530-d2c3201371e7", title: "Editorial Portrait", tags: ["fashion", "portraits", "people", "editorial", "luxury"] },
+  { photo: "photo-1576091160550-2173dba999ef", title: "Pastel Abstract", tags: ["abstract", "pastel", "minimal", "art", "backgrounds"] },
+  { photo: "photo-1462275646964-a0e3386b89fa", title: "Dark Workspace", tags: ["interior", "architecture", "dark", "minimal", "studio"] },
 ];
 
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
@@ -56,6 +70,14 @@ const ExplorePage = () => {
   const [sort, setSort] = useState("Most Relevant");
   const [sortOpen, setSortOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(20);
+
+  const filteredImages = imageData.filter(img => {
+    const q = query.trim().toLowerCase();
+    const cat = activeFilter.toLowerCase();
+    const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
+    const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
+    return matchQuery && matchCat;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -123,22 +145,25 @@ const ExplorePage = () => {
 
         {/* Filter bar */}
         <div className="px-6 md:px-12 pt-5 pb-1">
-          <div className="max-w-[1440px] mx-auto flex items-center overflow-x-auto no-scrollbar">
-            <div className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase text-muted mr-2.5 flex items-center gap-1.5 shrink-0">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-2.5 overflow-x-auto no-scrollbar">
+            <div className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase text-muted mr-1 flex items-center gap-1.5 shrink-0">
               <Filter className="w-3 h-3" /> Filter
             </div>
-            {filters.map(f => (
-              <button
-                key={f}
-                onClick={() => setActiveFilter(f)}
-                className={`border px-4 py-1.5 rounded-md font-body text-[0.79rem] font-medium cursor-pointer whitespace-nowrap transition-all ${
-                  activeFilter === f
-                    ? "bg-foreground text-primary-foreground border-foreground"
-                    : "bg-transparent border-foreground/[0.12] text-muted hover:text-foreground hover:border-foreground/30"
-                }`}
-              >
-                {f}
-              </button>
+            {filters.map((f, idx) => (
+              <>
+                {idx === 1 && <div key="divider" className="w-px h-4 bg-foreground/[0.1] shrink-0" />}
+                <button
+                  key={f}
+                  onClick={() => setActiveFilter(f)}
+                  className={`border px-4 py-1.5 rounded-lg font-body text-[0.79rem] font-medium cursor-pointer whitespace-nowrap transition-all shrink-0 ${
+                    activeFilter === f
+                      ? "bg-foreground text-primary-foreground border-foreground"
+                      : "bg-transparent border-foreground/[0.18] text-muted hover:text-foreground hover:border-foreground/40"
+                  }`}
+                >
+                  {f}
+                </button>
+              </>
             ))}
           </div>
         </div>
@@ -147,11 +172,12 @@ const ExplorePage = () => {
         <div className="px-6 md:px-12 py-4">
           <div className="max-w-[1440px] mx-auto flex items-center justify-between">
             <div className="text-[0.82rem] text-muted">
-              {query ? (
-                <>Showing results for <strong className="text-foreground">"{query}"</strong> · 2,418 images</>
-              ) : (
-                <><strong className="text-foreground">{activeFilter}</strong> · 2,418,000 images</>
-              )}
+              {(() => {
+                const count = filteredImages.length;
+                if (query) return <>Showing results for <strong className="text-foreground">"{query}"</strong> · {count} images</>;
+                if (activeFilter !== "All") return <><strong className="text-foreground">{activeFilter}</strong> · {count} images</>;
+                return <>All · {count.toLocaleString()}+ images</>;
+              })()}
             </div>
           </div>
         </div>
@@ -160,31 +186,29 @@ const ExplorePage = () => {
         <div className="px-6 md:px-12 pb-16">
           <div className="max-w-[1440px] mx-auto">
             <div className="masonry-grid">
-              {photos.slice(0, visibleCount).map((photo, i) => {
+              {filteredImages.slice(0, visibleCount).map((img, i) => {
                 const cr = creators[i % creators.length];
                 const h = heights[i % heights.length];
 
-                // Insert a sponsored card every 25 images
                 const sponsoredIndex = Math.floor(i / 25);
                 const showSponsored = i > 0 && i % 25 === 0 && sponsoredIndex <= sponsoredAds.length;
                 const ad = showSponsored ? sponsoredAds[(sponsoredIndex - 1) % sponsoredAds.length] : null;
 
                 return (
-                  <>
+                  <div key={`${img.photo}-${i}`}>
                     {showSponsored && ad && (
-                      <div key={`ad-${i}`} className="masonry-item rounded-xl overflow-hidden">
+                      <div className="masonry-item rounded-xl overflow-hidden">
                         <SponsoredCard imageUrl={ad.imageUrl} brandName={ad.brandName} destinationUrl={ad.destinationUrl} />
                       </div>
                     )}
                     <Link
-                      key={i}
                       to={`/image/${i}`}
                       className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative"
                       style={{ background: "#e0e0de" }}
                     >
                       <img
-                        src={`https://images.unsplash.com/${photo}?w=400&h=${h}&fit=crop&q=78`}
-                        alt=""
+                        src={`https://images.unsplash.com/${img.photo}?w=400&h=${h}&fit=crop&q=78`}
+                        alt={img.title}
                         loading="lazy"
                         className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-[350ms] ease-out"
                         style={{ height: h, objectFit: "cover" }}
@@ -211,18 +235,20 @@ const ExplorePage = () => {
                         </div>
                       </div>
                     </Link>
-                  </>
+                  </div>
                 );
               })}
             </div>
-            <div className="text-center mt-8">
-              <button
-                onClick={() => setVisibleCount(c => c + 20)}
-                className="font-body text-[0.82rem] font-semibold bg-transparent border border-foreground/[0.14] px-8 py-2.5 rounded-lg cursor-pointer text-foreground hover:border-foreground transition-colors"
-              >
-                Load More
-              </button>
-            </div>
+            {visibleCount < filteredImages.length && (
+              <div className="text-center mt-8">
+                <button
+                  onClick={() => setVisibleCount(c => c + 20)}
+                  className="font-body text-[0.82rem] font-semibold bg-transparent border border-foreground/[0.14] px-8 py-2.5 rounded-lg cursor-pointer text-foreground hover:border-foreground transition-colors"
+                >
+                  Load More
+                </button>
+              </div>
+            )}
           </div>
         </div>
         <Footer />
