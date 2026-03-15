@@ -29,7 +29,7 @@ const HeroSection = () => {
 
   return (
     <section className="pt-[140px] pb-20 px-6 md:px-12 text-center relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none" style={{ background: "var(--gradient-hero)" }} />
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
