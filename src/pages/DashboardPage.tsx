@@ -923,7 +923,7 @@ const DashboardPage = () => {
                       <span className="text-[0.72rem] text-muted">300 total items</span>
                     </div>
                     <button onClick={() => setActiveSection("media")} className="text-[0.78rem] font-semibold text-accent hover:underline flex items-center gap-1">
-                      View all <ChevronRight className="w-3.5 h-3.5" />
+                      View All <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
