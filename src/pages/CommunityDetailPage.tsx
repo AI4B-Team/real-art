@@ -69,6 +69,13 @@ const CommunityDetailPage = () => {
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("Gallery");
   const [collectionPerm, setCollectionPerm] = useState<"owner" | "moderators" | "any_member">(community.collectionPermission);
+  const [requestName, setRequestName] = useState("");
+  const [requestDesc, setRequestDesc] = useState("");
+  const [requests, setRequests] = useState([
+    { id: "r1", name: "Portrait Lighting", by: "NeoPixel", status: "pending" as const },
+    { id: "r2", name: "AI Fashion Editorial", by: "DreamForge", status: "pending" as const },
+    { id: "r3", name: "Luxury Interiors", by: "AI.Verse", status: "approved" as const },
+  ]);
   const tabs = ["Gallery", "Collections", "Members", "About", "Settings"];
   const collections = communityCollections[community.id] || communityCollections["2"];
 
