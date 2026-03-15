@@ -1134,8 +1134,11 @@ const DashboardPage = () => {
                     <h3 className="font-semibold text-[0.9rem] mb-4">Recent Activity</h3>
                     <div className="flex flex-col gap-3">
                       {recentActivity.slice(0, 5).map((a, i) => (
-                        <div key={i} className="flex items-center justify-between py-1.5 border-b border-foreground/[0.04] last:border-0">
-                          <span className="text-[0.8rem] text-muted">{a.text}</span>
+                        <div key={i} className="flex items-center gap-2.5 py-1.5 border-b border-foreground/[0.04] last:border-0">
+                          <div className="w-6 h-6 rounded-lg bg-foreground/[0.05] flex items-center justify-center shrink-0">
+                            <a.icon className="w-3 h-3 text-accent" />
+                          </div>
+                          <span className="text-[0.8rem] text-muted flex-1">{a.text}</span>
                           <span className="text-[0.7rem] text-muted/60 shrink-0 ml-3">{a.time}</span>
                         </div>
                       ))}
