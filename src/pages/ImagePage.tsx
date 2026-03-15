@@ -39,6 +39,15 @@ const ImagePage = () => {
   const [promptVisible, setPromptVisible] = useState(false);
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
+  const [creditCopied, setCreditCopied] = useState(false);
+
+  const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
+
+  const handleCopyCredit = () => {
+    navigator.clipboard.writeText(creditText).catch(() => {});
+    setCreditCopied(true);
+    setTimeout(() => setCreditCopied(false), 2500);
+  };
 
   const embedCode = `<iframe src="https://realart.com/embed/${id}" width="600" height="600" frameborder="0" style="border-radius:12px;overflow:hidden" allowfullscreen></iframe>`;
 
