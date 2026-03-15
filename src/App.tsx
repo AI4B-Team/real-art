@@ -73,6 +73,8 @@ const App = () => (
           <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/creators" element={<CreatorsPage />} />
+          <Route path="/boards" element={<BoardsPage />} />
+          <Route path="/boards/:id" element={<BoardDetailPage />} />
 
           {/* Round 3 — Creator Tools */}
           <Route path="/upload" element={<UploadPage />} />
