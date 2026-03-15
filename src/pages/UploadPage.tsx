@@ -472,6 +472,7 @@ const UploadPage = () => {
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
                     ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private gallery"],
+                    ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
                     ["Prompt shared", prompt ? "Yes" : "No"],
                   ].map(([k, v]) => (
