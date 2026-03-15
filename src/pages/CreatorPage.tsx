@@ -16,7 +16,7 @@ const creatorsData = [
     location: "San Francisco, CA", website: "aiverse.art", twitter: "@aiverseart", instagram: "@aiverse",
     followers: 12400, following: 284, images: 284, downloads: "4.2M", views: "18.6M", remixes: "8.4K",
     joined: "January 2024",
-    badges: ["🏆 Top Creator", "👥 10K Followers", "🔥 Trending Artist", "🎨 Style Pioneer"],
+    badges: [{ icon: Award, label: "Top Creator" }, { icon: Users, label: "10K Followers" }, { icon: TrendingUp, label: "Trending Artist" }, { icon: Palette, label: "Style Pioneer" }],
     pinnedImage: { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", views: "48,201" },
   },
   {
