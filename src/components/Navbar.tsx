@@ -1,13 +1,15 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Sparkles, FileText, X, Layout } from "lucide-react";
+import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Sparkles, FileText, X, Layout, ChevronDown, Plus, Compass } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const communitiesRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
@@ -23,6 +25,9 @@ const Navbar = () => {
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
+      }
+      if (communitiesRef.current && !communitiesRef.current.contains(e.target as Node)) {
+        setCommunitiesOpen(false);
       }
     };
     document.addEventListener("click", handler);
@@ -112,6 +117,39 @@ const Navbar = () => {
       <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
         Real<span className="text-accent">.</span>Art
       </Link>
+
+      {/* Desktop Communities Dropdown */}
+      <div className="hidden md:block relative ml-4" ref={communitiesRef}>
+        <button
+          onClick={() => setCommunitiesOpen(!communitiesOpen)}
+          className="flex items-center gap-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
+        >
+          <Users className="w-3.5 h-3.5 opacity-60" />
+          Communities
+          <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {communitiesOpen && (
+          <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[240px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
+            <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Your Communities</div>
+            <Link to="/communities/1" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+              Avatar Architects
+            </Link>
+            <Link to="/communities/2" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+              PromptVault Pro
+            </Link>
+            <Link to="/communities/3" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+              Abstract Minds
+            </Link>
+            <div className="h-px bg-foreground/[0.06] my-1.5" />
+            <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+              <Compass className="w-3.5 h-3.5 opacity-40 shrink-0" /> Browse Communities
+            </Link>
+            <Link to="/communities/create" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+              <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> Create Community
+            </Link>
+          </div>
+        )}
+      </div>
 
       {/* Mobile: 🔍 right */}
       <button
