@@ -496,6 +496,8 @@ const BoardDetailPage = () => {
               )}
             </div>
           </div>
+        </div>
+
 
         <div className="px-6 md:px-12 max-w-[1440px] mx-auto py-8">
           {/* Description */}
