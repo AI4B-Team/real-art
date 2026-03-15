@@ -42,6 +42,7 @@ const labelBtnClass = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-n
 
 const MasonryGrid = () => {
   const [activePrompt, setActivePrompt] = useState<number | null>(null);
+  const [boardModalOpen, setBoardModalOpen] = useState(false);
 
   return (
     <div className="px-6 md:px-12 py-6 pb-16">
