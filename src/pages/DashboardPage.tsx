@@ -783,7 +783,7 @@ const MyBoardsSection = () => {
   const [newVisibility, setNewVisibility] = useState<"public" | "private">("private");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  const navigate = useNavigate();
+  
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2500); };
 
   useEffect(() => {
