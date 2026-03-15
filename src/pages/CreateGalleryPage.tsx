@@ -65,7 +65,7 @@ const CreateGalleryPage = () => {
                   </button>
                 </div>
                 <p className="text-[0.75rem] text-muted mt-3 leading-[1.6]">
-                  Share this code with anyone you want to give access. You can change or regenerate it anytime from your gallery settings.
+                  Share this code with anyone you want to give access. You can change or regenerate it anytime from your collection settings.
                 </p>
               </div>
             )}
