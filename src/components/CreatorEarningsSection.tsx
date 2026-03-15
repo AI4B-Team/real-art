@@ -41,7 +41,7 @@ const earningMethods = [
 
 const CreatorEarningsSection = () => {
   return (
-    <section className="py-[72px] px-6 md:px-12">
+    <section className="py-12 px-6 md:px-12">
       <div className="max-w-[1440px] mx-auto">
         <div className="text-center mb-10">
           <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-2">Earn As A Creator</h2>

@@ -53,7 +53,7 @@ const promptPacks = [
 
 const PromptLibrary = () => {
   return (
-    <section className="py-[72px] px-6 md:px-12">
+    <section className="py-12 px-6 md:px-12">
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
