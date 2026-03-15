@@ -51,7 +51,7 @@ const TrendingCreatorsSection = () => {
               </Link>
             ))}
             <Link to="/leaderboard" className="text-[0.82rem] text-accent font-semibold hover:underline flex items-center gap-1 mt-1">
-              View full leaderboard <ChevronRight className="w-3.5 h-3.5" />
+              View Full Leaderboard <ChevronRight className="w-3.5 h-3.5" />
             </Link>
           </div>
         </div>
