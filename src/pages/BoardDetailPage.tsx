@@ -186,16 +186,8 @@ const BoardDetailPage = () => {
     removeFromBoard(userBoard.id, imageId);
   };
 
-  // Close menu on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setShowMenu(false);
-      }
-    };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+
+
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href).catch(() => {});
