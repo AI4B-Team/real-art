@@ -469,8 +469,33 @@ const BoardDetailPage = () => {
                 )}
               </div>
             </div>
+            </div>
+
+            {/* Owner + stats */}
+            <div className="flex items-center gap-4 flex-wrap">
+              <Link to={isOwner ? "/dashboard" : `/creator/${creatorId}`} className="flex items-center gap-2 no-underline">
+                <div
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-white border border-white/20"
+                  style={{ background: creatorColor }}
+                >
+                  {creatorInit}
+                </div>
+                <span className="text-[0.85rem] text-white/80">by {creator}</span>
+              </Link>
+              <span className="text-white/30">·</span>
+              <span className="flex items-center gap-1 text-[0.8rem] text-white/50">
+                <Bookmark className="w-3.5 h-3.5" /> {boardItems.length} saved
+              </span>
+              {collabs.length > 0 && (
+                <>
+                  <span className="text-white/30">·</span>
+                  <span className="flex items-center gap-1 text-[0.8rem] text-white/50">
+                    <Users className="w-3.5 h-3.5" /> {collabs.length} collaborator{collabs.length !== 1 ? "s" : ""}
+                  </span>
+                </>
+              )}
+            </div>
           </div>
-        </div>
 
         <div className="px-6 md:px-12 max-w-[1440px] mx-auto py-8">
           {/* Description */}
