@@ -49,9 +49,9 @@ const ChallengesSection = () => {
             </button>
           </div>
           <div className="text-right">
-            <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/[0.32] mb-1">Grand Prize</div>
+            <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/60 mb-1">Grand Prize</div>
             <div className="font-display text-[4rem] font-black text-accent tracking-[-0.04em] leading-none">$5,000</div>
-            <div className="text-[0.75rem] text-primary-foreground/[0.36] mt-2 leading-[1.6]">+ REAL CREATOR Pro<br />+ Featured Placement</div>
+            <div className="text-[0.75rem] text-primary-foreground/60 mt-2 leading-[1.6]">+ REAL CREATOR Pro<br />+ Featured Placement</div>
             <div className="w-[160px] h-[160px] rounded-[14px] overflow-hidden mt-5 ml-auto">
               <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&fit=crop&q=80" alt="Challenge art" loading="lazy" className="w-full h-full object-cover" />
             </div>
