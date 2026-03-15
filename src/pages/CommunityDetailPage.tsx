@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Heart, Download, Star } from "lucide-react";
+import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Star } from "lucide-react";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -199,16 +200,7 @@ const CommunityDetailPage = () => {
                           className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
                           style={{ height: heights[i % heights.length], objectFit: "cover" }}
                         />
-                        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-3" style={{ background: "var(--gradient-overlay)" }}>
-                          <div className="flex gap-1.5 ml-auto">
-                            <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-white/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/40 transition-colors">
-                              <Heart className="w-3 h-3" />
-                            </button>
-                            <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-white/20 backdrop-blur-sm text-white flex items-center justify-center hover:bg-white/40 transition-colors">
-                              <Download className="w-3 h-3" />
-                            </button>
-                          </div>
-                        </div>
+                        <ImageCardOverlay index={i} />
                       </Link>
                     ))}
                   </div>
