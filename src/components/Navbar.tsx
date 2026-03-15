@@ -378,7 +378,7 @@ const Navbar = () => {
                   </div>
                   <div>
                     <div className="text-[0.88rem] font-semibold">{userDisplay}</div>
-                    <div className="text-[0.75rem] text-muted">@{userHandle}</div>
+                    <div className="text-[0.75rem] text-muted">@{userHandle.toLowerCase()}</div>
                   </div>
                 </div>
                 <div className="h-px bg-foreground/[0.06] my-1" />
