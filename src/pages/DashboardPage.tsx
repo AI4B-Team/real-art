@@ -11,15 +11,16 @@ import {
 import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
 
-const navItems = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "exposure", label: "Exposure", icon: TrendingUp },
-  { id: "media", label: "Media", icon: Image },
-  { id: "galleries", label: "Collections", icon: FolderOpen },
-  { id: "earnings", label: "Earnings", icon: DollarSign },
-  { id: "ads", label: "Ads", icon: Megaphone },
-  { id: "notifications", label: "Notifications", icon: Bell },
-  { id: "settings", label: "Settings", icon: Settings },
+const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard, internal: true },
+  { id: "exposure", label: "Exposure", icon: TrendingUp, internal: true },
+  { id: "media", label: "Media", icon: Image, internal: true },
+  { id: "galleries", label: "Collections", icon: FolderOpen, internal: true },
+  { id: "boards", label: "Boards", icon: Bookmark, internal: false, href: "/boards" },
+  { id: "earnings", label: "Earnings", icon: DollarSign, internal: true },
+  { id: "ads", label: "Ads", icon: Megaphone, internal: true },
+  { id: "notifications", label: "Notifications", icon: Bell, internal: true },
+  { id: "settings", label: "Settings", icon: Settings, internal: true },
 ];
 
 const recentActivity = [
