@@ -39,7 +39,7 @@ const ChallengesSection = () => {
               ].map((s) => (
                 <div key={s.label}>
                   <strong className="block text-primary-foreground text-[1.3rem] font-bold font-display">{s.val}</strong>
-                  <span className="text-[0.68rem] text-primary-foreground/[0.38] uppercase tracking-[0.1em]">{s.label}</span>
+                  <span className="text-[0.68rem] text-primary-foreground/[0.6] uppercase tracking-[0.1em]">{s.label}</span>
                 </div>
               ))}
             </div>
