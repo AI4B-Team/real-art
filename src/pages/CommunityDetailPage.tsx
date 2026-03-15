@@ -68,7 +68,8 @@ const CommunityDetailPage = () => {
   const [codeInput, setCodeInput] = useState("");
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("Gallery");
-  const tabs = ["Gallery", "Collections", "Members", "About"];
+  const [collectionPerm, setCollectionPerm] = useState<"owner" | "moderators" | "any_member">(community.collectionPermission);
+  const tabs = ["Gallery", "Collections", "Members", "About", "Settings"];
   const collections = communityCollections[community.id] || communityCollections["2"];
 
   const handleJoin = () => {
