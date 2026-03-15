@@ -599,11 +599,7 @@ const ImagePage = () => {
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
                       />
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%)" }} />
-                      <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <div className="text-[0.78rem] text-primary-foreground font-semibold">{r.title}</div>
-                        <div className="text-[0.68rem] text-primary-foreground/55">{r.creator}</div>
-                      </div>
+                      <ImageCardOverlay index={i + 30} />
                     </Link>
                   ))}
                 </div>
