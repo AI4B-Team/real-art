@@ -92,11 +92,14 @@ const CreatorPage = () => {
                     <div className="text-[0.82rem] text-muted">{creator.handle} · Joined {creator.joined}</div>
                     {/* Badges */}
                     <div className="flex flex-wrap gap-1.5 mt-2">
-                      {creator.badges.map(badge => (
-                        <span key={badge} className="text-[0.68rem] font-semibold bg-accent/10 text-accent px-2.5 py-1 rounded-lg border border-accent/15">
-                          {badge}
-                        </span>
-                      ))}
+                      {creator.badges.map(badge => {
+                        const BadgeIcon = badge.icon;
+                        return (
+                          <span key={badge.label} className="flex items-center gap-1.5 text-[0.68rem] font-semibold bg-accent/10 text-accent px-2.5 py-1 rounded-lg border border-accent/15">
+                            <BadgeIcon className="w-3 h-3" /> {badge.label}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                   <div className="flex gap-2">
