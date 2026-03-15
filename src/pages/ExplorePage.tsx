@@ -3,6 +3,13 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SponsoredCard from "@/components/SponsoredCard";
+
+const sponsoredAds = [
+  { imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=260&fit=crop&q=80", brandName: "Poshmark", destinationUrl: "#" },
+  { imageUrl: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=400&h=230&fit=crop&q=80", brandName: "SHEIN", destinationUrl: "#" },
+  { imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop&q=80", brandName: "Target", destinationUrl: "#" },
+];
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe","photo-1558618666-fcd25c85cd64",
