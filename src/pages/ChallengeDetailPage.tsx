@@ -108,9 +108,14 @@ const ChallengeDetailPage = () => {
                 <div className="text-[0.68rem] text-muted uppercase tracking-[0.1em]">Grand Prize</div>
               </div>
             </div>
-            <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-6 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors">
-              <Upload className="w-4 h-4" /> Submit Your Entry
-            </button>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[0.82rem] font-semibold">
+                <ThumbsUp className="w-4 h-4" /> Vote for your favorite
+              </div>
+              <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-6 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors">
+                <Upload className="w-4 h-4" /> Submit Your Entry
+              </button>
+            </div>
           </div>
 
           {/* Body */}
