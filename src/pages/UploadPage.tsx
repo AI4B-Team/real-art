@@ -15,6 +15,22 @@ const categories = [
 
 const steps = ["Upload", "Details", "Publish"];
 
+const mockCommunities = [
+  { id: "c1", name: "Avatar Architects" },
+  { id: "c2", name: "Abstract Minds" },
+  { id: "c3", name: "Neon Futures" },
+  { id: "c4", name: "Forest & Earth" },
+];
+
+const mockCollections = [
+  { id: "col1", name: "Cosmic Portraits", communityId: null },
+  { id: "col2", name: "Neon Dreams", communityId: "c3" },
+  { id: "col3", name: "Nature Studies", communityId: "c4" },
+  { id: "col4", name: "My Favorites", communityId: null },
+];
+
+type CollectionTarget = "none" | "existing" | "new";
+
 const UploadPage = () => {
   const [step, setStep] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
@@ -29,6 +45,26 @@ const UploadPage = () => {
   const [visibility, setVisibility] = useState<"public" | "private">("public");
   const [published, setPublished] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Collection targeting
+  const [collectionTarget, setCollectionTarget] = useState<CollectionTarget>("none");
+  const [selectedCommunity, setSelectedCommunity] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState("");
+  const [newCollectionName, setNewCollectionName] = useState("");
+  const [collectionSearch, setCollectionSearch] = useState("");
+
+  const filteredCollections = mockCollections.filter(c => {
+    const matchesSearch = !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase());
+    const matchesCommunity = !selectedCommunity || c.communityId === selectedCommunity;
+    return matchesSearch && (selectedCommunity ? matchesCommunity : true);
+  });
+
+  const selectedCollectionName =
+    collectionTarget === "existing"
+      ? mockCollections.find(c => c.id === selectedCollection)?.name || ""
+      : collectionTarget === "new"
+        ? newCollectionName
+        : "";
 
   const handleFiles = (incoming: FileList | null) => {
     if (!incoming) return;
@@ -296,6 +332,108 @@ const UploadPage = () => {
                     ))}
                   </div>
                 </div>
+
+                {/* Add to Collection */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Add to Collection <span className="text-muted font-normal">(optional)</span></label>
+                  <div className="flex flex-col gap-3">
+                    {([
+                      { val: "none" as CollectionTarget, title: "No Collection", desc: "Upload without adding to a collection" },
+                      { val: "existing" as CollectionTarget, title: "Existing Collection", desc: "Add to one of your collections" },
+                      { val: "new" as CollectionTarget, title: "Create New Collection", desc: "Create a new collection with these images" },
+                    ]).map(opt => (
+                      <button
+                        key={opt.val}
+                        onClick={() => { setCollectionTarget(opt.val); setSelectedCollection(""); setNewCollectionName(""); setSelectedCommunity(""); }}
+                        className={`flex items-start gap-4 p-4 rounded-xl border text-left transition-all ${collectionTarget === opt.val ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                      >
+                        <div className="flex-1">
+                          <div className="font-semibold text-[0.86rem]">{opt.title}</div>
+                          <div className="text-[0.75rem] text-muted">{opt.desc}</div>
+                        </div>
+                        {collectionTarget === opt.val && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Community filter */}
+                  {collectionTarget !== "none" && (
+                    <div className="mt-4">
+                      <label className="block text-[0.78rem] font-medium text-muted mb-1.5">Filter by Community</label>
+                      <div className="relative">
+                        <select
+                          value={selectedCommunity}
+                          onChange={e => { setSelectedCommunity(e.target.value); setSelectedCollection(""); }}
+                          className="w-full h-11 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
+                        >
+                          <option value="">All Communities</option>
+                          {mockCommunities.map(c => (
+                            <option key={c.id} value={c.id}>{c.name}</option>
+                          ))}
+                        </select>
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Existing collection picker */}
+                  {collectionTarget === "existing" && (
+                    <div className="mt-4">
+                      <div className="relative mb-3">
+                        <input
+                          value={collectionSearch}
+                          onChange={e => setCollectionSearch(e.target.value)}
+                          placeholder="Search collections…"
+                          className="w-full h-11 border border-foreground/[0.13] rounded-xl pl-10 pr-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors"
+                        />
+                        <Image className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                        {collectionSearch && (
+                          <button onClick={() => setCollectionSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        )}
+                      </div>
+                      <div className="max-h-[200px] overflow-y-auto border border-foreground/[0.08] rounded-xl divide-y divide-foreground/[0.06]">
+                        {filteredCollections.length === 0 ? (
+                          <div className="p-4 text-center text-[0.82rem] text-muted">No collections found</div>
+                        ) : (
+                          filteredCollections.map(c => (
+                            <button
+                              key={c.id}
+                              onClick={() => setSelectedCollection(c.id)}
+                              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-foreground/[0.03] ${selectedCollection === c.id ? "bg-foreground/[0.05]" : ""}`}
+                            >
+                              <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
+                                <Image className="w-4 h-4 text-muted" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="text-[0.84rem] font-medium truncate">{c.name}</div>
+                                {c.communityId && (
+                                  <div className="text-[0.72rem] text-muted">{mockCommunities.find(mc => mc.id === c.communityId)?.name}</div>
+                                )}
+                              </div>
+                              {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* New collection name */}
+                  {collectionTarget === "new" && (
+                    <div className="mt-4">
+                      <label className="block text-[0.78rem] font-medium text-muted mb-1.5">Collection Name</label>
+                      <input
+                        value={newCollectionName}
+                        onChange={e => setNewCollectionName(e.target.value)}
+                        placeholder="e.g., Cosmic Portraits"
+                        className="w-full h-11 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors"
+                        maxLength={60}
+                      />
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="flex gap-3 mt-8">
@@ -334,6 +472,7 @@ const UploadPage = () => {
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
                     ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private gallery"],
+                    ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
                     ["Prompt shared", prompt ? "Yes" : "No"],
                   ].map(([k, v]) => (
