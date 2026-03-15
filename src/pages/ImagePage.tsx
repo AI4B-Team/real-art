@@ -508,6 +508,7 @@ const ImagePage = () => {
         </div>
         <Footer />
       </div>
+      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
     </div>
   );
 };
