@@ -36,15 +36,7 @@ const sampleVideoPrompt = "Slow dolly-in through swirling nebula clouds as cryst
 
 const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
 
-// Shop data — some images have shop links (simulated by index)
-const shopEnabledIndices = [0, 3, 5, 7, 9];
-const shopLinks: Record<number, ShopLink> = {
-  0: { url: "https://example.com/cosmic-print", site: "ArtPrints.co", price: "$49.99" },
-  3: { url: "https://example.com/horizon-dress", site: "ZARA", price: "$89.00" },
-  5: { url: "https://example.com/alpine-canvas", site: "Society6", price: "$34.00" },
-  7: { url: "https://example.com/urban-hoodie", site: "Redbubble", price: "$44.00" },
-  9: { url: "https://example.com/bloom-poster", site: "Etsy", price: "$28.00" },
-};
+// Shop similar items (static for now)
 const shopSimilarItems: ShopSimilarItem[] = [
   { photo: "photo-1558618666-fcd25c85cd64", title: "Abstract Silk Scarf", price: "$65.00", site: "Etsy", url: "#" },
   { photo: "photo-1549880338-65ddcdfd017b", title: "Horizon Canvas Print", price: "$42.00", site: "Society6", url: "#" },
