@@ -613,7 +613,7 @@ const ImagePage = () => {
             </div>
 
             {/* RIGHT — Sidebar */}
-            <div className="lg:sticky lg:top-24 flex flex-col gap-5">
+            <div className="lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pl-2 scrollbar-thin flex flex-col gap-5">
 
               {/* Title + meta */}
               <div>
