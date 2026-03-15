@@ -41,7 +41,7 @@ const TrendingCreatorsSection = () => {
                     <span className="font-semibold text-[0.88rem] group-hover:text-accent transition-colors">{cr.name}</span>
                     {cr.badges.map(b => <span key={b} className="text-xs">{b}</span>)}
                   </div>
-                  <div className="text-[0.72rem] text-muted">{cr.followers} followers</div>
+                  <div className="text-[0.72rem] text-muted">{cr.followers} followers · {cr.downloads} downloads</div>
                 </div>
                 <div className="text-right shrink-0">
                   <div className="text-[0.72rem] text-green-500 font-semibold flex items-center gap-1">
