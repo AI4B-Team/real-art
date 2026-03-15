@@ -375,6 +375,220 @@ const MediaSection = () => {
   );
 };
 
+/* ═══ GALLERIES SECTION COMPONENT ═══ */
+const totalMedia = (g: typeof galleriesInitial[0]) => g.images + g.videos + g.music;
+
+const GalleriesSection = () => {
+  const [galData, setGalData] = useState(galleriesInitial);
+  const [changingCode, setChangingCode] = useState<string | null>(null);
+  const [newCode, setNewCode] = useState("");
+  const [codeError, setCodeError] = useState("");
+  const [managingId, setManagingId] = useState<string | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  const managingGallery = managingId ? galData.find(g => g.id === managingId) : null;
+  const totalItems = galData.reduce((s, g) => s + totalMedia(g), 0);
+
+  const handleChangeCode = (id: string) => {
+    if (newCode.length < 4) { setCodeError("Code must be at least 4 characters"); return; }
+    if (!/^[A-Z0-9]+$/.test(newCode)) { setCodeError("Only uppercase letters and numbers"); return; }
+    setGalData(prev => prev.map(g => g.id === id ? { ...g, code: newCode } : g));
+    setChangingCode(null);
+    setNewCode("");
+    setCodeError("");
+    setSuccessMsg("Access code updated");
+    setTimeout(() => setSuccessMsg(null), 3000);
+  };
+
+  return (
+    <>
+      {/* Success toast */}
+      {successMsg && (
+        <div className="fixed top-20 right-6 bg-green-600 text-primary-foreground text-[0.82rem] font-semibold px-5 py-3 rounded-xl shadow-lg z-50 animate-in slide-in-from-right">
+          {successMsg}
+        </div>
+      )}
+
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">My Collections</h1>
+          <p className="text-[0.82rem] text-muted mt-1">{galData.length} collections · {totalItems} total items</p>
+        </div>
+        <Link to="/create-gallery" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
+          <Plus className="w-4 h-4" /> New Collection
+        </Link>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {galData.map(g => (
+          <div key={g.id} className="bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
+            <div className="p-5">
+              {/* Thumbnails row */}
+              <div className="flex gap-1.5 mb-3">
+                {g.thumbs.map((t, n) => (
+                  <div key={n} className="h-10 flex-1 rounded-lg overflow-hidden">
+                    <img src={`https://images.unsplash.com/${t}?w=100&h=60&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex items-start justify-between flex-wrap gap-4">
+                <div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <h3 className="font-semibold text-[0.92rem]">{g.name}</h3>
+                    <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${g.free ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
+                      {g.free ? "Public" : "Private"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2 text-[0.78rem] text-muted flex-wrap">
+                    <span className="flex items-center gap-1"><Image className="w-3 h-3" />{g.images} images</span>
+                    {g.videos > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{g.videos} videos</span>}
+                    {g.music > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{g.music} tracks</span>}
+                    {!g.free && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{g.members} members</span></>}
+                    {g.code && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1 font-mono text-muted"><Key className="w-3 h-3" />{g.code}</span></>}
+                  </div>
+                </div>
+                <div className="flex gap-2">
+                  {g.code && (
+                    <button
+                      onClick={() => { setChangingCode(changingCode === g.id ? null : g.id); setNewCode(""); setCodeError(""); }}
+                      className="text-[0.78rem] font-medium text-muted border border-foreground/[0.12] px-4 py-2 rounded-lg hover:border-foreground/30 hover:text-foreground transition-colors"
+                    >
+                      Change Code
+                    </button>
+                  )}
+                  <button
+                    onClick={() => setManagingId(g.id)}
+                    className="text-[0.78rem] font-medium bg-foreground text-primary-foreground px-4 py-2 rounded-lg hover:bg-accent transition-colors"
+                  >
+                    Manage
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Change Code inline panel */}
+            {changingCode === g.id && (
+              <div className="px-5 pb-5 pt-0">
+                <div className="bg-foreground/[0.03] border border-foreground/[0.08] rounded-xl p-4">
+                  <p className="text-[0.75rem] text-muted mb-3">Set a new access code. Anyone who previously joined will need this new code to re-enter.</p>
+                  <div className="flex gap-2 items-start">
+                    <input
+                      value={newCode}
+                      onChange={e => { setNewCode(e.target.value.toUpperCase()); setCodeError(""); }}
+                      onKeyDown={e => e.key === "Enter" && handleChangeCode(g.id)}
+                      maxLength={12}
+                      placeholder="NEW CODE"
+                      className="flex-1 h-10 px-4 rounded-xl bg-background border border-foreground/[0.1] text-[0.85rem] font-mono tracking-[0.15em] uppercase focus:outline-none focus:border-accent transition-colors"
+                    />
+                    <button onClick={() => handleChangeCode(g.id)} className="px-4 h-10 bg-foreground text-primary-foreground rounded-xl text-[0.82rem] font-semibold hover:bg-accent transition-colors whitespace-nowrap">
+                      Save Code
+                    </button>
+                    <button onClick={() => { setChangingCode(null); setNewCode(""); setCodeError(""); }} className="px-3 h-10 border border-foreground/[0.12] rounded-xl text-[0.82rem] hover:border-foreground/30 transition-colors">
+                      Cancel
+                    </button>
+                  </div>
+                  {codeError && <p className="text-[0.72rem] text-destructive mt-2">{codeError}</p>}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Manage Modal */}
+      {managingGallery && (
+        <div className="fixed inset-0 bg-foreground/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setManagingId(null)}>
+          <div className="bg-card rounded-2xl w-full max-w-[480px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            {/* Header */}
+            <div className="p-6 pb-4 flex items-start justify-between">
+              <div>
+                <h3 className="font-display text-[1.3rem] font-black tracking-[-0.02em]">{managingGallery.name}</h3>
+                <p className="text-[0.78rem] text-muted mt-0.5">{totalMedia(managingGallery)} items · {managingGallery.free ? "Public" : "Private"}</p>
+              </div>
+              <button onClick={() => setManagingId(null)} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors text-muted">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Media breakdown */}
+            <div className="px-6 pb-4">
+              <div className="grid grid-cols-3 gap-3">
+                {[
+                  { label: "Images", value: managingGallery.images, icon: Image, color: "text-blue-500" },
+                  { label: "Videos", value: managingGallery.videos, icon: Video, color: "text-purple-500" },
+                  { label: "Music", value: managingGallery.music, icon: Music, color: "text-orange-500" },
+                ].map(s => (
+                  <div key={s.label} className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-xl p-3 text-center">
+                    <s.icon className={`w-4 h-4 mx-auto mb-1 ${s.color}`} />
+                    <div className="font-display font-black text-[1.1rem]">{s.value}</div>
+                    <div className="text-[0.65rem] text-muted uppercase tracking-[0.06em]">{s.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="px-6 pb-2">
+              {[
+                { icon: Upload, label: "Add media to collection", sub: "Upload new images, videos, or music", action: "upload" },
+                { icon: Edit3, label: "Edit collection name & description", sub: "Update title, description, and cover", action: "edit" },
+                { icon: Globe, label: managingGallery.free ? "Make private" : "Make public", sub: managingGallery.free ? "Restrict access with a code" : "Open to all REAL ART visitors", action: "visibility" },
+                { icon: ExternalLink, label: "View collection page", sub: `realart.ai/collections/${managingGallery.slug}`, action: "view" },
+                { icon: Download, label: "Export all media", sub: "Download a ZIP of all your collection content", action: "export" },
+              ].map(item => (
+                <button
+                  key={item.action}
+                  onClick={() => {
+                    if (item.action === "view") { window.open(`/collections/1`, "_blank"); setManagingId(null); }
+                    else if (item.action === "upload") { setManagingId(null); }
+                    else if (item.action === "visibility") {
+                      setGalData(prev => prev.map(g => g.id === managingGallery.id ? { ...g, free: !g.free } : g));
+                      setSuccessMsg(`Collection set to ${managingGallery.free ? "Private" : "Public"}`);
+                      setManagingId(null);
+                      setTimeout(() => setSuccessMsg(null), 3000);
+                    }
+                  }}
+                  className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left w-full group"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0 group-hover:bg-foreground/[0.08] transition-colors">
+                    <item.icon className="w-4 h-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="text-[0.82rem] font-medium">{item.label}</div>
+                    <div className="text-[0.7rem] text-muted truncate">{item.sub}</div>
+                  </div>
+                </button>
+              ))}
+            </div>
+
+            {/* Delete */}
+            <div className="px-6 pb-6 pt-2">
+              <button
+                onClick={() => {
+                  setGalData(prev => prev.filter(g => g.id !== managingGallery.id));
+                  setManagingId(null);
+                  setSuccessMsg(`"${managingGallery.name}" deleted`);
+                  setTimeout(() => setSuccessMsg(null), 3000);
+                }}
+                className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-destructive/[0.06] transition-colors text-left w-full group"
+              >
+                <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+                  <Trash2 className="w-4 h-4 text-destructive" />
+                </div>
+                <div>
+                  <div className="text-[0.82rem] font-medium text-destructive">Delete collection</div>
+                  <div className="text-[0.7rem] text-muted">This cannot be undone</div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 /* ═══ ADS SECTION COMPONENT ═══ */
 type CampaignStatus = "active" | "paused" | "draft" | "completed";
 
