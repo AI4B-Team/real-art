@@ -46,6 +46,9 @@ const Navbar = () => {
       if (communitiesRef.current && !communitiesRef.current.contains(e.target as Node)) {
         setCommunitiesOpen(false);
       }
+      if (navSearchDropRef.current && !navSearchDropRef.current.contains(e.target as Node)) {
+        setNavSearchDropOpen(false);
+      }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
