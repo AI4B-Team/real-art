@@ -4,6 +4,11 @@ const leaderboard = [
   { name: "DreamForge", pts: "37,100", dl: "9.8K dls", c: "#2a9d8f", i: "DF" },
   { name: "LuminaAI", pts: "29,400", dl: "7.3K dls", c: "#e76f51", i: "LA" },
   { name: "SpectraGen", pts: "24,600", dl: "5.9K dls", c: "#7b2d8b", i: "SG" },
+  { name: "PixelForge", pts: "22,100", dl: "5.4K dls", c: "#0891b2", i: "PF" },
+  { name: "ArtWave", pts: "19,800", dl: "4.9K dls", c: "#7c3aed", i: "AW" },
+  { name: "NeuralNest", pts: "17,300", dl: "4.2K dls", c: "#059669", i: "NN" },
+  { name: "SynthDream", pts: "15,600", dl: "3.8K dls", c: "#dc2626", i: "SD" },
+  { name: "GenLab", pts: "13,900", dl: "3.3K dls", c: "#ea580c", i: "GL" },
 ];
 
 const LeaderboardSection = () => {
