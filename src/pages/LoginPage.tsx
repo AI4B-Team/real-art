@@ -27,7 +27,10 @@ const LoginPage = () => {
     if (!email.includes("@")) e.email = "Please enter a valid email";
     if (password.length < 1) e.password = "Please enter your password";
     setErrors(e);
-    if (Object.keys(e).length === 0) navigate("/dashboard");
+    if (Object.keys(e).length === 0) {
+      try { localStorage.setItem("ra_auth", "1"); } catch {}
+      navigate("/dashboard");
+    }
   };
 
   return (

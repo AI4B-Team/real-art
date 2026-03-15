@@ -174,7 +174,7 @@ const SignUpPage = () => {
                 {errors.agreed && <p className="text-[0.75rem] text-red-500 mb-3">{errors.agreed}</p>}
 
                 <button
-                  onClick={() => validateDetails() && setStep("done")}
+                  onClick={() => { if (validateDetails()) { try { localStorage.setItem("ra_auth", "1"); } catch {} setStep("done"); } }}
                   className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mt-5 mb-5"
                 >
                   Create Account — Free
