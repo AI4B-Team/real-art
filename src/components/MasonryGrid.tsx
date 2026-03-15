@@ -88,7 +88,7 @@ const MasonryGrid = () => {
                         e.stopPropagation();
                         if (label === "Prompt") setActivePrompt(activePrompt === i ? null : i);
                       }}
-                      className="flex items-center gap-1 px-2 py-1 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors text-[0.62rem] font-medium"
+                      className="flex items-center gap-1 px-2 py-1 rounded-md border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors text-[0.62rem] font-medium"
                     >
                       <Icon className="w-[10px] h-[10px]" />
                       {label}
