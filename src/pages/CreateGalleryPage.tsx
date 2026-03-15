@@ -45,7 +45,7 @@ const CreateGalleryPage = () => {
             <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
               <Check className="w-9 h-9 text-accent" />
             </div>
-            <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3">Gallery created!</h1>
+            <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3">Collection Created!</h1>
             <p className="text-muted text-[0.88rem] leading-[1.7] mb-8">
               {name} is live. Start adding images to build your collection.
             </p>
