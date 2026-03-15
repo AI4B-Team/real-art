@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
 import { ExternalLink, ShoppingBag } from "lucide-react";
 
 export interface ShopLink {
   url: string;
   site: string;
   price?: string;
+  isAffiliate?: boolean;
+  label?: string;
 }
 
 export interface ShopSimilarItem {
@@ -19,9 +20,10 @@ interface ShopSectionProps {
   shopLink: ShopLink;
   shopSimilar?: ShopSimilarItem[];
   imageUrl?: string;
+  onClickTrack?: () => void;
 }
 
-const ShopSection = ({ shopLink, shopSimilar = [], imageUrl }: ShopSectionProps) => (
+const ShopSection = ({ shopLink, shopSimilar = [], imageUrl, onClickTrack }: ShopSectionProps) => (
   <>
     {/* Shop This Image */}
     <div className="mt-8">
@@ -29,11 +31,15 @@ const ShopSection = ({ shopLink, shopSimilar = [], imageUrl }: ShopSectionProps)
         <ShoppingBag className="w-4 h-4 text-accent" />
         <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Shop the Look</span>
       </div>
-      <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-4">Shop This Image</h2>
+      <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1">Shop This Image</h2>
+      {shopLink.isAffiliate && (
+        <p className="text-[0.68rem] text-muted mb-3">AD · Affiliate link</p>
+      )}
       <a
         href={shopLink.url}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={onClickTrack}
         className="flex items-center justify-between p-4 rounded-xl border border-foreground/[0.08] bg-card hover:border-accent/30 transition-all group no-underline"
       >
         <div className="flex items-center gap-3">
@@ -46,7 +52,7 @@ const ShopSection = ({ shopLink, shopSimilar = [], imageUrl }: ShopSectionProps)
           </div>
           <div>
             <div className="font-semibold text-[0.88rem] group-hover:text-accent transition-colors">
-              Shop This Look
+              {shopLink.label || "Shop This Look"}
             </div>
             <div className="text-[0.72rem] text-muted">via {shopLink.site}</div>
           </div>
@@ -89,7 +95,6 @@ const ShopSection = ({ shopLink, shopSimilar = [], imageUrl }: ShopSectionProps)
                   <span className="text-[0.62rem] text-primary-foreground/50">{item.site}</span>
                 </div>
               </div>
-              {/* Shop badge */}
               <div className="absolute top-2 left-2 flex items-center gap-1 bg-accent text-primary-foreground text-[0.55rem] font-bold tracking-[0.08em] uppercase px-2 py-0.5 rounded-lg">
                 <ShoppingBag className="w-2.5 h-2.5" /> Shop
               </div>

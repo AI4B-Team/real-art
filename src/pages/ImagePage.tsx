@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
@@ -8,6 +8,7 @@ import {
 import SponsoredCard from "@/components/SponsoredCard";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
 import Navbar from "@/components/Navbar";
+import { resolveLink, trackClick, seedDemoLinks, type ImageLink } from "@/lib/linkStore";
 import Footer from "@/components/Footer";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
 import ShareModal from "@/components/ShareModal";
@@ -35,15 +36,7 @@ const sampleVideoPrompt = "Slow dolly-in through swirling nebula clouds as cryst
 
 const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
 
-// Shop data — some images have shop links (simulated by index)
-const shopEnabledIndices = [0, 3, 5, 7, 9];
-const shopLinks: Record<number, ShopLink> = {
-  0: { url: "https://example.com/cosmic-print", site: "ArtPrints.co", price: "$49.99" },
-  3: { url: "https://example.com/horizon-dress", site: "ZARA", price: "$89.00" },
-  5: { url: "https://example.com/alpine-canvas", site: "Society6", price: "$34.00" },
-  7: { url: "https://example.com/urban-hoodie", site: "Redbubble", price: "$44.00" },
-  9: { url: "https://example.com/bloom-poster", site: "Etsy", price: "$28.00" },
-};
+// Shop similar items (static for now)
 const shopSimilarItems: ShopSimilarItem[] = [
   { photo: "photo-1558618666-fcd25c85cd64", title: "Abstract Silk Scarf", price: "$65.00", site: "Etsy", url: "#" },
   { photo: "photo-1549880338-65ddcdfd017b", title: "Horizon Canvas Print", price: "$42.00", site: "Society6", url: "#" },
@@ -58,8 +51,16 @@ const ImagePage = () => {
   const idx = parseInt(id || "0") % photos.length;
   const photo = photos[idx];
   const creator = creators[idx % creators.length];
-  const hasShop = shopEnabledIndices.includes(idx);
-  const shopLink = shopLinks[idx];
+
+  // Seed demo links on first load, then resolve for this image
+  useEffect(() => { seedDemoLinks(); }, []);
+  const imageLink = resolveLink(String(idx));
+  const hasShop = !!imageLink;
+  const shopLink: ShopLink | undefined = imageLink ? {
+    url: imageLink.url, site: imageLink.site || "Shop",
+    price: imageLink.price, isAffiliate: imageLink.isAffiliate,
+    label: imageLink.label,
+  } : undefined;
 
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -564,7 +565,12 @@ const ImagePage = () => {
 
               {/* Shop This Image + Shop Similar (conditional) */}
               {hasShop && shopLink && (
-                <ShopSection shopLink={shopLink} shopSimilar={shopSimilarItems} imageUrl={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=80`} />
+                <ShopSection
+                  shopLink={shopLink}
+                  shopSimilar={shopSimilarItems}
+                  imageUrl={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=80`}
+                  onClickTrack={() => trackClick(String(idx))}
+                />
               )}
 
               {/* Tags */}
