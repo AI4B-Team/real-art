@@ -61,7 +61,7 @@ const HeroSection = () => {
         transition={{ duration: 0.65, delay: 0.26 }}
         className="max-w-[740px] mx-auto"
       >
-        <div className="flex items-center bg-card border-[1.5px] border-foreground/[0.13] rounded-full h-[68px] shadow-[var(--shadow-search)] transition-shadow focus-within:border-foreground focus-within:shadow-[var(--shadow-search-focus)] relative">
+        <div className="flex items-center bg-card border-[1.5px] border-foreground/[0.13] rounded-xl h-[68px] shadow-[var(--shadow-search)] transition-shadow focus-within:border-foreground focus-within:shadow-[var(--shadow-search-focus)] relative">
           <div ref={dropRef} className="relative flex items-center gap-[7px] px-6 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setDropdownOpen(!dropdownOpen)}>
             <SelectedIcon className="w-3.5 h-3.5" />
             <span className="text-[0.88rem] font-semibold whitespace-nowrap">{selectedType}</span>
