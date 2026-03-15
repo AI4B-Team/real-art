@@ -38,6 +38,10 @@ const CollectionsSection = () => {
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
+            <div className="flex items-center gap-2 mb-2">
+              <Star className="w-4 h-4 text-accent fill-accent" />
+              <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Hand-Selected</span>
+            </div>
             <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Collections</h2>
             <p className="text-[0.83rem] text-muted mt-[7px]">Hand-picked by our team — the finest in every category</p>
           </div>
