@@ -226,7 +226,7 @@ const CreateGalleryPage = () => {
             <div className="flex items-start gap-3 bg-accent/[0.04] border border-accent/15 rounded-xl p-4">
               <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
               <p className="text-[0.78rem] text-muted leading-[1.6]">
-                Your gallery will appear in the Communities section. Public galleries are discoverable by all REAL ART members.
+                Your collection will appear in the Communities section. Public collections are discoverable by all REAL ART members.
               </p>
             </div>
 
