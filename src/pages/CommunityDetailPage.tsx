@@ -241,6 +241,66 @@ const CommunityDetailPage = () => {
                     </Link>
                   ))}
                 </div>
+
+                {/* Request a Collection */}
+                {joined && (
+                  <div className="mt-10">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Lightbulb className="w-4 h-4 text-accent" />
+                      <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Suggest</span>
+                    </div>
+                    <h3 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-4">Request a Collection</h3>
+                    <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 max-w-[480px]">
+                      <input
+                        type="text"
+                        value={requestName}
+                        onChange={e => setRequestName(e.target.value)}
+                        placeholder="Collection name idea…"
+                        maxLength={80}
+                        className="w-full h-11 px-4 rounded-lg border border-foreground/[0.12] bg-background text-[0.88rem] font-body outline-none focus:border-foreground transition-colors mb-3"
+                      />
+                      <textarea
+                        value={requestDesc}
+                        onChange={e => setRequestDesc(e.target.value)}
+                        placeholder="Brief description (optional)"
+                        maxLength={200}
+                        rows={2}
+                        className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.12] bg-background text-[0.88rem] font-body outline-none focus:border-foreground transition-colors resize-none mb-3"
+                      />
+                      <button
+                        onClick={() => {
+                          if (requestName.trim()) {
+                            setRequests(prev => [...prev, { id: `r${Date.now()}`, name: requestName.trim(), by: "You", status: "pending" }]);
+                            setRequestName("");
+                            setRequestDesc("");
+                          }
+                        }}
+                        disabled={!requestName.trim()}
+                        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        <Lightbulb className="w-3.5 h-3.5" /> Submit Request
+                      </button>
+                    </div>
+
+                    {/* Pending requests visible to members */}
+                    {requests.filter(r => r.status === "pending").length > 0 && (
+                      <div className="mt-6">
+                        <div className="text-[0.75rem] font-semibold text-muted mb-3">Pending Requests</div>
+                        <div className="flex flex-col gap-2 max-w-[480px]">
+                          {requests.filter(r => r.status === "pending").map(r => (
+                            <div key={r.id} className="flex items-center justify-between p-3.5 rounded-xl border border-foreground/[0.08] bg-card">
+                              <div>
+                                <div className="font-semibold text-[0.85rem]">{r.name}</div>
+                                <div className="text-[0.72rem] text-muted">by {r.by}</div>
+                              </div>
+                              <span className="text-[0.7rem] font-medium text-muted bg-foreground/[0.06] px-2.5 py-1 rounded-lg">Pending</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             )}
 
