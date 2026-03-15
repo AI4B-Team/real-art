@@ -35,11 +35,12 @@ const entryPhotos = [
   "photo-1549880338-65ddcdfd017b","photo-1567360425618-1594206637d2",
 ];
 const heights = [230, 190, 260, 205, 175, 240, 215, 180, 250, 195, 220, 165];
+const entryVotes = [342, 289, 267, 231, 198, 184, 172, 156, 143, 128, 112, 97];
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee" }, { n: "NeoPixel", i: "NP", c: "#c9184a" },
   { n: "DreamForge", i: "DF", c: "#2a9d8f" }, { n: "LuminaAI", i: "LA", c: "#e76f51" },
 ];
-const entryTabs = ["Top Entries", "Newest", "Most Liked"];
+const entryTabs = ["Top Voted", "Newest", "Most Liked"];
 
 const ChallengeDetailPage = () => {
   const { id } = useParams();
