@@ -547,14 +547,14 @@ const ImagePage = () => {
                 </h1>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
                   {[
-                    { icon: Eye, label: "Views", value: "24,800", accent: false },
-                    { icon: Download, label: "Downloads", value: "3,412", accent: false },
-                    { icon: RefreshCw, label: "Recreated", value: "1,247×", accent: true },
-                    { icon: Code, label: "Embeds", value: "1,032", accent: false },
+                    { icon: Eye, label: "Views", value: "24,800", suffix: "", accent: false },
+                    { icon: Download, label: "Downloads", value: "3,412", suffix: "", accent: false },
+                    { icon: RefreshCw, label: "Recreated", value: "1,247", suffix: "×", accent: true },
+                    { icon: Code, label: "Embeds", value: "1,032", suffix: "", accent: false },
                   ].map((stat) => (
-                    <div key={stat.label} className="bg-card border border-foreground/[0.08] rounded-xl p-4 text-center">
+                    <div key={stat.label} className="bg-card border border-foreground/[0.08] rounded-xl p-4 text-center overflow-hidden">
                       <stat.icon className={`w-4 h-4 mx-auto mb-2 ${stat.accent ? "text-accent" : "text-muted"}`} />
-                      <div className={`font-display font-black text-[1.15rem] tracking-[-0.02em] ${stat.accent ? "text-accent" : ""}`}>{stat.value}</div>
+                      <div className={`font-display font-black text-[1.15rem] tracking-[-0.02em] leading-tight ${stat.accent ? "text-accent" : ""}`}>{stat.value}{stat.suffix && <span className="text-[0.75rem] align-super ml-0.5">{stat.suffix}</span>}</div>
                       <div className="text-[0.68rem] text-muted uppercase tracking-[0.08em] mt-0.5">{stat.label}</div>
                     </div>
                   ))}
