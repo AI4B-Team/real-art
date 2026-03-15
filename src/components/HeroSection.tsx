@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, Image, Video, Music, ChevronDown, Camera, Sparkles, Upload } from "lucide-react";
+import { Search, Image, Video, Music, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 
