@@ -98,8 +98,8 @@ const CreatorPage = () => {
                       <Heart className={`w-3.5 h-3.5 ${followed ? "fill-accent text-accent" : ""}`} />
                       {followed ? "Following" : "Follow"}
                     </button>
-                    <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-medium border border-foreground/[0.12] hover:border-foreground/30 transition-colors">
-                      💛 Donate
+                    <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-medium border border-foreground/[0.12] hover:border-foreground/30 transition-colors text-destructive">
+                      <Heart className="w-4 h-4 fill-destructive text-destructive" /> Donate
                     </button>
                     <button className="w-10 h-10 rounded-lg border border-foreground/[0.12] flex items-center justify-center hover:border-foreground/30 transition-colors">
                       <Share2 className="w-4 h-4" />
