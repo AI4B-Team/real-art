@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Pen, FileText, X } from "lucide-react";
+import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Pen, FileText, X, Layout } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
@@ -36,6 +36,7 @@ const Navbar = () => {
   const navLinks = [
     { icon: Grid3X3, label: "Explore", to: "/explore" },
     { icon: Star, label: "Collections", to: "/collections" },
+    { icon: Layout, label: "Boards", to: "/boards" },
     { icon: Users, label: "Communities", to: "/communities" },
     { icon: Trophy, label: "Challenges", to: "/challenges" },
     { icon: BarChart3, label: "Leaderboard", to: "/leaderboard" },

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Heart, Eye, Copy, Shuffle, FileText } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Heart, Eye, Copy, Shuffle, FileText, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import SaveToBoardModal from "@/components/SaveToBoardModal";
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe", "photo-1558618666-fcd25c85cd64",
@@ -41,6 +42,7 @@ const labelBtnClass = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-n
 
 const MasonryGrid = () => {
   const [activePrompt, setActivePrompt] = useState<number | null>(null);
+  const [boardModalOpen, setBoardModalOpen] = useState(false);
 
   return (
     <div className="px-6 md:px-12 py-6 pb-16">
@@ -89,6 +91,14 @@ const MasonryGrid = () => {
                         </button>
                       </TooltipTrigger>
                       <TooltipContent side="bottom" className="text-xs"><p>Download</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBoardModalOpen(true); }} className={iconBtnClass}>
+                          <Bookmark className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs"><p>Save to Board</p></TooltipContent>
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -178,6 +188,7 @@ const MasonryGrid = () => {
           Load More
         </button>
       </div>
+      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
     </div>
   );
 };

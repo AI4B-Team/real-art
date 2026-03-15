@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SaveToBoardModal from "@/components/SaveToBoardModal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
@@ -40,6 +41,7 @@ const ImagePage = () => {
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
   const [creditCopied, setCreditCopied] = useState(false);
+  const [boardModalOpen, setBoardModalOpen] = useState(false);
 
   const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
 
@@ -120,11 +122,11 @@ const ImagePage = () => {
                   {liked ? "Liked" : "Like"}
                 </button>
                 <button
-                  onClick={() => setSaved(!saved)}
+                  onClick={() => setBoardModalOpen(true)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border transition-colors ${saved ? "bg-accent/10 border-accent/30 text-accent" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
                 >
                   <Bookmark className={`w-4 h-4 ${saved ? "fill-accent text-accent" : ""}`} />
-                  {saved ? "Saved" : "Save"}
+                  Save to Board
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Share2 className="w-4 h-4" /> Share
@@ -506,6 +508,7 @@ const ImagePage = () => {
         </div>
         <Footer />
       </div>
+      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
     </div>
   );
 };

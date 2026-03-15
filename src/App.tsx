@@ -38,8 +38,9 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 
-// Additional pages
 import CreatorsPage from "./pages/CreatorsPage";
+import BoardsPage from "./pages/BoardsPage";
+import BoardDetailPage from "./pages/BoardDetailPage";
 
 const queryClient = new QueryClient();
 
@@ -72,6 +73,8 @@ const App = () => (
           <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
           <Route path="/creators" element={<CreatorsPage />} />
+          <Route path="/boards" element={<BoardsPage />} />
+          <Route path="/boards/:id" element={<BoardDetailPage />} />
 
           {/* Round 3 — Creator Tools */}
           <Route path="/upload" element={<UploadPage />} />
