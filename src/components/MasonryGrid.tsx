@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Download, FileText, RefreshCw, Video, Pencil, Eye, Copy, Shuffle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe", "photo-1558618666-fcd25c85cd64",
@@ -80,21 +81,79 @@ const MasonryGrid = () => {
                   <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
                 </div>
                 {/* Action buttons */}
-                <div className="flex gap-1 flex-wrap">
-                  {actionButtons.map(({ icon: Icon, label }) => (
-                    <button
-                      key={label}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        if (label === "Prompt") setActivePrompt(activePrompt === i ? null : i);
-                      }}
-                      className="flex items-center gap-1 px-2 py-1 rounded-md border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors text-[0.62rem] font-medium"
-                    >
-                      <Icon className="w-[10px] h-[10px]" />
-                      {label}
-                    </button>
-                  ))}
-                </div>
+                <TooltipProvider>
+                  <div className="flex gap-1.5 flex-wrap">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
+                        >
+                          <Download className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">
+                        <p>Download</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); setActivePrompt(activePrompt === i ? null : i); }}
+                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
+                        >
+                          <FileText className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">
+                        <p>View Prompt</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
+                        >
+                          <RefreshCw className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">
+                        <p>Recreate</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
+                        >
+                          <Video className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">
+                        <p>Animate</p>
+                      </TooltipContent>
+                    </Tooltip>
+
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
+                        >
+                          <Pencil className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs">
+                        <p>Edit</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </div>
+                </TooltipProvider>
               </div>
               {/* Prompt popup */}
               {activePrompt === i && (
