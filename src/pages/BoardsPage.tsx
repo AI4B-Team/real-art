@@ -42,7 +42,7 @@ const BoardsPage = () => {
           </div>
 
           {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+          <div className="flex items-start md:items-center justify-between gap-4 flex-wrap mb-8">
             <div>
               <h1 className="font-display text-[clamp(2.4rem,5vw,3.8rem)] font-black tracking-[-0.03em] leading-none mb-2">
                 Explore Boards
@@ -51,24 +51,24 @@ const BoardsPage = () => {
                 Curated collections by creators. Discover, follow, and get inspired by themed boards.
               </p>
             </div>
-            <Link
-              to="/dashboard"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline shrink-0"
-            >
-              <Plus className="w-4 h-4" /> Create Board
-            </Link>
-          </div>
-
-          {/* Search */}
-          <div className="relative max-w-md mb-6">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
-            <input
-              type="text"
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              placeholder="Search boards..."
-              className="w-full pl-11 pr-4 py-3 rounded-xl bg-card border border-foreground/[0.08] text-[0.88rem] font-body outline-none focus:border-accent/40 transition-colors"
-            />
+            <div className="flex items-center gap-3 shrink-0">
+              <div className="relative w-full md:w-72">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+                <input
+                  type="text"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                  placeholder="Search boards..."
+                  className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-card border border-foreground/[0.08] text-[0.88rem] font-body outline-none focus:border-accent/40 transition-colors"
+                />
+              </div>
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline shrink-0 whitespace-nowrap"
+              >
+                <Plus className="w-4 h-4" /> Create Board
+              </Link>
+            </div>
           </div>
 
           {/* Category filter */}

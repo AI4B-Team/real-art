@@ -89,17 +89,21 @@ const BlogPage = () => {
 
         {/* Hero */}
         <section className="px-6 md:px-12 pt-8 pb-10 max-w-[1440px] mx-auto">
-          <h1 className="font-display text-[clamp(2.4rem,5vw,4.2rem)] font-black tracking-[-0.03em] leading-[1.02] mb-3">The REAL ART Blog</h1>
-          <p className="text-[0.94rem] text-muted mb-6">Creator stories, product updates, tutorials, and ideas.</p>
-          <div className="relative max-w-[400px]">
-            <Search className="w-3.5 h-3.5 text-muted absolute left-3 top-1/2 -translate-y-1/2" />
-            <input
-              type="text"
-              placeholder="Search posts..."
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-card border border-foreground/[0.1] text-[0.84rem] focus:outline-none focus:border-accent transition-colors"
-            />
+          <div className="flex items-start md:items-center justify-between gap-4 flex-wrap">
+            <div>
+              <h1 className="font-display text-[clamp(2.4rem,5vw,4.2rem)] font-black tracking-[-0.03em] leading-[1.02] mb-3">The REAL ART Blog</h1>
+              <p className="text-[0.94rem] text-muted">Creator stories, product updates, tutorials, and ideas.</p>
+            </div>
+            <div className="relative w-full md:w-72">
+              <Search className="w-3.5 h-3.5 text-muted absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Search posts..."
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-card border border-foreground/[0.1] text-[0.84rem] focus:outline-none focus:border-accent transition-colors"
+              />
+            </div>
           </div>
         </section>
 

@@ -53,19 +53,20 @@ const CollectionsPage = () => {
 
         {/* Header */}
         <div className="px-6 md:px-12 pb-5 max-w-[1440px] mx-auto">
-          <div>
-            <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Collections</h1>
-            <p className="text-[0.88rem] text-muted">Curated galleries of the finest visuals — by our team and top creators</p>
-          </div>
-          {/* Search */}
-          <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors mt-4">
-            <Search className="w-4 h-4 text-muted shrink-0" />
-            <input
-              className="flex-1 border-none outline-none font-body text-[0.88rem] bg-transparent"
-              placeholder="Search collections…"
-              value={query}
-              onChange={e => setQuery(e.target.value)}
-            />
+          <div className="flex items-start md:items-center justify-between gap-4 flex-wrap">
+            <div>
+              <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Collections</h1>
+              <p className="text-[0.88rem] text-muted">Curated galleries of the finest visuals — by our team and top creators</p>
+            </div>
+            <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
+              <Search className="w-4 h-4 text-muted shrink-0" />
+              <input
+                className="flex-1 border-none outline-none font-body text-[0.88rem] bg-transparent"
+                placeholder="Search collections…"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 
