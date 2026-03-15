@@ -849,6 +849,9 @@ const DashboardPage = () => {
               </>
             )}
 
+            {/* ═══ ADS ═══ */}
+            {activeSection === "ads" && <AdsSection />}
+
             {/* ═══ NOTIFICATIONS ═══ */}
             {activeSection === "notifications" && (
               <>
