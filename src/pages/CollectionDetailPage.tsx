@@ -1,7 +1,8 @@
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Heart, Download } from "lucide-react";
+import { ArrowLeft, ChevronRight } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 const allCollections: Record<string, { name: string; curator: string; count: number; category: string; photo: string; desc: string }> = {
   "1": { name: "CEO / Boss Babe", curator: "REAL ART", count: 152, category: "People & Portraits", photo: "photo-1573496359142-b8d87734a5a2", desc: "Power portraits curated by creators — bold, confident, and editorial." },
