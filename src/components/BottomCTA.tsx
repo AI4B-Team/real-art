@@ -7,7 +7,7 @@ const BottomCTA = () => {
       <div>
         <div className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-primary-foreground/30 mb-5">Free Forever</div>
         <h2 className="font-display text-[clamp(2.4rem,4vw,3.8rem)] font-black tracking-[-0.03em] leading-none text-primary-foreground mb-4">
-          Your work<br />deserves to be <em className="italic font-normal text-accent">seen.</em>
+          Turn Your Art<br />Into <em className="italic font-normal text-accent">Influence.</em>
         </h2>
         <p className="text-[0.9rem] text-primary-foreground/45 font-light leading-[1.65]">
           Join 84,000+ creators sharing visuals, earning affiliate income, and building communities on REAL ART.
