@@ -59,6 +59,9 @@ const UploadPage = () => {
   const [newCollectionName, setNewCollectionName] = useState("");
   const [collectionSearch, setCollectionSearch] = useState("");
 
+  // Per-image AI prompts
+  const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
+
   const filteredCollections = mockCollections.filter(c => {
     const matchesSearch = !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase());
     const matchesCommunity = !selectedCommunity || c.communityId === selectedCommunity;
