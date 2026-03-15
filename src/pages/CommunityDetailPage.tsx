@@ -76,7 +76,7 @@ const CommunityDetailPage = () => {
     { id: "r2", name: "AI Fashion Editorial", by: "DreamForge", status: "pending" as const },
     { id: "r3", name: "Luxury Interiors", by: "AI.Verse", status: "approved" as const },
   ]);
-  const tabs = ["Gallery", "Collections", "Members", "About", "Settings"];
+  const tabs = ["Collection", "Collections", "Members", "About", "Settings"];
   const collections = communityCollections[community.id] || communityCollections["2"];
 
   // Mock role — in production this comes from auth + community membership
