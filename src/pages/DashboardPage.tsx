@@ -1348,7 +1348,7 @@ const DashboardPage = () => {
                         ].map(s => (
                           <div key={s.l}>
                             <div className="font-display font-black text-[1.1rem] text-primary-foreground">{s.v}</div>
-                            <div className="text-[0.65rem] text-primary-foreground/40 uppercase tracking-[0.08em]">{s.l}</div>
+                            <div className="text-[0.65rem] text-primary-foreground/60 uppercase tracking-[0.08em]">{s.l}</div>
                           </div>
                         ))}
                       </div>
