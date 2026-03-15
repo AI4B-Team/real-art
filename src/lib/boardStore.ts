@@ -12,6 +12,8 @@ export interface Board {
   description: string;
   visibility: "public" | "private";
   coverPhoto?: string;
+  bannerPhoto?: string;
+  collaborators?: string[];
   createdAt: string;
   items: BoardItem[];
 }
@@ -69,7 +71,7 @@ export const deleteBoard = (boardId: string) => {
   saveBoards(getBoards().filter(b => b.id !== boardId));
 };
 
-export const updateBoard = (boardId: string, patch: Partial<Pick<Board, "title" | "description" | "visibility" | "coverPhoto">>) => {
+export const updateBoard = (boardId: string, patch: Partial<Pick<Board, "title" | "description" | "visibility" | "coverPhoto" | "bannerPhoto" | "collaborators">>) => {
   saveBoards(getBoards().map(b => b.id === boardId ? { ...b, ...patch } : b));
 };
 
