@@ -1,4 +1,5 @@
-import { Heart, Download } from "lucide-react";
+import { useState } from "react";
+import { Download, FileText, RefreshCw, Video, Pencil, Eye, Copy, Shuffle } from "lucide-react";
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe", "photo-1558618666-fcd25c85cd64",
@@ -24,43 +25,97 @@ const creators = [
   { n: "Synthetix", i: "SX", c: "#06d6a0" },
 ];
 
+const samplePrompts = [
+  "A cosmic dreamscape with nebula clouds and floating crystalline structures, cinematic lighting, 8k",
+  "Abstract fluid art with deep ocean blues and metallic gold, macro photography style",
+  "Surreal mountain landscape at golden hour with bioluminescent flora, fantasy art",
+  "Digital portrait with neon cyberpunk aesthetics, rain-soaked cityscape reflection",
+  "Ethereal forest spirit emerging from ancient trees, volumetric fog, mystical atmosphere",
+  "Geometric abstract composition with brutalist architecture influence, monochrome palette",
+  "Underwater cathedral with coral pillars and light rays, photorealistic render",
+  "Retro-futuristic space station interior, warm analog film grain, 70s sci-fi aesthetic",
+];
+
+const actionButtons = [
+  { icon: Download, label: "Download" },
+  { icon: FileText, label: "Prompt" },
+  { icon: RefreshCw, label: "Recreate" },
+  { icon: Video, label: "Animate" },
+  { icon: Pencil, label: "Edit" },
+];
+
 const MasonryGrid = () => {
+  const [activePrompt, setActivePrompt] = useState<number | null>(null);
+
   return (
     <div className="px-6 md:px-12 py-6 pb-16">
       <div className="masonry-grid">
         {photos.map((photo, i) => {
           const cr = creators[i % creators.length];
           const h = heights[i % heights.length];
+          const prompt = samplePrompts[i % samplePrompts.length];
           return (
             <div key={i} className="masonry-item rounded-xl overflow-hidden relative cursor-pointer group" style={{ background: "#e0e0de" }}>
               <img
                 src={`https://images.unsplash.com/${photo}?w=400&h=${h}&fit=crop&q=78`}
-                alt="Art piece"
+                alt="AI-Generated Digital Art"
                 loading="lazy"
                 className="w-full block rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
                 style={{ height: h, objectFit: "cover" }}
               />
-              <div className="absolute inset-0 rounded-xl flex flex-col justify-end p-3.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <div
-                      className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
-                      style={{ background: cr.c }}
-                    >
-                      {cr.i}
-                    </div>
-                    <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
+              {/* AI label */}
+              <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                AI-Generated
+              </div>
+              {/* Hover overlay */}
+              <div className="absolute inset-0 rounded-xl flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
+                {/* Creator info */}
+                <div className="flex items-center gap-1.5 mb-2">
+                  <div
+                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
+                    style={{ background: cr.c }}
+                  >
+                    {cr.i}
                   </div>
-                  <div className="flex gap-1">
-                    <button className="w-[27px] h-[27px] rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
-                      <Heart className="w-[11px] h-[11px]" />
+                  <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
+                </div>
+                {/* Action buttons */}
+                <div className="flex gap-1 flex-wrap">
+                  {actionButtons.map(({ icon: Icon, label }) => (
+                    <button
+                      key={label}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (label === "Prompt") setActivePrompt(activePrompt === i ? null : i);
+                      }}
+                      className="flex items-center gap-1 px-2 py-1 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors text-[0.62rem] font-medium"
+                    >
+                      <Icon className="w-[10px] h-[10px]" />
+                      {label}
                     </button>
-                    <button className="w-[27px] h-[27px] rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
-                      <Download className="w-[11px] h-[11px]" />
+                  ))}
+                </div>
+              </div>
+              {/* Prompt popup */}
+              {activePrompt === i && (
+                <div
+                  className="absolute bottom-0 left-0 right-0 bg-foreground/95 backdrop-blur-md rounded-b-xl p-3 z-10 animate-drop-in"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <p className="text-[0.72rem] text-primary-foreground/80 leading-[1.5] mb-2">{prompt}</p>
+                  <div className="flex gap-1.5">
+                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
+                      <Eye className="w-[10px] h-[10px]" /> View
+                    </button>
+                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
+                      <Copy className="w-[10px] h-[10px]" /> Copy
+                    </button>
+                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-accent text-primary-foreground text-[0.62rem] font-medium hover:bg-accent/80 transition-colors">
+                      <Shuffle className="w-[10px] h-[10px]" /> Remix
                     </button>
                   </div>
                 </div>
-              </div>
+              )}
             </div>
           );
         })}

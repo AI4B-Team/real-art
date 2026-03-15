@@ -1,7 +1,12 @@
 import { useState } from "react";
 import { Filter } from "lucide-react";
 
-const filters = ["Trending", "New", "Popular", "Abstract", "Portraits", "Nature", "Architecture", "Fantasy", "3D Art", "Sci-Fi", "Fashion", "Dreamscapes"];
+const filters = [
+  "Trending", "New", "Popular", "Portraits", "People", "Nature", "Architecture",
+  "Fantasy", "3D Art", "Fashion", "Sci-Fi", "Avatars", "Backgrounds", "Textures",
+  "Logos", "Products", "Abstract", "Dreamscapes", "Animals", "Food", "Travel",
+  "Luxury", "Cyberpunk", "Minimal",
+];
 
 const FilterBar = () => {
   const [active, setActive] = useState("Trending");
