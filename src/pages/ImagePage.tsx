@@ -545,11 +545,19 @@ const ImagePage = () => {
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">
                   Cosmic Dreamscape
                 </h1>
-                <div className="flex items-center gap-4 text-[0.8rem] text-muted flex-wrap">
-                  <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> 24,800 views</span>
-                  <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5" /> 3,412 downloads</span>
-                  <span className="flex items-center gap-1 text-accent font-semibold"><RefreshCw className="w-3.5 h-3.5" /> Recreated 1,247×</span>
-                  <span className="flex items-center gap-1 font-semibold"><Code className="w-3.5 h-3.5" /> 1,032 embeds</span>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
+                  {[
+                    { icon: Eye, label: "Views", value: "24,800", accent: false },
+                    { icon: Download, label: "Downloads", value: "3,412", accent: false },
+                    { icon: RefreshCw, label: "Recreated", value: "1,247×", accent: true },
+                    { icon: Code, label: "Embeds", value: "1,032", accent: false },
+                  ].map((stat) => (
+                    <div key={stat.label} className="bg-card border border-foreground/[0.08] rounded-xl p-4 text-center">
+                      <stat.icon className={`w-4 h-4 mx-auto mb-2 ${stat.accent ? "text-accent" : "text-muted"}`} />
+                      <div className={`font-display font-black text-[1.15rem] tracking-[-0.02em] ${stat.accent ? "text-accent" : ""}`}>{stat.value}</div>
+                      <div className="text-[0.68rem] text-muted uppercase tracking-[0.08em] mt-0.5">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
 
