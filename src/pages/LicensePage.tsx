@@ -155,7 +155,7 @@ const LicensePage = () => {
                 <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
                   <Info className="w-5 h-5 text-blue-500" />
                 </div>
-                <h3 className="font-display text-[1.1rem] font-black">What you don't need</h3>
+                <h3 className="font-display text-[1.1rem] font-black">What You Don't Need</h3>
               </div>
               <div className="flex flex-col gap-2.5">
                 {noNeed.map(item => (
