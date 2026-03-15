@@ -21,7 +21,7 @@ const collections = [
     name: "Runway Inspired",
     count: 130,
     main: "photo-1558618666-fcd25c85cd64",
-    thumbs: ["photo-1558618666-fcd25c85cd64", "photo-1509631179647-0177331693ae"],
+    thumbs: ["photo-1558618666-fcd25c85cd64", "photo-1509631179647-0177331693ae", "photo-1544005313-94ddf0286df2", "photo-1524504388940-b1c1722653e1"],
   },
 ];
 
