@@ -110,7 +110,7 @@ const CreateGalleryPage = () => {
           <div className="flex flex-col gap-7">
             {/* Gallery name */}
             <div>
-              <label className="block text-[0.84rem] font-semibold mb-2">Gallery name <span className="text-accent">*</span></label>
+              <label className="block text-[0.84rem] font-semibold mb-2">Collection Name <span className="text-accent">*</span></label>
               <input
                 className="w-full h-12 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.95rem] bg-card outline-none focus:border-foreground transition-colors"
                 placeholder="e.g. My Cyberpunk Collection"
