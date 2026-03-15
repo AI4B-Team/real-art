@@ -21,8 +21,9 @@ const CommunitiesSection = () => {
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
+            <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent mb-2">Creator Galleries</div>
             <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Communities</h2>
-            <p className="text-[0.83rem] text-muted mt-[7px]">Public galleries and private vaults from creators worldwide</p>
+            <p className="text-[0.83rem] text-muted mt-[7px]">Join private or public galleries curated by creators around the world.</p>
           </div>
           <a href="#" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap">Browse All →</a>
         </div>
