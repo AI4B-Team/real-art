@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Heart, Globe, Twitter, Instagram,
-  Link2, Grid3X3, Bookmark, Download, Share2, Award, Eye, RefreshCw, Star
+  Link2, Grid3X3, Bookmark, Download, Share2, Award, Eye, RefreshCw, Star,
+  TrendingUp, Users, Palette
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
