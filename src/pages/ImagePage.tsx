@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
-  Download, Heart, Bookmark, Share2, Video, Pencil, RefreshCw,
-  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles
+  Download, Heart, Bookmark, Share2, RefreshCw,
+  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
