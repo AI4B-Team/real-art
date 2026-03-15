@@ -882,17 +882,29 @@ const DashboardPage = () => {
 
             <nav className="flex flex-col gap-1">
               {navItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                >
-                  <item.icon className="w-4 h-4 shrink-0" />
-                  {item.label}
-                  {item.id === "notifications" && (
-                    <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
-                  )}
-                </button>
+                item.internal === false ? (
+                  <Link
+                    key={item.id}
+                    to={item.href!}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors text-muted hover:text-foreground hover:bg-foreground/[0.04] no-underline"
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {item.label}
+                    <ExternalLink className="w-3 h-3 ml-auto opacity-30" />
+                  </Link>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSection(item.id)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {item.label}
+                    {item.id === "notifications" && (
+                      <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                    )}
+                  </button>
+                )
               ))}
             </nav>
 
