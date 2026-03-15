@@ -156,8 +156,82 @@ const UploadPage = () => {
     title.trim().length > 2 && selectedCats.length > 0,
     true,
   ];
+  const handlePublish = async () => {
+    setPublishing(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ title: "Please log in", description: "You need to be logged in to upload art.", variant: "destructive" });
+        setPublishing(false);
+        return;
+      }
 
-  // Published success screen
+      // Determine collection ID
+      let collectionId: string | null = null;
+
+      if (collectionTarget === "new" && newCollectionName.trim()) {
+        const { data: col, error: colErr } = await supabase.from("collections").insert({
+          name: newCollectionName.trim(),
+          user_id: user.id,
+          is_public: visibility === "public",
+          description: title,
+        }).select("id").single();
+        if (colErr) throw colErr;
+        collectionId = col.id;
+      } else if (collectionTarget === "existing" && selectedCollection) {
+        collectionId = selectedCollection;
+      }
+
+      // If no collection chosen, create a default one for this upload
+      if (!collectionId) {
+        const { data: col, error: colErr } = await supabase.from("collections").insert({
+          name: title || `Upload ${new Date().toLocaleDateString()}`,
+          user_id: user.id,
+          is_public: visibility === "public",
+        }).select("id").single();
+        if (colErr) throw colErr;
+        collectionId = col.id;
+      }
+
+      // Upload each file to storage and insert record
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext = file.name.split(".").pop() || "jpg";
+        const path = `${user.id}/${collectionId}/${crypto.randomUUID()}.${ext}`;
+
+        const { error: uploadErr } = await supabase.storage
+          .from("collection-images")
+          .upload(path, file, { contentType: file.type });
+        if (uploadErr) throw uploadErr;
+
+        const { data: { publicUrl } } = supabase.storage
+          .from("collection-images")
+          .getPublicUrl(path);
+
+        const prompts = imagePrompts[i];
+        const { error: insertErr } = await supabase.from("collection_images").insert({
+          collection_id: collectionId,
+          user_id: user.id,
+          image_url: publicUrl,
+          title: title || file.name,
+          sort_order: i,
+          image_prompt: prompts?.image_prompt || null,
+          video_prompt: prompts?.video_prompt || null,
+        });
+        if (insertErr) throw insertErr;
+      }
+
+      setPublished(true);
+      toast({ title: "Published!", description: `${files.length} image${files.length > 1 ? "s" : ""} uploaded successfully.` });
+    } catch (err: any) {
+      console.error("Publish failed:", err);
+      toast({ title: "Upload failed", description: err.message || "Something went wrong.", variant: "destructive" });
+    } finally {
+      setPublishing(false);
+    }
+  };
+
+
   if (published) {
     return (
       <div className="min-h-screen bg-background">
