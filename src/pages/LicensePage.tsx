@@ -119,7 +119,7 @@ const LicensePage = () => {
                 <div className="w-8 h-8 rounded-lg bg-green-600/10 flex items-center justify-center">
                   <Check className="w-5 h-5 text-green-600" />
                 </div>
-                <h3 className="font-display text-[1.1rem] font-black">What you can do</h3>
+                <h3 className="font-display text-[1.1rem] font-black">What You Can Do</h3>
               </div>
               <div className="flex flex-col gap-2.5">
                 {allowed.map(item => (
