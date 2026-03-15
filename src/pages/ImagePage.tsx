@@ -146,7 +146,7 @@ const ImagePage = () => {
                         onClick={() => setShowRecreateModal(true)}
                         className="flex items-center gap-2 bg-accent text-primary-foreground rounded-lg text-[0.88rem] font-bold px-6 py-3 hover:bg-accent/85 transition-colors shadow-md"
                       >
-                        <Sparkles className="w-4.5 h-4.5" /> Recreate in REAL CREATOR
+                        <Sparkles className="w-4.5 h-4.5" /> Recreate
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="bg-foreground text-primary-foreground border-none max-w-[240px] p-3">
