@@ -158,6 +158,30 @@ const UploadPage = () => {
     title.trim().length > 2 && selectedCats.length > 0,
     true,
   ];
+
+  const runAutoTag = async () => {
+    if (autoTagsDone || previews.length === 0) return;
+    setAutoTagsLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("auto-tag", {
+        body: { imageUrl: previews[0] },
+      });
+      if (error) throw error;
+      if (data.tags?.length) setTags(data.tags.slice(0, 12));
+      if (data.title && !title) setTitle(data.title);
+      if (data.categories?.length) {
+        const validCats = categories;
+        const matched = data.categories.filter((c: string) => validCats.includes(c)).slice(0, 3);
+        if (matched.length) setSelectedCats(matched);
+      }
+      setAutoTagsDone(true);
+    } catch (e) {
+      console.error("Auto-tag failed:", e);
+    } finally {
+      setAutoTagsLoading(false);
+    }
+  };
+
   const handlePublish = async () => {
     setPublishing(true);
     try {
