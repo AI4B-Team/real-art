@@ -1,33 +1,35 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Pen, FileText } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Pen, FileText, X } from "lucide-react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const isHomePage = location.pathname === "/";
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setSearchOpen(false);
-      }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
   }, []);
 
-  const handleSearch = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && searchQuery.trim()) {
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
       navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchOpen(false);
       setSearchQuery("");
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
     }
   };
 
@@ -47,10 +49,38 @@ const Navbar = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[300] h-16 px-6 md:px-12 flex items-center justify-between bg-background/96 backdrop-blur-xl border-b border-foreground/[0.08]">
-      <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline">
+      {/* Logo */}
+      <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
         Real<span className="text-accent">.</span>Art
       </Link>
-      <div className="flex items-center gap-1">
+
+      {/* Center Search - Only on non-home pages */}
+      {!isHomePage && (
+        <div className="hidden md:flex flex-1 max-w-xl mx-8">
+          <div className="relative w-full">
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Search visuals..."
+              className="w-full pl-11 pr-4 py-2.5 rounded-full bg-foreground/[0.06] border-none outline-none font-body text-[0.88rem] text-foreground placeholder:text-muted focus:ring-2 focus:ring-accent/20"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full flex items-center justify-center hover:bg-foreground/10"
+              >
+                <X className="w-3 h-3 text-muted" />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Right Side Actions */}
+      <div className="flex items-center gap-1 shrink-0">
         {/* Upload button */}
         <Link
           to="/upload"
@@ -58,30 +88,6 @@ const Navbar = () => {
         >
           <Upload className="w-3.5 h-3.5" /> Upload
         </Link>
-        {/* Search icon + inline expand */}
-        <div className="relative" ref={searchRef}>
-          <button
-            onClick={() => setSearchOpen(!searchOpen)}
-            className="w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors"
-          >
-            <Search className="w-4 h-4" />
-          </button>
-          {searchOpen && (
-            <div className="absolute top-[calc(100%+8px)] right-0 bg-card border border-foreground/[0.1] rounded-xl shadow-[var(--shadow-card)] p-2 w-72 animate-drop-in">
-              <div className="flex items-center gap-2 px-3 py-2">
-                <Search className="w-3.5 h-3.5 text-muted shrink-0" />
-                <input
-                  autoFocus
-                  className="flex-1 border-none outline-none font-body text-[0.88rem] bg-transparent"
-                  placeholder="Search visuals… press Enter"
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                  onKeyDown={handleSearch}
-                />
-              </div>
-            </div>
-          )}
-        </div>
 
         {/* Hamburger menu */}
         <div className="relative" ref={menuRef}>
