@@ -1028,39 +1028,7 @@ const DashboardPage = () => {
             {activeSection === "media" && <MediaSection />}
 
             {/* ═══ GALLERIES ═══ */}
-            {activeSection === "galleries" && (
-              <>
-                <div className="flex items-center justify-between mb-6">
-                  <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">My Collections</h1>
-                  <Link to="/create-gallery" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
-                    <Plus className="w-4 h-4" /> New Collection
-                  </Link>
-                </div>
-                <div className="flex flex-col gap-4">
-                  {collections.map((g, i) => (
-                    <div key={i} className="bg-card border border-foreground/[0.08] rounded-xl p-5 flex items-center justify-between flex-wrap gap-4">
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-semibold text-[0.92rem]">{g.name}</h3>
-                          <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${g.free ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
-                            {g.free ? "Public" : "Private"}
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-3 text-[0.78rem] text-muted">
-                          <span>{g.images} images</span>
-                          {!g.free && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{g.members} members</span>}
-                          {g.code && <span className="flex items-center gap-1"><Key className="w-3 h-3 text-muted" /> {g.code}</span>}
-                        </div>
-                      </div>
-                      <div className="flex gap-2">
-                        {g.code && <button className="text-[0.78rem] text-muted border border-foreground/[0.1] px-3 py-1.5 rounded-lg hover:border-foreground/30 transition-colors">Change Code</button>}
-                        <button className="text-[0.78rem] font-medium bg-foreground text-primary-foreground px-4 py-1.5 rounded-lg hover:bg-accent transition-colors">Manage</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+            {activeSection === "galleries" && <GalleriesSection />}
 
             {/* ═══ EARNINGS ═══ */}
             {activeSection === "earnings" && (
