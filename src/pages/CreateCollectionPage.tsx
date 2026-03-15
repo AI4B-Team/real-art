@@ -149,6 +149,21 @@ const CreateCollectionPage = () => {
           .from("collections")
           .update({ cover_url: finalCoverUrl })
           .eq("id", collection.id);
+      } else if (coverFile) {
+        const coverExt = coverFile.name.split(".").pop();
+        const coverPath = `${user.id}/${collection.id}/cover.${coverExt}`;
+        const { error: coverUploadErr } = await supabase.storage
+          .from("collection-images")
+          .upload(coverPath, coverFile);
+        if (!coverUploadErr) {
+          const { data: { publicUrl: coverPublicUrl } } = supabase.storage
+            .from("collection-images")
+            .getPublicUrl(coverPath);
+          await supabase
+            .from("collections")
+            .update({ cover_url: coverPublicUrl })
+            .eq("id", collection.id);
+        }
       }
 
       toast({ title: "Collection created!", description: `"${name}" is ready.` });
