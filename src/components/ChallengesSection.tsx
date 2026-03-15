@@ -14,7 +14,7 @@ const ChallengesSection = () => {
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-7">
           <div>
-            <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Weekly Prompt Challenges</h2>
+            <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Challenges</h2>
             <p className="text-[0.83rem] text-muted mt-[7px]">Enter, compete, win cash — open to all skill levels</p>
           </div>
         </div>
