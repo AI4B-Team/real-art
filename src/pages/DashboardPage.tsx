@@ -505,6 +505,10 @@ const GalleriesSection = () => {
         ))}
       </div>
 
+    </>
+  );
+};
+
 
 /* ═══ ADS SECTION COMPONENT ═══ */
 type CampaignStatus = "active" | "paused" | "draft" | "completed";
