@@ -344,7 +344,7 @@ const Navbar = () => {
               onKeyDown={(e) => { handleKeyDown(e); if (e.key === "Enter") setMobileSearchOpen(false); }}
               placeholder="Search visuals..."
               autoFocus
-              className="w-full pl-10 pr-10 py-2.5 rounded-full bg-foreground/[0.06] border-none outline-none font-body text-[0.88rem] text-foreground placeholder:text-muted focus:ring-2 focus:ring-accent/20"
+              className="w-full pl-10 pr-10 py-2.5 rounded-lg bg-foreground/[0.06] border-none outline-none font-body text-[0.88rem] text-foreground placeholder:text-muted focus:ring-2 focus:ring-accent/20"
             />
             <button
               onClick={() => { setMobileSearchOpen(false); setSearchQuery(""); }}
