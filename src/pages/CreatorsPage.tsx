@@ -40,18 +40,20 @@ const CreatorsPage = () => {
           <span className="text-foreground font-medium">Creators</span>
         </div>
 
-        <h1 className="font-display text-[clamp(2.4rem,5vw,4rem)] font-black tracking-[-0.03em] leading-none mb-3">Creators</h1>
-        <p className="text-[0.92rem] text-muted mb-8 max-w-[520px]">The artists behind the images. Follow, donate, explore their galleries.</p>
-
-        {/* Search */}
-        <div className="flex items-center gap-3 bg-card border border-foreground/[0.1] rounded-xl px-4 py-3 max-w-[400px] mb-10">
-          <Search className="w-3.5 h-3.5 text-muted shrink-0" />
-          <input
-            className="flex-1 bg-transparent border-none outline-none text-[0.88rem] font-body placeholder:text-muted"
-            placeholder="Search creators…"
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-          />
+        <div className="flex items-start md:items-center justify-between gap-4 flex-wrap mb-8">
+          <div>
+            <h1 className="font-display text-[clamp(2.4rem,5vw,4rem)] font-black tracking-[-0.03em] leading-none mb-3">Creators</h1>
+            <p className="text-[0.92rem] text-muted max-w-[520px]">The artists behind the images. Follow, donate, explore their galleries.</p>
+          </div>
+          <div className="flex items-center gap-3 bg-card border border-foreground/[0.1] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
+            <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+            <input
+              className="flex-1 bg-transparent border-none outline-none text-[0.88rem] font-body placeholder:text-muted"
+              placeholder="Search creators…"
+              value={query}
+              onChange={e => setQuery(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* Grid */}
