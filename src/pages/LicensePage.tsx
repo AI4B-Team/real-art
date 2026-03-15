@@ -89,7 +89,7 @@ const LicensePage = () => {
             <span className="text-[0.72rem] font-semibold text-accent">Free License</span>
           </div>
           <h1 className="font-display text-[clamp(2.4rem,5vw,4.2rem)] font-black tracking-[-0.03em] leading-[1.02] mb-4">
-            Simple license.<br /><span className="text-muted">Plain language.</span>
+            Simple License.<br /><span className="text-muted">Plain Language.</span>
           </h1>
           <p className="text-[0.94rem] text-muted leading-[1.75] max-w-[600px]">
             All images on REAL ART are free to use. No attribution, no subscription, no lawyer.<br />
