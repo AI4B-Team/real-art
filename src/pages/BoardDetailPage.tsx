@@ -3,11 +3,12 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Heart, Share2, Lock, Globe, Bookmark,
   Eye, Sparkles, Copy, Check, Users, X, Link2, Plus, UserPlus,
-  Camera, Edit3, Trash2
+  Camera, Edit3, Trash2, MoreHorizontal, Archive, GitMerge,
+  Download, Flag, EyeOff, FolderOpen
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { getBoards, updateBoard, removeFromBoard, type Board } from "@/lib/boardStore";
+import { getBoards, updateBoard, removeFromBoard, addToBoard, deleteBoard, type Board } from "@/lib/boardStore";
 
 /* ── Hardcoded public boards (for /boards/1, /boards/2 etc) ── */
 const publicBoardData: Record<string, {
@@ -86,6 +87,7 @@ const socialLinks = [
 const BoardDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   /* ── Resolve board: user board from store or public fallback ── */
   const [userBoard, setUserBoard] = useState<Board | null>(null);
@@ -137,6 +139,12 @@ const BoardDetailPage = () => {
   const [invitedHandles, setInvitedHandles] = useState<string[]>([]);
   const bannerPickerRef = useRef<HTMLDivElement>(null);
 
+  // 3-dot menu state
+  const [showMenu, setShowMenu] = useState(false);
+  const [showMerge, setShowMerge] = useState(false);
+  const [showArchiveConfirm, setShowArchiveConfirm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
   /* ── Not found ── */
   if (!userBoard && !publicBoard) {
     return (
@@ -166,6 +174,17 @@ const BoardDetailPage = () => {
     if (!isOwner || !userBoard) return;
     removeFromBoard(userBoard.id, imageId);
   };
+
+  // Close menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setShowMenu(false);
+      }
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href).catch(() => {});
@@ -208,6 +227,20 @@ const BoardDetailPage = () => {
     { text: "Dark alley in a cyberpunk megacity, steam vents, flickering lights, moody atmosphere", uses: "968" },
   ];
 
+  // Merge handler
+  const handleMerge = (targetBoardId: string) => {
+    if (!isOwner || !userBoard) return;
+    boardItems.forEach(item => {
+      addToBoard(targetBoardId, { imageId: item.imageId, photo: item.photo, title: item.title });
+    });
+    deleteBoard(userBoard.id);
+    setShowMerge(false);
+    navigate("/boards");
+  };
+
+  // Other boards for merge picker
+  const otherBoards = getBoards().filter(b => b.id !== id);
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -245,13 +278,11 @@ const BoardDetailPage = () => {
                 </button>
               </div>
               <div className="grid grid-cols-4 gap-2">
-                {/* From board items first */}
                 {userBoard?.items.slice(0, 4).map(item => (
                   <button key={item.imageId} onClick={() => setBanner(item.photo)} className={`aspect-square rounded-xl overflow-hidden transition-all ${bannerPhoto === item.photo ? "ring-2 ring-accent ring-offset-1" : "hover:opacity-90"}`}>
                     <img src={`https://images.unsplash.com/${item.photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
                   </button>
                 ))}
-                {/* Library */}
                 {bannerPickerPhotos.slice(0, 8).map(photo => (
                   <button key={photo} onClick={() => setBanner(photo)} className={`aspect-square rounded-xl overflow-hidden transition-all ${bannerPhoto === photo ? "ring-2 ring-accent ring-offset-1" : "opacity-70 hover:opacity-100"}`}>
                     <img src={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
@@ -345,6 +376,121 @@ const BoardDetailPage = () => {
                   <UserPlus className="w-4 h-4" /> Invite
                 </button>
               )}
+
+              {/* 3-dot menu */}
+              <div className="relative" ref={menuRef}>
+                <button
+                  onClick={() => setShowMenu(!showMenu)}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
+
+                {showMenu && (
+                  <div className="absolute top-12 right-0 bg-background border border-foreground/[0.08] rounded-xl shadow-2xl w-[260px] py-2 z-20">
+                    {isOwner ? (
+                      <>
+                        {/* Owner menu */}
+                        <p className="px-4 py-1.5 text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Manage</p>
+
+                        <button
+                          onClick={() => { setShowMenu(false); setShowMerge(true); }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
+                          style={{ width: "calc(100% - 8px)" }}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
+                            <GitMerge className="w-4 h-4 text-muted" />
+                          </div>
+                          <div>
+                            <div className="text-[0.82rem] font-medium">Merge into another board</div>
+                            <div className="text-[0.68rem] text-muted">Move all images to a different board</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => { setShowMenu(false); setShowArchiveConfirm(true); }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
+                          style={{ width: "calc(100% - 8px)" }}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
+                            <Archive className="w-4 h-4 text-muted" />
+                          </div>
+                          <div>
+                            <div className="text-[0.82rem] font-medium">Archive board</div>
+                            <div className="text-[0.68rem] text-muted">Hide without deleting</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => { setShowMenu(false); /* TODO: download ZIP */ }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
+                          style={{ width: "calc(100% - 8px)" }}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
+                            <Download className="w-4 h-4 text-muted" />
+                          </div>
+                          <div>
+                            <div className="text-[0.82rem] font-medium">Download all images</div>
+                            <div className="text-[0.68rem] text-muted">Save a ZIP of this board</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => { setShowMenu(false); setShowDeleteConfirm(true); }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-red-50 transition-colors text-left group mx-1"
+                          style={{ width: "calc(100% - 8px)" }}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
+                            <Trash2 className="w-4 h-4 text-red-500" />
+                          </div>
+                          <div>
+                            <div className="text-[0.82rem] font-medium text-red-600">Delete board</div>
+                            <div className="text-[0.68rem] text-red-400">Cannot be undone</div>
+                          </div>
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {/* Visitor menu */}
+                        <p className="px-4 py-1.5 text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Actions</p>
+
+                        <button
+                          onClick={() => { setShowMenu(false); /* TODO: add to own board */ }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
+                          style={{ width: "calc(100% - 8px)" }}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
+                            <FolderOpen className="w-4 h-4 text-muted" />
+                          </div>
+                          <div className="text-[0.82rem] font-medium">Save board to my profile</div>
+                        </button>
+
+                        <button
+                          onClick={() => { setShowMenu(false); handleCopyLink(); }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
+                          style={{ width: "calc(100% - 8px)" }}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
+                            <Link2 className="w-4 h-4 text-muted" />
+                          </div>
+                          <div className="text-[0.82rem] font-medium">Copy link</div>
+                        </button>
+
+                        <button
+                          onClick={() => { setShowMenu(false); }}
+                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
+                          style={{ width: "calc(100% - 8px)" }}
+                        >
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
+                            <Flag className="w-4 h-4 text-muted" />
+                          </div>
+                          <div className="text-[0.82rem] font-medium">Report</div>
+                        </button>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
@@ -470,16 +616,13 @@ const BoardDetailPage = () => {
         {showShare && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setShowShare(false)}>
             <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[440px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
-              {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-foreground/[0.06]">
                 <h3 className="font-display text-[1.05rem] font-bold">Share & Invite</h3>
                 <button onClick={() => setShowShare(false)} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors text-muted">
                   <X className="w-3.5 h-3.5" />
                 </button>
               </div>
-
               <div className="px-5 py-4 space-y-5">
-                {/* Copy link */}
                 <div>
                   <p className="text-[0.78rem] font-semibold mb-2">Share link</p>
                   <div className="flex items-center gap-2">
@@ -492,8 +635,6 @@ const BoardDetailPage = () => {
                     </button>
                   </div>
                 </div>
-
-                {/* Social share */}
                 <div>
                   <p className="text-[0.78rem] font-semibold mb-2">Share on</p>
                   <div className="flex gap-2">
@@ -507,14 +648,10 @@ const BoardDetailPage = () => {
                     ))}
                   </div>
                 </div>
-
-                {/* Invite collaborators (owner only) */}
                 {isOwner && (
                   <div>
                     <p className="text-[0.78rem] font-semibold mb-1">Invite collaborators</p>
                     <p className="text-[0.68rem] text-muted mb-3">· can add and remove images</p>
-
-                    {/* Current collabs */}
                     {collabs.length > 0 && (
                       <div className="flex flex-wrap gap-2 mb-3">
                         {collabs.map(handle => {
@@ -533,8 +670,6 @@ const BoardDetailPage = () => {
                         })}
                       </div>
                     )}
-
-                    {/* Search */}
                     <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] mb-2">
                       <Users className="w-3.5 h-3.5 text-muted shrink-0" />
                       <input
@@ -545,16 +680,9 @@ const BoardDetailPage = () => {
                         className="flex-1 bg-transparent text-[0.82rem] outline-none"
                       />
                     </div>
-
-                    {/* User list */}
                     <div className="max-h-[160px] overflow-y-auto space-y-1">
                       {filteredInviteUsers.length === 0 && (
-                        <p className="text-[0.78rem] text-muted text-center py-3">
-                          {fakeUsers.every(u => collabs.includes(u.handle) || invitedHandles.includes(u.handle))
-                            ? "All users invited"
-                            : "No users found"
-                          }
-                        </p>
+                        <p className="text-[0.78rem] text-muted text-center py-3">No users found</p>
                       )}
                       {filteredInviteUsers.map(u => {
                         const alreadyInvited = collabs.includes(u.handle) || invitedHandles.includes(u.handle);
@@ -584,6 +712,120 @@ const BoardDetailPage = () => {
                     </div>
                   </div>
                 )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Merge Modal ── */}
+        {showMerge && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setShowMerge(false)}>
+            <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+              <div className="flex items-center justify-between px-5 py-4 border-b border-foreground/[0.06]">
+                <div className="flex items-center gap-2">
+                  <GitMerge className="w-4 h-4 text-accent" />
+                  <h3 className="font-display text-[1.05rem] font-bold">Merge Board</h3>
+                </div>
+                <button onClick={() => setShowMerge(false)} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors text-muted">
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              </div>
+              <div className="px-5 py-4">
+                <p className="text-[0.82rem] text-muted mb-4">
+                  Move all {boardItems.length} image{boardItems.length !== 1 ? "s" : ""} from <strong>{title}</strong> into another board. This board will be deleted.
+                </p>
+                {otherBoards.length === 0 ? (
+                  <p className="text-[0.82rem] text-muted text-center py-6">No other boards to merge into</p>
+                ) : (
+                  <div className="space-y-1.5 max-h-[240px] overflow-y-auto">
+                    {otherBoards.map(b => (
+                      <button
+                        key={b.id}
+                        onClick={() => handleMerge(b.id)}
+                        className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left"
+                      >
+                        <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-foreground/[0.06]">
+                          {b.items[0] ? (
+                            <img src={`https://images.unsplash.com/${b.items[0].photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center"><Bookmark className="w-4 h-4 text-muted" /></div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[0.84rem] font-semibold truncate">{b.title}</div>
+                          <div className="text-[0.72rem] text-muted">{b.items.length} saved</div>
+                        </div>
+                        <GitMerge className="w-3.5 h-3.5 text-muted" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Archive Confirm Modal ── */}
+        {showArchiveConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setShowArchiveConfirm(false)}>
+            <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[380px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+              <div className="px-6 py-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-amber-500/10 flex items-center justify-center mx-auto mb-4">
+                  <Archive className="w-5 h-5 text-amber-500" />
+                </div>
+                <h3 className="font-display text-[1.1rem] font-bold mb-2">Archive "{title}"?</h3>
+                <p className="text-[0.82rem] text-muted mb-6">This board will be hidden from your profile. You can unarchive it later from settings.</p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowArchiveConfirm(false)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Archive = just navigate away for now (no archive field in store)
+                      setShowArchiveConfirm(false);
+                      navigate("/boards");
+                    }}
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-amber-500 text-white text-[0.82rem] font-semibold hover:bg-amber-600 transition-colors"
+                  >
+                    Archive
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ── Delete Confirm Modal ── */}
+        {showDeleteConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setShowDeleteConfirm(false)}>
+            <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[380px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+              <div className="px-6 py-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mx-auto mb-4">
+                  <Trash2 className="w-5 h-5 text-red-500" />
+                </div>
+                <h3 className="font-display text-[1.1rem] font-bold mb-2">Delete "{title}"?</h3>
+                <p className="text-[0.82rem] text-muted mb-6">This will permanently delete the board and all {boardItems.length} saved image{boardItems.length !== 1 ? "s" : ""}. This cannot be undone.</p>
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowDeleteConfirm(false)}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (userBoard) deleteBoard(userBoard.id);
+                      setShowDeleteConfirm(false);
+                      navigate("/boards");
+                    }}
+                    className="flex-1 px-4 py-2.5 rounded-xl bg-red-500 text-white text-[0.82rem] font-semibold hover:bg-red-600 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
               </div>
             </div>
           </div>
