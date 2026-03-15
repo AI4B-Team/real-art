@@ -81,7 +81,6 @@ const ShopSection = ({ shopLink, shopSimilar = [] }: ShopSectionProps) => (
               >
                 <p className="text-[0.75rem] text-primary-foreground font-semibold leading-tight">{item.title}</p>
                 <div className="flex items-center justify-between mt-1">
-                  <span className="text-[0.72rem] text-primary-foreground/80 font-bold">{item.price}</span>
                   <span className="text-[0.62rem] text-primary-foreground/50">{item.site}</span>
                 </div>
               </div>
