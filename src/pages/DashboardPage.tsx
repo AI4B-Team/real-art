@@ -944,7 +944,51 @@ const DashboardPage = () => {
                   ))}
                 </div>
 
-                {/* Featured Artwork (pinned) */}
+                {/* Media Library Summary */}
+                <div className="mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-muted">Media Library</span>
+                      <span className="text-[0.72rem] text-muted">300 total items</span>
+                    </div>
+                    <button onClick={() => setActiveSection("media")} className="text-[0.78rem] font-semibold text-accent hover:underline flex items-center gap-1">
+                      View all <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                      { label: "Images", count: 284, newThis: 6, icon: Image, color: "text-blue-500", bgColor: "bg-blue-500", thumbs: ["photo-1618005182384-a83a8bd57fbe","photo-1557682250-33bd709cbe85","photo-1604881991720-f91add269bed"] },
+                      { label: "Videos", count: 12, newThis: 2, icon: Video, color: "text-purple-500", bgColor: "bg-purple-500", thumbs: ["photo-1558591710-4b4a1ae0f04d","photo-1550684848-fac1c5b4e853","photo-1506259091721-2c27eb6c768f"] },
+                      { label: "Music", count: 4, newThis: 1, icon: Music, color: "text-orange-500", bgColor: "bg-orange-500", thumbs: ["photo-1511379938547-c1f69419868d","photo-1493225457124-a3eb161ffa5f","photo-1470225620780-dba8ba36b745"] },
+                    ].map(m => (
+                      <button
+                        key={m.label}
+                        onClick={() => setActiveSection("media")}
+                        className="group bg-background rounded-xl p-4 border border-foreground/[0.06] hover:border-foreground/20 hover:shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-all text-left"
+                      >
+                        <div className="flex gap-1.5 mb-3">
+                          {m.thumbs.map((t, i) => (
+                            <div key={i} className="h-9 flex-1 rounded-lg overflow-hidden">
+                              <img src={`https://images.unsplash.com/${t}?w=120&h=60&fit=crop&q=70`} alt="" className={`w-full h-full object-cover ${i > 0 ? "opacity-60" : ""}`} />
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className={`w-6 h-6 rounded-lg ${m.bgColor}/10 flex items-center justify-center`}>
+                            <m.icon className={`w-3.5 h-3.5 ${m.color}`} />
+                          </div>
+                          <span className="text-[0.82rem] font-semibold">{m.label}</span>
+                        </div>
+                        <div className="font-display text-[1.6rem] font-black tracking-[-0.03em] leading-none mb-2">{m.count.toLocaleString()}</div>
+                        <div className={`h-1.5 rounded-full bg-foreground/[0.06] mb-2`}>
+                          <div className={`h-full rounded-full ${m.bgColor}`} style={{ width: `${Math.min((m.count / 300) * 100, 100)}%` }} />
+                        </div>
+                        <div className="text-[0.72rem] text-green-500 font-medium">+{m.newThis} this month</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
                 <div className="bg-foreground rounded-2xl p-6 mb-8 relative overflow-hidden">
                   <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full opacity-[0.06]"
                     style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
