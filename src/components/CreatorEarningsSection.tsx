@@ -26,8 +26,8 @@ const earningMethods = [
     highlight: false,
   },
   {
-    title: "Private Gallery Codes",
-    desc: "Lock your gallery with a code. Share it with whoever you choose. Charge for premium access.",
+    title: "Private Collection Codes",
+    desc: "Lock your collection with a code. Share it with whoever you choose. Charge for premium access.",
     icon: Lock,
     highlight: false,
   },

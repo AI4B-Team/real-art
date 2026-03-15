@@ -57,7 +57,7 @@ const CollectionsPage = () => {
           <div className="flex items-start md:items-center justify-between gap-4 flex-wrap">
             <div>
               <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Collections</h1>
-              <p className="text-[0.88rem] text-muted">Curated galleries of the finest visuals — by our team and top creators</p>
+              <p className="text-[0.88rem] text-muted">Curated collections of the finest visuals — by our team and top creators</p>
             </div>
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">

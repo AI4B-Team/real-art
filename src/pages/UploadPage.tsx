@@ -591,7 +591,7 @@ const UploadPage = () => {
                     ["Title", title || "—"],
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
-                    ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private gallery"],
+                    ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private collection"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
                     ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],

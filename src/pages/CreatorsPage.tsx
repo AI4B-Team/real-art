@@ -43,7 +43,7 @@ const CreatorsPage = () => {
         <div className="flex items-start md:items-center justify-between gap-4 flex-wrap mb-8">
           <div>
             <h1 className="font-display text-[clamp(2.4rem,5vw,4rem)] font-black tracking-[-0.03em] leading-none mb-3">Creators</h1>
-            <p className="text-[0.92rem] text-muted max-w-[520px]">The artists behind the images. Follow, donate, explore their galleries.</p>
+            <p className="text-[0.92rem] text-muted max-w-[520px]">The artists behind the images. Follow, donate, explore their collections.</p>
           </div>
           <div className="flex items-center gap-3 bg-card border border-foreground/[0.1] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
             <Search className="w-3.5 h-3.5 text-muted shrink-0" />

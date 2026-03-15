@@ -236,7 +236,7 @@ const CreateGalleryPage = () => {
               onClick={() => setCreated(true)}
               className="bg-foreground text-primary-foreground px-8 py-3.5 rounded-xl text-[0.9rem] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent transition-colors w-full flex items-center justify-center gap-2"
             >
-              Create Gallery
+              Create Collection
             </button>
           </div>
         </div>

@@ -63,7 +63,7 @@ const CommunitiesPage = () => {
             </div>
             <Link to="/create-gallery">
               <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors">
-                <Plus className="w-4 h-4" /> Create Gallery
+                <Plus className="w-4 h-4" /> Create Collection
               </button>
             </Link>
           </div>
