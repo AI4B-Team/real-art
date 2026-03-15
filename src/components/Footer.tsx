@@ -8,8 +8,17 @@ const footerCols: { title: string; links: { label: string; to: string }[] }[] = 
       { label: "Start Gallery", to: "/create-gallery" },
       { label: "Boards", to: "/boards" },
       { label: "Affiliates", to: "/affiliates" },
-      { label: "Private Vaults", to: "/create-gallery" },
       { label: "Prompt Packs", to: "/prompts" },
+    ],
+  },
+  {
+    title: "Topics",
+    links: [
+      { label: "Cyberpunk", to: "/topic/cyberpunk" },
+      { label: "Luxury Homes", to: "/topic/luxury-homes" },
+      { label: "Dreamscapes", to: "/topic/dreamscapes" },
+      { label: "AI Avatars", to: "/topic/ai-avatars" },
+      { label: "All Topics", to: "/explore" },
     ],
   },
   {
