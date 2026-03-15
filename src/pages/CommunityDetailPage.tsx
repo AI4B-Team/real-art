@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Heart, Download, Star } from "lucide-react";
+import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Star } from "lucide-react";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
