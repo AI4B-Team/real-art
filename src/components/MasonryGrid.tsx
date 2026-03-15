@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Star, TrendingUp, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 
@@ -18,12 +18,12 @@ const photos = [
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 const isVideo = (i: number) => i % 4 === 3;
 const isShoppable = (i: number) => [0, 3, 5, 7, 9].includes(i);
-const badgeMap: Record<number, { label: string; icon: string; style: string }> = {
-  0: { label: "Editor's Pick", icon: "⭐", style: "bg-accent text-primary-foreground" },
-  2: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
-  7: { label: "Featured", icon: "⭐", style: "bg-accent text-primary-foreground" },
-  11: { label: "Curated", icon: "✨", style: "bg-foreground text-primary-foreground" },
-  15: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
+const badgeMap: Record<number, { label: string; Icon: React.FC<{ className?: string }>; style: string }> = {
+  0: { label: "Editor's Pick", Icon: Star, style: "bg-accent text-primary-foreground" },
+  2: { label: "Trending", Icon: TrendingUp, style: "bg-foreground text-primary-foreground" },
+  7: { label: "Featured", Icon: Star, style: "bg-accent text-primary-foreground" },
+  11: { label: "Curated", Icon: Sparkles, style: "bg-foreground text-primary-foreground" },
+  15: { label: "Trending", Icon: TrendingUp, style: "bg-foreground text-primary-foreground" },
 };
 
 const MasonryGrid = () => {
