@@ -1112,7 +1112,7 @@ const DashboardPage = () => {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-[0.9rem]">Top Performing Images</h3>
                     <button onClick={() => setActiveSection("media")} className="text-[0.78rem] text-accent hover:underline flex items-center gap-1">
-                      View all <ChevronRight className="w-3 h-3" />
+                      View All <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
                   <div className="overflow-x-auto">
