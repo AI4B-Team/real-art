@@ -79,6 +79,20 @@ const CommunityDetailPage = () => {
   const tabs = ["Gallery", "Collections", "Members", "About", "Settings"];
   const collections = communityCollections[community.id] || communityCollections["2"];
 
+  // Mock role — in production this comes from auth + community membership
+  const [userRole] = useState<"owner" | "moderator" | "member">("owner");
+
+  const canCreateCollections =
+    collectionPerm === "any_member" ||
+    (collectionPerm === "moderators" && (userRole === "owner" || userRole === "moderator")) ||
+    (collectionPerm === "owner" && userRole === "owner");
+
+  const permLabel: Record<typeof collectionPerm, string> = {
+    owner: "Only the owner can create collections",
+    moderators: "Owner and moderators can create collections",
+    any_member: "All members can create collections",
+  };
+
   const handleJoin = () => {
     if (!community.free) {
       setShowCodeModal(true);
