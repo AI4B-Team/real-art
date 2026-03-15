@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Search, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronRight, Search } from "lucide-react";
+import CollectionCard from "@/components/CollectionCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -97,29 +98,17 @@ const CollectionsPage = () => {
                 <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent">Featured</div>
                 <div className="flex-1 h-px bg-foreground/[0.06]" />
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
                 {featured.map(col => (
-                  <Link key={col.id} to={`/collections/${col.id}`} className="cursor-pointer group block">
-                    <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-3 relative">
-                      <img
-                        src={`https://images.unsplash.com/${col.photo}?w=400&h=530&fit=crop&q=78`}
-                        alt={col.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                      <div className="absolute top-3 left-3 bg-accent text-primary-foreground text-[0.62rem] font-bold px-2.5 py-1 rounded-full uppercase tracking-[0.06em]">
-                        Featured
-                      </div>
-                      <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 60%)" }} />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-semibold text-[0.92rem]">{col.name}</p>
-                        <p className="text-[0.76rem] text-muted mt-0.5">by {col.curator} · {col.count} images</p>
-                      </div>
-                      <ChevronRight className="w-4 h-4 text-muted group-hover:text-foreground transition-colors" />
-                    </div>
-                  </Link>
+                  <CollectionCard
+                    key={col.id}
+                    id={col.id}
+                    name={col.name}
+                    subtitle={`by ${col.curator} · ${col.count} images`}
+                    count={col.count}
+                    mainPhoto={col.photo}
+                    badge="Featured"
+                  />
                 ))}
               </div>
             </div>
@@ -136,18 +125,14 @@ const CollectionsPage = () => {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 {rest.map(col => (
-                  <Link key={col.id} to={`/collections/${col.id}`} className="cursor-pointer group block">
-                    <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-2.5">
-                      <img
-                        src={`https://images.unsplash.com/${col.photo}?w=400&h=530&fit=crop&q=78`}
-                        alt={col.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <p className="font-semibold text-[0.9rem]">{col.name}</p>
-                    <p className="text-[0.75rem] text-muted mt-0.5">{col.curator} · {col.count} images</p>
-                  </Link>
+                  <CollectionCard
+                    key={col.id}
+                    id={col.id}
+                    name={col.name}
+                    subtitle={`${col.curator} · ${col.count} images`}
+                    count={col.count}
+                    mainPhoto={col.photo}
+                  />
                 ))}
               </div>
             </div>
