@@ -40,6 +40,7 @@ import BlogPage from "./pages/BlogPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import DashboardCollectionPage from "./pages/DashboardCollectionPage";
 import AdsPage from "./pages/AdsPage";
 
 import CreatorsPage from "./pages/CreatorsPage";
@@ -104,6 +105,7 @@ const App = () => (
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/dashboard/collections/:id" element={<DashboardCollectionPage />} />
           <Route path="/ads" element={<AdsPage />} />
 
           {/* Catch-all */}
