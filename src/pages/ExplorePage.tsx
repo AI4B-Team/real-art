@@ -3,6 +3,13 @@ import { Link, useSearchParams } from "react-router-dom";
 import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SponsoredCard from "@/components/SponsoredCard";
+
+const sponsoredAds = [
+  { imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=260&fit=crop&q=80", brandName: "Poshmark", destinationUrl: "#" },
+  { imageUrl: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=400&h=230&fit=crop&q=80", brandName: "SHEIN", destinationUrl: "#" },
+  { imageUrl: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=250&fit=crop&q=80", brandName: "Target", destinationUrl: "#" },
+];
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe","photo-1558618666-fcd25c85cd64",
@@ -156,42 +163,55 @@ const ExplorePage = () => {
               {photos.slice(0, visibleCount).map((photo, i) => {
                 const cr = creators[i % creators.length];
                 const h = heights[i % heights.length];
+
+                // Insert a sponsored card every 25 images
+                const sponsoredIndex = Math.floor(i / 25);
+                const showSponsored = i > 0 && i % 25 === 0 && sponsoredIndex <= sponsoredAds.length;
+                const ad = showSponsored ? sponsoredAds[(sponsoredIndex - 1) % sponsoredAds.length] : null;
+
                 return (
-                  <Link
-                    key={i}
-                    to={`/image/${i}`}
-                    className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative"
-                    style={{ background: "#e0e0de" }}
-                  >
-                    <img
-                      src={`https://images.unsplash.com/${photo}?w=400&h=${h}&fit=crop&q=78`}
-                      alt=""
-                      loading="lazy"
-                      className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-[350ms] ease-out"
-                      style={{ height: h, objectFit: "cover" }}
-                    />
-                    <div className="absolute inset-0 rounded-xl flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5">
-                          <div
-                            className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
-                            style={{ background: cr.c }}
-                          >
-                            {cr.i}
+                  <>
+                    {showSponsored && ad && (
+                      <div key={`ad-${i}`} className="masonry-item rounded-xl overflow-hidden">
+                        <SponsoredCard imageUrl={ad.imageUrl} brandName={ad.brandName} destinationUrl={ad.destinationUrl} />
+                      </div>
+                    )}
+                    <Link
+                      key={i}
+                      to={`/image/${i}`}
+                      className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative"
+                      style={{ background: "#e0e0de" }}
+                    >
+                      <img
+                        src={`https://images.unsplash.com/${photo}?w=400&h=${h}&fit=crop&q=78`}
+                        alt=""
+                        loading="lazy"
+                        className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-[350ms] ease-out"
+                        style={{ height: h, objectFit: "cover" }}
+                      />
+                      <div className="absolute inset-0 rounded-xl flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-1.5">
+                            <div
+                              className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
+                              style={{ background: cr.c }}
+                            >
+                              {cr.i}
+                            </div>
+                            <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
                           </div>
-                          <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
-                        </div>
-                        <div className="flex gap-1.5">
-                          <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
-                            <Heart className="w-3 h-3" />
-                          </button>
-                          <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
-                            <Download className="w-3 h-3" />
-                          </button>
+                          <div className="flex gap-1.5">
+                            <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
+                              <Heart className="w-3 h-3" />
+                            </button>
+                            <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
+                              <Download className="w-3 h-3" />
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </Link>
+                    </Link>
+                  </>
                 );
               })}
             </div>
