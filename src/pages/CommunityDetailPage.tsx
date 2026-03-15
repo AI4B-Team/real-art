@@ -395,7 +395,7 @@ const CommunityDetailPage = () => {
                     </div>
                     <div>
                       <div className="font-semibold text-[0.85rem]">{community.owner}</div>
-                      <div className="text-[0.72rem] text-muted">Gallery owner</div>
+                      <div className="text-[0.72rem] text-muted">Collection owner</div>
                     </div>
                   </div>
                 </div>
