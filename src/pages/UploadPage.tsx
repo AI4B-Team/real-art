@@ -18,15 +18,13 @@ const categories = [
 
 const steps = ["Upload", "Details", "Publish"];
 
-const mockCommunities = [
-  { id: "c1", name: "Avatar Architects" },
-  { id: "c2", name: "Abstract Minds" },
-  { id: "c3", name: "Neon Futures" },
-  { id: "c4", name: "Forest & Earth" },
-];
+const steps = ["Upload", "Details", "Publish"];
 
-type CollectionTarget = "none" | "existing" | "new";
 interface ImagePrompts {
+  image_prompt: string;
+  video_prompt: string;
+  loading: boolean;
+}
   image_prompt: string;
   video_prompt: string;
   loading: boolean;
