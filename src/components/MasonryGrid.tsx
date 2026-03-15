@@ -155,6 +155,16 @@ const MasonryGrid = () => {
                     </Tooltip>
                   </div>
                 </TooltipProvider>
+                {/* Creator info - bottom left */}
+                <div className="flex items-center gap-1.5 mt-auto">
+                  <div
+                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
+                    style={{ background: cr.c }}
+                  >
+                    {cr.i}
+                  </div>
+                  <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
+                </div>
               </div>
               {/* Prompt popup */}
               {activePrompt === i && (
