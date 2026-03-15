@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Heart, Download } from "lucide-react";
+import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Heart, Download, Star } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -43,6 +43,21 @@ const members = [
   { name: "VoidArt", init: "VA", color: "#023e8a", images: 73 },
 ];
 
+const communityCollections: Record<string, { name: string; count: number; photo: string; curator: string }[]> = {
+  "1": [
+    { name: "Portrait Masterclass", count: 86, photo: "photo-1573496359142-b8d87734a5a2", curator: "LuminaAI" },
+    { name: "Cyberpunk Avatars", count: 124, photo: "photo-1579546929518-9e396f3cc809", curator: "NeoPixel" },
+    { name: "Ethereal Faces", count: 63, photo: "photo-1544005313-94ddf0286df2", curator: "DreamForge" },
+    { name: "Neon Portraits", count: 97, photo: "photo-1557682250-33bd709cbe85", curator: "AI.Verse" },
+  ],
+  "2": [
+    { name: "Fluid Gradients", count: 152, photo: "photo-1541701494587-cb58502866ab", curator: "SpectraGen" },
+    { name: "Cosmic Abstractions", count: 89, photo: "photo-1618005182384-a83a8bd57fbe", curator: "VoidArt" },
+    { name: "Geometric Dreams", count: 71, photo: "photo-1557682250-33bd709cbe85", curator: "AI.Verse" },
+    { name: "Color Explosions", count: 108, photo: "photo-1576091160550-2173dba999ef", curator: "DreamForge" },
+  ],
+};
+
 const CommunityDetailPage = () => {
   const { id } = useParams();
   const community = communitiesData.find(c => c.id === id) || communitiesData[0];
@@ -50,7 +65,8 @@ const CommunityDetailPage = () => {
   const [codeInput, setCodeInput] = useState("");
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("Gallery");
-  const tabs = ["Gallery", "Members", "About"];
+  const tabs = ["Gallery", "Collections", "Members", "About"];
+  const collections = communityCollections[community.id] || communityCollections["2"];
 
   const handleJoin = () => {
     if (!community.free) {
@@ -198,6 +214,32 @@ const CommunityDetailPage = () => {
                   </div>
                 )}
               </>
+            )}
+
+            {activeTab === "Collections" && (
+              <div>
+                <div className="flex items-center gap-2 mb-5">
+                  <Star className="w-4 h-4 text-accent fill-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Community Curated</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                  {collections.map(col => (
+                    <Link key={col.name} to="/collections" className="cursor-pointer group block no-underline">
+                      <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-2.5 relative">
+                        <img
+                          src={`https://images.unsplash.com/${col.photo}?w=400&h=530&fit=crop&q=78`}
+                          alt={col.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 60%)" }} />
+                      </div>
+                      <p className="font-semibold text-[0.92rem]">{col.name}</p>
+                      <p className="text-[0.75rem] text-muted mt-0.5">by {col.curator} · {col.count} images</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
             )}
 
             {activeTab === "Members" && (
