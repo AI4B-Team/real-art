@@ -43,6 +43,21 @@ const members = [
   { name: "VoidArt", init: "VA", color: "#023e8a", images: 73 },
 ];
 
+const communityCollections: Record<string, { name: string; count: number; photo: string; curator: string }[]> = {
+  "1": [
+    { name: "Portrait Masterclass", count: 86, photo: "photo-1573496359142-b8d87734a5a2", curator: "LuminaAI" },
+    { name: "Cyberpunk Avatars", count: 124, photo: "photo-1579546929518-9e396f3cc809", curator: "NeoPixel" },
+    { name: "Ethereal Faces", count: 63, photo: "photo-1544005313-94ddf0286df2", curator: "DreamForge" },
+    { name: "Neon Portraits", count: 97, photo: "photo-1557682250-33bd709cbe85", curator: "AI.Verse" },
+  ],
+  "2": [
+    { name: "Fluid Gradients", count: 152, photo: "photo-1541701494587-cb58502866ab", curator: "SpectraGen" },
+    { name: "Cosmic Abstractions", count: 89, photo: "photo-1618005182384-a83a8bd57fbe", curator: "VoidArt" },
+    { name: "Geometric Dreams", count: 71, photo: "photo-1557682250-33bd709cbe85", curator: "AI.Verse" },
+    { name: "Color Explosions", count: 108, photo: "photo-1576091160550-2173dba999ef", curator: "DreamForge" },
+  ],
+};
+
 const CommunityDetailPage = () => {
   const { id } = useParams();
   const community = communitiesData.find(c => c.id === id) || communitiesData[0];
