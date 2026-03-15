@@ -69,7 +69,7 @@ export const deleteBoard = (boardId: string) => {
   saveBoards(getBoards().filter(b => b.id !== boardId));
 };
 
-export const updateBoard = (boardId: string, patch: Partial<Pick<Board, "title" | "description" | "visibility">>) => {
+export const updateBoard = (boardId: string, patch: Partial<Pick<Board, "title" | "description" | "visibility" | "coverPhoto">>) => {
   saveBoards(getBoards().map(b => b.id === boardId ? { ...b, ...patch } : b));
 };
 
