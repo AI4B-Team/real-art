@@ -262,6 +262,75 @@ const UploadPage = () => {
                 </div>
               )}
 
+              {/* AI-Generated Prompts Per Image */}
+              {previews.length > 0 && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Sparkles className="w-4 h-4 text-accent" />
+                    <h3 className="font-display text-[1.1rem] font-bold">AI-Generated Prompts</h3>
+                    <span className="text-[0.72rem] text-muted bg-accent/10 text-accent font-semibold px-2 py-0.5 rounded-md">Auto</span>
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    {previews.map((src, i) => {
+                      const prompts = imagePrompts[i];
+                      return (
+                        <div key={i} className="bg-card border border-foreground/[0.08] rounded-xl p-4">
+                          <div className="flex gap-4 mb-3">
+                            <img src={src} alt="" className="w-16 h-16 rounded-lg object-cover shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-[0.82rem] font-semibold mb-1 truncate">Image {i + 1}</div>
+                              {prompts?.loading && (
+                                <div className="flex items-center gap-2 text-[0.78rem] text-accent">
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating prompts with AI…
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {prompts && !prompts.loading && (
+                            <div className="flex flex-col gap-3">
+                              <div>
+                                <label className="flex items-center gap-1.5 text-[0.76rem] font-semibold text-muted mb-1.5">
+                                  <Image className="w-3 h-3" /> Image Prompt
+                                </label>
+                                <textarea
+                                  value={prompts.image_prompt}
+                                  onChange={e => setImagePrompts(prev => ({
+                                    ...prev,
+                                    [i]: { ...prev[i], image_prompt: e.target.value }
+                                  }))}
+                                  rows={3}
+                                  className="w-full border border-foreground/[0.1] rounded-lg px-3 py-2 font-body text-[0.8rem] bg-background outline-none focus:border-accent/40 transition-colors resize-none leading-[1.6]"
+                                />
+                              </div>
+                              <div>
+                                <label className="flex items-center gap-1.5 text-[0.76rem] font-semibold text-muted mb-1.5">
+                                  <Video className="w-3 h-3" /> Video Inspo Prompt
+                                </label>
+                                <textarea
+                                  value={prompts.video_prompt}
+                                  onChange={e => setImagePrompts(prev => ({
+                                    ...prev,
+                                    [i]: { ...prev[i], video_prompt: e.target.value }
+                                  }))}
+                                  rows={3}
+                                  className="w-full border border-foreground/[0.1] rounded-lg px-3 py-2 font-body text-[0.8rem] bg-background outline-none focus:border-accent/40 transition-colors resize-none leading-[1.6]"
+                                />
+                              </div>
+                              <button
+                                onClick={() => generatePromptsForImage(src, i)}
+                                className="self-start flex items-center gap-1.5 text-[0.76rem] font-medium text-accent hover:text-accent/80 transition-colors"
+                              >
+                                <Sparkles className="w-3 h-3" /> Regenerate
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )
+
               <button
                 disabled={!canProceed[0]}
                 onClick={() => setStep(1)}
