@@ -2,10 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FilterBar from "@/components/FilterBar";
 import MasonryGrid from "@/components/MasonryGrid";
-import PromptLibrary from "@/components/PromptLibrary";
 import CollectionsSection from "@/components/CollectionsSection";
-import StyleTransferSection from "@/components/StyleTransferSection";
-import RecreationsSection from "@/components/RecreationsSection";
 import CommunitiesSection from "@/components/CommunitiesSection";
 import ChallengesSection from "@/components/ChallengesSection";
 import CreatorEarningsSection from "@/components/CreatorEarningsSection";
@@ -20,14 +17,15 @@ const Index = () => {
       <HeroSection />
       <FilterBar />
       <MasonryGrid />
-      <PromptLibrary />
       <CollectionsSection />
-      <StyleTransferSection />
-      <RecreationsSection />
       <CommunitiesSection />
       <ChallengesSection />
-      <CreatorEarningsSection />
-      <LeaderboardSection />
+      <section className="py-12 px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+          <LeaderboardSection />
+          <CreatorEarningsSection />
+        </div>
+      </section>
       <BottomCTA />
       <Footer />
     </div>
