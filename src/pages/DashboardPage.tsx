@@ -225,6 +225,43 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
+                {/* Your Communities */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-8">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-[0.9rem] flex items-center gap-2">
+                      <Users className="w-4 h-4 text-accent" /> Your Communities
+                    </h3>
+                    <Link to="/communities" className="text-[0.78rem] text-accent hover:underline flex items-center gap-1 no-underline">
+                      Browse All <ChevronRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {[
+                      { name: "Avatar Architects", members: "2.4K", posts: 3, lastPost: "Neural portrait series by @stellarink", color: "#4361ee", to: "/communities/1" },
+                      { name: "PromptVault Pro", members: "1.8K", posts: 0, lastPost: "Best negative prompts for realism", color: "#7209b7", to: "/communities/2" },
+                      { name: "Abstract Minds", members: "3.1K", posts: 1, lastPost: "Weekly color palette challenge results", color: "#e63946", to: "/communities/3" },
+                    ].map(c => (
+                      <Link key={c.name} to={c.to} className="border border-foreground/[0.06] rounded-xl p-4 hover:border-accent/30 transition-colors no-underline group">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[0.7rem] font-bold text-primary-foreground" style={{ background: c.color }}>
+                            {c.name.split(" ").map(w => w[0]).join("")}
+                          </div>
+                          <div>
+                            <div className="text-[0.84rem] font-semibold group-hover:text-accent transition-colors">{c.name}</div>
+                            <div className="text-[0.7rem] text-muted">{c.members} members</div>
+                          </div>
+                          {c.posts > 0 && (
+                            <span className="ml-auto text-[0.65rem] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-md">
+                              {c.posts} new
+                            </span>
+                          )}
+                        </div>
+                        <p className="text-[0.75rem] text-muted leading-relaxed line-clamp-1">{c.lastPost}</p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Earnings Chart + Activity */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-8">
                   <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
