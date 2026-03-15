@@ -80,7 +80,7 @@ const PromptLibrary = () => {
                     <div className="text-[0.7rem] text-muted">by {pack.creator}</div>
                   </div>
                 </div>
-                <span className={`text-[0.75rem] font-bold px-3 py-1 rounded-full ${pack.price === "Free" ? "bg-accent/10 text-accent" : "bg-foreground/[0.06] text-foreground"}`}>
+                <span className={`text-[0.75rem] font-bold px-3 py-1 rounded-md ${pack.price === "Free" ? "bg-accent/10 text-accent" : "bg-foreground/[0.06] text-foreground"}`}>
                   {pack.price}
                 </span>
               </div>
@@ -90,13 +90,13 @@ const PromptLibrary = () => {
               <div className="flex items-center justify-between">
                 <span className="text-[0.72rem] text-muted">{pack.prompts} prompts</span>
                 <div className="flex gap-1">
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
+                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
                     <Eye className="w-[10px] h-[10px]" /> View
                   </button>
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
+                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
                     <Copy className="w-[10px] h-[10px]" /> Copy
                   </button>
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-accent text-primary-foreground text-[0.68rem] font-medium hover:bg-accent/80 transition-colors">
+                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-accent text-primary-foreground text-[0.68rem] font-medium hover:bg-accent/80 transition-colors">
                     <Shuffle className="w-[10px] h-[10px]" /> Remix
                   </button>
                 </div>
@@ -111,7 +111,7 @@ const PromptLibrary = () => {
             <div className="font-bold text-[0.9rem] mb-[3px]">Sell Your Prompt Packs</div>
             <div className="text-[0.8rem] text-muted">Package your best prompts and earn passive income from every sale.</div>
           </div>
-          <button className="font-body text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-[22px] py-2.5 rounded-full cursor-pointer hover:bg-accent transition-colors">
+          <button className="font-body text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-[22px] py-2.5 rounded-lg cursor-pointer hover:bg-accent transition-colors">
             Create Prompt Pack
           </button>
         </div>

@@ -31,7 +31,7 @@ const CommunitiesSection = () => {
             <div key={com.name} className="bg-card border border-foreground/[0.08] rounded-[18px] overflow-hidden cursor-pointer hover:-translate-y-1 hover:shadow-[0_20px_56px_rgba(0,0,0,0.1)] transition-all">
               <div className="h-[120px] relative">
                 <img src={`https://images.unsplash.com/${comPhotos[i]}?w=400&h=240&fit=crop&q=78`} alt={com.name} loading="lazy" className="w-full h-full object-cover block" />
-                <span className={`absolute bottom-2.5 left-3 text-[0.65rem] font-bold px-2.5 py-[3px] rounded-full tracking-[0.06em] uppercase ${com.free ? "bg-[rgba(15,180,90,0.9)] text-primary-foreground" : "bg-foreground/[0.72] text-primary-foreground/90"}`}>
+                <span className={`absolute bottom-2.5 left-3 text-[0.65rem] font-bold px-2.5 py-[3px] rounded-md tracking-[0.06em] uppercase ${com.free ? "bg-[rgba(15,180,90,0.9)] text-primary-foreground" : "bg-foreground/[0.72] text-primary-foreground/90"}`}>
                   {com.free ? "Free" : "Private"}
                 </span>
               </div>
@@ -43,7 +43,7 @@ const CommunitiesSection = () => {
                     <Users className="w-[11px] h-[11px]" />
                     {com.members.toLocaleString()}
                   </span>
-                  <button className="text-[0.76rem] font-bold px-4 py-[7px] rounded-full border-none cursor-pointer bg-foreground text-primary-foreground hover:bg-accent transition-colors">
+                  <button className="text-[0.76rem] font-bold px-4 py-[7px] rounded-lg border-none cursor-pointer bg-foreground text-primary-foreground hover:bg-accent transition-colors">
                     Join Now
                   </button>
                 </div>
@@ -56,7 +56,7 @@ const CommunitiesSection = () => {
             <div className="font-bold text-[0.9rem] mb-[3px]">Build Your Own Gallery</div>
             <div className="text-[0.8rem] text-muted">Public or private. Earn affiliate credit on every image you post.</div>
           </div>
-          <button className="font-body text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-[22px] py-2.5 rounded-full cursor-pointer">
+          <button className="font-body text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-[22px] py-2.5 rounded-lg cursor-pointer">
             Create Gallery
           </button>
         </div>

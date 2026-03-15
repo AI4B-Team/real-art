@@ -61,7 +61,7 @@ const HeroSection = () => {
         transition={{ duration: 0.65, delay: 0.26 }}
         className="max-w-[740px] mx-auto"
       >
-        <div className="flex items-center bg-card border-[1.5px] border-foreground/[0.13] rounded-full h-[68px] shadow-[var(--shadow-search)] transition-shadow focus-within:border-foreground focus-within:shadow-[var(--shadow-search-focus)] relative">
+        <div className="flex items-center bg-card border-[1.5px] border-foreground/[0.13] rounded-xl h-[68px] shadow-[var(--shadow-search)] transition-shadow focus-within:border-foreground focus-within:shadow-[var(--shadow-search-focus)] relative">
           <div ref={dropRef} className="relative flex items-center gap-[7px] px-6 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setDropdownOpen(!dropdownOpen)}>
             <SelectedIcon className="w-3.5 h-3.5" />
             <span className="text-[0.88rem] font-semibold whitespace-nowrap">{selectedType}</span>
@@ -85,7 +85,7 @@ const HeroSection = () => {
             className="flex-1 border-none outline-none font-body text-[0.97rem] font-light px-[22px] bg-transparent text-foreground placeholder:text-foreground/30"
             placeholder="Search millions of free visuals…"
           />
-          <button className="w-[50px] h-[50px] rounded-full bg-foreground border-none cursor-pointer flex items-center justify-center mr-[9px] shrink-0 hover:bg-accent hover:scale-105 transition-all">
+          <button className="w-[50px] h-[50px] rounded-lg bg-foreground border-none cursor-pointer flex items-center justify-center mr-[9px] shrink-0 hover:bg-accent hover:scale-105 transition-all">
             <Search className="w-4 h-4 text-primary-foreground" />
           </button>
         </div>

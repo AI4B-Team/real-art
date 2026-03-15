@@ -29,7 +29,7 @@ const StyleTransferSection = () => {
                 className="w-full h-full object-cover group-hover:scale-[1.06] transition-transform duration-[350ms]"
               />
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/40 backdrop-blur-[2px]">
-                <button className="flex items-center gap-1.5 bg-primary-foreground text-foreground text-[0.78rem] font-semibold px-4 py-2 rounded-full">
+                <button className="flex items-center gap-1.5 bg-primary-foreground text-foreground text-[0.78rem] font-semibold px-4 py-2 rounded-lg">
                   Apply Style <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
