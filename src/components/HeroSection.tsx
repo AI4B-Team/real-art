@@ -124,19 +124,6 @@ const HeroSection = () => {
         ))}
       </motion.p>
 
-      {/* Micro-actions */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.65, delay: 0.5 }}
-        className="mt-5 flex items-center justify-center gap-1.5 text-[0.78rem]"
-      >
-        <Link to="/upload" className="text-muted hover:text-accent transition-colors">Upload Art</Link>
-        <span className="text-foreground/15">·</span>
-        <Link to="/explore" className="text-muted hover:text-accent transition-colors">Recreate Image</Link>
-        <span className="text-foreground/15">·</span>
-        <Link to="/real-creator" className="text-muted hover:text-accent transition-colors">Start Creating</Link>
-      </motion.div>
     </section>
   );
 };
