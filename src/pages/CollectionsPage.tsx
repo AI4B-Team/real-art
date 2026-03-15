@@ -125,18 +125,14 @@ const CollectionsPage = () => {
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
                 {rest.map(col => (
-                  <Link key={col.id} to={`/collections/${col.id}`} className="cursor-pointer group block">
-                    <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-2.5">
-                      <img
-                        src={`https://images.unsplash.com/${col.photo}?w=400&h=530&fit=crop&q=78`}
-                        alt={col.name}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                    <p className="font-semibold text-[0.9rem]">{col.name}</p>
-                    <p className="text-[0.75rem] text-muted mt-0.5">{col.curator} · {col.count} images</p>
-                  </Link>
+                  <CollectionCard
+                    key={col.id}
+                    id={col.id}
+                    name={col.name}
+                    subtitle={`${col.curator} · ${col.count} images`}
+                    count={col.count}
+                    mainPhoto={col.photo}
+                  />
                 ))}
               </div>
             </div>
