@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
-  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X
+  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -19,9 +19,9 @@ const photos = [
 ];
 
 const creators = [
-  { id: "1", name: "AI.Verse", handle: "@aiverse", avatar: "AV", color: "#4361ee", bio: "Generative art explorer specializing in cosmic and abstract digital landscapes. I push the boundaries of what AI can visualize — from deep space visions to microscopic worlds.", followers: "12.4K", images: 284 },
-  { id: "2", name: "NeoPixel", handle: "@neopixel", avatar: "NP", color: "#c9184a", bio: "Cyberpunk visuals and neon-drenched futures. Building worlds one prompt at a time.", followers: "9.8K", images: 196 },
-  { id: "3", name: "DreamForge", handle: "@dreamforge", avatar: "DF", color: "#2a9d8f", bio: "Fantasy landscapes, mythical worlds, and surreal dreamscapes.", followers: "7.3K", images: 421 },
+  { id: "1", name: "AI.Verse", handle: "@aiverse", avatar: "AV", color: "#4361ee", bio: "Generative art explorer specializing in cosmic and abstract digital landscapes. I push the boundaries of what AI can visualize — from deep space visions to microscopic worlds.", followers: "12.4K", images: 284, downloads: "4.2M" },
+  { id: "2", name: "NeoPixel", handle: "@neopixel", avatar: "NP", color: "#c9184a", bio: "Cyberpunk visuals and neon-drenched futures. Building worlds one prompt at a time.", followers: "9.8K", images: 196, downloads: "2.8M" },
+  { id: "3", name: "DreamForge", handle: "@dreamforge", avatar: "DF", color: "#2a9d8f", bio: "Fantasy landscapes, mythical worlds, and surreal dreamscapes.", followers: "7.3K", images: 421, downloads: "1.9M" },
 ];
 
 const samplePrompt = "A cosmic dreamscape with swirling nebula clouds and floating crystalline structures, cinematic lighting, dramatic shadows, 8k ultra-detailed, photorealistic render, deep space background with stars and aurora borealis, editorial photography style";
@@ -42,6 +42,8 @@ const ImagePage = () => {
   const [embedCopied, setEmbedCopied] = useState(false);
   const [creditCopied, setCreditCopied] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
+  const [showRecreateModal, setShowRecreateModal] = useState(false);
+  const [followed, setFollowed] = useState(false);
 
   const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
 
@@ -60,6 +62,7 @@ const ImagePage = () => {
   };
 
   const handleCopy = () => {
+    navigator.clipboard.writeText(samplePrompt).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -79,7 +82,7 @@ const ImagePage = () => {
           <ChevronRight className="w-3 h-3 opacity-30" />
           <Link to="/explore" className="hover:text-foreground transition-colors">Explore</Link>
           <ChevronRight className="w-3 h-3 opacity-30" />
-          <span className="text-foreground">Cosmic Dreamscape #{id}</span>
+          <span className="text-foreground">Cosmic Dreamscape</span>
         </div>
 
         <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
@@ -96,13 +99,16 @@ const ImagePage = () => {
                 />
               </div>
 
-              {/* Action bar */}
+              {/* Action bar — Recreate dominates, Download smaller */}
               <div className="flex items-center gap-2 mt-4 flex-wrap">
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button className="flex items-center gap-2 bg-accent text-primary-foreground rounded-lg text-[0.84rem] font-semibold px-5 py-2.5 hover:bg-accent/85 transition-colors shadow-md">
-                        <Sparkles className="w-4 h-4" /> Recreate in REAL CREATOR
+                      <button
+                        onClick={() => setShowRecreateModal(true)}
+                        className="flex items-center gap-2 bg-accent text-primary-foreground rounded-lg text-[0.88rem] font-bold px-6 py-3 hover:bg-accent/85 transition-colors shadow-md"
+                      >
+                        <Sparkles className="w-4.5 h-4.5" /> Recreate in REAL CREATOR
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="bg-foreground text-primary-foreground border-none max-w-[240px] p-3">
@@ -111,32 +117,53 @@ const ImagePage = () => {
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <button className="flex items-center gap-2 bg-foreground text-primary-foreground rounded-lg text-[0.84rem] font-semibold px-5 py-2.5 hover:bg-foreground/85 transition-colors">
-                  <Download className="w-4 h-4" /> Download Free
+                <button className="flex items-center gap-2 bg-foreground/[0.08] text-foreground rounded-lg text-[0.8rem] font-medium px-4 py-2.5 hover:bg-foreground/[0.14] transition-colors border border-foreground/[0.1]">
+                  <Download className="w-3.5 h-3.5" /> Download Free
                 </button>
                 <button
                   onClick={() => setLiked(!liked)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border transition-colors ${liked ? "bg-red-50 border-red-200 text-red-600" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
+                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border transition-colors ${liked ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
                 >
-                  <Heart className={`w-4 h-4 ${liked ? "fill-red-500 text-red-500" : ""}`} />
+                  <Heart className={`w-3.5 h-3.5 ${liked ? "fill-destructive text-destructive" : ""}`} />
                   {liked ? "Liked" : "Like"}
                 </button>
                 <button
                   onClick={() => setBoardModalOpen(true)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border transition-colors ${saved ? "bg-accent/10 border-accent/30 text-accent" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
+                  className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors"
                 >
-                  <Bookmark className={`w-4 h-4 ${saved ? "fill-accent text-accent" : ""}`} />
-                  Save to Board
+                  <Bookmark className="w-3.5 h-3.5" /> Save to Board
                 </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
-                  <Share2 className="w-4 h-4" /> Share
+                <button className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                  <Share2 className="w-3.5 h-3.5" /> Share
                 </button>
-                <button onClick={() => setShowEmbed(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-accent/40 hover:text-accent transition-colors">
-                  <Code className="w-4 h-4" /> Embed
+                <button onClick={() => setShowEmbed(true)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-accent/40 hover:text-accent transition-colors">
+                  <Code className="w-3.5 h-3.5" /> Embed
                 </button>
               </div>
 
-              {/* Credit Block */}
+              {/* Follow Creator inline */}
+              <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-card border border-foreground/[0.06]">
+                <Link to={`/creator/${creator.id}`}>
+                  <div className="w-9 h-9 rounded-full flex items-center justify-center text-[0.7rem] font-bold text-primary-foreground shrink-0" style={{ background: creator.color }}>
+                    {creator.avatar}
+                  </div>
+                </Link>
+                <div className="flex-1 min-w-0">
+                  <Link to={`/creator/${creator.id}`} className="font-semibold text-[0.84rem] hover:text-accent transition-colors">{creator.name}</Link>
+                  <div className="text-[0.72rem] text-muted">{creator.followers} followers · {creator.images} images</div>
+                </div>
+                <button
+                  onClick={() => setFollowed(!followed)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.8rem] font-semibold transition-colors ${
+                    followed ? "bg-foreground/[0.06] border border-foreground/20 text-foreground" : "bg-foreground text-primary-foreground hover:bg-accent"
+                  }`}
+                >
+                  <Heart className={`w-3.5 h-3.5 ${followed ? "fill-accent text-accent" : ""}`} />
+                  {followed ? "Following" : "Follow"}
+                </button>
+              </div>
+
+              {/* Credit Block — Copy + Embed together */}
               <div className="mt-5 p-4 rounded-xl border border-foreground/[0.08] bg-card">
                 <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-3">
                   <Shield className="w-3.5 h-3.5" />
@@ -153,12 +180,12 @@ const ImagePage = () => {
                   >
                     {creditCopied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy Credit</>}
                   </button>
-                  <Link to={`/creator/${creator.id}`} className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-medium border border-foreground/[0.12] hover:border-foreground/30 transition-colors no-underline text-foreground">
-                    <Heart className="w-3.5 h-3.5" /> Follow Creator
-                  </Link>
-                  <Link to="/real-creator" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-medium border border-foreground/[0.12] hover:border-accent/30 hover:text-accent transition-colors no-underline text-foreground">
-                    <Sparkles className="w-3.5 h-3.5" /> Recreate This Image
-                  </Link>
+                  <button
+                    onClick={() => setShowEmbed(true)}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-medium border border-foreground/[0.12] hover:border-accent/30 hover:text-accent transition-colors"
+                  >
+                    <Code className="w-3.5 h-3.5" /> Embed Image
+                  </button>
                 </div>
                 <p className="text-[0.7rem] text-muted mt-3 flex items-center gap-1">
                   <Globe className="w-3 h-3" /> Credited 3,482 times
@@ -166,9 +193,8 @@ const ImagePage = () => {
               </div>
 
               {showEmbed && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" onClick={() => setShowEmbed(false)}>
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setShowEmbed(false)}>
                   <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[560px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
-                    {/* Header */}
                     <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/[0.06]">
                       <div className="flex items-center gap-2">
                         <Code className="w-4 h-4 text-accent" />
@@ -178,8 +204,6 @@ const ImagePage = () => {
                         <X className="w-5 h-5" />
                       </button>
                     </div>
-
-                    {/* Preview */}
                     <div className="px-6 pt-5 pb-4">
                       <p className="text-[0.78rem] text-muted mb-4">Add this image to any website, blog, or Notion page. The embed links back to REAL ART and the creator.</p>
                       <div className="bg-card border border-foreground/[0.06] rounded-xl p-4 mb-5">
@@ -188,7 +212,7 @@ const ImagePage = () => {
                         </div>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[0.5rem] font-bold text-white" style={{ background: creator.color }}>{creator.avatar}</div>
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[0.5rem] font-bold text-primary-foreground" style={{ background: creator.color }}>{creator.avatar}</div>
                             <span className="text-[0.78rem] text-muted">By <strong className="text-foreground">{creator.name}</strong></span>
                           </div>
                           <div className="flex items-center gap-1.5">
@@ -197,8 +221,6 @@ const ImagePage = () => {
                           </div>
                         </div>
                       </div>
-
-                      {/* Code */}
                       <label className="text-[0.78rem] font-semibold mb-2 block">Embed code</label>
                       <div className="relative">
                         <pre className="bg-foreground text-primary-foreground/70 rounded-lg p-4 text-[0.72rem] leading-[1.6] overflow-x-auto font-mono whitespace-pre-wrap break-all">
@@ -206,14 +228,12 @@ const ImagePage = () => {
                         </pre>
                         <button
                           onClick={handleCopyEmbed}
-                          className="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary-foreground/[0.1] text-primary-foreground text-[0.7rem] font-medium hover:bg-primary-foreground/[0.2] transition-colors"
+                          className="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-primary-foreground/[0.1] text-primary-foreground text-[0.7rem] font-medium hover:bg-primary-foreground/[0.2] transition-colors"
                         >
                           {embedCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy</>}
                         </button>
                       </div>
                     </div>
-
-                    {/* Footer */}
                     <div className="px-6 py-4 border-t border-foreground/[0.06] bg-card/50 flex items-center justify-between">
                       <p className="text-[0.72rem] text-muted">Embeds include creator attribution and a link to REAL ART</p>
                       <button onClick={() => setShowEmbed(false)} className="bg-foreground text-primary-foreground px-5 py-2 rounded-lg text-[0.82rem] font-semibold hover:bg-accent transition-colors">
@@ -224,10 +244,102 @@ const ImagePage = () => {
                 </div>
               )}
 
-              {/* Prompt section */}
-              <div className="mt-6 bg-card border border-foreground/[0.08] rounded-xl p-5">
+              {/* Recreate Modal */}
+              {showRecreateModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setShowRecreateModal(false)}>
+                  <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[480px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/[0.06]">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-accent" />
+                        <h3 className="font-display text-[1.1rem] font-black">Create This Image In REAL CREATOR?</h3>
+                      </div>
+                      <button onClick={() => setShowRecreateModal(false)} className="text-muted hover:text-foreground transition-colors">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+                    <div className="px-6 py-5">
+                      <div className="flex gap-4 mb-5">
+                        <img src={`https://images.unsplash.com/${photo}?w=120&h=120&fit=crop&q=80`} alt="" className="w-20 h-20 rounded-xl object-cover shrink-0" />
+                        <div>
+                          <div className="font-semibold text-[0.9rem] mb-1">Cosmic Dreamscape</div>
+                          <div className="text-[0.75rem] text-muted">by {creator.name}</div>
+                        </div>
+                      </div>
+                      <div className="bg-card border border-foreground/[0.06] rounded-xl p-4 mb-5">
+                        <div className="text-[0.68rem] font-bold tracking-[0.1em] uppercase text-muted mb-3">Preloaded Settings</div>
+                        <div className="flex flex-col gap-2.5">
+                          {[
+                            ["Prompt", "Cosmic dreamscape with nebula clouds…"],
+                            ["Style", "Cyberpunk Neon City"],
+                            ["Lighting", "Neon + Fog + Cinematic"],
+                            ["Camera", "Wide Angle"],
+                            ["Detail", "Ultra / 8K"],
+                          ].map(([k, v]) => (
+                            <div key={k} className="flex justify-between text-[0.8rem]">
+                              <span className="text-muted">{k}</span>
+                              <span className="font-medium text-foreground">{v}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <button className="w-full bg-accent text-primary-foreground text-[0.88rem] font-bold py-3 rounded-lg hover:bg-accent/85 transition-colors flex items-center justify-center gap-2">
+                        <Sparkles className="w-4 h-4" /> Open in REAL CREATOR
+                      </button>
+                      <p className="text-[0.7rem] text-muted text-center mt-2">All settings preloaded — just hit generate</p>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Similar Images — moved higher for discovery */}
+              <div className="mt-8">
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Similar Images</h2>
+                <div className="masonry-grid">
+                  {similar.map((p, i) => (
+                    <Link key={i} to={`/image/${i + 10}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
+                      <img
+                        src={`https://images.unsplash.com/${p}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
+                        alt=""
+                        loading="lazy"
+                        className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
+                        style={{ height: heights[i % heights.length], objectFit: "cover" }}
+                      />
+                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "var(--gradient-overlay)" }} />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Boards Using This Image */}
+              <div className="mt-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Layout className="w-4 h-4 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Featured In</span>
+                </div>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Boards Using This Image</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[
+                    { id: "1", title: "Cyberpunk Inspiration", creator: "VoidArt", images: 128 },
+                    { id: "5", title: "Cosmic Visions", creator: "AI.Verse", images: 241 },
+                    { id: "2", title: "AI Moodboards", creator: "DreamForge", images: 94 },
+                  ].map(board => (
+                    <Link key={board.id} to={`/boards/${board.id}`} className="block no-underline group">
+                      <div className="border border-foreground/[0.06] bg-card rounded-xl p-4 hover:border-foreground/[0.14] transition-all">
+                        <div className="font-semibold text-[0.88rem] mb-1 group-hover:text-accent transition-colors">{board.title}</div>
+                        <div className="text-[0.75rem] text-muted">by {board.creator} · {board.images} images</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Prompt section with usage stat */}
+              <div className="mt-8 bg-card border border-foreground/[0.08] rounded-xl p-5">
                 <div className="flex items-center justify-between mb-3">
-                  <div className="font-semibold text-[0.9rem]">AI Prompt</div>
+                  <div className="flex items-center gap-3">
+                    <div className="font-semibold text-[0.9rem]">AI Prompt</div>
+                    <span className="text-[0.72rem] text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-md">Used 1,247 times</span>
+                  </div>
                   <button
                     onClick={() => setPromptVisible(!promptVisible)}
                     className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
@@ -242,12 +354,12 @@ const ImagePage = () => {
                     <div className="flex gap-2">
                       <button
                         onClick={handleCopy}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
                       >
                         {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
                         {copied ? "Copied!" : "Copy"}
                       </button>
-                      <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-accent text-primary-foreground text-[0.75rem] font-medium hover:bg-accent/80 transition-colors">
+                      <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-primary-foreground text-[0.75rem] font-medium hover:bg-accent/80 transition-colors">
                         <RefreshCw className="w-3 h-3" /> Remix in REAL CREATOR
                       </button>
                     </div>
@@ -259,47 +371,50 @@ const ImagePage = () => {
                 )}
               </div>
 
-              {/* Steal This Style */}
-              <div className="mt-6 bg-foreground rounded-xl p-5 relative overflow-hidden">
-                <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full opacity-[0.07]"
+              {/* Steal This Style — enhanced as feature moment */}
+              <div className="mt-8 bg-foreground rounded-2xl p-7 md:p-8 relative overflow-hidden">
+                <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full opacity-[0.08]"
                   style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
-                <div className="flex items-center gap-2 mb-3">
-                  <Sparkles className="w-4 h-4 text-accent" />
-                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Style Fingerprint</span>
+                <div className="absolute -left-10 -bottom-10 w-40 h-40 rounded-full opacity-[0.05]"
+                  style={{ background: "radial-gradient(circle, hsl(200 80% 60%), transparent)" }} />
+                <div className="flex items-center gap-2 mb-4">
+                  <Sparkles className="w-5 h-5 text-accent" />
+                  <span className="text-[0.7rem] font-bold tracking-[0.14em] uppercase text-accent">Signature Feature</span>
                 </div>
-                <div className="flex flex-wrap gap-2 mb-5">
+                <h3 className="font-display text-[1.5rem] font-black text-primary-foreground mb-4 tracking-[-0.02em]">Steal This Style</h3>
+                <div className="flex flex-wrap gap-2 mb-6">
                   {["Cyberpunk", "Neon Lighting", "Ultra Detailed", "Futuristic City", "Moody Fog"].map(style => (
-                    <span key={style} className="text-[0.72rem] font-semibold px-3 py-1.5 rounded-lg bg-primary-foreground/[0.08] text-primary-foreground/80 border border-primary-foreground/[0.08]">
+                    <span key={style} className="text-[0.75rem] font-semibold px-3.5 py-2 rounded-lg bg-primary-foreground/[0.08] text-primary-foreground/80 border border-primary-foreground/[0.08]">
                       {style}
                     </span>
                   ))}
                 </div>
-                <div className="bg-primary-foreground/[0.06] rounded-lg p-3.5 mb-5 border border-primary-foreground/[0.06]">
-                  <div className="grid grid-cols-2 gap-y-2.5 gap-x-6">
+                <div className="bg-primary-foreground/[0.06] rounded-xl p-4 mb-6 border border-primary-foreground/[0.06]">
+                  <div className="grid grid-cols-2 gap-y-3 gap-x-6">
                     {[
                       ["Style", "Cyberpunk Neon City"],
                       ["Lighting", "Neon + Fog"],
                       ["Camera", "Wide Angle"],
                       ["Detail", "Ultra / 8K"],
                     ].map(([k, v]) => (
-                      <div key={k} className="flex justify-between text-[0.75rem]">
+                      <div key={k} className="flex justify-between text-[0.78rem]">
                         <span className="text-primary-foreground/40">{k}</span>
                         <span className="text-primary-foreground/80 font-medium">{v}</span>
                       </div>
                     ))}
                   </div>
                 </div>
-                <button className="w-full flex items-center justify-center gap-2 bg-accent text-primary-foreground text-[0.88rem] font-bold py-3 rounded-lg hover:bg-accent/85 transition-colors">
-                  <Sparkles className="w-4 h-4" /> Steal This Style
+                <button className="w-full flex items-center justify-center gap-2 bg-accent text-primary-foreground text-[0.92rem] font-bold py-3.5 rounded-lg hover:bg-accent/85 transition-colors shadow-lg">
+                  <Sparkles className="w-4.5 h-4.5" /> Steal This Style
                 </button>
-                <p className="text-[0.7rem] text-primary-foreground/35 text-center mt-2.5">Opens REAL CREATOR with prompt, model & style preloaded</p>
+                <p className="text-[0.72rem] text-primary-foreground/35 text-center mt-3">Opens REAL CREATOR with prompt, model & style preloaded</p>
               </div>
 
               {/* Tags */}
-              <div className="flex flex-wrap gap-2 mt-4">
+              <div className="flex flex-wrap gap-2 mt-6">
                 {tags.map(tag => (
                   <Link key={tag} to={`/explore?q=${tag.toLowerCase()}`}
-                    className="text-[0.78rem] font-medium px-3 py-1.5 rounded-md bg-card border border-foreground/[0.1] hover:border-foreground/30 transition-colors text-muted hover:text-foreground">
+                    className="text-[0.78rem] font-medium px-3 py-1.5 rounded-lg bg-card border border-foreground/[0.1] hover:border-foreground/30 transition-colors text-muted hover:text-foreground no-underline">
                     {tag}
                   </Link>
                 ))}
@@ -312,7 +427,9 @@ const ImagePage = () => {
                   <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Visual Evolution</span>
                 </div>
                 <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Recreated From This Image</h2>
-                <p className="text-[0.8rem] text-muted mb-5">50 variations created by the community</p>
+                <p className="text-[0.8rem] text-muted mb-5">
+                  <span className="text-accent font-semibold">Recreated 1,247 times</span> · 50 variations by the community
+                </p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {[
                     { photo: "photo-1557682250-33bd709cbe85", creator: "@NeoPixel", style: "Watercolor" },
@@ -331,7 +448,7 @@ const ImagePage = () => {
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
                       />
-                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-md">
+                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-lg">
                         {r.style}
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
@@ -347,13 +464,13 @@ const ImagePage = () => {
                 </div>
               </div>
 
-              {/* Created From This Style */}
+              {/* More Art Using This Style */}
               <div className="mt-10">
                 <div className="flex items-center gap-2 mb-1">
                   <Sparkles className="w-4.5 h-4.5 text-accent" />
                   <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Style Evolution</span>
                 </div>
-                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Created From This Style</h2>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">More Art Using This Style</h2>
                 <p className="text-[0.8rem] text-muted mb-5">See what others created using the same style fingerprint</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                   {[
@@ -385,25 +502,6 @@ const ImagePage = () => {
                   </button>
                 </div>
               </div>
-
-              {/* Similar images */}
-              <div className="mt-10">
-                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Similar Images</h2>
-                <div className="masonry-grid">
-                  {similar.map((p, i) => (
-                    <Link key={i} to={`/image/${i + 10}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
-                      <img
-                        src={`https://images.unsplash.com/${p}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
-                        alt=""
-                        loading="lazy"
-                        className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                        style={{ height: heights[i % heights.length], objectFit: "cover" }}
-                      />
-                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "var(--gradient-overlay)" }} />
-                    </Link>
-                  ))}
-                </div>
-              </div>
             </div>
 
             {/* RIGHT — Sidebar */}
@@ -412,17 +510,17 @@ const ImagePage = () => {
               {/* Title + meta */}
               <div>
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">
-                  Cosmic Dreamscape #{id}
+                  Cosmic Dreamscape
                 </h1>
                 <div className="flex items-center gap-4 text-[0.8rem] text-muted flex-wrap">
                   <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> 24,800 views</span>
                   <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5" /> 3,412 downloads</span>
-                  <span className="flex items-center gap-1 text-accent font-semibold"><RefreshCw className="w-3.5 h-3.5" /> Recreated 1,247 times</span>
-                  <span className="flex items-center gap-1 font-semibold"><Code className="w-3.5 h-3.5" /> Embedded on 1,032 websites</span>
+                  <span className="flex items-center gap-1 text-accent font-semibold"><RefreshCw className="w-3.5 h-3.5" /> Recreated 1,247×</span>
+                  <span className="flex items-center gap-1 font-semibold"><Code className="w-3.5 h-3.5" /> 1,032 embeds</span>
                 </div>
               </div>
 
-              {/* Creator card */}
+              {/* Creator card — with social proof stats */}
               <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
                 <div className="flex items-center gap-3 mb-4">
                   <Link to={`/creator/${creator.id}`}>
@@ -436,13 +534,28 @@ const ImagePage = () => {
                   </div>
                 </div>
                 <p className="text-[0.8rem] text-muted leading-[1.6] mb-4">{creator.bio}</p>
-                <div className="flex gap-4 text-[0.78rem] text-muted mb-4">
-                  <span><strong className="text-foreground font-semibold">{creator.followers}</strong> followers</span>
-                  <span><strong className="text-foreground font-semibold">{creator.images}</strong> images</span>
+                <div className="grid grid-cols-3 gap-3 mb-4 bg-background rounded-lg p-3">
+                  <div className="text-center">
+                    <div className="font-display font-black text-[1.1rem] tracking-[-0.02em]">{creator.followers}</div>
+                    <div className="text-[0.65rem] text-muted uppercase tracking-[0.08em]">followers</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-display font-black text-[1.1rem] tracking-[-0.02em]">{creator.images}</div>
+                    <div className="text-[0.65rem] text-muted uppercase tracking-[0.08em]">images</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="font-display font-black text-[1.1rem] tracking-[-0.02em]">{creator.downloads}</div>
+                    <div className="text-[0.65rem] text-muted uppercase tracking-[0.08em]">downloads</div>
+                  </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="flex-1 bg-foreground text-primary-foreground text-[0.8rem] font-semibold py-2 rounded-lg hover:bg-accent transition-colors">
-                    Follow
+                  <button
+                    onClick={() => setFollowed(!followed)}
+                    className={`flex-1 text-[0.8rem] font-semibold py-2 rounded-lg transition-colors ${
+                      followed ? "bg-foreground/[0.06] border border-foreground/20 text-foreground" : "bg-foreground text-primary-foreground hover:bg-accent"
+                    }`}
+                  >
+                    {followed ? "Following" : "Follow"}
                   </button>
                   <button className="flex-1 bg-card border border-foreground/[0.12] text-[0.8rem] font-medium py-2 rounded-lg hover:border-foreground/30 transition-colors text-destructive flex items-center justify-center gap-2">
                     <Heart className="w-4 h-4 fill-destructive text-destructive" /> Donate
@@ -471,17 +584,20 @@ const ImagePage = () => {
                 </Link>
               </div>
 
-              {/* REAL CREATOR CTA */}
+              {/* REAL CREATOR CTA — stronger headline */}
               <div className="bg-foreground rounded-xl p-5 relative overflow-hidden">
                 <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full opacity-10"
                   style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
-                <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40 mb-2">Powered by</div>
-                <div className="font-display text-[1.2rem] font-black text-primary-foreground mb-2">REAL CREATOR</div>
+                <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40 mb-2">Powered by REAL CREATOR</div>
+                <div className="font-display text-[1.15rem] font-black text-primary-foreground mb-2 leading-tight">Turn This Image Into Your Own Creation</div>
                 <p className="text-[0.78rem] text-primary-foreground/50 leading-[1.6] mb-4">
-                  Edit, animate, or recreate this image in our full AI creation suite.
+                  Edit, animate, or recreate with our full AI creation suite. Prompt, style & settings preloaded.
                 </p>
-                <button className="w-full bg-accent text-primary-foreground text-[0.82rem] font-semibold py-2.5 rounded-lg hover:bg-accent/90 transition-colors flex items-center justify-center gap-2">
-                  <Globe className="w-3.5 h-3.5" /> Open In REAL CREATOR
+                <button
+                  onClick={() => setShowRecreateModal(true)}
+                  className="w-full bg-accent text-primary-foreground text-[0.82rem] font-semibold py-2.5 rounded-lg hover:bg-accent/90 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Sparkles className="w-3.5 h-3.5" /> Open In REAL CREATOR
                 </button>
               </div>
 
