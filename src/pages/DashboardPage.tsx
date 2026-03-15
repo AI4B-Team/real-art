@@ -1352,7 +1352,7 @@ const DashboardPage = () => {
                           </div>
                         ))}
                       </div>
-                      <p className="text-[0.75rem] text-primary-foreground/35">Your most viewed image · Pinned to profile</p>
+                      <p className="text-[0.75rem] text-primary-foreground/50">Your most viewed image · Pinned to profile</p>
                     </div>
                   </div>
                 </div>
