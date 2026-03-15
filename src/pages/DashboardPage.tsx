@@ -52,12 +52,12 @@ const galleries = [
 const maxEarning = Math.max(...earningsData.map(d => d.amount));
 
 const achievements = [
-  { icon: "🏆", title: "Top Creator", desc: "Top 10 on leaderboard", unlocked: true },
-  { icon: "⬇️", title: "100K Downloads", desc: "Images downloaded 100,000 times", unlocked: false, progress: 82 },
-  { icon: "👥", title: "10K Followers", desc: "Reached 10,000 followers", unlocked: true },
-  { icon: "🔥", title: "Trending Artist", desc: "Featured on trending page", unlocked: true },
-  { icon: "🎨", title: "Style Pioneer", desc: "Style used by 500+ creators", unlocked: true },
-  { icon: "🌐", title: "Embedded Everywhere", desc: "Images on 1,000+ websites", unlocked: false, progress: 64 },
+  { icon: Award, title: "Top Creator", desc: "Top 10 on leaderboard", unlocked: true },
+  { icon: Download, title: "100K Downloads", desc: "Images downloaded 100,000 times", unlocked: false, progress: 82 },
+  { icon: Users, title: "10K Followers", desc: "Reached 10,000 followers", unlocked: true },
+  { icon: TrendingUp, title: "Trending Artist", desc: "Featured on trending page", unlocked: true },
+  { icon: Sparkles, title: "Style Pioneer", desc: "Style used by 500+ creators", unlocked: true },
+  { icon: Globe, title: "Embedded Everywhere", desc: "Images on 1,000+ websites", unlocked: false, progress: 64 },
 ];
 
 const weeklyExposure = [
