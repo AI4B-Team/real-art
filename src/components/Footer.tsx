@@ -8,8 +8,17 @@ const footerCols: { title: string; links: { label: string; to: string }[] }[] = 
       { label: "Start Gallery", to: "/create-gallery" },
       { label: "Boards", to: "/boards" },
       { label: "Affiliates", to: "/affiliates" },
-      { label: "Private Vaults", to: "/create-gallery" },
       { label: "Prompt Packs", to: "/prompts" },
+    ],
+  },
+  {
+    title: "Topics",
+    links: [
+      { label: "Cyberpunk", to: "/topic/cyberpunk" },
+      { label: "Luxury Homes", to: "/topic/luxury-homes" },
+      { label: "Dreamscapes", to: "/topic/dreamscapes" },
+      { label: "AI Avatars", to: "/topic/ai-avatars" },
+      { label: "All Topics", to: "/explore" },
     ],
   },
   {
@@ -27,7 +36,7 @@ const Footer = () => {
   return (
     <footer className="bg-foreground px-6 md:px-12 pt-14 pb-8">
       <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-[2.2fr_1fr_1fr] gap-12 mb-[52px]">
+        <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-[52px]">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="no-underline">
               <div className="font-display text-2xl font-black text-primary-foreground tracking-[0.06em] uppercase mb-3.5">
