@@ -52,6 +52,13 @@ const UploadPage = () => {
   const [collectionSearch, setCollectionSearch] = useState("");
   const [showNewCol, setShowNewCol] = useState(false);
 
+  // Shop / Affiliate link
+  const [showLinkField, setShowLinkField] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkLabel, setLinkLabel] = useState("");
+  const [linkSite, setLinkSite] = useState("");
+  const [linkPrice, setLinkPrice] = useState("");
+  const [linkIsAffiliate, setLinkIsAffiliate] = useState(false);
   // Per-image AI prompts
   const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
 
