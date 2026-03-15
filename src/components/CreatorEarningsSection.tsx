@@ -51,7 +51,7 @@ const CreatorEarningsSection = () => {
           </span>
         ))}
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3.5">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5">
         {earningMethods.map((e) => (
           <div key={e.title} className={`border rounded-[16px] p-6 flex flex-col gap-3 transition-all hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] ${e.highlight ? "bg-accent border-accent" : "bg-card border-foreground/[0.08]"}`}>
             <div className={`w-11 h-11 rounded-[12px] flex items-center justify-center ${e.highlight ? "bg-primary-foreground/20" : "bg-foreground/[0.06]"}`}>
