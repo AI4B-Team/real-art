@@ -196,7 +196,7 @@ const CommunityDetailPage = () => {
 
           {/* Tab content */}
           <div className="py-8 pb-16">
-            {activeTab === "Collection" && (
+            {activeTab === "Collections" && (
               <>
                 {(!community.free && !joined) ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -215,24 +215,6 @@ const CommunityDetailPage = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="masonry-grid">
-                    {photos.map((photo, i) => (
-                      <Link key={i} to={`/image/${i}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
-                        <img
-                          src={`https://images.unsplash.com/${photo}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
-                          alt="" loading="lazy"
-                          className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                          style={{ height: heights[i % heights.length], objectFit: "cover" }}
-                        />
-                        <ImageCardOverlay index={i} />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-
-            {activeTab === "Collections" && (
               <div>
                 <div className="flex items-center gap-2 mb-5">
                   <Star className="w-4 h-4 text-accent fill-accent" />
