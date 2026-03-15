@@ -424,7 +424,7 @@ const ImagePage = () => {
               <div className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 pt-4 pb-0">
                   <div className="flex items-center gap-3">
-                    <div className="font-semibold text-[0.9rem]">Prompts</div>
+                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Prompts</h2>
                     <span className="text-[0.72rem] text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-md">Used 1,247 times</span>
                   </div>
                   <button
