@@ -15,8 +15,8 @@ const allPosts = [
     photo: "photo-1618005182384-a83a8bd57fbe",
   },
   {
-    title: "Introducing Private Gallery Codes: your art, your rules",
-    excerpt: "Today we're launching one of the most-requested features in REAL ART history. Lock your gallery, share a code, control who sees your work.",
+    title: "Introducing Private Collection Codes: your art, your rules",
+    excerpt: "Today we're launching one of the most-requested features in REAL ART history. Lock your collection, share a code, control who sees your work.",
     author: "Marcus Cole", authorInit: "MC", authorColor: "#4361ee",
     date: "March 5, 2026", readTime: "4 min read", category: "Product Updates", featured: true,
     photo: "photo-1557682250-33bd709cbe85",

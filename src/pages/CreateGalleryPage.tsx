@@ -108,7 +108,7 @@ const CreateGalleryPage = () => {
           <p className="text-muted text-[0.88rem] mb-10 leading-[1.65]">Build a public showcase or a private vault for your art — you control who sees it.</p>
 
           <div className="flex flex-col gap-7">
-            {/* Gallery name */}
+            {/* Collection name */}
             <div>
               <label className="block text-[0.84rem] font-semibold mb-2">Collection Name <span className="text-accent">*</span></label>
               <input

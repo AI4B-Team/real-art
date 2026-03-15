@@ -15,7 +15,7 @@ const photos = [
 const perks = [
   { icon: Download, text: "Download 2.4M+ free images — no watermarks, ever" },
   { icon: DollarSign, text: "Earn affiliate commission on every image you post" },
-  { icon: Users, text: "Build galleries, join communities, enter challenges" },
+  { icon: Users, text: "Build collections, join communities, enter challenges" },
 ];
 
 const SignUpPage = () => {
