@@ -962,7 +962,7 @@ const DashboardPage = () => {
                   <div className="flex-1 min-w-0">
                     <div className="text-[0.72rem] font-bold tracking-[0.14em] uppercase text-muted mb-1">Growth Snapshot</div>
                     <div className="font-display text-[1.6rem] font-black tracking-[-0.03em] leading-none">
-                      Your content reached <span className="text-accent">+52,000</span> people this month
+                      <span className="text-[2.2rem]">Y</span>our content reached <span className="text-accent">+52,000</span> people this month
                     </div>
                   </div>
                   <div className="bg-green-500/10 text-green-600 px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0">
