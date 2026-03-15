@@ -42,6 +42,7 @@ const UploadPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [publishing, setPublishing] = useState(false);
+  const [step, setStep] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [dragging, setDragging] = useState(false);
