@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
-import { TrendingUp, Download, Eye, RefreshCw, Star, ChevronRight } from "lucide-react";
+import { TrendingUp, Download, Eye, RefreshCw, Star, ChevronRight, Award, Flame, Palette } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
+
+const badgeIconMap: Record<string, LucideIcon> = {
+  "trophy": Award,
+  "flame": TrendingUp,
+  "palette": Palette,
+};
 
 const trendingCreators = [
-  { id: "1", name: "AI.Verse", init: "AV", color: "#4361ee", followers: "12.4K", downloads: "4.2M", change: "+2.4K this week", badges: ["🏆", "🔥"] },
-  { id: "2", name: "NeoPixel", init: "NP", color: "#c9184a", followers: "9.8K", downloads: "2.8M", change: "+1.8K this week", badges: ["🔥"] },
-  { id: "3", name: "DreamForge", init: "DF", color: "#2a9d8f", followers: "7.3K", downloads: "1.9M", change: "+1.2K this week", badges: ["🎨"] },
+  { id: "1", name: "AI.Verse", init: "AV", color: "#4361ee", followers: "12.4K", downloads: "4.2M", change: "+2.4K this week", badges: ["trophy", "flame"] },
+  { id: "2", name: "NeoPixel", init: "NP", color: "#c9184a", followers: "9.8K", downloads: "2.8M", change: "+1.8K this week", badges: ["flame"] },
+  { id: "3", name: "DreamForge", init: "DF", color: "#2a9d8f", followers: "7.3K", downloads: "1.9M", change: "+1.2K this week", badges: ["palette"] },
   { id: "4", name: "LuminaAI", init: "LA", color: "#e76f51", followers: "5.9K", downloads: "1.1M", change: "+980 this week", badges: [] },
   { id: "5", name: "SpectraGen", init: "SG", color: "#7b2d8b", followers: "4.7K", downloads: "890K", change: "+740 this week", badges: [] },
 ];
@@ -39,7 +46,7 @@ const TrendingCreatorsSection = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-[0.88rem] group-hover:text-accent transition-colors">{cr.name}</span>
-                    {cr.badges.map(b => <span key={b} className="text-xs">{b}</span>)}
+                    {cr.badges.map(b => { const BadgeIcon = badgeIconMap[b]; return BadgeIcon ? <BadgeIcon key={b} className="w-3.5 h-3.5 text-accent" /> : null; })}
                   </div>
                   <div className="text-[0.72rem] text-muted">{cr.followers} followers · {cr.downloads} downloads</div>
                 </div>

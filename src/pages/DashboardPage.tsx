@@ -52,12 +52,12 @@ const galleries = [
 const maxEarning = Math.max(...earningsData.map(d => d.amount));
 
 const achievements = [
-  { icon: "🏆", title: "Top Creator", desc: "Top 10 on leaderboard", unlocked: true },
-  { icon: "⬇️", title: "100K Downloads", desc: "Images downloaded 100,000 times", unlocked: false, progress: 82 },
-  { icon: "👥", title: "10K Followers", desc: "Reached 10,000 followers", unlocked: true },
-  { icon: "🔥", title: "Trending Artist", desc: "Featured on trending page", unlocked: true },
-  { icon: "🎨", title: "Style Pioneer", desc: "Style used by 500+ creators", unlocked: true },
-  { icon: "🌐", title: "Embedded Everywhere", desc: "Images on 1,000+ websites", unlocked: false, progress: 64 },
+  { icon: Award, title: "Top Creator", desc: "Top 10 on leaderboard", unlocked: true },
+  { icon: Download, title: "100K Downloads", desc: "Images downloaded 100,000 times", unlocked: false, progress: 82 },
+  { icon: Users, title: "10K Followers", desc: "Reached 10,000 followers", unlocked: true },
+  { icon: TrendingUp, title: "Trending Artist", desc: "Featured on trending page", unlocked: true },
+  { icon: Sparkles, title: "Style Pioneer", desc: "Style used by 500+ creators", unlocked: true },
+  { icon: Globe, title: "Embedded Everywhere", desc: "Images on 1,000+ websites", unlocked: false, progress: 64 },
 ];
 
 const weeklyExposure = [
@@ -207,7 +207,7 @@ const DashboardPage = () => {
                     {achievements.map(a => (
                       <div key={a.title} className={`border rounded-xl p-4 transition-colors ${a.unlocked ? "border-accent/20 bg-accent/[0.03]" : "border-foreground/[0.06] bg-card opacity-60"}`}>
                         <div className="flex items-center gap-2 mb-1.5">
-                          <span className="text-lg">{a.icon}</span>
+                          <a.icon className="w-5 h-5 text-accent shrink-0" />
                           <span className="text-[0.82rem] font-semibold">{a.title}</span>
                           {a.unlocked && <span className="ml-auto text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">Unlocked</span>}
                         </div>
@@ -438,7 +438,7 @@ const DashboardPage = () => {
                     {achievements.map(a => (
                       <div key={a.title} className={`border rounded-xl p-4 transition-colors ${a.unlocked ? "border-accent/20 bg-accent/[0.03]" : "border-foreground/[0.06] bg-card opacity-60"}`}>
                         <div className="flex items-center gap-2 mb-1.5">
-                          <span className="text-lg">{a.icon}</span>
+                          <a.icon className="w-5 h-5 text-accent shrink-0" />
                           <span className="text-[0.82rem] font-semibold">{a.title}</span>
                           {a.unlocked && <span className="ml-auto text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-lg">✓</span>}
                         </div>

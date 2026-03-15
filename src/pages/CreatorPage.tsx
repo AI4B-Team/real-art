@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Heart, Globe, Twitter, Instagram,
-  Link2, Grid3X3, Bookmark, Download, Share2, Award, Eye, RefreshCw, Star
+  Link2, Grid3X3, Bookmark, Download, Share2, Award, Eye, RefreshCw, Star,
+  TrendingUp, Users, Palette
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -14,7 +16,7 @@ const creatorsData = [
     location: "San Francisco, CA", website: "aiverse.art", twitter: "@aiverseart", instagram: "@aiverse",
     followers: 12400, following: 284, images: 284, downloads: "4.2M", views: "18.6M", remixes: "8.4K",
     joined: "January 2024",
-    badges: ["🏆 Top Creator", "👥 10K Followers", "🔥 Trending Artist", "🎨 Style Pioneer"],
+    badges: [{ icon: Award, label: "Top Creator" }, { icon: Users, label: "10K Followers" }, { icon: TrendingUp, label: "Trending Artist" }, { icon: Palette, label: "Style Pioneer" }],
     pinnedImage: { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", views: "48,201" },
   },
   {
@@ -23,7 +25,7 @@ const creatorsData = [
     location: "Tokyo, Japan", website: "neopixel.io", twitter: "@neopixelart", instagram: "@neopixel.art",
     followers: 9800, following: 156, images: 196, downloads: "2.8M", views: "12.1M", remixes: "5.2K",
     joined: "March 2024",
-    badges: ["🔥 Trending Artist", "⬇️ 100K Downloads"],
+    badges: [{ icon: TrendingUp, label: "Trending Artist" }, { icon: Download, label: "100K Downloads" }],
     pinnedImage: { photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", views: "31,400" },
   },
   {
@@ -32,7 +34,7 @@ const creatorsData = [
     location: "London, UK", website: "dreamforge.co", twitter: "@dreamforgeart", instagram: "@dreamforge",
     followers: 7300, following: 412, images: 421, downloads: "1.9M", views: "9.4M", remixes: "3.8K",
     joined: "February 2024",
-    badges: ["🎨 Style Pioneer", "👥 10K Followers"],
+    badges: [{ icon: Palette, label: "Style Pioneer" }, { icon: Users, label: "10K Followers" }],
     pinnedImage: { photo: "photo-1579546929518-9e396f3cc809", title: "Dream Portal", downloads: "1,940", views: "26,800" },
   },
 ];
@@ -90,11 +92,14 @@ const CreatorPage = () => {
                     <div className="text-[0.82rem] text-muted">{creator.handle} · Joined {creator.joined}</div>
                     {/* Badges */}
                     <div className="flex flex-wrap gap-1.5 mt-2">
-                      {creator.badges.map(badge => (
-                        <span key={badge} className="text-[0.68rem] font-semibold bg-accent/10 text-accent px-2.5 py-1 rounded-lg border border-accent/15">
-                          {badge}
-                        </span>
-                      ))}
+                      {creator.badges.map(badge => {
+                        const BadgeIcon = badge.icon;
+                        return (
+                          <span key={badge.label} className="flex items-center gap-1.5 text-[0.68rem] font-semibold bg-accent/10 text-accent px-2.5 py-1 rounded-lg border border-accent/15">
+                            <BadgeIcon className="w-3 h-3" /> {badge.label}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                   <div className="flex gap-2">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingBag, Star, TrendingUp, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 
@@ -18,12 +18,12 @@ const photos = [
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 const isVideo = (i: number) => i % 4 === 3;
 const isShoppable = (i: number) => [0, 3, 5, 7, 9].includes(i);
-const badgeMap: Record<number, { label: string; icon: string; style: string }> = {
-  0: { label: "Editor's Pick", icon: "⭐", style: "bg-accent text-primary-foreground" },
-  2: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
-  7: { label: "Featured", icon: "⭐", style: "bg-accent text-primary-foreground" },
-  11: { label: "Curated", icon: "✨", style: "bg-foreground text-primary-foreground" },
-  15: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
+const badgeMap: Record<number, { label: string; Icon: React.FC<{ className?: string }>; style: string }> = {
+  0: { label: "Editor's Pick", Icon: Star, style: "bg-accent text-primary-foreground" },
+  2: { label: "Trending", Icon: TrendingUp, style: "bg-foreground text-primary-foreground" },
+  7: { label: "Featured", Icon: Star, style: "bg-accent text-primary-foreground" },
+  11: { label: "Curated", Icon: Sparkles, style: "bg-foreground text-primary-foreground" },
+  15: { label: "Trending", Icon: TrendingUp, style: "bg-foreground text-primary-foreground" },
 };
 
 const MasonryGrid = () => {
@@ -49,11 +49,14 @@ const MasonryGrid = () => {
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
               {/* Badge */}
-              {badgeMap[i] && (
-                <div className={`absolute top-2 left-2 flex items-center gap-1 text-[0.58rem] font-bold tracking-[0.08em] uppercase px-2.5 py-1 rounded-lg shadow-sm z-10 ${badgeMap[i].style}`}>
-                  <span className="text-xs leading-none">{badgeMap[i].icon}</span> {badgeMap[i].label}
-                </div>
-              )}
+              {badgeMap[i] && (() => {
+                const BadgeIcon = badgeMap[i].Icon;
+                return (
+                  <div className={`absolute top-2 left-2 flex items-center gap-1 text-[0.58rem] font-bold tracking-[0.08em] uppercase px-2.5 py-1 rounded-lg shadow-sm z-10 ${badgeMap[i].style}`}>
+                    <BadgeIcon className="w-3 h-3" /> {badgeMap[i].label}
+                  </div>
+                );
+              })()}
               {/* AI label (only when no badge) */}
               {!badgeMap[i] && (
                 <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
