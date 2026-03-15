@@ -26,6 +26,13 @@ import CreateGalleryPage from "./pages/CreateGalleryPage";
 import PromptLibraryPage from "./pages/PromptLibraryPage";
 import AffiliatesPage from "./pages/AffiliatesPage";
 
+// Round 4 — Company
+import AboutPage from "./pages/AboutPage";
+import LicensePage from "./pages/LicensePage";
+import PrivacyPage from "./pages/PrivacyPage";
+import TermsPage from "./pages/TermsPage";
+import BlogPage from "./pages/BlogPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -62,6 +69,13 @@ const App = () => (
           <Route path="/prompts" element={<PromptLibraryPage />} />
           <Route path="/prompt-packs" element={<PromptLibraryPage />} />
           <Route path="/affiliates" element={<AffiliatesPage />} />
+
+          {/* Round 4 — Company */}
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/license" element={<LicensePage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/blog" element={<BlogPage />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
