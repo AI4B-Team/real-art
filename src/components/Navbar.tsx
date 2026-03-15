@@ -131,13 +131,11 @@ const Navbar = () => {
   ];
 
   const userMenuLinks = [
-    { icon: LayoutDashboard, label: "Overview", to: "/dashboard" },
-    { icon: TrendingUp, label: "Exposure", to: "/dashboard" },
-    { icon: Image, label: "Media", to: "/dashboard" },
-    { icon: FolderOpen, label: "Collections", to: "/dashboard" },
-    { icon: Bookmark, label: "Boards", to: "/boards" },
-    { icon: DollarSign, label: "Earnings", to: "/dashboard" },
-    { icon: Megaphone, label: "Ads", to: "/dashboard" },
+    { icon: LayoutDashboard, label: "Account", to: "/dashboard" },
+    { icon: Upload, label: "Upload Art", to: "/upload" },
+  ];
+
+  const userMenuSecondary = [
     { icon: Bell, label: "Notifications", to: "/dashboard" },
     { icon: Settings, label: "Settings", to: "/dashboard" },
   ];
