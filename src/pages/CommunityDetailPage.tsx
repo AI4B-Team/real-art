@@ -487,7 +487,7 @@ const CommunityDetailPage = () => {
               </div>
               <h2 className="font-display text-[1.5rem] font-black tracking-[-0.03em] mb-2">Enter Access Code</h2>
               <p className="text-[0.82rem] text-muted mb-5 leading-[1.65]">
-                This gallery is private. Enter the code provided by the gallery owner to gain access.
+                This collection is private. Enter the code provided by the collection owner to gain access.
               </p>
               <input
                 autoFocus
