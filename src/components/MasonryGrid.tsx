@@ -18,14 +18,14 @@ const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248
 const isVideo = (i: number) => i % 4 === 3;
 
 const creators = [
-  { n: "AI.Verse", i: "AV", c: "#4361ee" },
-  { n: "NeoPixel", i: "NP", c: "#c9184a" },
-  { n: "DreamForge", i: "DF", c: "#2a9d8f" },
-  { n: "LuminaAI", i: "LA", c: "#e76f51" },
-  { n: "SpectraGen", i: "SG", c: "#7b2d8b" },
-  { n: "VoidArt", i: "VA", c: "#023e8a" },
-  { n: "ChromaLab", i: "CL", c: "#f4a261" },
-  { n: "Synthetix", i: "SX", c: "#06d6a0" },
+  { n: "AI.Verse", i: "AV", c: "#4361ee", dl: "12.4K" },
+  { n: "NeoPixel", i: "NP", c: "#c9184a", dl: "10.9K" },
+  { n: "DreamForge", i: "DF", c: "#2a9d8f", dl: "9.8K" },
+  { n: "LuminaAI", i: "LA", c: "#e76f51", dl: "7.3K" },
+  { n: "SpectraGen", i: "SG", c: "#7b2d8b", dl: "5.9K" },
+  { n: "VoidArt", i: "VA", c: "#023e8a", dl: "4.7K" },
+  { n: "ChromaLab", i: "CL", c: "#f4a261", dl: "4.1K" },
+  { n: "Synthetix", i: "SX", c: "#06d6a0", dl: "3.8K" },
 ];
 
 const iconBtnClass = "flex items-center justify-center w-8 h-8 rounded-lg border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors";
@@ -87,6 +87,10 @@ const MasonryGrid = () => {
                         {cr.i}
                       </div>
                       <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
+                      <span className="text-primary-foreground/40 text-[0.6rem]">·</span>
+                      <span className="text-[0.64rem] text-primary-foreground/70 flex items-center gap-0.5">
+                        <Download className="w-2.5 h-2.5" />{cr.dl}
+                      </span>
                     </div>
 
                     {/* Bottom right actions */}
