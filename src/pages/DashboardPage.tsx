@@ -5,9 +5,11 @@ import {
   Download, Eye, Users, Upload, Plus, ChevronRight, Key, TrendingUp,
   Heart, ArrowRight, RefreshCw, Code, Globe, Award, Star, Sparkles, Pin,
   Play, Music, SlidersHorizontal, Bookmark, MoreHorizontal, LayoutGrid,
-  Megaphone, MousePointerClick, Pause, Trash2, Search, Layout as LayoutIcon
+  Megaphone, MousePointerClick, Pause, Trash2, Search, Layout as LayoutIcon,
+  Edit3, ExternalLink, Video, X
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { useNavigate } from "react-router-dom";
 
 const navItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
