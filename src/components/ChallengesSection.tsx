@@ -13,7 +13,7 @@ const ChallengesSection = () => {
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-7">
           <div>
-            <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Weekly Prompt Challenges</h2>
+            <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Challenges</h2>
             <p className="text-[0.83rem] text-muted mt-[7px]">Enter, compete, win cash — open to all skill levels</p>
           </div>
         </div>
@@ -28,7 +28,7 @@ const ChallengesSection = () => {
             <h3 className="font-display text-[2.6rem] font-black tracking-[-0.03em] text-primary-foreground leading-[1.02] mb-3.5">
               CYBERPUNK CITY
             </h3>
-            <p className="text-[0.86rem] text-primary-foreground/[0.62] leading-[1.75] mb-7 max-w-[460px]">
+            <p className="text-[0.86rem] text-primary-foreground/[0.85] leading-[1.75] mb-7 max-w-[460px]">
               Create the most stunning cyberpunk cityscape. Neon lights, flying cars, holographic ads — push the boundaries of futuristic urban imagination. Best entries win cash and a REAL CREATOR Pro subscription.
             </p>
             <div className="flex gap-8 mb-8">
@@ -39,7 +39,7 @@ const ChallengesSection = () => {
               ].map((s) => (
                 <div key={s.label}>
                   <strong className="block text-primary-foreground text-[1.3rem] font-bold font-display">{s.val}</strong>
-                  <span className="text-[0.68rem] text-primary-foreground/[0.38] uppercase tracking-[0.1em]">{s.label}</span>
+                  <span className="text-[0.68rem] text-primary-foreground/[0.6] uppercase tracking-[0.1em]">{s.label}</span>
                 </div>
               ))}
             </div>
@@ -49,9 +49,9 @@ const ChallengesSection = () => {
             </button>
           </div>
           <div className="text-right">
-            <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/[0.32] mb-1">Grand Prize</div>
+            <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/[0.55] mb-1">Grand Prize</div>
             <div className="font-display text-[4rem] font-black text-accent tracking-[-0.04em] leading-none">$5,000</div>
-            <div className="text-[0.75rem] text-primary-foreground/[0.36] mt-2 leading-[1.6]">+ REAL CREATOR Pro<br />+ Featured Placement</div>
+            <div className="text-[0.75rem] text-primary-foreground/[0.7] mt-2 leading-[1.6]">+ REAL CREATOR Pro<br />+ Featured Placement</div>
             <div className="w-[160px] h-[160px] rounded-[14px] overflow-hidden mt-5 ml-auto">
               <img src="https://images.unsplash.com/photo-1518770660439-4636190af475?w=300&fit=crop&q=80" alt="Challenge art" loading="lazy" className="w-full h-full object-cover" />
             </div>
