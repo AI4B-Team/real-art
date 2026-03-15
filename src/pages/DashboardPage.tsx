@@ -15,6 +15,7 @@ const navItems = [
   { id: "media", label: "Media", icon: Image },
   { id: "galleries", label: "Collections", icon: FolderOpen },
   { id: "earnings", label: "Earnings", icon: DollarSign },
+  { id: "ads", label: "Ads", icon: Megaphone },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "settings", label: "Settings", icon: Settings },
 ];
