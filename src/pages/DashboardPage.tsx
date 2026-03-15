@@ -939,8 +939,8 @@ const DashboardPage = () => {
                       >
                         <div className="flex gap-1.5 mb-3">
                           {m.thumbs.map((t, i) => (
-                            <div key={i} className="h-9 flex-1 rounded-lg overflow-hidden">
-                              <img src={`https://images.unsplash.com/${t}?w=120&h=60&fit=crop&q=70`} alt="" className={`w-full h-full object-cover ${i > 0 ? "opacity-60" : ""}`} />
+                            <div key={i} className="h-16 flex-1 rounded-lg overflow-hidden">
+                              <img src={`https://images.unsplash.com/${t}?w=200&h=120&fit=crop&q=75`} alt="" className={`w-full h-full object-cover ${i > 0 ? "opacity-70" : ""}`} />
                             </div>
                           ))}
                         </div>
