@@ -61,7 +61,7 @@ const CommunitiesSection = () => {
             <div className="font-bold text-[0.9rem] mb-[3px]">Build Your Own Gallery</div>
             <div className="text-[0.8rem] text-muted">Public or private. Earn affiliate credit on every image you post.</div>
           </div>
-          <Link to="/create-gallery" className="font-body text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-[22px] py-2.5 rounded-lg no-underline hover:bg-accent transition-colors">
+          <Link to="/create-gallery" className="font-body text-[0.8rem] font-semibold bg-accent text-primary-foreground border-none px-[22px] py-2.5 rounded-lg no-underline hover:bg-accent/85 transition-colors">
             Create Gallery
           </Link>
         </div>
