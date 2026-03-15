@@ -314,7 +314,56 @@ const ImagePage = () => {
                 </div>
               )}
 
-              {/* Similar Images — moved higher for discovery */}
+              {/* Recreated From This Image — first for creation ecosystem */}
+              <div className="mt-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <RefreshCw className="w-4.5 h-4.5 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Visual Evolution</span>
+                </div>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Recreated From This Image</h2>
+                <p className="text-[0.8rem] text-muted mb-5">
+                  <span className="text-accent font-semibold">Recreated 1,247 times</span> · 50 variations by the community
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {[
+                    { photo: "photo-1557682250-33bd709cbe85", creator: "@NeoPixel", style: "Watercolor" },
+                    { photo: "photo-1541701494587-cb58502866ab", creator: "@DreamForge", style: "Cyberpunk" },
+                    { photo: "photo-1579546929518-9e396f3cc809", creator: "@LuminaAI", style: "Minimal" },
+                    { photo: "photo-1604881991720-f91add269bed", creator: "@SpectraGen", style: "3D Render" },
+                    { photo: "photo-1549880338-65ddcdfd017b", creator: "@VoidArt", style: "Oil Paint" },
+                    { photo: "photo-1558618666-fcd25c85cd64", creator: "@PixelMind", style: "Neon" },
+                    { photo: "photo-1506905925346-21bda4d32df4", creator: "@AuraGen", style: "Landscape" },
+                    { photo: "photo-1518020382113-a7e8fc38eac9", creator: "@DeepVis", style: "Surreal" },
+                  ].map((r, i) => (
+                    <Link key={i} to={`/image/${i + 20}`} className="relative rounded-xl overflow-hidden aspect-square group cursor-pointer">
+                      <img
+                        src={`https://images.unsplash.com/${r.photo}?w=300&h=300&fit=crop&q=78`}
+                        alt={`Recreation by ${r.creator}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
+                      />
+                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-lg">
+                        {r.style}
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
+                        <div className="text-[0.72rem] text-primary-foreground/80">{r.creator}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="text-center mt-5">
+                  <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-card border border-foreground/[0.12] px-6 py-2.5 rounded-lg cursor-pointer hover:border-foreground/30 transition-colors">
+                    View All 50 Recreations
+                  </button>
+                </div>
+              </div>
+
+              {/* Shop This Image + Shop Similar (conditional) */}
+              {hasShop && shopLink && (
+                <ShopSection shopLink={shopLink} shopSimilar={shopSimilarItems} />
+              )}
+
+              {/* Similar Images */}
               <div className="mt-8">
                 <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Similar Images</h2>
                 <div className="masonry-grid">
@@ -394,7 +443,7 @@ const ImagePage = () => {
                 )}
               </div>
 
-              {/* Steal This Style — enhanced as feature moment */}
+              {/* Steal This Style */}
               <div className="mt-8 bg-foreground rounded-2xl p-7 md:p-8 relative overflow-hidden">
                 <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full opacity-[0.08]"
                   style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
@@ -441,50 +490,6 @@ const ImagePage = () => {
                     {tag}
                   </Link>
                 ))}
-              </div>
-
-              {/* Recreated From This Image */}
-              <div className="mt-10">
-                <div className="flex items-center gap-2 mb-1">
-                  <RefreshCw className="w-4.5 h-4.5 text-accent" />
-                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Visual Evolution</span>
-                </div>
-                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Recreated From This Image</h2>
-                <p className="text-[0.8rem] text-muted mb-5">
-                  <span className="text-accent font-semibold">Recreated 1,247 times</span> · 50 variations by the community
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {[
-                    { photo: "photo-1557682250-33bd709cbe85", creator: "@NeoPixel", style: "Watercolor" },
-                    { photo: "photo-1541701494587-cb58502866ab", creator: "@DreamForge", style: "Cyberpunk" },
-                    { photo: "photo-1579546929518-9e396f3cc809", creator: "@LuminaAI", style: "Minimal" },
-                    { photo: "photo-1604881991720-f91add269bed", creator: "@SpectraGen", style: "3D Render" },
-                    { photo: "photo-1549880338-65ddcdfd017b", creator: "@VoidArt", style: "Oil Paint" },
-                    { photo: "photo-1558618666-fcd25c85cd64", creator: "@PixelMind", style: "Neon" },
-                    { photo: "photo-1506905925346-21bda4d32df4", creator: "@AuraGen", style: "Landscape" },
-                    { photo: "photo-1518020382113-a7e8fc38eac9", creator: "@DeepVis", style: "Surreal" },
-                  ].map((r, i) => (
-                    <Link key={i} to={`/image/${i + 20}`} className="relative rounded-xl overflow-hidden aspect-square group cursor-pointer">
-                      <img
-                        src={`https://images.unsplash.com/${r.photo}?w=300&h=300&fit=crop&q=78`}
-                        alt={`Recreation by ${r.creator}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
-                      />
-                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-lg">
-                        {r.style}
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
-                        <div className="text-[0.72rem] text-primary-foreground/80">{r.creator}</div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-                <div className="text-center mt-5">
-                  <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-card border border-foreground/[0.12] px-6 py-2.5 rounded-lg cursor-pointer hover:border-foreground/30 transition-colors">
-                    View All 50 Recreations
-                  </button>
-                </div>
               </div>
 
               {/* More Art Using This Style */}
