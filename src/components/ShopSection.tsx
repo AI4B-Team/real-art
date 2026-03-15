@@ -18,6 +18,7 @@ export interface ShopSimilarItem {
 interface ShopSectionProps {
   shopLink: ShopLink;
   shopSimilar?: ShopSimilarItem[];
+  imageUrl?: string;
 }
 
 const ShopSection = ({ shopLink, shopSimilar = [] }: ShopSectionProps) => (
