@@ -43,7 +43,7 @@ const CollectionsSection = () => {
               <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Hand-Selected</span>
             </div>
             <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Collections</h2>
-            <p className="text-[0.83rem] text-muted mt-[7px]">Hand-picked by our team — the finest in every category</p>
+            <p className="text-[0.83rem] text-muted mt-[7px]">Curated by the REAL ART team — the finest in every category</p>
           </div>
           <Link to="/collections" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap no-underline hover:text-accent hover:border-accent transition-colors">View All →</Link>
         </div>
