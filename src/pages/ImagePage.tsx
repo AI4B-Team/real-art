@@ -547,8 +547,8 @@ const ImagePage = () => {
                 </h1>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
                   {[
-                    { icon: Eye, label: "Views", value: "24,800", accent: false },
-                    { icon: Download, label: "Downloads", value: "3,412", accent: false },
+                    { icon: Eye, label: "Views", value: "24,800", suffix: "", accent: false },
+                    { icon: Download, label: "Downloads", value: "3,412", suffix: "", accent: false },
                     { icon: RefreshCw, label: "Recreated", value: "1,247", suffix: "×", accent: true },
                     { icon: Code, label: "Embeds", value: "1,032", suffix: "", accent: false },
                   ].map((stat) => (
