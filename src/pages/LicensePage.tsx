@@ -89,7 +89,7 @@ const LicensePage = () => {
             <span className="text-[0.72rem] font-semibold text-accent">Free License</span>
           </div>
           <h1 className="font-display text-[clamp(2.4rem,5vw,4.2rem)] font-black tracking-[-0.03em] leading-[1.02] mb-4">
-            Simple license.<br /><span className="text-muted">Plain language.</span>
+            Simple License.<br /><span className="text-muted">Plain Language.</span>
           </h1>
           <p className="text-[0.94rem] text-muted leading-[1.75] max-w-[600px]">
             All images on REAL ART are free to use. No attribution, no subscription, no lawyer.<br />
@@ -102,7 +102,7 @@ const LicensePage = () => {
           <div className="bg-card border border-foreground/[0.08] rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
               <Info className="w-4 h-4 text-accent" />
-              <span className="font-semibold text-[0.9rem]">The short version</span>
+              <span className="font-semibold text-[0.9rem]">The Short Version</span>
             </div>
             <p className="text-[0.88rem] text-muted leading-[1.7]">
               Download any image. Use it in anything you build, sell, or share. Modify it however you want. Don't claim you made the original or try to resell it as stock. That's it.
@@ -119,7 +119,7 @@ const LicensePage = () => {
                 <div className="w-8 h-8 rounded-lg bg-green-600/10 flex items-center justify-center">
                   <Check className="w-5 h-5 text-green-600" />
                 </div>
-                <h3 className="font-display text-[1.1rem] font-black">What you can do</h3>
+                <h3 className="font-display text-[1.1rem] font-black">What You Can Do</h3>
               </div>
               <div className="flex flex-col gap-2.5">
                 {allowed.map(item => (
@@ -137,7 +137,7 @@ const LicensePage = () => {
                 <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
                   <X className="w-5 h-5 text-red-500" />
                 </div>
-                <h3 className="font-display text-[1.1rem] font-black">What you cannot do</h3>
+                <h3 className="font-display text-[1.1rem] font-black">What You Cannot Do</h3>
               </div>
               <div className="flex flex-col gap-2.5">
                 {notAllowed.map(item => (
@@ -155,7 +155,7 @@ const LicensePage = () => {
                 <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
                   <Info className="w-5 h-5 text-blue-500" />
                 </div>
-                <h3 className="font-display text-[1.1rem] font-black">What you don't need</h3>
+                <h3 className="font-display text-[1.1rem] font-black">What You Don't Need</h3>
               </div>
               <div className="flex flex-col gap-2.5">
                 {noNeed.map(item => (
@@ -172,7 +172,7 @@ const LicensePage = () => {
         {/* Use Cases */}
         <section className="px-6 md:px-12 py-16 bg-card">
           <div className="max-w-[1440px] mx-auto">
-            <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">Common use cases</h2>
+            <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">Common Use Cases</h2>
             <p className="text-[0.84rem] text-muted mb-8">Still not sure if your use case is covered? Here are the most common ones.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {useCases.map(uc => (
@@ -193,7 +193,7 @@ const LicensePage = () => {
 
         {/* Full License Text */}
         <section className="px-6 md:px-12 py-16 max-w-[1440px] mx-auto">
-          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-6">Full license text</h2>
+          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-6">Full License Text</h2>
           <pre className="bg-card border border-foreground/[0.08] rounded-xl p-6 text-[0.78rem] text-muted leading-[1.8] whitespace-pre-wrap font-mono overflow-x-auto">
             {fullLicense}
           </pre>
@@ -201,7 +201,7 @@ const LicensePage = () => {
 
         {/* CTA */}
         <section className="px-6 md:px-12 py-16 text-center max-w-[1440px] mx-auto">
-          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-3">Still have questions?</h2>
+          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-3">Still Have Questions?</h2>
           <p className="text-[0.88rem] text-muted mb-8 max-w-[520px] mx-auto leading-[1.65]">
             Our license is designed to be as permissive as possible. If you're unsure about a specific use case, the answer is almost certainly yes. For anything unusual, email us at legal@realart.ai.
           </p>
