@@ -2,11 +2,11 @@ import { Link } from "react-router-dom";
 import { TrendingUp, Download, Eye, RefreshCw, Star, ChevronRight } from "lucide-react";
 
 const trendingCreators = [
-  { id: "1", name: "AI.Verse", init: "AV", color: "#4361ee", followers: "12.4K", change: "+2.4K this week", badges: ["🏆", "🔥"] },
-  { id: "2", name: "NeoPixel", init: "NP", color: "#c9184a", followers: "9.8K", change: "+1.8K this week", badges: ["🔥"] },
-  { id: "3", name: "DreamForge", init: "DF", color: "#2a9d8f", followers: "7.3K", change: "+1.2K this week", badges: ["🎨"] },
-  { id: "4", name: "LuminaAI", init: "LA", color: "#e76f51", followers: "5.9K", change: "+980 this week", badges: [] },
-  { id: "5", name: "SpectraGen", init: "SG", color: "#7b2d8b", followers: "4.7K", change: "+740 this week", badges: [] },
+  { id: "1", name: "AI.Verse", init: "AV", color: "#4361ee", followers: "12.4K", downloads: "4.2M", change: "+2.4K this week", badges: ["🏆", "🔥"] },
+  { id: "2", name: "NeoPixel", init: "NP", color: "#c9184a", followers: "9.8K", downloads: "2.8M", change: "+1.8K this week", badges: ["🔥"] },
+  { id: "3", name: "DreamForge", init: "DF", color: "#2a9d8f", followers: "7.3K", downloads: "1.9M", change: "+1.2K this week", badges: ["🎨"] },
+  { id: "4", name: "LuminaAI", init: "LA", color: "#e76f51", followers: "5.9K", downloads: "1.1M", change: "+980 this week", badges: [] },
+  { id: "5", name: "SpectraGen", init: "SG", color: "#7b2d8b", followers: "4.7K", downloads: "890K", change: "+740 this week", badges: [] },
 ];
 
 const imageOfWeek = {
