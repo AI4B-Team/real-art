@@ -17,7 +17,7 @@ const navItems: { id: string; label: string; icon: typeof LayoutDashboard; inter
   { id: "exposure", label: "Exposure", icon: TrendingUp, internal: true },
   { id: "media", label: "Media", icon: Image, internal: true },
   { id: "galleries", label: "Collections", icon: FolderOpen, internal: true },
-  { id: "boards", label: "Boards", icon: Bookmark, internal: false, href: "/boards" },
+  { id: "boards", label: "Boards", icon: Bookmark, internal: true },
   { id: "earnings", label: "Earnings", icon: DollarSign, internal: true },
   { id: "ads", label: "Ads", icon: Megaphone, internal: true },
   { id: "notifications", label: "Notifications", icon: Bell, internal: true },
