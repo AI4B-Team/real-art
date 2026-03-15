@@ -1163,6 +1163,7 @@ const DashboardPage = () => {
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Downloads</th>
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Remixes</th>
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Embeds</th>
+                          <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Aff. Clicks</th>
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2">Earnings</th>
                         </tr>
                       </thead>
@@ -1181,6 +1182,7 @@ const DashboardPage = () => {
                             <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.downloads}</td>
                             <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.remixes}</td>
                             <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.embeds}</td>
+                            <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.affClicks}</td>
                             <td className="text-[0.82rem] font-semibold text-accent text-right py-2.5">{img.earnings}</td>
                           </tr>
                         ))}
