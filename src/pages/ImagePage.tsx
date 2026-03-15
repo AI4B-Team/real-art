@@ -41,6 +41,7 @@ const ImagePage = () => {
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
   const [creditCopied, setCreditCopied] = useState(false);
+  const [boardModalOpen, setBoardModalOpen] = useState(false);
 
   const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
 
