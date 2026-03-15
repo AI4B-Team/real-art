@@ -594,7 +594,7 @@ const UploadPage = () => {
                     ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private gallery"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
-                    ["Prompt shared", prompt ? "Yes" : "No"],
+                    ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],
                   ].map(([k, v]) => (
                     <div key={k} className="flex items-start gap-4 text-[0.82rem]">
                       <span className="text-muted w-28 shrink-0">{k}</span>
