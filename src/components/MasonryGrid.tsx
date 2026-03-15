@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, FileText, RefreshCw, Video, Pencil, Eye, Copy, Shuffle } from "lucide-react";
+import { Download, FileText, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, Heart } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
