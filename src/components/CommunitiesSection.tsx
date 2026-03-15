@@ -43,7 +43,7 @@ const CommunitiesSection = () => {
                     <Users className="w-[11px] h-[11px]" />
                     {com.members.toLocaleString()}
                   </span>
-                  <button className="text-[0.76rem] font-bold px-4 py-[7px] rounded-full border-none cursor-pointer bg-foreground text-primary-foreground hover:bg-accent transition-colors">
+                  <button className="text-[0.76rem] font-bold px-4 py-[7px] rounded-lg border-none cursor-pointer bg-foreground text-primary-foreground hover:bg-accent transition-colors">
                     Join Now
                   </button>
                 </div>
