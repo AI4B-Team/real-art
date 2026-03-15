@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { getBoards, deleteBoard, updateBoard, createBoard, type Board } from "@/lib/boardStore";
+import { getCollections, updateCollection as updateCol, type Collection } from "@/lib/collectionStore";
 import { useNavigate } from "react-router-dom";
 
 const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
@@ -50,11 +51,7 @@ const earningsData = [
   { month: "Mar", amount: 412 },
 ];
 
-const galleriesInitial = [
-  { id: "g1", name: "Main Collection", images: 84, videos: 3, music: 2, members: 0, free: true, code: "", slug: "main-collection", thumbs: ["photo-1618005182384-a83a8bd57fbe","photo-1557682250-33bd709cbe85","photo-1604881991720-f91add269bed","photo-1579546929518-9e396f3cc809"] },
-  { id: "g2", name: "Premium Prompts", images: 42, videos: 0, music: 0, members: 127, free: false, code: "XK9F2M", slug: "premium-prompts", thumbs: ["photo-1541701494587-cb58502866ab","photo-1558618666-fcd25c85cd64","photo-1618005182384-a83a8bd57fbe","photo-1557682250-33bd709cbe85"] },
-  { id: "g3", name: "Avatar Collection", images: 31, videos: 2, music: 1, members: 64, free: false, code: "RT7P4Q", slug: "avatar-collection", thumbs: ["photo-1604881991720-f91add269bed","photo-1579546929518-9e396f3cc809","photo-1541701494587-cb58502866ab","photo-1558618666-fcd25c85cd64"] },
-];
+// galleriesInitial removed — now sourced from collectionStore
 
 const maxEarning = Math.max(...earningsData.map(d => d.amount));
 
@@ -388,21 +385,28 @@ const MediaSection = () => {
 };
 
 /* ═══ GALLERIES SECTION COMPONENT ═══ */
-const totalMedia = (g: typeof galleriesInitial[0]) => g.images + g.videos + g.music;
+const totalMedia = (g: Collection) => g.images + g.videos + g.music;
 
 const GalleriesSection = () => {
-  const [galData, setGalData] = useState(galleriesInitial);
+  const [galData, setGalData] = useState<Collection[]>(() => getCollections());
   const [changingCode, setChangingCode] = useState<string | null>(null);
   const [newCode, setNewCode] = useState("");
   const [codeError, setCodeError] = useState("");
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sync = () => setGalData(getCollections());
+    window.addEventListener("ra_collections_changed", sync);
+    return () => window.removeEventListener("ra_collections_changed", sync);
+  }, []);
 
   const totalItems = galData.reduce((s, g) => s + totalMedia(g), 0);
 
   const handleChangeCode = (id: string) => {
     if (newCode.length < 4) { setCodeError("Code must be at least 4 characters"); return; }
     if (!/^[A-Z0-9]+$/.test(newCode)) { setCodeError("Only uppercase letters and numbers"); return; }
-    setGalData(prev => prev.map(g => g.id === id ? { ...g, code: newCode } : g));
+    updateCol(id, { code: newCode });
+    setGalData(getCollections());
     setChangingCode(null);
     setNewCode("");
     setCodeError("");

@@ -2,9 +2,10 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Upload, Image, X, Plus,
-  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2
+  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { getCollections, addCollection, type Collection } from "@/lib/collectionStore";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -17,14 +18,6 @@ const categories = [
 
 const steps = ["Upload", "Details", "Publish"];
 
-const mockCommunities = [
-  { id: "c1", name: "Avatar Architects" },
-  { id: "c2", name: "Abstract Minds" },
-  { id: "c3", name: "Neon Futures" },
-  { id: "c4", name: "Forest & Earth" },
-];
-
-type CollectionTarget = "none" | "existing" | "new";
 interface ImagePrompts {
   image_prompt: string;
   video_prompt: string;
@@ -52,43 +45,23 @@ const UploadPage = () => {
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Collection targeting
-  const [collectionTarget, setCollectionTarget] = useState<CollectionTarget>("none");
-  const [selectedCommunity, setSelectedCommunity] = useState("");
-  const [selectedCollection, setSelectedCollection] = useState("");
+  const [collections, setCollections] = useState<Collection[]>(() => getCollections());
+  const [selectedCollection, setSelectedCollection] = useState<string>("none");
   const [newCollectionName, setNewCollectionName] = useState("");
   const [collectionSearch, setCollectionSearch] = useState("");
-  const [userCollections, setUserCollections] = useState<{id: string; name: string; community_id: string | null}[]>([]);
+  const [showNewCol, setShowNewCol] = useState(false);
 
   // Per-image AI prompts
   const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
 
-  // Fetch user's real collections from DB
-  useEffect(() => {
-    const fetchCollections = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase
-        .from("collections")
-        .select("id, name, community_id")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (data) setUserCollections(data);
-    };
-    fetchCollections();
-  }, []);
-
-  const filteredCollections = userCollections.filter(c => {
-    const matchesSearch = !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase());
-    const matchesCommunity = !selectedCommunity || c.community_id === selectedCommunity;
-    return matchesSearch && (selectedCommunity ? matchesCommunity : true);
-  });
+  const filteredCollections = collections.filter(c =>
+    !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase())
+  );
 
   const selectedCollectionName =
-    collectionTarget === "existing"
-      ? userCollections.find(c => c.id === selectedCollection)?.name || ""
-      : collectionTarget === "new"
-        ? newCollectionName
-        : "";
+    selectedCollection === "none" ? "" :
+    selectedCollection === "new" ? newCollectionName :
+    collections.find(c => c.id === selectedCollection)?.name || "";
 
   const generatePromptsForImage = async (dataUrl: string, index: number) => {
     setImagePrompts(prev => ({
@@ -204,7 +177,7 @@ const UploadPage = () => {
       // Determine collection ID
       let collectionId: string | null = null;
 
-      if (collectionTarget === "new" && newCollectionName.trim()) {
+      if (selectedCollection === "new" && newCollectionName.trim()) {
         const { data: col, error: colErr } = await supabase.from("collections").insert({
           name: newCollectionName.trim(),
           user_id: user.id,
@@ -213,7 +186,7 @@ const UploadPage = () => {
         }).select("id").single();
         if (colErr) throw colErr;
         collectionId = col.id;
-      } else if (collectionTarget === "existing" && selectedCollection) {
+      } else if (selectedCollection !== "none" && selectedCollection !== "new" && selectedCollection) {
         collectionId = selectedCollection;
       }
 
@@ -590,102 +563,122 @@ const UploadPage = () => {
 
                 {/* Add to Collection */}
                 <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">Add to Collection <span className="text-muted font-normal">(optional)</span></label>
-                  <div className="flex flex-col gap-3">
-                    {([
-                      { val: "none" as CollectionTarget, title: "No Collection", desc: "Upload without adding to a collection" },
-                      { val: "existing" as CollectionTarget, title: "Existing Collection", desc: "Add to one of your collections" },
-                      { val: "new" as CollectionTarget, title: "Create New Collection", desc: "Create a new collection with these images" },
-                    ]).map(opt => (
-                      <button
-                        key={opt.val}
-                        onClick={() => { setCollectionTarget(opt.val); setSelectedCollection(""); setNewCollectionName(""); setSelectedCommunity(""); }}
-                        className={`flex items-start gap-4 p-4 rounded-xl border text-left transition-all ${collectionTarget === opt.val ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
-                      >
-                        <div className="flex-1">
-                          <div className="font-semibold text-[0.86rem]">{opt.title}</div>
-                          <div className="text-[0.75rem] text-muted">{opt.desc}</div>
-                        </div>
-                        {collectionTarget === opt.val && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-[0.84rem] font-semibold">Add to Collection <span className="text-muted font-normal">(optional)</span></label>
+                    {selectedCollection !== "none" && selectedCollection !== "new" && (
+                      <button onClick={() => setSelectedCollection("none")} className="text-[0.74rem] text-muted hover:text-foreground transition-colors">
+                        Clear
                       </button>
-                    ))}
+                    )}
                   </div>
 
-                  {/* Community filter */}
-                  {collectionTarget !== "none" && (
-                    <div className="mt-4">
-                      <label className="block text-[0.78rem] font-medium text-muted mb-1.5">Filter by Community</label>
-                      <div className="relative">
-                        <select
-                          value={selectedCommunity}
-                          onChange={e => { setSelectedCommunity(e.target.value); setSelectedCollection(""); }}
-                          className="w-full h-11 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
-                        >
-                          <option value="">All Communities</option>
-                          {mockCommunities.map(c => (
-                            <option key={c.id} value={c.id}>{c.name}</option>
-                          ))}
-                        </select>
-                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
-                      </div>
+                  <div className="border border-foreground/[0.08] rounded-xl overflow-hidden">
+                    {/* Search */}
+                    <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06]">
+                      <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                      <input
+                        value={collectionSearch}
+                        onChange={e => setCollectionSearch(e.target.value)}
+                        placeholder="Search collections…"
+                        className="flex-1 text-[0.84rem] bg-transparent outline-none font-body"
+                      />
+                      {collectionSearch && (
+                        <button onClick={() => setCollectionSearch("")} className="text-muted hover:text-foreground">
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
-                  )}
 
-                  {/* Existing collection picker */}
-                  {collectionTarget === "existing" && (
-                    <div className="mt-4">
-                      <div className="relative mb-3">
-                        <input
-                          value={collectionSearch}
-                          onChange={e => setCollectionSearch(e.target.value)}
-                          placeholder="Search collections…"
-                          className="w-full h-11 border border-foreground/[0.13] rounded-xl pl-10 pr-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors"
-                        />
-                        <Image className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
-                        {collectionSearch && (
-                          <button onClick={() => setCollectionSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
+                    {/* Scrollable list */}
+                    <div className="max-h-[260px] overflow-y-auto">
+                      {/* None option */}
+                      <button
+                        onClick={() => setSelectedCollection("none")}
+                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-foreground/[0.06] ${selectedCollection === "none" ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
+                          <X className="w-4 h-4 text-muted" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-[0.84rem] font-medium">Don't add to a collection</div>
+                          <div className="text-[0.72rem] text-muted">Publish as a standalone upload</div>
+                        </div>
+                        {selectedCollection === "none" && <Check className="w-4 h-4 text-accent shrink-0" />}
+                      </button>
+
+                      {/* No results */}
+                      {filteredCollections.length === 0 && collectionSearch && (
+                        <div className="p-4 text-center text-[0.82rem] text-muted">No collections match "{collectionSearch}"</div>
+                      )}
+
+                      {/* Collection items */}
+                      {filteredCollections.map(c => (
+                        <button
+                          key={c.id}
+                          onClick={() => { setSelectedCollection(c.id); setShowNewCol(false); }}
+                          className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-foreground/[0.04] last:border-none ${selectedCollection === c.id ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
+                        >
+                          <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0">
+                            {c.thumbs?.[0] ? (
+                              <img src={`https://images.unsplash.com/${c.thumbs[0]}?w=64&h=64&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full bg-foreground/[0.06] flex items-center justify-center"><Image className="w-4 h-4 text-muted" /></div>
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="text-[0.84rem] font-medium truncate">{c.name}</div>
+                            <div className="text-[0.72rem] text-muted">
+                              {c.images} images{c.videos > 0 ? ` · ${c.videos} videos` : ""}{c.music > 0 ? ` · ${c.music} tracks` : ""} · {c.free ? "Public" : "Private"}
+                            </div>
+                          </div>
+                          {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Create new */}
+                    {!showNewCol ? (
+                      <button
+                        onClick={() => { setShowNewCol(true); setSelectedCollection("new"); }}
+                        className={`w-full flex items-center gap-3 px-4 py-3 border-t border-foreground/[0.06] transition-colors ${selectedCollection === "new" ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
+                      >
+                        <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
+                          <Plus className="w-4 h-4 text-muted" />
+                        </div>
+                        <div className="text-[0.84rem] font-medium">Create new collection…</div>
+                      </button>
+                    ) : (
+                      <div className="px-4 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
+                        <div className="flex items-center gap-2">
+                          <input
+                            autoFocus
+                            value={newCollectionName}
+                            onChange={e => setNewCollectionName(e.target.value)}
+                            onKeyDown={e => { if (e.key === "Escape") { setShowNewCol(false); setSelectedCollection("none"); } }}
+                            maxLength={60}
+                            placeholder="Collection name…"
+                            className="flex-1 h-10 px-3 rounded-lg border border-foreground/[0.1] bg-background text-[0.84rem] font-body outline-none focus:border-foreground transition-colors"
+                          />
+                          <button onClick={() => { setShowNewCol(false); setSelectedCollection("none"); setNewCollectionName(""); }} className="ml-auto text-muted hover:text-foreground transition-colors">
                             <X className="w-3.5 h-3.5" />
                           </button>
-                        )}
+                        </div>
+                        <p className="text-[0.72rem] text-muted mt-1.5">
+                          {newCollectionName.trim().length > 0
+                            ? `Will create "${newCollectionName.trim()}" and add your images to it`
+                            : "Enter a name for the new collection"}
+                        </p>
                       </div>
-                      <div className="max-h-[200px] overflow-y-auto border border-foreground/[0.08] rounded-xl divide-y divide-foreground/[0.06]">
-                        {filteredCollections.length === 0 ? (
-                          <div className="p-4 text-center text-[0.82rem] text-muted">No collections found</div>
-                        ) : (
-                          filteredCollections.map(c => (
-                            <button
-                              key={c.id}
-                              onClick={() => setSelectedCollection(c.id)}
-                              className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors hover:bg-foreground/[0.03] ${selectedCollection === c.id ? "bg-foreground/[0.05]" : ""}`}
-                            >
-                              <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
-                                <Image className="w-4 h-4 text-muted" />
-                              </div>
-                              <div className="flex-1 min-w-0">
-                                <div className="text-[0.84rem] font-medium truncate">{c.name}</div>
-                                {c.community_id && (
-                                  <div className="text-[0.72rem] text-muted">{mockCommunities.find(mc => mc.id === c.community_id)?.name}</div>
-                                )}
-                              </div>
-                              {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
-                            </button>
-                          ))
-                        )}
-                      </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
 
-                  {/* New collection name */}
-                  {collectionTarget === "new" && (
-                    <div className="mt-4">
-                      <label className="block text-[0.78rem] font-medium text-muted mb-1.5">Collection Name</label>
-                      <input
-                        value={newCollectionName}
-                        onChange={e => setNewCollectionName(e.target.value)}
-                        placeholder="e.g., Cosmic Portraits"
-                        className="w-full h-11 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors"
-                        maxLength={60}
-                      />
+                  {/* Selection confirmation */}
+                  {selectedCollection !== "none" && (
+                    <div className="mt-2.5 flex items-center gap-2 text-[0.78rem] text-green-600 bg-green-50 dark:bg-green-500/10 px-3 py-2 rounded-lg">
+                      <Check className="w-3.5 h-3.5" />
+                      {selectedCollection === "new"
+                        ? newCollectionName.trim() ? `Will create and add to "${newCollectionName.trim()}"` : "Enter a collection name above"
+                        : `Will add to "${collections.find(c => c.id === selectedCollection)?.name}"`}
                     </div>
                   )}
                 </div>
