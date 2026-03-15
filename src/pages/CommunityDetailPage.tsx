@@ -196,7 +196,7 @@ const CommunityDetailPage = () => {
 
           {/* Tab content */}
           <div className="py-8 pb-16">
-            {activeTab === "Gallery" && (
+            {activeTab === "Collection" && (
               <>
                 {(!community.free && !joined) ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
