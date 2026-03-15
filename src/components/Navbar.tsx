@@ -17,6 +17,9 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [communitySearch, setCommunitySearch] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [navSearchType, setNavSearchType] = useState("Photos");
+  const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
+  const navSearchDropRef = useRef<HTMLDivElement>(null);
   const [communities, setCommunities] = useState<Community[]>([
     { id: "1", name: "Avatar Architects", to: "/communities/1", newPosts: 3, pinned: true },
     { id: "2", name: "PromptVault Pro", to: "/communities/2", newPosts: 0, pinned: true },
