@@ -1046,7 +1046,15 @@ const DashboardPage = () => {
                           {a.unlocked && <span className="ml-auto text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">Unlocked</span>}
                         </div>
                         <p className="text-[0.72rem] text-muted">{a.desc}</p>
-                        {!a.unlocked && a.progress && (
+                        {"level" in a && a.level && a.maxLevel && (
+                          <div className="flex items-center gap-1 mt-2">
+                            {Array.from({ length: a.maxLevel }).map((_, i) => (
+                              <div key={i} className={`h-1.5 flex-1 rounded-full ${i < a.level! ? "bg-accent" : "bg-foreground/[0.08]"}`} />
+                            ))}
+                            <span className="text-[0.6rem] text-muted ml-1">Lv {a.level}/{a.maxLevel}</span>
+                          </div>
+                        )}
+                        {!a.unlocked && a.progress && !("level" in a && a.level) && (
                           <div className="mt-2">
                             <div className="h-1.5 bg-foreground/[0.06] rounded-full overflow-hidden">
                               <div className="h-full bg-accent rounded-full" style={{ width: `${a.progress}%` }} />
@@ -1075,7 +1083,7 @@ const DashboardPage = () => {
                       { name: "PromptVault Pro", members: "1.8K", posts: 0, lastPost: "Best negative prompts for realism", color: "#7209b7", to: "/communities/2" },
                       { name: "Abstract Minds", members: "3.1K", posts: 1, lastPost: "Weekly color palette challenge results", color: "#e63946", to: "/communities/3" },
                     ].map(c => (
-                      <Link key={c.name} to={c.to} className="border border-foreground/[0.06] rounded-xl p-4 hover:border-accent/30 transition-colors no-underline group">
+                      <div key={c.name} className="border border-foreground/[0.06] rounded-xl p-4 hover:border-accent/30 transition-colors group">
                         <div className="flex items-center gap-3 mb-3">
                           <div className="w-9 h-9 rounded-xl flex items-center justify-center text-[0.7rem] font-bold text-primary-foreground" style={{ background: c.color }}>
                             {c.name.split(" ").map(w => w[0]).join("")}
@@ -1090,8 +1098,11 @@ const DashboardPage = () => {
                             </span>
                           )}
                         </div>
-                        <p className="text-[0.75rem] text-muted leading-relaxed line-clamp-1">{c.lastPost}</p>
-                      </Link>
+                        <p className="text-[0.75rem] text-muted leading-relaxed line-clamp-1 mb-3">{c.lastPost}</p>
+                        <Link to={c.to} className="flex items-center justify-center gap-1.5 w-full py-2 rounded-lg bg-foreground text-primary-foreground text-[0.78rem] font-semibold hover:bg-accent transition-colors no-underline">
+                          Open Community <ChevronRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     ))}
                   </div>
                 </div>
