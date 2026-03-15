@@ -13,7 +13,7 @@ const communitiesData = [
     coverPhoto: "photo-1604881991720-f91add269bed",
     tags: ["Avatars", "Portraits", "AI Art", "Prompts"],
     rules: ["Be respectful and constructive", "Only post original AI-generated work", "Credit your tools and prompts when sharing", "No NSFW content"],
-    collectionPermission: "owner" as const,
+    collectionPermission: "moderators" as const,
   },
   {
     id: "2", name: "Abstract Minds", category: "Abstract", free: true,
