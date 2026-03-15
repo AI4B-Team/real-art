@@ -13,6 +13,7 @@ import CreatorPage from "./pages/CreatorPage";
 import ExplorePage from "./pages/ExplorePage";
 import CollectionsPage from "./pages/CollectionsPage";
 import CollectionDetailPage from "./pages/CollectionDetailPage";
+import CreateCollectionPage from "./pages/CreateCollectionPage";
 
 // Round 2 — Community
 import CommunitiesPage from "./pages/CommunitiesPage";
