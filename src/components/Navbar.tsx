@@ -122,23 +122,27 @@ const Navbar = () => {
       <div className="hidden md:block relative ml-4" ref={communitiesRef}>
         <button
           onClick={() => setCommunitiesOpen(!communitiesOpen)}
-          className="flex items-center gap-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
+          className="relative flex items-center gap-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
         >
           <Users className="w-3.5 h-3.5 opacity-60" />
           Communities
           <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? 'rotate-180' : ''}`} />
+          {/* Notification dot */}
+          <span className="absolute top-1.5 right-1 w-2 h-2 rounded-full bg-accent" />
         </button>
         {communitiesOpen && (
-          <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[240px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
+          <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
             <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Your Communities</div>
-            <Link to="/communities/1" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+            <Link to="/communities/1" onClick={() => setCommunitiesOpen(false)} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
               Avatar Architects
+              <span className="text-[0.7rem] text-accent font-medium">3 new posts</span>
             </Link>
-            <Link to="/communities/2" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+            <Link to="/communities/2" onClick={() => setCommunitiesOpen(false)} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
               PromptVault Pro
             </Link>
-            <Link to="/communities/3" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+            <Link to="/communities/3" onClick={() => setCommunitiesOpen(false)} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
               Abstract Minds
+              <span className="text-[0.7rem] text-accent font-medium">1 new post</span>
             </Link>
             <div className="h-px bg-foreground/[0.06] my-1.5" />
             <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
