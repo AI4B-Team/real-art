@@ -9,7 +9,7 @@ const collections = [
     name: "Luxury Lifestyle",
     count: 239,
     main: "photo-1600210492486-724fe5c67fb0",
-    thumbs: ["photo-1600210492486-724fe5c67fb0", "photo-1616486338812-3dadae4b4ace"],
+    thumbs: ["photo-1600210492486-724fe5c67fb0", "photo-1616486338812-3dadae4b4ace", "photo-1600607687939-ce8a6c25118c", "photo-1600566753086-00f18fb6b3ea"],
   },
   {
     name: "Street Fashion",
