@@ -191,6 +191,14 @@ const CreateCollectionPage = () => {
             />
           </div>
 
+          {/* Cover Image */}
+          <CoverImageEditor
+            uploadedImages={files}
+            coverPreview={coverPreview}
+            onCoverChange={handleCoverChange}
+            position={coverPosition}
+          />
+
           {/* Visibility */}
           <div className="mb-6">
             <label className="block text-[0.82rem] font-semibold mb-3">Visibility</label>
