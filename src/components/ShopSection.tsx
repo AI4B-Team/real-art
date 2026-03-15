@@ -41,7 +41,7 @@ const ShopSection = ({ shopLink, shopSimilar = [] }: ShopSectionProps) => (
           </div>
           <div>
             <div className="font-semibold text-[0.88rem] group-hover:text-accent transition-colors">
-              {shopLink.price ? `Shop for ${shopLink.price}` : "Shop This Look"}
+              Shop This Look
             </div>
             <div className="text-[0.72rem] text-muted">via {shopLink.site}</div>
           </div>
