@@ -621,10 +621,13 @@ const UploadPage = () => {
                   Back
                 </button>
                 <button
-                  onClick={() => setPublished(true)}
-                  className="bg-foreground text-primary-foreground px-8 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors flex items-center gap-2"
+                  disabled={publishing}
+                  onClick={handlePublish}
+                  className="bg-foreground text-primary-foreground px-8 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors flex items-center gap-2 disabled:opacity-60"
                 >
-                  <Upload className="w-4 h-4" /> Publish {files.length} Image{files.length > 1 ? "s" : ""}
+                  {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                  {publishing ? "Publishing…" : `Publish ${files.length} Image${files.length > 1 ? "s" : ""}`}
+                </button>
                 </button>
               </div>
             </div>
