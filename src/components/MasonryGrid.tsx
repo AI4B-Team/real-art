@@ -87,6 +87,12 @@ const MasonryGrid = () => {
                   {video ? "AI Video" : "AI Art"}
                 </div>
               )}
+              {/* Shop badge — subtle corner indicator */}
+              {isShoppable(i) && (
+                <div className="absolute top-2 right-2 flex items-center gap-1 bg-accent text-primary-foreground text-[0.52rem] font-bold tracking-[0.06em] uppercase px-1.5 py-0.5 rounded-lg shadow-sm z-10">
+                  <ShoppingBag className="w-2.5 h-2.5" /> Shop
+                </div>
+              )}
               {/* Hover overlay */}
               <div className="absolute inset-0 rounded-xl flex flex-col justify-between p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
                 <TooltipProvider>
