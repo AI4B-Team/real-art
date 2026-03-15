@@ -18,6 +18,13 @@ const photos = [
 ];
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 const isVideo = (i: number) => i % 4 === 3;
+const badgeMap: Record<number, { label: string; icon: string; style: string }> = {
+  0: { label: "Editor's Pick", icon: "⭐", style: "bg-accent text-primary-foreground" },
+  2: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
+  7: { label: "Featured", icon: "⭐", style: "bg-accent text-primary-foreground" },
+  11: { label: "Curated", icon: "✨", style: "bg-foreground text-primary-foreground" },
+  15: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
+};
 
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee", dl: "12.4K", id: "1" },
