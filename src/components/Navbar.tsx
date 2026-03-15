@@ -382,11 +382,11 @@ const Navbar = () => {
                 {/* User header */}
                 <div className="flex items-center gap-3 px-3.5 py-3 mb-1">
                   <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">
-                    AV
+                    {userInitials}
                   </div>
                   <div>
-                    <div className="text-[0.88rem] font-semibold">AI.Verse</div>
-                    <div className="text-[0.75rem] text-muted">@aiverse</div>
+                    <div className="text-[0.88rem] font-semibold">{userDisplay}</div>
+                    <div className="text-[0.75rem] text-muted">@{userHandle}</div>
                   </div>
                 </div>
                 <div className="h-px bg-foreground/[0.06] my-1" />
