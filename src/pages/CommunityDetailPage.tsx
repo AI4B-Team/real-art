@@ -281,6 +281,44 @@ const CommunityDetailPage = () => {
                 </div>
               </div>
             )}
+
+            {activeTab === "Settings" && (
+              <div className="max-w-[600px]">
+                <div className="flex items-center gap-2 mb-6">
+                  <Settings className="w-5 h-5 text-muted" />
+                  <h2 className="font-display text-[1.6rem] font-black tracking-[-0.03em]">Community Settings</h2>
+                </div>
+
+                {/* Collection permissions */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-4">
+                  <div className="font-semibold text-[0.88rem] mb-1">Who can create collections?</div>
+                  <p className="text-[0.75rem] text-muted mb-4">Control who is allowed to create new collections inside this community.</p>
+                  <div className="flex flex-col gap-2">
+                    {([
+                      { value: "owner" as const, label: "Owner only", desc: "Only you can create collections" },
+                      { value: "moderators" as const, label: "Moderators", desc: "Owner and moderators can create collections" },
+                      { value: "any_member" as const, label: "Any member", desc: "All community members can create collections" },
+                    ]).map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setCollectionPerm(opt.value)}
+                        className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${collectionPerm === opt.value ? "border-accent bg-accent/5" : "border-foreground/[0.08] hover:border-foreground/20"}`}
+                      >
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${collectionPerm === opt.value ? "border-accent" : "border-foreground/20"}`}>
+                          {collectionPerm === opt.value && <div className="w-2 h-2 rounded-full bg-accent" />}
+                        </div>
+                        <div>
+                          <div className="font-semibold text-[0.85rem]">{opt.label}</div>
+                          <div className="text-[0.72rem] text-muted">{opt.desc}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <p className="text-[0.72rem] text-muted">Settings are only visible to the community owner.</p>
+              </div>
+            )}
           </div>
         </div>
 
