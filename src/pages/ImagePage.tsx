@@ -122,11 +122,11 @@ const ImagePage = () => {
                   {liked ? "Liked" : "Like"}
                 </button>
                 <button
-                  onClick={() => setSaved(!saved)}
+                  onClick={() => setBoardModalOpen(true)}
                   className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border transition-colors ${saved ? "bg-accent/10 border-accent/30 text-accent" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
                 >
                   <Bookmark className={`w-4 h-4 ${saved ? "fill-accent text-accent" : ""}`} />
-                  {saved ? "Saved" : "Save"}
+                  Save to Board
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Share2 className="w-4 h-4" /> Share
