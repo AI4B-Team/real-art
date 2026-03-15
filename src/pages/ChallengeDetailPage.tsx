@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Clock, Users, Trophy, Heart, Upload, Shield, Check } from "lucide-react";
+import { ArrowLeft, ChevronRight, Clock, Users, Trophy, Heart, Upload, Shield, Check, ThumbsUp } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -35,17 +35,27 @@ const entryPhotos = [
   "photo-1549880338-65ddcdfd017b","photo-1567360425618-1594206637d2",
 ];
 const heights = [230, 190, 260, 205, 175, 240, 215, 180, 250, 195, 220, 165];
+const entryVotes = [342, 289, 267, 231, 198, 184, 172, 156, 143, 128, 112, 97];
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee" }, { n: "NeoPixel", i: "NP", c: "#c9184a" },
   { n: "DreamForge", i: "DF", c: "#2a9d8f" }, { n: "LuminaAI", i: "LA", c: "#e76f51" },
 ];
-const entryTabs = ["Top Entries", "Newest", "Most Liked"];
+const entryTabs = ["Top Voted", "Newest", "Most Liked"];
 
 const ChallengeDetailPage = () => {
   const { id } = useParams();
   const c = challengeData;
-  const [activeTab, setActiveTab] = useState("Top Entries");
+  const [activeTab, setActiveTab] = useState("Top Voted");
+  const [votedEntries, setVotedEntries] = useState<Set<number>>(new Set());
 
+  const toggleVote = (index: number) => {
+    setVotedEntries(prev => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -98,9 +108,14 @@ const ChallengeDetailPage = () => {
                 <div className="text-[0.68rem] text-muted uppercase tracking-[0.1em]">Grand Prize</div>
               </div>
             </div>
-            <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-6 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors">
-              <Upload className="w-4 h-4" /> Submit Your Entry
-            </button>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[0.82rem] font-semibold">
+                <ThumbsUp className="w-4 h-4" /> Vote for your favorite
+              </div>
+              <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-6 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors">
+                <Upload className="w-4 h-4" /> Submit Your Entry
+              </button>
+            </div>
           </div>
 
           {/* Body */}
@@ -132,25 +147,36 @@ const ChallengeDetailPage = () => {
                   {entryPhotos.map((photo, i) => {
                     const cr = creators[i % creators.length];
                     return (
-                      <Link key={i} to={`/image/${i + 20}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
-                        <img
-                          src={`https://images.unsplash.com/${photo}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
-                          alt="" loading="lazy"
-                          className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                          style={{ height: heights[i % heights.length], objectFit: "cover" }}
-                        />
-                        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3" style={{ background: "var(--gradient-overlay)" }}>
+                      <div key={i} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
+                        <Link to={`/image/${i + 20}`}>
+                          <img
+                            src={`https://images.unsplash.com/${photo}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
+                            alt="" loading="lazy"
+                            className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
+                            style={{ height: heights[i % heights.length], objectFit: "cover" }}
+                          />
+                        </Link>
+                        {/* Vote button - always visible */}
+                        <button
+                          onClick={(e) => { e.preventDefault(); toggleVote(i); }}
+                          className={`absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.72rem] font-bold transition-all ${
+                            votedEntries.has(i)
+                              ? "bg-accent text-primary-foreground shadow-lg"
+                              : "bg-foreground/70 backdrop-blur-sm text-primary-foreground hover:bg-accent"
+                          }`}
+                        >
+                          <ThumbsUp className={`w-3 h-3 ${votedEntries.has(i) ? "fill-primary-foreground" : ""}`} />
+                          {entryVotes[i] + (votedEntries.has(i) ? 1 : 0)}
+                        </button>
+                        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 pointer-events-none" style={{ background: "var(--gradient-overlay)" }}>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5">
                               <div className="w-5 h-5 rounded-full flex items-center justify-center text-[0.52rem] font-bold text-white" style={{ background: cr.c }}>{cr.i}</div>
                               <span className="text-[0.7rem] text-white/90">{cr.n}</span>
                             </div>
-                            <button onClick={e => e.preventDefault()} className="w-6 h-6 rounded-full border-none bg-white/20 text-white flex items-center justify-center hover:bg-white/40 transition-colors">
-                              <Heart className="w-3 h-3" />
-                            </button>
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>
