@@ -70,20 +70,10 @@ const MasonryGrid = () => {
                 AI-Generated
               </div>
               {/* Hover overlay */}
-              <div className="absolute inset-0 rounded-xl flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
-                {/* Creator info */}
-                <div className="flex items-center gap-1.5 mb-2">
-                  <div
-                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
-                    style={{ background: cr.c }}
-                  >
-                    {cr.i}
-                  </div>
-                  <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
-                </div>
-                {/* Action buttons */}
+              <div className="absolute inset-0 rounded-xl flex flex-col justify-between p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
+                {/* Action buttons - right side vertical */}
                 <TooltipProvider>
-                  <div className="flex gap-1.5 flex-wrap justify-center">
+                  <div className="flex flex-col gap-1.5 absolute right-3 top-1/2 -translate-y-1/2">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
@@ -155,6 +145,16 @@ const MasonryGrid = () => {
                     </Tooltip>
                   </div>
                 </TooltipProvider>
+                {/* Creator info - bottom left */}
+                <div className="flex items-center gap-1.5 mt-auto">
+                  <div
+                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
+                    style={{ background: cr.c }}
+                  >
+                    {cr.i}
+                  </div>
+                  <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
+                </div>
               </div>
               {/* Prompt popup */}
               {activePrompt === i && (
