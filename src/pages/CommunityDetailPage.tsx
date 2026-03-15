@@ -67,7 +67,7 @@ const CommunityDetailPage = () => {
   const [joined, setJoined] = useState(false);
   const [codeInput, setCodeInput] = useState("");
   const [showCodeModal, setShowCodeModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("Collection");
+  const [activeTab, setActiveTab] = useState("Collections");
   const [collectionPerm, setCollectionPerm] = useState<"owner" | "moderators" | "any_member">(community.collectionPermission);
   const [requestName, setRequestName] = useState("");
   const [requestDesc, setRequestDesc] = useState("");
@@ -76,7 +76,7 @@ const CommunityDetailPage = () => {
     { id: "r2", name: "AI Fashion Editorial", by: "DreamForge", status: "pending" as const },
     { id: "r3", name: "Luxury Interiors", by: "AI.Verse", status: "approved" as const },
   ]);
-  const tabs = ["Collection", "Collections", "Members", "About", "Settings"];
+  const tabs = ["Collections", "Members", "About", "Settings"];
   const collections = communityCollections[community.id] || communityCollections["2"];
 
   // Mock role — in production this comes from auth + community membership
@@ -196,7 +196,7 @@ const CommunityDetailPage = () => {
 
           {/* Tab content */}
           <div className="py-8 pb-16">
-            {activeTab === "Collection" && (
+            {activeTab === "Collections" && (
               <>
                 {(!community.free && !joined) ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
@@ -215,24 +215,6 @@ const CommunityDetailPage = () => {
                     </button>
                   </div>
                 ) : (
-                  <div className="masonry-grid">
-                    {photos.map((photo, i) => (
-                      <Link key={i} to={`/image/${i}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
-                        <img
-                          src={`https://images.unsplash.com/${photo}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
-                          alt="" loading="lazy"
-                          className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                          style={{ height: heights[i % heights.length], objectFit: "cover" }}
-                        />
-                        <ImageCardOverlay index={i} />
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-
-            {activeTab === "Collections" && (
               <div>
                 <div className="flex items-center gap-2 mb-5">
                   <Star className="w-4 h-4 text-accent fill-accent" />
@@ -355,6 +337,8 @@ const CommunityDetailPage = () => {
                   </div>
                 )}
               </div>
+                )}
+              </>
             )}
 
             {activeTab === "Members" && (
