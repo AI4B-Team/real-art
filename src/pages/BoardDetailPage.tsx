@@ -308,7 +308,7 @@ const BoardDetailPage = () => {
               <span className="text-white">{title}</span>
             </div>
 
-            {/* Title + privacy */}
+            {/* Title + privacy + actions on same row */}
             <div className="flex items-center gap-3 mb-3">
               <h1 className="font-display text-[clamp(2.2rem,5vw,3.6rem)] font-black text-white tracking-[-0.03em] leading-none">
                 {title}
@@ -323,71 +323,45 @@ const BoardDetailPage = () => {
                   <Globe className="w-3 h-3" /> Public
                 </span>
               )}
-            </div>
 
-            {/* Owner + stats */}
-            <div className="flex items-center gap-4 flex-wrap mb-4">
-              <Link to={isOwner ? "/dashboard" : `/creator/${creatorId}`} className="flex items-center gap-2 no-underline">
-                <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-white border border-white/20"
-                  style={{ background: creatorColor }}
-                >
-                  {creatorInit}
-                </div>
-                <span className="text-[0.85rem] text-white/80">by {creator}</span>
-              </Link>
-              <span className="text-white/30">·</span>
-              <span className="flex items-center gap-1 text-[0.8rem] text-white/50">
-                <Bookmark className="w-3.5 h-3.5" /> {boardItems.length} saved
-              </span>
-              {collabs.length > 0 && (
-                <>
-                  <span className="text-white/30">·</span>
-                  <span className="flex items-center gap-1 text-[0.8rem] text-white/50">
-                    <Users className="w-3.5 h-3.5" /> {collabs.length} collaborator{collabs.length !== 1 ? "s" : ""}
-                  </span>
-                </>
-              )}
-            </div>
-
-            {/* Actions */}
-            <div className="flex items-center gap-3 flex-wrap">
-              {!isOwner && (
-                <button
-                  onClick={() => setFollowing(!following)}
-                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold transition-colors ${
-                    following
-                      ? "bg-white/15 backdrop-blur-sm text-white border border-white/20"
-                      : "bg-white text-foreground hover:bg-white/90"
-                  }`}
-                >
-                  <Heart className={`w-4 h-4 ${following ? "fill-accent text-accent" : ""}`} />
-                  {following ? "Following" : "Follow Board"}
-                </button>
-              )}
-              <button
-                onClick={() => setShowShare(true)}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
-              >
-                <Share2 className="w-4 h-4" /> Share
-              </button>
-              {isOwner && (
+              {/* Actions — pushed to far right */}
+              <div className="flex items-center gap-3 ml-auto">
+                {!isOwner && (
+                  <button
+                    onClick={() => setFollowing(!following)}
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold transition-colors ${
+                      following
+                        ? "bg-white/15 backdrop-blur-sm text-white border border-white/20"
+                        : "bg-white text-foreground hover:bg-white/90"
+                    }`}
+                  >
+                    <Heart className={`w-4 h-4 ${following ? "fill-accent text-accent" : ""}`} />
+                    {following ? "Following" : "Follow Board"}
+                  </button>
+                )}
                 <button
                   onClick={() => setShowShare(true)}
                   className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
                 >
-                  <UserPlus className="w-4 h-4" /> Invite
+                  <Share2 className="w-4 h-4" /> Share
                 </button>
-              )}
+                {isOwner && (
+                  <button
+                    onClick={() => setShowShare(true)}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
+                  >
+                    <UserPlus className="w-4 h-4" /> Invite
+                  </button>
+                )}
 
-              {/* 3-dot menu */}
-              <div className="relative" ref={menuRef}>
-                <button
-                  onClick={() => setShowMenu(!showMenu)}
-                  className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
-                >
-                  <MoreHorizontal className="w-4 h-4" />
-                </button>
+                {/* 3-dot menu */}
+                <div className="relative" ref={menuRef}>
+                  <button
+                    onClick={() => setShowMenu(!showMenu)}
+                    className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
+                  >
+                    <MoreHorizontal className="w-4 h-4" />
+                  </button>
 
                 {showMenu && (
                   <div className="absolute top-12 right-0 bg-background border border-foreground/[0.08] rounded-xl shadow-2xl w-[260px] py-2 z-20">
