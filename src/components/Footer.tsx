@@ -2,7 +2,8 @@ const footerCols = [
   { title: "Explore", links: ["Photos", "Videos", "Music", "3D Art", "Trending", "Prompt Library"] },
   { title: "Community", links: ["Galleries", "Challenges", "Leaderboard", "Creators", "Recreations"] },
   { title: "Creators", links: ["Upload", "Start Gallery", "Affiliates", "Private Vaults", "Prompt Packs", "Style Transfer"] },
-  { title: "Company", links: ["About", "License", "Blog", "REAL CREATOR"] },
+  { title: "Trust & Safety", links: ["License", "AI Transparency", "Content Guidelines", "Creator Rewards"] },
+  { title: "Company", links: ["About", "Blog", "REAL CREATOR"] },
 ];
 
 const Footer = () => {
