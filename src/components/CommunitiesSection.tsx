@@ -22,9 +22,9 @@ const CommunitiesSection = () => {
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent mb-2">Creator Galleries</div>
+            <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent mb-2">Creator Collections</div>
             <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Communities</h2>
-            <p className="text-[0.83rem] text-muted mt-[7px]">Public galleries and private vaults from creators worldwide</p>
+            <p className="text-[0.83rem] text-muted mt-[7px]">Public collections and private vaults from creators worldwide</p>
           </div>
           <Link to="/communities" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap no-underline hover:text-accent hover:border-accent transition-colors">Browse All →</Link>
         </div>
