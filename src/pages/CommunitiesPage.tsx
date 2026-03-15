@@ -59,7 +59,7 @@ const CommunitiesPage = () => {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-8">
             <div>
               <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Communities</h1>
-              <p className="text-[0.88rem] text-muted">Public galleries and private vaults. Find your people.</p>
+              <p className="text-[0.88rem] text-muted">Public collections and private vaults. Find your people.</p>
             </div>
             <Link to="/create-gallery">
               <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors">
