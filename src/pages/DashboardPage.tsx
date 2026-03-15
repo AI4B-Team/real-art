@@ -57,12 +57,22 @@ const galleriesInitial = [
 const maxEarning = Math.max(...earningsData.map(d => d.amount));
 
 const achievements = [
+  // Download milestones (leveled)
+  { icon: Download, title: "10K Downloads", desc: "Images downloaded 10,000 times", unlocked: true, level: 1, maxLevel: 4 },
+  { icon: Download, title: "50K Downloads", desc: "Images downloaded 50,000 times", unlocked: true, level: 2, maxLevel: 4 },
+  { icon: Download, title: "100K Downloads", desc: "Images downloaded 100,000 times", unlocked: false, progress: 82, level: 3, maxLevel: 4 },
+  { icon: Download, title: "500K Downloads", desc: "Images downloaded 500,000 times", unlocked: false, progress: 16, level: 4, maxLevel: 4 },
+  // Creator milestones
   { icon: Award, title: "Top Creator", desc: "Top 10 on leaderboard", unlocked: true },
-  { icon: Download, title: "100K Downloads", desc: "Images downloaded 100,000 times", unlocked: false, progress: 82 },
   { icon: Users, title: "10K Followers", desc: "Reached 10,000 followers", unlocked: true },
   { icon: TrendingUp, title: "Trending Artist", desc: "Featured on trending page", unlocked: true },
   { icon: Sparkles, title: "Style Pioneer", desc: "Style used by 500+ creators", unlocked: true },
   { icon: Globe, title: "Embedded Everywhere", desc: "Images on 1,000+ websites", unlocked: false, progress: 64 },
+  // Creator economy achievements
+  { icon: DollarSign, title: "First $100 Earned", desc: "Earned your first $100 from the platform", unlocked: true },
+  { icon: DollarSign, title: "First $1,000 Earned", desc: "Earned $1,000 total from all revenue streams", unlocked: false, progress: 71 },
+  { icon: Eye, title: "1M Views", desc: "Your images have been viewed 1 million times", unlocked: false, progress: 48 },
+  { icon: Code, title: "First 10 Embeds", desc: "Your images are embedded on 10+ websites", unlocked: true },
 ];
 
 const weeklyExposure = [
