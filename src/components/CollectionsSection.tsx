@@ -69,6 +69,7 @@ const CollectionsSection = () => {
               </div>
               {/* Name */}
               <p className="text-foreground font-semibold text-[0.95rem] mt-2.5">{col.name}</p>
+              <p className="text-muted text-[0.76rem] leading-[1.4] mt-0.5">{col.subtitle}</p>
             </div>
           ))}
         </div>
