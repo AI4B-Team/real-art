@@ -3,7 +3,8 @@ import {
   Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3,
   Upload, Sparkles, FileText, X, Layout, ChevronDown, Plus,
   Compass, Image, Video, Music, LayoutDashboard, DollarSign,
-  LogOut, Settings, Bookmark
+  LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
+  Megaphone, LayoutGrid
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
@@ -130,11 +131,14 @@ const Navbar = () => {
   ];
 
   const userMenuLinks = [
-    { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
-    { icon: Image, label: "My Images", to: "/dashboard" },
-    { icon: Bookmark, label: "My Boards", to: "/boards" },
-    { icon: Upload, label: "Upload Art", to: "/upload" },
+    { icon: LayoutDashboard, label: "Overview", to: "/dashboard" },
+    { icon: TrendingUp, label: "Exposure", to: "/dashboard" },
+    { icon: Image, label: "Media", to: "/dashboard" },
+    { icon: FolderOpen, label: "Collections", to: "/dashboard" },
+    { icon: Bookmark, label: "Boards", to: "/boards" },
     { icon: DollarSign, label: "Earnings", to: "/dashboard" },
+    { icon: Megaphone, label: "Ads", to: "/dashboard" },
+    { icon: Bell, label: "Notifications", to: "/dashboard" },
     { icon: Settings, label: "Settings", to: "/dashboard" },
   ];
 
@@ -397,6 +401,11 @@ const Navbar = () => {
                     {label}
                   </Link>
                 ))}
+                <div className="h-px bg-foreground/[0.06] my-1" />
+                <Link to="/upload" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-foreground hover:bg-background transition-colors no-underline">
+                  <Upload className="w-3.5 h-3.5 opacity-40 shrink-0" />
+                  Upload Art
+                </Link>
                 <div className="h-px bg-foreground/[0.06] my-1" />
                 <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors">
                   <LogOut className="w-3.5 h-3.5" /> Log Out

@@ -11,15 +11,16 @@ import {
 import Navbar from "@/components/Navbar";
 import { useNavigate } from "react-router-dom";
 
-const navItems = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "exposure", label: "Exposure", icon: TrendingUp },
-  { id: "media", label: "Media", icon: Image },
-  { id: "galleries", label: "Collections", icon: FolderOpen },
-  { id: "earnings", label: "Earnings", icon: DollarSign },
-  { id: "ads", label: "Ads", icon: Megaphone },
-  { id: "notifications", label: "Notifications", icon: Bell },
-  { id: "settings", label: "Settings", icon: Settings },
+const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
+  { id: "overview", label: "Overview", icon: LayoutDashboard, internal: true },
+  { id: "exposure", label: "Exposure", icon: TrendingUp, internal: true },
+  { id: "media", label: "Media", icon: Image, internal: true },
+  { id: "galleries", label: "Collections", icon: FolderOpen, internal: true },
+  { id: "boards", label: "Boards", icon: Bookmark, internal: false, href: "/boards" },
+  { id: "earnings", label: "Earnings", icon: DollarSign, internal: true },
+  { id: "ads", label: "Ads", icon: Megaphone, internal: true },
+  { id: "notifications", label: "Notifications", icon: Bell, internal: true },
+  { id: "settings", label: "Settings", icon: Settings, internal: true },
 ];
 
 const recentActivity = [
@@ -881,17 +882,29 @@ const DashboardPage = () => {
 
             <nav className="flex flex-col gap-1">
               {navItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id)}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                >
-                  <item.icon className="w-4 h-4 shrink-0" />
-                  {item.label}
-                  {item.id === "notifications" && (
-                    <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
-                  )}
-                </button>
+                item.internal === false ? (
+                  <Link
+                    key={item.id}
+                    to={item.href!}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors text-muted hover:text-foreground hover:bg-foreground/[0.04] no-underline"
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {item.label}
+                    <ExternalLink className="w-3 h-3 ml-auto opacity-30" />
+                  </Link>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSection(item.id)}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    {item.label}
+                    {item.id === "notifications" && (
+                      <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
+                    )}
+                  </button>
+                )
               ))}
             </nav>
 
@@ -905,14 +918,26 @@ const DashboardPage = () => {
             {/* Mobile Nav */}
             <div className="flex items-center gap-2 mb-6 lg:hidden overflow-x-auto pb-2 no-scrollbar">
               {navItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted"}`}
-                >
-                  <item.icon className="w-3.5 h-3.5" />
-                  {item.label}
-                </button>
+                item.internal === false ? (
+                  <Link
+                    key={item.id}
+                    to={item.href!}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap bg-card border border-foreground/[0.1] text-muted no-underline"
+                  >
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                    <ExternalLink className="w-2.5 h-2.5 opacity-30" />
+                  </Link>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSection(item.id)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted"}`}
+                  >
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </button>
+                )
               ))}
             </div>
 
