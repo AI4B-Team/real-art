@@ -78,6 +78,19 @@ const MasonryGrid = () => {
                       <TooltipTrigger asChild>
                         <button
                           onClick={(e) => e.stopPropagation()}
+                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-accent hover:text-primary-foreground transition-colors"
+                        >
+                          <Heart className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="left" className="text-xs">
+                        <p>Favorite</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
                           className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
                         >
                           <Download className="w-3.5 h-3.5" />
