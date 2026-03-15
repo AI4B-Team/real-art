@@ -256,8 +256,8 @@ const UploadPage = () => {
         if (insertErr) throw insertErr;
       }
 
-      setPublished(true);
       toast({ title: "Published!", description: `${files.length} image${files.length > 1 ? "s" : ""} uploaded successfully.` });
+      navigate(`/collections/${collectionId}`);
     } catch (err: any) {
       console.error("Publish failed:", err);
       toast({ title: "Upload failed", description: err.message || "Something went wrong.", variant: "destructive" });
