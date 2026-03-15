@@ -47,6 +47,15 @@ const Navbar = () => {
     return () => document.removeEventListener("click", handler);
   }, []);
 
+  const togglePin = (id: string) => {
+    setCommunities(prev => prev.map(c => c.id === id ? { ...c, pinned: !c.pinned } : c));
+  };
+
+  const sortedCommunities = [...communities].sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return 0;
+  });
+
   const handleSearch = () => {
     if (searchQuery.trim()) {
       navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
