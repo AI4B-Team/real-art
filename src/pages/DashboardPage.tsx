@@ -468,12 +468,12 @@ const GalleriesSection = () => {
                       Change Code
                     </button>
                   )}
-                  <button
-                    onClick={() => setManagingId(g.id)}
-                    className="text-[0.78rem] font-medium bg-foreground text-primary-foreground px-4 py-2 rounded-lg hover:bg-accent transition-colors"
+                  <Link
+                    to={`/dashboard/collections/${g.id}`}
+                    className="text-[0.78rem] font-medium bg-foreground text-primary-foreground px-4 py-2 rounded-lg hover:bg-accent transition-colors no-underline"
                   >
                     Manage
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
