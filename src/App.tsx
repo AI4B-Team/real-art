@@ -102,6 +102,7 @@ const App = () => (
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/ads" element={<AdsPage />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
