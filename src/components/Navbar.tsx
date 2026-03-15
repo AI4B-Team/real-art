@@ -55,6 +55,8 @@ const Navbar = () => {
   useEffect(() => {
     try {
       setIsLoggedIn(localStorage.getItem("ra_auth") === "1");
+      setUserDisplay(localStorage.getItem("ra_display") || "AI.Verse");
+      setUserHandle(localStorage.getItem("ra_username") || "aiverse");
     } catch {}
   }, [location.pathname]);
 
