@@ -82,7 +82,7 @@ const MasonryGrid = () => {
                 </div>
                 {/* Action buttons */}
                 <TooltipProvider>
-                  <div className="flex gap-1.5 flex-wrap">
+                  <div className="flex gap-1.5 flex-wrap justify-center">
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
