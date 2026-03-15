@@ -3,6 +3,7 @@ import HeroSection from "@/components/HeroSection";
 import FilterBar from "@/components/FilterBar";
 import MasonryGrid from "@/components/MasonryGrid";
 import CollectionsSection from "@/components/CollectionsSection";
+import TrendingCreatorsSection from "@/components/TrendingCreatorsSection";
 import CommunitiesSection from "@/components/CommunitiesSection";
 import ChallengesSection from "@/components/ChallengesSection";
 import CreatorEarningsSection from "@/components/CreatorEarningsSection";
@@ -18,6 +19,7 @@ const Index = () => {
       <FilterBar />
       <MasonryGrid />
       <CollectionsSection />
+      <TrendingCreatorsSection />
       <CommunitiesSection />
       <ChallengesSection />
       <section className="py-12 px-6 md:px-12">

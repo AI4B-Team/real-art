@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Heart, Globe, Twitter, Instagram,
-  Link2, Grid3X3, Bookmark, Download, Share2
+  Link2, Grid3X3, Bookmark, Download, Share2, Award, Eye, RefreshCw, Star
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -11,32 +11,29 @@ const creatorsData = [
   {
     id: "1", name: "AI.Verse", handle: "@aiverse", avatar: "AV", color: "#4361ee",
     bio: "Generative art explorer specializing in cosmic and abstract digital landscapes. I push the boundaries of what AI can visualize — from deep space visions to microscopic worlds.",
-    location: "San Francisco, CA",
-    website: "aiverse.art",
-    twitter: "@aiverseart",
-    instagram: "@aiverse",
-    followers: 12400, following: 284, images: 284, downloads: "892K", views: "4.2M",
+    location: "San Francisco, CA", website: "aiverse.art", twitter: "@aiverseart", instagram: "@aiverse",
+    followers: 12400, following: 284, images: 284, downloads: "4.2M", views: "18.6M", remixes: "8.4K",
     joined: "January 2024",
+    badges: ["🏆 Top Creator", "👥 10K Followers", "🔥 Trending Artist", "🎨 Style Pioneer"],
+    pinnedImage: { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", views: "48,201" },
   },
   {
     id: "2", name: "NeoPixel", handle: "@neopixel", avatar: "NP", color: "#c9184a",
     bio: "Cyberpunk visuals and neon-drenched futures. I build tomorrow's cities today — one prompt at a time. Specializing in urban dystopia, retrofuturism, and digital noir.",
-    location: "Tokyo, Japan",
-    website: "neopixel.io",
-    twitter: "@neopixelart",
-    instagram: "@neopixel.art",
-    followers: 9800, following: 156, images: 196, downloads: "641K", views: "3.1M",
+    location: "Tokyo, Japan", website: "neopixel.io", twitter: "@neopixelart", instagram: "@neopixel.art",
+    followers: 9800, following: 156, images: 196, downloads: "2.8M", views: "12.1M", remixes: "5.2K",
     joined: "March 2024",
+    badges: ["🔥 Trending Artist", "⬇️ 100K Downloads"],
+    pinnedImage: { photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", views: "31,400" },
   },
   {
     id: "3", name: "DreamForge", handle: "@dreamforge", avatar: "DF", color: "#2a9d8f",
     bio: "Fantasy landscapes, mythical worlds, and surreal dreamscapes. Every image is a portal to somewhere impossible.",
-    location: "London, UK",
-    website: "dreamforge.co",
-    twitter: "@dreamforgeart",
-    instagram: "@dreamforge",
-    followers: 7300, following: 412, images: 421, downloads: "1.1M", views: "5.8M",
+    location: "London, UK", website: "dreamforge.co", twitter: "@dreamforgeart", instagram: "@dreamforge",
+    followers: 7300, following: 412, images: 421, downloads: "1.9M", views: "9.4M", remixes: "3.8K",
     joined: "February 2024",
+    badges: ["🎨 Style Pioneer", "👥 10K Followers"],
+    pinnedImage: { photo: "photo-1579546929518-9e396f3cc809", title: "Dream Portal", downloads: "1,940", views: "26,800" },
   },
 ];
 
@@ -73,8 +70,8 @@ const CreatorPage = () => {
           <span className="text-foreground">{creator.name}</span>
         </div>
 
-        {/* Profile header */}
         <div className="px-6 md:px-12 pb-8 max-w-[1440px] mx-auto">
+          {/* Profile header */}
           <div className="bg-card border border-foreground/[0.08] rounded-2xl p-8 mb-6">
             <div className="flex flex-col md:flex-row md:items-start gap-6">
               {/* Avatar */}
@@ -87,8 +84,18 @@ const CreatorPage = () => {
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3">
                   <div>
-                    <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-none mb-1">{creator.name}</h1>
+                    <div className="flex items-center gap-3 mb-1">
+                      <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-none">{creator.name}</h1>
+                    </div>
                     <div className="text-[0.82rem] text-muted">{creator.handle} · Joined {creator.joined}</div>
+                    {/* Badges */}
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      {creator.badges.map(badge => (
+                        <span key={badge} className="text-[0.68rem] font-semibold bg-accent/10 text-accent px-2.5 py-1 rounded-lg border border-accent/15">
+                          {badge}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -111,45 +118,65 @@ const CreatorPage = () => {
 
                 {/* Links */}
                 <div className="flex flex-wrap gap-4 text-[0.8rem] text-muted mb-5">
-                  {creator.location && (
-                    <span className="flex items-center gap-1.5">
-                      <Globe className="w-3.5 h-3.5" /> {creator.location}
-                    </span>
-                  )}
-                  {creator.website && (
-                    <a href={`https://${creator.website}`} className="flex items-center gap-1.5 hover:text-accent transition-colors">
-                      <Link2 className="w-3.5 h-3.5" /> {creator.website}
-                    </a>
-                  )}
-                  {creator.twitter && (
-                    <a href="#" className="flex items-center gap-1.5 hover:text-accent transition-colors">
-                      <Twitter className="w-3.5 h-3.5" /> {creator.twitter}
-                    </a>
-                  )}
-                  {creator.instagram && (
-                    <a href="#" className="flex items-center gap-1.5 hover:text-accent transition-colors">
-                      <Instagram className="w-3.5 h-3.5" /> {creator.instagram}
-                    </a>
-                  )}
+                  {creator.location && <span className="flex items-center gap-1.5"><Globe className="w-3.5 h-3.5" /> {creator.location}</span>}
+                  {creator.website && <a href={`https://${creator.website}`} className="flex items-center gap-1.5 hover:text-accent transition-colors"><Link2 className="w-3.5 h-3.5" /> {creator.website}</a>}
+                  {creator.twitter && <a href="#" className="flex items-center gap-1.5 hover:text-accent transition-colors"><Twitter className="w-3.5 h-3.5" /> {creator.twitter}</a>}
+                  {creator.instagram && <a href="#" className="flex items-center gap-1.5 hover:text-accent transition-colors"><Instagram className="w-3.5 h-3.5" /> {creator.instagram}</a>}
                 </div>
 
-                {/* Stats */}
-                <div className="flex flex-wrap gap-6">
+                {/* Stats — enhanced with more metrics */}
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-4 bg-background rounded-xl p-4">
                   {[
                     { label: "Followers", value: (creator.followers / 1000).toFixed(1) + "K" },
                     { label: "Images", value: creator.images.toLocaleString() },
                     { label: "Downloads", value: creator.downloads },
                     { label: "Total Views", value: creator.views },
+                    { label: "Remixes", value: creator.remixes },
                   ].map(stat => (
-                    <div key={stat.label}>
-                      <div className="font-display text-[1.5rem] font-black tracking-[-0.02em] leading-none">{stat.value}</div>
-                      <div className="text-[0.72rem] text-muted uppercase tracking-[0.08em] mt-0.5">{stat.label}</div>
+                    <div key={stat.label} className="text-center">
+                      <div className="font-display text-[1.4rem] font-black tracking-[-0.02em] leading-none">{stat.value}</div>
+                      <div className="text-[0.68rem] text-muted uppercase tracking-[0.08em] mt-0.5">{stat.label}</div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
           </div>
+
+          {/* Featured Artwork (pinned) */}
+          {creator.pinnedImage && (
+            <div className="bg-foreground rounded-2xl p-6 mb-6 relative overflow-hidden">
+              <div className="absolute -right-12 -top-12 w-48 h-48 rounded-full opacity-[0.06]"
+                style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
+              <div className="flex items-center gap-2 mb-4">
+                <Star className="w-4 h-4 text-accent fill-accent" />
+                <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Featured Artwork</span>
+              </div>
+              <div className="flex flex-col md:flex-row gap-5">
+                <Link to={`/image/0`}>
+                  <img
+                    src={`https://images.unsplash.com/${creator.pinnedImage.photo}?w=320&h=200&fit=crop&q=80`}
+                    alt={creator.pinnedImage.title}
+                    className="w-full md:w-[240px] h-[160px] rounded-xl object-cover hover:scale-[1.02] transition-transform"
+                  />
+                </Link>
+                <div>
+                  <h3 className="font-display text-[1.4rem] font-black text-primary-foreground mb-2">{creator.pinnedImage.title}</h3>
+                  <div className="flex gap-5 mb-3">
+                    <div>
+                      <div className="font-display font-black text-[1.2rem] text-primary-foreground">{creator.pinnedImage.views}</div>
+                      <div className="text-[0.65rem] text-primary-foreground/40 uppercase tracking-[0.08em]">views</div>
+                    </div>
+                    <div>
+                      <div className="font-display font-black text-[1.2rem] text-primary-foreground">{creator.pinnedImage.downloads}</div>
+                      <div className="text-[0.65rem] text-primary-foreground/40 uppercase tracking-[0.08em]">downloads</div>
+                    </div>
+                  </div>
+                  <p className="text-[0.75rem] text-primary-foreground/35">Pinned by {creator.name} · Their signature piece</p>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Tabs */}
           <div className="flex items-center gap-1 mb-6 border-b border-foreground/[0.06] pb-0">
@@ -175,15 +202,10 @@ const CreatorPage = () => {
           {activeTab === "Images" && (
             <div className="masonry-grid">
               {photos.map((photo, i) => (
-                <Link
-                  key={i}
-                  to={`/image/${i}`}
-                  className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative"
-                >
+                <Link key={i} to={`/image/${i}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
                   <img
                     src={`https://images.unsplash.com/${photo}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
-                    alt=""
-                    loading="lazy"
+                    alt="" loading="lazy"
                     className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
                     style={{ height: heights[i % heights.length], objectFit: "cover" }}
                   />
