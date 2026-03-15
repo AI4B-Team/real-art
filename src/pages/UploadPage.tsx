@@ -39,7 +39,9 @@ interface ImagePrompts {
 }
 
 const UploadPage = () => {
-  const [step, setStep] = useState(0);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [publishing, setPublishing] = useState(false);
   const [files, setFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [dragging, setDragging] = useState(false);
