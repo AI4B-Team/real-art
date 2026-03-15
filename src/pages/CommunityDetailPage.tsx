@@ -22,7 +22,7 @@ const communitiesData = [
     coverPhoto: "photo-1618005182384-a83a8bd57fbe",
     tags: ["Abstract", "Fluid Art", "Generative", "Open"],
     rules: ["Post original work only", "Weekly drop participation encouraged", "Constructive feedback only"],
-    collectionPermission: "any_member" as const,
+    collectionPermission: "moderators" as const,
   },
 ];
 
