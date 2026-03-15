@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
-  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag
+  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag, Video, Image
 } from "lucide-react";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
 import Navbar from "@/components/Navbar";
@@ -27,6 +27,8 @@ const creators = [
 ];
 
 const samplePrompt = "A cosmic dreamscape with swirling nebula clouds and floating crystalline structures, cinematic lighting, dramatic shadows, 8k ultra-detailed, photorealistic render, deep space background with stars and aurora borealis, editorial photography style";
+
+const sampleVideoPrompt = "Slow dolly-in through swirling nebula clouds as crystalline structures rotate and refract light. Camera drifts weightlessly through deep space, aurora borealis ribbons dancing across the frame. Cinematic orchestral score swells. Cut to macro shot of crystal facets catching starlight, then pull back to reveal the full cosmic dreamscape. 4K, 24fps, anamorphic lens flares, volumetric fog.";
 
 const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
 
@@ -67,6 +69,8 @@ const ImagePage = () => {
   const [showRecreateModal, setShowRecreateModal] = useState(false);
   const [followed, setFollowed] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [activePromptTab, setActivePromptTab] = useState<"image" | "video">("image");
+  const [videoCopied, setVideoCopied] = useState(false);
 
   const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
 
@@ -88,6 +92,12 @@ const ImagePage = () => {
     navigator.clipboard.writeText(samplePrompt).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyVideo = () => {
+    navigator.clipboard.writeText(sampleVideoPrompt).catch(() => {});
+    setVideoCopied(true);
+    setTimeout(() => setVideoCopied(false), 2000);
   };
 
   const similar = photos.filter((_, i) => i !== idx).slice(0, 6);
@@ -410,11 +420,11 @@ const ImagePage = () => {
                 </div>
               </div>
 
-              {/* Prompt section with usage stat */}
-              <div className="mt-8 bg-card border border-foreground/[0.08] rounded-xl p-5">
-                <div className="flex items-center justify-between mb-3">
+              {/* Prompts section — Image & Video tabs */}
+              <div className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
+                <div className="flex items-center justify-between px-5 pt-4 pb-0">
                   <div className="flex items-center gap-3">
-                    <div className="font-semibold text-[0.9rem]">AI Prompt</div>
+                    <div className="font-semibold text-[0.9rem]">Prompts</div>
                     <span className="text-[0.72rem] text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-md">Used 1,247 times</span>
                   </div>
                   <button
@@ -422,30 +432,70 @@ const ImagePage = () => {
                     className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
                   >
                     <Eye className="w-3.5 h-3.5" />
-                    {promptVisible ? "Hide" : "Reveal Prompt"}
+                    {promptVisible ? "Hide" : "Reveal Prompts"}
                   </button>
                 </div>
-                {promptVisible ? (
-                  <>
-                    <p className="text-[0.82rem] text-muted leading-[1.65] mb-3">{samplePrompt}</p>
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleCopy}
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
-                      >
-                        {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
-                        {copied ? "Copied!" : "Copy"}
-                      </button>
-                      <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-primary-foreground text-[0.75rem] font-medium hover:bg-accent/80 transition-colors">
-                        <RefreshCw className="w-3 h-3" /> Remix in REAL CREATOR
-                      </button>
+
+                {/* Tabs */}
+                <div className="flex gap-0 px-5 mt-3 border-b border-foreground/[0.06]">
+                  {([
+                    { key: "image" as const, label: "Image Prompt", icon: Image },
+                    { key: "video" as const, label: "Video Inspo", icon: Video },
+                  ]).map(tab => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setActivePromptTab(tab.key)}
+                      className={`flex items-center gap-1.5 px-4 py-2.5 text-[0.8rem] font-medium border-b-2 transition-colors -mb-px ${
+                        activePromptTab === tab.key
+                          ? "border-accent text-accent"
+                          : "border-transparent text-muted hover:text-foreground"
+                      }`}
+                    >
+                      <tab.icon className="w-3.5 h-3.5" /> {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="px-5 py-4">
+                  {promptVisible ? (
+                    <>
+                      {activePromptTab === "image" ? (
+                        <>
+                          <p className="text-[0.82rem] text-muted leading-[1.65] mb-3">{samplePrompt}</p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={handleCopy}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                            >
+                              {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                              {copied ? "Copied!" : "Copy"}
+                            </button>
+                            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-primary-foreground text-[0.75rem] font-medium hover:bg-accent/80 transition-colors">
+                              <RefreshCw className="w-3 h-3" /> Remix in REAL CREATOR
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <p className="text-[0.82rem] text-muted leading-[1.65] mb-3">{sampleVideoPrompt}</p>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={handleCopyVideo}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                            >
+                              {videoCopied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                              {videoCopied ? "Copied!" : "Copy"}
+                            </button>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-[0.82rem] text-muted">
+                      Join REAL ART free to unlock prompts for every image on the platform.
                     </div>
-                  </>
-                ) : (
-                  <div className="text-[0.82rem] text-muted">
-                    Join REAL ART free to unlock prompts for every image on the platform.
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
 
               {/* Steal This Style */}
