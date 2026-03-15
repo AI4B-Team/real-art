@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Download, RefreshCw, Video, Pencil, Heart, Eye, Copy, Shuffle, FileText, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import SaveToBoardModal from "@/components/SaveToBoardModal";
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe", "photo-1558618666-fcd25c85cd64",
