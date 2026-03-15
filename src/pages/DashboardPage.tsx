@@ -506,7 +506,7 @@ const DashboardPage = () => {
                   </Link>
                 </div>
                 <div className="flex flex-col gap-4">
-                  {galleries.map((g, i) => (
+                  {collections.map((g, i) => (
                     <div key={i} className="bg-card border border-foreground/[0.08] rounded-xl p-5 flex items-center justify-between flex-wrap gap-4">
                       <div>
                         <div className="flex items-center gap-2 mb-1">
