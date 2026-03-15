@@ -79,8 +79,14 @@ const Navbar = () => {
   }, []);
 
   const handleLogout = () => {
-    try { localStorage.removeItem("ra_auth"); } catch {}
+    try {
+      localStorage.removeItem("ra_auth");
+      localStorage.removeItem("ra_display");
+      localStorage.removeItem("ra_username");
+    } catch {}
     setIsLoggedIn(false);
+    setUserDisplay("AI.Verse");
+    setUserHandle("aiverse");
     setUserMenuOpen(false);
     navigate("/");
   };
