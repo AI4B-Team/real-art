@@ -75,13 +75,45 @@ const UploadPage = () => {
         ? newCollectionName
         : "";
 
+  const generatePromptsForImage = async (dataUrl: string, index: number) => {
+    setImagePrompts(prev => ({
+      ...prev,
+      [index]: { image_prompt: "", video_prompt: "", loading: true },
+    }));
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-prompts", {
+        body: { imageUrl: dataUrl },
+      });
+      if (error) throw error;
+      setImagePrompts(prev => ({
+        ...prev,
+        [index]: {
+          image_prompt: data.image_prompt || "",
+          video_prompt: data.video_prompt || "",
+          loading: false,
+        },
+      }));
+    } catch (err) {
+      console.error("Prompt generation failed:", err);
+      setImagePrompts(prev => ({
+        ...prev,
+        [index]: { image_prompt: "", video_prompt: "", loading: false },
+      }));
+    }
+  };
+
   const handleFiles = (incoming: FileList | null) => {
     if (!incoming) return;
     const arr = Array.from(incoming).slice(0, 10);
+    const startIdx = files.length;
     setFiles(prev => [...prev, ...arr].slice(0, 10));
-    arr.forEach(f => {
+    arr.forEach((f, i) => {
       const r = new FileReader();
-      r.onload = e => setPreviews(prev => [...prev, e.target?.result as string].slice(0, 10));
+      r.onload = e => {
+        const dataUrl = e.target?.result as string;
+        setPreviews(prev => [...prev, dataUrl].slice(0, 10));
+        generatePromptsForImage(dataUrl, startIdx + i);
+      };
       r.readAsDataURL(f);
     });
   };
@@ -89,6 +121,16 @@ const UploadPage = () => {
   const removeFile = (i: number) => {
     setFiles(f => f.filter((_, idx) => idx !== i));
     setPreviews(p => p.filter((_, idx) => idx !== i));
+    // Reindex prompts
+    setImagePrompts(prev => {
+      const next: Record<number, ImagePrompts> = {};
+      Object.entries(prev).forEach(([key, val]) => {
+        const k = parseInt(key);
+        if (k < i) next[k] = val;
+        else if (k > i) next[k - 1] = val;
+      });
+      return next;
+    });
   };
 
   const toggleCat = (cat: string) => {
