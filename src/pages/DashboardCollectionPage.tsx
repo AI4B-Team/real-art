@@ -258,6 +258,46 @@ export default function DashboardCollectionPage() {
                 </p>
               )}
 
+              {/* Collection link display */}
+              {!editingLink && colLink ? (
+                <div className="flex items-center gap-2 mt-2.5 text-[0.78rem]">
+                  <ExternalLink className="w-3.5 h-3.5 text-accent" />
+                  <a href={colLink.defaultUrl} target="_blank" rel="noopener noreferrer" className="text-accent hover:underline truncate max-w-[300px]">
+                    {colLink.defaultSite} {colLink.defaultUrl}
+                  </a>
+                  {colLink.isAffiliate && <span className="text-[0.65rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">Affiliate</span>}
+                  <button onClick={() => { setEditingLink(true); setLinkUrl(colLink.defaultUrl); setLinkLabel(colLink.defaultLabel); setLinkSite(colLink.defaultSite); setLinkIsAffiliate(colLink.isAffiliate); }} className="text-muted hover:text-foreground transition-colors ml-1">
+                    <Edit3 className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : !editingLink ? (
+                <button onClick={() => setEditingLink(true)} className="flex items-center gap-1.5 text-[0.77rem] text-muted hover:text-accent transition-colors mt-2.5">
+                  <Plus className="w-3.5 h-3.5" /> Add shop / affiliate link to this collection
+                </button>
+              ) : null}
+
+              {/* Inline link editor */}
+              {editingLink && (
+                <div className="mt-3 bg-card border border-foreground/[0.08] rounded-xl p-4 flex flex-col gap-3">
+                  <input value={linkUrl} onChange={e => setLinkUrl(e.target.value)} placeholder="Destination URL" className="w-full h-9 border border-foreground/[0.13] rounded-lg px-3 font-body text-[0.82rem] bg-background outline-none focus:border-foreground transition-colors" autoFocus />
+                  <div className="grid grid-cols-2 gap-3">
+                    <input value={linkLabel} onChange={e => setLinkLabel(e.target.value)} placeholder="Button label" className="h-9 border border-foreground/[0.13] rounded-lg px-3 font-body text-[0.82rem] bg-background outline-none focus:border-foreground transition-colors" />
+                    <input value={linkSite} onChange={e => setLinkSite(e.target.value)} placeholder="Site / brand" className="h-9 border border-foreground/[0.13] rounded-lg px-3 font-body text-[0.82rem] bg-background outline-none focus:border-foreground transition-colors" />
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={() => setLinkIsAffiliate(!linkIsAffiliate)} className={`w-5 h-5 rounded border-2 flex items-center justify-center cursor-pointer shrink-0 transition-colors ${linkIsAffiliate ? "bg-foreground border-foreground" : "border-foreground/20"}`}>
+                      {linkIsAffiliate && <Check className="w-3 h-3 text-primary-foreground" />}
+                    </button>
+                    <span className="text-[0.78rem]">Affiliate link (FTC disclosure)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button onClick={saveColLink} className="px-4 py-1.5 bg-foreground text-primary-foreground rounded-lg text-[0.8rem] font-semibold hover:bg-accent transition-colors">Save</button>
+                    <button onClick={() => setEditingLink(false)} className="px-4 py-1.5 border border-foreground/[0.12] rounded-lg text-[0.8rem] hover:border-foreground/30 transition-colors">Cancel</button>
+                    {colLink && <button onClick={() => { setLinkUrl(""); saveColLink(); }} className="ml-auto text-[0.78rem] text-muted hover:text-red-500 transition-colors">Remove link</button>}
+                  </div>
+                </div>
+              )}
+
               {/* Meta row */}
               <div className="flex items-center gap-3 mt-3 flex-wrap text-[0.78rem] text-muted">
                 <span className={`flex items-center gap-1 font-bold text-[0.68rem] px-2.5 py-1 rounded-full ${col.free ? "bg-green-100 text-green-700" : "bg-accent/10 text-accent"}`}>
