@@ -4,10 +4,11 @@ import {
   ArrowLeft, Upload, Plus, Trash2, GripVertical, Download,
   Heart, Eye, Globe, Lock, Key, Edit3, Check, X,
   Grid3X3, Rows3, SlidersHorizontal, Search, Image,
-  Video, Music, Play, ChevronDown, AlertTriangle, Users
+  Video, Music, Play, ChevronDown, AlertTriangle, Users, ExternalLink
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { getCollectionLink, setCollectionLink, removeCollectionLink, type CollectionLink } from "@/lib/linkStore";
 
 // Types
 type MediaType = "image" | "video" | "music";
