@@ -394,10 +394,8 @@ const GalleriesSection = () => {
   const [changingCode, setChangingCode] = useState<string | null>(null);
   const [newCode, setNewCode] = useState("");
   const [codeError, setCodeError] = useState("");
-  const [managingId, setManagingId] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  const managingGallery = managingId ? galData.find(g => g.id === managingId) : null;
   const totalItems = galData.reduce((s, g) => s + totalMedia(g), 0);
 
   const handleChangeCode = (id: string) => {
