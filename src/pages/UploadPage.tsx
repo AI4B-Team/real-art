@@ -663,8 +663,8 @@ const UploadPage = () => {
                               </div>
                               <div className="flex-1 min-w-0">
                                 <div className="text-[0.84rem] font-medium truncate">{c.name}</div>
-                                {c.communityId && (
-                                  <div className="text-[0.72rem] text-muted">{mockCommunities.find(mc => mc.id === c.communityId)?.name}</div>
+                                {c.community_id && (
+                                  <div className="text-[0.72rem] text-muted">{mockCommunities.find(mc => mc.id === c.community_id)?.name}</div>
                                 )}
                               </div>
                               {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
