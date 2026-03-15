@@ -147,6 +147,42 @@ const ImagePage = () => {
                 )}
               </div>
 
+              {/* Steal This Style */}
+              <div className="mt-6 bg-foreground rounded-xl p-5 relative overflow-hidden">
+                <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full opacity-[0.07]"
+                  style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
+                <div className="flex items-center gap-2 mb-3">
+                  <Sparkles className="w-4 h-4 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Style Fingerprint</span>
+                </div>
+                <div className="flex flex-wrap gap-2 mb-5">
+                  {["Cyberpunk", "Neon Lighting", "Ultra Detailed", "Futuristic City", "Moody Fog"].map(style => (
+                    <span key={style} className="text-[0.72rem] font-semibold px-3 py-1.5 rounded-lg bg-primary-foreground/[0.08] text-primary-foreground/80 border border-primary-foreground/[0.08]">
+                      {style}
+                    </span>
+                  ))}
+                </div>
+                <div className="bg-primary-foreground/[0.06] rounded-lg p-3.5 mb-5 border border-primary-foreground/[0.06]">
+                  <div className="grid grid-cols-2 gap-y-2.5 gap-x-6">
+                    {[
+                      ["Style", "Cyberpunk Neon City"],
+                      ["Lighting", "Neon + Fog"],
+                      ["Camera", "Wide Angle"],
+                      ["Detail", "Ultra / 8K"],
+                    ].map(([k, v]) => (
+                      <div key={k} className="flex justify-between text-[0.75rem]">
+                        <span className="text-primary-foreground/40">{k}</span>
+                        <span className="text-primary-foreground/80 font-medium">{v}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <button className="w-full flex items-center justify-center gap-2 bg-accent text-primary-foreground text-[0.88rem] font-bold py-3 rounded-lg hover:bg-accent/85 transition-colors">
+                  <Sparkles className="w-4 h-4" /> Steal This Style
+                </button>
+                <p className="text-[0.7rem] text-primary-foreground/35 text-center mt-2.5">Opens REAL CREATOR with prompt, model & style preloaded</p>
+              </div>
+
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mt-4">
                 {tags.map(tag => (
