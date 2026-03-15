@@ -25,8 +25,12 @@ const Index = () => {
       <CommunitiesSection />
       <ChallengesSection />
       <section className="py-12 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+        <div className="max-w-[1440px] mx-auto">
           <LeaderboardSection />
+        </div>
+      </section>
+      <section className="py-12 px-6 md:px-12">
+        <div className="max-w-[1440px] mx-auto">
           <CreatorEarningsSection />
         </div>
       </section>
