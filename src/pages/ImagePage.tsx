@@ -737,6 +737,22 @@ const ImagePage = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Sponsored Sidebar Ads */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <Megaphone className="w-4 h-4 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Sponsored</span>
+                </div>
+                <div className="space-y-3">
+                  {[
+                    { imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=500&fit=crop&q=80", brandName: "Poshmark", destinationUrl: "#" },
+                    { imageUrl: "https://images.unsplash.com/photo-1549880338-65ddcdfd017b?w=400&h=500&fit=crop&q=80", brandName: "SHEIN", destinationUrl: "#" },
+                  ].map((ad, i) => (
+                    <SponsoredCard key={i} imageUrl={ad.imageUrl} brandName={ad.brandName} destinationUrl={ad.destinationUrl} variant="sidebar" />
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
