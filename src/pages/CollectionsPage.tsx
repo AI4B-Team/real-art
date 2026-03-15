@@ -77,8 +77,8 @@ const CollectionsPage = () => {
         </div>
 
         {/* Category filter */}
-        <div className="px-6 md:px-12 py-5 border-b border-foreground/[0.06]">
-          <div className="max-w-[1440px] mx-auto flex items-center gap-2 overflow-x-auto no-scrollbar">
+        <div className="border-b border-foreground/[0.06]">
+          <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-5 flex items-center gap-2 overflow-x-auto no-scrollbar">
             {categories.map(cat => (
               <button
                 key={cat}
