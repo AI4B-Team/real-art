@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
-  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout
+  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag
 } from "lucide-react";
+import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
