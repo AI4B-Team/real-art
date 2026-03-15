@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Sparkles, FileText, X, Layout } from "lucide-react";
+import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Sparkles, FileText, X, Layout, ChevronDown, Plus, Compass } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
