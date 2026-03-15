@@ -270,7 +270,7 @@ const Navbar = () => {
                     <div
                       key={label}
                       onClick={(e) => { e.stopPropagation(); setNavSearchType(label); setNavSearchDropOpen(false); }}
-                      className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-[0.82rem] font-medium hover:bg-background transition-colors ${navSearchType === label ? "text-accent" : ""}`}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer text-[0.82rem] font-medium transition-colors ${navSearchType === label ? "bg-accent text-primary-foreground" : "hover:bg-background"}`}
                     >
                       <Icon className="w-3 h-3" />
                       {label}
