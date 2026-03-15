@@ -1,11 +1,12 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Upload, Image, X, Plus,
-  Check, Info, Tag, Globe, Lock, ChevronDown
+  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { supabase } from "@/integrations/supabase/client";
 
 const categories = [
   "Abstract", "Portraits", "Nature", "Architecture", "Fantasy",
@@ -30,6 +31,11 @@ const mockCollections = [
 ];
 
 type CollectionTarget = "none" | "existing" | "new";
+interface ImagePrompts {
+  image_prompt: string;
+  video_prompt: string;
+  loading: boolean;
+}
 
 const UploadPage = () => {
   const [step, setStep] = useState(0);
@@ -53,6 +59,9 @@ const UploadPage = () => {
   const [newCollectionName, setNewCollectionName] = useState("");
   const [collectionSearch, setCollectionSearch] = useState("");
 
+  // Per-image AI prompts
+  const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
+
   const filteredCollections = mockCollections.filter(c => {
     const matchesSearch = !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase());
     const matchesCommunity = !selectedCommunity || c.communityId === selectedCommunity;
@@ -66,13 +75,45 @@ const UploadPage = () => {
         ? newCollectionName
         : "";
 
+  const generatePromptsForImage = async (dataUrl: string, index: number) => {
+    setImagePrompts(prev => ({
+      ...prev,
+      [index]: { image_prompt: "", video_prompt: "", loading: true },
+    }));
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-prompts", {
+        body: { imageUrl: dataUrl },
+      });
+      if (error) throw error;
+      setImagePrompts(prev => ({
+        ...prev,
+        [index]: {
+          image_prompt: data.image_prompt || "",
+          video_prompt: data.video_prompt || "",
+          loading: false,
+        },
+      }));
+    } catch (err) {
+      console.error("Prompt generation failed:", err);
+      setImagePrompts(prev => ({
+        ...prev,
+        [index]: { image_prompt: "", video_prompt: "", loading: false },
+      }));
+    }
+  };
+
   const handleFiles = (incoming: FileList | null) => {
     if (!incoming) return;
     const arr = Array.from(incoming).slice(0, 10);
+    const startIdx = files.length;
     setFiles(prev => [...prev, ...arr].slice(0, 10));
-    arr.forEach(f => {
+    arr.forEach((f, i) => {
       const r = new FileReader();
-      r.onload = e => setPreviews(prev => [...prev, e.target?.result as string].slice(0, 10));
+      r.onload = e => {
+        const dataUrl = e.target?.result as string;
+        setPreviews(prev => [...prev, dataUrl].slice(0, 10));
+        generatePromptsForImage(dataUrl, startIdx + i);
+      };
       r.readAsDataURL(f);
     });
   };
@@ -80,6 +121,16 @@ const UploadPage = () => {
   const removeFile = (i: number) => {
     setFiles(f => f.filter((_, idx) => idx !== i));
     setPreviews(p => p.filter((_, idx) => idx !== i));
+    // Reindex prompts
+    setImagePrompts(prev => {
+      const next: Record<number, ImagePrompts> = {};
+      Object.entries(prev).forEach(([key, val]) => {
+        const k = parseInt(key);
+        if (k < i) next[k] = val;
+        else if (k > i) next[k - 1] = val;
+      });
+      return next;
+    });
   };
 
   const toggleCat = (cat: string) => {
@@ -211,6 +262,75 @@ const UploadPage = () => {
                 </div>
               )}
 
+              {/* AI-Generated Prompts Per Image */}
+              {previews.length > 0 && (
+                <div className="mb-8">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Sparkles className="w-4 h-4 text-accent" />
+                    <h3 className="font-display text-[1.1rem] font-bold">AI-Generated Prompts</h3>
+                    <span className="text-[0.72rem] text-muted bg-accent/10 text-accent font-semibold px-2 py-0.5 rounded-md">Auto</span>
+                  </div>
+                  <div className="flex flex-col gap-4">
+                    {previews.map((src, i) => {
+                      const prompts = imagePrompts[i];
+                      return (
+                        <div key={i} className="bg-card border border-foreground/[0.08] rounded-xl p-4">
+                          <div className="flex gap-4 mb-3">
+                            <img src={src} alt="" className="w-16 h-16 rounded-lg object-cover shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-[0.82rem] font-semibold mb-1 truncate">Image {i + 1}</div>
+                              {prompts?.loading && (
+                                <div className="flex items-center gap-2 text-[0.78rem] text-accent">
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating prompts with AI…
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                          {prompts && !prompts.loading && (
+                            <div className="flex flex-col gap-3">
+                              <div>
+                                <label className="flex items-center gap-1.5 text-[0.76rem] font-semibold text-muted mb-1.5">
+                                  <Image className="w-3 h-3" /> Image Prompt
+                                </label>
+                                <textarea
+                                  value={prompts.image_prompt}
+                                  onChange={e => setImagePrompts(prev => ({
+                                    ...prev,
+                                    [i]: { ...prev[i], image_prompt: e.target.value }
+                                  }))}
+                                  rows={3}
+                                  className="w-full border border-foreground/[0.1] rounded-lg px-3 py-2 font-body text-[0.8rem] bg-background outline-none focus:border-accent/40 transition-colors resize-none leading-[1.6]"
+                                />
+                              </div>
+                              <div>
+                                <label className="flex items-center gap-1.5 text-[0.76rem] font-semibold text-muted mb-1.5">
+                                  <Video className="w-3 h-3" /> Video Inspo Prompt
+                                </label>
+                                <textarea
+                                  value={prompts.video_prompt}
+                                  onChange={e => setImagePrompts(prev => ({
+                                    ...prev,
+                                    [i]: { ...prev[i], video_prompt: e.target.value }
+                                  }))}
+                                  rows={3}
+                                  className="w-full border border-foreground/[0.1] rounded-lg px-3 py-2 font-body text-[0.8rem] bg-background outline-none focus:border-accent/40 transition-colors resize-none leading-[1.6]"
+                                />
+                              </div>
+                              <button
+                                onClick={() => generatePromptsForImage(src, i)}
+                                className="self-start flex items-center gap-1.5 text-[0.76rem] font-medium text-accent hover:text-accent/80 transition-colors"
+                              >
+                                <Sparkles className="w-3 h-3" /> Regenerate
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
               <button
                 disabled={!canProceed[0]}
                 onClick={() => setStep(1)}
@@ -278,17 +398,17 @@ const UploadPage = () => {
                   </div>
                 </div>
 
-                {/* Prompt */}
-                <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">AI Prompt <span className="text-muted font-normal">(optional but recommended)</span></label>
-                  <textarea
-                    className="w-full border border-foreground/[0.13] rounded-xl px-4 py-3 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors resize-none"
-                    rows={4}
-                    placeholder="Paste the prompt you used to generate this image…"
-                    value={prompt}
-                    onChange={e => setPrompt(e.target.value)}
-                  />
-                  <p className="text-[0.72rem] text-muted mt-1">Sharing your prompt helps other creators learn and gives you more affiliate clicks.</p>
+                {/* AI Prompts Summary */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="w-4 h-4 text-accent" />
+                    <span className="font-semibold text-[0.86rem]">AI Prompts</span>
+                    <span className="text-[0.72rem] text-accent bg-accent/10 px-2 py-0.5 rounded-md font-semibold">Auto-generated</span>
+                  </div>
+                  <p className="text-[0.78rem] text-muted mb-3">Image and video prompts were automatically generated for each image. You can edit them in the Upload step.</p>
+                  <div className="text-[0.8rem]">
+                    {Object.values(imagePrompts).filter(p => p.image_prompt).length} of {previews.length} images have prompts
+                  </div>
                 </div>
 
                 {/* AI Tool */}
@@ -474,7 +594,7 @@ const UploadPage = () => {
                     ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private gallery"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
-                    ["Prompt shared", prompt ? "Yes" : "No"],
+                    ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],
                   ].map(([k, v]) => (
                     <div key={k} className="flex items-start gap-4 text-[0.82rem]">
                       <span className="text-muted w-28 shrink-0">{k}</span>
