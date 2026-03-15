@@ -366,7 +366,7 @@ const Navbar = () => {
               <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-[0.7rem] font-bold text-accent">
                 {userInitials}
               </div>
-              <span className="text-[0.82rem] font-medium">{userDisplay}</span>
+              <span className="text-[0.82rem] font-medium lowercase">{userDisplay}</span>
               <ChevronDown className={`w-3.5 h-3.5 text-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
             </button>
             {userMenuOpen && (
