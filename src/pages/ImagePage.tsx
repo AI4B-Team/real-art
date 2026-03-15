@@ -235,6 +235,45 @@ const ImagePage = () => {
                 </div>
               </div>
 
+              {/* Created From This Style */}
+              <div className="mt-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Sparkles className="w-4.5 h-4.5 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Style Evolution</span>
+                </div>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Created From This Style</h2>
+                <p className="text-[0.8rem] text-muted mb-5">See what others created using the same style fingerprint</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {[
+                    { photo: "photo-1462275646964-a0e3386b89fa", creator: "@CosmicRay", title: "Cyberpunk Miami" },
+                    { photo: "photo-1567360425618-1594206637d2", creator: "@NightOwl", title: "Neon Shanghai" },
+                    { photo: "photo-1505765050516-f72dcac9c60e", creator: "@UrbanDream", title: "Blade Runner LA" },
+                    { photo: "photo-1547036967-23d11aacaee0", creator: "@VoidCity", title: "Neo Seoul" },
+                    { photo: "photo-1576091160550-2173dba999ef", creator: "@GlitchArt", title: "Cyber London" },
+                    { photo: "photo-1501854140801-50d01698950b", creator: "@SynthWave", title: "Neon Paris" },
+                  ].map((r, i) => (
+                    <Link key={i} to={`/image/${i + 30}`} className="relative rounded-xl overflow-hidden aspect-[4/5] group cursor-pointer">
+                      <img
+                        src={`https://images.unsplash.com/${r.photo}?w=300&h=375&fit=crop&q=78`}
+                        alt={r.title}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 50%)" }} />
+                      <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="text-[0.78rem] text-primary-foreground font-semibold">{r.title}</div>
+                        <div className="text-[0.68rem] text-primary-foreground/55">{r.creator}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="text-center mt-5">
+                  <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-accent text-primary-foreground px-6 py-2.5 rounded-lg cursor-pointer hover:bg-accent/85 transition-colors">
+                    <Sparkles className="w-3.5 h-3.5" /> Steal This Style & Create Yours
+                  </button>
+                </div>
+              </div>
+
               {/* Similar images */}
               <div className="mt-10">
                 <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Similar Images</h2>
