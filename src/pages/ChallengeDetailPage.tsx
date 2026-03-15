@@ -147,25 +147,36 @@ const ChallengeDetailPage = () => {
                   {entryPhotos.map((photo, i) => {
                     const cr = creators[i % creators.length];
                     return (
-                      <Link key={i} to={`/image/${i + 20}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
-                        <img
-                          src={`https://images.unsplash.com/${photo}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
-                          alt="" loading="lazy"
-                          className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                          style={{ height: heights[i % heights.length], objectFit: "cover" }}
-                        />
-                        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3" style={{ background: "var(--gradient-overlay)" }}>
+                      <div key={i} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
+                        <Link to={`/image/${i + 20}`}>
+                          <img
+                            src={`https://images.unsplash.com/${photo}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
+                            alt="" loading="lazy"
+                            className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
+                            style={{ height: heights[i % heights.length], objectFit: "cover" }}
+                          />
+                        </Link>
+                        {/* Vote button - always visible */}
+                        <button
+                          onClick={(e) => { e.preventDefault(); toggleVote(i); }}
+                          className={`absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.72rem] font-bold transition-all ${
+                            votedEntries.has(i)
+                              ? "bg-accent text-primary-foreground shadow-lg"
+                              : "bg-foreground/70 backdrop-blur-sm text-primary-foreground hover:bg-accent"
+                          }`}
+                        >
+                          <ThumbsUp className={`w-3 h-3 ${votedEntries.has(i) ? "fill-primary-foreground" : ""}`} />
+                          {entryVotes[i] + (votedEntries.has(i) ? 1 : 0)}
+                        </button>
+                        <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3 pointer-events-none" style={{ background: "var(--gradient-overlay)" }}>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center gap-1.5">
                               <div className="w-5 h-5 rounded-full flex items-center justify-center text-[0.52rem] font-bold text-white" style={{ background: cr.c }}>{cr.i}</div>
                               <span className="text-[0.7rem] text-white/90">{cr.n}</span>
                             </div>
-                            <button onClick={e => e.preventDefault()} className="w-6 h-6 rounded-full border-none bg-white/20 text-white flex items-center justify-center hover:bg-white/40 transition-colors">
-                              <Heart className="w-3 h-3" />
-                            </button>
                           </div>
                         </div>
-                      </Link>
+                      </div>
                     );
                   })}
                 </div>
