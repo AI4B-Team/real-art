@@ -1539,6 +1539,9 @@ const MyBoardsSection = () => {
               </>
             )}
 
+            {/* ═══ BOARDS ═══ */}
+            {activeSection === "boards" && <MyBoardsSection />}
+
             {/* ═══ ADS ═══ */}
             {activeSection === "ads" && <AdsSection />}
 
