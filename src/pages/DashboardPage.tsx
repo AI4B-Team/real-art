@@ -3,14 +3,15 @@ import { Link } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
   Download, Eye, Users, Upload, Plus, ChevronRight, Key, TrendingUp,
-  Heart, ArrowRight, RefreshCw, Code, Globe, Award, Star, Sparkles, Pin
+  Heart, ArrowRight, RefreshCw, Code, Globe, Award, Star, Sparkles, Pin,
+  Play, Music, SlidersHorizontal, Bookmark, MoreHorizontal, LayoutGrid
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 const navItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "exposure", label: "Exposure", icon: TrendingUp },
-  { id: "images", label: "My Images", icon: Image },
+  { id: "media", label: "Media", icon: Image },
   { id: "galleries", label: "Collections", icon: FolderOpen },
   { id: "earnings", label: "Earnings", icon: DollarSign },
   { id: "notifications", label: "Notifications", icon: Bell },
@@ -70,6 +71,305 @@ const weeklyExposure = [
   { day: "Sun", views: 44300 },
 ];
 const maxWeekly = Math.max(...weeklyExposure.map(d => d.views));
+
+/* ═══ MEDIA DATA ═══ */
+type MediaType = "image" | "video" | "music";
+
+interface MediaItem {
+  id: string;
+  type: MediaType;
+  photo: string;
+  title: string;
+  downloads: string;
+  remixes: string;
+  likes: string;
+  views: string;
+  earnings: string;
+  pinned: boolean;
+  published: string;
+  size: string;
+}
+
+const mediaItems: MediaItem[] = [
+  // Images
+  { id: "i1", type: "image", photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", remixes: "247", likes: "847", views: "48,201", earnings: "$124.40", pinned: true, published: "Mar 10, 2026", size: "4096×4096" },
+  { id: "i2", type: "image", photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", remixes: "189", likes: "612", views: "31,400", earnings: "$79.20", pinned: false, published: "Mar 8, 2026", size: "4096×4096" },
+  { id: "i3", type: "image", photo: "photo-1604881991720-f91add269bed", title: "Digital Avatar 01", downloads: "1,940", remixes: "156", likes: "534", views: "26,800", earnings: "$70.56", pinned: false, published: "Mar 5, 2026", size: "2048×2048" },
+  { id: "i4", type: "image", photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City Night", downloads: "1,620", remixes: "121", likes: "441", views: "22,100", earnings: "$58.90", pinned: false, published: "Feb 28, 2026", size: "4096×4096" },
+  { id: "i5", type: "image", photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire", downloads: "1,410", remixes: "94", likes: "388", views: "18,600", earnings: "$51.26", pinned: false, published: "Feb 22, 2026", size: "3840×2160" },
+  { id: "i6", type: "image", photo: "photo-1558618666-fcd25c85cd64", title: "Forest Spirit", downloads: "1,120", remixes: "78", likes: "302", views: "14,200", earnings: "$40.70", pinned: false, published: "Feb 18, 2026", size: "4096×4096" },
+  // Videos
+  { id: "v1", type: "video", photo: "photo-1558591710-4b4a1ae0f04d", title: "Liquid Chrome Loop", downloads: "842", remixes: "34", likes: "291", views: "12,800", earnings: "$30.62", pinned: false, published: "Mar 6, 2026", size: "1920×1080 · 0:12" },
+  { id: "v2", type: "video", photo: "photo-1550684848-fac1c5b4e853", title: "Neon Rain Cinemagraph", downloads: "619", remixes: "22", likes: "178", views: "8,400", earnings: "$22.50", pinned: false, published: "Feb 24, 2026", size: "1920×1080 · 0:08" },
+  { id: "v3", type: "video", photo: "photo-1506259091721-2c27eb6c768f", title: "Fractal Expansion", downloads: "390", remixes: "11", likes: "94", views: "4,100", earnings: "$14.18", pinned: false, published: "Feb 10, 2026", size: "3840×2160 · 0:24" },
+  // Music
+  { id: "m1", type: "music", photo: "photo-1511379938547-c1f69419868d", title: "Midnight Synthwave", downloads: "1,240", remixes: "0", likes: "512", views: "9,300", earnings: "$45.10", pinned: false, published: "Mar 1, 2026", size: "3:42 · 128 BPM · Am" },
+  { id: "m2", type: "music", photo: "photo-1493225457124-a3eb161ffa5f", title: "Cosmic Ambience", downloads: "870", remixes: "0", likes: "334", views: "6,100", earnings: "$31.64", pinned: false, published: "Feb 14, 2026", size: "5:18 · 90 BPM · Dm" },
+  { id: "m3", type: "music", photo: "photo-1470225620780-dba8ba36b745", title: "Neural Drift", downloads: "420", remixes: "0", likes: "187", views: "3,200", earnings: "$15.28", pinned: false, published: "Jan 30, 2026", size: "4:07 · 140 BPM · Cm" },
+];
+
+const typeIcon: Record<MediaType, typeof Image> = {
+  image: Image,
+  video: Play,
+  music: Music,
+};
+
+/* ═══ MEDIA SECTION COMPONENT ═══ */
+const MediaSection = () => {
+  const [filter, setFilter] = useState<"all" | MediaType>("all");
+  const [view, setView] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState("recent");
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const filtered = filter === "all" ? mediaItems : mediaItems.filter(m => m.type === filter);
+  const allSelected = selected.length === filtered.length && filtered.length > 0;
+
+  const toggleSelect = (id: string) => {
+    setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+  };
+
+  const counts = {
+    all: mediaItems.length,
+    image: mediaItems.filter(m => m.type === "image").length,
+    video: mediaItems.filter(m => m.type === "video").length,
+    music: mediaItems.filter(m => m.type === "music").length,
+  };
+
+  return (
+    <>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Media</h1>
+          <p className="text-[0.82rem] text-muted mt-1">{filtered.length} item{filtered.length !== 1 ? "s" : ""} · Images, Videos, Music</p>
+        </div>
+        <Link to="/upload" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
+          <Upload className="w-4 h-4" /> Upload New
+        </Link>
+      </div>
+
+      {/* Controls bar */}
+      <div className="flex flex-wrap items-center gap-3 mb-5">
+        {/* Filter pills */}
+        <div className="flex gap-1.5">
+          {(["all", "image", "video", "music"] as const).map(f => (
+            <button
+              key={f}
+              onClick={() => { setFilter(f); setSelected([]); }}
+              className={`px-3.5 py-1.5 rounded-lg text-[0.78rem] font-medium transition-colors ${filter === f ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted hover:text-foreground"}`}
+            >
+              {f === "all" ? "All" : f === "image" ? "Images" : f === "video" ? "Videos" : "Music"} <span className="ml-1 opacity-60">{counts[f]}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="flex-1" />
+
+        {/* Sort */}
+        <select
+          value={sortBy}
+          onChange={e => setSortBy(e.target.value)}
+          className="h-10 px-3 rounded-xl border border-foreground/[0.1] text-[0.8rem] font-medium bg-card outline-none cursor-pointer hover:border-foreground/25 transition-colors appearance-none"
+        >
+          <option value="recent">Most Recent</option>
+          <option value="downloads">Most Downloads</option>
+        </select>
+
+        {/* View toggle */}
+        <div className="flex gap-1">
+          <button onClick={() => setView("grid")} className={`p-2 rounded-lg transition-colors ${view === "grid" ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}>
+            <LayoutGrid className="w-3.5 h-3.5" />
+          </button>
+          <button onClick={() => setView("list")} className={`p-2 rounded-lg transition-colors ${view === "list" ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}>
+            <SlidersHorizontal className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      </div>
+
+      {/* Bulk action bar */}
+      {selected.length > 0 && (
+        <div className="bg-foreground rounded-xl px-4 py-3 mb-4 flex items-center gap-3 flex-wrap">
+          <span className="text-[0.8rem] text-primary-foreground font-semibold">{selected.length} selected</span>
+          <div className="flex gap-2">
+            {[
+              { label: "Add to Collection", icon: Bookmark },
+              { label: "Download", icon: Download },
+              { label: "Delete", icon: MoreHorizontal },
+            ].map(a => (
+              <button key={a.label} className="flex items-center gap-1.5 text-[0.75rem] text-primary-foreground/70 hover:text-primary-foreground transition-colors px-2.5 py-1.5 rounded-lg bg-primary-foreground/[0.08]">
+                <a.icon className="w-3 h-3" /> {a.label}
+              </button>
+            ))}
+          </div>
+          <button onClick={() => setSelected([])} className="text-[0.75rem] text-primary-foreground/40 hover:text-primary-foreground/70 transition-colors ml-1">
+            Clear
+          </button>
+        </div>
+      )}
+
+      {/* Select all */}
+      <div className="flex items-center gap-2 mb-4">
+        <button
+          onClick={() => setSelected(allSelected ? [] : filtered.map(m => m.id))}
+          className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${allSelected ? "bg-accent border-accent" : "border-foreground/20 hover:border-foreground/40"}`}
+        >
+          {allSelected && <Star className="w-2.5 h-2.5 text-primary-foreground" />}
+        </button>
+        <span className="text-[0.78rem] text-muted">Select all</span>
+        <span className="text-[0.72rem] text-muted/60 ml-2">{filtered.length} item{filtered.length !== 1 ? "s" : ""}</span>
+      </div>
+
+      {/* ═══ GRID VIEW ═══ */}
+      {view === "grid" && (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {filtered.map(item => {
+            const isSelected = selected.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                onClick={() => toggleSelect(item.id)}
+                className={`bg-card border rounded-xl overflow-hidden group cursor-pointer transition-colors ${isSelected ? "border-accent ring-1 ring-accent/30" : "border-foreground/[0.08]"}`}
+              >
+                <div className="aspect-[4/3] overflow-hidden relative">
+                  {item.type === "music" ? (
+                    <div className="w-full h-full bg-foreground/[0.06] flex items-center justify-center">
+                      <div className="flex items-end gap-[3px] h-12">
+                        {[4, 7, 5, 9, 6, 11, 8, 5, 10, 7, 4, 8, 6, 10, 5, 9, 7, 4, 8, 6].map((h, i) => (
+                          <div key={i} className="w-[3px] bg-accent/60 rounded-full" style={{ height: `${h * 3}px` }} />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <img
+                      src={`https://images.unsplash.com/${item.photo}?w=400&h=300&fit=crop&q=78`}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                    />
+                  )}
+
+                  {/* Type badge */}
+                  {item.type !== "image" && (
+                    <div className="absolute top-2 left-2 bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 uppercase">
+                      {item.type === "video" && <Play className="w-3 h-3" />}
+                      {item.type === "music" && <Music className="w-3 h-3" />}
+                      {item.type}
+                    </div>
+                  )}
+
+                  {/* Pinned badge */}
+                  {item.pinned && (
+                    <div className="absolute top-2 right-2 bg-accent text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
+                      <Star className="w-2 h-2" /> Featured
+                    </div>
+                  )}
+
+                  {/* Hover actions */}
+                  <div className="absolute bottom-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+                    <button className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg">Edit</button>
+                    <button className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg">View</button>
+                  </div>
+
+                  {/* Selection indicator */}
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-md bg-accent flex items-center justify-center">
+                      <Star className="w-2.5 h-2.5 text-primary-foreground" />
+                    </div>
+                  )}
+                </div>
+                <div className="p-3">
+                  <div className="text-[0.82rem] font-semibold mb-0.5">{item.title}</div>
+                  <div className="text-[0.68rem] text-muted mb-1.5 capitalize">{item.type} · {item.size}</div>
+                  <div className="flex items-center gap-3 text-[0.72rem] text-muted">
+                    <span className="flex items-center gap-1"><Download className="w-2.5 h-2.5" />{item.downloads}</span>
+                    {item.type !== "music" && <span className="flex items-center gap-1"><RefreshCw className="w-2.5 h-2.5" />{item.remixes}</span>}
+                    <span className="flex items-center gap-1"><Heart className="w-2.5 h-2.5" />{item.likes}</span>
+                    <span className="ml-auto text-accent font-semibold">{item.earnings}</span>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {/* Upload more tile */}
+          <Link
+            to="/upload"
+            className="bg-card border border-dashed border-foreground/[0.15] rounded-xl flex flex-col items-center justify-center gap-2 aspect-[4/3] hover:border-accent/40 transition-colors no-underline group"
+            onClick={e => e.stopPropagation()}
+          >
+            <Plus className="w-8 h-8 text-muted group-hover:text-accent transition-colors" />
+            <span className="text-[0.8rem] text-muted group-hover:text-accent font-medium transition-colors">Upload More</span>
+          </Link>
+        </div>
+      )}
+
+      {/* ═══ LIST VIEW ═══ */}
+      {view === "list" && (
+        <div className="bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
+          {/* Header */}
+          <div className="grid grid-cols-[28px_44px_1fr_80px_80px_80px_90px_80px] gap-3 px-4 py-3 border-b border-foreground/[0.06] text-[0.72rem] text-muted font-medium">
+            <span />
+            <span />
+            <span>Title</span>
+            <span className="text-right">Downloads</span>
+            <span className="text-right">Remixes</span>
+            <span className="text-right">Likes</span>
+            <span className="text-right">Earnings</span>
+            <span className="text-right">Published</span>
+          </div>
+
+          {filtered.map(item => {
+            const isSelected = selected.includes(item.id);
+            return (
+              <div
+                key={item.id}
+                onClick={() => toggleSelect(item.id)}
+                className={`grid grid-cols-[28px_44px_1fr_80px_80px_80px_90px_80px] gap-3 px-4 py-3.5 border-b border-foreground/[0.04] last:border-none items-center cursor-pointer transition-colors hover:bg-foreground/[0.02] ${isSelected ? "bg-accent/[0.04]" : ""}`}
+              >
+                {/* Checkbox */}
+                <div className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-colors ${isSelected ? "bg-accent border-accent" : "border-foreground/20"}`}>
+                  {isSelected && <Star className="w-2.5 h-2.5 text-primary-foreground" />}
+                </div>
+
+                {/* Thumbnail */}
+                <div className="w-10 h-7 rounded-lg overflow-hidden bg-foreground/[0.06] relative">
+                  {item.type === "music" ? (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Music className="w-3 h-3 text-muted" />
+                    </div>
+                  ) : (
+                    <>
+                      <img src={`https://images.unsplash.com/${item.photo}?w=60&h=40&fit=crop&q=75`} alt="" className="w-full h-full object-cover" />
+                      {item.type === "video" && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <Play className="w-3 h-3 text-primary-foreground drop-shadow-md" />
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+
+                {/* Title */}
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[0.82rem] font-medium truncate">{item.title}</span>
+                    {item.pinned && <span className="text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md shrink-0">Featured</span>}
+                    <span className="text-[0.65rem] text-muted capitalize shrink-0">{item.type}</span>
+                  </div>
+                  <div className="text-[0.68rem] text-muted truncate">{item.size}</div>
+                </div>
+
+                <span className="text-[0.8rem] text-muted text-right">{item.downloads}</span>
+                <span className="text-[0.8rem] text-muted text-right">{item.type !== "music" ? item.remixes : "—"}</span>
+                <span className="text-[0.8rem] text-muted text-right">{item.likes}</span>
+                <span className="text-[0.8rem] text-accent font-semibold text-right">{item.earnings}</span>
+                <span className="text-[0.72rem] text-muted text-right">{item.published.split(",")[0]}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </>
+  );
+};
 
 const DashboardPage = () => {
   const [activeSection, setActiveSection] = useState("overview");
@@ -299,7 +599,7 @@ const DashboardPage = () => {
                 <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-[0.9rem]">Top Performing Images</h3>
-                    <button onClick={() => setActiveSection("images")} className="text-[0.78rem] text-accent hover:underline flex items-center gap-1">
+                    <button onClick={() => setActiveSection("media")} className="text-[0.78rem] text-accent hover:underline flex items-center gap-1">
                       View all <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
@@ -458,43 +758,8 @@ const DashboardPage = () => {
               </>
             )}
 
-            {/* ═══ MY IMAGES ═══ */}
-            {activeSection === "images" && (
-              <>
-                <div className="flex items-center justify-between mb-6">
-                  <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">My Images</h1>
-                  <Link to="/upload" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
-                    <Upload className="w-4 h-4" /> Upload New
-                  </Link>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {topImages.map((img, i) => (
-                    <div key={i} className="bg-card border border-foreground/[0.08] rounded-xl overflow-hidden group">
-                      <div className="aspect-[4/3] overflow-hidden relative">
-                        <img src={`https://images.unsplash.com/${img.photo}?w=400&h=300&fit=crop&q=78`} alt={img.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                        {img.pinned && (
-                          <div className="absolute top-2 left-2 bg-accent text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
-                            <Star className="w-2.5 h-2.5" /> Featured
-                          </div>
-                        )}
-                        <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg">Edit</button>
-                          <button className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg">View</button>
-                        </div>
-                      </div>
-                      <div className="p-3">
-                        <div className="text-[0.82rem] font-semibold mb-1">{img.title}</div>
-                        <div className="flex items-center gap-3 text-[0.72rem] text-muted">
-                          <span className="flex items-center gap-1"><Download className="w-2.5 h-2.5" />{img.downloads}</span>
-                          <span className="flex items-center gap-1"><RefreshCw className="w-2.5 h-2.5" />{img.remixes}</span>
-                          <span className="flex items-center gap-1"><Heart className="w-2.5 h-2.5" />{img.likes}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            )}
+            {/* ═══ MEDIA ═══ */}
+            {activeSection === "media" && <MediaSection />}
 
             {/* ═══ GALLERIES ═══ */}
             {activeSection === "galleries" && (
