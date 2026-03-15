@@ -124,7 +124,7 @@ const MasonryGrid = () => {
                                 <Pencil className="w-3.5 h-3.5" /> Edit
                               </button>
                             </TooltipTrigger>
-                            <TooltipContent side="top" className="text-xs"><p>Edit this image</p></TooltipContent>
+                            <TooltipContent side="top" className="text-xs"><p>Edit Image</p></TooltipContent>
                           </Tooltip>
                         </>
                       )}
