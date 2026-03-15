@@ -41,25 +41,21 @@ const earningMethods = [
 
 const CreatorEarningsSection = () => {
   return (
-    <section className="py-12 px-6 md:px-12">
-      <div className="max-w-[1440px] mx-auto">
-        <div className="text-center mb-10">
-          <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-2">Earn As A Creator</h2>
-          <p className="text-[0.9rem] text-muted max-w-[520px] mx-auto">Every image you post works for you automatically. Multiple revenue streams, zero overhead.</p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3.5">
-          {earningMethods.map((e) => (
-            <div key={e.title} className={`border rounded-[16px] p-6 flex flex-col gap-3 transition-all hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] ${e.highlight ? "bg-accent border-accent" : "bg-card border-foreground/[0.08]"}`}>
-              <div className={`w-11 h-11 rounded-[12px] flex items-center justify-center ${e.highlight ? "bg-primary-foreground/20" : "bg-foreground/[0.06]"}`}>
-                <e.icon className={`w-5 h-5 ${e.highlight ? "text-primary-foreground" : "text-foreground"}`} />
-              </div>
-              <div className={`font-semibold text-[0.92rem] ${e.highlight ? "text-primary-foreground" : ""}`}>{e.title}</div>
-              <div className={`text-[0.8rem] leading-[1.6] ${e.highlight ? "text-primary-foreground/70" : "text-muted"}`}>{e.desc}</div>
+    <div>
+      <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-2">Earn As A Creator</h2>
+      <p className="text-[0.9rem] text-muted mb-6">Every image you post works for you automatically. Multiple revenue streams, zero overhead.</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        {earningMethods.map((e) => (
+          <div key={e.title} className={`border rounded-[16px] p-6 flex flex-col gap-3 transition-all hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] ${e.highlight ? "bg-accent border-accent" : "bg-card border-foreground/[0.08]"}`}>
+            <div className={`w-11 h-11 rounded-[12px] flex items-center justify-center ${e.highlight ? "bg-primary-foreground/20" : "bg-foreground/[0.06]"}`}>
+              <e.icon className={`w-5 h-5 ${e.highlight ? "text-primary-foreground" : "text-foreground"}`} />
             </div>
-          ))}
-        </div>
+            <div className={`font-semibold text-[0.92rem] ${e.highlight ? "text-primary-foreground" : ""}`}>{e.title}</div>
+            <div className={`text-[0.8rem] leading-[1.6] ${e.highlight ? "text-primary-foreground/70" : "text-muted"}`}>{e.desc}</div>
+          </div>
+        ))}
       </div>
-    </section>
+    </div>
   );
 };
 
