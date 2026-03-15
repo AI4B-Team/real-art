@@ -94,7 +94,7 @@ const HeroSection = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.65, delay: 0.4 }}
-        className="mt-6 flex items-center justify-center gap-1.5 flex-wrap"
+        className="mt-6 flex items-center justify-center gap-2 whitespace-nowrap"
       >
         <span className="text-[0.75rem] font-semibold text-muted tracking-[0.06em] uppercase">Trending:</span>
         {trendingTerms.map((term, i) => (
