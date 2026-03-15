@@ -157,7 +157,7 @@ const Navbar = () => {
           </button>
         </Link>
         <Link to="/signup">
-          <button className="text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-6 py-2.5 rounded-lg cursor-pointer hover:bg-foreground/90 transition-colors">
+          <button className="text-[0.8rem] font-semibold bg-accent text-primary-foreground border-none px-6 py-2.5 rounded-lg cursor-pointer hover:bg-accent/85 transition-colors">
             Join Free
           </button>
         </Link>
