@@ -24,13 +24,6 @@ const mockCommunities = [
   { id: "c4", name: "Forest & Earth" },
 ];
 
-const mockCollections = [
-  { id: "col1", name: "Cosmic Portraits", communityId: null },
-  { id: "col2", name: "Neon Dreams", communityId: "c3" },
-  { id: "col3", name: "Nature Studies", communityId: "c4" },
-  { id: "col4", name: "My Favorites", communityId: null },
-];
-
 type CollectionTarget = "none" | "existing" | "new";
 interface ImagePrompts {
   image_prompt: string;
