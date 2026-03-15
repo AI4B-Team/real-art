@@ -3,8 +3,9 @@ import { useParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
   Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag, Video, Image,
-  Briefcase, Youtube, Instagram, Globe2, Package, Monitor
+  Briefcase, Youtube, Instagram, Globe2, Package, Monitor, Megaphone
 } from "lucide-react";
+import SponsoredCard from "@/components/SponsoredCard";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
