@@ -627,6 +627,16 @@ const ImagePage = () => {
         <Footer />
       </div>
       <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
+      <ShareModal
+        open={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        imageUrl={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
+        title="Cosmic Dreamscape"
+        creator={creator}
+        prompt={samplePrompt}
+        recreations="1,247"
+        imageId={id || "0"}
+      />
     </div>
   );
 };
