@@ -14,6 +14,72 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_campaigns: {
+        Row: {
+          brand_name: string
+          clicks: number
+          created_at: string
+          daily_budget_cents: number
+          destination_url: string
+          end_date: string | null
+          id: string
+          image_url: string
+          impressions: number
+          placements: Database["public"]["Enums"]["ad_placement"][]
+          spent_cents: number
+          start_date: string | null
+          status: Database["public"]["Enums"]["ad_status"]
+          stripe_payment_id: string | null
+          targeting_tags: string[] | null
+          title: string
+          total_budget_cents: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          brand_name: string
+          clicks?: number
+          created_at?: string
+          daily_budget_cents?: number
+          destination_url: string
+          end_date?: string | null
+          id?: string
+          image_url: string
+          impressions?: number
+          placements?: Database["public"]["Enums"]["ad_placement"][]
+          spent_cents?: number
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["ad_status"]
+          stripe_payment_id?: string | null
+          targeting_tags?: string[] | null
+          title: string
+          total_budget_cents?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          brand_name?: string
+          clicks?: number
+          created_at?: string
+          daily_budget_cents?: number
+          destination_url?: string
+          end_date?: string | null
+          id?: string
+          image_url?: string
+          impressions?: number
+          placements?: Database["public"]["Enums"]["ad_placement"][]
+          spent_cents?: number
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["ad_status"]
+          stripe_payment_id?: string | null
+          targeting_tags?: string[] | null
+          title?: string
+          total_budget_cents?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       collection_images: {
         Row: {
           collection_id: string
@@ -135,7 +201,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      ad_placement: "explore_feed" | "search_results" | "image_sidebar"
+      ad_status:
+        | "draft"
+        | "pending"
+        | "active"
+        | "paused"
+        | "completed"
+        | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -262,6 +335,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      ad_placement: ["explore_feed", "search_results", "image_sidebar"],
+      ad_status: [
+        "draft",
+        "pending",
+        "active",
+        "paused",
+        "completed",
+        "rejected",
+      ],
+    },
   },
 } as const
