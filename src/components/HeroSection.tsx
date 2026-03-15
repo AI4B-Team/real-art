@@ -105,6 +105,41 @@ const HeroSection = () => {
           </span>
         ))}
       </motion.p>
+
+      {/* Three Primary Action Cards */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.65, delay: 0.5 }}
+        className="max-w-[820px] mx-auto mt-12 grid grid-cols-1 sm:grid-cols-3 gap-4"
+      >
+        <Link to="/explore" className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-foreground/[0.08] bg-card hover:border-accent/40 hover:shadow-[0_8px_30px_-8px_hsl(var(--accent)/0.15)] transition-all duration-300 no-underline">
+          <div className="w-11 h-11 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+            <Camera className="w-5 h-5 text-accent" />
+          </div>
+          <span className="font-display text-[1rem] font-bold text-foreground">Browse Images</span>
+          <span className="text-[0.78rem] text-muted leading-snug">Explore millions of free visuals</span>
+          <span className="text-[0.68rem] font-semibold text-accent/70 tracking-wide">2.4M images available</span>
+        </Link>
+
+        <Link to="/real-creator" className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-foreground/[0.08] bg-card hover:border-accent/40 hover:shadow-[0_8px_30px_-8px_hsl(var(--accent)/0.15)] transition-all duration-300 no-underline">
+          <div className="w-11 h-11 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+            <Sparkles className="w-5 h-5 text-accent" />
+          </div>
+          <span className="font-display text-[1rem] font-bold text-foreground">Recreate An Image</span>
+          <span className="text-[0.78rem] text-muted leading-snug">Generate your own version instantly</span>
+          <span className="text-[0.68rem] font-semibold text-accent/70 tracking-wide">Infinite variations</span>
+        </Link>
+
+        <Link to="/upload" className="group flex flex-col items-center gap-3 p-6 rounded-xl border border-foreground/[0.08] bg-card hover:border-accent/40 hover:shadow-[0_8px_30px_-8px_hsl(var(--accent)/0.15)] transition-all duration-300 no-underline">
+          <div className="w-11 h-11 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+            <Upload className="w-5 h-5 text-accent" />
+          </div>
+          <span className="font-display text-[1rem] font-bold text-foreground">Upload Your Art</span>
+          <span className="text-[0.78rem] text-muted leading-snug">Share your work with the world</span>
+          <span className="text-[0.68rem] font-semibold text-accent/70 tracking-wide">Join 5,000+ creators</span>
+        </Link>
+      </motion.div>
     </section>
   );
 };
