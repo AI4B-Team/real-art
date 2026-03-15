@@ -101,6 +101,25 @@ export default function DashboardCollectionPage() {
   const [toast, setToast] = useState<string | null>(null);
   const [sortOpen, setSortOpen] = useState(false);
 
+  // Affiliate link state
+  const [colLink, setColLink] = useState<CollectionLink | null>(() => getCollectionLink(collectionKey) || null);
+  const [editingLink, setEditingLink] = useState(false);
+  const [linkUrl, setLinkUrl] = useState("");
+  const [linkLabel, setLinkLabel] = useState("");
+  const [linkSite, setLinkSite] = useState("");
+  const [linkIsAffiliate, setLinkIsAffiliate] = useState(false);
+
+  const saveColLink = () => {
+    if (!linkUrl.trim()) {
+      removeCollectionLink(collectionKey);
+      setColLink(null);
+      showToast("Link removed");
+    } else {
+      const l: CollectionLink = { collectionId: collectionKey, defaultUrl: linkUrl.trim(), defaultLabel: linkLabel.trim() || "Shop this look", defaultSite: linkSite.trim() || "Shop", isAffiliate: linkIsAffiliate };
+      setCollectionLink(l); setColLink(l); showToast("Collection link saved");
+    }
+    setEditingLink(false);
+  };
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2500); };
 
   // Filtering & sorting
