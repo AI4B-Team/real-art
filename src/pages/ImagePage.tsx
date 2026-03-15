@@ -53,6 +53,8 @@ const ImagePage = () => {
   const idx = parseInt(id || "0") % photos.length;
   const photo = photos[idx];
   const creator = creators[idx % creators.length];
+  const hasShop = shopEnabledIndices.includes(idx);
+  const shopLink = shopLinks[idx];
 
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
