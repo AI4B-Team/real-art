@@ -181,11 +181,10 @@ const Navbar = () => {
               const otherFiltered = filtered.filter(c => !c.pinned);
               return (
                 <>
-            {/* Pinned */}
             {pinnedFiltered.length > 0 && (
               <>
                 <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Pinned</div>
-                {sortedCommunities.filter(c => c.pinned).map(c => (
+                {pinnedFiltered.map(c => (
                   <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
                     <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
                       <Star className="w-3 h-3 text-accent fill-accent shrink-0" />
@@ -201,11 +200,10 @@ const Navbar = () => {
                 ))}
               </>
             )}
-            {/* Others */}
-            {sortedCommunities.some(c => !c.pinned) && (
+            {otherFiltered.length > 0 && (
               <>
                 <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Other Communities</div>
-                {sortedCommunities.filter(c => !c.pinned).map(c => (
+                {otherFiltered.map(c => (
                   <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
                     <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
                       {c.name}
@@ -220,6 +218,9 @@ const Navbar = () => {
                 ))}
               </>
             )}
+            {filtered.length === 0 && (
+              <div className="px-3.5 py-3 text-[0.82rem] text-muted">No communities found</div>
+            )}
             <div className="h-px bg-foreground/[0.06] my-1.5" />
             <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
               <Compass className="w-3.5 h-3.5 opacity-40 shrink-0" /> Browse Communities
@@ -227,6 +228,9 @@ const Navbar = () => {
             <Link to="/communities/create" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
               <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> Create Community
             </Link>
+                </>
+              );
+            })()}
           </div>
         )}
       </div>
