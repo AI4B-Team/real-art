@@ -3,7 +3,8 @@ import {
   Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3,
   Upload, Sparkles, FileText, X, Layout, ChevronDown, Plus,
   Compass, Image, Video, Music, LayoutDashboard, DollarSign,
-  LogOut, Settings, Bookmark
+  LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
+  Megaphone, LayoutGrid
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
