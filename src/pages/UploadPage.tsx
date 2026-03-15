@@ -1,0 +1,376 @@
+import { useState, useRef } from "react";
+import { Link } from "react-router-dom";
+import {
+  ArrowLeft, ChevronRight, Upload, Image, X, Plus,
+  Check, Info, Tag, Globe, Lock, ChevronDown
+} from "lucide-react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+
+const categories = [
+  "Abstract", "Portraits", "Nature", "Architecture", "Fantasy",
+  "3D Art", "Fashion", "Sci-Fi", "Avatars", "Backgrounds",
+  "Luxury", "Cyberpunk", "Minimal", "Food", "Travel",
+];
+
+const steps = ["Upload", "Details", "Publish"];
+
+const UploadPage = () => {
+  const [step, setStep] = useState(0);
+  const [files, setFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [dragging, setDragging] = useState(false);
+  const [title, setTitle] = useState("");
+  const [selectedCats, setSelectedCats] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [prompt, setPrompt] = useState("");
+  const [tool, setTool] = useState("");
+  const [visibility, setVisibility] = useState<"public" | "private">("public");
+  const [published, setPublished] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const handleFiles = (incoming: FileList | null) => {
+    if (!incoming) return;
+    const arr = Array.from(incoming).slice(0, 10);
+    setFiles(prev => [...prev, ...arr].slice(0, 10));
+    arr.forEach(f => {
+      const r = new FileReader();
+      r.onload = e => setPreviews(prev => [...prev, e.target?.result as string].slice(0, 10));
+      r.readAsDataURL(f);
+    });
+  };
+
+  const removeFile = (i: number) => {
+    setFiles(f => f.filter((_, idx) => idx !== i));
+    setPreviews(p => p.filter((_, idx) => idx !== i));
+  };
+
+  const toggleCat = (cat: string) => {
+    setSelectedCats(prev => prev.includes(cat) ? prev.filter(c => c !== cat) : [...prev, cat].slice(0, 5));
+  };
+
+  const addTag = (e: React.KeyboardEvent) => {
+    if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
+      e.preventDefault();
+      setTags(prev => [...new Set([...prev, tagInput.trim().toLowerCase()])].slice(0, 15));
+      setTagInput("");
+    }
+  };
+
+  const removeTag = (t: string) => setTags(prev => prev.filter(x => x !== t));
+
+  const canProceed = [
+    files.length > 0,
+    title.trim().length > 2 && selectedCats.length > 0,
+    true,
+  ];
+
+  // Published success screen
+  if (published) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="pt-16 flex items-center justify-center min-h-[80vh] px-6">
+          <div className="text-center max-w-[440px]">
+            <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
+              <Check className="w-9 h-9 text-accent" />
+            </div>
+            <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3">Published!</h1>
+            <p className="text-muted text-[0.88rem] leading-[1.7] mb-8">
+              Your {files.length} image{files.length > 1 ? "s are" : " is"} live on REAL ART. Your affiliate link is already attached to every image — start sharing.
+            </p>
+            <div className="flex flex-col gap-3">
+              <Link to="/explore">
+                <button className="w-full bg-foreground text-primary-foreground py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors">
+                  View on Explore
+                </button>
+              </Link>
+              <button
+                onClick={() => { setPublished(false); setStep(0); setFiles([]); setPreviews([]); setTitle(""); setSelectedCats([]); setTags([]); setPrompt(""); }}
+                className="w-full border border-foreground/[0.14] py-3 rounded-lg text-[0.86rem] font-medium hover:border-foreground/30 transition-colors"
+              >
+                Upload More
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      <Navbar />
+      <div className="pt-16">
+        <div className="px-6 md:px-12 py-8 max-w-[860px] mx-auto">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-[0.8rem] text-muted mb-8">
+            <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
+              <ArrowLeft className="w-3.5 h-3.5" /> Home
+            </Link>
+            <ChevronRight className="w-3 h-3 opacity-30" />
+            <span className="text-foreground">Upload Art</span>
+          </div>
+
+          {/* Step indicator */}
+          <div className="flex items-center gap-3 mb-10">
+            {steps.map((s, i) => (
+              <div key={s} className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-[0.75rem] font-bold transition-colors ${i <= step ? "bg-accent text-white" : i === step ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.08] text-muted"}`}>
+                    {i < step ? <Check className="w-3.5 h-3.5" /> : i + 1}
+                  </div>
+                  <span className={`text-[0.82rem] font-medium ${i <= step ? "text-foreground" : "text-muted"}`}>{s}</span>
+                </div>
+                {i < steps.length - 1 && <div className="w-12 h-px bg-foreground/[0.1]" />}
+              </div>
+            ))}
+          </div>
+
+          {/* STEP 0: Upload */}
+          {step === 0 && (
+            <div>
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Upload your art</h1>
+              <p className="text-muted text-[0.88rem] mb-8">Up to 10 images at once. JPG, PNG, WebP up to 20MB each.</p>
+
+              <div
+                onDragOver={e => { e.preventDefault(); setDragging(true); }}
+                onDragLeave={() => setDragging(false)}
+                onDrop={e => { e.preventDefault(); setDragging(false); handleFiles(e.dataTransfer.files); }}
+                onClick={() => fileRef.current?.click()}
+                className={`border-2 border-dashed rounded-2xl flex flex-col items-center justify-center py-16 px-8 cursor-pointer transition-colors mb-6 ${dragging ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.14] hover:border-foreground/30 bg-card"}`}
+              >
+                <input ref={fileRef} type="file" multiple accept="image/*" className="hidden" onChange={e => handleFiles(e.target.files)} />
+                <Upload className={`w-7 h-7 mb-3 ${dragging ? "text-accent" : "text-muted"}`} />
+                <div className="font-semibold text-[0.92rem] mb-1">{dragging ? "Drop to upload" : "Drag & drop your images here"}</div>
+                <div className="text-[0.78rem] text-muted">or click to browse</div>
+              </div>
+
+              <div className="flex items-center gap-2 text-[0.75rem] text-muted mb-6">
+                <Info className="w-3.5 h-3.5" /> JPG, PNG, WebP · Max 20MB per file · Up to 10 images
+              </div>
+
+              {previews.length > 0 && (
+                <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mb-8">
+                  {previews.map((src, i) => (
+                    <div key={i} className="aspect-square rounded-xl overflow-hidden relative group">
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => removeFile(i)}
+                        className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                  {previews.length < 10 && (
+                    <button
+                      onClick={() => fileRef.current?.click()}
+                      className="aspect-square rounded-xl border-2 border-dashed border-foreground/[0.12] flex items-center justify-center hover:border-foreground/30 transition-colors text-muted hover:text-foreground"
+                    >
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+              )}
+
+              <button
+                disabled={!canProceed[0]}
+                onClick={() => setStep(1)}
+                className="bg-foreground text-primary-foreground px-8 py-3 rounded-lg text-[0.86rem] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent transition-colors"
+              >
+                Continue
+              </button>
+            </div>
+          )}
+
+          {/* STEP 1: Details */}
+          {step === 1 && (
+            <div>
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Add details</h1>
+              <p className="text-muted text-[0.88rem] mb-8">Help people find your work. Better details = more downloads.</p>
+
+              <div className="flex flex-col gap-7">
+                {/* Title */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Title <span className="text-accent">*</span></label>
+                  <input
+                    className="w-full h-12 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.95rem] bg-card outline-none focus:border-foreground transition-colors"
+                    placeholder="Give your art a title"
+                    value={title}
+                    onChange={e => setTitle(e.target.value)}
+                    maxLength={80}
+                  />
+                  <div className="text-[0.72rem] text-muted mt-1 text-right">{title.length}/80</div>
+                </div>
+
+                {/* Categories */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Categories <span className="text-accent">*</span> <span className="text-muted font-normal">(up to 5)</span></label>
+                  <div className="flex flex-wrap gap-2">
+                    {categories.map(cat => (
+                      <button
+                        key={cat}
+                        onClick={() => toggleCat(cat)}
+                        className={`border px-3.5 py-1.5 rounded-md text-[0.79rem] font-medium transition-all ${selectedCats.includes(cat) ? "bg-foreground text-primary-foreground border-foreground" : "border-foreground/[0.12] text-muted hover:border-foreground/30 hover:text-foreground"}`}
+                      >
+                        {selectedCats.includes(cat) && <Check className="w-3 h-3 inline mr-1" />}
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Tags */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Tags <span className="text-muted font-normal">(type and press Enter)</span></label>
+                  <div className="flex flex-wrap items-center gap-2 border border-foreground/[0.13] rounded-xl px-3 py-2 bg-card focus-within:border-foreground transition-colors">
+                    {tags.map(t => (
+                      <span key={t} className="flex items-center gap-1.5 bg-foreground/[0.06] text-[0.78rem] font-medium px-2.5 py-1 rounded-md">
+                        <Tag className="w-2.5 h-2.5" /> {t}
+                        <button onClick={() => removeTag(t)} className="text-muted hover:text-foreground transition-colors"><X className="w-3 h-3" /></button>
+                      </span>
+                    ))}
+                    <input
+                      className="flex-1 min-w-[120px] border-none outline-none font-body text-[0.88rem] bg-transparent py-1"
+                      placeholder="Add a tag…"
+                      value={tagInput}
+                      onChange={e => setTagInput(e.target.value)}
+                      onKeyDown={addTag}
+                    />
+                  </div>
+                </div>
+
+                {/* Prompt */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">AI Prompt <span className="text-muted font-normal">(optional but recommended)</span></label>
+                  <textarea
+                    className="w-full border border-foreground/[0.13] rounded-xl px-4 py-3 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors resize-none"
+                    rows={4}
+                    placeholder="Paste the prompt you used to generate this image…"
+                    value={prompt}
+                    onChange={e => setPrompt(e.target.value)}
+                  />
+                  <p className="text-[0.72rem] text-muted mt-1">Sharing your prompt helps other creators learn and gives you more affiliate clicks.</p>
+                </div>
+
+                {/* AI Tool */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">AI Tool Used</label>
+                  <div className="relative">
+                    <select
+                      value={tool}
+                      onChange={e => setTool(e.target.value)}
+                      className="w-full h-12 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
+                    >
+                      <option value="">Select tool…</option>
+                      {["Midjourney", "DALL-E 3", "Stable Diffusion", "Firefly", "Leonardo", "Ideogram", "Flux", "Other"].map(t => (
+                        <option key={t} value={t}>{t}</option>
+                      ))}
+                    </select>
+                    <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted pointer-events-none" />
+                  </div>
+                </div>
+
+                {/* Visibility */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Visibility</label>
+                  <div className="flex flex-col gap-3">
+                    {([
+                      { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone can view, download, and use this image for free" },
+                      { val: "private" as const, icon: Lock, title: "Private Gallery", desc: "Only accessible via your gallery with an access code" },
+                    ]).map(opt => (
+                      <button
+                        key={opt.val}
+                        onClick={() => setVisibility(opt.val)}
+                        className={`flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${visibility === opt.val ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                      >
+                        <opt.icon className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
+                        <div className="flex-1">
+                          <div className="font-semibold text-[0.86rem]">{opt.title}</div>
+                          <div className="text-[0.75rem] text-muted">{opt.desc}</div>
+                        </div>
+                        {visibility === opt.val && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-8">
+                <button onClick={() => setStep(0)} className="border border-foreground/[0.14] px-6 py-3 rounded-lg text-[0.86rem] font-medium hover:border-foreground/30 transition-colors">
+                  Back
+                </button>
+                <button
+                  disabled={!canProceed[1]}
+                  onClick={() => setStep(2)}
+                  className="bg-foreground text-primary-foreground px-8 py-3 rounded-lg text-[0.86rem] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent transition-colors"
+                >
+                  Continue
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: Publish */}
+          {step === 2 && (
+            <div>
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Ready to publish</h1>
+              <p className="text-muted text-[0.88rem] mb-8">Review your submission before going live.</p>
+
+              {/* Preview thumbnails */}
+              <div className="bg-card border border-foreground/[0.08] rounded-2xl p-6 mb-6">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-5">
+                  {previews.slice(0, 6).map((src, i) => (
+                    <div key={i} className="aspect-square rounded-xl overflow-hidden">
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-3">
+                  {[
+                    ["Title", title || "—"],
+                    ["Categories", selectedCats.join(", ") || "—"],
+                    ["Tags", tags.join(", ") || "—"],
+                    ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private gallery"],
+                    ["AI Tool", tool || "Not specified"],
+                    ["Prompt shared", prompt ? "Yes" : "No"],
+                  ].map(([k, v]) => (
+                    <div key={k} className="flex items-start gap-4 text-[0.82rem]">
+                      <span className="text-muted w-28 shrink-0">{k}</span>
+                      <span className="font-medium">{v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Affiliate reminder */}
+              <div className="bg-accent/[0.06] border border-accent/20 rounded-xl p-4 flex items-start gap-3 mb-8">
+                <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                <p className="text-[0.8rem] text-muted leading-[1.65]">
+                  Your affiliate link is automatically attached to every image you publish. When someone joins REAL CREATOR through your art, you earn commission — no setup required.
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button onClick={() => setStep(1)} className="border border-foreground/[0.14] px-6 py-3 rounded-lg text-[0.86rem] font-medium hover:border-foreground/30 transition-colors">
+                  Back
+                </button>
+                <button
+                  onClick={() => setPublished(true)}
+                  className="bg-foreground text-primary-foreground px-8 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors flex items-center gap-2"
+                >
+                  <Upload className="w-4 h-4" /> Publish {files.length} Image{files.length > 1 ? "s" : ""}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+        <Footer />
+      </div>
+    </div>
+  );
+};
+
+export default UploadPage;

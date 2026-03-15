@@ -20,6 +20,12 @@ import ChallengesPage from "./pages/ChallengesPage";
 import ChallengeDetailPage from "./pages/ChallengeDetailPage";
 import LeaderboardPage from "./pages/LeaderboardPage";
 
+// Round 3 — Creator Tools
+import UploadPage from "./pages/UploadPage";
+import CreateGalleryPage from "./pages/CreateGalleryPage";
+import PromptLibraryPage from "./pages/PromptLibraryPage";
+import AffiliatesPage from "./pages/AffiliatesPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -49,6 +55,13 @@ const App = () => (
           <Route path="/challenges" element={<ChallengesPage />} />
           <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
           <Route path="/leaderboard" element={<LeaderboardPage />} />
+
+          {/* Round 3 */}
+          <Route path="/upload" element={<UploadPage />} />
+          <Route path="/create-gallery" element={<CreateGalleryPage />} />
+          <Route path="/prompts" element={<PromptLibraryPage />} />
+          <Route path="/prompt-packs" element={<PromptLibraryPage />} />
+          <Route path="/affiliates" element={<AffiliatesPage />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
