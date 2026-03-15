@@ -628,7 +628,6 @@ const UploadPage = () => {
                   {publishing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                   {publishing ? "Publishing…" : `Publish ${files.length} Image${files.length > 1 ? "s" : ""}`}
                 </button>
-                </button>
               </div>
             </div>
           )}
