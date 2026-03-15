@@ -32,11 +32,11 @@ const recentActivity = [
 ];
 
 const topImages = [
-  { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", likes: "847", views: "48,201", remixes: "247", embeds: "1,032", earnings: "$124.40", pinned: true },
-  { photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", likes: "612", views: "31,400", remixes: "189", embeds: "742", earnings: "$79.20", pinned: false },
-  { photo: "photo-1604881991720-f91add269bed", title: "Digital Avatar 01", downloads: "1,940", likes: "534", views: "26,800", remixes: "156", embeds: "498", earnings: "$70.56", pinned: false },
-  { photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City Night", downloads: "1,620", likes: "441", views: "22,100", remixes: "121", embeds: "387", earnings: "$58.90", pinned: false },
-  { photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire", downloads: "1,410", likes: "388", views: "18,600", remixes: "94", embeds: "256", earnings: "$51.26", pinned: false },
+  { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", likes: "847", views: "48,201", remixes: "247", embeds: "1,032", affClicks: "312", earnings: "$124.40", pinned: true },
+  { photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", likes: "612", views: "31,400", remixes: "189", embeds: "742", affClicks: "198", earnings: "$79.20", pinned: false },
+  { photo: "photo-1604881991720-f91add269bed", title: "Digital Avatar 01", downloads: "1,940", likes: "534", views: "26,800", remixes: "156", embeds: "498", affClicks: "164", earnings: "$70.56", pinned: false },
+  { photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City Night", downloads: "1,620", likes: "441", views: "22,100", remixes: "121", embeds: "387", affClicks: "127", earnings: "$58.90", pinned: false },
+  { photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire", downloads: "1,410", likes: "388", views: "18,600", remixes: "94", embeds: "256", affClicks: "89", earnings: "$51.26", pinned: false },
 ];
 
 const earningsData = [
@@ -1163,6 +1163,7 @@ const DashboardPage = () => {
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Downloads</th>
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Remixes</th>
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Embeds</th>
+                          <th className="text-right text-[0.72rem] text-muted font-medium py-2 pr-4">Aff. Clicks</th>
                           <th className="text-right text-[0.72rem] text-muted font-medium py-2">Earnings</th>
                         </tr>
                       </thead>
@@ -1181,6 +1182,7 @@ const DashboardPage = () => {
                             <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.downloads}</td>
                             <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.remixes}</td>
                             <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.embeds}</td>
+                            <td className="text-[0.82rem] text-muted text-right py-2.5 pr-4">{img.affClicks}</td>
                             <td className="text-[0.82rem] font-semibold text-accent text-right py-2.5">{img.earnings}</td>
                           </tr>
                         ))}
@@ -1251,6 +1253,7 @@ const DashboardPage = () => {
                             <span className="flex items-center gap-1"><Download className="w-3 h-3" /> {img.downloads} downloads</span>
                             <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3" /> {img.remixes} remixes</span>
                             <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> {img.embeds} websites</span>
+                            <span className="flex items-center gap-1"><MousePointerClick className="w-3 h-3" /> {img.affClicks} aff. clicks</span>
                           </div>
                         </div>
                         <div className="text-right shrink-0">
