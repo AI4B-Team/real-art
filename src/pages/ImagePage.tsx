@@ -2,10 +2,11 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, Video, Pencil, RefreshCw,
-  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe
+  Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe","photo-1558618666-fcd25c85cd64",
