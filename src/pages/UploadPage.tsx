@@ -31,6 +31,11 @@ const mockCollections = [
 ];
 
 type CollectionTarget = "none" | "existing" | "new";
+interface ImagePrompts {
+  image_prompt: string;
+  video_prompt: string;
+  loading: boolean;
+}
 
 const UploadPage = () => {
   const [step, setStep] = useState(0);
