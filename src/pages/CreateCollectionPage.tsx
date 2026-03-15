@@ -34,6 +34,26 @@ const CreateCollectionPage = () => {
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPosition, setCoverPosition] = useState({ x: 50, y: 50, scale: 1 });
+  const [aiWriting, setAiWriting] = useState(false);
+
+  const generateDescription = async () => {
+    if (!name.trim()) {
+      toast({ title: "Name required", description: "Enter a collection name first so AI can write a description.", variant: "destructive" });
+      return;
+    }
+    setAiWriting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { collectionName: name.trim() },
+      });
+      if (error) throw error;
+      if (data?.description) setDescription(data.description);
+    } catch (err: any) {
+      toast({ title: "AI error", description: err.message || "Could not generate description.", variant: "destructive" });
+    } finally {
+      setAiWriting(false);
+    }
+  };
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
     const imageFiles = Array.from(newFiles).filter(f => f.type.startsWith("image/"));
