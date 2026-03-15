@@ -7,6 +7,7 @@ import {
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
+import ShareModal from "@/components/ShareModal";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
@@ -44,6 +45,7 @@ const ImagePage = () => {
   const [boardModalOpen, setBoardModalOpen] = useState(false);
   const [showRecreateModal, setShowRecreateModal] = useState(false);
   const [followed, setFollowed] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
 
@@ -133,7 +135,7 @@ const ImagePage = () => {
                 >
                   <Bookmark className="w-3.5 h-3.5" /> Save to Board
                 </button>
-                <button className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                <button onClick={() => setShareModalOpen(true)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Share2 className="w-3.5 h-3.5" /> Share
                 </button>
                 <button onClick={() => setShowEmbed(true)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-accent/40 hover:text-accent transition-colors">
@@ -625,6 +627,16 @@ const ImagePage = () => {
         <Footer />
       </div>
       <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
+      <ShareModal
+        open={shareModalOpen}
+        onClose={() => setShareModalOpen(false)}
+        imageUrl={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
+        title="Cosmic Dreamscape"
+        creator={creator}
+        prompt={samplePrompt}
+        recreations="1,247"
+        imageId={id || "0"}
+      />
     </div>
   );
 };
