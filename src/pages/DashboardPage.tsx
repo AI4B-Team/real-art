@@ -385,10 +385,10 @@ const MediaSection = () => {
 };
 
 /* ═══ GALLERIES SECTION COMPONENT ═══ */
-const totalMedia = (g: typeof galleriesInitial[0]) => g.images + g.videos + g.music;
+const totalMedia = (g: Collection) => g.images + g.videos + g.music;
 
 const GalleriesSection = () => {
-  const [galData, setGalData] = useState(galleriesInitial);
+  const [galData, setGalData] = useState<Collection[]>(() => getCollections());
   const [changingCode, setChangingCode] = useState<string | null>(null);
   const [newCode, setNewCode] = useState("");
   const [codeError, setCodeError] = useState("");
