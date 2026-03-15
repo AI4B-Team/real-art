@@ -130,13 +130,25 @@ const CreateCollectionPage = () => {
 
         if (imgError) throw imgError;
 
-        // Set first image as cover
-        if (imageRecords.length > 0) {
-          await supabase
-            .from("collections")
-            .update({ cover_url: imageRecords[0].image_url })
-            .eq("id", collection.id);
+        // Set cover from uploaded cover file or first image
+        let finalCoverUrl = imageRecords[0].image_url;
+        if (coverFile) {
+          const coverExt = coverFile.name.split(".").pop();
+          const coverPath = `${user.id}/${collection.id}/cover.${coverExt}`;
+          const { error: coverUploadErr } = await supabase.storage
+            .from("collection-images")
+            .upload(coverPath, coverFile);
+          if (!coverUploadErr) {
+            const { data: { publicUrl: coverPublicUrl } } = supabase.storage
+              .from("collection-images")
+              .getPublicUrl(coverPath);
+            finalCoverUrl = coverPublicUrl;
+          }
         }
+        await supabase
+          .from("collections")
+          .update({ cover_url: finalCoverUrl })
+          .eq("id", collection.id);
       }
 
       toast({ title: "Collection created!", description: `"${name}" is ready.` });
