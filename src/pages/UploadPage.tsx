@@ -18,8 +18,6 @@ const categories = [
 
 const steps = ["Upload", "Details", "Publish"];
 
-const steps = ["Upload", "Details", "Publish"];
-
 interface ImagePrompts {
   image_prompt: string;
   video_prompt: string;
