@@ -3,9 +3,9 @@ import { Search, Image, Video, Music, ChevronDown } from "lucide-react";
 import { motion } from "framer-motion";
 
 const searchTypes = [
-  { label: "Photos", icon: Image },
-  { label: "Videos", icon: Video },
-  { label: "Music", icon: Music },
+  { label: "Photos", icon: Image, placeholder: "Search millions of free photos…" },
+  { label: "Videos", icon: Video, placeholder: "Search millions of free videos…" },
+  { label: "Music", icon: Music, placeholder: "Search millions of free music tracks…" },
 ];
 
 const trendingTerms = ["avatars", "luxury homes", "cyberpunk", "podcast studio", "fitness women"];
