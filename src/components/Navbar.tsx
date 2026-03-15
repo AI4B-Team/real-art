@@ -32,7 +32,7 @@ const Navbar = () => {
     try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; }
   });
   const [userDisplay, setUserDisplay] = useState(() => {
-    try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; }
+    try { return (localStorage.getItem("ra_display") || "AI.Verse").toLowerCase(); } catch { return "aiverse"; }
   });
   const [userHandle, setUserHandle] = useState(() => {
     try { return (localStorage.getItem("ra_username") || "aiverse").toLowerCase(); } catch { return "aiverse"; }
@@ -56,7 +56,7 @@ const Navbar = () => {
   const syncAuth = () => {
     try {
       setIsLoggedIn(localStorage.getItem("ra_auth") === "1");
-      setUserDisplay(localStorage.getItem("ra_display") || "AI.Verse");
+      setUserDisplay((localStorage.getItem("ra_display") || "AI.Verse").toLowerCase());
       setUserHandle((localStorage.getItem("ra_username") || "aiverse").toLowerCase());
     } catch {}
   };

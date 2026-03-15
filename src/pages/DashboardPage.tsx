@@ -1148,14 +1148,14 @@ const DashboardPage = () => {
           <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:block">
             <div className="flex items-center gap-3 mb-8 px-3">
               {(() => {
-                const display = (() => { try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; } })();
+                const display = (() => { try { return (localStorage.getItem("ra_display") || "AI.Verse").toLowerCase(); } catch { return "aiverse"; } })();
                 const handle = (() => { try { return (localStorage.getItem("ra_username") || "aiverse").toLowerCase(); } catch { return "aiverse"; } })();
                 const initials = display.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
                 return (
                   <>
                     <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{initials}</div>
                     <div>
-                      <div className="font-semibold text-[0.88rem]">{display}</div>
+                      <div className="font-semibold text-[0.88rem] lowercase">{display}</div>
                       <div className="text-[0.72rem] text-muted lowercase">@{handle}</div>
                     </div>
                   </>
