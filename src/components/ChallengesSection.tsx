@@ -9,7 +9,7 @@ const winners = [
 
 const ChallengesSection = () => {
   return (
-    <section className="py-[72px] px-6 md:px-12 bg-card">
+    <section className="py-12 px-6 md:px-12 bg-card">
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-7">
           <div>

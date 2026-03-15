@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 
 const BottomCTA = () => {
   return (
-    <div className="mx-6 md:mx-12 mb-[72px] bg-foreground rounded-[20px] p-12 md:p-[88px_80px] grid grid-cols-1 md:grid-cols-2 gap-[60px] items-center relative overflow-hidden">
+    <div className="mx-6 md:mx-12 mb-12 bg-foreground rounded-[20px] p-12 md:p-[88px_80px] grid grid-cols-1 md:grid-cols-2 gap-[60px] items-center relative overflow-hidden">
       <div className="absolute -right-[60px] -top-[60px] w-[360px] h-[360px] rounded-full pointer-events-none" style={{ background: "var(--gradient-cta-glow)" }} />
       <div>
         <div className="text-[0.68rem] font-semibold tracking-[0.16em] uppercase text-primary-foreground/30 mb-5">Free Forever</div>

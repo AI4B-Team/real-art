@@ -8,7 +8,7 @@ const leaderboard = [
 
 const LeaderboardSection = () => {
   return (
-    <section className="py-[72px] px-6 md:px-12">
+    <section className="py-12 px-6 md:px-12">
       <div className="max-w-[720px] mx-auto">
         <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-1.5 text-center">Leaderboard</h2>
         <p className="text-[0.82rem] text-muted mb-5 text-center">Top creators this month by downloads and engagement</p>
