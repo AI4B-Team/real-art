@@ -177,7 +177,7 @@ const UploadPage = () => {
       // Determine collection ID
       let collectionId: string | null = null;
 
-      if (collectionTarget === "new" && newCollectionName.trim()) {
+      if (selectedCollection === "new" && newCollectionName.trim()) {
         const { data: col, error: colErr } = await supabase.from("collections").insert({
           name: newCollectionName.trim(),
           user_id: user.id,
@@ -186,7 +186,7 @@ const UploadPage = () => {
         }).select("id").single();
         if (colErr) throw colErr;
         collectionId = col.id;
-      } else if (collectionTarget === "existing" && selectedCollection) {
+      } else if (selectedCollection !== "none" && selectedCollection !== "new" && selectedCollection) {
         collectionId = selectedCollection;
       }
 
