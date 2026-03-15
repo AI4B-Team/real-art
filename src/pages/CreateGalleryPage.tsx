@@ -101,7 +101,7 @@ const CreateGalleryPage = () => {
             <ChevronRight className="w-3 h-3 opacity-30" />
             <Link to="/communities" className="hover:text-foreground transition-colors">Communities</Link>
             <ChevronRight className="w-3 h-3 opacity-30" />
-            <span className="text-foreground">Create Gallery</span>
+            <span className="text-foreground">Create Collection</span>
           </div>
 
           <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] mb-2">Create your gallery</h1>
