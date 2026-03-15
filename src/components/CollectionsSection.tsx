@@ -51,7 +51,7 @@ const CollectionsSection = () => {
               {/* Thumbnails row */}
               <div className="flex items-center gap-1.5">
                 {col.thumbs.map((t, i) => (
-                  <div key={i} className="w-[42px] h-[42px] rounded-lg overflow-hidden flex-shrink-0">
+                  <div key={i} className="h-[42px] rounded-lg overflow-hidden flex-1 min-w-0">
                     <img
                       src={`https://images.unsplash.com/${t}?w=100&h=100&fit=crop&q=70`}
                       alt=""
@@ -59,7 +59,7 @@ const CollectionsSection = () => {
                     />
                   </div>
                 ))}
-                <div className="h-[42px] px-3 rounded-lg bg-muted-foreground/80 flex items-center justify-center">
+                <div className="h-[42px] px-3 rounded-lg bg-muted-foreground/80 flex items-center justify-center flex-shrink-0">
                   <span className="text-primary-foreground font-semibold text-sm">+{col.count}</span>
                 </div>
               </div>
