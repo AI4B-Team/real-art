@@ -392,7 +392,6 @@ const Navbar = () => {
                   </div>
                 </div>
                 <div className="h-px bg-foreground/[0.06] my-1" />
-                <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Account</div>
                 {userMenuLinks.map(({ icon: Icon, label, to }) => (
                   <Link key={label} to={to} onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-foreground hover:bg-background transition-colors no-underline">
                     <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />
@@ -400,10 +399,12 @@ const Navbar = () => {
                   </Link>
                 ))}
                 <div className="h-px bg-foreground/[0.06] my-1" />
-                <Link to="/upload" onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-foreground hover:bg-background transition-colors no-underline">
-                  <Upload className="w-3.5 h-3.5 opacity-40 shrink-0" />
-                  Upload Art
-                </Link>
+                {userMenuSecondary.map(({ icon: Icon, label, to }) => (
+                  <Link key={label} to={to} onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-foreground hover:bg-background transition-colors no-underline">
+                    <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />
+                    {label}
+                  </Link>
+                ))}
                 <div className="h-px bg-foreground/[0.06] my-1" />
                 <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors">
                   <LogOut className="w-3.5 h-3.5" /> Log Out
