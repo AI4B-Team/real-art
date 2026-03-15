@@ -77,7 +77,20 @@ const ImagePage = () => {
 
               {/* Action bar */}
               <div className="flex items-center gap-2 mt-4 flex-wrap">
-                <button className="flex items-center gap-2 bg-foreground text-primary-foreground rounded-lg text-[0.84rem] font-semibold px-5 py-2.5 hover:bg-accent transition-colors">
+                <TooltipProvider delayDuration={200}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button className="flex items-center gap-2 bg-accent text-primary-foreground rounded-lg text-[0.84rem] font-semibold px-5 py-2.5 hover:bg-accent/85 transition-colors shadow-md">
+                        <Sparkles className="w-4 h-4" /> Recreate in REAL CREATOR
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="bg-foreground text-primary-foreground border-none max-w-[240px] p-3">
+                      <p className="text-[0.75rem] font-semibold mb-1">One-click recreate</p>
+                      <p className="text-[0.7rem] opacity-70 leading-[1.5]">Opens REAL CREATOR with prompt, style & settings preloaded. Just hit generate.</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+                <button className="flex items-center gap-2 bg-foreground text-primary-foreground rounded-lg text-[0.84rem] font-semibold px-5 py-2.5 hover:bg-foreground/85 transition-colors">
                   <Download className="w-4 h-4" /> Download Free
                 </button>
                 <button
@@ -96,12 +109,6 @@ const ImagePage = () => {
                 </button>
                 <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Share2 className="w-4 h-4" /> Share
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
-                  <Video className="w-4 h-4" /> Animate
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
-                  <Pencil className="w-4 h-4" /> Edit
                 </button>
               </div>
 
