@@ -188,6 +188,7 @@ const MasonryGrid = () => {
           Load More
         </button>
       </div>
+      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
     </div>
   );
 };
