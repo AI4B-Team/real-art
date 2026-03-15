@@ -53,6 +53,13 @@ const CreateCollectionPage = () => {
     });
   };
 
+  const handleCoverChange = useCallback((preview: string | null, file: File | null, pos: { x: number; y: number; scale: number }) => {
+    setCoverPreview(preview);
+    if (file) setCoverFile(file);
+    if (!preview) setCoverFile(null);
+    setCoverPosition(pos);
+  }, []);
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     setDragActive(false);
