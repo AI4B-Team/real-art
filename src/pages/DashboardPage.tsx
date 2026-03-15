@@ -954,7 +954,24 @@ const DashboardPage = () => {
                   ))}
                 </div>
 
-                {/* Media Library Summary */}
+                {/* Growth Snapshot */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-8 flex items-center gap-5 flex-wrap">
+                  <div className="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center shrink-0">
+                    <TrendingUp className="w-6 h-6 text-accent" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-[0.72rem] font-bold tracking-[0.14em] uppercase text-muted mb-1">Growth Snapshot</div>
+                    <div className="font-display text-[1.6rem] font-black tracking-[-0.03em] leading-none">
+                      Your content reached <span className="text-accent">+52,000</span> people this month
+                    </div>
+                  </div>
+                  <div className="bg-green-500/10 text-green-600 px-3.5 py-2 rounded-xl flex items-center gap-1.5 shrink-0">
+                    <TrendingUp className="w-4 h-4" />
+                    <span className="text-[0.9rem] font-bold">↑ 23%</span>
+                    <span className="text-[0.75rem] font-medium opacity-70">from last month</span>
+                  </div>
+                </div>
+
                 <div className="mb-8">
                   <div className="flex items-center justify-between mb-4">
                     <div className="flex items-center gap-3">
