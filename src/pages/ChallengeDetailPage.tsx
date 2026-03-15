@@ -45,8 +45,17 @@ const entryTabs = ["Top Voted", "Newest", "Most Liked"];
 const ChallengeDetailPage = () => {
   const { id } = useParams();
   const c = challengeData;
-  const [activeTab, setActiveTab] = useState("Top Entries");
+  const [activeTab, setActiveTab] = useState("Top Voted");
+  const [votedEntries, setVotedEntries] = useState<Set<number>>(new Set());
 
+  const toggleVote = (index: number) => {
+    setVotedEntries(prev => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
