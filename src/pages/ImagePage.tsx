@@ -28,6 +28,8 @@ const creators = [
 
 const samplePrompt = "A cosmic dreamscape with swirling nebula clouds and floating crystalline structures, cinematic lighting, dramatic shadows, 8k ultra-detailed, photorealistic render, deep space background with stars and aurora borealis, editorial photography style";
 
+const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
+
 // Shop data — some images have shop links (simulated by index)
 const shopEnabledIndices = [0, 3, 5, 7, 9];
 const shopLinks: Record<number, ShopLink> = {
