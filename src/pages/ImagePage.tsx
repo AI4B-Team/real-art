@@ -51,8 +51,16 @@ const ImagePage = () => {
   const idx = parseInt(id || "0") % photos.length;
   const photo = photos[idx];
   const creator = creators[idx % creators.length];
-  const hasShop = shopEnabledIndices.includes(idx);
-  const shopLink = shopLinks[idx];
+
+  // Seed demo links on first load, then resolve for this image
+  useEffect(() => { seedDemoLinks(); }, []);
+  const imageLink = resolveLink(String(idx));
+  const hasShop = !!imageLink;
+  const shopLink: ShopLink | undefined = imageLink ? {
+    url: imageLink.url, site: imageLink.site || "Shop",
+    price: imageLink.price, isAffiliate: imageLink.isAffiliate,
+    label: imageLink.label,
+  } : undefined;
 
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
