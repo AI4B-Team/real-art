@@ -329,7 +329,7 @@ const UploadPage = () => {
                     })}
                   </div>
                 </div>
-              )
+              )}
 
               <button
                 disabled={!canProceed[0]}
