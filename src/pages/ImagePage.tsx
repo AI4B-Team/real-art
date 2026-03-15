@@ -122,7 +122,7 @@ const ImagePage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-10 items-start pb-16">
 
             {/* LEFT — Image */}
-            <div>
+            <div className="lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-2 scrollbar-thin">
               <div className="rounded-2xl overflow-hidden bg-card border border-foreground/[0.06] relative">
                 <img
                   src={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
