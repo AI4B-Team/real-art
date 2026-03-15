@@ -565,7 +565,12 @@ const ImagePage = () => {
 
               {/* Shop This Image + Shop Similar (conditional) */}
               {hasShop && shopLink && (
-                <ShopSection shopLink={shopLink} shopSimilar={shopSimilarItems} imageUrl={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=80`} />
+                <ShopSection
+                  shopLink={shopLink}
+                  shopSimilar={shopSimilarItems}
+                  imageUrl={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=80`}
+                  onClickTrack={() => trackClick(String(idx))}
+                />
               )}
 
               {/* Tags */}
