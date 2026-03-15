@@ -78,7 +78,7 @@ const CreateGalleryPage = () => {
               </Link>
               <Link to="/communities">
                 <button className="w-full border border-foreground/[0.14] py-3 rounded-lg text-[0.86rem] font-medium hover:border-foreground/30 transition-colors">
-                  View All Galleries
+                  View All Collections
                 </button>
               </Link>
             </div>
