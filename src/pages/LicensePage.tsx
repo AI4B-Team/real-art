@@ -193,7 +193,7 @@ const LicensePage = () => {
 
         {/* Full License Text */}
         <section className="px-6 md:px-12 py-16 max-w-[1440px] mx-auto">
-          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-6">Full license text</h2>
+          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-6">Full License Text</h2>
           <pre className="bg-card border border-foreground/[0.08] rounded-xl p-6 text-[0.78rem] text-muted leading-[1.8] whitespace-pre-wrap font-mono overflow-x-auto">
             {fullLicense}
           </pre>
