@@ -94,6 +94,14 @@ const MasonryGrid = () => {
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
+                        <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBoardModalOpen(true); }} className={iconBtnClass}>
+                          <Bookmark className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom" className="text-xs"><p>Save to Board</p></TooltipContent>
+                    </Tooltip>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
                         <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setActivePrompt(activePrompt === i ? null : i); }} className={iconBtnClass}>
                           <FileText className="w-3.5 h-3.5" />
                         </button>
