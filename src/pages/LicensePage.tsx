@@ -92,7 +92,8 @@ const LicensePage = () => {
             Simple license.<br /><span className="text-muted">Plain language.</span>
           </h1>
           <p className="text-[0.94rem] text-muted leading-[1.75] max-w-[600px]">
-            All images on REAL ART are free to use. No attribution, no subscription, no lawyer. This page explains exactly what that means.
+            All images on REAL ART are free to use. No attribution, no subscription, no lawyer.<br />
+            This page explains exactly what that means.
           </p>
         </section>
 
