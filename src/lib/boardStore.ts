@@ -11,6 +11,7 @@ export interface Board {
   title: string;
   description: string;
   visibility: "public" | "private";
+  coverPhoto?: string;
   createdAt: string;
   items: BoardItem[];
 }
