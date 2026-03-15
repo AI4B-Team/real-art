@@ -21,7 +21,7 @@ interface ShopSectionProps {
   imageUrl?: string;
 }
 
-const ShopSection = ({ shopLink, shopSimilar = [] }: ShopSectionProps) => (
+const ShopSection = ({ shopLink, shopSimilar = [], imageUrl }: ShopSectionProps) => (
   <>
     {/* Shop This Image */}
     <div className="mt-8">
