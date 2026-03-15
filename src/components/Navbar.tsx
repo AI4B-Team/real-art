@@ -156,8 +156,33 @@ const Navbar = () => {
         </button>
         {communitiesOpen && (
           <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[270px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
+            {/* Search */}
+            <div className="px-1 pb-2">
+              <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
+                <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                <input
+                  autoFocus
+                  value={communitySearch}
+                  onChange={e => setCommunitySearch(e.target.value)}
+                  placeholder="Search communities…"
+                  className="flex-1 border-none outline-none bg-transparent text-[0.82rem] font-body"
+                />
+                {communitySearch && (
+                  <button onClick={() => setCommunitySearch("")} className="shrink-0">
+                    <X className="w-3 h-3 text-muted hover:text-foreground" />
+                  </button>
+                )}
+              </div>
+            </div>
+            {(() => {
+              const q = communitySearch.toLowerCase();
+              const filtered = sortedCommunities.filter(c => !q || c.name.toLowerCase().includes(q));
+              const pinnedFiltered = filtered.filter(c => c.pinned);
+              const otherFiltered = filtered.filter(c => !c.pinned);
+              return (
+                <>
             {/* Pinned */}
-            {sortedCommunities.some(c => c.pinned) && (
+            {pinnedFiltered.length > 0 && (
               <>
                 <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Pinned</div>
                 {sortedCommunities.filter(c => c.pinned).map(c => (
