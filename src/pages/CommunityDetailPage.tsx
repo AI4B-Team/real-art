@@ -383,6 +383,42 @@ const CommunityDetailPage = () => {
                   </div>
                 </div>
 
+                {/* Review collection requests */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-4">
+                  <div className="font-semibold text-[0.88rem] mb-1">Collection Requests</div>
+                  <p className="text-[0.75rem] text-muted mb-4">Review and approve collection ideas submitted by members.</p>
+                  {requests.filter(r => r.status === "pending").length === 0 ? (
+                    <p className="text-[0.8rem] text-muted">No pending requests.</p>
+                  ) : (
+                    <div className="flex flex-col gap-2">
+                      {requests.filter(r => r.status === "pending").map(r => (
+                        <div key={r.id} className="flex items-center justify-between p-3.5 rounded-xl border border-foreground/[0.08]">
+                          <div>
+                            <div className="font-semibold text-[0.85rem]">{r.name}</div>
+                            <div className="text-[0.72rem] text-muted">by {r.by}</div>
+                          </div>
+                          <div className="flex gap-1.5">
+                            <button
+                              onClick={() => setRequests(prev => prev.map(x => x.id === r.id ? { ...x, status: "approved" } : x))}
+                              className="w-8 h-8 rounded-lg bg-[rgba(15,180,90,0.12)] text-[#0fb45a] flex items-center justify-center hover:bg-[rgba(15,180,90,0.2)] transition-colors"
+                              title="Approve"
+                            >
+                              <Check className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => setRequests(prev => prev.filter(x => x.id !== r.id))}
+                              className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center hover:bg-accent/20 transition-colors"
+                              title="Reject"
+                            >
+                              <XIcon className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
                 <p className="text-[0.72rem] text-muted">Settings are only visible to the community owner.</p>
               </div>
             )}
