@@ -918,14 +918,26 @@ const DashboardPage = () => {
             {/* Mobile Nav */}
             <div className="flex items-center gap-2 mb-6 lg:hidden overflow-x-auto pb-2 no-scrollbar">
               {navItems.map(item => (
-                <button
-                  key={item.id}
-                  onClick={() => setActiveSection(item.id)}
-                  className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted"}`}
-                >
-                  <item.icon className="w-3.5 h-3.5" />
-                  {item.label}
-                </button>
+                item.internal === false ? (
+                  <Link
+                    key={item.id}
+                    to={item.href!}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap bg-card border border-foreground/[0.1] text-muted no-underline"
+                  >
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                    <ExternalLink className="w-2.5 h-2.5 opacity-30" />
+                  </Link>
+                ) : (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSection(item.id)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted"}`}
+                  >
+                    <item.icon className="w-3.5 h-3.5" />
+                    {item.label}
+                  </button>
+                )
               ))}
             </div>
 
