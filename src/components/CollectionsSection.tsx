@@ -51,7 +51,7 @@ const CollectionsSection = () => {
               {/* Thumbnails row */}
               <div className="flex items-center gap-1.5">
                 {col.thumbs.map((t, i) => (
-                  <div key={i} className="w-[52px] h-[52px] rounded-xl overflow-hidden flex-shrink-0">
+                  <div key={i} className="w-[42px] h-[42px] rounded-lg overflow-hidden flex-shrink-0">
                     <img
                       src={`https://images.unsplash.com/${t}?w=100&h=100&fit=crop&q=70`}
                       alt=""
