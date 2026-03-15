@@ -584,6 +584,9 @@ const ImagePage = () => {
                 ))}
               </div>
 
+              {/* Comments */}
+              <CommentsSection imageId={id || "0"} />
+
               {/* More Art Using This Style */}
               <div className="mt-10">
                 <div className="flex items-center gap-2 mb-1">
