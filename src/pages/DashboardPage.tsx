@@ -783,11 +783,20 @@ const DashboardPage = () => {
           {/* Sidebar */}
           <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:block">
             <div className="flex items-center gap-3 mb-8 px-3">
-              <div className="w-10 h-10 rounded-full bg-[#4361ee] flex items-center justify-center text-[0.8rem] font-bold text-primary-foreground">AV</div>
-              <div>
-                <div className="font-semibold text-[0.88rem]">AI.Verse</div>
-                <div className="text-[0.72rem] text-muted">@aiverse</div>
-              </div>
+              {(() => {
+                const display = (() => { try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; } })();
+                const handle = (() => { try { return localStorage.getItem("ra_username") || "aiverse"; } catch { return "aiverse"; } })();
+                const initials = display.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
+                return (
+                  <>
+                    <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{initials}</div>
+                    <div>
+                      <div className="font-semibold text-[0.88rem]">{display}</div>
+                      <div className="text-[0.72rem] text-muted">@{handle.toLowerCase()}</div>
+                    </div>
+                  </>
+                );
+              })()}
             </div>
 
             <nav className="flex flex-col gap-1">
