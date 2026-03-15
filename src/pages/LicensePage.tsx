@@ -102,7 +102,7 @@ const LicensePage = () => {
           <div className="bg-card border border-foreground/[0.08] rounded-xl p-6">
             <div className="flex items-center gap-2 mb-3">
               <Info className="w-4 h-4 text-accent" />
-              <span className="font-semibold text-[0.9rem]">The short version</span>
+              <span className="font-semibold text-[0.9rem]">The Short Version</span>
             </div>
             <p className="text-[0.88rem] text-muted leading-[1.7]">
               Download any image. Use it in anything you build, sell, or share. Modify it however you want. Don't claim you made the original or try to resell it as stock. That's it.
