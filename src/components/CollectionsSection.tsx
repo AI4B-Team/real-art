@@ -1,15 +1,28 @@
-const collectionPhotos = [
-  "photo-1618005182384-a83a8bd57fbe", "photo-1558618666-fcd25c85cd64",
-  "photo-1549880338-65ddcdfd017b", "photo-1518020382113-a7e8fc38eac9",
-  "photo-1543722530-d2c3201371e7",
-];
-
 const collections = [
-  { name: "Abstract Worlds", count: "12,400 images", big: true },
-  { name: "Portraits", count: "8,200 images", big: false },
-  { name: "Fantasy Realms", count: "9,800 images", big: false },
-  { name: "Sci-Fi", count: "6,100 images", big: false },
-  { name: "Architecture", count: "5,400 images", big: false },
+  {
+    name: "CEO / Boss Babe",
+    count: 152,
+    main: "photo-1573496359142-b8d87734a5a2",
+    thumbs: ["photo-1573496359142-b8d87734a5a2", "photo-1573497019940-1c28c88b4f3e"],
+  },
+  {
+    name: "Luxury Lifestyle",
+    count: 239,
+    main: "photo-1600210492486-724fe5c67fb0",
+    thumbs: ["photo-1600210492486-724fe5c67fb0", "photo-1616486338812-3dadae4b4ace"],
+  },
+  {
+    name: "Street Fashion",
+    count: 185,
+    main: "photo-1509631179647-0177331693ae",
+    thumbs: ["photo-1509631179647-0177331693ae", "photo-1529139574466-a303027c1d8b"],
+  },
+  {
+    name: "Runway Inspired",
+    count: 130,
+    main: "photo-1558618666-fcd25c85cd64",
+    thumbs: ["photo-1558618666-fcd25c85cd64", "photo-1509631179647-0177331693ae"],
+  },
 ];
 
 const CollectionsSection = () => {
@@ -23,22 +36,35 @@ const CollectionsSection = () => {
           </div>
           <a href="#" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap">View All →</a>
         </div>
-        <div className="grid grid-cols-[2fr_1fr_1fr] grid-rows-[240px_240px] gap-3">
-          {collections.map((col, i) => (
-            <div
-              key={col.name}
-              className={`rounded-[14px] overflow-hidden cursor-pointer relative hover:scale-[1.015] transition-transform ${col.big ? "row-span-2" : ""}`}
-            >
-              <img
-                src={`https://images.unsplash.com/${collectionPhotos[i]}?w=${col.big ? 600 : 400}&h=${col.big ? 500 : 240}&fit=crop&q=78`}
-                alt={col.name}
-                loading="lazy"
-                className="w-full h-full object-cover block"
-              />
-              <div className="absolute inset-0 p-5 flex flex-col justify-end" style={{ background: "var(--gradient-overlay-light)" }}>
-                <div className="text-primary-foreground font-semibold text-base">{col.name}</div>
-                <div className="text-primary-foreground/55 text-[0.74rem] mt-[3px]">{col.count}</div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+          {collections.map((col) => (
+            <div key={col.name} className="cursor-pointer group">
+              {/* Main image */}
+              <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-2.5">
+                <img
+                  src={`https://images.unsplash.com/${col.main}?w=400&h=530&fit=crop&q=78`}
+                  alt={col.name}
+                  loading="lazy"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
               </div>
+              {/* Thumbnails row */}
+              <div className="flex items-center gap-1.5">
+                {col.thumbs.map((t, i) => (
+                  <div key={i} className="w-[52px] h-[52px] rounded-xl overflow-hidden flex-shrink-0">
+                    <img
+                      src={`https://images.unsplash.com/${t}?w=100&h=100&fit=crop&q=70`}
+                      alt=""
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+                <div className="h-[52px] px-4 rounded-xl bg-muted-foreground/80 flex items-center justify-center ml-auto">
+                  <span className="text-primary-foreground font-semibold text-sm">+{col.count}</span>
+                </div>
+              </div>
+              {/* Name */}
+              <p className="text-foreground font-semibold text-[0.95rem] mt-2.5">{col.name}</p>
             </div>
           ))}
         </div>
