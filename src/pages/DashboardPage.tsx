@@ -23,12 +23,12 @@ const navItems = [
 ];
 
 const recentActivity = [
-  { text: "Your image Cosmic Dreamscape was downloaded", time: "2 min ago" },
-  { text: "NeoPixel started following you", time: "18 min ago" },
-  { text: "You earned $12.00 from an affiliate referral", time: "1 hr ago" },
-  { text: "34 people liked Neon Boulevard today", time: "2 hr ago" },
-  { text: "Your image Abstract Mind was downloaded", time: "3 hr ago" },
-  { text: "You earned $24.00 from an affiliate referral", time: "5 hr ago" },
+  { text: "Your image Cosmic Dreamscape was downloaded", time: "2 min ago", icon: Download },
+  { text: "NeoPixel started following you", time: "18 min ago", icon: Users },
+  { text: "You earned $12.00 from an affiliate referral", time: "1 hr ago", icon: DollarSign },
+  { text: "34 people liked Neon Boulevard today", time: "2 hr ago", icon: Heart },
+  { text: "Your image Abstract Mind was downloaded", time: "3 hr ago", icon: Download },
+  { text: "You earned $24.00 from an affiliate referral", time: "5 hr ago", icon: DollarSign },
 ];
 
 const topImages = [
