@@ -397,8 +397,8 @@ const Navbar = () => {
                   </Link>
                 ))}
                 <div className="h-px bg-foreground/[0.06] my-1" />
-                <button onClick={handleLogout} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-muted hover:text-foreground hover:bg-background transition-colors w-full text-left">
-                  <LogOut className="w-3.5 h-3.5 shrink-0" /> Log Out
+                <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors">
+                  <LogOut className="w-3.5 h-3.5" /> Log Out
                 </button>
               </div>
             )}
