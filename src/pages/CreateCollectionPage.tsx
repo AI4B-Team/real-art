@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2, Sparkles } from "lucide-react";
 import CoverImageEditor from "@/components/CoverImageEditor";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
