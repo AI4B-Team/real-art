@@ -51,6 +51,13 @@ const Navbar = () => {
         Real<span className="text-accent">.</span>Art
       </Link>
       <div className="flex items-center gap-1">
+        {/* Upload button */}
+        <Link
+          to="/upload"
+          className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-semibold hover:bg-accent/90 transition-colors mr-1"
+        >
+          <Upload className="w-3.5 h-3.5" /> Upload
+        </Link>
         {/* Search icon + inline expand */}
         <div className="relative" ref={searchRef}>
           <button
