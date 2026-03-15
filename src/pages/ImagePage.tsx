@@ -100,8 +100,6 @@ const ImagePage = () => {
     setTimeout(() => setVideoCopied(false), 2000);
   };
 
-  const similar = photos.filter((_, i) => i !== idx).slice(0, 6);
-  const heights = [220, 180, 260, 200, 240, 190];
 
   return (
     <div className="min-h-screen bg-background">
