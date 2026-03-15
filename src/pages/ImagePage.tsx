@@ -625,10 +625,10 @@ const ImagePage = () => {
                 </h1>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
                   {[
-                    { icon: Eye, label: "Views", value: "24,800", suffix: "", accent: false },
-                    { icon: Download, label: "Downloads", value: "3,412", suffix: "", accent: false },
+                    { icon: Eye, label: "Views", value: "24,800", suffix: "", accent: true },
+                    { icon: Download, label: "Downloads", value: "3,412", suffix: "", accent: true },
                     { icon: RefreshCw, label: "Recreated", value: "1,247", suffix: "×", accent: true },
-                    { icon: Code, label: "Embeds", value: "1,032", suffix: "", accent: false },
+                    { icon: Code, label: "Embeds", value: "1,032", suffix: "", accent: true },
                   ].map((stat) => (
                     <div key={stat.label} className="bg-card border border-foreground/[0.08] rounded-xl p-4 flex flex-col items-center justify-center">
                       <stat.icon className={`w-4 h-4 mb-2 ${stat.accent ? "text-accent" : "text-muted"}`} />
