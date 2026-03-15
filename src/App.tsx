@@ -76,6 +76,7 @@ const App = () => (
           <Route path="/creators" element={<CreatorsPage />} />
           <Route path="/boards" element={<BoardsPage />} />
           <Route path="/boards/:id" element={<BoardDetailPage />} />
+          <Route path="/topic/:slug" element={<TopicPage />} />
 
           {/* Round 3 — Creator Tools */}
           <Route path="/upload" element={<UploadPage />} />
