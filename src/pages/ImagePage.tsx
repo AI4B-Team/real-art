@@ -263,9 +263,10 @@ const ImagePage = () => {
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">
                   Cosmic Dreamscape #{id}
                 </h1>
-                <div className="flex items-center gap-4 text-[0.8rem] text-muted">
+                <div className="flex items-center gap-4 text-[0.8rem] text-muted flex-wrap">
                   <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> 24,800 views</span>
                   <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5" /> 3,412 downloads</span>
+                  <span className="flex items-center gap-1 text-accent font-semibold"><RefreshCw className="w-3.5 h-3.5" /> Recreated 1,247 times</span>
                 </div>
               </div>
 
