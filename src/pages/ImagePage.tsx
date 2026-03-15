@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
 import ShareModal from "@/components/ShareModal";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
