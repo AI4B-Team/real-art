@@ -42,8 +42,15 @@ const earningMethods = [
 const CreatorEarningsSection = () => {
   return (
     <div>
-      <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-2">Earn As A Creator</h2>
-      <p className="text-[0.9rem] text-muted mb-6">Every image you post works for you automatically. Multiple revenue streams, zero overhead.</p>
+      <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-3">Earn As A Creator</h2>
+      <p className="text-[0.92rem] text-muted mb-2">Upload your art once and earn from:</p>
+      <div className="flex flex-wrap gap-x-4 gap-y-1 mb-6">
+        {["affiliate links", "donations", "prompt packs", "collections", "style transfers"].map(item => (
+          <span key={item} className="text-[0.86rem] text-foreground font-medium flex items-center gap-1.5">
+            <span className="w-1 h-1 rounded-full bg-accent" /> {item}
+          </span>
+        ))}
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
         {earningMethods.map((e) => (
           <div key={e.title} className={`border rounded-[16px] p-6 flex flex-col gap-3 transition-all hover:-translate-y-1 hover:shadow-[0_16px_48px_rgba(0,0,0,0.08)] ${e.highlight ? "bg-accent border-accent" : "bg-card border-foreground/[0.08]"}`}>
