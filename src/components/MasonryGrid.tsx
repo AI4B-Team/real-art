@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Heart, Eye, Copy, Shuffle, FileText, Bookmark } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Heart, Eye, Copy, Shuffle, FileText, Bookmark, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
@@ -18,6 +18,7 @@ const photos = [
 ];
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 const isVideo = (i: number) => i % 4 === 3;
+const isShoppable = (i: number) => [0, 3, 5, 7, 9].includes(i);
 const badgeMap: Record<number, { label: string; icon: string; style: string }> = {
   0: { label: "Editor's Pick", icon: "⭐", style: "bg-accent text-primary-foreground" },
   2: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
@@ -84,6 +85,12 @@ const MasonryGrid = () => {
               {!badgeMap[i] && (
                 <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
                   {video ? "AI Video" : "AI Art"}
+                </div>
+              )}
+              {/* Shop badge — subtle corner indicator */}
+              {isShoppable(i) && (
+                <div className="absolute top-2 right-2 flex items-center gap-1 bg-accent text-primary-foreground text-[0.52rem] font-bold tracking-[0.06em] uppercase px-1.5 py-0.5 rounded-lg shadow-sm z-10">
+                  <ShoppingBag className="w-2.5 h-2.5" /> Shop
                 </div>
               )}
               {/* Hover overlay */}
