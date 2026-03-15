@@ -35,7 +35,7 @@ const Navbar = () => {
     try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; }
   });
   const [userHandle, setUserHandle] = useState(() => {
-    try { return localStorage.getItem("ra_username") || "aiverse"; } catch { return "aiverse"; }
+    try { return (localStorage.getItem("ra_username") || "aiverse").toLowerCase(); } catch { return "aiverse"; }
   });
   const userInitials = userDisplay.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
