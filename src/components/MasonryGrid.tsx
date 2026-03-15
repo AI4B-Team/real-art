@@ -18,6 +18,13 @@ const photos = [
 ];
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 const isVideo = (i: number) => i % 4 === 3;
+const badgeMap: Record<number, { label: string; icon: string; style: string }> = {
+  0: { label: "Editor's Pick", icon: "⭐", style: "bg-accent text-primary-foreground" },
+  2: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
+  7: { label: "Featured", icon: "⭐", style: "bg-accent text-primary-foreground" },
+  11: { label: "Curated", icon: "✨", style: "bg-foreground text-primary-foreground" },
+  15: { label: "Trending", icon: "🔥", style: "bg-foreground text-primary-foreground" },
+};
 
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee", dl: "12.4K", id: "1" },
@@ -67,10 +74,18 @@ const MasonryGrid = () => {
                 style={{ height: h, objectFit: "cover" }}
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
-              {/* AI label */}
-              <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                {video ? "AI Video" : "AI Art"}
-              </div>
+              {/* Badge */}
+              {badgeMap[i] && (
+                <div className={`absolute top-2 left-2 flex items-center gap-1 text-[0.58rem] font-bold tracking-[0.08em] uppercase px-2.5 py-1 rounded-lg shadow-sm z-10 ${badgeMap[i].style}`}>
+                  <span className="text-xs leading-none">{badgeMap[i].icon}</span> {badgeMap[i].label}
+                </div>
+              )}
+              {/* AI label (only when no badge) */}
+              {!badgeMap[i] && (
+                <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                  {video ? "AI Video" : "AI Art"}
+                </div>
+              )}
               {/* Hover overlay */}
               <div className="absolute inset-0 rounded-xl flex flex-col justify-between p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
                 <TooltipProvider>

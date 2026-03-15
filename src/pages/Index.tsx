@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FilterBar from "@/components/FilterBar";
+import FeaturedArtworkSection from "@/components/FeaturedArtworkSection";
 import MasonryGrid from "@/components/MasonryGrid";
 import CollectionsSection from "@/components/CollectionsSection";
 import TrendingCreatorsSection from "@/components/TrendingCreatorsSection";
@@ -16,6 +17,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <HeroSection />
+      <FeaturedArtworkSection />
       <FilterBar />
       <MasonryGrid />
       <CollectionsSection />
