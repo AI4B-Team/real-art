@@ -1329,7 +1329,7 @@ const DashboardPage = () => {
                     style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
                   <div className="flex items-center gap-2 mb-4">
                     <Star className="w-4 h-4 text-accent" />
-                    <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Featured Artwork</span>
+                    <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/60">Featured Artwork</span>
                   </div>
                   <div className="flex flex-col md:flex-row gap-5">
                     <img
