@@ -69,7 +69,7 @@ const MasonryGrid = () => {
                 AI-Generated
               </div>
               {/* Hover overlay */}
-              <div className="absolute inset-0 rounded-xl flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
+              <div className="absolute inset-0 rounded-xl flex flex-col justify-end items-center p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
                 {/* Creator info */}
                 <div className="flex items-center gap-1.5 mb-2">
                   <div
