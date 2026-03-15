@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { ShoppingBag, Star, TrendingUp, Sparkles } from "lucide-react";
+import { Star, TrendingUp, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 
@@ -15,9 +14,7 @@ const photos = [
   "photo-1533158628620-7e4d0a003147", "photo-1505765050516-f72dcac9c60e",
   "photo-1470071459604-3b5ec3a7fe05", "photo-1465146344425-f00d5f5c8f07",
 ];
-const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 const isVideo = (i: number) => i % 4 === 3;
-const isShoppable = (i: number) => [0, 3, 5, 7, 9].includes(i);
 const badgeMap: Record<number, { label: string; Icon: React.FC<{ className?: string }>; style: string }> = {
   0: { label: "Editor's Pick", Icon: Star, style: "bg-accent text-primary-foreground" },
   2: { label: "Trending", Icon: TrendingUp, style: "bg-foreground text-primary-foreground" },
@@ -29,23 +26,21 @@ const badgeMap: Record<number, { label: string; Icon: React.FC<{ className?: str
 const MasonryGrid = () => {
   return (
     <div className="px-6 md:px-12 py-6 pb-16">
-      <div className="masonry-grid">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {photos.map((photo, i) => {
-          const h = heights[i % heights.length];
           const video = isVideo(i);
           return (
             <Link
               key={i}
               to={`/image/${i}`}
-              className="masonry-item rounded-xl overflow-hidden relative cursor-pointer group no-underline block"
+              className="rounded-xl overflow-hidden relative cursor-pointer group no-underline block aspect-[4/3]"
               style={{ background: "#e0e0de" }}
             >
               <img
-                src={`https://images.unsplash.com/${photo}?w=400&h=${h}&fit=crop&q=78`}
+                src={`https://images.unsplash.com/${photo}?w=400&h=300&fit=crop&q=78`}
                 alt="AI-Generated Digital Art"
                 loading="lazy"
-                className="w-full block rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
-                style={{ height: h, objectFit: "cover" }}
+                className="w-full h-full object-cover rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
               {/* Badge */}
