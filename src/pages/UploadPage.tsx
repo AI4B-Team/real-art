@@ -15,6 +15,22 @@ const categories = [
 
 const steps = ["Upload", "Details", "Publish"];
 
+const mockCommunities = [
+  { id: "c1", name: "Avatar Architects" },
+  { id: "c2", name: "Abstract Minds" },
+  { id: "c3", name: "Neon Futures" },
+  { id: "c4", name: "Forest & Earth" },
+];
+
+const mockCollections = [
+  { id: "col1", name: "Cosmic Portraits", communityId: null },
+  { id: "col2", name: "Neon Dreams", communityId: "c3" },
+  { id: "col3", name: "Nature Studies", communityId: "c4" },
+  { id: "col4", name: "My Favorites", communityId: null },
+];
+
+type CollectionTarget = "none" | "existing" | "new";
+
 const UploadPage = () => {
   const [step, setStep] = useState(0);
   const [files, setFiles] = useState<File[]>([]);
@@ -29,6 +45,26 @@ const UploadPage = () => {
   const [visibility, setVisibility] = useState<"public" | "private">("public");
   const [published, setPublished] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  // Collection targeting
+  const [collectionTarget, setCollectionTarget] = useState<CollectionTarget>("none");
+  const [selectedCommunity, setSelectedCommunity] = useState("");
+  const [selectedCollection, setSelectedCollection] = useState("");
+  const [newCollectionName, setNewCollectionName] = useState("");
+  const [collectionSearch, setCollectionSearch] = useState("");
+
+  const filteredCollections = mockCollections.filter(c => {
+    const matchesSearch = !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase());
+    const matchesCommunity = !selectedCommunity || c.communityId === selectedCommunity;
+    return matchesSearch && (selectedCommunity ? matchesCommunity : true);
+  });
+
+  const selectedCollectionName =
+    collectionTarget === "existing"
+      ? mockCollections.find(c => c.id === selectedCollection)?.name || ""
+      : collectionTarget === "new"
+        ? newCollectionName
+        : "";
 
   const handleFiles = (incoming: FileList | null) => {
     if (!incoming) return;
