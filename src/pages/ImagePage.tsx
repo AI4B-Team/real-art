@@ -442,8 +442,8 @@ const ImagePage = () => {
                   <button className="flex-1 bg-foreground text-primary-foreground text-[0.8rem] font-semibold py-2 rounded-lg hover:bg-accent transition-colors">
                     Follow
                   </button>
-                  <button className="flex-1 bg-card border border-foreground/[0.12] text-[0.8rem] font-medium py-2 rounded-lg hover:border-foreground/30 transition-colors">
-                    💛 Donate
+                  <button className="flex-1 bg-card border border-foreground/[0.12] text-[0.8rem] font-medium py-2 rounded-lg hover:border-foreground/30 transition-colors text-destructive flex items-center justify-center gap-2">
+                    <Heart className="w-4 h-4 fill-destructive text-destructive" /> Donate
                   </button>
                 </div>
               </div>
