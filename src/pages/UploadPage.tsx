@@ -437,7 +437,7 @@ const UploadPage = () => {
 
               <button
                 disabled={!canProceed[0]}
-                onClick={() => setStep(1)}
+                onClick={() => { setStep(1); runAutoTag(); }}
                 className="bg-foreground text-primary-foreground px-8 py-3 rounded-lg text-[0.86rem] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent transition-colors"
               >
                 Continue
