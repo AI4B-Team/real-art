@@ -207,7 +207,7 @@ const DashboardPage = () => {
                     {achievements.map(a => (
                       <div key={a.title} className={`border rounded-xl p-4 transition-colors ${a.unlocked ? "border-accent/20 bg-accent/[0.03]" : "border-foreground/[0.06] bg-card opacity-60"}`}>
                         <div className="flex items-center gap-2 mb-1.5">
-                          <span className="text-lg">{a.icon}</span>
+                          <a.icon className="w-5 h-5 text-accent shrink-0" />
                           <span className="text-[0.82rem] font-semibold">{a.title}</span>
                           {a.unlocked && <span className="ml-auto text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">Unlocked</span>}
                         </div>
