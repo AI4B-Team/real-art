@@ -59,7 +59,7 @@ const CollectionsSection = () => {
                     />
                   </div>
                 ))}
-                <div className="h-[42px] px-3 rounded-lg bg-muted-foreground/80 flex items-center justify-center ml-auto">
+                <div className="h-[42px] px-3 rounded-lg bg-muted-foreground/80 flex items-center justify-center">
                   <span className="text-primary-foreground font-semibold text-sm">+{col.count}</span>
                 </div>
               </div>
