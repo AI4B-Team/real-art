@@ -90,13 +90,13 @@ const PromptLibrary = () => {
               <div className="flex items-center justify-between">
                 <span className="text-[0.72rem] text-muted">{pack.prompts} prompts</span>
                 <div className="flex gap-1">
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
+                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
                     <Eye className="w-[10px] h-[10px]" /> View
                   </button>
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
+                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-foreground/[0.06] text-[0.68rem] font-medium hover:bg-foreground/[0.12] transition-colors">
                     <Copy className="w-[10px] h-[10px]" /> Copy
                   </button>
-                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-accent text-primary-foreground text-[0.68rem] font-medium hover:bg-accent/80 transition-colors">
+                  <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-md bg-accent text-primary-foreground text-[0.68rem] font-medium hover:bg-accent/80 transition-colors">
                     <Shuffle className="w-[10px] h-[10px]" /> Remix
                   </button>
                 </div>
