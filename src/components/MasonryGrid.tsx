@@ -60,12 +60,6 @@ const MasonryGrid = () => {
                   {video ? "AI Video" : "AI Art"}
                 </div>
               )}
-              {/* Shop badge */}
-              {isShoppable(i) && (
-                <div className="absolute top-2 right-2 flex items-center gap-1 bg-accent text-primary-foreground text-[0.52rem] font-bold tracking-[0.06em] uppercase px-1.5 py-0.5 rounded-lg shadow-sm z-10">
-                  <ShoppingBag className="w-2.5 h-2.5" /> Shop
-                </div>
-              )}
               {/* Hover overlay with all actions */}
               <ImageCardOverlay index={i} isVideo={video} />
             </Link>
