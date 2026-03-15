@@ -67,6 +67,7 @@ const App = () => (
           <Route path="/trending" element={<ExplorePage />} />
           <Route path="/3d-art" element={<ExplorePage />} />
           <Route path="/collections" element={<CollectionsPage />} />
+          <Route path="/collections/create" element={<CreateCollectionPage />} />
           <Route path="/collections/:id" element={<CollectionDetailPage />} />
 
           {/* Round 2 — Community */}
