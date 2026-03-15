@@ -65,7 +65,8 @@ const CommunityDetailPage = () => {
   const [codeInput, setCodeInput] = useState("");
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("Gallery");
-  const tabs = ["Gallery", "Members", "About"];
+  const tabs = ["Gallery", "Collections", "Members", "About"];
+  const collections = communityCollections[community.id] || communityCollections["2"];
 
   const handleJoin = () => {
     if (!community.free) {
