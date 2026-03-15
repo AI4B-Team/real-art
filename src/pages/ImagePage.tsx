@@ -45,6 +45,7 @@ const ImagePage = () => {
   const [boardModalOpen, setBoardModalOpen] = useState(false);
   const [showRecreateModal, setShowRecreateModal] = useState(false);
   const [followed, setFollowed] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
 
