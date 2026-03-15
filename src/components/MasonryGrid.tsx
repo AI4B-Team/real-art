@@ -11,8 +11,8 @@ const photos = [
   "photo-1501854140801-50d01698950b", "photo-1576091160550-2173dba999ef",
   "photo-1518770660439-4636190af475", "photo-1462275646964-a0e3386b89fa",
   "photo-1500462918059-b1a0cb512f1d", "photo-1543722530-d2c3201371e7",
-  "photo-1607799279861-4dd421887fb3", "photo-1533158628620-7e4d0a003147",
-  "photo-1567360425618-1594206637d2", "photo-1505765050516-f72dcac9c60e",
+  "photo-1533158628620-7e4d0a003147", "photo-1505765050516-f72dcac9c60e",
+  "photo-1470071459604-3b5ec3a7fe05", "photo-1465146344425-f00d5f5c8f07",
 ];
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 const creators = [
@@ -63,6 +63,7 @@ const MasonryGrid = () => {
                 loading="lazy"
                 className="w-full block rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
                 style={{ height: h, objectFit: "cover" }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
               {/* AI label */}
               <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
