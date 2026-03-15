@@ -20,9 +20,9 @@ const Index = () => {
       <FilterBar />
       <MasonryGrid />
       <CollectionsSection />
-      <TrendingCreatorsSection />
       <CommunitiesSection />
       <ChallengesSection />
+      <TrendingCreatorsSection />
       <section className="py-12 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto">
           <CreatorEarningsSection />
