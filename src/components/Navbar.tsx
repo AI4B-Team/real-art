@@ -42,9 +42,12 @@ const Navbar = () => {
     { icon: BarChart3, label: "Leaderboard", to: "/leaderboard" },
   ];
 
-  const creatorLinks = [
+  const createLinks = [
+    { icon: Sparkles, label: "REAL CREATOR", to: "/real-creator" },
     { icon: Upload, label: "Upload Art", to: "/upload" },
-    { icon: Pen, label: "REAL CREATOR", to: "/real-creator" },
+  ];
+
+  const infoLinks = [
     { icon: FileText, label: "License Info", to: "/license" },
   ];
 
