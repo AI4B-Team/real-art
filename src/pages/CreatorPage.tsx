@@ -25,7 +25,7 @@ const creatorsData = [
     location: "Tokyo, Japan", website: "neopixel.io", twitter: "@neopixelart", instagram: "@neopixel.art",
     followers: 9800, following: 156, images: 196, downloads: "2.8M", views: "12.1M", remixes: "5.2K",
     joined: "March 2024",
-    badges: ["🔥 Trending Artist", "⬇️ 100K Downloads"],
+    badges: [{ icon: TrendingUp, label: "Trending Artist" }, { icon: Download, label: "100K Downloads" }],
     pinnedImage: { photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", views: "31,400" },
   },
   {
