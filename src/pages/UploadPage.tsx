@@ -417,7 +417,7 @@ const UploadPage = () => {
                               </div>
                               <div>
                                 <label className="flex items-center gap-1.5 text-[0.76rem] font-semibold text-muted mb-1.5">
-                                  <Video className="w-3 h-3" /> Video Inspo Prompt
+                                  <Video className="w-3 h-3" /> Video Prompt
                                 </label>
                                 <textarea
                                   value={prompts.video_prompt}
