@@ -502,7 +502,7 @@ const CommunityDetailPage = () => {
                   onClick={handleCodeSubmit}
                   className="flex-1 bg-foreground text-primary-foreground py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors"
                 >
-                  Unlock Gallery
+                  Unlock Collection
                 </button>
                 <button
                   onClick={() => setShowCodeModal(false)}
