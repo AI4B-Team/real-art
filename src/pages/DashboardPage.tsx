@@ -6,7 +6,7 @@ import {
   Heart, ArrowRight, RefreshCw, Code, Globe, Award, Star, Sparkles, Pin,
   Play, Music, SlidersHorizontal, Bookmark, MoreHorizontal, LayoutGrid,
   Megaphone, MousePointerClick, Pause, Trash2, Search, Layout as LayoutIcon,
-  Edit3, ExternalLink, Video, X
+  Edit3, ExternalLink, Video, X, Check
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { getBoards, deleteBoard, updateBoard, createBoard, type Board } from "@/lib/boardStore";
