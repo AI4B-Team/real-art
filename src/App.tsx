@@ -40,6 +40,7 @@ import BlogPage from "./pages/BlogPage";
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import DashboardCollectionPage from "./pages/DashboardCollectionPage";
 import AdsPage from "./pages/AdsPage";
 
 import CreatorsPage from "./pages/CreatorsPage";
