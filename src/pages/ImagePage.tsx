@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
@@ -8,6 +8,7 @@ import {
 import SponsoredCard from "@/components/SponsoredCard";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
 import Navbar from "@/components/Navbar";
+import { resolveLink, trackClick, seedDemoLinks, type ImageLink } from "@/lib/linkStore";
 import Footer from "@/components/Footer";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
 import ShareModal from "@/components/ShareModal";
