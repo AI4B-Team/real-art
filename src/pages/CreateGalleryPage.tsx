@@ -173,8 +173,8 @@ const CreateGalleryPage = () => {
               <label className="block text-[0.84rem] font-semibold mb-2">Access type</label>
               <div className="flex flex-col gap-3">
                 {([
-                  { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone on REAL ART can discover and join your gallery for free." },
-                  { val: "private" as const, icon: Lock, title: "Private (Code Access)", desc: "Only people with your access code can view this gallery's content." },
+                  { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone on REAL ART can discover and join your collection for free." },
+                  { val: "private" as const, icon: Lock, title: "Private (Code Access)", desc: "Only people with your access code can view this collection's content." },
                 ] as const).map(opt => (
                   <button
                     key={opt.val}
