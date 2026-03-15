@@ -120,7 +120,70 @@ const ImagePage = () => {
                 <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Share2 className="w-4 h-4" /> Share
                 </button>
+                <button onClick={() => setShowEmbed(true)} className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-accent/40 hover:text-accent transition-colors">
+                  <Code className="w-4 h-4" /> Embed
+                </button>
               </div>
+
+              {/* Embed Modal */}
+              {showEmbed && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" onClick={() => setShowEmbed(false)}>
+                  <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[560px] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+                    {/* Header */}
+                    <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/[0.06]">
+                      <div className="flex items-center gap-2">
+                        <Code className="w-4 h-4 text-accent" />
+                        <h3 className="font-display text-[1.1rem] font-black">Embed This Image</h3>
+                      </div>
+                      <button onClick={() => setShowEmbed(false)} className="text-muted hover:text-foreground transition-colors">
+                        <X className="w-5 h-5" />
+                      </button>
+                    </div>
+
+                    {/* Preview */}
+                    <div className="px-6 pt-5 pb-4">
+                      <p className="text-[0.78rem] text-muted mb-4">Add this image to any website, blog, or Notion page. The embed links back to REAL ART and the creator.</p>
+                      <div className="bg-card border border-foreground/[0.06] rounded-xl p-4 mb-5">
+                        <div className="rounded-lg overflow-hidden mb-3">
+                          <img src={`https://images.unsplash.com/${photo}?w=500&h=300&fit=crop&q=80`} alt="" className="w-full block" />
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[0.5rem] font-bold text-white" style={{ background: creator.color }}>{creator.avatar}</div>
+                            <span className="text-[0.78rem] text-muted">By <strong className="text-foreground">{creator.name}</strong></span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[0.68rem] text-accent font-semibold">Create your own version →</span>
+                            <span className="text-[0.65rem] font-bold text-muted tracking-[0.06em]">REAL ART</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Code */}
+                      <label className="text-[0.78rem] font-semibold mb-2 block">Embed code</label>
+                      <div className="relative">
+                        <pre className="bg-foreground text-primary-foreground/70 rounded-lg p-4 text-[0.72rem] leading-[1.6] overflow-x-auto font-mono whitespace-pre-wrap break-all">
+                          {embedCode}
+                        </pre>
+                        <button
+                          onClick={handleCopyEmbed}
+                          className="absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2.5 py-1.5 rounded-md bg-primary-foreground/[0.1] text-primary-foreground text-[0.7rem] font-medium hover:bg-primary-foreground/[0.2] transition-colors"
+                        >
+                          {embedCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy</>}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="px-6 py-4 border-t border-foreground/[0.06] bg-card/50 flex items-center justify-between">
+                      <p className="text-[0.72rem] text-muted">Embeds include creator attribution and a link to REAL ART</p>
+                      <button onClick={() => setShowEmbed(false)} className="bg-foreground text-primary-foreground px-5 py-2 rounded-lg text-[0.82rem] font-semibold hover:bg-accent transition-colors">
+                        Done
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Prompt section */}
               <div className="mt-6 bg-card border border-foreground/[0.08] rounded-xl p-5">
