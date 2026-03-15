@@ -1,14 +1,16 @@
+import { Link } from "react-router-dom";
+
 const leaderboard = [
-  { name: "AI.Verse", pts: "48,200", dl: "12.4K dls", c: "#4361ee", i: "AV" },
-  { name: "NeoPixel", pts: "41,800", dl: "10.9K dls", c: "#c9184a", i: "NP" },
-  { name: "DreamForge", pts: "37,100", dl: "9.8K dls", c: "#2a9d8f", i: "DF" },
-  { name: "LuminaAI", pts: "29,400", dl: "7.3K dls", c: "#e76f51", i: "LA" },
-  { name: "SpectraGen", pts: "24,600", dl: "5.9K dls", c: "#7b2d8b", i: "SG" },
-  { name: "PixelForge", pts: "22,100", dl: "5.4K dls", c: "#0891b2", i: "PF" },
-  { name: "ArtWave", pts: "19,800", dl: "4.9K dls", c: "#7c3aed", i: "AW" },
-  { name: "NeuralNest", pts: "17,300", dl: "4.2K dls", c: "#059669", i: "NN" },
-  { name: "SynthDream", pts: "15,600", dl: "3.8K dls", c: "#dc2626", i: "SD" },
-  { name: "GenLab", pts: "13,900", dl: "3.3K dls", c: "#ea580c", i: "GL" },
+  { name: "AI.Verse", pts: "48,200", dl: "12.4K dls", c: "#4361ee", i: "AV", id: "1" },
+  { name: "NeoPixel", pts: "41,800", dl: "10.9K dls", c: "#c9184a", i: "NP", id: "2" },
+  { name: "DreamForge", pts: "37,100", dl: "9.8K dls", c: "#2a9d8f", i: "DF", id: "3" },
+  { name: "LuminaAI", pts: "29,400", dl: "7.3K dls", c: "#e76f51", i: "LA", id: "4" },
+  { name: "SpectraGen", pts: "24,600", dl: "5.9K dls", c: "#7b2d8b", i: "SG", id: "5" },
+  { name: "PixelForge", pts: "22,100", dl: "5.4K dls", c: "#0891b2", i: "PF", id: "6" },
+  { name: "ArtWave", pts: "19,800", dl: "4.9K dls", c: "#7c3aed", i: "AW", id: "7" },
+  { name: "NeuralNest", pts: "17,300", dl: "4.2K dls", c: "#059669", i: "NN", id: "8" },
+  { name: "SynthDream", pts: "15,600", dl: "3.8K dls", c: "#dc2626", i: "SD", id: "9" },
+  { name: "GenLab", pts: "13,900", dl: "3.3K dls", c: "#ea580c", i: "GL", id: "10" },
 ];
 
 const LeaderboardSection = () => {
@@ -26,19 +28,23 @@ const LeaderboardSection = () => {
           <span className="text-[0.74rem] text-muted">March 2026</span>
         </div>
         {leaderboard.map((r, i) => (
-          <div key={r.name} className="flex items-center gap-3.5 px-[22px] py-3.5 border-b border-foreground/[0.04] last:border-none">
+          <Link
+            key={r.name}
+            to={`/creator/${r.id}`}
+            className="flex items-center gap-3.5 px-[22px] py-3.5 border-b border-foreground/[0.04] last:border-none no-underline hover:bg-background/50 transition-colors"
+          >
             <div className={`font-display text-[1.1rem] font-black w-[22px] ${i < 3 ? "text-accent" : "text-foreground/20"}`}>{i + 1}</div>
             <div className="w-9 h-9 rounded-full flex items-center justify-center text-[0.72rem] font-bold text-primary-foreground shrink-0" style={{ background: r.c }}>{r.i}</div>
             <div className="flex-1">
-              <div className="font-semibold text-[0.85rem]">{r.name}</div>
+              <div className="font-semibold text-[0.85rem] text-foreground">{r.name}</div>
               <div className="text-[0.73rem] text-muted">{r.pts} pts</div>
             </div>
-            <div className="text-[0.78rem] font-semibold">{r.dl}</div>
-          </div>
+            <div className="text-[0.78rem] font-semibold text-foreground">{r.dl}</div>
+          </Link>
         ))}
       </div>
       <div className="text-center mt-3.5">
-        <a href="#" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px">Full Leaderboard →</a>
+        <Link to="/leaderboard" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px no-underline hover:text-accent hover:border-accent transition-colors">Full Leaderboard →</Link>
       </div>
     </div>
   );
