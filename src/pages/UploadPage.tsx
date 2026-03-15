@@ -435,7 +435,7 @@ const UploadPage = () => {
                   <div className="flex flex-col gap-3">
                     {([
                       { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone can view, download, and use this image for free" },
-                      { val: "private" as const, icon: Lock, title: "Private Gallery", desc: "Only accessible via your gallery with an access code" },
+                      { val: "private" as const, icon: Lock, title: "Private Collection", desc: "Only accessible via your collection with an access code" },
                     ]).map(opt => (
                       <button
                         key={opt.val}
@@ -591,7 +591,7 @@ const UploadPage = () => {
                     ["Title", title || "—"],
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
-                    ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private gallery"],
+                    ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private collection"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
                     ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],

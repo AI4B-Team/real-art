@@ -45,7 +45,7 @@ const CreateGalleryPage = () => {
             <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
               <Check className="w-9 h-9 text-accent" />
             </div>
-            <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3">Gallery created!</h1>
+            <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3">Collection Created!</h1>
             <p className="text-muted text-[0.88rem] leading-[1.7] mb-8">
               {name} is live. Start adding images to build your collection.
             </p>
@@ -65,7 +65,7 @@ const CreateGalleryPage = () => {
                   </button>
                 </div>
                 <p className="text-[0.75rem] text-muted mt-3 leading-[1.6]">
-                  Share this code with anyone you want to give access. You can change or regenerate it anytime from your gallery settings.
+                  Share this code with anyone you want to give access. You can change or regenerate it anytime from your collection settings.
                 </p>
               </div>
             )}
@@ -78,7 +78,7 @@ const CreateGalleryPage = () => {
               </Link>
               <Link to="/communities">
                 <button className="w-full border border-foreground/[0.14] py-3 rounded-lg text-[0.86rem] font-medium hover:border-foreground/30 transition-colors">
-                  View All Galleries
+                  View All Collections
                 </button>
               </Link>
             </div>
@@ -101,16 +101,16 @@ const CreateGalleryPage = () => {
             <ChevronRight className="w-3 h-3 opacity-30" />
             <Link to="/communities" className="hover:text-foreground transition-colors">Communities</Link>
             <ChevronRight className="w-3 h-3 opacity-30" />
-            <span className="text-foreground">Create Gallery</span>
+            <span className="text-foreground">Create Collection</span>
           </div>
 
-          <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] mb-2">Create your gallery</h1>
+          <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] mb-2">Create Your Collection</h1>
           <p className="text-muted text-[0.88rem] mb-10 leading-[1.65]">Build a public showcase or a private vault for your art — you control who sees it.</p>
 
           <div className="flex flex-col gap-7">
-            {/* Gallery name */}
+            {/* Collection name */}
             <div>
-              <label className="block text-[0.84rem] font-semibold mb-2">Gallery name <span className="text-accent">*</span></label>
+              <label className="block text-[0.84rem] font-semibold mb-2">Collection Name <span className="text-accent">*</span></label>
               <input
                 className="w-full h-12 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.95rem] bg-card outline-none focus:border-foreground transition-colors"
                 placeholder="e.g. My Cyberpunk Collection"
@@ -126,7 +126,7 @@ const CreateGalleryPage = () => {
               <textarea
                 className="w-full border border-foreground/[0.13] rounded-xl px-4 py-3 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors resize-none"
                 rows={4}
-                placeholder="Tell people what this gallery is about. What will they find inside?"
+                placeholder="Tell people what this collection is about. What will they find inside?"
                 value={desc}
                 onChange={e => setDesc(e.target.value)}
                 maxLength={300}
@@ -173,8 +173,8 @@ const CreateGalleryPage = () => {
               <label className="block text-[0.84rem] font-semibold mb-2">Access type</label>
               <div className="flex flex-col gap-3">
                 {([
-                  { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone on REAL ART can discover and join your gallery for free." },
-                  { val: "private" as const, icon: Lock, title: "Private (Code Access)", desc: "Only people with your access code can view this gallery's content." },
+                  { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone on REAL ART can discover and join your collection for free." },
+                  { val: "private" as const, icon: Lock, title: "Private (Code Access)", desc: "Only people with your access code can view this collection's content." },
                 ] as const).map(opt => (
                   <button
                     key={opt.val}
@@ -219,14 +219,14 @@ const CreateGalleryPage = () => {
             <div className="flex items-start gap-3 bg-foreground/[0.03] border border-foreground/[0.06] rounded-xl p-4">
               <Users className="w-4 h-4 text-muted shrink-0 mt-0.5" />
               <p className="text-[0.78rem] text-muted leading-[1.6]">
-                Every image in your gallery automatically carries your affiliate link. When someone joins REAL CREATOR after discovering your work here, you earn commission.
+                Every image in your collection automatically carries your affiliate link. When someone joins REAL CREATOR after discovering your work here, you earn commission.
               </p>
             </div>
 
             <div className="flex items-start gap-3 bg-accent/[0.04] border border-accent/15 rounded-xl p-4">
               <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
               <p className="text-[0.78rem] text-muted leading-[1.6]">
-                Your gallery will appear in the Communities section. Public galleries are discoverable by all REAL ART members.
+                Your collection will appear in the Communities section. Public collections are discoverable by all REAL ART members.
               </p>
             </div>
 
@@ -236,7 +236,7 @@ const CreateGalleryPage = () => {
               onClick={() => setCreated(true)}
               className="bg-foreground text-primary-foreground px-8 py-3.5 rounded-xl text-[0.9rem] font-semibold disabled:opacity-40 disabled:cursor-not-allowed hover:bg-accent transition-colors w-full flex items-center justify-center gap-2"
             >
-              Create Gallery
+              Create Collection
             </button>
           </div>
         </div>

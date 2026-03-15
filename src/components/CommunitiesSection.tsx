@@ -22,9 +22,9 @@ const CommunitiesSection = () => {
       <div className="max-w-[1440px] mx-auto">
         <div className="flex items-end justify-between mb-8">
           <div>
-            <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent mb-2">Creator Galleries</div>
+            <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent mb-2">Creator Collections</div>
             <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">Communities</h2>
-            <p className="text-[0.83rem] text-muted mt-[7px]">Public galleries and private vaults from creators worldwide</p>
+            <p className="text-[0.83rem] text-muted mt-[7px]">Public collections and private vaults from creators worldwide</p>
           </div>
           <Link to="/communities" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap no-underline hover:text-accent hover:border-accent transition-colors">Browse All →</Link>
         </div>
@@ -58,11 +58,11 @@ const CommunitiesSection = () => {
         </div>
         <div className="mt-3.5 bg-card border border-foreground/[0.08] rounded-[14px] p-[22px_26px] flex items-center justify-between flex-wrap gap-3">
           <div>
-            <div className="font-bold text-[0.9rem] mb-[3px]">Build Your Own Gallery</div>
+            <div className="font-bold text-[0.9rem] mb-[3px]">Build Your Own Collection</div>
             <div className="text-[0.8rem] text-muted">Public or private. Earn affiliate credit on every image you post.</div>
           </div>
           <Link to="/create-gallery" className="font-body text-[0.8rem] font-semibold bg-accent text-primary-foreground border-none px-[22px] py-2.5 rounded-lg no-underline hover:bg-accent/85 transition-colors">
-            Create Gallery
+            Create Collection
           </Link>
         </div>
       </div>

@@ -43,8 +43,8 @@ const earningsData = [
   { month: "Mar", amount: 412 },
 ];
 
-const galleries = [
-  { name: "Main Gallery", images: 84, members: 0, free: true, code: "" },
+const collections = [
+  { name: "Main Collection", images: 84, members: 0, free: true, code: "" },
   { name: "Premium Prompts", images: 42, members: 127, free: false, code: "XK9F2M" },
   { name: "Avatar Collection", images: 31, members: 64, free: false, code: "RT7P4Q" },
 ];
@@ -506,7 +506,7 @@ const DashboardPage = () => {
                   </Link>
                 </div>
                 <div className="flex flex-col gap-4">
-                  {galleries.map((g, i) => (
+                  {collections.map((g, i) => (
                     <div key={i} className="bg-card border border-foreground/[0.08] rounded-xl p-5 flex items-center justify-between flex-wrap gap-4">
                       <div>
                         <div className="flex items-center gap-2 mb-1">

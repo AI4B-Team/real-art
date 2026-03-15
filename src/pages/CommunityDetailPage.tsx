@@ -67,7 +67,7 @@ const CommunityDetailPage = () => {
   const [joined, setJoined] = useState(false);
   const [codeInput, setCodeInput] = useState("");
   const [showCodeModal, setShowCodeModal] = useState(false);
-  const [activeTab, setActiveTab] = useState("Gallery");
+  const [activeTab, setActiveTab] = useState("Collection");
   const [collectionPerm, setCollectionPerm] = useState<"owner" | "moderators" | "any_member">(community.collectionPermission);
   const [requestName, setRequestName] = useState("");
   const [requestDesc, setRequestDesc] = useState("");
@@ -76,7 +76,7 @@ const CommunityDetailPage = () => {
     { id: "r2", name: "AI Fashion Editorial", by: "DreamForge", status: "pending" as const },
     { id: "r3", name: "Luxury Interiors", by: "AI.Verse", status: "approved" as const },
   ]);
-  const tabs = ["Gallery", "Collections", "Members", "About", "Settings"];
+  const tabs = ["Collection", "Collections", "Members", "About", "Settings"];
   const collections = communityCollections[community.id] || communityCollections["2"];
 
   // Mock role — in production this comes from auth + community membership
@@ -196,16 +196,16 @@ const CommunityDetailPage = () => {
 
           {/* Tab content */}
           <div className="py-8 pb-16">
-            {activeTab === "Gallery" && (
+            {activeTab === "Collection" && (
               <>
                 {(!community.free && !joined) ? (
                   <div className="flex flex-col items-center justify-center py-24 text-center">
                     <div className="w-16 h-16 rounded-2xl bg-foreground/[0.06] flex items-center justify-center mb-5">
                       <Lock className="w-7 h-7 text-muted" />
                     </div>
-                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] mb-3">This gallery is private</h2>
+                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] mb-3">This Collection Is Private</h2>
                     <p className="text-muted text-[0.88rem] max-w-[380px] leading-[1.65] mb-6">
-                      Enter the access code shared by the gallery owner to view the full image library and prompt collection.
+                      Enter the access code shared by the collection owner to view the full image library and prompt collection.
                     </p>
                     <button
                       onClick={() => setShowCodeModal(true)}
@@ -395,7 +395,7 @@ const CommunityDetailPage = () => {
                     </div>
                     <div>
                       <div className="font-semibold text-[0.85rem]">{community.owner}</div>
-                      <div className="text-[0.72rem] text-muted">Gallery owner</div>
+                      <div className="text-[0.72rem] text-muted">Collection owner</div>
                     </div>
                   </div>
                 </div>
@@ -487,7 +487,7 @@ const CommunityDetailPage = () => {
               </div>
               <h2 className="font-display text-[1.5rem] font-black tracking-[-0.03em] mb-2">Enter Access Code</h2>
               <p className="text-[0.82rem] text-muted mb-5 leading-[1.65]">
-                This gallery is private. Enter the code provided by the gallery owner to gain access.
+                This collection is private. Enter the code provided by the collection owner to gain access.
               </p>
               <input
                 autoFocus
@@ -502,7 +502,7 @@ const CommunityDetailPage = () => {
                   onClick={handleCodeSubmit}
                   className="flex-1 bg-foreground text-primary-foreground py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors"
                 >
-                  Unlock Gallery
+                  Unlock Collection
                 </button>
                 <button
                   onClick={() => setShowCodeModal(false)}
