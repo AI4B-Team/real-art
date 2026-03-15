@@ -1329,7 +1329,7 @@ const DashboardPage = () => {
                     style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
                   <div className="flex items-center gap-2 mb-4">
                     <Star className="w-4 h-4 text-accent" />
-                    <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Featured Artwork</span>
+                    <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/60">Featured Artwork</span>
                   </div>
                   <div className="flex flex-col md:flex-row gap-5">
                     <img
@@ -1348,11 +1348,11 @@ const DashboardPage = () => {
                         ].map(s => (
                           <div key={s.l}>
                             <div className="font-display font-black text-[1.1rem] text-primary-foreground">{s.v}</div>
-                            <div className="text-[0.65rem] text-primary-foreground/40 uppercase tracking-[0.08em]">{s.l}</div>
+                            <div className="text-[0.65rem] text-primary-foreground/60 uppercase tracking-[0.08em]">{s.l}</div>
                           </div>
                         ))}
                       </div>
-                      <p className="text-[0.75rem] text-primary-foreground/35">Your most viewed image · Pinned to profile</p>
+                      <p className="text-[0.75rem] text-primary-foreground/50">Your most viewed image · Pinned to profile</p>
                     </div>
                   </div>
                 </div>
