@@ -15,7 +15,7 @@ const collections = [
     name: "Street Fashion",
     count: 185,
     main: "photo-1509631179647-0177331693ae",
-    thumbs: ["photo-1509631179647-0177331693ae", "photo-1529139574466-a303027c1d8b"],
+    thumbs: ["photo-1509631179647-0177331693ae", "photo-1529139574466-a303027c1d8b", "photo-1515886657613-9f3515b0c78f", "photo-1496747611176-843222e1e57c"],
   },
   {
     name: "Runway Inspired",
