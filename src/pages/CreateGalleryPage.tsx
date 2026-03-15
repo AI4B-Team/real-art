@@ -126,7 +126,7 @@ const CreateGalleryPage = () => {
               <textarea
                 className="w-full border border-foreground/[0.13] rounded-xl px-4 py-3 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors resize-none"
                 rows={4}
-                placeholder="Tell people what this gallery is about. What will they find inside?"
+                placeholder="Tell people what this collection is about. What will they find inside?"
                 value={desc}
                 onChange={e => setDesc(e.target.value)}
                 maxLength={300}
