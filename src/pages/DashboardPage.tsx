@@ -778,16 +778,34 @@ const AdsSection = () => {
 };
 
 /* ═══ MY BOARDS SECTION ═══ */
+const coverOptions = [
+  "photo-1618005182384-a83a8bd57fbe",
+  "photo-1557682250-33bd709cbe85",
+  "photo-1604881991720-f91add269bed",
+  "photo-1579546929518-9e396f3cc809",
+  "photo-1541701494587-cb58502866ab",
+  "photo-1501854140801-50d01698950b",
+  "photo-1576091160550-2173dba999ef",
+  "photo-1547036967-23d11aacaee0",
+  "photo-1549880338-65ddcdfd017b",
+  "photo-1506905925346-21bda4d32df4",
+  "photo-1518020382113-a7e8fc38eac9",
+  "photo-1543722530-d2c3201371e7",
+];
+
 const MyBoardsSection = () => {
   const [boards, setBoards] = useState<Board[]>(() => getBoards());
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editName, setEditName] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
   const [newVisibility, setNewVisibility] = useState<"public" | "private">("private");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
-  
+  const [editingBoard, setEditingBoard] = useState<Board | null>(null);
+  const [editName, setEditName] = useState("");
+  const [editDesc, setEditDesc] = useState("");
+  const [editVisibility, setEditVisibility] = useState<"public" | "private">("private");
+  const [editCover, setEditCover] = useState("");
+
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2500); };
 
   useEffect(() => {
@@ -805,18 +823,25 @@ const MyBoardsSection = () => {
     showToast(`"${newName.trim()}" created`);
   };
 
-  const handleRename = (id: string) => {
-    if (!editName.trim()) { setEditingId(null); return; }
-    updateBoard(id, { title: editName.trim() });
-    setBoards(getBoards());
-    setEditingId(null);
-    showToast("Board renamed");
+  const openEdit = (board: Board) => {
+    setEditingBoard(board);
+    setEditName(board.title);
+    setEditDesc(board.description || "");
+    setEditVisibility(board.visibility);
+    setEditCover(board.coverPhoto || (board.items[0]?.photo ?? ""));
   };
 
-  const handleToggleVisibility = (id: string, current: "public" | "private") => {
-    updateBoard(id, { visibility: current === "public" ? "private" : "public" });
+  const handleSaveEdit = () => {
+    if (!editingBoard || !editName.trim()) return;
+    updateBoard(editingBoard.id, {
+      title: editName.trim(),
+      description: editDesc.trim(),
+      visibility: editVisibility,
+      coverPhoto: editCover,
+    });
     setBoards(getBoards());
-    showToast(`Board set to ${current === "public" ? "private" : "public"}`);
+    setEditingBoard(null);
+    showToast("Board updated");
   };
 
   const handleDelete = (id: string, title: string) => {
@@ -827,6 +852,8 @@ const MyBoardsSection = () => {
   };
 
   const totalSaved = boards.reduce((s, b) => s + b.items.length, 0);
+
+  const getCover = (board: Board) => board.coverPhoto || board.items[0]?.photo || "";
 
   return (
     <>
@@ -857,7 +884,7 @@ const MyBoardsSection = () => {
             type="text"
             value={newName}
             onChange={e => setNewName(e.target.value)}
-            placeholder="Board name..."
+            placeholder="Board name…"
             autoFocus
             className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.84rem] outline-none focus:border-accent/40 transition-colors"
             onKeyDown={e => e.key === "Enter" && handleCreate()}
@@ -894,83 +921,198 @@ const MyBoardsSection = () => {
 
       {boards.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {boards.map(board => (
-            <div key={board.id} className="bg-card border border-foreground/[0.08] rounded-xl overflow-hidden group">
-              {/* Mosaic cover */}
-              <div className="aspect-[16/9] bg-foreground/[0.04] grid grid-cols-3 gap-0.5 overflow-hidden">
-                {board.items.slice(0, 3).map((item, i) => (
-                  <img key={i} src={`https://images.unsplash.com/${item.photo}?w=200&h=140&fit=crop&q=70`} alt="" className={`w-full h-full object-cover ${i === 0 ? "col-span-2 row-span-1" : ""}`} />
-                ))}
-                {board.items.length === 0 && (
-                  <div className="col-span-3 flex items-center justify-center">
-                    <Bookmark className="w-8 h-8 text-muted opacity-30" />
+          {boards.map(board => {
+            const cover = getCover(board);
+            return (
+              <div key={board.id} className="bg-card border border-foreground/[0.08] rounded-2xl overflow-hidden group">
+                {/* Single full-bleed cover */}
+                <Link to={`/boards/${board.id}`} className="block no-underline">
+                  <div className="relative aspect-[4/3] bg-foreground/[0.04] overflow-hidden">
+                    {cover ? (
+                      <img
+                        src={`https://images.unsplash.com/${cover}?w=500&h=375&fit=crop&q=80`}
+                        alt={board.title}
+                        className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Bookmark className="w-10 h-10 text-muted opacity-20" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
+                    {/* Overlaid info */}
+                    <div className="absolute bottom-3 left-4 right-4">
+                      <h3 className="font-display text-[1.2rem] font-black text-primary-foreground leading-tight mb-1">{board.title}</h3>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[0.72rem] text-primary-foreground/80 flex items-center gap-1">
+                          <Bookmark className="w-3 h-3" /> {board.items.length} saved
+                        </span>
+                        <span className="text-[0.72rem] text-primary-foreground/80 flex items-center gap-1">
+                          {board.visibility === "private" ? <Key className="w-3 h-3" /> : <Globe className="w-3 h-3" />}
+                          {board.visibility}
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                )}
-                {board.items.length === 1 && (
-                  <div className="flex items-center justify-center bg-foreground/[0.04]">
-                    <Plus className="w-5 h-5 text-muted opacity-30" />
-                  </div>
-                )}
-                {board.items.length === 2 && (
-                  <div className="flex items-center justify-center bg-foreground/[0.04]">
-                    <Plus className="w-5 h-5 text-muted opacity-30" />
-                  </div>
-                )}
-              </div>
-
-              <div className="p-4">
-                {editingId === board.id ? (
-                  <input
-                    type="text"
-                    value={editName}
-                    onChange={e => setEditName(e.target.value)}
-                    autoFocus
-                    className="w-full px-2 py-1 rounded-lg border border-foreground/[0.15] text-[0.88rem] font-semibold outline-none focus:border-accent/40 mb-2"
-                    onKeyDown={e => { if (e.key === "Enter") handleRename(board.id); if (e.key === "Escape") setEditingId(null); }}
-                    onBlur={() => handleRename(board.id)}
-                  />
-                ) : (
-                  <h3 className="font-semibold text-[0.88rem] mb-0.5">{board.title}</h3>
-                )}
-                <div className="flex items-center gap-1.5 text-[0.72rem] text-muted mb-3">
-                  {board.visibility === "private" ? <Key className="w-3 h-3 text-muted" /> : <Globe className="w-3 h-3 text-muted" />}
-                  {board.items.length} saved · {board.visibility}
-                </div>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <button onClick={() => { setEditingId(board.id); setEditName(board.title); }} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-foreground/25 hover:text-foreground transition-colors">
-                    <Edit3 className="w-3 h-3" /> Rename
+                </Link>
+                {/* Footer buttons */}
+                <div className="flex items-center gap-2 p-3">
+                  <button
+                    onClick={() => openEdit(board)}
+                    className="flex items-center justify-center gap-1.5 flex-1 px-4 py-2 rounded-lg text-[0.8rem] font-medium border border-foreground/[0.12] hover:border-foreground/25 hover:text-foreground text-muted transition-colors"
+                  >
+                    <Edit3 className="w-3.5 h-3.5" /> Edit
                   </button>
-                  <button onClick={() => handleToggleVisibility(board.id, board.visibility)} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-foreground/25 hover:text-foreground transition-colors">
-                    {board.visibility === "private" ? <Globe className="w-3 h-3" /> : <Key className="w-3 h-3" />}
-                    {board.visibility === "private" ? "Make public" : "Make private"}
-                  </button>
-                  <Link to={`/boards/${board.id}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-foreground/25 hover:text-foreground transition-colors no-underline">
-                    <ExternalLink className="w-3 h-3" /> Open
-                  </Link>
                   {deleteConfirm === board.id ? (
-                    <div className="flex items-center gap-1.5">
-                      <span className="text-[0.72rem] text-muted">Sure?</span>
-                      <button onClick={() => handleDelete(board.id, board.title)} className="text-[0.72rem] font-bold text-red-600 hover:text-red-700 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">Yes</button>
-                      <button onClick={() => setDeleteConfirm(null)} className="text-[0.72rem] text-muted hover:text-foreground">No</button>
+                    <div className="flex items-center gap-1.5 flex-1 justify-center">
+                      <span className="text-[0.75rem] text-muted">Delete?</span>
+                      <button onClick={() => handleDelete(board.id, board.title)} className="text-[0.75rem] font-bold text-red-600 hover:text-red-700 px-2.5 py-1.5 rounded-lg hover:bg-red-50 transition-colors">Yes</button>
+                      <button onClick={() => setDeleteConfirm(null)} className="text-[0.75rem] text-muted hover:text-foreground px-2 py-1.5 rounded-lg transition-colors">No</button>
                     </div>
                   ) : (
-                    <button onClick={() => setDeleteConfirm(board.id)} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-destructive/30 hover:text-destructive transition-colors">
-                      <Trash2 className="w-3 h-3" />
+                    <button
+                      onClick={() => setDeleteConfirm(board.id)}
+                      className="flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg text-[0.8rem] font-medium border border-foreground/[0.12] hover:border-red-300 hover:text-red-500 hover:bg-red-50 text-muted transition-colors"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" /> Delete
                     </button>
                   )}
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {/* Create new board card */}
           <button
             onClick={() => setShowCreate(true)}
-            className="rounded-2xl border-2 border-dashed border-foreground/[0.1] flex flex-col items-center justify-center hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors min-h-[200px] group"
+            className="rounded-2xl border-2 border-dashed border-foreground/[0.1] flex flex-col items-center justify-center hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors min-h-[240px] group"
           >
             <Plus className="w-6 h-6 text-muted group-hover:text-foreground transition-colors mb-2" />
             <span className="text-[0.82rem] font-medium text-muted group-hover:text-foreground transition-colors">New Board</span>
           </button>
+        </div>
+      )}
+
+      {/* Edit modal */}
+      {editingBoard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setEditingBoard(null)}>
+          <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[480px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+            {/* Modal header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/[0.06]">
+              <h3 className="font-display text-[1.1rem] font-bold">Edit Board</h3>
+              <button onClick={() => setEditingBoard(null)} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors text-muted">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="px-6 py-5 flex flex-col gap-5 max-h-[70vh] overflow-y-auto">
+              {/* Name */}
+              <div>
+                <label className="block text-[0.8rem] font-semibold mb-2">Board name</label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={e => setEditName(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleSaveEdit()}
+                  maxLength={60}
+                  className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.85rem] outline-none focus:border-accent/40 transition-colors"
+                />
+              </div>
+
+              {/* Description */}
+              <div>
+                <label className="block text-[0.8rem] font-semibold mb-2">Description (optional)</label>
+                <textarea
+                  value={editDesc}
+                  onChange={e => setEditDesc(e.target.value)}
+                  maxLength={200}
+                  rows={3}
+                  className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.85rem] outline-none focus:border-accent/40 transition-colors resize-none"
+                />
+                <div className="text-[0.7rem] text-muted text-right mt-1">{editDesc.length}/200</div>
+              </div>
+
+              {/* Visibility */}
+              <div>
+                <label className="block text-[0.8rem] font-semibold mb-2">Visibility</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {([
+                    { val: "private" as const, icon: Key, title: "Private", desc: "Only you can see this board" },
+                    { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone with the link can view" },
+                  ]).map(opt => (
+                    <button
+                      key={opt.val}
+                      onClick={() => setEditVisibility(opt.val)}
+                      className={`flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all ${editVisibility === opt.val ? "border-foreground bg-foreground/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                    >
+                      <opt.icon className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
+                      <div>
+                        <div className="font-semibold text-[0.84rem]">{opt.title}</div>
+                        <div className="text-[0.72rem] text-muted">{opt.desc}</div>
+                      </div>
+                      {editVisibility === opt.val && <Check className="w-4 h-4 text-accent ml-auto shrink-0 mt-0.5" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Cover picker */}
+              <div>
+                <label className="block text-[0.8rem] font-semibold mb-2">
+                  Cover image
+                  {editingBoard.items.length > 0 && (
+                    <span className="font-normal text-muted ml-1">— or choose from your library</span>
+                  )}
+                </label>
+                {editingBoard.items.length > 0 && (
+                  <div className="mb-3">
+                    <p className="text-[0.76rem] text-muted mb-2">Saved to this board</p>
+                    <div className="flex flex-wrap gap-2">
+                      {editingBoard.items.map(item => (
+                        <button
+                          key={item.imageId}
+                          onClick={() => setEditCover(item.photo)}
+                          className="w-14 h-14 rounded-xl overflow-hidden shrink-0 transition-all"
+                          style={editCover === item.photo ? { outline: "2px solid hsl(var(--accent))", outlineOffset: "2px" } : {}}
+                        >
+                          <img src={`https://images.unsplash.com/${item.photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <p className="text-[0.76rem] text-muted mb-2">Or pick from library</p>
+                <div className="flex flex-wrap gap-2">
+                  {coverOptions.map(photo => (
+                    <button
+                      key={photo}
+                      onClick={() => setEditCover(photo)}
+                      className="w-14 h-14 rounded-xl overflow-hidden shrink-0 transition-all"
+                      style={editCover === photo ? { outline: "2px solid hsl(var(--accent))", outlineOffset: "2px" } : {}}
+                    >
+                      <img src={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Modal footer */}
+            <div className="px-6 py-4 border-t border-foreground/[0.06] flex gap-3">
+              <button
+                onClick={handleSaveEdit}
+                className="px-6 py-3 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors"
+              >
+                Save Changes
+              </button>
+              <button
+                onClick={() => setEditingBoard(null)}
+                className="px-6 py-3 rounded-xl border border-foreground/[0.12] text-[0.88rem] font-medium hover:border-foreground/30 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>
