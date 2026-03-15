@@ -162,19 +162,16 @@ const Navbar = () => {
           <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" /> {label}
         </Link>
       ))}
-      <div className="h-px bg-foreground/[0.06] my-1.5" />
-      <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Account</div>
       {isLoggedIn ? (
         <>
-          <Link to="/dashboard" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-            <LayoutDashboard className="w-3.5 h-3.5 opacity-40 shrink-0" /> Dashboard
-          </Link>
+          <div className="h-px bg-foreground/[0.06] my-1.5" />
           <button onClick={() => { handleLogout(); setMenuOpen(false); }} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-muted hover:text-foreground hover:bg-background transition-colors w-full text-left">
             <LogOut className="w-3.5 h-3.5 opacity-40 shrink-0" /> Log Out
           </button>
         </>
       ) : (
         <>
+          <div className="h-px bg-foreground/[0.06] my-1.5" />
           <Link to="/login" onClick={() => setMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
             Log In
           </Link>
