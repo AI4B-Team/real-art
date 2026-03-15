@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Download, FileText, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, Heart } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Heart } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 const photos = [
@@ -15,6 +14,9 @@ const photos = [
   "photo-1470071459604-3b5ec3a7fe05", "photo-1465146344425-f00d5f5c8f07",
 ];
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
+// Mark some items as videos (every 4th item)
+const isVideo = (i: number) => i % 4 === 3;
+
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee" },
   { n: "NeoPixel", i: "NP", c: "#c9184a" },
@@ -26,35 +28,17 @@ const creators = [
   { n: "Synthetix", i: "SX", c: "#06d6a0" },
 ];
 
-const samplePrompts = [
-  "A cosmic dreamscape with nebula clouds and floating crystalline structures, cinematic lighting, 8k",
-  "Abstract fluid art with deep ocean blues and metallic gold, macro photography style",
-  "Surreal mountain landscape at golden hour with bioluminescent flora, fantasy art",
-  "Digital portrait with neon cyberpunk aesthetics, rain-soaked cityscape reflection",
-  "Ethereal forest spirit emerging from ancient trees, volumetric fog, mystical atmosphere",
-  "Geometric abstract composition with brutalist architecture influence, monochrome palette",
-  "Underwater cathedral with coral pillars and light rays, photorealistic render",
-  "Retro-futuristic space station interior, warm analog film grain, 70s sci-fi aesthetic",
-];
-
-const actionButtons = [
-  { icon: Download, label: "Download" },
-  { icon: FileText, label: "Prompt" },
-  { icon: RefreshCw, label: "Recreate" },
-  { icon: Video, label: "Animate" },
-  { icon: Pencil, label: "Edit" },
-];
+const iconBtnClass = "flex items-center justify-center w-8 h-8 rounded-lg border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors";
+const labelBtnClass = "flex items-center gap-1.5 px-3 py-1.5 rounded-lg border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground text-[0.68rem] font-medium hover:bg-primary-foreground/[0.38] transition-colors";
 
 const MasonryGrid = () => {
-  const [activePrompt, setActivePrompt] = useState<number | null>(null);
-
   return (
     <div className="px-6 md:px-12 py-6 pb-16">
       <div className="masonry-grid">
         {photos.map((photo, i) => {
           const cr = creators[i % creators.length];
           const h = heights[i % heights.length];
-          const prompt = samplePrompts[i % samplePrompts.length];
+          const video = isVideo(i);
           return (
             <div key={i} className="masonry-item rounded-xl overflow-hidden relative cursor-pointer group" style={{ background: "#e0e0de" }}>
               <img
@@ -67,128 +51,87 @@ const MasonryGrid = () => {
               />
               {/* AI label */}
               <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                AI-Generated
+                {video ? "AI Video" : "AI-Generated"}
               </div>
               {/* Hover overlay */}
               <div className="absolute inset-0 rounded-xl flex flex-col justify-between p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
-                {/* Action buttons - right side vertical */}
                 <TooltipProvider>
-                  <div className="flex flex-col gap-1.5 absolute right-3 top-1/2 -translate-y-1/2">
+                  {/* Top right: Heart + Download */}
+                  <div className="flex gap-1.5 justify-end">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-accent hover:text-primary-foreground transition-colors"
-                        >
+                        <button onClick={(e) => e.stopPropagation()} className={iconBtnClass + " hover:bg-accent hover:text-primary-foreground"}>
                           <Heart className="w-3.5 h-3.5" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent side="left" className="text-xs">
-                        <p>Favorite</p>
-                      </TooltipContent>
+                      <TooltipContent side="bottom" className="text-xs"><p>Favorite</p></TooltipContent>
                     </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
-                        >
+                        <button onClick={(e) => e.stopPropagation()} className={iconBtnClass}>
                           <Download className="w-3.5 h-3.5" />
                         </button>
                       </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">
-                        <p>Download</p>
-                      </TooltipContent>
+                      <TooltipContent side="bottom" className="text-xs"><p>Download</p></TooltipContent>
                     </Tooltip>
+                  </div>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setActivePrompt(activePrompt === i ? null : i); }}
-                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">
-                        <p>View Prompt</p>
-                      </TooltipContent>
-                    </Tooltip>
+                  {/* Bottom row */}
+                  <div className="flex items-end justify-between mt-auto">
+                    {/* Creator info - bottom left */}
+                    <div className="flex items-center gap-1.5">
+                      <div
+                        className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
+                        style={{ background: cr.c }}
+                      >
+                        {cr.i}
+                      </div>
+                      <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
+                    </div>
 
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
-                        >
-                          <RefreshCw className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">
-                        <p>Recreate</p>
-                      </TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
-                        >
-                          <Video className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">
-                        <p>Animate</p>
-                      </TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center justify-center w-8 h-8 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground hover:bg-primary-foreground/[0.38] transition-colors"
-                        >
-                          <Pencil className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom" className="text-xs">
-                        <p>Edit</p>
-                      </TooltipContent>
-                    </Tooltip>
+                    {/* Bottom right actions */}
+                    <div className="flex gap-1.5">
+                      {video ? (
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button onClick={(e) => e.stopPropagation()} className={labelBtnClass}>
+                              <RefreshCw className="w-3.5 h-3.5" /> Recreate
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="top" className="text-xs"><p>Recreate this video</p></TooltipContent>
+                        </Tooltip>
+                      ) : (
+                        <>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button onClick={(e) => e.stopPropagation()} className={iconBtnClass}>
+                                <RefreshCw className="w-3.5 h-3.5" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-xs"><p>Recreate</p></TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button onClick={(e) => e.stopPropagation()} className={iconBtnClass}>
+                                <Video className="w-3.5 h-3.5" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-xs"><p>Animate</p></TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button onClick={(e) => e.stopPropagation()} className={labelBtnClass}>
+                                <Pencil className="w-3.5 h-3.5" /> Edit
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="text-xs"><p>Edit this image</p></TooltipContent>
+                          </Tooltip>
+                        </>
+                      )}
+                    </div>
                   </div>
                 </TooltipProvider>
-                {/* Creator info - bottom left */}
-                <div className="flex items-center gap-1.5 mt-auto">
-                  <div
-                    className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
-                    style={{ background: cr.c }}
-                  >
-                    {cr.i}
-                  </div>
-                  <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
-                </div>
               </div>
-              {/* Prompt popup */}
-              {activePrompt === i && (
-                <div
-                  className="absolute bottom-0 left-0 right-0 bg-foreground/95 backdrop-blur-md rounded-b-xl p-3 z-10 animate-drop-in"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <p className="text-[0.72rem] text-primary-foreground/80 leading-[1.5] mb-2">{prompt}</p>
-                  <div className="flex gap-1.5">
-                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
-                      <Eye className="w-[10px] h-[10px]" /> View
-                    </button>
-                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
-                      <Copy className="w-[10px] h-[10px]" /> Copy
-                    </button>
-                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-accent text-primary-foreground text-[0.62rem] font-medium hover:bg-accent/80 transition-colors">
-                      <Shuffle className="w-[10px] h-[10px]" /> Remix
-                    </button>
-                  </div>
-                </div>
-              )}
             </div>
           );
         })}
