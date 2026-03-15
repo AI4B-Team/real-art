@@ -57,19 +57,35 @@ const UploadPage = () => {
   const [selectedCollection, setSelectedCollection] = useState("");
   const [newCollectionName, setNewCollectionName] = useState("");
   const [collectionSearch, setCollectionSearch] = useState("");
+  const [userCollections, setUserCollections] = useState<{id: string; name: string; community_id: string | null}[]>([]);
 
   // Per-image AI prompts
   const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
 
-  const filteredCollections = mockCollections.filter(c => {
+  // Fetch user's real collections from DB
+  useEffect(() => {
+    const fetchCollections = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      const { data } = await supabase
+        .from("collections")
+        .select("id, name, community_id")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (data) setUserCollections(data);
+    };
+    fetchCollections();
+  }, []);
+
+  const filteredCollections = userCollections.filter(c => {
     const matchesSearch = !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase());
-    const matchesCommunity = !selectedCommunity || c.communityId === selectedCommunity;
+    const matchesCommunity = !selectedCommunity || c.community_id === selectedCommunity;
     return matchesSearch && (selectedCommunity ? matchesCommunity : true);
   });
 
   const selectedCollectionName =
     collectionTarget === "existing"
-      ? mockCollections.find(c => c.id === selectedCollection)?.name || ""
+      ? userCollections.find(c => c.id === selectedCollection)?.name || ""
       : collectionTarget === "new"
         ? newCollectionName
         : "";
