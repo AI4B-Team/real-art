@@ -46,7 +46,7 @@ const TrendingCreatorsSection = () => {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2">
                     <span className="font-semibold text-[0.88rem] group-hover:text-accent transition-colors">{cr.name}</span>
-                    {cr.badges.map(b => <span key={b} className="text-xs">{b}</span>)}
+                    {cr.badges.map(b => { const BadgeIcon = badgeIconMap[b]; return BadgeIcon ? <BadgeIcon key={b} className="w-3.5 h-3.5 text-accent" /> : null; })}
                   </div>
                   <div className="text-[0.72rem] text-muted">{cr.followers} followers · {cr.downloads} downloads</div>
                 </div>

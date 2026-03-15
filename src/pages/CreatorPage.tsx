@@ -34,7 +34,7 @@ const creatorsData = [
     location: "London, UK", website: "dreamforge.co", twitter: "@dreamforgeart", instagram: "@dreamforge",
     followers: 7300, following: 412, images: 421, downloads: "1.9M", views: "9.4M", remixes: "3.8K",
     joined: "February 2024",
-    badges: ["🎨 Style Pioneer", "👥 10K Followers"],
+    badges: [{ icon: Palette, label: "Style Pioneer" }, { icon: Users, label: "10K Followers" }],
     pinnedImage: { photo: "photo-1579546929518-9e396f3cc809", title: "Dream Portal", downloads: "1,940", views: "26,800" },
   },
 ];

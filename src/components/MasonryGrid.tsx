@@ -51,7 +51,7 @@ const MasonryGrid = () => {
               {/* Badge */}
               {badgeMap[i] && (
                 <div className={`absolute top-2 left-2 flex items-center gap-1 text-[0.58rem] font-bold tracking-[0.08em] uppercase px-2.5 py-1 rounded-lg shadow-sm z-10 ${badgeMap[i].style}`}>
-                  <span className="text-xs leading-none">{badgeMap[i].icon}</span> {badgeMap[i].label}
+                  <badgeMap[i].Icon className="w-3 h-3" /> {badgeMap[i].label}
                 </div>
               )}
               {/* AI label (only when no badge) */}
