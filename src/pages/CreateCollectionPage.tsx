@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2 } from "lucide-react";
+import CoverImageEditor from "@/components/CoverImageEditor";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
@@ -30,6 +31,9 @@ const CreateCollectionPage = () => {
   const [files, setFiles] = useState<PreviewFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPosition, setCoverPosition] = useState({ x: 50, y: 50, scale: 1 });
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
     const imageFiles = Array.from(newFiles).filter(f => f.type.startsWith("image/"));
@@ -48,6 +52,13 @@ const CreateCollectionPage = () => {
       return updated;
     });
   };
+
+  const handleCoverChange = useCallback((preview: string | null, file: File | null, pos: { x: number; y: number; scale: number }) => {
+    setCoverPreview(preview);
+    if (file) setCoverFile(file);
+    if (!preview) setCoverFile(null);
+    setCoverPosition(pos);
+  }, []);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
@@ -119,11 +130,38 @@ const CreateCollectionPage = () => {
 
         if (imgError) throw imgError;
 
-        // Set first image as cover
-        if (imageRecords.length > 0) {
+        // Set cover from uploaded cover file or first image
+        let finalCoverUrl = imageRecords[0].image_url;
+        if (coverFile) {
+          const coverExt = coverFile.name.split(".").pop();
+          const coverPath = `${user.id}/${collection.id}/cover.${coverExt}`;
+          const { error: coverUploadErr } = await supabase.storage
+            .from("collection-images")
+            .upload(coverPath, coverFile);
+          if (!coverUploadErr) {
+            const { data: { publicUrl: coverPublicUrl } } = supabase.storage
+              .from("collection-images")
+              .getPublicUrl(coverPath);
+            finalCoverUrl = coverPublicUrl;
+          }
+        }
+        await supabase
+          .from("collections")
+          .update({ cover_url: finalCoverUrl })
+          .eq("id", collection.id);
+      } else if (coverFile) {
+        const coverExt = coverFile.name.split(".").pop();
+        const coverPath = `${user.id}/${collection.id}/cover.${coverExt}`;
+        const { error: coverUploadErr } = await supabase.storage
+          .from("collection-images")
+          .upload(coverPath, coverFile);
+        if (!coverUploadErr) {
+          const { data: { publicUrl: coverPublicUrl } } = supabase.storage
+            .from("collection-images")
+            .getPublicUrl(coverPath);
           await supabase
             .from("collections")
-            .update({ cover_url: imageRecords[0].image_url })
+            .update({ cover_url: coverPublicUrl })
             .eq("id", collection.id);
         }
       }
@@ -179,6 +217,14 @@ const CreateCollectionPage = () => {
               className="w-full px-4 py-3 rounded-xl border border-foreground/[0.12] bg-card text-[0.9rem] font-body outline-none focus:border-foreground transition-colors resize-none"
             />
           </div>
+
+          {/* Cover Image */}
+          <CoverImageEditor
+            uploadedImages={files}
+            coverPreview={coverPreview}
+            onCoverChange={handleCoverChange}
+            position={coverPosition}
+          />
 
           {/* Visibility */}
           <div className="mb-6">
