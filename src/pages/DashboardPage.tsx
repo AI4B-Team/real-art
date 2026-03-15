@@ -11,7 +11,7 @@ const navItems = [
   { id: "overview", label: "Overview", icon: LayoutDashboard },
   { id: "exposure", label: "Exposure", icon: TrendingUp },
   { id: "images", label: "My Images", icon: Image },
-  { id: "galleries", label: "Galleries", icon: FolderOpen },
+  { id: "galleries", label: "Collections", icon: FolderOpen },
   { id: "earnings", label: "Earnings", icon: DollarSign },
   { id: "notifications", label: "Notifications", icon: Bell },
   { id: "settings", label: "Settings", icon: Settings },
