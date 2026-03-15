@@ -942,7 +942,7 @@ const MyBoardsSection = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
                     {/* Overlaid info */}
                     <div className="absolute bottom-3 left-4 right-4">
-                      <h3 className="font-display text-[1.2rem] font-black text-primary-foreground leading-tight mb-1">{board.title}</h3>
+                      <h3 className="font-display text-[1.2rem] font-black text-primary-foreground leading-tight mb-1">{board.title.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substring(1).toLowerCase())}</h3>
                       <div className="flex items-center gap-2">
                         <span className="text-[0.72rem] text-primary-foreground/80 flex items-center gap-1">
                           <Bookmark className="w-3 h-3" /> {board.items.length} saved
@@ -993,11 +993,11 @@ const MyBoardsSection = () => {
         </div>
       )}
 
-      {/* Edit modal */}
+      {/* Edit modal — horizontal two-column layout */}
       {editingBoard && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setEditingBoard(null)}>
-          <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[480px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
-            {/* Modal header */}
+          <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[720px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+            {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-foreground/[0.06]">
               <h3 className="font-display text-[1.1rem] font-bold">Edit Board</h3>
               <button onClick={() => setEditingBoard(null)} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors text-muted">
@@ -1005,75 +1005,32 @@ const MyBoardsSection = () => {
               </button>
             </div>
 
-            <div className="px-6 py-5 flex flex-col gap-5 max-h-[70vh] overflow-y-auto">
-              {/* Name */}
-              <div>
-                <label className="block text-[0.8rem] font-semibold mb-2">Board name</label>
-                <input
-                  type="text"
-                  value={editName}
-                  onChange={e => setEditName(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleSaveEdit()}
-                  maxLength={60}
-                  className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.85rem] outline-none focus:border-accent/40 transition-colors"
-                />
-              </div>
-
-              {/* Description */}
-              <div>
-                <label className="block text-[0.8rem] font-semibold mb-2">Description (optional)</label>
-                <textarea
-                  value={editDesc}
-                  onChange={e => setEditDesc(e.target.value)}
-                  maxLength={200}
-                  rows={3}
-                  className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.85rem] outline-none focus:border-accent/40 transition-colors resize-none"
-                />
-                <div className="text-[0.7rem] text-muted text-right mt-1">{editDesc.length}/200</div>
-              </div>
-
-              {/* Visibility */}
-              <div>
-                <label className="block text-[0.8rem] font-semibold mb-2">Visibility</label>
-                <div className="grid grid-cols-2 gap-2">
-                  {([
-                    { val: "private" as const, icon: Key, title: "Private", desc: "Only you can see this board" },
-                    { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone with the link can view" },
-                  ]).map(opt => (
-                    <button
-                      key={opt.val}
-                      onClick={() => setEditVisibility(opt.val)}
-                      className={`flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all ${editVisibility === opt.val ? "border-foreground bg-foreground/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
-                    >
-                      <opt.icon className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
-                      <div>
-                        <div className="font-semibold text-[0.84rem]">{opt.title}</div>
-                        <div className="text-[0.72rem] text-muted">{opt.desc}</div>
-                      </div>
-                      {editVisibility === opt.val && <Check className="w-4 h-4 text-accent ml-auto shrink-0 mt-0.5" />}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Cover picker */}
-              <div>
-                <label className="block text-[0.8rem] font-semibold mb-2">
-                  Cover image
-                  {editingBoard.items.length > 0 && (
-                    <span className="font-normal text-muted ml-1">— or choose from your library</span>
+            {/* Two-column body */}
+            <div className="flex max-h-[70vh]">
+              {/* LEFT — Cover image */}
+              <div className="w-[340px] shrink-0 border-r border-foreground/[0.06] p-6 overflow-y-auto flex flex-col gap-4">
+                {/* Cover preview */}
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-foreground/[0.04]">
+                  {editCover ? (
+                    <img src={`https://images.unsplash.com/${editCover}?w=500&h=375&fit=crop&q=80`} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Bookmark className="w-8 h-8 text-muted opacity-30" />
+                      <span className="text-[0.8rem] text-muted ml-2">No cover selected</span>
+                    </div>
                   )}
-                </label>
+                </div>
+
+                {/* From this board */}
                 {editingBoard.items.length > 0 && (
-                  <div className="mb-3">
-                    <p className="text-[0.76rem] text-muted mb-2">Saved to this board</p>
+                  <div>
+                    <p className="text-[0.76rem] text-muted mb-2 font-medium">From this board</p>
                     <div className="flex flex-wrap gap-2">
                       {editingBoard.items.map(item => (
                         <button
                           key={item.imageId}
                           onClick={() => setEditCover(item.photo)}
-                          className="w-14 h-14 rounded-xl overflow-hidden shrink-0 transition-all"
-                          style={editCover === item.photo ? { outline: "2px solid hsl(var(--accent))", outlineOffset: "2px" } : {}}
+                          className={`w-12 h-12 rounded-lg overflow-hidden shrink-0 transition-all ring-2 ${editCover === item.photo ? "ring-accent" : "ring-transparent hover:ring-foreground/20"}`}
                         >
                           <img src={`https://images.unsplash.com/${item.photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
                         </button>
@@ -1081,36 +1038,96 @@ const MyBoardsSection = () => {
                     </div>
                   </div>
                 )}
-                <p className="text-[0.76rem] text-muted mb-2">Or pick from library</p>
-                <div className="flex flex-wrap gap-2">
-                  {coverOptions.map(photo => (
-                    <button
-                      key={photo}
-                      onClick={() => setEditCover(photo)}
-                      className="w-14 h-14 rounded-xl overflow-hidden shrink-0 transition-all"
-                      style={editCover === photo ? { outline: "2px solid hsl(var(--accent))", outlineOffset: "2px" } : {}}
-                    >
-                      <img src={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
-                    </button>
-                  ))}
+
+                {/* From library */}
+                <div>
+                  <p className="text-[0.76rem] text-muted mb-2 font-medium">From library</p>
+                  <div className="flex flex-wrap gap-2">
+                    {coverOptions.map(photo => (
+                      <button
+                        key={photo}
+                        onClick={() => setEditCover(photo)}
+                        className={`w-12 h-12 rounded-lg overflow-hidden shrink-0 transition-all ring-2 ${editCover === photo ? "ring-accent" : "ring-transparent hover:ring-foreground/20"}`}
+                      >
+                        <img src={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Modal footer */}
-            <div className="px-6 py-4 border-t border-foreground/[0.06] flex gap-3">
-              <button
-                onClick={handleSaveEdit}
-                className="px-6 py-3 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors"
-              >
-                Save Changes
-              </button>
-              <button
-                onClick={() => setEditingBoard(null)}
-                className="px-6 py-3 rounded-xl border border-foreground/[0.12] text-[0.88rem] font-medium hover:border-foreground/30 transition-colors"
-              >
-                Cancel
-              </button>
+              {/* RIGHT — Fields */}
+              <div className="flex-1 flex flex-col">
+                <div className="p-6 flex flex-col gap-5 overflow-y-auto flex-1">
+                  {/* Board name */}
+                  <div>
+                    <label className="block text-[0.8rem] font-semibold mb-2">Board name</label>
+                    <input
+                      type="text"
+                      value={editName}
+                      onChange={e => setEditName(e.target.value)}
+                      onKeyDown={e => e.key === "Enter" && handleSaveEdit()}
+                      maxLength={60}
+                      className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.85rem] outline-none focus:border-accent/40 transition-colors"
+                    />
+                  </div>
+
+                  {/* Description */}
+                  <div>
+                    <label className="block text-[0.8rem] font-semibold mb-2">Description (optional)</label>
+                    <textarea
+                      value={editDesc}
+                      onChange={e => setEditDesc(e.target.value)}
+                      maxLength={200}
+                      rows={4}
+                      placeholder="What is this board about?"
+                      className="w-full px-4 py-3 rounded-xl border border-foreground/[0.1] text-[0.88rem] outline-none focus:border-accent transition-colors resize-none"
+                    />
+                    <div className="text-[0.7rem] text-muted text-right mt-1">{editDesc.length}/200</div>
+                  </div>
+
+                  {/* Visibility */}
+                  <div>
+                    <label className="block text-[0.8rem] font-semibold mb-2">Visibility</label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {([
+                        { val: "private" as const, icon: Key, title: "Private", desc: "Only you can see this" },
+                        { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone with the link" },
+                      ]).map(opt => (
+                        <button
+                          key={opt.val}
+                          onClick={() => setEditVisibility(opt.val)}
+                          className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all ${editVisibility === opt.val ? "border-foreground bg-foreground/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                        >
+                          <opt.icon className="w-4 h-4 shrink-0 text-muted" />
+                          <div className="flex-1 min-w-0">
+                            <div className="font-semibold text-[0.84rem]">{opt.title}</div>
+                            <div className="text-[0.7rem] text-muted truncate">{opt.desc}</div>
+                          </div>
+                          {editVisibility === opt.val && <Check className="w-4 h-4 text-accent shrink-0" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="px-6 py-4 border-t border-foreground/[0.06] flex gap-3 shrink-0">
+                  <button
+                    onClick={handleSaveEdit}
+                    disabled={!editName.trim()}
+                    className="flex-1 py-3 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors disabled:opacity-40"
+                  >
+                    Save Changes
+                  </button>
+                  <button
+                    onClick={() => setEditingBoard(null)}
+                    className="px-6 py-3 rounded-xl border border-foreground/[0.12] text-[0.88rem] font-medium hover:border-foreground/30 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
