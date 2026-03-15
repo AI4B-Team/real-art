@@ -1,24 +1,28 @@
 const collections = [
   {
     name: "CEO / Boss Babe",
+    subtitle: "Power portraits curated by creators",
     count: 152,
     main: "photo-1573496359142-b8d87734a5a2",
     thumbs: ["photo-1573496359142-b8d87734a5a2", "photo-1573497019940-1c28c88b4f3e", "photo-1560179707-f14e90ef3623", "photo-1551836022-d5d88e9218df"],
   },
   {
     name: "Luxury Lifestyle",
+    subtitle: "1,539 images curated by creators",
     count: 239,
     main: "photo-1600210492486-724fe5c67fb0",
     thumbs: ["photo-1600210492486-724fe5c67fb0", "photo-1616486338812-3dadae4b4ace", "photo-1600607687939-ce8a6c25118c", "photo-1600566753086-00f18fb6b3ea"],
   },
   {
     name: "Street Fashion",
+    subtitle: "Trending fashion visuals from creators",
     count: 185,
     main: "photo-1509631179647-0177331693ae",
     thumbs: ["photo-1509631179647-0177331693ae", "photo-1529139574466-a303027c1d8b", "photo-1515886657613-9f3515b0c78f", "photo-1496747611176-843222e1e57c"],
   },
   {
     name: "Runway Inspired",
+    subtitle: "Editorial looks from top AI artists",
     count: 130,
     main: "photo-1558618666-fcd25c85cd64",
     thumbs: ["photo-1558618666-fcd25c85cd64", "photo-1509631179647-0177331693ae", "photo-1544005313-94ddf0286df2", "photo-1524504388940-b1c1722653e1"],
@@ -65,6 +69,7 @@ const CollectionsSection = () => {
               </div>
               {/* Name */}
               <p className="text-foreground font-semibold text-[0.95rem] mt-2.5">{col.name}</p>
+              <p className="text-muted text-[0.76rem] leading-[1.4] mt-0.5">{col.subtitle}</p>
             </div>
           ))}
         </div>
