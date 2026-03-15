@@ -48,10 +48,10 @@ const earningsData = [
   { month: "Mar", amount: 412 },
 ];
 
-const collections = [
-  { name: "Main Collection", images: 84, members: 0, free: true, code: "" },
-  { name: "Premium Prompts", images: 42, members: 127, free: false, code: "XK9F2M" },
-  { name: "Avatar Collection", images: 31, members: 64, free: false, code: "RT7P4Q" },
+const galleriesInitial = [
+  { id: "g1", name: "Main Collection", images: 84, videos: 3, music: 2, members: 0, free: true, code: "", slug: "main-collection", thumbs: ["photo-1618005182384-a83a8bd57fbe","photo-1557682250-33bd709cbe85","photo-1604881991720-f91add269bed","photo-1579546929518-9e396f3cc809"] },
+  { id: "g2", name: "Premium Prompts", images: 42, videos: 0, music: 0, members: 127, free: false, code: "XK9F2M", slug: "premium-prompts", thumbs: ["photo-1541701494587-cb58502866ab","photo-1558618666-fcd25c85cd64","photo-1618005182384-a83a8bd57fbe","photo-1557682250-33bd709cbe85"] },
+  { id: "g3", name: "Avatar Collection", images: 31, videos: 2, music: 1, members: 64, free: false, code: "RT7P4Q", slug: "avatar-collection", thumbs: ["photo-1604881991720-f91add269bed","photo-1579546929518-9e396f3cc809","photo-1541701494587-cb58502866ab","photo-1558618666-fcd25c85cd64"] },
 ];
 
 const maxEarning = Math.max(...earningsData.map(d => d.amount));
