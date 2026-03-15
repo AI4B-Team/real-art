@@ -49,11 +49,14 @@ const MasonryGrid = () => {
                 onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
               {/* Badge */}
-              {badgeMap[i] && (
-                <div className={`absolute top-2 left-2 flex items-center gap-1 text-[0.58rem] font-bold tracking-[0.08em] uppercase px-2.5 py-1 rounded-lg shadow-sm z-10 ${badgeMap[i].style}`}>
-                  <badgeMap[i].Icon className="w-3 h-3" /> {badgeMap[i].label}
-                </div>
-              )}
+              {badgeMap[i] && (() => {
+                const BadgeIcon = badgeMap[i].Icon;
+                return (
+                  <div className={`absolute top-2 left-2 flex items-center gap-1 text-[0.58rem] font-bold tracking-[0.08em] uppercase px-2.5 py-1 rounded-lg shadow-sm z-10 ${badgeMap[i].style}`}>
+                    <BadgeIcon className="w-3 h-3" /> {badgeMap[i].label}
+                  </div>
+                );
+              })()}
               {/* AI label (only when no badge) */}
               {!badgeMap[i] && (
                 <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
