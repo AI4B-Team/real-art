@@ -6,6 +6,7 @@ const footerCols: { title: string; links: { label: string; to: string }[] }[] = 
     links: [
       { label: "Upload", to: "/upload" },
       { label: "Start Gallery", to: "/create-gallery" },
+      { label: "Boards", to: "/boards" },
       { label: "Affiliates", to: "/affiliates" },
       { label: "Private Vaults", to: "/create-gallery" },
       { label: "Prompt Packs", to: "/prompts" },
