@@ -7,11 +7,18 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 
-// Round 1 — Core pages
+// Round 1 — Core
 import ImagePage from "./pages/ImagePage";
 import CreatorPage from "./pages/CreatorPage";
 import ExplorePage from "./pages/ExplorePage";
 import CollectionsPage from "./pages/CollectionsPage";
+
+// Round 2 — Community
+import CommunitiesPage from "./pages/CommunitiesPage";
+import CommunityDetailPage from "./pages/CommunityDetailPage";
+import ChallengesPage from "./pages/ChallengesPage";
+import ChallengeDetailPage from "./pages/ChallengeDetailPage";
+import LeaderboardPage from "./pages/LeaderboardPage";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +32,7 @@ const App = () => (
           {/* Home */}
           <Route path="/" element={<Index />} />
 
-          {/* Round 1 — Core */}
+          {/* Round 1 */}
           <Route path="/image/:id" element={<ImagePage />} />
           <Route path="/creator/:id" element={<CreatorPage />} />
           <Route path="/explore" element={<ExplorePage />} />
@@ -35,6 +42,13 @@ const App = () => (
           <Route path="/trending" element={<ExplorePage />} />
           <Route path="/collections" element={<CollectionsPage />} />
           <Route path="/collections/:id" element={<CollectionsPage />} />
+
+          {/* Round 2 */}
+          <Route path="/communities" element={<CommunitiesPage />} />
+          <Route path="/communities/:id" element={<CommunityDetailPage />} />
+          <Route path="/challenges" element={<ChallengesPage />} />
+          <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
 
           {/* Catch-all */}
           <Route path="*" element={<NotFound />} />
