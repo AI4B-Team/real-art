@@ -63,6 +63,7 @@ const MasonryGrid = () => {
                 loading="lazy"
                 className="w-full block rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
                 style={{ height: h, objectFit: "cover" }}
+                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
               />
               {/* AI label */}
               <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
