@@ -53,13 +53,24 @@ const Navbar = () => {
   const isHomePage = location.pathname === "/";
 
   // Re-read auth on every route change (so login/signup pages can update it)
-  useEffect(() => {
+  const syncAuth = () => {
     try {
       setIsLoggedIn(localStorage.getItem("ra_auth") === "1");
       setUserDisplay(localStorage.getItem("ra_display") || "AI.Verse");
       setUserHandle(localStorage.getItem("ra_username") || "aiverse");
     } catch {}
-  }, [location.pathname]);
+  };
+  // Re-read on every route change
+  useEffect(() => { syncAuth(); }, [location.pathname]);
+  // Also re-read when any tab writes to localStorage or custom event fires
+  useEffect(() => {
+    window.addEventListener("storage", syncAuth);
+    window.addEventListener("ra_auth_changed", syncAuth);
+    return () => {
+      window.removeEventListener("storage", syncAuth);
+      window.removeEventListener("ra_auth_changed", syncAuth);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isHomePage) return;

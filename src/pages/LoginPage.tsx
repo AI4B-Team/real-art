@@ -28,7 +28,10 @@ const LoginPage = () => {
     if (password.length < 1) e.password = "Please enter your password";
     setErrors(e);
     if (Object.keys(e).length === 0) {
-      try { localStorage.setItem("ra_auth", "1"); } catch {}
+      try {
+        localStorage.setItem("ra_auth", "1");
+        window.dispatchEvent(new Event("ra_auth_changed"));
+      } catch {}
       navigate("/dashboard");
     }
   };
