@@ -379,6 +379,7 @@ const ImagePage = () => {
                   <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" /> 24,800 views</span>
                   <span className="flex items-center gap-1"><Download className="w-3.5 h-3.5" /> 3,412 downloads</span>
                   <span className="flex items-center gap-1 text-accent font-semibold"><RefreshCw className="w-3.5 h-3.5" /> Recreated 1,247 times</span>
+                  <span className="flex items-center gap-1 font-semibold"><Code className="w-3.5 h-3.5" /> Embedded on 1,032 websites</span>
                 </div>
               </div>
 
