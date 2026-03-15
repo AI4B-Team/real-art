@@ -997,7 +997,7 @@ const DashboardPage = () => {
                     <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{initials}</div>
                     <div>
                       <div className="font-semibold text-[0.88rem]">{display}</div>
-                      <div className="text-[0.72rem] text-muted">@{handle.toLowerCase()}</div>
+                      <div className="text-[0.72rem] text-muted lowercase">@{handle}</div>
                     </div>
                   </>
                 );
