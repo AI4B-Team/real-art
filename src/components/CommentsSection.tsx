@@ -22,7 +22,7 @@ export default function CommentsSection({ imageId }: CommentsSectionProps) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
-  const userDisplay = (() => { try { return localStorage.getItem("ra_display") || "You"; } catch { return "You"; } })();
+  const userDisplay = (() => { try { return (localStorage.getItem("ra_display") || "You").toLowerCase(); } catch { return "you"; } })();
   const userHandle = (() => { try { return (localStorage.getItem("ra_username") || "you").toLowerCase(); } catch { return "you"; } })();
   const userInit = userDisplay.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
