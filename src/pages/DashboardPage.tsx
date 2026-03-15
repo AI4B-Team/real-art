@@ -4,7 +4,8 @@ import {
   LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
   Download, Eye, Users, Upload, Plus, ChevronRight, Key, TrendingUp,
   Heart, ArrowRight, RefreshCw, Code, Globe, Award, Star, Sparkles, Pin,
-  Play, Music, SlidersHorizontal, Bookmark, MoreHorizontal, LayoutGrid
+  Play, Music, SlidersHorizontal, Bookmark, MoreHorizontal, LayoutGrid,
+  Megaphone, MousePointerClick, Pause, Trash2, Search, Layout as LayoutIcon
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
