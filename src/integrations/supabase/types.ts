@@ -19,28 +19,34 @@ export type Database = {
           collection_id: string
           created_at: string
           id: string
+          image_prompt: string | null
           image_url: string
           sort_order: number | null
           title: string | null
           user_id: string
+          video_prompt: string | null
         }
         Insert: {
           collection_id: string
           created_at?: string
           id?: string
+          image_prompt?: string | null
           image_url: string
           sort_order?: number | null
           title?: string | null
           user_id: string
+          video_prompt?: string | null
         }
         Update: {
           collection_id?: string
           created_at?: string
           id?: string
+          image_prompt?: string | null
           image_url?: string
           sort_order?: number | null
           title?: string | null
           user_id?: string
+          video_prompt?: string | null
         }
         Relationships: [
           {
