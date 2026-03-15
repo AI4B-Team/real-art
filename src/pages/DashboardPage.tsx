@@ -973,7 +973,7 @@ const MyBoardsSection = () => {
   );
 };
 
-
+const DashboardPage = () => {
   const [activeSection, setActiveSection] = useState("overview");
 
   return (
