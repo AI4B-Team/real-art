@@ -631,7 +631,7 @@ const ImagePage = () => {
                     { icon: Code, label: "Embeds", value: "1,032", suffix: "" },
                   ].map((stat) => (
                     <div key={stat.label} className="bg-card border border-foreground/[0.08] rounded-xl p-4 flex flex-col items-center justify-center">
-                      <stat.icon className="w-4 h-4 mb-2 text-muted" />
+                      <stat.icon className="w-4 h-4 mb-2 text-accent" />
                       <div className="font-display font-black text-[1.15rem] tracking-[-0.02em] leading-tight text-center">
                         {stat.value}{stat.suffix && <sup className="text-[0.7rem] ml-0.5">{stat.suffix}</sup>}
                       </div>
