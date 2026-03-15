@@ -204,7 +204,7 @@ const MediaSection = () => {
           <span className="text-[0.8rem] text-primary-foreground font-semibold">{selected.length} selected</span>
           <div className="flex gap-2">
             {[
-              { label: "Add to Collection", icon: Bookmark },
+              { label: "Add To Collection", icon: Bookmark },
               { label: "Download", icon: Download },
               { label: "Delete", icon: MoreHorizontal },
             ].map(a => (
