@@ -36,7 +36,7 @@ const HeroSection = () => {
         transition={{ duration: 0.65 }}
         className="text-[0.72rem] font-semibold tracking-[0.2em] uppercase text-muted mb-8"
       >
-        2.4 Million Images &nbsp;·&nbsp; 5,000+ Creators &nbsp;·&nbsp; Always Free
+        2.4M Images &nbsp;·&nbsp; 5,000+ Creators &nbsp;·&nbsp; 100% Free
       </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
