@@ -8,7 +8,6 @@ import TrendingCreatorsSection from "@/components/TrendingCreatorsSection";
 import CommunitiesSection from "@/components/CommunitiesSection";
 import ChallengesSection from "@/components/ChallengesSection";
 import CreatorEarningsSection from "@/components/CreatorEarningsSection";
-import LeaderboardSection from "@/components/LeaderboardSection";
 import BottomCTA from "@/components/BottomCTA";
 import Footer from "@/components/Footer";
 
@@ -24,11 +23,6 @@ const Index = () => {
       <TrendingCreatorsSection />
       <CommunitiesSection />
       <ChallengesSection />
-      <section className="py-12 px-6 md:px-12">
-        <div className="max-w-[1440px] mx-auto">
-          <LeaderboardSection />
-        </div>
-      </section>
       <section className="py-12 px-6 md:px-12">
         <div className="max-w-[1440px] mx-auto">
           <CreatorEarningsSection />
