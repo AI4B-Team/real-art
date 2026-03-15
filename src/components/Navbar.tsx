@@ -35,7 +35,7 @@ const Navbar = () => {
     try { return localStorage.getItem("ra_display") || "AI.Verse"; } catch { return "AI.Verse"; }
   });
   const [userHandle, setUserHandle] = useState(() => {
-    try { return localStorage.getItem("ra_username") || "aiverse"; } catch { return "aiverse"; }
+    try { return (localStorage.getItem("ra_username") || "aiverse").toLowerCase(); } catch { return "aiverse"; }
   });
   const userInitials = userDisplay.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
@@ -57,7 +57,7 @@ const Navbar = () => {
     try {
       setIsLoggedIn(localStorage.getItem("ra_auth") === "1");
       setUserDisplay(localStorage.getItem("ra_display") || "AI.Verse");
-      setUserHandle(localStorage.getItem("ra_username") || "aiverse");
+      setUserHandle((localStorage.getItem("ra_username") || "aiverse").toLowerCase());
     } catch {}
   };
   // Re-read on every route change
@@ -388,7 +388,7 @@ const Navbar = () => {
                   </div>
                   <div>
                     <div className="text-[0.88rem] font-semibold">{userDisplay}</div>
-                    <div className="text-[0.75rem] text-muted">@{userHandle.toLowerCase()}</div>
+                    <div className="text-[0.75rem] text-muted lowercase">@{userHandle}</div>
                   </div>
                 </div>
                 <div className="h-px bg-foreground/[0.06] my-1" />
