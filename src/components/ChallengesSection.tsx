@@ -28,8 +28,12 @@ const ChallengesSection = () => {
             <h3 className="font-display text-[2.6rem] font-black tracking-[-0.03em] text-primary-foreground leading-[1.02] mb-3.5">
               CYBERPUNK CITY
             </h3>
-            <p className="text-[0.86rem] text-primary-foreground/[0.85] leading-[1.75] mb-7 max-w-[460px]">
-              Create the most stunning cyberpunk cityscape. Neon lights, flying cars, holographic ads — push the boundaries of futuristic urban imagination. Best entries win cash and a REAL CREATOR Pro subscription.
+            <p className="text-[0.92rem] text-primary-foreground/[0.9] leading-[1.65] mb-2 max-w-[460px] font-medium">
+              Create the most stunning cyberpunk skyline.<br />
+              Winner takes <span className="text-accent font-bold">$5,000</span>.
+            </p>
+            <p className="text-[0.82rem] text-primary-foreground/50 mb-7 flex items-center gap-1.5">
+              <span className="font-bold text-primary-foreground/80">1,247 entries</span> so far — competition is heating up
             </p>
             <div className="flex gap-8 mb-8">
               {[
