@@ -3,7 +3,7 @@ const collections = [
     name: "CEO / Boss Babe",
     count: 152,
     main: "photo-1573496359142-b8d87734a5a2",
-    thumbs: ["photo-1573496359142-b8d87734a5a2", "photo-1573497019940-1c28c88b4f3e"],
+    thumbs: ["photo-1573496359142-b8d87734a5a2", "photo-1573497019940-1c28c88b4f3e", "photo-1560179707-f14e90ef3623", "photo-1551836022-d5d88e9218df"],
   },
   {
     name: "Luxury Lifestyle",
