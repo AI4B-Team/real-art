@@ -56,7 +56,7 @@ const Navbar = () => {
   const syncAuth = () => {
     try {
       setIsLoggedIn(localStorage.getItem("ra_auth") === "1");
-      setUserDisplay(localStorage.getItem("ra_display") || "AI.Verse");
+      setUserDisplay((localStorage.getItem("ra_display") || "AI.Verse").toLowerCase());
       setUserHandle((localStorage.getItem("ra_username") || "aiverse").toLowerCase());
     } catch {}
   };
