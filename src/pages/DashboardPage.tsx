@@ -435,10 +435,10 @@ const GalleriesSection = () => {
           <div key={g.id} className="bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
             <div className="p-5">
               {/* Thumbnails row */}
-              <div className="flex gap-1.5 mb-3">
+              <div className="flex gap-2 mb-4">
                 {g.thumbs.map((t, n) => (
-                  <div key={n} className="h-10 flex-1 rounded-lg overflow-hidden">
-                    <img src={`https://images.unsplash.com/${t}?w=100&h=60&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                  <div key={n} className="h-24 flex-1 rounded-xl overflow-hidden">
+                    <img src={`https://images.unsplash.com/${t}?w=400&h=200&fit=crop&q=78`} alt="" className="w-full h-full object-cover" />
                   </div>
                 ))}
               </div>
