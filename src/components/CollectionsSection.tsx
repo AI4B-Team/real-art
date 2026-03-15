@@ -53,7 +53,7 @@ const CollectionsSection = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
           {collections.map((col) => (
-            <Link to="/collections" key={col.name} className="cursor-pointer group no-underline">
+            <Link to={`/collections/${col.id}`} key={col.name} className="cursor-pointer group no-underline">
               <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-2.5">
                 <img
                   src={`https://images.unsplash.com/${col.main}?w=400&h=530&fit=crop&q=78`}
