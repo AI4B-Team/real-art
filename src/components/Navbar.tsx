@@ -135,13 +135,14 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Logo — centered on mobile */}
-      <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0 absolute left-1/2 -translate-x-1/2 md:static md:translate-x-0">
-        Real<span className="text-accent">.</span>Art
-      </Link>
+      {/* Logo + Communities group — always left-aligned */}
+      <div className="hidden md:flex items-center gap-0 shrink-0">
+        <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
+          Real<span className="text-accent">.</span>Art
+        </Link>
 
       {/* Desktop Communities Dropdown */}
-      <div className="hidden md:block relative ml-4" ref={communitiesRef}>
+      <div className="relative ml-4" ref={communitiesRef}>
         <button
           onClick={() => setCommunitiesOpen(!communitiesOpen)}
           className="relative flex items-center gap-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
