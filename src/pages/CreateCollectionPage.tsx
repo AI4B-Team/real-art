@@ -31,6 +31,9 @@ const CreateCollectionPage = () => {
   const [files, setFiles] = useState<PreviewFile[]>([]);
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPosition, setCoverPosition] = useState({ x: 50, y: 50, scale: 1 });
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
     const imageFiles = Array.from(newFiles).filter(f => f.type.startsWith("image/"));
