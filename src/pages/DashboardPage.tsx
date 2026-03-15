@@ -268,8 +268,8 @@ const MediaSection = () => {
 
                   {/* Hover actions */}
                   <div className="absolute bottom-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
-                    <button className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg">Edit</button>
-                    <button className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg">View</button>
+                    <Link to="/upload" className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg no-underline hover:bg-accent transition-colors">Edit</Link>
+                    <Link to={`/image/${item.id}`} className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg no-underline hover:bg-accent transition-colors">View</Link>
                   </div>
 
                   {/* Selection indicator */}
