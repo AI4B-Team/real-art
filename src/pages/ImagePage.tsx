@@ -348,7 +348,7 @@ const ImagePage = () => {
                 <div className="flex gap-0 px-5 mt-3 border-b border-foreground/[0.06]">
                   {([
                     { key: "image" as const, label: "Image Prompt", icon: Image },
-                    { key: "video" as const, label: "Video Inspo", icon: Video },
+                    { key: "video" as const, label: "Video Prompt", icon: Video },
                   ]).map(tab => (
                     <button
                       key={tab.key}
