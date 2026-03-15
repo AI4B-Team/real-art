@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Star, Settings, Lightbulb, Check, X as XIcon } from "lucide-react";
+import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Star, Settings, Lightbulb, Check, X as XIcon, DollarSign } from "lucide-react";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -68,6 +68,10 @@ const CommunityDetailPage = () => {
   const [codeInput, setCodeInput] = useState("");
   const [showCodeModal, setShowCodeModal] = useState(false);
   const [activeTab, setActiveTab] = useState("Collections");
+  const [accessView, setAccessView] = useState<"options" | "request" | "pay" | "code">("options");
+  const [requestSent, setRequestSent] = useState(false);
+  const [requestMessage, setRequestMessage] = useState("");
+  const [payComplete, setPayComplete] = useState(false);
   const [collectionPerm, setCollectionPerm] = useState<"owner" | "moderators" | "any_member">(community.collectionPermission);
   const [requestName, setRequestName] = useState("");
   const [requestDesc, setRequestDesc] = useState("");
@@ -199,20 +203,204 @@ const CommunityDetailPage = () => {
             {activeTab === "Collections" && (
               <>
                 {(!community.free && !joined) ? (
-                  <div className="flex flex-col items-center justify-center py-24 text-center">
-                    <div className="w-16 h-16 rounded-2xl bg-foreground/[0.06] flex items-center justify-center mb-5">
+                  <div className="flex flex-col items-center justify-center py-16 text-center max-w-[560px] mx-auto">
+                    {/* Community info summary */}
+                    <div className="w-16 h-16 rounded-2xl bg-foreground/[0.06] flex items-center justify-center mb-4">
                       <Lock className="w-7 h-7 text-muted" />
                     </div>
-                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] mb-3">This Collection Is Private</h2>
-                    <p className="text-muted text-[0.88rem] max-w-[380px] leading-[1.65] mb-6">
-                      Enter the access code shared by the collection owner to view the full image library and prompt collection.
+                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] mb-1 capitalize">{community.name}</h2>
+                    <div className="flex items-center gap-1.5 mb-2">
+                      <Lock className="w-2.5 h-2.5 text-muted" />
+                      <span className="text-[0.72rem] font-semibold text-muted">Private</span>
+                    </div>
+                    <p className="text-muted text-[0.84rem] leading-[1.65] mb-3 max-w-[440px]">{community.desc}</p>
+                    <p className="text-[0.78rem] text-muted mb-8">
+                      {community.members.toLocaleString()} members · {community.images.toLocaleString()} images · by {community.owner}
                     </p>
-                    <button
-                      onClick={() => setShowCodeModal(true)}
-                      className="flex items-center gap-2 bg-foreground text-primary-foreground px-6 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors"
-                    >
-                      <Key className="w-4 h-4" /> Enter Access Code
-                    </button>
+
+                    {/* Options view */}
+                    {accessView === "options" && (
+                      <div className="w-full max-w-[480px] text-left">
+                        <h3 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-1 text-center capitalize">How would you like to join?</h3>
+                        <p className="text-[0.82rem] text-muted mb-6 text-center">This is a private community. Choose how you'd like to request access below.</p>
+                        <div className="flex flex-col gap-3">
+                          <button
+                            onClick={() => setAccessView("request")}
+                            className="flex items-start gap-4 p-5 bg-card border border-foreground/[0.08] rounded-xl text-left hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-foreground/20 transition-all group"
+                          >
+                            <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] flex items-center justify-center shrink-0 group-hover:bg-foreground/[0.1] transition-colors">
+                              <Users className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-[0.92rem] mb-0.5">Request Access</div>
+                              <p className="text-[0.78rem] text-muted leading-[1.55]">Send a join request to the community owner. If approved, you'll get full access. Free — no code or payment needed.</p>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-muted shrink-0 mt-0.5 group-hover:text-foreground transition-colors" />
+                          </button>
+                          <button
+                            onClick={() => setAccessView("pay")}
+                            className="flex items-start gap-4 p-5 bg-card border border-foreground/[0.08] rounded-xl text-left hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-foreground/20 transition-all group"
+                          >
+                            <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
+                              <DollarSign className="w-5 h-5 text-accent" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-[0.92rem] mb-0.5">Unlock with Payment <span className="text-accent text-[0.78rem] font-medium ml-1">$29 one-time</span></div>
+                              <p className="text-[0.78rem] text-muted leading-[1.55]">Get immediate, lifetime access to all images, prompts, and community content. No waiting for approval.</p>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-muted shrink-0 mt-0.5 group-hover:text-foreground transition-colors" />
+                          </button>
+                          <button
+                            onClick={() => setAccessView("code")}
+                            className="flex items-start gap-4 p-5 bg-card border border-foreground/[0.08] rounded-xl text-left hover:-translate-y-0.5 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:border-foreground/20 transition-all group"
+                          >
+                            <div className="w-10 h-10 rounded-xl bg-foreground/[0.06] flex items-center justify-center shrink-0 group-hover:bg-foreground/[0.1] transition-colors">
+                              <Key className="w-5 h-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="font-semibold text-[0.92rem] mb-0.5">I Have an Access Code</div>
+                              <p className="text-[0.78rem] text-muted leading-[1.55]">Already have a code from the community owner? Enter it here for instant access.</p>
+                            </div>
+                            <ChevronRight className="w-4 h-4 text-muted shrink-0 mt-0.5 group-hover:text-foreground transition-colors" />
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Request Access view */}
+                    {accessView === "request" && (
+                      <div className="w-full max-w-[480px] text-left">
+                        <button onClick={() => setAccessView("options")} className="flex items-center gap-1.5 text-[0.8rem] text-muted hover:text-foreground transition-colors mb-5">
+                          <ArrowLeft className="w-3.5 h-3.5" /> Back
+                        </button>
+                        {!requestSent ? (
+                          <>
+                            <h3 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-1 capitalize">Request access</h3>
+                            <p className="text-[0.82rem] text-muted mb-5 leading-[1.6]">Tell the community owner a little about yourself and why you'd like to join. The owner will review and grant or decline access.</p>
+                            <textarea
+                              value={requestMessage}
+                              onChange={e => setRequestMessage(e.target.value)}
+                              placeholder="Hi! I'd love to join because…"
+                              rows={4}
+                              className="w-full px-4 py-3 rounded-xl border border-foreground/[0.12] bg-card text-[0.88rem] outline-none focus:border-foreground transition-colors resize-none mb-4"
+                            />
+                            <div className="flex items-start gap-2.5 mb-5 text-left">
+                              <Shield className="w-4 h-4 text-muted shrink-0 mt-0.5" />
+                              <p className="text-[0.75rem] text-muted leading-[1.55]">
+                                Your request will be reviewed by {community.owner}. You'll receive a notification when your access is approved or declined. There's no obligation — joining is free if approved.
+                              </p>
+                            </div>
+                            <div className="flex gap-2">
+                              <button
+                                onClick={() => setRequestSent(true)}
+                                className="flex-1 bg-foreground text-primary-foreground py-3 rounded-xl text-[0.88rem] font-semibold hover:bg-accent transition-colors"
+                              >
+                                Send Join Request
+                              </button>
+                              <button
+                                onClick={() => setAccessView("options")}
+                                className="px-5 py-3 rounded-xl border border-foreground/[0.12] text-[0.88rem] font-medium hover:border-foreground/30 transition-colors"
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <div className="text-center py-6">
+                            <div className="w-14 h-14 rounded-full bg-[rgba(15,180,90,0.1)] flex items-center justify-center mx-auto mb-4">
+                              <Check className="w-7 h-7 text-[#0fb45a]" />
+                            </div>
+                            <h3 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-2 capitalize">Request sent</h3>
+                            <p className="text-[0.84rem] text-muted leading-[1.6] max-w-[360px] mx-auto mb-4">
+                              {community.owner} will review your request and you'll get notified once a decision is made. Keep an eye on your notifications.
+                            </p>
+                            <span className="inline-block text-[0.72rem] font-semibold text-muted bg-foreground/[0.06] px-3 py-1.5 rounded-lg">Pending approval</span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Pay to Unlock view */}
+                    {accessView === "pay" && (
+                      <div className="w-full max-w-[480px] text-left">
+                        <button onClick={() => setAccessView("options")} className="flex items-center gap-1.5 text-[0.8rem] text-muted hover:text-foreground transition-colors mb-5">
+                          <ArrowLeft className="w-3.5 h-3.5" /> Back
+                        </button>
+                        <h3 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-1 capitalize">Unlock with payment</h3>
+                        <p className="text-[0.82rem] text-muted mb-6">One-time payment. Lifetime access. No recurring charges.</p>
+
+                        <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-5">
+                          <div className="font-semibold text-[0.88rem] mb-3">What's included</div>
+                          <div className="flex flex-col gap-2.5">
+                            {[
+                              `Full access to all ${community.images.toLocaleString()} images`,
+                              "Complete prompt library — every prompt revealed",
+                              "Community feed, member gallery, and showcases",
+                              "Weekly tutorial drops and challenge entries",
+                              "Permanent access — never expires",
+                            ].map(item => (
+                              <div key={item} className="flex items-start gap-2.5">
+                                <Check className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                                <span className="text-[0.82rem] text-muted">{item}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div className="bg-card border border-accent/20 rounded-xl p-5 mb-5 text-center">
+                          <div className="font-display text-[2.4rem] font-black tracking-[-0.03em] text-foreground">$29</div>
+                          <div className="text-[0.78rem] text-muted mb-3">One-time · Lifetime access</div>
+                          <div className="flex items-center justify-center gap-4 text-[0.72rem] text-muted">
+                            <span>Billed once</span>
+                            <span className="w-1 h-1 rounded-full bg-foreground/20" />
+                            <span>No subscription</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => { setPayComplete(true); setJoined(true); }}
+                          className="w-full bg-accent text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent/90 transition-colors flex items-center justify-center gap-2 mb-3"
+                        >
+                          <DollarSign className="w-4 h-4" /> Pay $29 — Unlock Now
+                        </button>
+                        <p className="text-[0.72rem] text-muted text-center">Secure checkout. Money-back guarantee within 7 days if you're not happy.</p>
+                      </div>
+                    )}
+
+                    {/* Enter Code view */}
+                    {accessView === "code" && (
+                      <div className="w-full max-w-[480px] text-left">
+                        <button onClick={() => setAccessView("options")} className="flex items-center gap-1.5 text-[0.8rem] text-muted hover:text-foreground transition-colors mb-5">
+                          <ArrowLeft className="w-3.5 h-3.5" /> Back
+                        </button>
+                        <h3 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-1 capitalize">Enter your access code</h3>
+                        <p className="text-[0.82rem] text-muted mb-6 leading-[1.6]">
+                          If {community.owner} shared a code with you — via email, DM, or in a course — enter it below for instant access.
+                        </p>
+                        <input
+                          autoFocus
+                          className="w-full h-14 border border-foreground/[0.13] rounded-xl px-4 text-[1.1rem] bg-card outline-none focus:border-foreground transition-colors mb-4 font-bold text-center tracking-[0.18em] uppercase"
+                          placeholder="ENTER CODE"
+                          value={codeInput}
+                          onChange={e => setCodeInput(e.target.value.toUpperCase())}
+                          onKeyDown={e => { if (e.key === "Enter" && codeInput.length > 0) { setJoined(true); } }}
+                          maxLength={10}
+                        />
+                        <button
+                          onClick={() => { if (codeInput.length > 0) setJoined(true); }}
+                          disabled={codeInput.length === 0}
+                          className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed mb-5"
+                        >
+                          Unlock with Code
+                        </button>
+                        <p className="text-[0.82rem] text-muted text-center">
+                          Don't have a code?{" "}
+                          <button onClick={() => setAccessView("request")} className="text-[0.82rem] font-semibold text-accent hover:underline">
+                            Request access instead
+                          </button>
+                        </p>
+                      </div>
+                    )}
                   </div>
                 ) : (
               <div>
