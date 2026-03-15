@@ -15,10 +15,10 @@ const LeaderboardSection = () => {
   return (
     <div>
       <h2 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">
-        Leaderboard
+        Top Creators This Month
       </h2>
       <p className="text-[0.82rem] text-muted mb-5">
-        Top creators this month by downloads and engagement
+        Ranked by downloads and engagement
       </p>
       <div className="bg-card border border-foreground/[0.08] rounded-2xl overflow-hidden">
         <div className="px-[22px] py-[18px] border-b border-foreground/[0.08] flex justify-between items-center">
