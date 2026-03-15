@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
@@ -9,6 +9,7 @@ import {
   Edit3, ExternalLink, Video, X
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
+import { getBoards, deleteBoard, updateBoard, createBoard, type Board } from "@/lib/boardStore";
 import { useNavigate } from "react-router-dom";
 
 const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
@@ -16,7 +17,7 @@ const navItems: { id: string; label: string; icon: typeof LayoutDashboard; inter
   { id: "exposure", label: "Exposure", icon: TrendingUp, internal: true },
   { id: "media", label: "Media", icon: Image, internal: true },
   { id: "galleries", label: "Collections", icon: FolderOpen, internal: true },
-  { id: "boards", label: "Boards", icon: Bookmark, internal: false, href: "/boards" },
+  { id: "boards", label: "Boards", icon: Bookmark, internal: true },
   { id: "earnings", label: "Earnings", icon: DollarSign, internal: true },
   { id: "ads", label: "Ads", icon: Megaphone, internal: true },
   { id: "notifications", label: "Notifications", icon: Bell, internal: true },
@@ -772,7 +773,207 @@ const AdsSection = () => {
   );
 };
 
-const DashboardPage = () => {
+/* ═══ MY BOARDS SECTION ═══ */
+const MyBoardsSection = () => {
+  const [boards, setBoards] = useState<Board[]>(() => getBoards());
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editName, setEditName] = useState("");
+  const [showCreate, setShowCreate] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newVisibility, setNewVisibility] = useState<"public" | "private">("private");
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [toast, setToast] = useState<string | null>(null);
+  
+  const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2500); };
+
+  useEffect(() => {
+    const sync = () => setBoards(getBoards());
+    window.addEventListener("ra_boards_changed", sync);
+    return () => window.removeEventListener("ra_boards_changed", sync);
+  }, []);
+
+  const handleCreate = () => {
+    if (!newName.trim()) return;
+    createBoard(newName.trim(), newVisibility);
+    setBoards(getBoards());
+    setNewName("");
+    setShowCreate(false);
+    showToast(`"${newName.trim()}" created`);
+  };
+
+  const handleRename = (id: string) => {
+    if (!editName.trim()) { setEditingId(null); return; }
+    updateBoard(id, { title: editName.trim() });
+    setBoards(getBoards());
+    setEditingId(null);
+    showToast("Board renamed");
+  };
+
+  const handleToggleVisibility = (id: string, current: "public" | "private") => {
+    updateBoard(id, { visibility: current === "public" ? "private" : "public" });
+    setBoards(getBoards());
+    showToast(`Board set to ${current === "public" ? "private" : "public"}`);
+  };
+
+  const handleDelete = (id: string, title: string) => {
+    deleteBoard(id);
+    setBoards(getBoards());
+    setDeleteConfirm(null);
+    showToast(`"${title}" deleted`);
+  };
+
+  const totalSaved = boards.reduce((s, b) => s + b.items.length, 0);
+
+  return (
+    <>
+      {toast && (
+        <div className="fixed top-20 right-6 z-50 bg-foreground text-primary-foreground px-4 py-2.5 rounded-xl text-[0.82rem] font-medium flex items-center gap-2 shadow-lg animate-drop-in">
+          <Check className="w-3.5 h-3.5 text-green-400" /> {toast}
+        </div>
+      )}
+
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">My Boards</h1>
+          <p className="text-[0.82rem] text-muted mt-1">{boards.length} board{boards.length !== 1 ? "s" : ""} · {totalSaved} saved item{totalSaved !== 1 ? "s" : ""}</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link to="/explore" className="flex items-center gap-1.5 px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.82rem] font-medium text-muted hover:text-foreground hover:border-foreground/25 transition-colors no-underline">
+            <Search className="w-3.5 h-3.5" /> Find images to save
+          </Link>
+          <button onClick={() => setShowCreate(!showCreate)} className="flex items-center gap-1.5 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors">
+            <Plus className="w-4 h-4" /> New Board
+          </button>
+        </div>
+      </div>
+
+      {showCreate && (
+        <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-6 flex flex-col gap-3">
+          <input
+            type="text"
+            value={newName}
+            onChange={e => setNewName(e.target.value)}
+            placeholder="Board name..."
+            autoFocus
+            className="w-full px-4 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.84rem] outline-none focus:border-accent/40 transition-colors"
+            onKeyDown={e => e.key === "Enter" && handleCreate()}
+          />
+          <div className="flex items-center gap-2">
+            {(["private", "public"] as const).map(v => (
+              <button
+                key={v}
+                onClick={() => setNewVisibility(v)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.76rem] font-medium transition-colors capitalize ${newVisibility === v ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}
+              >
+                {v === "private" ? <Key className="w-3 h-3" /> : <Globe className="w-3 h-3" />}
+                {v}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleCreate} className="px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-semibold hover:bg-accent transition-colors">Create</button>
+            <button onClick={() => { setShowCreate(false); setNewName(""); }} className="text-muted hover:text-foreground transition-colors">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      )}
+
+      {boards.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <Bookmark className="w-7 h-7 text-muted mb-3" />
+          <h3 className="font-display text-[1.1rem] font-bold mb-2">No boards yet</h3>
+          <p className="text-[0.82rem] text-muted mb-4 max-w-xs">Browse the site and click "Save to Board" on any image to start building your personal collections.</p>
+          <Link to="/explore" className="bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">Browse Images</Link>
+        </div>
+      )}
+
+      {boards.length > 0 && (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {boards.map(board => (
+            <div key={board.id} className="bg-card border border-foreground/[0.08] rounded-xl overflow-hidden group">
+              {/* Mosaic cover */}
+              <div className="aspect-[16/9] bg-foreground/[0.04] grid grid-cols-3 gap-0.5 overflow-hidden">
+                {board.items.slice(0, 3).map((item, i) => (
+                  <img key={i} src={`https://images.unsplash.com/${item.photo}?w=200&h=140&fit=crop&q=70`} alt="" className={`w-full h-full object-cover ${i === 0 ? "col-span-2 row-span-1" : ""}`} />
+                ))}
+                {board.items.length === 0 && (
+                  <div className="col-span-3 flex items-center justify-center">
+                    <Bookmark className="w-8 h-8 text-muted opacity-30" />
+                  </div>
+                )}
+                {board.items.length === 1 && (
+                  <div className="flex items-center justify-center bg-foreground/[0.04]">
+                    <Plus className="w-5 h-5 text-muted opacity-30" />
+                  </div>
+                )}
+                {board.items.length === 2 && (
+                  <div className="flex items-center justify-center bg-foreground/[0.04]">
+                    <Plus className="w-5 h-5 text-muted opacity-30" />
+                  </div>
+                )}
+              </div>
+
+              <div className="p-4">
+                {editingId === board.id ? (
+                  <input
+                    type="text"
+                    value={editName}
+                    onChange={e => setEditName(e.target.value)}
+                    autoFocus
+                    className="w-full px-2 py-1 rounded-lg border border-foreground/[0.15] text-[0.88rem] font-semibold outline-none focus:border-accent/40 mb-2"
+                    onKeyDown={e => { if (e.key === "Enter") handleRename(board.id); if (e.key === "Escape") setEditingId(null); }}
+                    onBlur={() => handleRename(board.id)}
+                  />
+                ) : (
+                  <h3 className="font-semibold text-[0.88rem] mb-0.5">{board.title}</h3>
+                )}
+                <div className="flex items-center gap-1.5 text-[0.72rem] text-muted mb-3">
+                  {board.visibility === "private" ? <Key className="w-3 h-3 text-muted" /> : <Globe className="w-3 h-3 text-muted" />}
+                  {board.items.length} saved · {board.visibility}
+                </div>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button onClick={() => { setEditingId(board.id); setEditName(board.title); }} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-foreground/25 hover:text-foreground transition-colors">
+                    <Edit3 className="w-3 h-3" /> Rename
+                  </button>
+                  <button onClick={() => handleToggleVisibility(board.id, board.visibility)} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-foreground/25 hover:text-foreground transition-colors">
+                    {board.visibility === "private" ? <Globe className="w-3 h-3" /> : <Key className="w-3 h-3" />}
+                    {board.visibility === "private" ? "Make public" : "Make private"}
+                  </button>
+                  <Link to={`/boards/${board.id}`} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-foreground/25 hover:text-foreground transition-colors no-underline">
+                    <ExternalLink className="w-3 h-3" /> Open
+                  </Link>
+                  {deleteConfirm === board.id ? (
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[0.72rem] text-muted">Sure?</span>
+                      <button onClick={() => handleDelete(board.id, board.title)} className="text-[0.72rem] font-bold text-red-600 hover:text-red-700 px-2 py-1 rounded-lg hover:bg-red-50 transition-colors">Yes</button>
+                      <button onClick={() => setDeleteConfirm(null)} className="text-[0.72rem] text-muted hover:text-foreground">No</button>
+                    </div>
+                  ) : (
+                    <button onClick={() => setDeleteConfirm(board.id)} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.74rem] font-medium text-muted border border-foreground/[0.1] hover:border-destructive/30 hover:text-destructive transition-colors">
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+
+          {/* Create new board card */}
+          <button
+            onClick={() => setShowCreate(true)}
+            className="rounded-2xl border-2 border-dashed border-foreground/[0.1] flex flex-col items-center justify-center hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors min-h-[200px] group"
+          >
+            <Plus className="w-6 h-6 text-muted group-hover:text-foreground transition-colors mb-2" />
+            <span className="text-[0.82rem] font-medium text-muted group-hover:text-foreground transition-colors">New Board</span>
+          </button>
+        </div>
+      )}
+    </>
+  );
+};
+
+
   const [activeSection, setActiveSection] = useState("overview");
 
   return (
@@ -1337,6 +1538,9 @@ const DashboardPage = () => {
                 </div>
               </>
             )}
+
+            {/* ═══ BOARDS ═══ */}
+            {activeSection === "boards" && <MyBoardsSection />}
 
             {/* ═══ ADS ═══ */}
             {activeSection === "ads" && <AdsSection />}
