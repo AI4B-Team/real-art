@@ -172,7 +172,7 @@ const LicensePage = () => {
         {/* Use Cases */}
         <section className="px-6 md:px-12 py-16 bg-card">
           <div className="max-w-[1440px] mx-auto">
-            <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">Common use cases</h2>
+            <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">Common Use Cases</h2>
             <p className="text-[0.84rem] text-muted mb-8">Still not sure if your use case is covered? Here are the most common ones.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {useCases.map(uc => (
