@@ -37,8 +37,12 @@ const ShopSection = ({ shopLink, shopSimilar = [], imageUrl }: ShopSectionProps)
         className="flex items-center justify-between p-4 rounded-xl border border-foreground/[0.08] bg-card hover:border-accent/30 transition-all group no-underline"
       >
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-            <ShoppingBag className="w-5 h-5 text-accent" />
+          <div className="w-10 h-10 rounded-lg overflow-hidden flex items-center justify-center bg-accent/10">
+            {imageUrl ? (
+              <img src={imageUrl} alt="" className="w-full h-full object-cover" />
+            ) : (
+              <ShoppingBag className="w-5 h-5 text-accent" />
+            )}
           </div>
           <div>
             <div className="font-semibold text-[0.88rem] group-hover:text-accent transition-colors">
