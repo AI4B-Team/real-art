@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Search } from "lucide-react";
+import { ArrowLeft, ChevronRight, Search, Plus } from "lucide-react";
 import CollectionCard from "@/components/CollectionCard";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -59,14 +59,19 @@ const CollectionsPage = () => {
               <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Collections</h1>
               <p className="text-[0.88rem] text-muted">Curated galleries of the finest visuals — by our team and top creators</p>
             </div>
-            <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
-              <Search className="w-4 h-4 text-muted shrink-0" />
-              <input
-                className="flex-1 border-none outline-none font-body text-[0.88rem] bg-transparent"
-                placeholder="Search collections…"
-                value={query}
-                onChange={e => setQuery(e.target.value)}
-              />
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
+                <Search className="w-4 h-4 text-muted shrink-0" />
+                <input
+                  className="flex-1 border-none outline-none font-body text-[0.88rem] bg-transparent"
+                  placeholder="Search collections…"
+                  value={query}
+                  onChange={e => setQuery(e.target.value)}
+                />
+              </div>
+              <Link to="/collections/create" className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline shrink-0 whitespace-nowrap">
+                <Plus className="w-4 h-4" /> Create
+              </Link>
             </div>
           </div>
         </div>
