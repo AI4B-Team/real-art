@@ -929,7 +929,7 @@ const DashboardPage = () => {
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {[
                       { label: "Images", count: 284, newThis: 6, icon: Image, color: "text-blue-500", bgColor: "bg-blue-500", thumbs: ["photo-1618005182384-a83a8bd57fbe","photo-1557682250-33bd709cbe85","photo-1604881991720-f91add269bed"] },
-                      { label: "Videos", count: 12, newThis: 2, icon: Video, color: "text-purple-500", bgColor: "bg-purple-500", thumbs: ["photo-1558591710-4b4a1ae0f04d","photo-1550684848-fac1c5b4e853","photo-1506259091721-2c27eb6c768f"] },
+                      { label: "Videos", count: 12, newThis: 2, icon: Video, color: "text-purple-500", bgColor: "bg-purple-500", thumbs: ["photo-1558591710-4b4a1ae0f04d","photo-1550684848-fac1c5b4e853","photo-1547036967-23d11aacaee0"] },
                       { label: "Music", count: 4, newThis: 1, icon: Music, color: "text-orange-500", bgColor: "bg-orange-500", thumbs: ["photo-1511379938547-c1f69419868d","photo-1493225457124-a3eb161ffa5f","photo-1470225620780-dba8ba36b745"] },
                     ].map(m => (
                       <button
