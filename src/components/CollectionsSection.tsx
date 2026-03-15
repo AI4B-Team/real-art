@@ -3,25 +3,25 @@ const collections = [
     name: "CEO / Boss Babe",
     count: 152,
     main: "photo-1573496359142-b8d87734a5a2",
-    thumbs: ["photo-1573496359142-b8d87734a5a2", "photo-1573497019940-1c28c88b4f3e"],
+    thumbs: ["photo-1573496359142-b8d87734a5a2", "photo-1573497019940-1c28c88b4f3e", "photo-1560179707-f14e90ef3623", "photo-1551836022-d5d88e9218df"],
   },
   {
     name: "Luxury Lifestyle",
     count: 239,
     main: "photo-1600210492486-724fe5c67fb0",
-    thumbs: ["photo-1600210492486-724fe5c67fb0", "photo-1616486338812-3dadae4b4ace"],
+    thumbs: ["photo-1600210492486-724fe5c67fb0", "photo-1616486338812-3dadae4b4ace", "photo-1600607687939-ce8a6c25118c", "photo-1600566753086-00f18fb6b3ea"],
   },
   {
     name: "Street Fashion",
     count: 185,
     main: "photo-1509631179647-0177331693ae",
-    thumbs: ["photo-1509631179647-0177331693ae", "photo-1529139574466-a303027c1d8b"],
+    thumbs: ["photo-1509631179647-0177331693ae", "photo-1529139574466-a303027c1d8b", "photo-1515886657613-9f3515b0c78f", "photo-1496747611176-843222e1e57c"],
   },
   {
     name: "Runway Inspired",
     count: 130,
     main: "photo-1558618666-fcd25c85cd64",
-    thumbs: ["photo-1558618666-fcd25c85cd64", "photo-1509631179647-0177331693ae"],
+    thumbs: ["photo-1558618666-fcd25c85cd64", "photo-1509631179647-0177331693ae", "photo-1544005313-94ddf0286df2", "photo-1524504388940-b1c1722653e1"],
   },
 ];
 
@@ -51,7 +51,7 @@ const CollectionsSection = () => {
               {/* Thumbnails row */}
               <div className="flex items-center gap-1.5">
                 {col.thumbs.map((t, i) => (
-                  <div key={i} className="w-[52px] h-[52px] rounded-xl overflow-hidden flex-shrink-0">
+                  <div key={i} className="w-[42px] h-[42px] rounded-lg overflow-hidden flex-shrink-0">
                     <img
                       src={`https://images.unsplash.com/${t}?w=100&h=100&fit=crop&q=70`}
                       alt=""
@@ -59,7 +59,7 @@ const CollectionsSection = () => {
                     />
                   </div>
                 ))}
-                <div className="h-[52px] px-4 rounded-xl bg-muted-foreground/80 flex items-center justify-center ml-auto">
+                <div className="h-[42px] px-3 rounded-lg bg-muted-foreground/80 flex items-center justify-center ml-auto">
                   <span className="text-primary-foreground font-semibold text-sm">+{col.count}</span>
                 </div>
               </div>
