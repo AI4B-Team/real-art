@@ -449,7 +449,29 @@ const UploadPage = () => {
           {step === 1 && (
             <div>
               <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Add details</h1>
-              <p className="text-muted text-[0.88rem] mb-8">Help people find your work. Better details = more downloads.</p>
+              <p className="text-muted text-[0.88rem] mb-4">Help people find your work. Better details = more downloads.</p>
+
+              {/* Auto-tag status */}
+              {autoTagsLoading && (
+                <div className="flex items-center gap-2 text-[0.82rem] text-accent bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  AI is analysing your image for tags, title & categories…
+                </div>
+              )}
+              {autoTagsDone && (
+                <div className="flex items-center justify-between bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
+                  <div className="flex items-center gap-2 text-[0.82rem] text-accent">
+                    <Sparkles className="w-4 h-4" />
+                    AI auto-filled title, tags & categories
+                  </div>
+                  <button
+                    onClick={() => { setAutoTagsDone(false); runAutoTag(); }}
+                    className="text-[0.76rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                  >
+                    <Sparkles className="w-3 h-3" /> Re-analyse
+                  </button>
+                </div>
+              )}
 
               <div className="flex flex-col gap-7">
                 {/* Title */}
