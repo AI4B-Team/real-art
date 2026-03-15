@@ -201,7 +201,7 @@ const LicensePage = () => {
 
         {/* CTA */}
         <section className="px-6 md:px-12 py-16 text-center max-w-[1440px] mx-auto">
-          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-3">Still have questions?</h2>
+          <h2 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-3">Still Have Questions?</h2>
           <p className="text-[0.88rem] text-muted mb-8 max-w-[520px] mx-auto leading-[1.65]">
             Our license is designed to be as permissive as possible. If you're unsure about a specific use case, the answer is almost certainly yes. For anything unusual, email us at legal@realart.ai.
           </p>
