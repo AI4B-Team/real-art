@@ -26,6 +26,9 @@ const Navbar = () => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMenuOpen(false);
       }
+      if (communitiesRef.current && !communitiesRef.current.contains(e.target as Node)) {
+        setCommunitiesOpen(false);
+      }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
