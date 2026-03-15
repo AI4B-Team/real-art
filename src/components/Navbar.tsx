@@ -2,12 +2,25 @@ import { useState, useRef, useEffect } from "react";
 import { Search, Menu, Grid3X3, Star, Users, Trophy, BarChart3, Upload, Sparkles, FileText, X, Layout, ChevronDown, Plus, Compass } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
+type Community = {
+  id: string;
+  name: string;
+  to: string;
+  newPosts?: number;
+  pinned: boolean;
+};
+
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+  const [communities, setCommunities] = useState<Community[]>([
+    { id: "1", name: "Avatar Architects", to: "/communities/1", newPosts: 3, pinned: true },
+    { id: "2", name: "PromptVault Pro", to: "/communities/2", newPosts: 0, pinned: true },
+    { id: "3", name: "Abstract Minds", to: "/communities/3", newPosts: 1, pinned: false },
+  ]);
   const menuRef = useRef<HTMLDivElement>(null);
   const communitiesRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -33,6 +46,15 @@ const Navbar = () => {
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
   }, []);
+
+  const togglePin = (id: string) => {
+    setCommunities(prev => prev.map(c => c.id === id ? { ...c, pinned: !c.pinned } : c));
+  };
+
+  const sortedCommunities = [...communities].sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return 0;
+  });
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -131,19 +153,46 @@ const Navbar = () => {
           <span className="absolute top-1.5 right-1 w-2 h-2 rounded-full bg-accent" />
         </button>
         {communitiesOpen && (
-          <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
-            <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Your Communities</div>
-            <Link to="/communities/1" onClick={() => setCommunitiesOpen(false)} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-              Avatar Architects
-              <span className="text-[0.7rem] text-accent font-medium">3 new posts</span>
-            </Link>
-            <Link to="/communities/2" onClick={() => setCommunitiesOpen(false)} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-              PromptVault Pro
-            </Link>
-            <Link to="/communities/3" onClick={() => setCommunitiesOpen(false)} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-              Abstract Minds
-              <span className="text-[0.7rem] text-accent font-medium">1 new post</span>
-            </Link>
+          <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[270px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
+            {/* Pinned */}
+            {sortedCommunities.some(c => c.pinned) && (
+              <>
+                <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Pinned</div>
+                {sortedCommunities.filter(c => c.pinned).map(c => (
+                  <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
+                    <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
+                      <Star className="w-3 h-3 text-accent fill-accent shrink-0" />
+                      {c.name}
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      {c.newPosts ? <span className="text-[0.7rem] text-accent font-medium">{c.newPosts} new</span> : null}
+                      <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" title="Unpin">
+                        <X className="w-3 h-3 text-muted hover:text-foreground" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+            {/* Others */}
+            {sortedCommunities.some(c => !c.pinned) && (
+              <>
+                <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Other Communities</div>
+                {sortedCommunities.filter(c => !c.pinned).map(c => (
+                  <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
+                    <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
+                      {c.name}
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      {c.newPosts ? <span className="text-[0.7rem] text-accent font-medium">{c.newPosts} new</span> : null}
+                      <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" title="Pin">
+                        <Star className="w-3 h-3 text-muted hover:text-accent" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
             <div className="h-px bg-foreground/[0.06] my-1.5" />
             <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
               <Compass className="w-3.5 h-3.5 opacity-40 shrink-0" /> Browse Communities
