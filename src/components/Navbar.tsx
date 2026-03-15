@@ -4,10 +4,12 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 
 const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const communitiesRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
   const location = useLocation();
   const isHomePage = location.pathname === "/";
