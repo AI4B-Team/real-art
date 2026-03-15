@@ -87,6 +87,10 @@ const MasonryGrid = () => {
                         {cr.i}
                       </div>
                       <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
+                      <span className="text-primary-foreground/40 text-[0.6rem]">·</span>
+                      <span className="text-[0.64rem] text-primary-foreground/70 flex items-center gap-0.5">
+                        <Download className="w-2.5 h-2.5" />{cr.dl}
+                      </span>
                     </div>
 
                     {/* Bottom right actions */}
