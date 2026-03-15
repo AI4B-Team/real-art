@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Search, Image, Video, Music, ChevronDown } from "lucide-react";
+import { Search, Image, Video, Music, ChevronDown, Camera, Sparkles, Upload } from "lucide-react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 
 const searchTypes = [
