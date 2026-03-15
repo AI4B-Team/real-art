@@ -12,6 +12,7 @@ import ImagePage from "./pages/ImagePage";
 import CreatorPage from "./pages/CreatorPage";
 import ExplorePage from "./pages/ExplorePage";
 import CollectionsPage from "./pages/CollectionsPage";
+import CollectionDetailPage from "./pages/CollectionDetailPage";
 
 // Round 2 — Community
 import CommunitiesPage from "./pages/CommunitiesPage";
@@ -65,7 +66,7 @@ const App = () => (
           <Route path="/trending" element={<ExplorePage />} />
           <Route path="/3d-art" element={<ExplorePage />} />
           <Route path="/collections" element={<CollectionsPage />} />
-          <Route path="/collections/:id" element={<CollectionsPage />} />
+          <Route path="/collections/:id" element={<CollectionDetailPage />} />
 
           {/* Round 2 — Community */}
           <Route path="/communities" element={<CommunitiesPage />} />
