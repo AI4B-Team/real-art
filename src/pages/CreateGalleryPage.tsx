@@ -1,18 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Lock, Globe, Key, Check, Info, Image, Users, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronRight, Lock, Globe, Key, Check, Info, Image, Users, ChevronDown, Upload, Plus, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const categories = [
   "Abstract", "Portraits", "Nature", "Architecture", "Fantasy",
   "3D Art", "Fashion", "Sci-Fi", "Avatars", "Luxury", "Cyberpunk", "Minimal",
-];
-
-const coverPhotos = [
-  "photo-1618005182384-a83a8bd57fbe", "photo-1557682250-33bd709cbe85",
-  "photo-1604881991720-f91add269bed", "photo-1501854140801-50d01698950b",
-  "photo-1579546929518-9e396f3cc809", "photo-1500462918059-b1a0cb512f1d",
 ];
 
 const generateCode = () => Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -23,9 +17,41 @@ const CreateGalleryPage = () => {
   const [category, setCategory] = useState("");
   const [visibility, setVisibility] = useState<"public" | "private">("public");
   const [accessCode, setAccessCode] = useState(generateCode());
-  const [coverIdx, setCoverIdx] = useState(0);
   const [created, setCreated] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Image uploads
+  const [uploadedImages, setUploadedImages] = useState<{ file: File; preview: string }[]>([]);
+  const [coverIndex, setCoverIndex] = useState<number>(0);
+  const [customCover, setCustomCover] = useState<{ file: File; preview: string } | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const coverInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAddImages = (files: FileList | null) => {
+    if (!files) return;
+    const newImages = Array.from(files).map(file => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+    setUploadedImages(prev => [...prev, ...newImages]);
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setUploadedImages(prev => {
+      const updated = prev.filter((_, i) => i !== index);
+      if (coverIndex === index) setCoverIndex(0);
+      else if (coverIndex > index) setCoverIndex(coverIndex - 1);
+      return updated;
+    });
+    setCustomCover(null);
+  };
+
+  const handleUploadCover = (files: FileList | null) => {
+    if (!files?.[0]) return;
+    const file = files[0];
+    setCustomCover({ file, preview: URL.createObjectURL(file) });
+    setCoverIndex(-1);
+  };
 
   const handleCopy = () => {
     navigator.clipboard.writeText(accessCode).catch(() => {});
@@ -45,7 +71,7 @@ const CreateGalleryPage = () => {
             <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
               <Check className="w-9 h-9 text-accent" />
             </div>
-            <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3">Collection Created!</h1>
+            <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3 capitalize">Collection Created!</h1>
             <p className="text-muted text-[0.88rem] leading-[1.7] mb-8">
               {name} is live. Start adding images to build your collection.
             </p>
@@ -88,6 +114,10 @@ const CreateGalleryPage = () => {
     );
   }
 
+  const selectedCoverPreview = customCover
+    ? customCover.preview
+    : uploadedImages[coverIndex]?.preview ?? null;
+
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
@@ -104,13 +134,13 @@ const CreateGalleryPage = () => {
             <span className="text-foreground">Create Collection</span>
           </div>
 
-          <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] mb-2">Create Your Collection</h1>
+          <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] mb-2 capitalize">Create Your Collection</h1>
           <p className="text-muted text-[0.88rem] mb-10 leading-[1.65]">Build a public showcase or a private vault for your art — you control who sees it.</p>
 
           <div className="flex flex-col gap-7">
             {/* Collection name */}
             <div>
-              <label className="block text-[0.84rem] font-semibold mb-2">Collection Name <span className="text-accent">*</span></label>
+              <label className="block text-[0.84rem] font-semibold mb-2 capitalize">Collection Name <span className="text-accent">*</span></label>
               <input
                 className="w-full h-12 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.95rem] bg-card outline-none focus:border-foreground transition-colors"
                 placeholder="e.g. My Cyberpunk Collection"
@@ -122,7 +152,7 @@ const CreateGalleryPage = () => {
 
             {/* Description */}
             <div>
-              <label className="block text-[0.84rem] font-semibold mb-2">Description <span className="text-accent">*</span></label>
+              <label className="block text-[0.84rem] font-semibold mb-2 capitalize">Description <span className="text-accent">*</span></label>
               <textarea
                 className="w-full border border-foreground/[0.13] rounded-xl px-4 py-3 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors resize-none"
                 rows={4}
@@ -136,7 +166,7 @@ const CreateGalleryPage = () => {
 
             {/* Category */}
             <div>
-              <label className="block text-[0.84rem] font-semibold mb-2">Category <span className="text-accent">*</span></label>
+              <label className="block text-[0.84rem] font-semibold mb-2 capitalize">Category <span className="text-accent">*</span></label>
               <div className="relative">
                 <select
                   value={category}
@@ -150,27 +180,116 @@ const CreateGalleryPage = () => {
               </div>
             </div>
 
+            {/* Upload images */}
+            <div>
+              <label className="block text-[0.84rem] font-semibold mb-2 capitalize">Upload Images</label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                className="hidden"
+                onChange={e => handleAddImages(e.target.files)}
+              />
+              {uploadedImages.length === 0 ? (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full h-[140px] rounded-xl border-2 border-dashed border-foreground/[0.12] flex flex-col items-center justify-center gap-2 cursor-pointer hover:border-foreground/30 transition-colors"
+                >
+                  <Upload className="w-7 h-7 text-muted" />
+                  <span className="text-[0.85rem] font-medium">Click to upload images</span>
+                  <span className="text-[0.72rem] text-muted">JPG, PNG, WebP — multiple files supported</span>
+                </button>
+              ) : (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-4 md:grid-cols-6 gap-2">
+                    {uploadedImages.map((img, i) => (
+                      <div key={i} className="relative aspect-square rounded-xl overflow-hidden group">
+                        <img src={img.preview} alt="" className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => handleRemoveImage(i)}
+                          className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-foreground/70 text-primary-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      onClick={() => fileInputRef.current?.click()}
+                      className="aspect-square rounded-xl border-2 border-dashed border-foreground/[0.12] flex items-center justify-center hover:border-foreground/30 transition-colors"
+                    >
+                      <Plus className="w-5 h-5 text-muted" />
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Cover image */}
             <div>
-              <label className="block text-[0.84rem] font-semibold mb-2">Cover image</label>
-              <div className="grid grid-cols-3 md:grid-cols-6 gap-2 mb-2">
-                {coverPhotos.map((p, i) => (
-                  <button key={i} onClick={() => setCoverIdx(i)} className={`aspect-square rounded-xl overflow-hidden relative border-2 transition-all ${coverIdx === i ? "border-accent" : "border-transparent"}`}>
-                    <img src={`https://images.unsplash.com/${p}?w=150&h=150&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
-                    {coverIdx === i && (
-                      <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
-                        <Check className="w-5 h-5 text-white" />
-                      </div>
-                    )}
+              <label className="block text-[0.84rem] font-semibold mb-2 capitalize">Cover Image</label>
+              <input
+                ref={coverInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={e => handleUploadCover(e.target.files)}
+              />
+
+              {uploadedImages.length === 0 && !customCover ? (
+                <div className="rounded-xl border border-foreground/[0.1] p-5 text-center">
+                  <p className="text-[0.82rem] text-muted mb-3">Upload images above first, or upload a separate cover image.</p>
+                  <button
+                    onClick={() => coverInputRef.current?.click()}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-foreground/[0.14] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors"
+                  >
+                    <Upload className="w-4 h-4" /> Upload Cover Image
                   </button>
-                ))}
-              </div>
-              <p className="text-[0.72rem] text-muted">Select a cover, or it will auto-select from your first uploaded image.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+                    {uploadedImages.map((img, i) => (
+                      <button
+                        key={i}
+                        onClick={() => { setCoverIndex(i); setCustomCover(null); }}
+                        className={`aspect-square rounded-xl overflow-hidden relative border-2 transition-all ${!customCover && coverIndex === i ? "border-accent" : "border-transparent"}`}
+                      >
+                        <img src={img.preview} alt="" className="w-full h-full object-cover" />
+                        {!customCover && coverIndex === i && (
+                          <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
+                            <Check className="w-5 h-5 text-primary-foreground" />
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                    {customCover && (
+                      <button
+                        className="aspect-square rounded-xl overflow-hidden relative border-2 border-accent transition-all"
+                      >
+                        <img src={customCover.preview} alt="" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
+                          <Check className="w-5 h-5 text-primary-foreground" />
+                        </div>
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => coverInputRef.current?.click()}
+                      className="inline-flex items-center gap-2 text-[0.78rem] text-muted hover:text-foreground font-medium transition-colors"
+                    >
+                      <Upload className="w-3.5 h-3.5" /> Upload Different Cover
+                    </button>
+                  </div>
+                  <p className="text-[0.72rem] text-muted">Select a cover, or it will auto-select from your first uploaded image.</p>
+                </div>
+              )}
             </div>
 
             {/* Access type */}
             <div>
-              <label className="block text-[0.84rem] font-semibold mb-2">Access type</label>
+              <label className="block text-[0.84rem] font-semibold mb-2 capitalize">Access Type</label>
               <div className="flex flex-col gap-3">
                 {([
                   { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone on REAL ART can discover and join your collection for free." },
