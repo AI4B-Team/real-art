@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2, Sparkles } from "lucide-react";
 import CoverImageEditor from "@/components/CoverImageEditor";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -34,6 +34,26 @@ const CreateCollectionPage = () => {
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPosition, setCoverPosition] = useState({ x: 50, y: 50, scale: 1 });
+  const [aiWriting, setAiWriting] = useState(false);
+
+  const generateDescription = async () => {
+    if (!name.trim()) {
+      toast({ title: "Name required", description: "Enter a collection name first so AI can write a description.", variant: "destructive" });
+      return;
+    }
+    setAiWriting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { collectionName: name.trim() },
+      });
+      if (error) throw error;
+      if (data?.description) setDescription(data.description);
+    } catch (err: any) {
+      toast({ title: "AI error", description: err.message || "Could not generate description.", variant: "destructive" });
+    } finally {
+      setAiWriting(false);
+    }
+  };
 
   const handleFiles = useCallback((newFiles: FileList | File[]) => {
     const imageFiles = Array.from(newFiles).filter(f => f.type.startsWith("image/"));
@@ -208,14 +228,27 @@ const CreateCollectionPage = () => {
 
           {/* Description */}
           <div className="mb-6">
-            <label className="block text-[0.82rem] font-semibold mb-2">Description <span className="text-muted font-normal">(optional)</span></label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="text-[0.82rem] font-semibold">Description <span className="text-muted font-normal">(optional)</span></label>
+              <button
+                type="button"
+                onClick={generateDescription}
+                disabled={aiWriting || !name.trim()}
+                className="flex items-center gap-1.5 text-[0.75rem] font-medium text-accent hover:text-accent/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {aiWriting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {aiWriting ? "Writing…" : "AI Write"}
+              </button>
+            </div>
             <textarea
               value={description}
               onChange={e => setDescription(e.target.value)}
-              placeholder="What is this collection about?"
-              rows={3}
+              placeholder="Tell people what this collection is about. What will they find inside?"
+              rows={4}
+              maxLength={300}
               className="w-full px-4 py-3 rounded-xl border border-foreground/[0.12] bg-card text-[0.9rem] font-body outline-none focus:border-foreground transition-colors resize-none"
             />
+            <div className="text-right text-[0.72rem] text-muted mt-1">{description.length}/300</div>
           </div>
 
           {/* Cover Image */}
