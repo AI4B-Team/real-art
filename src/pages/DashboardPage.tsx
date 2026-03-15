@@ -1288,7 +1288,15 @@ const DashboardPage = () => {
                           {a.unlocked && <span className="ml-auto text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-lg">✓</span>}
                         </div>
                         <p className="text-[0.72rem] text-muted">{a.desc}</p>
-                        {!a.unlocked && a.progress && (
+                        {"level" in a && a.level && a.maxLevel && (
+                          <div className="flex items-center gap-1 mt-2">
+                            {Array.from({ length: a.maxLevel }).map((_, i) => (
+                              <div key={i} className={`h-1.5 flex-1 rounded-full ${i < a.level! ? "bg-accent" : "bg-foreground/[0.08]"}`} />
+                            ))}
+                            <span className="text-[0.6rem] text-muted ml-1">Lv {a.level}/{a.maxLevel}</span>
+                          </div>
+                        )}
+                        {!a.unlocked && a.progress && !("level" in a && a.level) && (
                           <div className="mt-2">
                             <div className="h-1.5 bg-foreground/[0.06] rounded-full overflow-hidden">
                               <div className="h-full bg-accent rounded-full" style={{ width: `${a.progress}%` }} />
