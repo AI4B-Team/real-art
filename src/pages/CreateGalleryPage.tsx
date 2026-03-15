@@ -219,7 +219,7 @@ const CreateGalleryPage = () => {
             <div className="flex items-start gap-3 bg-foreground/[0.03] border border-foreground/[0.06] rounded-xl p-4">
               <Users className="w-4 h-4 text-muted shrink-0 mt-0.5" />
               <p className="text-[0.78rem] text-muted leading-[1.6]">
-                Every image in your gallery automatically carries your affiliate link. When someone joins REAL CREATOR after discovering your work here, you earn commission.
+                Every image in your collection automatically carries your affiliate link. When someone joins REAL CREATOR after discovering your work here, you earn commission.
               </p>
             </div>
 
