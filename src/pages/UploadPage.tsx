@@ -25,10 +25,6 @@ interface ImagePrompts {
   video_prompt: string;
   loading: boolean;
 }
-  image_prompt: string;
-  video_prompt: string;
-  loading: boolean;
-}
 
 const UploadPage = () => {
   const navigate = useNavigate();
@@ -51,43 +47,23 @@ const UploadPage = () => {
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Collection targeting
-  const [collectionTarget, setCollectionTarget] = useState<CollectionTarget>("none");
-  const [selectedCommunity, setSelectedCommunity] = useState("");
-  const [selectedCollection, setSelectedCollection] = useState("");
+  const [collections, setCollections] = useState<Collection[]>(() => getCollections());
+  const [selectedCollection, setSelectedCollection] = useState<string>("none");
   const [newCollectionName, setNewCollectionName] = useState("");
   const [collectionSearch, setCollectionSearch] = useState("");
-  const [userCollections, setUserCollections] = useState<{id: string; name: string; community_id: string | null}[]>([]);
+  const [showNewCol, setShowNewCol] = useState(false);
 
   // Per-image AI prompts
   const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
 
-  // Fetch user's real collections from DB
-  useEffect(() => {
-    const fetchCollections = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-      const { data } = await supabase
-        .from("collections")
-        .select("id, name, community_id")
-        .eq("user_id", user.id)
-        .order("created_at", { ascending: false });
-      if (data) setUserCollections(data);
-    };
-    fetchCollections();
-  }, []);
-
-  const filteredCollections = userCollections.filter(c => {
-    const matchesSearch = !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase());
-    const matchesCommunity = !selectedCommunity || c.community_id === selectedCommunity;
-    return matchesSearch && (selectedCommunity ? matchesCommunity : true);
-  });
+  const filteredCollections = collections.filter(c =>
+    !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase())
+  );
 
   const selectedCollectionName =
-    collectionTarget === "existing"
-      ? userCollections.find(c => c.id === selectedCollection)?.name || ""
-      : collectionTarget === "new"
-        ? newCollectionName
-        : "";
+    selectedCollection === "none" ? "" :
+    selectedCollection === "new" ? newCollectionName :
+    collections.find(c => c.id === selectedCollection)?.name || "";
 
   const generatePromptsForImage = async (dataUrl: string, index: number) => {
     setImagePrompts(prev => ({
