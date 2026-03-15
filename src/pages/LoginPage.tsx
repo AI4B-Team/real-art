@@ -37,7 +37,28 @@ const LoginPage = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="pt-16 min-h-screen grid grid-cols-1 lg:grid-cols-2">
-        {/* Left — Form */}
+        {/* Left — Photo Collage */}
+        <div className="hidden lg:block relative bg-foreground overflow-hidden">
+          <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">
+            {recentImages.map((p, i) => (
+              <img key={i} src={`https://images.unsplash.com/${p}?w=400&h=500&fit=crop&q=75`} alt="" className="w-full h-full object-cover rounded-lg" />
+            ))}
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-foreground/30" />
+          <div className="absolute bottom-0 left-0 right-0 p-12">
+            <div className="font-display text-[2.4rem] font-black text-primary-foreground tracking-[-0.03em] leading-[1.08] mb-2">
+              2.4 Million Free Images.
+            </div>
+            <div className="font-display text-[2.4rem] font-black text-accent tracking-[-0.03em] leading-[1.08] mb-6">
+              Zero Strings Attached.
+            </div>
+            <p className="text-[0.88rem] text-primary-foreground/50 leading-[1.65] max-w-[400px]">
+              Log back in to access your galleries, check your affiliate earnings, and see what's new in the community.
+            </p>
+          </div>
+        </div>
+
+        {/* Right — Form */}
         <div className="flex items-center justify-center px-6 py-16">
           <div className="w-full max-w-[420px]">
             {!showForgot ? (
@@ -46,11 +67,11 @@ const LoginPage = () => {
                   <span className="text-accent">Real</span>.Art
                 </div>
                 <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-[1.05] mt-6 mb-2">
-                  Welcome back
+                  Welcome Back
                 </h1>
                 <p className="text-[0.88rem] text-muted mb-8">Log in to your REAL ART account.</p>
 
-                <label className="block text-[0.82rem] font-semibold mb-2">Email address</label>
+                <label className="block text-[0.82rem] font-semibold mb-2">Email Address</label>
                 <input
                   type="email" value={email}
                   onChange={e => setEmail(e.target.value)}
@@ -63,7 +84,7 @@ const LoginPage = () => {
                 <div className="flex items-center justify-between mt-4 mb-2">
                   <label className="text-[0.82rem] font-semibold">Password</label>
                   <button onClick={() => { setShowForgot(true); setForgotEmail(email); }} className="text-[0.78rem] text-accent hover:underline">
-                    Forgot password?
+                    Forgot Password?
                   </button>
                 </div>
                 <div className="relative mb-1">
@@ -101,16 +122,16 @@ const LoginPage = () => {
                 ))}
 
                 <p className="text-center text-[0.82rem] text-muted mt-6">
-                  Don't have an account?{" "}
-                  <Link to="/signup" className="text-accent font-semibold hover:underline">Join free</Link>
+                  Don't Have An Account?{" "}
+                  <Link to="/signup" className="text-accent font-semibold hover:underline">Join Free</Link>
                 </p>
               </>
             ) : (
               <>
                 <button onClick={() => setShowForgot(false)} className="text-[0.8rem] text-muted hover:text-foreground transition-colors mb-4 flex items-center gap-1">
-                  ← Back to login
+                  ← Back To Login
                 </button>
-                <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-2">Reset password</h1>
+                <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-2">Reset Password</h1>
                 <p className="text-[0.88rem] text-muted mb-8">Enter your email and we'll send you a reset link.</p>
 
                 {!forgotSent ? (
@@ -128,38 +149,17 @@ const LoginPage = () => {
                   </>
                 ) : (
                   <div className="text-center py-6">
-                    <h2 className="font-display text-[1.4rem] font-black mb-2">Check your inbox</h2>
+                    <h2 className="font-display text-[1.4rem] font-black mb-2">Check Your Inbox</h2>
                     <p className="text-[0.84rem] text-muted mb-4">
                       We sent a password reset link to <strong className="text-foreground">{forgotEmail}</strong>. It expires in 1 hour.
                     </p>
                     <button onClick={() => { setShowForgot(false); setForgotSent(false); }} className="mt-4 text-[0.8rem] text-accent hover:underline">
-                      Back to login
+                      Back To Login
                     </button>
                   </div>
                 )}
               </>
             )}
-          </div>
-        </div>
-
-        {/* Right — Photo Collage */}
-        <div className="hidden lg:block relative bg-foreground overflow-hidden">
-          <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">
-            {recentImages.map((p, i) => (
-              <img key={i} src={`https://images.unsplash.com/${p}?w=400&h=500&fit=crop&q=75`} alt="" className="w-full h-full object-cover rounded-lg" />
-            ))}
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground via-foreground/60 to-foreground/30" />
-          <div className="absolute bottom-0 left-0 right-0 p-12">
-            <div className="font-display text-[2.4rem] font-black text-primary-foreground tracking-[-0.03em] leading-[1.08] mb-2">
-              2.4 million free images.
-            </div>
-            <div className="font-display text-[2.4rem] font-black text-accent tracking-[-0.03em] leading-[1.08] mb-6">
-              Zero strings attached.
-            </div>
-            <p className="text-[0.88rem] text-primary-foreground/50 leading-[1.65] max-w-[400px]">
-              Log back in to access your galleries, check your affiliate earnings, and see what's new in the community.
-            </p>
           </div>
         </div>
       </div>
