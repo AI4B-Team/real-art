@@ -36,7 +36,7 @@ const Footer = () => {
   return (
     <footer className="bg-foreground px-6 md:px-12 pt-14 pb-8">
       <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-[2.2fr_1fr_1fr] gap-12 mb-[52px]">
+        <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-[52px]">
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="no-underline">
               <div className="font-display text-2xl font-black text-primary-foreground tracking-[0.06em] uppercase mb-3.5">
