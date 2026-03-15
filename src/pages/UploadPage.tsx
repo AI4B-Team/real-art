@@ -687,6 +687,10 @@ const UploadPage = () => {
                       {selectedCollection === "new"
                         ? newCollectionName.trim() ? `Will create and add to "${newCollectionName.trim()}"` : "Enter a collection name above"
                         : `Will add to "${collections.find(c => c.id === selectedCollection)?.name}"`}
+                    </div>
+                  )}
+                </div>
+
                 {/* Shop / Affiliate Link */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -745,7 +749,6 @@ const UploadPage = () => {
                     </div>
                   )}
                 </div>
-              </div>
               </div>
 
               <div className="flex gap-3 mt-8">
