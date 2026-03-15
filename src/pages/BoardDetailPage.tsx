@@ -111,7 +111,7 @@ const BoardDetailPage = () => {
   }, [id]);
 
   /* ── Derive display data ── */
-  const ownerName = localStorage.getItem("ra_display") || localStorage.getItem("ra_display_name") || "You";
+  const ownerName = (localStorage.getItem("ra_display") || localStorage.getItem("ra_display_name") || "You").toLowerCase();
   const ownerHandle = localStorage.getItem("ra_handle") || "you";
   const isOwner = isUserBoard; // user boards = owned
 
