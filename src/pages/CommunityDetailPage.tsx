@@ -203,9 +203,9 @@ const CommunityDetailPage = () => {
                     <div className="w-16 h-16 rounded-2xl bg-foreground/[0.06] flex items-center justify-center mb-5">
                       <Lock className="w-7 h-7 text-muted" />
                     </div>
-                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] mb-3">This gallery is private</h2>
+                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] mb-3">This Collection Is Private</h2>
                     <p className="text-muted text-[0.88rem] max-w-[380px] leading-[1.65] mb-6">
-                      Enter the access code shared by the gallery owner to view the full image library and prompt collection.
+                      Enter the access code shared by the collection owner to view the full image library and prompt collection.
                     </p>
                     <button
                       onClick={() => setShowCodeModal(true)}
