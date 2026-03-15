@@ -329,97 +329,6 @@ const ImagePage = () => {
                 </div>
               )}
 
-              {/* Recreated From This Image — first for creation ecosystem */}
-              <div className="mt-10">
-                <div className="flex items-center gap-2 mb-1">
-                  <RefreshCw className="w-4.5 h-4.5 text-accent" />
-                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Visual Evolution</span>
-                </div>
-                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Recreated From This Image</h2>
-                <p className="text-[0.8rem] text-muted mb-5">
-                  <span className="text-accent font-semibold">Recreated 1,247 times</span> · 50 variations by the community
-                </p>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-                  {[
-                    { photo: "photo-1557682250-33bd709cbe85", creator: "@NeoPixel", style: "Watercolor" },
-                    { photo: "photo-1541701494587-cb58502866ab", creator: "@DreamForge", style: "Cyberpunk" },
-                    { photo: "photo-1579546929518-9e396f3cc809", creator: "@LuminaAI", style: "Minimal" },
-                    { photo: "photo-1604881991720-f91add269bed", creator: "@SpectraGen", style: "3D Render" },
-                    { photo: "photo-1549880338-65ddcdfd017b", creator: "@VoidArt", style: "Oil Paint" },
-                    { photo: "photo-1558618666-fcd25c85cd64", creator: "@PixelMind", style: "Neon" },
-                    { photo: "photo-1506905925346-21bda4d32df4", creator: "@AuraGen", style: "Landscape" },
-                    { photo: "photo-1518020382113-a7e8fc38eac9", creator: "@DeepVis", style: "Surreal" },
-                  ].map((r, i) => (
-                    <Link key={i} to={`/image/${i + 20}`} className="relative rounded-xl overflow-hidden aspect-square group cursor-pointer">
-                      <img
-                        src={`https://images.unsplash.com/${r.photo}?w=300&h=300&fit=crop&q=78`}
-                        alt={`Recreation by ${r.creator}`}
-                        loading="lazy"
-                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
-                      />
-                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-lg">
-                        {r.style}
-                      </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
-                        <div className="text-[0.72rem] text-primary-foreground/80">{r.creator}</div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-                <div className="text-center mt-5">
-                  <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-card border border-foreground/[0.12] px-6 py-2.5 rounded-lg cursor-pointer hover:border-foreground/30 transition-colors">
-                    View All 50 Recreations
-                  </button>
-                </div>
-              </div>
-
-              {/* Shop This Image + Shop Similar (conditional) */}
-              {hasShop && shopLink && (
-                <ShopSection shopLink={shopLink} shopSimilar={shopSimilarItems} />
-              )}
-
-              {/* Similar Images */}
-              <div className="mt-8">
-                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Similar Images</h2>
-                <div className="masonry-grid">
-                  {similar.map((p, i) => (
-                    <Link key={i} to={`/image/${i + 10}`} className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative">
-                      <img
-                        src={`https://images.unsplash.com/${p}?w=400&h=${heights[i % heights.length]}&fit=crop&q=78`}
-                        alt=""
-                        loading="lazy"
-                        className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                        style={{ height: heights[i % heights.length], objectFit: "cover" }}
-                      />
-                      <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "var(--gradient-overlay)" }} />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
-              {/* Boards Using This Image */}
-              <div className="mt-10">
-                <div className="flex items-center gap-2 mb-1">
-                  <Layout className="w-4 h-4 text-accent" />
-                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Featured In</span>
-                </div>
-                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Boards Using This Image</h2>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  {[
-                    { id: "1", title: "Cyberpunk Inspiration", creator: "VoidArt", images: 128 },
-                    { id: "5", title: "Cosmic Visions", creator: "AI.Verse", images: 241 },
-                    { id: "2", title: "AI Moodboards", creator: "DreamForge", images: 94 },
-                  ].map(board => (
-                    <Link key={board.id} to={`/boards/${board.id}`} className="block no-underline group">
-                      <div className="border border-foreground/[0.06] bg-card rounded-xl p-4 hover:border-foreground/[0.14] transition-all">
-                        <div className="font-semibold text-[0.88rem] mb-1 group-hover:text-accent transition-colors">{board.title}</div>
-                        <div className="text-[0.75rem] text-muted">by {board.creator} · {board.images} images</div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-
               {/* Prompts section — Image & Video tabs */}
               <div className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
                 <div className="flex items-center justify-between px-5 pt-4 pb-0">
@@ -536,6 +445,78 @@ const ImagePage = () => {
                 </button>
                 <p className="text-[0.72rem] text-primary-foreground/35 text-center mt-3">Opens REAL CREATOR with prompt, model & style preloaded</p>
               </div>
+
+              {/* Recreated From This Image */}
+              <div className="mt-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <RefreshCw className="w-4.5 h-4.5 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Visual Evolution</span>
+                </div>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1.5">Recreated From This Image</h2>
+                <p className="text-[0.8rem] text-muted mb-5">
+                  <span className="text-accent font-semibold">Recreated 1,247 times</span> · 50 variations by the community
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {[
+                    { photo: "photo-1557682250-33bd709cbe85", creator: "@NeoPixel", style: "Watercolor" },
+                    { photo: "photo-1541701494587-cb58502866ab", creator: "@DreamForge", style: "Cyberpunk" },
+                    { photo: "photo-1579546929518-9e396f3cc809", creator: "@LuminaAI", style: "Minimal" },
+                    { photo: "photo-1604881991720-f91add269bed", creator: "@SpectraGen", style: "3D Render" },
+                    { photo: "photo-1549880338-65ddcdfd017b", creator: "@VoidArt", style: "Oil Paint" },
+                    { photo: "photo-1558618666-fcd25c85cd64", creator: "@PixelMind", style: "Neon" },
+                    { photo: "photo-1506905925346-21bda4d32df4", creator: "@AuraGen", style: "Landscape" },
+                    { photo: "photo-1518020382113-a7e8fc38eac9", creator: "@DeepVis", style: "Surreal" },
+                  ].map((r, i) => (
+                    <Link key={i} to={`/image/${i + 20}`} className="relative rounded-xl overflow-hidden aspect-square group cursor-pointer">
+                      <img
+                        src={`https://images.unsplash.com/${r.photo}?w=300&h=300&fit=crop&q=78`}
+                        alt={`Recreation by ${r.creator}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
+                      />
+                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-lg">
+                        {r.style}
+                      </div>
+                      <div className="absolute bottom-0 left-0 right-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
+                        <div className="text-[0.72rem] text-primary-foreground/80">{r.creator}</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+                <div className="text-center mt-5">
+                  <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-card border border-foreground/[0.12] px-6 py-2.5 rounded-lg cursor-pointer hover:border-foreground/30 transition-colors">
+                    View All 50 Recreations
+                  </button>
+                </div>
+              </div>
+
+              {/* Boards Using This Image */}
+              <div className="mt-10">
+                <div className="flex items-center gap-2 mb-1">
+                  <Layout className="w-4 h-4 text-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Featured In</span>
+                </div>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-5">Boards Using This Image</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {[
+                    { id: "1", title: "Cyberpunk Inspiration", creator: "VoidArt", images: 128 },
+                    { id: "5", title: "Cosmic Visions", creator: "AI.Verse", images: 241 },
+                    { id: "2", title: "AI Moodboards", creator: "DreamForge", images: 94 },
+                  ].map(board => (
+                    <Link key={board.id} to={`/boards/${board.id}`} className="block no-underline group">
+                      <div className="border border-foreground/[0.06] bg-card rounded-xl p-4 hover:border-foreground/[0.14] transition-all">
+                        <div className="font-semibold text-[0.88rem] mb-1 group-hover:text-accent transition-colors">{board.title}</div>
+                        <div className="text-[0.75rem] text-muted">by {board.creator} · {board.images} images</div>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Shop This Image + Shop Similar (conditional) */}
+              {hasShop && shopLink && (
+                <ShopSection shopLink={shopLink} shopSimilar={shopSimilarItems} />
+              )}
 
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mt-6">
