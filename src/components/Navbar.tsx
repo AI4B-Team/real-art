@@ -57,7 +57,7 @@ const Navbar = () => {
     try {
       setIsLoggedIn(localStorage.getItem("ra_auth") === "1");
       setUserDisplay(localStorage.getItem("ra_display") || "AI.Verse");
-      setUserHandle(localStorage.getItem("ra_username") || "aiverse");
+      setUserHandle((localStorage.getItem("ra_username") || "aiverse").toLowerCase());
     } catch {}
   };
   // Re-read on every route change
