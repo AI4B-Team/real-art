@@ -43,7 +43,7 @@ const ChallengesSection = () => {
                 </div>
               ))}
             </div>
-            <button className="inline-flex items-center gap-2 bg-card text-foreground font-body text-[0.86rem] font-bold px-7 py-3.5 rounded-full border-none cursor-pointer hover:bg-accent hover:text-primary-foreground transition-colors">
+            <button className="inline-flex items-center gap-2 bg-card text-foreground font-body text-[0.86rem] font-bold px-7 py-3.5 rounded-lg border-none cursor-pointer hover:bg-accent hover:text-primary-foreground transition-colors">
               Enter Now — Free
               <ArrowRight className="w-3 h-3" />
             </button>

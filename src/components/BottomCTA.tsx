@@ -14,10 +14,10 @@ const BottomCTA = () => {
         </p>
       </div>
       <div className="flex flex-col gap-2.5">
-        <button className="bg-card text-foreground font-body text-[0.88rem] font-bold px-9 py-3.5 rounded-full border-none cursor-pointer hover:bg-accent hover:text-primary-foreground transition-colors text-center">
+        <button className="bg-card text-foreground font-body text-[0.88rem] font-bold px-9 py-3.5 rounded-lg border-none cursor-pointer hover:bg-accent hover:text-primary-foreground transition-colors text-center">
           Create Free Account
         </button>
-        <button className="bg-transparent text-primary-foreground/50 font-body text-[0.88rem] font-normal px-7 py-3.5 rounded-full border border-primary-foreground/[0.12] cursor-pointer hover:border-primary-foreground/[0.35] hover:text-primary-foreground/80 transition-colors text-center">
+        <button className="bg-transparent text-primary-foreground/50 font-body text-[0.88rem] font-normal px-7 py-3.5 rounded-lg border border-primary-foreground/[0.12] cursor-pointer hover:border-primary-foreground/[0.35] hover:text-primary-foreground/80 transition-colors text-center">
           Browse As Guest
         </button>
         <div className="flex flex-col gap-2 mt-1">

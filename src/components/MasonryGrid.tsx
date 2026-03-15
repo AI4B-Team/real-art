@@ -104,13 +104,13 @@ const MasonryGrid = () => {
                 >
                   <p className="text-[0.72rem] text-primary-foreground/80 leading-[1.5] mb-2">{prompt}</p>
                   <div className="flex gap-1.5">
-                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
+                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
                       <Eye className="w-[10px] h-[10px]" /> View
                     </button>
-                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
+                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-primary-foreground/[0.15] text-primary-foreground text-[0.62rem] font-medium hover:bg-primary-foreground/[0.3] transition-colors">
                       <Copy className="w-[10px] h-[10px]" /> Copy
                     </button>
-                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-accent text-primary-foreground text-[0.62rem] font-medium hover:bg-accent/80 transition-colors">
+                    <button className="flex items-center gap-1 px-2.5 py-1 rounded-md bg-accent text-primary-foreground text-[0.62rem] font-medium hover:bg-accent/80 transition-colors">
                       <Shuffle className="w-[10px] h-[10px]" /> Remix
                     </button>
                   </div>

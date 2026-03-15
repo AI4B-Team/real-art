@@ -56,7 +56,7 @@ const RecreationsSection = () => {
         </div>
 
         <div className="text-center mt-6">
-          <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-foreground text-primary-foreground border-none px-7 py-3 rounded-full cursor-pointer hover:bg-accent transition-colors">
+          <button className="inline-flex items-center gap-2 font-body text-[0.82rem] font-semibold bg-foreground text-primary-foreground border-none px-7 py-3 rounded-lg cursor-pointer hover:bg-accent transition-colors">
             <RefreshCw className="w-3.5 h-3.5" />
             Recreate This Image
           </button>

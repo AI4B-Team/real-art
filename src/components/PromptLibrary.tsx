@@ -111,7 +111,7 @@ const PromptLibrary = () => {
             <div className="font-bold text-[0.9rem] mb-[3px]">Sell Your Prompt Packs</div>
             <div className="text-[0.8rem] text-muted">Package your best prompts and earn passive income from every sale.</div>
           </div>
-          <button className="font-body text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-[22px] py-2.5 rounded-full cursor-pointer hover:bg-accent transition-colors">
+          <button className="font-body text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-[22px] py-2.5 rounded-lg cursor-pointer hover:bg-accent transition-colors">
             Create Prompt Pack
           </button>
         </div>

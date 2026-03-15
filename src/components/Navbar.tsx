@@ -61,10 +61,10 @@ const Navbar = () => {
             </div>
           )}
         </div>
-        <button className="text-[0.8rem] font-medium bg-transparent border border-foreground/[0.18] px-[18px] py-[7px] rounded-full cursor-pointer text-foreground hover:border-foreground transition-colors ml-1">
+        <button className="text-[0.8rem] font-medium bg-transparent border border-foreground/[0.18] px-[18px] py-[7px] rounded-lg cursor-pointer text-foreground hover:border-foreground transition-colors ml-1">
           Log In
         </button>
-        <button className="text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-5 py-2 rounded-full cursor-pointer hover:bg-foreground/90 transition-colors">
+        <button className="text-[0.8rem] font-semibold bg-foreground text-primary-foreground border-none px-5 py-2 rounded-lg cursor-pointer hover:bg-foreground/90 transition-colors">
           Join Free
         </button>
       </div>
