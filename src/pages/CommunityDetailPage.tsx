@@ -216,6 +216,32 @@ const CommunityDetailPage = () => {
               </>
             )}
 
+            {activeTab === "Collections" && (
+              <div>
+                <div className="flex items-center gap-2 mb-5">
+                  <Star className="w-4 h-4 text-accent fill-accent" />
+                  <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Community Curated</span>
+                </div>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                  {collections.map(col => (
+                    <Link key={col.name} to="/collections" className="cursor-pointer group block no-underline">
+                      <div className="aspect-[3/4] rounded-2xl overflow-hidden mb-2.5 relative">
+                        <img
+                          src={`https://images.unsplash.com/${col.photo}?w=400&h=530&fit=crop&q=78`}
+                          alt={col.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5), transparent 60%)" }} />
+                      </div>
+                      <p className="font-semibold text-[0.92rem]">{col.name}</p>
+                      <p className="text-[0.75rem] text-muted mt-0.5">by {col.curator} · {col.count} images</p>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {activeTab === "Members" && (
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {members.map(m => (
