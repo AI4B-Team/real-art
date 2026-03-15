@@ -866,7 +866,7 @@ const DashboardPage = () => {
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Overview</h1>
-                    <p className="text-[0.82rem] text-muted mt-1">March 2026 · Last 30 days</p>
+                    <p className="text-[0.82rem] text-muted mt-1">March 2026 · Last 30 Days</p>
                   </div>
                   <Link to="/upload" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
                     Upload <Plus className="w-4 h-4" />
@@ -923,7 +923,7 @@ const DashboardPage = () => {
                       <span className="text-[0.72rem] text-muted">300 total items</span>
                     </div>
                     <button onClick={() => setActiveSection("media")} className="text-[0.78rem] font-semibold text-accent hover:underline flex items-center gap-1">
-                      View all <ChevronRight className="w-3.5 h-3.5" />
+                      View All <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -1112,7 +1112,7 @@ const DashboardPage = () => {
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="font-semibold text-[0.9rem]">Top Performing Images</h3>
                     <button onClick={() => setActiveSection("media")} className="text-[0.78rem] text-accent hover:underline flex items-center gap-1">
-                      View all <ChevronRight className="w-3 h-3" />
+                      View All <ChevronRight className="w-3 h-3" />
                     </button>
                   </div>
                   <div className="overflow-x-auto">
