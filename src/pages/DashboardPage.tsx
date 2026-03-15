@@ -942,7 +942,7 @@ const MyBoardsSection = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-foreground/60 via-transparent to-transparent" />
                     {/* Overlaid info */}
                     <div className="absolute bottom-3 left-4 right-4">
-                      <h3 className="font-display text-[1.2rem] font-black text-primary-foreground leading-tight mb-1">{board.title}</h3>
+                      <h3 className="font-display text-[1.2rem] font-black text-primary-foreground leading-tight mb-1">{board.title.replace(/\w\S*/g, t => t.charAt(0).toUpperCase() + t.substring(1).toLowerCase())}</h3>
                       <div className="flex items-center gap-2">
                         <span className="text-[0.72rem] text-primary-foreground/80 flex items-center gap-1">
                           <Bookmark className="w-3 h-3" /> {board.items.length} saved
