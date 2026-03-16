@@ -168,7 +168,7 @@ const BoardDetailPage = () => {
           </Link>
         </div>
         <Footer />
-      </div>
+      </PageShell>
     );
   }
 
