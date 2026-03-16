@@ -115,13 +115,19 @@ const ExplorePage = () => {
     return () => document.removeEventListener("click", handler);
   }, []);
 
-  const filteredImages = imageData.filter(img => {
+  const filteredImages = (() => {
     const q = query.trim().toLowerCase();
     const cat = activeFilter.toLowerCase();
-    const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
-    const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
-    return matchQuery && matchCat;
-  });
+    const base = imageData.filter(img => {
+      const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
+      const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
+      return matchQuery && matchCat;
+    });
+    if (sort === "Newest First") return [...base].sort((a, b) => imageData.indexOf(b) - imageData.indexOf(a));
+    if (sort === "Most Downloaded") return [...base].sort((a, b) => (downloadWeights[imageData.indexOf(b)] || 0) - (downloadWeights[imageData.indexOf(a)] || 0));
+    if (sort === "Most Liked") return [...base].sort((a, b) => (likesWeights[imageData.indexOf(b)] || 0) - (likesWeights[imageData.indexOf(a)] || 0));
+    return base;
+  })();
 
   return (
     <PageShell>
