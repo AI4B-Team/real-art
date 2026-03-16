@@ -343,17 +343,16 @@ const CollectionDetailPage = () => {
             No images in this collection yet.
           </div>
         ) : (
-          <div className="masonry-grid">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {images.map((img, i) => {
               const photo = isStatic ? samplePhotos[i % samplePhotos.length] : "";
               return (
                 <div key={img.id}
                   onClick={() => open({ id: String(i), photo: photo || img.image_url, title: img.title || collection.name })}
-                  className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative"
+                  className="rounded-xl overflow-hidden block cursor-pointer group relative aspect-square"
                   style={{ background: "#e0e0de" }}>
                   <img src={img.image_url} alt={img.title || ""} loading="lazy"
-                    className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                    style={{ minHeight: 150, objectFit: "cover" }} />
+                    className="w-full h-full object-cover rounded-xl group-hover:scale-[1.03] transition-transform duration-300" />
                   <ImageCardOverlay index={i} />
                 </div>
               );
