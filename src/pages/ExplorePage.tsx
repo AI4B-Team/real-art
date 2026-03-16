@@ -288,7 +288,7 @@ const ExplorePage = () => {
                 );
               })}
             </div>
-            {visibleCount < filteredImages.length && (
+            {!isLoggedIn && visibleCount < filteredImages.length && (
               <div className="text-center mt-8">
                 <button
                   onClick={() => setVisibleCount(c => c + 20)}
