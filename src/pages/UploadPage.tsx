@@ -720,7 +720,7 @@ const UploadPage = () => {
                       <Check className="w-3.5 h-3.5" />
                       {selectedCollection === "new"
                         ? newCollectionName.trim() ? `Will create and add to "${newCollectionName.trim()}"` : "Enter a collection name above"
-                        : `Will add to "${collections.find(c => c.id === selectedCollection)?.name}"`}
+                        : `Will add to "${collections.find(c => c.id === selectedCollection)?.title}"`}
                     </div>
                   )}
                 </div>

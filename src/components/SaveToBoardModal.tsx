@@ -117,7 +117,7 @@ const SaveToBoardModal = ({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[0.84rem] font-semibold truncate">{col.name}</div>
+                  <div className="text-[0.84rem] font-semibold truncate">{col.title}</div>
                   <div className="text-[0.72rem] text-muted flex items-center gap-1">
                     {col.visibility === "private" ?
                       <Lock className="w-2.5 h-2.5" /> :
