@@ -72,6 +72,7 @@ export default function QuickViewPanel() {
   const creator = creators[idx % creators.length];
   const title = image?.title || titles[idx % titles.length];
   const prompt = prompts[idx % prompts.length];
+  const videoPrompt = videoPrompts[idx % videoPrompts.length];
   const tagList = tags[idx % tags.length];
   const stat = stats[idx % stats.length];
   const shopLink = image ? resolveLink(image.id) : null;
