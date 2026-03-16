@@ -30,6 +30,13 @@ const LoginPage = () => {
     if (Object.keys(e).length === 0) {
       try {
         localStorage.setItem("ra_auth", "1");
+        // Set username/display from email if not already set from signup
+        if (!localStorage.getItem("ra_username")) {
+          const username = email.split("@")[0].replace(/[^a-zA-Z0-9._]/g, "").toLowerCase();
+          localStorage.setItem("ra_username", username);
+          const display = username.replace(/[._]/g, " ").replace(/\b\w/g, c => c.toUpperCase());
+          localStorage.setItem("ra_display", display);
+        }
         window.dispatchEvent(new Event("ra_auth_changed"));
       } catch {}
       navigate("/dashboard");
