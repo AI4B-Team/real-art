@@ -361,7 +361,7 @@ const ImagePage = () => {
                       <div className="flex gap-4 mb-5">
                         <img src={`https://images.unsplash.com/${photo}?w=120&h=120&fit=crop&q=80`} alt="" className="w-20 h-20 rounded-xl object-cover shrink-0" />
                         <div>
-                          <div className="font-semibold text-[0.9rem] mb-1">Cosmic Dreamscape</div>
+                          <div className="font-semibold text-[0.9rem] mb-1">{imageTitle}</div>
                           <div className="text-[0.75rem] text-muted">by {creator.name}</div>
                         </div>
                       </div>
