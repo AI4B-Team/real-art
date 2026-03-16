@@ -230,8 +230,11 @@ export default function QuickViewPanel() {
                 <div className="text-[0.88rem] font-semibold text-foreground">{creator.n}</div>
                 <div className="text-[0.72rem] text-muted">{creator.handle}</div>
               </div>
-              <button className="ml-auto text-[0.78rem] font-semibold text-accent border border-accent/30 px-4 py-1.5 rounded-lg hover:bg-accent/10 transition-colors" onClick={(e) => e.preventDefault()}>
-                Follow
+              <button
+                className={`ml-auto text-[0.78rem] font-semibold px-4 py-1.5 rounded-lg transition-colors ${creatorFollowed ? "bg-accent/15 text-accent border border-accent/30" : "text-accent border border-accent/30 hover:bg-accent/10"}`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCreatorFollow(); }}
+              >
+                {creatorFollowed ? "Following" : "Follow"}
               </button>
             </Link>
 
