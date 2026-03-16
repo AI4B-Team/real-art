@@ -812,5 +812,6 @@ const ImagePage = () => {
       />
     </PageShell>
   );
+};
 
 export default ImagePage;
