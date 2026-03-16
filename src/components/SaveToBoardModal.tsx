@@ -30,7 +30,7 @@ const SaveToBoardModal = ({
   if (!open) return null;
 
   const filtered = collections.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    c.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const alreadySaved = (colId: string) =>
