@@ -253,7 +253,7 @@ const ExplorePage = () => {
               </div>
             )}
             <div className="masonry-grid">
-              {filteredImages.slice(0, visibleCount).map((img, i) => {
+              {(isLoggedIn ? filteredImages : filteredImages.slice(0, visibleCount)).map((img, i) => {
                 const cr = creators[i % creators.length];
                 const h = heights[i % heights.length];
 
