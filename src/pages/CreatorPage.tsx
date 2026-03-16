@@ -276,7 +276,8 @@ const CreatorPage = () => {
                     {!isOwnProfile && (
                       <>
                         <button
-                          onClick={() => setFollowed(!followed)}
+                          onClick={toggleFollow}
+                          disabled={followLoading}
                           className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold transition-all ${followed ? "bg-foreground/[0.08] text-foreground border border-foreground/20" : "bg-foreground text-primary-foreground hover:bg-accent"}`}
                         >
                           <UserCheck className={`w-4 h-4 ${followed ? "text-accent" : ""}`} />

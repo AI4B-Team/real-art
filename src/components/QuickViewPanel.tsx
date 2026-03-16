@@ -6,6 +6,7 @@ import {
   MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image, Code
 } from "lucide-react";
 import { useQuickView } from "@/context/QuickViewContext";
+import { useFollow } from "@/hooks/useFollow";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
 import { getCommentsForImage, seedDemoComments, formatRelativeTime, toggleLikeComment, type Comment } from "@/lib/commentStore";
 import { resolveLink } from "@/lib/linkStore";
