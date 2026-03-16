@@ -157,7 +157,7 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
           );
         })}
       </div>
-      {visibleCount < filtered.length && (
+      {!isLoggedIn && visibleCount < filtered.length && (
         <div className="text-center mt-5">
           <button
             onClick={() => setVisibleCount(c => c + PAGE_SIZE)}
