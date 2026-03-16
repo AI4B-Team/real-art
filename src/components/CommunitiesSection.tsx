@@ -18,6 +18,17 @@ const communities = [
 ];
 
 const CommunitiesSection = () => {
+  const [joined, setJoined] = useState<Record<number, boolean>>({});
+
+  const handleJoin = (e: React.MouseEvent, i: number, free: boolean) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (joined[i]) return;
+    if (!free) {
+      // For non-free communities, could show code entry - for now just join
+    }
+    setJoined(prev => ({ ...prev, [i]: true }));
+  };
   return (
     <section className="py-12 px-6 md:px-12">
       <div className="max-w-[1440px] mx-auto">
