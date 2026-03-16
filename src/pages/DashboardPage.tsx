@@ -14,7 +14,7 @@ import { getCollections, updateCollection as updateCol, type Collection } from "
 import { useNavigate } from "react-router-dom";
 
 const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard, internal: true },
+  { id: "overview", label: "Dashboard", icon: LayoutDashboard, internal: true },
   { id: "exposure", label: "Exposure", icon: TrendingUp, internal: true },
   { id: "media", label: "Media", icon: Image, internal: true },
   { id: "galleries", label: "Collections", icon: FolderOpen, internal: true },
