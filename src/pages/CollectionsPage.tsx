@@ -137,7 +137,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
               </div>
               {codeErr && <p className="text-[0.78rem] text-destructive mb-3">{codeErr}</p>}
               <button onClick={tryCode} className="w-full py-3 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors">
-                Unlock with Code
+                Unlock With Code
               </button>
               {price && price > 0 && (
                 <button onClick={() => setTab("pay")} className="w-full mt-2.5 text-[0.78rem] text-muted hover:text-foreground transition-colors">
