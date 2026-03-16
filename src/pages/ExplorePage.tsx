@@ -4,6 +4,10 @@ import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal, Image,
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import SponsoredCard from "@/components/SponsoredCard";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
+import { useQuickView } from "@/context/QuickViewContext";
+import Footer from "@/components/Footer";
+import SponsoredCard from "@/components/SponsoredCard";
 
 const sponsoredAds = [
   { imageUrl: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=260&fit=crop&q=80", brandName: "Poshmark", destinationUrl: "#" },
