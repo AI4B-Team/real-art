@@ -257,7 +257,7 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
       <div className="rounded-2xl overflow-hidden border border-foreground/[0.06] bg-card hover:border-foreground/[0.14] transition-all hover:-translate-y-1">
         <div className="h-[180px] overflow-hidden bg-foreground/[0.04] relative">
           {cover ? (
-            <img src={`https://images.unsplash.com/${cover}?w=400&h=180&fit=crop&q=80`} alt={col.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+            <img src={`https://images.unsplash.com/${cover}?w=400&h=180&fit=crop&q=80`} alt={col.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <Bookmark className="w-8 h-8 text-muted opacity-25" />
