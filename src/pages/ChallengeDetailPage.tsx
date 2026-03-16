@@ -90,6 +90,15 @@ const ChallengeDetailPage = () => {
   return (
     <PageShell>
       <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
+        {/* Breadcrumb + Title */}
+        <div className="flex items-center gap-2 text-[0.78rem] text-muted pt-6 mb-2">
+          <Link to="/challenges" className="hover:text-foreground transition-colors no-underline text-muted">Challenges</Link>
+          <ChevronRight className="w-3 h-3" />
+          <span className="text-foreground capitalize">{c.title}</span>
+        </div>
+        <h1 className="font-display text-[2.4rem] md:text-[3rem] font-black tracking-[-0.03em] leading-[1.1] capitalize mb-2">{c.title}</h1>
+        <p className="text-muted text-[0.92rem] leading-[1.6] max-w-[680px] mb-6">{c.desc}</p>
+
         {/* Stats + CTA bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 py-5 border-b border-foreground/[0.06]">
           <div className="flex flex-wrap items-center gap-6">
