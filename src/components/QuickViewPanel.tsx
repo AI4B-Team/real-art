@@ -84,6 +84,7 @@ const relatedHeights = [220, 280, 180, 240, 195, 260, 170, 230, 205, 250, 185, 2
 export default function QuickViewPanel() {
   const { image, open, close, isOpen } = useQuickView();
   const { sidebarCollapsed } = useLayoutContext();
+  const navigate = useNavigate();
   const panelRef = useRef<HTMLDivElement>(null);
   const creatorId = image ? creators[parseInt(image.id || "1") % creators.length].id : "1";
   const { followed: creatorFollowed, toggle: toggleCreatorFollow } = useFollow(creatorId);
