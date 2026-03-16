@@ -299,17 +299,17 @@ export default function DashboardCollectionPage() {
 
               {/* Meta row */}
               <div className="flex items-center gap-3 mt-3 flex-wrap text-[0.78rem] text-muted">
-                <span className={`flex items-center gap-1 font-bold text-[0.68rem] px-2.5 py-1 rounded-full ${col.free ? "bg-green-100 text-green-700" : "bg-accent/10 text-accent"}`}>
-                  {col.free ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
-                  {col.free ? "Public" : "Private"}
+                <span className={`flex items-center gap-1 font-bold text-[0.68rem] px-2.5 py-1 rounded-full ${col.visibility === "public" ? "bg-green-100 text-green-700" : "bg-accent/10 text-accent"}`}>
+                  {col.visibility === "public" ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                  {col.visibility === "public" ? "Public" : "Private"}
                 </span>
                 <span className="flex items-center gap-1"><Image className="w-3 h-3" />{imageCount} images</span>
                 {videoCount > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{videoCount} videos</span>}
                 {musicCount > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{musicCount} tracks</span>}
-                {!col.free && col.members > 0 && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span>}
-                {!col.free && col.code && (
+                {col.visibility === "private" && col.members > 0 && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span>}
+                {col.visibility === "private" && col.accessCode && (
                   <span className="flex items-center gap-1 font-mono font-bold text-foreground">
-                    <Key className="w-3 h-3 text-muted" />{col.code}
+                    <Key className="w-3 h-3 text-muted" />{col.accessCode}
                   </span>
                 )}
               </div>
