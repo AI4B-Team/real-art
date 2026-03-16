@@ -902,7 +902,7 @@ const UploadPage = () => {
                     ["Comments", commentsEnabled ? "Enabled" : "Disabled"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
-                    ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],
+                    ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} Images`],
                   ].map(([k, v]) => (
                     <div key={k} className="flex items-start gap-4 text-[0.82rem]">
                       <span className="text-muted w-28 shrink-0">{k}</span>
