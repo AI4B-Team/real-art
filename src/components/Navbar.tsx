@@ -23,7 +23,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [communitySearch, setCommunitySearch] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [navSearchType, setNavSearchType] = useState("Photos");
+  const [navSearchType, setNavSearchType] = useState("Images");
   const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
@@ -319,12 +319,12 @@ const Navbar = () => {
         <div className="hidden md:flex flex-1 max-w-xl mx-8">
           <div className="relative w-full flex items-center bg-foreground/[0.06] rounded-lg h-[42px] focus-within:ring-2 focus-within:ring-accent/20">
             <div ref={navSearchDropRef} className="relative flex items-center gap-1.5 px-3 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setNavSearchDropOpen(!navSearchDropOpen)}>
-              {(() => { const Icon = navSearchType === "Photos" ? Image : navSearchType === "Videos" ? Video : Music; return <Icon className="w-3.5 h-3.5 opacity-60" />; })()}
+              {(() => { const Icon = navSearchType === "Images" ? Image : navSearchType === "Videos" ? Video : Music; return <Icon className="w-3.5 h-3.5 opacity-60" />; })()}
               <span className="text-[0.82rem] font-medium whitespace-nowrap">{navSearchType}</span>
               <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${navSearchDropOpen ? "rotate-180" : ""}`} />
               {navSearchDropOpen && (
                 <div className="absolute top-[calc(100%+8px)] left-0 bg-card border border-foreground/[0.08] rounded-xl min-w-[150px] shadow-[var(--shadow-card)] p-1.5 z-[500] animate-drop-in">
-                  {[{ label: "Photos", icon: Image }, { label: "Videos", icon: Video }, { label: "Music", icon: Music }].map(({ label, icon: Icon }) => (
+                  {[{ label: "Images", icon: Image }, { label: "Videos", icon: Video }, { label: "Music", icon: Music }].map(({ label, icon: Icon }) => (
                     <div
                       key={label}
                       onClick={(e) => { e.stopPropagation(); setNavSearchType(label); setNavSearchDropOpen(false); }}

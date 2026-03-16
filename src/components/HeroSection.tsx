@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 
 const searchTypes = [
-  { label: "Photos", icon: Image },
+  { label: "Images", icon: Image },
   { label: "Videos", icon: Video },
   { label: "Music", icon: Music },
 ];
@@ -13,7 +13,7 @@ const trendingTerms = ["avatars", "luxury homes", "cyberpunk", "podcast studio",
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [selectedType, setSelectedType] = useState("Photos");
+  const [selectedType, setSelectedType] = useState("Images");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [query, setQuery] = useState("");
   const dropRef = useRef<HTMLDivElement>(null);

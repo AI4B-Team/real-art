@@ -60,7 +60,7 @@ const filters = [
 const sortOptions = ["Most Relevant", "Newest First", "Most Downloaded", "Most Liked"];
 
 const searchTypes = [
-  { label: "Photos", icon: Image },
+  { label: "Images", icon: Image },
   { label: "Videos", icon: Video },
   { label: "Music", icon: Music },
 ];
@@ -70,7 +70,7 @@ const ExplorePage = () => {
   const initialQuery = searchParams.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
   const [activeFilter, setActiveFilter] = useState("All");
-  const [activeType, setActiveType] = useState("Photos");
+  const [activeType, setActiveType] = useState("Images");
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [sort, setSort] = useState("Most Relevant");
   const [sortOpen, setSortOpen] = useState(false);
