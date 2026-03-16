@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Search, Plus, TrendingUp, Users, Bookmark, X, Globe, Lock, Key, Check,
-  Compass, Star, Edit3, Trash2
+  Compass, Star, Edit3, Trash2, Image, Video, Music
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
