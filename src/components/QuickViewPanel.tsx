@@ -10,6 +10,7 @@ import SaveToBoardModal from "@/components/SaveToBoardModal";
 import { getCommentsForImage, seedDemoComments, formatRelativeTime, toggleLikeComment, type Comment } from "@/lib/commentStore";
 import { resolveLink } from "@/lib/linkStore";
 import { addComment } from "@/lib/commentStore";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee", id: "1", handle: "@aiverse" },
@@ -54,8 +55,31 @@ const stats = [
   { views: "22.1K", downloads: "1,620", likes: "441" },
 ];
 
+const relatedPhotos = [
+  { photo: "photo-1558618666-fcd25c85cd64", title: "Neon Gradient" },
+  { photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire" },
+  { photo: "photo-1549880338-65ddcdfd017b", title: "Mountain Vista" },
+  { photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard" },
+  { photo: "photo-1506905925346-21bda4d32df4", title: "Alpine Glow" },
+  { photo: "photo-1518020382113-a7e8fc38eac9", title: "Geometric Architecture" },
+  { photo: "photo-1547036967-23d11aacaee0", title: "Night Sky" },
+  { photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City Night" },
+  { photo: "photo-1604881991720-f91add269bed", title: "Digital Avatar 01" },
+  { photo: "photo-1501854140801-50d01698950b", title: "Forest Spirit" },
+  { photo: "photo-1576091160550-2173dba999ef", title: "Abstract Fluid" },
+  { photo: "photo-1518770660439-4636190af475", title: "Tech Circuit Board" },
+  { photo: "photo-1462275646964-a0e3386b89fa", title: "Studio Setup" },
+  { photo: "photo-1500462918059-b1a0cb512f1d", title: "Sunset Haze" },
+  { photo: "photo-1543722530-d2c3201371e7", title: "Luxury Interior" },
+  { photo: "photo-1533158628620-7e4d0a003147", title: "Portrait Study" },
+  { photo: "photo-1505765050516-f72dcac9c60e", title: "Tropical Shore" },
+  { photo: "photo-1470071459604-3b5ec3a7fe05", title: "Golden Valley" },
+];
+
+const relatedHeights = [220, 280, 180, 240, 195, 260, 170, 230, 205, 250, 185, 265, 200, 245, 175, 235, 210, 255];
+
 export default function QuickViewPanel() {
-  const { image, close, isOpen } = useQuickView();
+  const { image, open, close, isOpen } = useQuickView();
   const navigate = useNavigate();
   const panelRef = useRef<HTMLDivElement>(null);
   const [liked, setLiked] = useState(false);
@@ -77,6 +101,9 @@ export default function QuickViewPanel() {
   const stat = stats[idx % stats.length];
   const shopLink = image ? resolveLink(image.id) : null;
   const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+
+  // Shuffle related photos based on current image to avoid showing same image
+  const shuffledRelated = relatedPhotos.filter(p => p.photo !== image?.photo);
 
   useEffect(() => {
     if (!image) return;
@@ -137,245 +164,279 @@ export default function QuickViewPanel() {
     setCommentText("");
   };
 
+  const handleRelatedClick = (photo: string, relIdx: number) => {
+    const globalIdx = relatedPhotos.findIndex(p => p.photo === photo);
+    open({
+      id: String(globalIdx >= 0 ? globalIdx : relIdx),
+      photo,
+      title: relatedPhotos.find(p => p.photo === photo)?.title,
+    });
+  };
+
   const actionBtnClass = "flex items-center gap-1.5 flex-1 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.84rem] font-semibold text-muted hover:text-foreground transition-colors";
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Full-screen two-panel overlay — no dim */}
       <div
-        className="fixed inset-0 bg-foreground/40 backdrop-blur-sm z-[500] transition-opacity"
-        onClick={close}
-      />
-
-      {/* Panel */}
-      <div
-        ref={panelRef}
-        className="fixed top-0 right-0 bottom-0 w-full max-w-[520px] bg-card border-l border-foreground/[0.08] z-[501] overflow-y-auto shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-        style={{ animation: "slideInRight 0.28s cubic-bezier(0.22,1,0.36,1) both" }}
+        className="fixed inset-0 z-[500] flex"
+        style={{ animation: "fadeInQuick 0.2s ease both" }}
       >
-        {/* Header */}
-        <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-foreground/[0.06] px-5 py-3 flex items-center justify-between z-10">
-          <button onClick={close} className="flex items-center gap-2 text-[0.82rem] text-muted hover:text-foreground transition-colors">
-            <X className="w-4 h-4" />
-            <span className="text-[0.72rem]">Press Esc To Close</span>
-          </button>
-          <button onClick={handleExpandToFullPage} className="flex items-center gap-1.5 text-[0.82rem] text-muted hover:text-foreground transition-colors">
-            <Maximize2 className="w-3.5 h-3.5" /> Open Full Page
-          </button>
-        </div>
-
-        {/* Image */}
-        <div className="relative group cursor-pointer" onClick={handleExpandToFullPage}>
-          <img
-            src={`https://images.unsplash.com/${image.photo}?w=600&h=500&fit=crop&q=85`}
-            alt={title}
-            className="w-full object-cover"
-            style={{ maxHeight: 420 }}
-          />
-          <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-            <ZoomIn className="w-6 h-6 text-primary-foreground drop-shadow-lg" />
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="px-5 py-5">
-          {/* Title */}
-          <h2 className="font-display text-[1.4rem] font-black tracking-[-0.03em] leading-tight mb-3">{title}</h2>
-
-          {/* Creator */}
-          <Link to={`/creator/${creator.id}`} onClick={close} className="flex items-center gap-3 mb-5 no-underline">
-            <div className="w-9 h-9 rounded-full flex items-center justify-center text-[0.7rem] font-bold text-primary-foreground" style={{ background: creator.c }}>
-              {creator.i}
-            </div>
-            <div>
-              <div className="text-[0.88rem] font-semibold text-foreground">{creator.n}</div>
-              <div className="text-[0.72rem] text-muted">{creator.handle}</div>
-            </div>
-            <button className="ml-auto text-[0.78rem] font-semibold text-accent border border-accent/30 px-4 py-1.5 rounded-lg hover:bg-accent/10 transition-colors" onClick={(e) => e.preventDefault()}>
-              Follow
+        {/* Left panel — image detail (scrollable) */}
+        <div
+          ref={panelRef}
+          className="w-full max-w-[580px] bg-card border-r border-foreground/[0.08] overflow-y-auto shadow-2xl flex-shrink-0"
+          onClick={(e) => e.stopPropagation()}
+          style={{ animation: "slideInRight 0.28s cubic-bezier(0.22,1,0.36,1) both" }}
+        >
+          {/* Header */}
+          <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-foreground/[0.06] px-5 py-3 flex items-center justify-between z-10">
+            <button onClick={close} className="flex items-center gap-2 text-[0.82rem] text-muted hover:text-foreground transition-colors">
+              <X className="w-4 h-4" />
+              <span className="text-[0.72rem]">Press Esc To Close</span>
             </button>
-          </Link>
-
-          {/* Stats */}
-          <div className="flex items-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06]">
-            <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
-              <Eye className="w-3.5 h-3.5" /> {stat.views} <span className="text-[0.68rem]">views</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
-              <Download className="w-3.5 h-3.5" /> {stat.downloads} <span className="text-[0.68rem]">downloads</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
-              <Heart className="w-3.5 h-3.5" /> {stat.likes} <span className="text-[0.68rem]">likes</span>
-            </div>
-          </div>
-
-          {/* Action buttons */}
-          <div className="grid grid-cols-2 gap-2 mb-2">
-            <button onClick={handleLike} className={`flex items-center gap-1.5 justify-center py-2.5 rounded-xl border text-[0.84rem] font-semibold transition-colors ${liked ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.12] hover:border-foreground/25 text-muted hover:text-foreground"}`}>
-              <Heart className={`w-4 h-4 ${liked ? "fill-accent" : ""}`} />
-              {likeCount.toLocaleString()}
-            </button>
-            <button onClick={() => setBoardOpen(true)} className={actionBtnClass}>
-              <Bookmark className="w-4 h-4" /> Save
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-2 mb-5">
-            <button className={actionBtnClass}>
-              <Download className="w-4 h-4" /> Download
-            </button>
-            <button className={actionBtnClass}>
-              <Share2 className="w-4 h-4" /> Share
+            <button onClick={handleExpandToFullPage} className="flex items-center gap-1.5 text-[0.82rem] text-muted hover:text-foreground transition-colors">
+              <Maximize2 className="w-3.5 h-3.5" /> Open Full Page
             </button>
           </div>
 
-          {/* Quick actions */}
-          <div className="flex gap-2 mb-5">
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
-              <RefreshCw className="w-3.5 h-3.5" /> Recreate
-            </button>
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
-              <Video className="w-3.5 h-3.5" /> Animate
-            </button>
-            <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
-              <Pencil className="w-3.5 h-3.5" /> Edit
-            </button>
+          {/* Image */}
+          <div className="relative group cursor-pointer" onClick={handleExpandToFullPage}>
+            <img
+              src={`https://images.unsplash.com/${image.photo}?w=600&h=500&fit=crop&q=85`}
+              alt={title}
+              className="w-full object-cover"
+              style={{ maxHeight: 420 }}
+            />
+            <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
+              <ZoomIn className="w-6 h-6 text-primary-foreground drop-shadow-lg" />
+            </div>
           </div>
 
-          <div className="border border-foreground/[0.08] rounded-xl mb-5 overflow-hidden">
-            <button onClick={() => setPromptOpen(!promptOpen)} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-foreground/[0.02] transition-colors">
-              <span className="text-[0.84rem] font-semibold">AI Prompt</span>
-              {promptOpen ? <ChevronUp className="w-4 h-4 text-muted" /> : <ChevronDown className="w-4 h-4 text-muted" />}
-            </button>
-            {promptOpen && (
-              <div className="px-4 pb-4">
-                {/* Tabs */}
-                <div className="flex gap-0 mb-3 border-b border-foreground/[0.06]">
-                  {([
-                    { key: "image" as const, label: "Image Prompt", icon: Image },
-                    { key: "video" as const, label: "Video Prompt", icon: Video },
-                  ]).map(tab => (
-                    <button
-                      key={tab.key}
-                      onClick={() => setActivePromptTab(tab.key)}
-                      className={`flex items-center gap-1.5 px-3 py-2 text-[0.75rem] font-medium border-b-2 transition-colors -mb-px ${
-                        activePromptTab === tab.key
-                          ? "border-accent text-accent"
-                          : "border-transparent text-muted hover:text-foreground"
-                      }`}
-                    >
-                      <tab.icon className="w-3 h-3" /> {tab.label}
-                    </button>
-                  ))}
+          {/* Content */}
+          <div className="px-5 py-5">
+            <h2 className="font-display text-[1.4rem] font-black tracking-[-0.03em] leading-tight mb-3">{title}</h2>
+
+            <Link to={`/creator/${creator.id}`} onClick={close} className="flex items-center gap-3 mb-5 no-underline">
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-[0.7rem] font-bold text-primary-foreground" style={{ background: creator.c }}>
+                {creator.i}
+              </div>
+              <div>
+                <div className="text-[0.88rem] font-semibold text-foreground">{creator.n}</div>
+                <div className="text-[0.72rem] text-muted">{creator.handle}</div>
+              </div>
+              <button className="ml-auto text-[0.78rem] font-semibold text-accent border border-accent/30 px-4 py-1.5 rounded-lg hover:bg-accent/10 transition-colors" onClick={(e) => e.preventDefault()}>
+                Follow
+              </button>
+            </Link>
+
+            {/* Stats */}
+            <div className="flex items-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06]">
+              <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+                <Eye className="w-3.5 h-3.5" /> {stat.views} <span className="text-[0.68rem]">views</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+                <Download className="w-3.5 h-3.5" /> {stat.downloads} <span className="text-[0.68rem]">downloads</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+                <Heart className="w-3.5 h-3.5" /> {stat.likes} <span className="text-[0.68rem]">likes</span>
+              </div>
+            </div>
+
+            {/* Action buttons */}
+            <div className="grid grid-cols-2 gap-2 mb-2">
+              <button onClick={handleLike} className={`flex items-center gap-1.5 justify-center py-2.5 rounded-xl border text-[0.84rem] font-semibold transition-colors ${liked ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.12] hover:border-foreground/25 text-muted hover:text-foreground"}`}>
+                <Heart className={`w-4 h-4 ${liked ? "fill-accent" : ""}`} />
+                {likeCount.toLocaleString()}
+              </button>
+              <button onClick={() => setBoardOpen(true)} className={actionBtnClass}>
+                <Bookmark className="w-4 h-4" /> Save
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-2 mb-5">
+              <button className={actionBtnClass}>
+                <Download className="w-4 h-4" /> Download
+              </button>
+              <button className={actionBtnClass}>
+                <Share2 className="w-4 h-4" /> Share
+              </button>
+            </div>
+
+            {/* Quick actions */}
+            <div className="flex gap-2 mb-5">
+              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+                <RefreshCw className="w-3.5 h-3.5" /> Recreate
+              </button>
+              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+                <Video className="w-3.5 h-3.5" /> Animate
+              </button>
+              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+                <Pencil className="w-3.5 h-3.5" /> Edit
+              </button>
+            </div>
+
+            <div className="border border-foreground/[0.08] rounded-xl mb-5 overflow-hidden">
+              <button onClick={() => setPromptOpen(!promptOpen)} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-foreground/[0.02] transition-colors">
+                <span className="text-[0.84rem] font-semibold">AI Prompt</span>
+                {promptOpen ? <ChevronUp className="w-4 h-4 text-muted" /> : <ChevronDown className="w-4 h-4 text-muted" />}
+              </button>
+              {promptOpen && (
+                <div className="px-4 pb-4">
+                  <div className="flex gap-0 mb-3 border-b border-foreground/[0.06]">
+                    {([
+                      { key: "image" as const, label: "Image Prompt", icon: Image },
+                      { key: "video" as const, label: "Video Prompt", icon: Video },
+                    ]).map(tab => (
+                      <button
+                        key={tab.key}
+                        onClick={() => setActivePromptTab(tab.key)}
+                        className={`flex items-center gap-1.5 px-3 py-2 text-[0.75rem] font-medium border-b-2 transition-colors -mb-px ${
+                          activePromptTab === tab.key
+                            ? "border-accent text-accent"
+                            : "border-transparent text-muted hover:text-foreground"
+                        }`}
+                      >
+                        <tab.icon className="w-3 h-3" /> {tab.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {activePromptTab === "image" ? (
+                    <>
+                      <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{prompt}</p>
+                      <button onClick={handleCopyPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
+                        {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{videoPrompt}</p>
+                      <button onClick={handleCopyVideoPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
+                        {videoCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
+                      </button>
+                    </>
+                  )}
                 </div>
-
-                {activePromptTab === "image" ? (
-                  <>
-                    <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{prompt}</p>
-                    <button onClick={handleCopyPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
-                      {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{videoPrompt}</p>
-                    <button onClick={handleCopyVideoPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
-                      {videoCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            {tagList.map(tag => (
-              <Link key={tag} to={`/explore?q=${tag}`} onClick={close} className="text-[0.75rem] font-medium text-muted bg-foreground/[0.04] border border-foreground/[0.08] px-3 py-1.5 rounded-lg hover:border-foreground/20 hover:text-foreground transition-colors no-underline">
-                #{tag}
-              </Link>
-            ))}
-          </div>
-
-          {/* Shop link */}
-          {shopLink && (
-            <a href={shopLink.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-4 border border-foreground/[0.08] rounded-xl mb-5 no-underline hover:border-accent/30 transition-colors group/shop">
-              <ShoppingBag className="w-5 h-5 text-accent" />
-              <div className="flex-1 min-w-0">
-                <div className="text-[0.84rem] font-semibold text-foreground">{shopLink.label}</div>
-                {shopLink.site && <div className="text-[0.72rem] text-muted">via {shopLink.site}</div>}
-              </div>
-              <ExternalLink className="w-4 h-4 text-accent shrink-0" />
-            </a>
-          )}
-
-          {/* Comments */}
-          <div className="border-t border-foreground/[0.06] pt-5">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2 text-[0.84rem] font-semibold">
-                <MessageCircle className="w-4 h-4 text-muted" />
-                {comments.length} Comments
-              </div>
-              <Link to={`/image/${image.id}`} onClick={close} className="text-[0.75rem] text-accent hover:underline no-underline">
-                View all →
-              </Link>
+              )}
             </div>
 
-            {comments.slice(0, 2).map(c => (
-              <div key={c.id} className="flex items-start gap-2.5 mb-3">
-                <div className="w-7 h-7 rounded-full flex items-center justify-center text-[0.55rem] font-bold text-primary-foreground shrink-0" style={{ background: c.authorColor }}>
-                  {c.authorInit}
-                </div>
+            {/* Tags */}
+            <div className="flex flex-wrap gap-2 mb-5">
+              {tagList.map(tag => (
+                <Link key={tag} to={`/explore?q=${tag}`} onClick={close} className="text-[0.75rem] font-medium text-muted bg-foreground/[0.04] border border-foreground/[0.08] px-3 py-1.5 rounded-lg hover:border-foreground/20 hover:text-foreground transition-colors no-underline">
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+
+            {/* Shop link */}
+            {shopLink && (
+              <a href={shopLink.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 p-4 border border-foreground/[0.08] rounded-xl mb-5 no-underline hover:border-accent/30 transition-colors group/shop">
+                <ShoppingBag className="w-5 h-5 text-accent" />
                 <div className="flex-1 min-w-0">
-                  <span className="text-[0.78rem] font-semibold">{c.authorName}</span>
-                  <p className="text-[0.78rem] text-muted leading-[1.5] mb-1">{c.text}</p>
-                  <div className="flex items-center gap-3">
-                    <span className="text-[0.68rem] text-muted/60">{formatRelativeTime(c.createdAt)}</span>
-                    <button
-                      onClick={() => { toggleLikeComment(c.id); }}
-                      className={`flex items-center gap-0.5 text-[0.68rem] transition-colors ${c.likedByMe ? "text-accent" : "text-muted hover:text-foreground"}`}
-                    >
-                      <Heart className={`w-3 h-3 ${c.likedByMe ? "fill-accent" : ""}`} />
-                      {c.likes > 0 && c.likes}
-                    </button>
+                  <div className="text-[0.84rem] font-semibold text-foreground">{shopLink.label}</div>
+                  {shopLink.site && <div className="text-[0.72rem] text-muted">via {shopLink.site}</div>}
+                </div>
+                <ExternalLink className="w-4 h-4 text-accent shrink-0" />
+              </a>
+            )}
+
+            {/* Comments */}
+            <div className="border-t border-foreground/[0.06] pt-5">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2 text-[0.84rem] font-semibold">
+                  <MessageCircle className="w-4 h-4 text-muted" />
+                  {comments.length} Comments
+                </div>
+                <Link to={`/image/${image.id}`} onClick={close} className="text-[0.75rem] text-accent hover:underline no-underline">
+                  View all →
+                </Link>
+              </div>
+
+              {comments.slice(0, 2).map(c => (
+                <div key={c.id} className="flex items-start gap-2.5 mb-3">
+                  <div className="w-7 h-7 rounded-full flex items-center justify-center text-[0.55rem] font-bold text-primary-foreground shrink-0" style={{ background: c.authorColor }}>
+                    {c.authorInit}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <span className="text-[0.78rem] font-semibold">{c.authorName}</span>
+                    <p className="text-[0.78rem] text-muted leading-[1.5] mb-1">{c.text}</p>
+                    <div className="flex items-center gap-3">
+                      <span className="text-[0.68rem] text-muted/60">{formatRelativeTime(c.createdAt)}</span>
+                      <button
+                        onClick={() => { toggleLikeComment(c.id); }}
+                        className={`flex items-center gap-0.5 text-[0.68rem] transition-colors ${c.likedByMe ? "text-accent" : "text-muted hover:text-foreground"}`}
+                      >
+                        <Heart className={`w-3 h-3 ${c.likedByMe ? "fill-accent" : ""}`} />
+                        {c.likes > 0 && c.likes}
+                      </button>
+                    </div>
                   </div>
                 </div>
+              ))}
+
+              {isLoggedIn ? (
+                <div className="flex items-center gap-2 mt-3">
+                  <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-[0.55rem] font-bold text-primary-foreground shrink-0">
+                    {(localStorage.getItem("ra_display") || "Y").charAt(0).toUpperCase()}
+                  </div>
+                  <input
+                    className="flex-1 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg px-3 py-2 text-[0.82rem] focus:outline-none focus:border-accent transition-colors"
+                    placeholder="Add a comment…"
+                    value={commentText}
+                    onChange={(e) => setCommentText(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && handleSubmitComment()}
+                  />
+                  {commentText.trim() && (
+                    <button onClick={handleSubmitComment} className="text-[0.82rem] font-semibold text-accent hover:text-accent/80 transition-colors">
+                      Post
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <Link to="/login" onClick={close} className="text-[0.82rem] text-accent hover:underline no-underline">
+                  Log in to comment
+                </Link>
+              )}
+            </div>
+
+            {/* Expand CTA */}
+            <button
+              onClick={handleExpandToFullPage}
+              className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors group"
+            >
+              <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
+              Open Full Image Page
+            </button>
+          </div>
+        </div>
+
+        {/* Right panel — related images masonry (scrollable) */}
+        <div
+          className="flex-1 overflow-y-auto bg-background p-4"
+          onClick={close}
+        >
+          <div className="columns-2 lg:columns-3 gap-3" onClick={(e) => e.stopPropagation()}>
+            {shuffledRelated.map((item, i) => (
+              <div
+                key={`${item.photo}-${i}`}
+                className="break-inside-avoid mb-3 relative group rounded-xl overflow-hidden cursor-pointer"
+                onClick={() => handleRelatedClick(item.photo, i)}
+              >
+                <img
+                  src={`https://images.unsplash.com/${item.photo}?w=400&h=${relatedHeights[i % relatedHeights.length]}&fit=crop&q=75`}
+                  alt={item.title}
+                  className="w-full object-cover rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
+                  style={{ height: relatedHeights[i % relatedHeights.length] }}
+                  loading="lazy"
+                />
+                {/* Hover overlay */}
+                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors rounded-xl flex items-end p-3 opacity-0 group-hover:opacity-100">
+                  <span className="text-[0.75rem] font-semibold text-primary-foreground drop-shadow-md">{item.title}</span>
+                </div>
               </div>
             ))}
-
-            {isLoggedIn ? (
-              <div className="flex items-center gap-2 mt-3">
-                <div className="w-7 h-7 rounded-full bg-accent flex items-center justify-center text-[0.55rem] font-bold text-primary-foreground shrink-0">
-                  {(localStorage.getItem("ra_display") || "Y").charAt(0).toUpperCase()}
-                </div>
-                <input
-                  className="flex-1 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg px-3 py-2 text-[0.82rem] focus:outline-none focus:border-accent transition-colors"
-                  placeholder="Add a comment…"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && handleSubmitComment()}
-                />
-                {commentText.trim() && (
-                  <button onClick={handleSubmitComment} className="text-[0.82rem] font-semibold text-accent hover:text-accent/80 transition-colors">
-                    Post
-                  </button>
-                )}
-              </div>
-            ) : (
-              <Link to="/login" onClick={close} className="text-[0.82rem] text-accent hover:underline no-underline">
-                Log in to comment
-              </Link>
-            )}
           </div>
-
-          {/* Expand CTA */}
-          <button
-            onClick={handleExpandToFullPage}
-            className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors group"
-          >
-            <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Open Full Image Page
-          </button>
         </div>
       </div>
 
@@ -383,8 +444,12 @@ export default function QuickViewPanel() {
 
       <style>{`
         @keyframes slideInRight {
-          from { transform: translateX(100%); opacity: 0.6; }
+          from { transform: translateX(-100%); opacity: 0.6; }
           to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes fadeInQuick {
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
       `}</style>
     </>
