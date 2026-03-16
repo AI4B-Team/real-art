@@ -529,17 +529,7 @@ export default function CollectionsPage() {
         {/* MY COLLECTIONS TAB */}
         {activeTab === "mine" && (
           <>
-            {!isLoggedIn ? (
-              <div className="text-center py-20">
-                <Bookmark className="w-10 h-10 text-muted mx-auto mb-4 opacity-30" />
-                <h2 className="font-display text-[1.6rem] font-black mb-2">Your collections live here</h2>
-                <p className="text-muted text-[0.88rem] mb-6">Log in to see collections you've created and images you've saved.</p>
-                <div className="flex gap-3 justify-center">
-                  <Link to="/login" className="px-6 py-2.5 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-semibold hover:border-foreground/30 transition-colors no-underline">Log in</Link>
-                  <Link to="/signup" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">Sign up free</Link>
-                </div>
-              </div>
-            ) : filteredMine.length === 0 ? (
+            {filteredMine.length === 0 ? (
               <div className="text-center py-20">
                 <Bookmark className="w-10 h-10 text-muted mx-auto mb-4 opacity-30" />
                 <h2 className="font-display text-[1.6rem] font-black mb-2">No collections yet</h2>
