@@ -13,6 +13,7 @@ import { getCommentsForImage, seedDemoComments, formatRelativeTime, toggleLikeCo
 import { resolveLink } from "@/lib/linkStore";
 import { addComment } from "@/lib/commentStore";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
+import { useLayoutContext } from "@/components/LayoutContext";
 
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee", id: "1", handle: "@aiverse" },
@@ -82,6 +83,7 @@ const relatedHeights = [220, 280, 180, 240, 195, 260, 170, 230, 205, 250, 185, 2
 
 export default function QuickViewPanel() {
   const { image, open, close, isOpen } = useQuickView();
+  const { sidebarCollapsed } = useLayoutContext();
   const navigate = useNavigate();
   const panelRef = useRef<HTMLDivElement>(null);
   const creatorId = image ? creators[parseInt(image.id || "1") % creators.length].id : "1";
@@ -112,6 +114,7 @@ export default function QuickViewPanel() {
   const stat = stats[idx % stats.length];
   const shopLink = image ? resolveLink(image.id) : null;
   const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+  const sidebarOffset = isLoggedIn ? (sidebarCollapsed ? 68 : 260) : 0;
 
   const aiTools = ["Midjourney", "DALL-E 3", "Stable Diffusion XL", "Adobe Firefly", "Midjourney", "Leonardo AI",
     "Ideogram", "Midjourney", "Flux", "DALL-E 3", "Stable Diffusion XL", "Midjourney"];
@@ -226,10 +229,13 @@ export default function QuickViewPanel() {
 
   return (
     <>
-      {/* Full-screen two-panel overlay — no dim */}
+      {/* Full-screen two-panel overlay — keeps sidebar visible */}
       <div
-        className="fixed inset-0 z-[500] flex"
-        style={{ animation: "fadeInQuick 0.2s ease both" }}
+        className="fixed inset-y-0 right-0 z-[500] flex"
+        style={{
+          left: `${sidebarOffset}px`,
+          animation: "fadeInQuick 0.2s ease both",
+        }}
       >
         {/* Left panel — image detail (scrollable) */}
         <div
