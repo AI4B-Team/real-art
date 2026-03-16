@@ -827,7 +827,7 @@ const UploadPage = () => {
                           <input value={linkLabel} onChange={e => setLinkLabel(e.target.value)} placeholder="Shop this look" maxLength={40} className="w-full h-9 border border-foreground/[0.13] rounded-xl px-3 text-[0.83rem] bg-background outline-none focus:border-accent transition-colors" />
                         </div>
                         <div>
-                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Price (optional)</label>
+                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Price (Optional)</label>
                           <input value={linkPrice} onChange={e => setLinkPrice(e.target.value)} placeholder="$49.99" maxLength={15} className="w-full h-9 border border-foreground/[0.13] rounded-xl px-3 text-[0.83rem] bg-background outline-none focus:border-accent transition-colors" />
                         </div>
                       </div>
