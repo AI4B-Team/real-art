@@ -166,7 +166,13 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
           </div>
         )}
       </div>
-      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
+      <SaveToBoardModal 
+        open={boardModalOpen} 
+        onClose={() => setBoardModalOpen(false)} 
+        imageId={String(index)} 
+        imagePhoto={imagePhotos[index % imagePhotos.length]} 
+        imageTitle={imageTitles[index % imageTitles.length]} 
+      />
     </>
   );
 };
