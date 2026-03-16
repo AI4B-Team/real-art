@@ -508,7 +508,7 @@ const Navbar = () => {
                   onClick={() => setNotifOpen(false)}
                   className="flex items-center justify-center gap-1.5 px-4 py-3 border-t border-foreground/[0.06] text-[0.78rem] font-semibold text-accent hover:bg-foreground/[0.02] transition-colors no-underline"
                 >
-                  View all notifications <ArrowRight className="w-3.5 h-3.5" />
+                  View All Notifications <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             )}
