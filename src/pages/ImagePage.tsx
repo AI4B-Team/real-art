@@ -283,12 +283,6 @@ const ImagePage = () => {
                 </button>
               </div>
 
-              {/* Embed */}
-              <div className="mt-1">
-                <button onClick={() => setShowEmbed(true)} className="flex items-center gap-2 text-[0.78rem] font-medium text-muted hover:text-accent transition-colors">
-                  <Code className="w-3.5 h-3.5" /> Embed This Image
-                </button>
-              </div>
 
               {/* Follow Creator inline */}
               <div className="mt-4 flex items-center gap-3 p-3 rounded-xl bg-card border border-foreground/[0.06]">
