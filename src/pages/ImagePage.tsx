@@ -3,7 +3,8 @@ import { useParams, useSearchParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw, Pencil,
   Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag, Video, Image,
-  Briefcase, Youtube, Instagram, Globe2, Package, Monitor, Megaphone, MessageCircleOff, MessageCircle
+  Briefcase, Youtube, Instagram, Globe2, Package, Monitor, Megaphone, MessageCircleOff, MessageCircle,
+  ChevronDown, Zap, Wand2, Cpu
 } from "lucide-react";
 import SponsoredCard from "@/components/SponsoredCard";
 import { supabase } from "@/integrations/supabase/client";
