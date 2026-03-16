@@ -4,7 +4,7 @@ import {
   Download, Sparkles, ArrowLeft, ChevronRight, Eye, Copy, Check,
   Users, Bookmark, RefreshCw, Layout, TrendingUp
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 /* ── Topic data (would come from API in production) ── */
