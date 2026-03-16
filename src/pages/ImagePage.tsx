@@ -362,13 +362,15 @@ const ImagePage = () => {
                     <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Prompts</h2>
                     <span className="text-[0.72rem] text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-md">Used 1,247 times</span>
                   </div>
-                  <button
-                    onClick={() => setPromptVisible(!promptVisible)}
-                    className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    {promptVisible ? "Hide" : "Reveal Prompts"}
-                  </button>
+                  {!isLoggedIn && (
+                    <button
+                      onClick={() => setPromptVisible(!promptVisible)}
+                      className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      {promptVisible ? "Hide" : "Reveal Prompts"}
+                    </button>
+                  )}
                 </div>
 
                 {/* Tabs */}
