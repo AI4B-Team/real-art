@@ -881,7 +881,7 @@ const UploadPage = () => {
           {/* STEP 2: Publish */}
           {step === 2 && (
             <div>
-              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Ready to publish</h1>
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Ready To Publish</h1>
               <p className="text-muted text-[0.88rem] mb-8">Review your submission before going live.</p>
 
               {/* Preview thumbnails */}
