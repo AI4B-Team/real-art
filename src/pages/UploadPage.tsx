@@ -563,7 +563,7 @@ const UploadPage = () => {
                       onChange={e => setTool(e.target.value)}
                       className="w-full h-12 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
                     >
-                      <option value="">Select tool…</option>
+                      <option value="">Select Tool…</option>
                       {["Midjourney", "DALL-E 3", "Stable Diffusion", "Firefly", "Leonardo", "Ideogram", "Flux", "Other"].map(t => (
                         <option key={t} value={t}>{t}</option>
                       ))}
