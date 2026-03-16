@@ -66,7 +66,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
                   <FileText className="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>View Prompt</p></TooltipContent>
+              <TooltipContent side="bottom" className="text-xs"><p>Prompt</p></TooltipContent>
             </Tooltip>
           </div>
 
