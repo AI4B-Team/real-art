@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Upload, Image, X, Plus,
-  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search, ExternalLink, Star
+  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search, ExternalLink, Star, MessageCircle
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { getCollections, addCollection, type Collection } from "@/lib/collectionStore";
@@ -43,6 +43,9 @@ const UploadPage = () => {
   const [prompt, setPrompt] = useState("");
   const [tool, setTool] = useState("");
   const [visibility, setVisibility] = useState<"public" | "private">("public");
+  const [commentsEnabled, setCommentsEnabled] = useState(() => {
+    try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; }
+  });
   const [published, setPublished] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
@@ -583,6 +586,26 @@ const UploadPage = () => {
                   </div>
                 </div>
 
+                {/* Comments toggle */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Comments</label>
+                  <button
+                    onClick={() => setCommentsEnabled(!commentsEnabled)}
+                    className={`flex items-center justify-between w-full p-4 rounded-xl border text-left transition-all ${commentsEnabled ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1]"}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <MessageCircle className="w-4 h-4 text-muted shrink-0" />
+                      <div>
+                        <div className="font-semibold text-[0.86rem]">{commentsEnabled ? "Comments enabled" : "Comments disabled"}</div>
+                        <div className="text-[0.75rem] text-muted">{commentsEnabled ? "Viewers can leave comments on this post" : "No one can comment on this post"}</div>
+                      </div>
+                    </div>
+                    <div className={`w-10 h-[22px] rounded-full relative transition-colors ${commentsEnabled ? "bg-accent" : "bg-foreground/[0.12]"}`}>
+                      <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform ${commentsEnabled ? "left-[22px]" : "left-[3px]"}`} />
+                    </div>
+                  </button>
+                </div>
+
                 {/* Add to Collection */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
@@ -866,6 +889,7 @@ const UploadPage = () => {
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
                     ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private collection"],
+                    ["Comments", commentsEnabled ? "Enabled" : "Disabled"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
                     ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],

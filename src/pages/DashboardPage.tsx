@@ -1138,6 +1138,9 @@ const MyBoardsSection = () => {
 
 const DashboardPage = () => {
   const [activeSection, setActiveSection] = useState("overview");
+  const [commentsDefault, setCommentsDefault] = useState(() => {
+    try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; }
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -1780,6 +1783,26 @@ const DashboardPage = () => {
                   <button className="bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors">
                     Update Payout
                   </button>
+                </div>
+
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-6 mb-5">
+                  <h3 className="font-semibold text-[0.95rem] mb-5">Content Preferences</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-[0.86rem] font-semibold">Allow comments by default</div>
+                      <div className="text-[0.75rem] text-muted">New uploads will have comments enabled or disabled by default</div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const next = !commentsDefault;
+                        setCommentsDefault(next);
+                        try { next ? localStorage.removeItem("ra_comments_default") : localStorage.setItem("ra_comments_default", "0"); } catch {}
+                      }}
+                      className={`w-10 h-[22px] rounded-full relative transition-colors shrink-0 cursor-pointer ${commentsDefault ? "bg-accent" : "bg-foreground/[0.12]"}`}
+                    >
+                      <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform ${commentsDefault ? "translate-x-[22px]" : "translate-x-[3px]"}`} />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="bg-card border border-foreground/[0.08] rounded-xl p-6">
