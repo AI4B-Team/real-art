@@ -58,7 +58,8 @@ const stats = [
   { views: "22.1K", downloads: "1,620", likes: "441" },
 ];
 
-const relatedPhotos = [
+const allPhotos = [
+  { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape" },
   { photo: "photo-1558618666-fcd25c85cd64", title: "Neon Gradient" },
   { photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire" },
   { photo: "photo-1549880338-65ddcdfd017b", title: "Mountain Vista" },
@@ -77,6 +78,21 @@ const relatedPhotos = [
   { photo: "photo-1533158628620-7e4d0a003147", title: "Portrait Study" },
   { photo: "photo-1505765050516-f72dcac9c60e", title: "Tropical Shore" },
   { photo: "photo-1470071459604-3b5ec3a7fe05", title: "Golden Valley" },
+  { photo: "photo-1465146344425-f00d5f5c8f07", title: "Wildflower Field" },
+  { photo: "photo-1519681393784-d120267933ba", title: "Starlit Mountains" },
+  { photo: "photo-1446776811953-b23d57bd21aa", title: "Cloud Formation" },
+  { photo: "photo-1488590528505-98d2b5aba04b", title: "Code Display" },
+  { photo: "photo-1526374965328-7f61d4dc18c5", title: "Matrix Rain" },
+  { photo: "photo-1451187580459-43490279c0fa", title: "Digital Earth" },
+  { photo: "photo-1534972195531-d756b9bfa9f2", title: "Gradient Wave" },
+  { photo: "photo-1498050108023-c5249f4df085", title: "Developer Workspace" },
+  { photo: "photo-1550751827-4bd374c3f58b", title: "Cyber Lock" },
+  { photo: "photo-1558591710-4b4a1ae0f04d", title: "Liquid Metal" },
+  { photo: "photo-1563089145-599997674d42", title: "Neon Tunnel" },
+  { photo: "photo-1478760329108-5c3ed9d495a0", title: "Urban Glow" },
+  { photo: "photo-1531297484001-80022131f5a1", title: "Server Room" },
+  { photo: "photo-1535378917042-10a22c95931a", title: "Lightning Storm" },
+  { photo: "photo-1516116216299-8a41f1bab3e0", title: "Ocean Waves" },
 ];
 
 const relatedHeights = [220, 280, 180, 240, 195, 260, 170, 230, 205, 250, 185, 265, 200, 245, 175, 235, 210, 255];
