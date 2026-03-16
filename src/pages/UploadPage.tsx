@@ -741,7 +741,7 @@ const UploadPage = () => {
                 {/* Shop / Affiliate Link */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[0.84rem] font-semibold">Shop / Affiliate Link <span className="text-muted font-normal">(optional)</span></label>
+                    <label className="text-[0.84rem] font-semibold">Shop / Affiliate Link <span className="text-muted font-normal">(Optional)</span></label>
                   </div>
 
                   {!showLinkField && (
