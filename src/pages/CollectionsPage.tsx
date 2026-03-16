@@ -265,11 +265,11 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
           {/* Privacy badge */}
           <div className="absolute top-2.5 left-2.5">
             {col.visibility === "private" ? (
-              <span className="flex items-center gap-1 bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-md">
+              <span className="flex items-center gap-1 bg-accent/90 backdrop-blur-sm text-white text-[0.6rem] font-bold px-2.5 py-1 rounded-md">
                 <Lock className="w-2.5 h-2.5" /> Private
               </span>
             ) : (
-              <span className="flex items-center gap-1 bg-foreground/50 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-md">
+              <span className="flex items-center gap-1 bg-green-600/90 backdrop-blur-sm text-white text-[0.6rem] font-bold px-2.5 py-1 rounded-md">
                 <Globe className="w-2.5 h-2.5" /> Public
               </span>
             )}
