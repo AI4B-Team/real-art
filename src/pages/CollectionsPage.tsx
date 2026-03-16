@@ -1,9 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Search, Plus, TrendingUp, Users, Bookmark, X, Globe, Lock, Key, Check, Compass, FolderOpen } from "lucide-react";
+import {
+  ArrowLeft, ChevronRight, Search, Plus, TrendingUp, Users, Bookmark, X, Globe, Lock, Key, Check,
+  Compass, FolderOpen, LayoutGrid, Star, Image, Edit3, Trash2
+} from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
-import { getCollections, addCollection, type Collection } from "@/lib/collectionStore";
+import { getCollections, addCollection, updateCollection, deleteCollection, type Collection } from "@/lib/collectionStore";
 
 const categories = [
   "All", "People & Portraits", "Fashion & Style", "Nature & Earth",
@@ -39,9 +42,9 @@ const communityCollections = [
 ];
 
 const TABS = [
-  { id: "discover" as const, label: "Discover", icon: Compass },
-  { id: "curated" as const, label: "Curated", icon: FolderOpen },
-  { id: "mine" as const, label: "Mine", icon: Bookmark },
+  { id: "discover" as const, label: "All Collections", icon: Compass },
+  { id: "curated" as const, label: "By REAL ART", icon: Star },
+  { id: "mine" as const, label: "My Collections", icon: Bookmark },
 ];
 
 /* ── Create Modal ── */
@@ -83,11 +86,9 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
             />
           </div>
           <div>
-            <label className="block text-[0.78rem] font-semibold mb-1.5">Description (optional)</label>
-            <textarea
-              value={desc} onChange={e => setDesc(e.target.value)} rows={3}
-              className="w-full bg-card border border-foreground/[0.1] rounded-lg px-4 py-2.5 text-[0.85rem] focus:outline-none focus:border-accent transition-colors resize-none"
-            />
+            <label className="block text-[0.78rem] font-semibold mb-1.5">Description <span className="font-normal text-muted">(optional)</span></label>
+            <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={3}
+              className="w-full bg-card border border-foreground/[0.1] rounded-lg px-4 py-2.5 text-[0.85rem] focus:outline-none focus:border-accent transition-colors resize-none" />
           </div>
           <div>
             <label className="block text-[0.78rem] font-semibold mb-2">Visibility</label>
@@ -113,12 +114,8 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
               <label className="block text-[0.78rem] font-semibold mb-1.5">Access code <span className="font-normal text-muted">(optional)</span></label>
               <div className="flex items-center gap-2 h-11 border border-foreground/[0.12] rounded-xl px-4 bg-background focus-within:border-accent transition-colors">
                 <Key className="w-3.5 h-3.5 text-muted shrink-0" />
-                <input
-                  value={code} onChange={e => setCode(e.target.value.toUpperCase())}
-                  placeholder="Leave blank for invite-only access"
-                  className="flex-1 border-none outline-none bg-transparent text-[0.85rem] font-mono tracking-[0.1em] uppercase"
-                  maxLength={12}
-                />
+                <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="Leave blank for invite-only access"
+                  className="flex-1 border-none outline-none bg-transparent text-[0.85rem] font-mono tracking-[0.1em] uppercase" maxLength={12} />
               </div>
             </div>
           )}
@@ -126,6 +123,88 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
         <div className="px-6 py-4 border-t border-foreground/[0.06] flex justify-end">
           <button onClick={handleCreate} className="bg-foreground text-primary-foreground px-6 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors">
             Create Collection
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+/* ── Edit Collection Modal ── */
+const EditCollectionModal = ({ col, onClose, onSave }: { col: Collection; onClose: () => void; onSave: () => void }) => {
+  const [name, setName] = useState(col.name);
+  const [desc, setDesc] = useState(col.description || "");
+  const [visibility, setVisibility] = useState<"public" | "private">(col.visibility);
+  const [code, setCode] = useState(col.accessCode || "");
+
+  const handleSave = () => {
+    if (!name.trim()) return;
+    updateCollection(col.id, {
+      name: name.trim(),
+      description: desc || undefined,
+      visibility,
+      accessCode: visibility === "private" ? code.trim() : undefined,
+    });
+    onSave();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
+      <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[480px] shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+        <div className="flex items-center justify-between px-6 py-5 border-b border-foreground/[0.06]">
+          <h3 className="font-display text-[1.2rem] font-bold">Edit Collection</h3>
+          <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+        <div className="px-6 py-5 flex flex-col gap-4">
+          <div>
+            <label className="block text-[0.78rem] font-semibold mb-1.5">Name</label>
+            <input autoFocus value={name} onChange={e => setName(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && handleSave()} maxLength={60}
+              className="w-full bg-card border border-foreground/[0.1] rounded-lg px-4 py-2.5 text-[0.85rem] focus:outline-none focus:border-accent transition-colors" />
+          </div>
+          <div>
+            <label className="block text-[0.78rem] font-semibold mb-1.5">Description <span className="font-normal text-muted">(optional)</span></label>
+            <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={3} placeholder="What's this collection about?"
+              className="w-full bg-card border border-foreground/[0.1] rounded-lg px-4 py-2.5 text-[0.85rem] focus:outline-none focus:border-accent transition-colors resize-none" />
+          </div>
+          <div>
+            <label className="block text-[0.78rem] font-semibold mb-2">Visibility</label>
+            <div className="grid grid-cols-2 gap-2">
+              {([
+                { val: "public" as const, icon: Globe, label: "Public", desc: "Anyone can view" },
+                { val: "private" as const, icon: Lock, label: "Private", desc: "Access code or invite" },
+              ]).map(opt => (
+                <button key={opt.val} onClick={() => setVisibility(opt.val)}
+                  className={`flex items-center gap-3 p-3.5 rounded-xl border text-left transition-all ${visibility === opt.val ? "border-foreground bg-foreground/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}>
+                  <opt.icon className="w-4 h-4 text-muted shrink-0" />
+                  <div>
+                    <div className="font-semibold text-[0.84rem]">{opt.label}</div>
+                    <div className="text-[0.7rem] text-muted">{opt.desc}</div>
+                  </div>
+                  {visibility === opt.val && <Check className="w-4 h-4 text-accent ml-auto shrink-0" />}
+                </button>
+              ))}
+            </div>
+          </div>
+          {visibility === "private" && (
+            <div>
+              <label className="block text-[0.78rem] font-semibold mb-1.5">Access code <span className="font-normal text-muted">(optional)</span></label>
+              <div className="flex items-center gap-2 h-11 border border-foreground/[0.12] rounded-xl px-4 bg-background focus-within:border-accent transition-colors">
+                <Key className="w-3.5 h-3.5 text-muted shrink-0" />
+                <input value={code} onChange={e => setCode(e.target.value.toUpperCase())} placeholder="Leave blank for invite-only access"
+                  className="flex-1 border-none outline-none bg-transparent text-[0.85rem] font-mono tracking-[0.1em] uppercase" maxLength={12} />
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="px-6 py-4 border-t border-foreground/[0.06] flex items-center justify-end gap-3">
+          <button onClick={onClose} className="px-5 py-2.5 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
+            Cancel
+          </button>
+          <button onClick={handleSave} className="bg-foreground text-primary-foreground px-6 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors">
+            Save Changes
           </button>
         </div>
       </div>
@@ -167,30 +246,39 @@ const CommunityCard = ({ board }: { board: typeof communityCollections[0] }) => 
   </Link>
 );
 
-/* ── My Collection Card ── */
-const MyCollectionCard = ({ col }: { col: Collection }) => {
+/* ── My Collection Card (with Edit / Delete) ── */
+const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: () => void; onDelete: () => void }) => {
   const cover = col.items[0]?.photo || col.thumbs[0];
   const itemCount = col.items.length;
 
   return (
     <Link to={`/dashboard/collections/${col.id}`} className="group block no-underline">
       <div className="rounded-2xl overflow-hidden border border-foreground/[0.06] bg-card hover:border-foreground/[0.14] transition-all hover:-translate-y-1">
-        <div className="h-[180px] overflow-hidden bg-foreground/[0.04]">
+        <div className="h-[180px] overflow-hidden bg-foreground/[0.04] relative">
           {cover ? (
             <img src={`https://images.unsplash.com/${cover}?w=400&h=180&fit=crop&q=80`} alt={col.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Bookmark className="w-8 h-8 text-muted opacity-25" />
+              <Image className="w-8 h-8 text-muted opacity-25" />
+              <span className="text-[0.75rem] text-muted/40 ml-2">No images yet</span>
             </div>
           )}
+          {/* Privacy badge */}
+          <div className="absolute top-2.5 left-2.5">
+            {col.visibility === "private" ? (
+              <span className="flex items-center gap-1 bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-md">
+                <Lock className="w-2.5 h-2.5" /> Private
+              </span>
+            ) : (
+              <span className="flex items-center gap-1 bg-foreground/50 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-md">
+                <Globe className="w-2.5 h-2.5" /> Public
+              </span>
+            )}
+          </div>
         </div>
         <div className="p-4">
-          <div className="flex items-center gap-2 mb-1">
-            {col.visibility === "private" && <Lock className="w-2.5 h-2.5 text-muted" />}
-            <span className="text-[0.72rem] text-muted">{col.visibility === "private" ? "Private" : "Public"}</span>
-          </div>
-          <div className="text-[0.78rem] text-muted">{itemCount} saved</div>
-          <h3 className="font-semibold text-[0.92rem] mt-1">{col.name}</h3>
+          <div className="text-[0.72rem] text-muted mb-1">{itemCount} items</div>
+          <h3 className="font-semibold text-[0.92rem]">{col.name}</h3>
           {col.description ? (
             <p className="text-[0.75rem] text-muted line-clamp-1 mt-0.5">{col.description}</p>
           ) : (
@@ -198,9 +286,24 @@ const MyCollectionCard = ({ col }: { col: Collection }) => {
           )}
           {col.accessCode && (
             <div className="flex items-center gap-1 mt-1.5 text-[0.7rem] text-muted font-mono">
-              <Key className="w-2.5 h-2.5" /> Code: {col.accessCode}
+              <Key className="w-2.5 h-2.5" /> {col.accessCode}
             </div>
           )}
+          {/* Edit / Delete */}
+          <div className="flex items-center gap-2 mt-3 pt-3 border-t border-foreground/[0.06]">
+            <button
+              onClick={e => { e.preventDefault(); e.stopPropagation(); onEdit(); }}
+              className="flex items-center gap-1.5 text-[0.76rem] text-muted hover:text-foreground transition-colors"
+            >
+              <Edit3 className="w-3.5 h-3.5" /> Edit
+            </button>
+            <button
+              onClick={e => { e.preventDefault(); e.stopPropagation(); onDelete(); }}
+              className="flex items-center gap-1.5 text-[0.76rem] text-muted hover:text-red-500 transition-colors ml-auto"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         </div>
       </div>
     </Link>
@@ -222,6 +325,9 @@ export default function CollectionsPage() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [showCreate, setShowCreate] = useState(false);
+  const [editingCol, setEditingCol] = useState<Collection | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Collection | null>(null);
+  const [sortMine, setSortMine] = useState<"newest" | "name" | "size">("newest");
   const [myCollections, setMyCollections] = useState<Collection[]>(() => getCollections());
   const isLoggedIn = (() => {
     try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; }
@@ -246,9 +352,13 @@ export default function CollectionsPage() {
     return matchCat && matchQ;
   });
 
-  const filteredMine = myCollections.filter(c =>
-    !query || c.name.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredMine = myCollections
+    .filter(c => !query || c.name.toLowerCase().includes(query.toLowerCase()))
+    .sort((a, b) => {
+      if (sortMine === "name") return a.name.localeCompare(b.name);
+      if (sortMine === "size") return b.items.length - a.items.length;
+      return 0; // newest = default insertion order
+    });
 
   const discoverFeatured = filteredCurated.filter(c => c.featured);
   const discoverCurated = filteredCurated.filter(c => !c.featured);
@@ -335,10 +445,9 @@ export default function CollectionsPage() {
       )}
 
       <div className="px-6 md:px-12 py-8 max-w-[1440px] mx-auto">
-        {/* DISCOVER TAB */}
+        {/* ALL COLLECTIONS TAB */}
         {activeTab === "discover" && (
           <>
-            {/* Featured by REAL ART */}
             {discoverFeatured.length > 0 && (
               <div className="mb-10">
                 <div className="flex items-center gap-2 mb-5">
@@ -366,7 +475,6 @@ export default function CollectionsPage() {
               </div>
             )}
 
-            {/* Community / Trending */}
             {filteredCommunity.length > 0 && (
               <div className="mb-10">
                 <div className="flex items-center gap-2 mb-5">
@@ -382,7 +490,6 @@ export default function CollectionsPage() {
               </div>
             )}
 
-            {/* More Curated */}
             {discoverCurated.length > 0 && (
               <div>
                 <div className="flex items-center gap-2 mb-5">
@@ -409,7 +516,7 @@ export default function CollectionsPage() {
           </>
         )}
 
-        {/* CURATED TAB */}
+        {/* BY REAL ART TAB */}
         {activeTab === "curated" && (
           <>
             {filteredCurated.filter(c => c.featured).length > 0 && (
@@ -462,7 +569,7 @@ export default function CollectionsPage() {
           </>
         )}
 
-        {/* MINE TAB */}
+        {/* MY COLLECTIONS TAB */}
         {activeTab === "mine" && (
           <>
             {!isLoggedIn ? (
@@ -485,15 +592,33 @@ export default function CollectionsPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-                {filteredMine.map(col => (
-                  <MyCollectionCard key={col.id} col={col} />
-                ))}
-                <button onClick={() => setShowCreate(true)} className="rounded-2xl border-2 border-dashed border-foreground/[0.1] flex flex-col items-center justify-center hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors min-h-[220px] group">
-                  <Plus className="w-6 h-6 text-muted group-hover:text-foreground transition-colors mb-2" />
-                  <span className="text-[0.82rem] text-muted group-hover:text-foreground font-medium">New Collection</span>
-                </button>
-              </div>
+              <>
+                {/* Sort bar */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="text-[0.82rem] text-muted">
+                    {filteredMine.length} collection{filteredMine.length !== 1 ? "s" : ""}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[0.75rem] text-muted mr-1">Sort:</span>
+                    {([["newest", "Newest"], ["name", "Name"], ["size", "Most saved"]] as const).map(([v, l]) => (
+                      <button key={v} onClick={() => setSortMine(v)}
+                        className={`px-3 py-1 rounded-lg text-[0.76rem] font-medium transition-colors ${sortMine === v ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}>
+                        {l}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                  {filteredMine.map(col => (
+                    <MyCollectionCard key={col.id} col={col} onEdit={() => setEditingCol(col)} onDelete={() => setDeleteTarget(col)} />
+                  ))}
+                  <button onClick={() => setShowCreate(true)} className="rounded-2xl border-2 border-dashed border-foreground/[0.1] flex flex-col items-center justify-center hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors min-h-[240px] group">
+                    <Plus className="w-6 h-6 text-muted group-hover:text-foreground transition-colors mb-2" />
+                    <span className="text-[0.82rem] text-muted group-hover:text-foreground font-medium">New Collection</span>
+                  </button>
+                </div>
+              </>
             )}
           </>
         )}
@@ -504,6 +629,36 @@ export default function CollectionsPage() {
           onClose={() => setShowCreate(false)}
           onCreate={() => { setMyCollections(getCollections()); setActiveTab("mine"); }}
         />
+      )}
+
+      {editingCol && (
+        <EditCollectionModal
+          col={editingCol}
+          onClose={() => setEditingCol(null)}
+          onSave={() => { setMyCollections(getCollections()); setEditingCol(null); }}
+        />
+      )}
+
+      {deleteTarget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setDeleteTarget(null)}>
+          <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] shadow-2xl animate-drop-in p-6 text-center" onClick={e => e.stopPropagation()}>
+            <Trash2 className="w-5 h-5 text-red-500 mx-auto mb-4" />
+            <h3 className="font-display text-[1.2rem] font-bold mb-2">Delete "{deleteTarget.name}"?</h3>
+            <p className="text-[0.85rem] text-muted mb-1">All {deleteTarget.items.length} saved images will be permanently removed.</p>
+            <p className="text-[0.78rem] text-muted/70 mb-6">This cannot be undone.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => { deleteCollection(deleteTarget.id); setMyCollections(getCollections()); setDeleteTarget(null); }}
+                className="flex-1 py-3 rounded-xl bg-red-600 text-white text-[0.88rem] font-semibold hover:bg-red-700 transition-colors"
+              >
+                Yes, Delete
+              </button>
+              <button onClick={() => setDeleteTarget(null)} className="px-5 py-3 rounded-xl border border-foreground/[0.12] text-[0.88rem] font-medium hover:border-foreground/30 transition-colors">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       <Footer />
