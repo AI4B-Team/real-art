@@ -419,14 +419,100 @@ const Navbar = () => {
         </Link>
 
         {isLoggedIn && (
-          <Link to="/account?section=notifications" className="relative w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
-            <Bell className="w-[17px] h-[17px] opacity-60" />
-            {unreadCount > 0 && (
-              <span className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full bg-accent text-primary-foreground text-[0.6rem] font-bold flex items-center justify-center px-1">
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
+          <div className="relative" ref={notifRef}>
+            <button
+              onClick={() => { setNotifOpen(!notifOpen); setUserMenuOpen(false); }}
+              className="relative w-9 h-9 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors shrink-0"
+            >
+              <Bell className="w-[17px] h-[17px] opacity-60" />
+              {unreadNotifs.length > 0 && (
+                <span className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full bg-accent text-primary-foreground text-[0.6rem] font-bold flex items-center justify-center px-1">
+                  {unreadNotifs.length > 9 ? "9+" : unreadNotifs.length}
+                </span>
+              )}
+            </button>
+            {notifOpen && (
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl w-[380px] max-h-[480px] shadow-[var(--shadow-card)] animate-drop-in z-[500] flex flex-col overflow-hidden">
+                <div className="px-5 pt-4 pb-3 border-b border-foreground/[0.06]">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-display text-[1rem] font-black">Notifications</h3>
+                      {unreadNotifs.length > 0 && (
+                        <span className="text-[0.65rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">{unreadNotifs.length} unread</span>
+                      )}
+                    </div>
+                    {unreadNotifs.length > 0 && (
+                      <button onClick={markAllNotifRead} className="flex items-center gap-1 text-[0.72rem] font-medium text-muted hover:text-foreground transition-colors">
+                        <Check className="w-3 h-3" /> Mark all read
+                      </button>
+                    )}
+                  </div>
+                  <div className="flex gap-1">
+                    {(["all", "unread"] as const).map(f => (
+                      <button
+                        key={f}
+                        onClick={() => setNotifFilter(f)}
+                        className={`px-3.5 py-1.5 rounded-lg text-[0.76rem] font-medium capitalize transition-colors ${
+                          notifFilter === f
+                            ? "bg-foreground text-primary-foreground"
+                            : "text-muted hover:text-foreground hover:bg-foreground/[0.05]"
+                        }`}
+                      >
+                        {f}
+                        {f === "unread" && unreadNotifs.length > 0 && (
+                          <span className="ml-1 text-[0.6rem] bg-accent text-primary-foreground px-1 py-0.5 rounded-full">{unreadNotifs.length}</span>
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div className="overflow-y-auto flex-1">
+                  {(() => {
+                    const visibleNotifs = notifFilter === "unread" ? unreadNotifs : notifications;
+                    if (visibleNotifs.length === 0) {
+                      return (
+                        <div className="py-10 text-center">
+                          <Bell className="w-8 h-8 text-muted opacity-20 mx-auto mb-3" />
+                          <div className="text-[0.85rem] font-medium text-muted">All caught up</div>
+                          <p className="text-[0.75rem] text-muted/60 mt-1">No unread notifications</p>
+                        </div>
+                      );
+                    }
+                    return visibleNotifs.map((n) => {
+                      const Icon = notifIconMap[n.icon] || Bell;
+                      return (
+                        <Link
+                          key={n.id}
+                          to={n.link}
+                          onClick={() => { markNotifRead(n.id); setNotifOpen(false); }}
+                          className={`flex items-start gap-3 px-5 py-3.5 transition-colors no-underline border-b border-foreground/[0.04] last:border-none ${!n.read ? "bg-accent/[0.025] hover:bg-accent/[0.04]" : "hover:bg-foreground/[0.02]"}`}
+                        >
+                          <div className={`w-8 h-8 rounded-lg ${n.iconBg} flex items-center justify-center shrink-0 mt-0.5`}>
+                            <Icon className={`w-4 h-4 ${n.iconColor}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[0.82rem] font-semibold truncate">{n.title}</span>
+                              {!n.read && <span className="w-2 h-2 rounded-full bg-accent shrink-0" />}
+                            </div>
+                            <p className="text-[0.75rem] text-muted mt-0.5 truncate">{n.body}</p>
+                          </div>
+                          <span className="text-[0.68rem] text-muted shrink-0 mt-1">{n.time}</span>
+                        </Link>
+                      );
+                    });
+                  })()}
+                </div>
+                <Link
+                  to="/dashboard?section=notifications"
+                  onClick={() => setNotifOpen(false)}
+                  className="flex items-center justify-center gap-1.5 px-4 py-3 border-t border-foreground/[0.06] text-[0.78rem] font-semibold text-accent hover:bg-foreground/[0.02] transition-colors no-underline"
+                >
+                  View all notifications <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             )}
-          </Link>
+          </div>
         )}
         {isLoggedIn ? (
           /* Logged-in: Avatar + name dropdown */
