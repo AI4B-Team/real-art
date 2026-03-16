@@ -119,7 +119,7 @@ const AppSidebar = () => {
   const hasNewPosts = communities.some(c => c.newPosts && c.newPosts > 0);
 
   return (
-    <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col w-[260px] shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
+    <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col w-[260px] shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto overflow-x-visible" style={{ overflow: 'visible' }}>
       <div className="flex items-center gap-3 mb-8 px-3">
         <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{initials}</div>
         <div>
