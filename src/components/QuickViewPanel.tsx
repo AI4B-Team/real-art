@@ -142,10 +142,10 @@ export default function QuickViewPanel() {
         <div className="sticky top-0 bg-card/95 backdrop-blur-sm border-b border-foreground/[0.06] px-5 py-3 flex items-center justify-between z-10">
           <button onClick={close} className="flex items-center gap-2 text-[0.82rem] text-muted hover:text-foreground transition-colors">
             <X className="w-4 h-4" />
-            <span className="text-[0.72rem]">Press Esc to close</span>
+            <span className="text-[0.72rem]">Press Esc To Close</span>
           </button>
           <button onClick={handleExpandToFullPage} className="flex items-center gap-1.5 text-[0.82rem] text-muted hover:text-foreground transition-colors">
-            <Maximize2 className="w-3.5 h-3.5" /> Open full page
+            <Maximize2 className="w-3.5 h-3.5" /> Open Full Page
           </button>
         </div>
 
@@ -328,7 +328,7 @@ export default function QuickViewPanel() {
             className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors group"
           >
             <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Open full image page
+            Open Full Image Page
           </button>
         </div>
       </div>
