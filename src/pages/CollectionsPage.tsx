@@ -91,7 +91,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
       grantAccess(id);
       onGranted();
     } else {
-      setCodeErr("Invalid code — check with the collection owner");
+      setCodeErr("Invalid Code — Check With The Collection Owner");
     }
   };
 
