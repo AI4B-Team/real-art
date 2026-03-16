@@ -149,14 +149,13 @@ const AppSidebar = () => {
           </button>
         </div>
       ) : (
-        <div className="flex flex-col items-center gap-2 mb-6">
-          <div className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent">{initials}</div>
+        <div className="flex flex-col items-center mb-6">
           <button
             onClick={() => setSidebarCollapsed(false)}
-            className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors"
+            className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
             title="Expand sidebar"
           >
-            <PanelLeftOpen className="w-4 h-4" />
+            {initials}
           </button>
         </div>
       )}
