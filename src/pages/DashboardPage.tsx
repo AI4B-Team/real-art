@@ -1375,6 +1375,24 @@ const DashboardPage = () => {
                   </div>
                 </div>
 
+                {/* Real-world Impact */}
+                <div className="bg-foreground rounded-2xl p-6 mb-8 relative overflow-hidden">
+                  <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full opacity-[0.06]"
+                    style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
+                  <div className="flex items-center gap-2 mb-4">
+                    <Globe className="w-4 h-4 text-accent" />
+                    <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Real-world Impact</span>
+                  </div>
+                  <h3 className="font-display text-[1.4rem] font-black text-primary-foreground mb-3">Your Images Are Embedded On</h3>
+                  <div className="font-display text-[3rem] font-black text-accent leading-none mb-2">1,032</div>
+                  <p className="text-[0.82rem] text-primary-foreground/40 mb-4">websites across blogs, newsletters, and social media</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Medium.com", "Dev.to", "Notion pages", "WordPress blogs", "Substack", "And 1,027 more…"].map(s => (
+                      <span key={s} className="text-[0.72rem] text-primary-foreground/50 bg-primary-foreground/[0.06] px-3 py-1.5 rounded-lg">{s}</span>
+                    ))}
+                  </div>
+                </div>
+
                 {/* Achievements */}
                 <div className="mb-8">
                   <h3 className="font-semibold text-[0.95rem] mb-4 flex items-center gap-2">
