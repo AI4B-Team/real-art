@@ -338,8 +338,8 @@ const UploadPage = () => {
               >
                 <input ref={fileRef} type="file" multiple accept="image/*" className="hidden" onChange={e => handleFiles(e.target.files)} />
                 <Upload className={`w-7 h-7 mb-3 ${dragging ? "text-accent" : "text-muted"}`} />
-                <div className="font-semibold text-[0.92rem] mb-1">{dragging ? "Drop to upload" : "Drag & drop your images here"}</div>
-                <div className="text-[0.78rem] text-muted">or click to browse</div>
+                <div className="font-semibold text-[0.92rem] mb-1">{dragging ? "Drop To Upload" : "Drag & Drop Your Images Here"}</div>
+                <div className="text-[0.78rem] text-muted">Or Click To Browse</div>
               </div>
 
               <div className="flex items-center gap-2 text-[0.75rem] text-muted mb-6">
