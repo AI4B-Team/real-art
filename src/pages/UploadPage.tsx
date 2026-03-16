@@ -326,7 +326,7 @@ const UploadPage = () => {
           {/* STEP 0: Upload */}
           {step === 0 && (
             <div>
-              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Upload your art</h1>
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Upload Your Art</h1>
               <p className="text-muted text-[0.88rem] mb-8">Up to 10 images at once. JPG, PNG, WebP up to 20MB each.</p>
 
               <div
@@ -338,8 +338,8 @@ const UploadPage = () => {
               >
                 <input ref={fileRef} type="file" multiple accept="image/*" className="hidden" onChange={e => handleFiles(e.target.files)} />
                 <Upload className={`w-7 h-7 mb-3 ${dragging ? "text-accent" : "text-muted"}`} />
-                <div className="font-semibold text-[0.92rem] mb-1">{dragging ? "Drop to upload" : "Drag & drop your images here"}</div>
-                <div className="text-[0.78rem] text-muted">or click to browse</div>
+                <div className="font-semibold text-[0.92rem] mb-1">{dragging ? "Drop To Upload" : "Drag & Drop Your Images Here"}</div>
+                <div className="text-[0.78rem] text-muted">Or Click To Browse</div>
               </div>
 
               <div className="flex items-center gap-2 text-[0.75rem] text-muted mb-6">
@@ -376,6 +376,7 @@ const UploadPage = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <Sparkles className="w-4 h-4 text-accent" />
                     <h3 className="font-display text-[1.1rem] font-bold">AI-Generated Prompts</h3>
+
                     <span className="text-[0.72rem] text-muted bg-accent/10 text-accent font-semibold px-2 py-0.5 rounded-md">Auto</span>
                   </div>
                   <div className="flex flex-col gap-4">
@@ -471,20 +472,20 @@ const UploadPage = () => {
               {autoTagsLoading && (
                 <div className="flex items-center gap-2 text-[0.82rem] text-accent bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  AI is analysing your image for tags, title & categories…
+                  AI Is Analysing Your Image For Tags, Title & Categories…
                 </div>
               )}
               {autoTagsDone && (
                 <div className="flex items-center justify-between bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
                   <div className="flex items-center gap-2 text-[0.82rem] text-accent">
                     <Sparkles className="w-4 h-4" />
-                    AI auto-filled title, tags & categories
+                    AI Auto-Filled Title, Tags & Categories
                   </div>
                   <button
                     onClick={() => { setAutoTagsDone(false); runAutoTag(); }}
                     className="text-[0.76rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
                   >
-                    <Sparkles className="w-3 h-3" /> Re-analyse
+                    <Sparkles className="w-3 h-3" /> Re-Analyse
                   </button>
                 </div>
               )}
@@ -505,7 +506,7 @@ const UploadPage = () => {
 
                 {/* Categories */}
                 <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">Categories <span className="text-accent">*</span> <span className="text-muted font-normal">(up to 5)</span></label>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Categories <span className="text-accent">*</span> <span className="text-muted font-normal">(Up To 5)</span></label>
                   <div className="flex flex-wrap gap-2">
                     {categories.map(cat => (
                       <button
@@ -522,7 +523,7 @@ const UploadPage = () => {
 
                 {/* Tags */}
                 <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">Tags <span className="text-muted font-normal">(type and press Enter)</span></label>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Tags <span className="text-muted font-normal">(Type And Press Enter)</span></label>
                   <div className="flex flex-wrap items-center gap-2 border border-foreground/[0.13] rounded-xl px-3 py-2 bg-card focus-within:border-foreground transition-colors">
                     {tags.map(t => (
                       <span key={t} className="flex items-center gap-1.5 bg-foreground/[0.06] text-[0.78rem] font-medium px-2.5 py-1 rounded-md">
@@ -532,7 +533,7 @@ const UploadPage = () => {
                     ))}
                     <input
                       className="flex-1 min-w-[120px] border-none outline-none font-body text-[0.88rem] bg-transparent py-1"
-                      placeholder="Add a tag…"
+                      placeholder="Add A Tag…"
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value)}
                       onKeyDown={addTag}
@@ -562,7 +563,7 @@ const UploadPage = () => {
                       onChange={e => setTool(e.target.value)}
                       className="w-full h-12 border border-foreground/[0.13] rounded-xl px-4 font-body text-[0.88rem] bg-card outline-none focus:border-foreground transition-colors appearance-none cursor-pointer"
                     >
-                      <option value="">Select tool…</option>
+                      <option value="">Select Tool…</option>
                       {["Midjourney", "DALL-E 3", "Stable Diffusion", "Firefly", "Leonardo", "Ideogram", "Flux", "Other"].map(t => (
                         <option key={t} value={t}>{t}</option>
                       ))}
@@ -605,7 +606,7 @@ const UploadPage = () => {
                     <div className="flex items-center gap-3">
                       <MessageCircle className="w-4 h-4 text-muted shrink-0" />
                       <div>
-                        <div className="font-semibold text-[0.86rem]">{commentsEnabled ? "Comments enabled" : "Comments disabled"}</div>
+                        <div className="font-semibold text-[0.86rem]">{commentsEnabled ? "Comments Enabled" : "Comments Disabled"}</div>
                         <div className="text-[0.75rem] text-muted">{commentsEnabled ? "Viewers can leave comments on this post" : "No one can comment on this post"}</div>
                       </div>
                     </div>
@@ -618,7 +619,7 @@ const UploadPage = () => {
                 {/* Add to Collection */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[0.84rem] font-semibold">Add to Collection <span className="text-muted font-normal">(optional)</span></label>
+                    <label className="text-[0.84rem] font-semibold">Add To Collection <span className="text-muted font-normal">(Optional)</span></label>
                     {selectedCollection !== "none" && selectedCollection !== "new" && (
                       <button onClick={() => setSelectedCollection("none")} className="text-[0.74rem] text-muted hover:text-foreground transition-colors">
                         Clear
@@ -654,8 +655,8 @@ const UploadPage = () => {
                           <X className="w-4 h-4 text-muted" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-[0.84rem] font-medium">Don't add to a collection</div>
-                          <div className="text-[0.72rem] text-muted">Publish as a standalone upload</div>
+                          <div className="text-[0.84rem] font-medium">Don't Add To A Collection</div>
+                          <div className="text-[0.72rem] text-muted">Publish As A Standalone Upload</div>
                         </div>
                         {selectedCollection === "none" && <Check className="w-4 h-4 text-accent shrink-0" />}
                       </button>
@@ -699,7 +700,7 @@ const UploadPage = () => {
                         <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
                           <Plus className="w-4 h-4 text-muted" />
                         </div>
-                        <div className="text-[0.84rem] font-medium">Create new collection…</div>
+                        <div className="text-[0.84rem] font-medium">Create New Collection…</div>
                       </button>
                     ) : (
                       <div className="px-4 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
@@ -740,7 +741,7 @@ const UploadPage = () => {
                 {/* Shop / Affiliate Link */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[0.84rem] font-semibold">Shop / Affiliate Link <span className="text-muted font-normal">(optional)</span></label>
+                    <label className="text-[0.84rem] font-semibold">Shop / Affiliate Link <span className="text-muted font-normal">(Optional)</span></label>
                   </div>
 
                   {!showLinkField && (
@@ -822,11 +823,11 @@ const UploadPage = () => {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Button label</label>
+                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Button Label</label>
                           <input value={linkLabel} onChange={e => setLinkLabel(e.target.value)} placeholder="Shop this look" maxLength={40} className="w-full h-9 border border-foreground/[0.13] rounded-xl px-3 text-[0.83rem] bg-background outline-none focus:border-accent transition-colors" />
                         </div>
                         <div>
-                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Price (optional)</label>
+                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Price (Optional)</label>
                           <input value={linkPrice} onChange={e => setLinkPrice(e.target.value)} placeholder="$49.99" maxLength={15} className="w-full h-9 border border-foreground/[0.13] rounded-xl px-3 text-[0.83rem] bg-background outline-none focus:border-accent transition-colors" />
                         </div>
                       </div>
@@ -836,7 +837,7 @@ const UploadPage = () => {
                         </button>
                         <div>
                           <div className="text-[0.82rem] font-medium">
-                            This is an affiliate link
+                            This Is An Affiliate Link
                             {autoAffiliate && detectedPartner && (
                               <span className="ml-2 text-[0.68rem] text-accent bg-accent/10 px-1.5 py-0.5 rounded font-semibold">Auto-detected</span>
                             )}
@@ -880,7 +881,7 @@ const UploadPage = () => {
           {/* STEP 2: Publish */}
           {step === 2 && (
             <div>
-              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Ready to publish</h1>
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Ready To Publish</h1>
               <p className="text-muted text-[0.88rem] mb-8">Review your submission before going live.</p>
 
               {/* Preview thumbnails */}
@@ -897,11 +898,11 @@ const UploadPage = () => {
                     ["Title", title || "—"],
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
-                    ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private collection"],
+                    ["Visibility", visibility === "public" ? "Public — Free For Everyone" : "Private Collection"],
                     ["Comments", commentsEnabled ? "Enabled" : "Disabled"],
                     ["Collection", selectedCollectionName || "None"],
-                    ["AI Tool", tool || "Not specified"],
-                    ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],
+                    ["AI Tool", tool || "Not Specified"],
+                    ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} Images`],
                   ].map(([k, v]) => (
                     <div key={k} className="flex items-start gap-4 text-[0.82rem]">
                       <span className="text-muted w-28 shrink-0">{k}</span>
