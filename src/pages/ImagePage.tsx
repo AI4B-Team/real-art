@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
   Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag, Video, Image,
@@ -49,8 +49,9 @@ const shopSimilarItems: ShopSimilarItem[] = [
 
 const ImagePage = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const idx = parseInt(id || "0") % photos.length;
-  const photo = photos[idx];
+  const photo = searchParams.get("photo") || photos[idx];
   const creator = creators[idx % creators.length];
 
   // Seed demo links on first load, then resolve for this image
