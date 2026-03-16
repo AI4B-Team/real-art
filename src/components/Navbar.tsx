@@ -23,7 +23,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [communitySearch, setCommunitySearch] = useState("");
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
-  const [navSearchType, setNavSearchType] = useState("Photos");
+  const [navSearchType, setNavSearchType] = useState("Images");
   const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
 
