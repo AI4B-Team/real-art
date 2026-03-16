@@ -280,7 +280,7 @@ const ExplorePage = () => {
         </div>
 
         {/* Filter bar */}
-        <div className="px-6 md:px-12 pt-5 pb-1">
+        <div className="px-6 md:px-12 pt-5 pb-6">
           <div className="max-w-[1440px] mx-auto flex items-center gap-2.5 overflow-x-auto no-scrollbar">
             <div className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase text-muted mr-1 flex items-center gap-1.5 shrink-0">
               <Filter className="w-3 h-3" /> Filter
