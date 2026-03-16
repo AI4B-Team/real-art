@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FilterBar from "@/components/FilterBar";
 
@@ -12,6 +14,15 @@ import Footer from "@/components/Footer";
 import PageShell from "@/components/PageShell";
 
 const Index = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    try {
+      if (localStorage.getItem("ra_auth") === "1") {
+        navigate("/dashboard", { replace: true });
+      }
+    } catch {}
+  }, [navigate]);
   return (
     <PageShell>
       <HeroSection />
