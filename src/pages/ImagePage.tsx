@@ -77,6 +77,16 @@ const ImagePage = () => {
   const [activePromptTab, setActivePromptTab] = useState<"image" | "video">("image");
   const [videoCopied, setVideoCopied] = useState(false);
 
+  // Comments toggle
+  const commentsKey = `ra_comments_off_${id || "0"}`;
+  const [commentsOff, setCommentsOff] = useState(() => {
+    try { return localStorage.getItem(commentsKey) === "1"; } catch { return false; }
+  });
+  const toggleComments = () => {
+    const next = !commentsOff;
+    setCommentsOff(next);
+    try { next ? localStorage.setItem(commentsKey, "1") : localStorage.removeItem(commentsKey); } catch {}
+  };
   const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
 
   const handleCopyCredit = () => {
