@@ -34,7 +34,7 @@ const SaveToBoardModal = ({
   );
 
   const alreadySaved = (colId: string) =>
-    collections.find(c => c.id === colId)?.items.some(i => i.imageId === imageId) ?? false;
+    collections.find(c => c.id === colId)?.items?.some(i => i.imageId === imageId) ?? false;
 
   const handleSave = (colId: string) => {
     addToCollection(colId, { imageId, photo: imagePhoto, title: imageTitle });
