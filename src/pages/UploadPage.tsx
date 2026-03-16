@@ -821,7 +821,7 @@ const UploadPage = () => {
                           <div className="text-[0.82rem] font-medium">
                             This Is An Affiliate Link
                             {autoAffiliate && detectedPartner && (
-                              <span className="ml-2 text-[0.68rem] text-accent bg-accent/10 px-1.5 py-0.5 rounded font-semibold">Auto-detected</span>
+                              <span className="ml-2 text-[0.68rem] text-accent bg-accent/10 px-1.5 py-0.5 rounded font-semibold">Auto-Detected</span>
                             )}
                           </div>
                           <p className="text-[0.72rem] text-muted leading-[1.5]">FTC requires disclosure when you earn a commission. We'll add an "AD · Affiliate" badge on the image.</p>
