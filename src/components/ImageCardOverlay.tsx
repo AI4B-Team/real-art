@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark, Maximize2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
@@ -32,6 +33,7 @@ interface ImageCardOverlayProps {
 const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
+  const navigate = useNavigate();
   const cr = creators[index % creators.length];
   const prompt = prompts[index % prompts.length];
 
@@ -44,6 +46,14 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
         <TooltipProvider>
           {/* Top right: Heart + Download + Bookmark + Prompt */}
           <div className="flex gap-1.5 justify-end">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}`); }} className={iconBtnClass}>
+                  <Maximize2 className="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs"><p>Open full page</p></TooltipContent>
+            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBoardModalOpen(true); }} className={iconBtnClass}>
