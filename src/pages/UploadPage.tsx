@@ -700,7 +700,7 @@ const UploadPage = () => {
                         <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
                           <Plus className="w-4 h-4 text-muted" />
                         </div>
-                        <div className="text-[0.84rem] font-medium">Create new collection…</div>
+                        <div className="text-[0.84rem] font-medium">Create New Collection…</div>
                       </button>
                     ) : (
                       <div className="px-4 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
