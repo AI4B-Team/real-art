@@ -4,8 +4,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, Settings,
   Users, Award, Eye, Bookmark, ChevronDown,
-  Search, X, Star, Compass, Plus
+  Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen
 } from "lucide-react";
+import { useLayoutContext } from "@/components/LayoutContext";
 
 interface NavItem {
   id: string;
