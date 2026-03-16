@@ -1782,6 +1782,34 @@ const DashboardPage = () => {
                   </button>
                 </div>
 
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-6 mb-5">
+                  <h3 className="font-semibold text-[0.95rem] mb-5">Content Preferences</h3>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-[0.86rem] font-semibold">Allow comments by default</div>
+                      <div className="text-[0.75rem] text-muted">New uploads will have comments enabled or disabled by default</div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const current = (() => { try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; } })();
+                        const next = !current;
+                        try { next ? localStorage.removeItem("ra_comments_default") : localStorage.setItem("ra_comments_default", "0"); } catch {}
+                        // Force re-render
+                        window.dispatchEvent(new Event("storage"));
+                        const el = document.querySelector('[data-comments-default-toggle]') as HTMLElement;
+                        if (el) el.dataset.state = next ? "on" : "off";
+                      }}
+                      data-comments-default-toggle
+                      data-state={(() => { try { return localStorage.getItem("ra_comments_default") !== "0" ? "on" : "off"; } catch { return "on"; } })()}
+                      className="w-10 h-[22px] rounded-full relative transition-colors data-[state=on]:bg-accent data-[state=off]:bg-foreground/[0.12] shrink-0 cursor-pointer"
+                    >
+                      <div className="absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform data-[state=on]:translate-x-[22px] data-[state=off]:translate-x-[3px]"
+                        data-state={(() => { try { return localStorage.getItem("ra_comments_default") !== "0" ? "on" : "off"; } catch { return "on"; } })()}
+                      />
+                    </button>
+                  </div>
+                </div>
+
                 <div className="bg-card border border-foreground/[0.08] rounded-xl p-6">
                   <h3 className="font-semibold text-[0.95rem] mb-5">Account</h3>
                   <div className="flex flex-wrap gap-3">
