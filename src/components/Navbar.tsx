@@ -470,19 +470,21 @@ const Navbar = () => {
           </>
         )}
 
-        <div className="relative" ref={menuRef}>
-          <button
-            onClick={() => setMenuOpen(!menuOpen)}
-            className="w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors ml-0.5"
-          >
-            <Menu className="w-4 h-4" />
-          </button>
-          {menuOpen && (
-            <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[232px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
-              {menuContent}
-            </div>
-          )}
-        </div>
+        {!isLoggedIn && (
+          <div className="relative" ref={menuRef}>
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors ml-0.5"
+            >
+              <Menu className="w-4 h-4" />
+            </button>
+            {menuOpen && (
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[232px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
+                {menuContent}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Mobile search overlay */}
