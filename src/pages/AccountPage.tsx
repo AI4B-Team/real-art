@@ -63,11 +63,21 @@ const AccountPage = () => {
 
   const handleSaveProfile = async () => {
     setSaving(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      await supabase.from("profiles").update({
-        display_name: displayName, username, bio, avatar_url: avatarUrl,
-      }).eq("user_id", user.id);
+    try {
+      // Always persist to localStorage so the rest of the app picks it up
+      localStorage.setItem("ra_display", displayName);
+      localStorage.setItem("ra_username", username);
+      window.dispatchEvent(new Event("ra_auth_changed"));
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { error } = await supabase.from("profiles").update({
+          display_name: displayName, username, bio, avatar_url: avatarUrl,
+        }).eq("user_id", user.id);
+        if (error) console.error("Profile save error:", error);
+      }
+    } catch (err) {
+      console.error("Profile save error:", err);
     }
     setSaving(false);
     setSaved(true);
