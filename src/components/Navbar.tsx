@@ -22,12 +22,12 @@ type NotifEntry = {
 };
 
 const initialNotifs: NotifEntry[] = [
-  { id: "n1", icon: "download", iconColor: "text-blue-500", iconBg: "bg-blue-50", title: "Cosmic Dreamscape downloaded", body: "A visitor downloaded your image in 4K", time: "2 min ago", read: false, link: "/image/0" },
-  { id: "n2", icon: "dollar", iconColor: "text-green-600", iconBg: "bg-green-50", title: "You earned $12.00", body: "Platform referral — Stream 2", time: "1 hr ago", read: false, link: "/dashboard?section=earnings" },
-  { id: "n3", icon: "heart", iconColor: "text-accent", iconBg: "bg-accent/10", title: "Cosmic Dreamscape trending", body: "Your pinned image is trending", time: "3 hr ago", read: false, link: "/image/0" },
-  { id: "n4", icon: "userplus", iconColor: "text-purple-500", iconBg: "bg-purple-50", title: "New follower: @neopixel", body: "NeoPixel is now following you", time: "5 hr ago", read: true, link: "/creator/2" },
-  { id: "n5", icon: "comment", iconColor: "text-teal-500", iconBg: "bg-teal-50", title: 'New comment on "Neon Boulevard"', body: '"What prompt did you use? The lighting is perfect"', time: "8 hr ago", read: true, link: "/image/4" },
-  { id: "n6", icon: "dollar", iconColor: "text-green-600", iconBg: "bg-green-50", title: "You earned $24.00", body: "Etsy link click converted — Stream 1", time: "10 hr ago", read: true, link: "/dashboard?section=earnings" },
+  { id: "n1", icon: "download", iconColor: "text-blue-500", iconBg: "bg-blue-50", title: "Cosmic Dreamscape Downloaded", body: "A visitor downloaded your image in 4K", time: "2 min ago", read: false, link: "/image/0" },
+  { id: "n2", icon: "dollar", iconColor: "text-green-600", iconBg: "bg-green-50", title: "You Earned $12.00", body: "Platform referral — Stream 2", time: "1 hr ago", read: false, link: "/dashboard?section=earnings" },
+  { id: "n3", icon: "heart", iconColor: "text-accent", iconBg: "bg-accent/10", title: "Cosmic Dreamscape Trending", body: "Your pinned image is trending", time: "3 hr ago", read: false, link: "/image/0" },
+  { id: "n4", icon: "userplus", iconColor: "text-purple-500", iconBg: "bg-purple-50", title: "New Follower: @neopixel", body: "NeoPixel is now following you", time: "5 hr ago", read: true, link: "/creator/2" },
+  { id: "n5", icon: "comment", iconColor: "text-teal-500", iconBg: "bg-teal-50", title: 'New Comment on "Neon Boulevard"', body: '"What prompt did you use? The lighting is perfect"', time: "8 hr ago", read: true, link: "/image/4" },
+  { id: "n6", icon: "dollar", iconColor: "text-green-600", iconBg: "bg-green-50", title: "You Earned $24.00", body: "Etsy link click converted — Stream 1", time: "10 hr ago", read: true, link: "/dashboard?section=earnings" },
   { id: "n7", icon: "refresh", iconColor: "text-orange-500", iconBg: "bg-orange-50", title: "Digital Avatar 01 recreated 156×", body: "Your image is being remixed by the community", time: "1 day ago", read: true, link: "/image/9" },
   { id: "n8", icon: "award", iconColor: "text-amber-500", iconBg: "bg-amber-50", title: "Challenge entry shortlisted", body: "Your Cyberpunk City entry made the top 10", time: "2 days ago", read: true, link: "/challenges/1" },
   { id: "n9", icon: "eye", iconColor: "text-blue-500", iconBg: "bg-blue-50", title: "12K views this week", body: "Your portfolio reached a new weekly high", time: "3 days ago", read: true, link: "/dashboard" },
@@ -508,7 +508,7 @@ const Navbar = () => {
                   onClick={() => setNotifOpen(false)}
                   className="flex items-center justify-center gap-1.5 px-4 py-3 border-t border-foreground/[0.06] text-[0.78rem] font-semibold text-accent hover:bg-foreground/[0.02] transition-colors no-underline"
                 >
-                  View all notifications <ArrowRight className="w-3.5 h-3.5" />
+                  View All Notifications <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             )}
