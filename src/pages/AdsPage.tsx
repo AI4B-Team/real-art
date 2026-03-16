@@ -4,7 +4,7 @@ import {
   ArrowLeft, Plus, BarChart3, Eye, MousePointerClick, DollarSign,
   Megaphone, TrendingUp, Pause, Play, Trash2, Globe, Search, Layout
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 type CampaignStatus = "active" | "paused" | "draft" | "completed";
