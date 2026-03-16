@@ -247,7 +247,7 @@ export default function QuickViewPanel() {
     <>
       {/* Full-screen two-panel overlay — keeps sidebar visible */}
       <div
-        className="fixed inset-y-0 right-0 z-[500] flex"
+        className="fixed top-16 bottom-0 right-0 z-[500] flex"
         style={{
           left: `${sidebarOffset}px`,
           animation: "fadeInQuick 0.2s ease both",
