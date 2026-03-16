@@ -233,11 +233,11 @@ export default function QuickViewPanel() {
   };
 
   const handleRelatedClick = (photo: string, relIdx: number) => {
-    const globalIdx = relatedPhotos.findIndex(p => p.photo === photo);
+    const globalIdx = allPhotos.findIndex(p => p.photo === photo);
     open({
       id: String(globalIdx >= 0 ? globalIdx : relIdx),
       photo,
-      title: relatedPhotos.find(p => p.photo === photo)?.title,
+      title: allPhotos.find(p => p.photo === photo)?.title,
     });
   };
 
