@@ -280,7 +280,7 @@ const CreatorPage = () => {
           <ChevronRight className="w-3 h-3 opacity-30" />
           <Link to="/creators" className="hover:text-foreground transition-colors">Creators</Link>
           <ChevronRight className="w-3 h-3 opacity-30" />
-          <span className="text-foreground">{creator.name}</span>
+          <span className="text-foreground">{creator.name.toLowerCase()}</span>
         </div>
 
         <div className="px-6 md:px-12 pb-8 max-w-[1440px] mx-auto">
