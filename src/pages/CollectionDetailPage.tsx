@@ -163,8 +163,7 @@ const CollectionDetailPage = () => {
         </div>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

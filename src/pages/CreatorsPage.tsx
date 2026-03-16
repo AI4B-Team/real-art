@@ -86,7 +86,7 @@ const CreatorsPage = () => {
         </div>
       </main>
       <Footer />
-    </div>
+    </PageShell>
   );
 };
 

@@ -384,7 +384,7 @@ const AdsPage = () => {
         )}
       </main>
       <Footer />
-    </div>
+    </PageShell>
   );
 };
 

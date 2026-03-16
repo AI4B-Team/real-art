@@ -924,8 +924,7 @@ const UploadPage = () => {
           )}
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

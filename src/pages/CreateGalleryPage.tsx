@@ -357,8 +357,7 @@ const CreateGalleryPage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 
