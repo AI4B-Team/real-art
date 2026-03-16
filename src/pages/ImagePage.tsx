@@ -848,7 +848,7 @@ const ImagePage = () => {
         open={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
         imageUrl={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
-        title="Cosmic Dreamscape"
+        title={imageTitle}
         creator={creator}
         prompt={samplePrompt}
         recreations="1,247"
