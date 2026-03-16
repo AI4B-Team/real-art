@@ -238,7 +238,7 @@ const ExplorePage = () => {
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                       />
                       {/* Hover overlay with all actions */}
-                      <ImageCardOverlay index={i} isVideo={isVideo(i)} />
+                      <ImageCardOverlay index={i} isVideo={isVideo(i)} photo={img.photo} title={img.title} />
                     </div>
                   </div>
                 );

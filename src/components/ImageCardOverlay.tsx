@@ -43,16 +43,19 @@ const iconBtnClass = "flex items-center justify-center w-8 h-8 rounded-full bord
 interface ImageCardOverlayProps {
   index: number;
   isVideo?: boolean;
+  photo?: string;
+  title?: string;
 }
 
-const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
+const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: titleProp }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const cr = creators[index % creators.length];
   const prompt = prompts[index % prompts.length];
-  const photo = imagePhotos[index % imagePhotos.length];
+  const photo = photoProp || imagePhotos[index % imagePhotos.length];
+  const title = titleProp || imageTitles[index % imageTitles.length];
 
   return (
     <>
@@ -176,7 +179,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
         onClose={() => setBoardModalOpen(false)}
         imageId={String(index)}
         imagePhoto={photo}
-        imageTitle={imageTitles[index % imageTitles.length]}
+        imageTitle={title}
       />
     </>
   );
