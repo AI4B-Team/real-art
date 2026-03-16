@@ -606,7 +606,7 @@ const UploadPage = () => {
                     <div className="flex items-center gap-3">
                       <MessageCircle className="w-4 h-4 text-muted shrink-0" />
                       <div>
-                        <div className="font-semibold text-[0.86rem]">{commentsEnabled ? "Comments enabled" : "Comments disabled"}</div>
+                        <div className="font-semibold text-[0.86rem]">{commentsEnabled ? "Comments Enabled" : "Comments Disabled"}</div>
                         <div className="text-[0.75rem] text-muted">{commentsEnabled ? "Viewers can leave comments on this post" : "No one can comment on this post"}</div>
                       </div>
                     </div>
