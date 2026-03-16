@@ -513,6 +513,22 @@ const GalleriesSection = () => {
   );
 };
 
+                {/* Weekly Views Chart */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-8">
+                  <h3 className="font-semibold text-[0.9rem] mb-5">Views This Week</h3>
+                  <div className="flex items-end gap-4 h-[160px]">
+                    {weeklyExposure.map(d => (
+                      <div key={d.day} className="flex-1 flex flex-col items-center gap-1.5">
+                        <span className="text-[0.65rem] text-muted">{(d.views / 1000).toFixed(1)}K</span>
+                        <div className="w-full bg-accent/15 rounded-t-lg relative" style={{ height: `${(d.views / maxWeekly) * 100}%` }}>
+                          <div className="absolute inset-0 bg-accent/80 rounded-t-lg" />
+                        </div>
+                        <span className="text-[0.72rem] text-muted font-medium">{d.day}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
 
 /* ═══ ADS SECTION COMPONENT ═══ */
 type CampaignStatus = "active" | "paused" | "draft" | "completed";
