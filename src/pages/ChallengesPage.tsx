@@ -82,11 +82,11 @@ const ChallengesPage = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[1440px] mx-auto">
               {live.map(c => (
                 <Link key={c.id} to={`/challenges/${c.id}`} className="block no-underline group">
-                  <div className="bg-foreground rounded-2xl overflow-hidden relative cursor-pointer hover:shadow-[0_24px_64px_rgba(0,0,0,0.25)] transition-shadow">
+                  <div className="bg-foreground rounded-2xl overflow-hidden relative cursor-pointer hover:shadow-[0_24px_64px_rgba(0,0,0,0.25)] transition-shadow h-full min-h-[380px] flex flex-col">
                     <div className="absolute inset-0 opacity-20">
                       <img src={`https://images.unsplash.com/${c.photo}?w=700&h=400&fit=crop&q=80`} alt="" className="w-full h-full object-cover" />
                     </div>
-                    <div className="relative p-8">
+                    <div className="relative p-8 flex flex-col flex-1">
                       <div className="flex items-center gap-2 text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent mb-4">
                         <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse-dot" />
                         Live Challenge · {c.daysLeft} days left
