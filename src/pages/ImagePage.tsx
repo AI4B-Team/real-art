@@ -236,7 +236,7 @@ const ImagePage = () => {
               {/* Action buttons */}
               <div className="grid grid-cols-2 gap-2 mt-4">
                 <button
-                  onClick={() => setLiked(!liked)}
+                  onClick={toggleLiked}
                   className={`flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border transition-colors ${liked ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
                 >
                   <Heart className={`w-4 h-4 ${liked ? "fill-destructive text-destructive" : ""}`} />
