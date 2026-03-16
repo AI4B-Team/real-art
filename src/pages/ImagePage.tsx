@@ -82,6 +82,17 @@ const ImagePage = () => {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Scroll to hash anchor (e.g. #prompts)
+  useEffect(() => {
+    if (window.location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        el?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }, []);
+
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
   const [creditCopied, setCreditCopied] = useState(false);
