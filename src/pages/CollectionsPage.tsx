@@ -150,8 +150,8 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
               {paid ? (
                 <div className="text-center py-6">
                   <Check className="w-7 h-7 text-green-600 mx-auto mb-2" />
-                  <div className="font-semibold text-[0.92rem]">Payment complete!</div>
-                  <div className="text-[0.78rem] text-muted mt-1">Unlocking collection…</div>
+                  <div className="font-semibold text-[0.92rem]">Payment Complete!</div>
+                  <div className="text-[0.78rem] text-muted mt-1">Unlocking Collection…</div>
                 </div>
               ) : (
                 <>
