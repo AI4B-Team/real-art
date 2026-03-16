@@ -452,7 +452,19 @@ const UploadPage = () => {
           {/* STEP 1: Details */}
           {step === 1 && (
             <div>
-              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Add details</h1>
+              {/* Persistent image previews */}
+              {previews.length > 0 && (
+                <div className="flex items-center gap-2 mb-6 overflow-x-auto no-scrollbar pb-1">
+                  {previews.map((src, i) => (
+                    <div key={i} className="w-14 h-14 rounded-lg overflow-hidden shrink-0 border-2 border-foreground/[0.08]">
+                      <img src={src} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  ))}
+                  <span className="text-[0.75rem] text-muted shrink-0 ml-1">{previews.length} image{previews.length !== 1 ? "s" : ""}</span>
+                </div>
+              )}
+
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Add Details</h1>
               <p className="text-muted text-[0.88rem] mb-4">Help people find your work. Better details = more downloads.</p>
 
               {/* Auto-tag status */}
