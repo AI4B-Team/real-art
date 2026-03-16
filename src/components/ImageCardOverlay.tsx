@@ -47,14 +47,15 @@ interface ImageCardOverlayProps {
   title?: string;
 }
 
-const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
+const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: titleProp }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
   const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const cr = creators[index % creators.length];
   const prompt = prompts[index % prompts.length];
-  const photo = imagePhotos[index % imagePhotos.length];
+  const photo = photoProp || imagePhotos[index % imagePhotos.length];
+  const title = titleProp || imageTitles[index % imageTitles.length];
 
   return (
     <>
