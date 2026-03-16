@@ -733,7 +733,7 @@ const CreatorPage = () => {
         <div className="fixed inset-0 z-[500] flex items-center justify-center bg-foreground/50 backdrop-blur-sm px-4" onClick={() => setShowShare(false)}>
           <div className="bg-card rounded-2xl w-full max-w-[400px] shadow-2xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-display text-[1.1rem] font-bold">Share {creator.name}'s profile</h2>
+              <h2 className="font-display text-[1.1rem] font-bold">Share {creator.name.toLowerCase()}'s Profile</h2>
               <button onClick={() => setShowShare(false)} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors text-muted">
                 <X className="w-3.5 h-3.5" />
               </button>
