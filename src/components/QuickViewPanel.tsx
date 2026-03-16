@@ -431,7 +431,7 @@ export default function QuickViewPanel() {
                             {/* Breakdown toggle */}
                             <button onClick={() => setShowBreakdown(!showBreakdown)} className="flex items-center gap-1.5 text-[0.72rem] font-medium text-muted hover:text-foreground transition-colors mb-2">
                               <Zap className="w-3 h-3" />
-                              {showBreakdown ? "Hide breakdown" : "Breakdown this prompt"}
+                              {showBreakdown ? "Hide Breakdown" : "Breakdown This Prompt"}
                               <ChevronDown className={`w-3 h-3 transition-transform ${showBreakdown ? "rotate-180" : ""}`} />
                             </button>
                             {showBreakdown && (
