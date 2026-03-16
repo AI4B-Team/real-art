@@ -4,7 +4,7 @@ import {
   Upload, Sparkles, FileText, X, Layout, ChevronDown, Plus,
   Compass, Image, Video, Music, LayoutDashboard, DollarSign,
   LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
-  Megaphone, LayoutGrid
+  Megaphone, LayoutGrid, User
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
@@ -26,6 +26,12 @@ const Navbar = () => {
   const [navSearchType, setNavSearchType] = useState("Images");
   const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [unreadCount] = useState(() => {
+    try {
+      const n = localStorage.getItem("ra_unread_notifs");
+      return n !== null ? parseInt(n, 10) : 3;
+    } catch { return 3; }
+  });
 
   // Simulated auth state — persists across pages via localStorage
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
@@ -141,12 +147,16 @@ const Navbar = () => {
   ];
 
   const userMenuLinks = [
-    { icon: LayoutDashboard, label: "Account", to: "/account" },
+    { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
+    { icon: User, label: "My Profile", to: `/creator/${userHandle}` },
+    { icon: Upload, label: "Upload Art", to: "/upload" },
+    { icon: Image, label: "My Collections", to: "/collections" },
   ];
 
   const userMenuSecondary = [
-    { icon: Bell, label: "Notifications", to: "/dashboard" },
-    { icon: Settings, label: "Settings", to: "/dashboard" },
+    { icon: DollarSign, label: "Earnings", to: "/account?section=earnings" },
+    { icon: Bell, label: "Notifications", to: "/account?section=notifications" },
+    { icon: Settings, label: "Account Settings", to: "/account" },
   ];
 
   const menuContent = (
@@ -365,6 +375,16 @@ const Navbar = () => {
           <Upload className="w-3.5 h-3.5" /> Upload Art
         </Link>
 
+        {isLoggedIn && (
+          <Link to="/account?section=notifications" className="relative w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
+            <Bell className="w-[17px] h-[17px] opacity-60" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full bg-accent text-primary-foreground text-[0.6rem] font-bold flex items-center justify-center px-1">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </Link>
+        )}
         {isLoggedIn ? (
           /* Logged-in: Avatar + name dropdown */
           <div className="relative" ref={userMenuRef}>

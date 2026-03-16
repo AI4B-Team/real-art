@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Filter } from "lucide-react";
 
 const filters = [
@@ -7,9 +6,12 @@ const filters = [
   "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal",
 ];
 
-const FilterBar = () => {
-  const [active, setActive] = useState("All");
+interface FilterBarProps {
+  active: string;
+  onChange: (f: string) => void;
+}
 
+const FilterBar = ({ active, onChange }: FilterBarProps) => {
   return (
     <div className="px-6 md:px-12 pt-6 pb-2">
       <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar">
@@ -17,7 +19,7 @@ const FilterBar = () => {
           <Filter className="w-3 h-3" /> Filter
         </div>
         <button
-          onClick={() => setActive("All")}
+          onClick={() => onChange("All")}
           className={`border px-4 py-1.5 rounded-lg font-body text-[0.79rem] font-medium cursor-pointer whitespace-nowrap transition-all shrink-0 ${
             active === "All"
               ? "bg-foreground text-primary-foreground border-foreground"
@@ -30,7 +32,7 @@ const FilterBar = () => {
         {filters.map((f) => (
           <button
             key={f}
-            onClick={() => setActive(f)}
+            onClick={() => onChange(f)}
             className={`border px-4 py-1.5 rounded-lg font-body text-[0.79rem] font-medium cursor-pointer whitespace-nowrap transition-all shrink-0 ${
               active === f
                 ? "bg-foreground text-primary-foreground border-foreground"

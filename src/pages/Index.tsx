@@ -1,8 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HeroSection from "@/components/HeroSection";
 import FilterBar from "@/components/FilterBar";
-
 import MasonryGrid from "@/components/MasonryGrid";
 import CollectionsSection from "@/components/CollectionsSection";
 import TrendingCreatorsSection from "@/components/TrendingCreatorsSection";
@@ -15,6 +14,14 @@ import PageShell from "@/components/PageShell";
 
 const Index = () => {
   const navigate = useNavigate();
+  const [activeFilter, setActiveFilter] = useState("All");
+
+  // Listen for reset event from MasonryGrid empty state
+  useEffect(() => {
+    const reset = () => setActiveFilter("All");
+    window.addEventListener("ra_filter_reset", reset);
+    return () => window.removeEventListener("ra_filter_reset", reset);
+  }, []);
 
   useEffect(() => {
     try {
@@ -23,12 +30,12 @@ const Index = () => {
       }
     } catch {}
   }, [navigate]);
+
   return (
     <PageShell>
       <HeroSection />
-      
-      <FilterBar />
-      <MasonryGrid />
+      <FilterBar active={activeFilter} onChange={setActiveFilter} />
+      <MasonryGrid activeFilter={activeFilter} />
       <CollectionsSection />
       <CommunitiesSection />
       <ChallengesSection />

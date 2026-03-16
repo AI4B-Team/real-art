@@ -73,7 +73,15 @@ const ImagePage = () => {
     label: imageLink.label,
   } : undefined;
 
-  const [liked, setLiked] = useState(false);
+  const likedKey = `ra_liked_${id || "0"}`;
+  const [liked, setLiked] = useState(() => {
+    try { return localStorage.getItem(likedKey) === "1"; } catch { return false; }
+  });
+  const toggleLiked = () => {
+    const next = !liked;
+    setLiked(next);
+    try { next ? localStorage.setItem(likedKey, "1") : localStorage.removeItem(likedKey); } catch {}
+  };
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [promptVisible, setPromptVisible] = useState(false);
@@ -228,7 +236,7 @@ const ImagePage = () => {
               {/* Action buttons */}
               <div className="grid grid-cols-2 gap-2 mt-4">
                 <button
-                  onClick={() => setLiked(!liked)}
+                  onClick={toggleLiked}
                   className={`flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border transition-colors ${liked ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
                 >
                   <Heart className={`w-4 h-4 ${liked ? "fill-destructive text-destructive" : ""}`} />
