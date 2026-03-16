@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X } from "lucide-react";
+import { useEffect, useState, useRef } from "react";
+import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X, MoreHorizontal, Merge, Archive } from "lucide-react";
 import { getCollections, grantAccess, type UnifiedCollection } from "@/lib/collectionStore";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
@@ -60,12 +60,23 @@ const CollectionDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [isStatic, setIsStatic] = useState(false);
   const [accessGranted, setAccessGranted] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   // Access gate state
   const [accessTab, setAccessTab] = useState<"code" | "pay">("code");
   const [codeInput, setCodeInput] = useState("");
   const [codeErr, setCodeErr] = useState("");
   const [paying, setPaying] = useState(false);
+
+  // Close more menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   // Determine if this is a locked collection
   const sc = id ? staticCollections[id] : undefined;
@@ -303,6 +314,24 @@ const CollectionDetailPage = () => {
               className="flex items-center gap-2 px-4 py-2 rounded-xl border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
               <Share2 className="w-4 h-4" /> Share
             </button>
+            <div className="relative" ref={moreRef}>
+              <button onClick={() => setMoreOpen(o => !o)}
+                className="flex items-center justify-center w-9 h-9 rounded-xl border border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                <MoreHorizontal className="w-4 h-4" />
+              </button>
+              {moreOpen && (
+                <div className="absolute right-0 top-full mt-1.5 w-[180px] bg-card border border-foreground/[0.1] rounded-xl shadow-lg py-1.5 z-50">
+                  <button onClick={() => { setMoreOpen(false); /* merge logic placeholder */ }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.84rem] text-foreground hover:bg-background transition-colors text-left">
+                    <Merge className="w-4 h-4" /> Merge Collection
+                  </button>
+                  <button onClick={() => { setMoreOpen(false); /* archive logic placeholder */ }}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.84rem] text-foreground hover:bg-background transition-colors text-left">
+                    <Archive className="w-4 h-4" /> Archive Collection
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
