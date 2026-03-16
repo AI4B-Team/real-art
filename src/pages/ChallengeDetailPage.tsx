@@ -57,9 +57,7 @@ const ChallengeDetailPage = () => {
     });
   };
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Hero */}
         <div className="relative h-[320px] md:h-[420px] overflow-hidden">
           <img
