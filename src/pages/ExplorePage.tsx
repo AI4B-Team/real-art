@@ -137,7 +137,7 @@ const ExplorePage = () => {
                 </div>
                 <input
                   className="flex-1 border-none outline-none font-body text-[0.9rem] bg-transparent px-4"
-                  placeholder={`Search millions of free ${activeType.toLowerCase()}…`}
+                  placeholder={`Search free ${activeType.toLowerCase()}…`}
                   value={query}
                   onChange={e => setQuery(e.target.value)}
                 />
