@@ -188,6 +188,13 @@ export default function QuickViewPanel() {
     setTimeout(() => setVideoCopied(false), 2000);
   };
 
+  const handleCopyWithModifier = (suffix: string) => {
+    navigator.clipboard.writeText(prompt + suffix).catch(() => {});
+    setCopyModifier(true);
+    setShowModifierMenu(false);
+    setTimeout(() => setCopyModifier(false), 2000);
+  };
+
   const handleExpandToFullPage = () => {
     close();
     navigate(`/image/${image.id}?photo=${encodeURIComponent(image.photo)}`);
