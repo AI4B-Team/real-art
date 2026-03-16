@@ -5,7 +5,7 @@ import {
   Check, ChevronDown, Link2, ShoppingBag, Zap, TrendingUp,
   Users, Globe, Shield, Star, Sparkles, Package
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { affiliateNetwork, affiliateCategories } from "@/lib/affiliateNetwork";
 
