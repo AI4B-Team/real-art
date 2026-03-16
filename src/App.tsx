@@ -43,6 +43,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import DashboardCollectionPage from "./pages/DashboardCollectionPage";
 import AdsPage from "./pages/AdsPage";
+import AccountPage from "./pages/AccountPage";
 
 import CreatorsPage from "./pages/CreatorsPage";
 import BoardsPage from "./pages/BoardsPage";
