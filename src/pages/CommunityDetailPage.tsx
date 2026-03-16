@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Users, Globe, Plus, Key, Shield, Share2, Lock, Star, Settings, Lightbulb, Check, X as XIcon, DollarSign } from "lucide-react";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 const communitiesData = [
