@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import SponsoredCard from "@/components/SponsoredCard";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import { resolveLink, trackClick, seedDemoLinks, type ImageLink } from "@/lib/linkStore";
 import Footer from "@/components/Footer";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
