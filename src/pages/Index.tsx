@@ -15,7 +15,6 @@ const Index = () => {
   return (
     <PageShell>
       <HeroSection />
-      <HeroSection />
       
       <FilterBar />
       <MasonryGrid />
