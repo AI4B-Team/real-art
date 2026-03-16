@@ -8,6 +8,7 @@ import {
   DollarSign, Megaphone, Bell
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NavItem {
   id: string;
