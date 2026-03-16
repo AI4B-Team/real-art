@@ -33,7 +33,7 @@ const sections = [
     "**Authentication:** keeping you logged in between sessions.",
     "**Preferences:** remembering your filter and display settings.",
     "**Analytics:** understanding aggregate usage through Plausible Analytics, which does not use cross-site tracking or fingerprinting.",
-    "**Affiliate tracking:** tracking referrals from creator affiliate links (90-day cookie).",
+    "**Affiliate tracking:** tracking platform referral clicks (90-day cookie). External affiliate link clicks are tracked by the respective affiliate network, not by REAL ART.",
   ], note: "We do not use third-party advertising cookies. You can control cookie behavior in your browser settings." },
   { id: "security", title: "6. Security", content: [
     "HTTPS everywhere — all data in transit is encrypted.",
