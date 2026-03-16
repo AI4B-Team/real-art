@@ -113,7 +113,7 @@ const ImagePage = () => {
     setCommentsOff(next);
     try { next ? localStorage.setItem(commentsKey, "1") : localStorage.removeItem(commentsKey); } catch {}
   };
-  const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
+  const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.ai/image/${id}`;
 
   const handleCopyCredit = () => {
     navigator.clipboard.writeText(creditText).catch(() => {});
