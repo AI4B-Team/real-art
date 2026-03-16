@@ -77,6 +77,8 @@ const ImagePage = () => {
   const photo = searchParams.get("photo") || photos[idx];
   const creator = creators[idx % creators.length];
   const imageTitle = imageTitles[idx % imageTitles.length];
+  const imageStatData = imageStats[idx % imageStats.length];
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   // Seed demo links on first load, then resolve for this image
   useEffect(() => { seedDemoLinks(); }, []);
