@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   X, Download, Heart, Bookmark, Share2, RefreshCw, Video, Pencil,
   Expand, Eye, Copy, Check, ChevronDown, ChevronUp, ExternalLink,
-  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image, Code
+  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image, Code,
+  Sparkles, Wand2, Zap, Cpu
 } from "lucide-react";
 import { useQuickView } from "@/context/QuickViewContext";
 import { useFollow } from "@/hooks/useFollow";
