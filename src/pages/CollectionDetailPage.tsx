@@ -91,7 +91,7 @@ const CollectionDetailPage = () => {
             <Link to="/collections" className="text-accent text-[0.88rem] hover:underline">Browse collections</Link>
           </div>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
