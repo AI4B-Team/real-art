@@ -362,7 +362,7 @@ const Navbar = () => {
 
       {/* Desktop Right Actions */}
       <div className="hidden md:flex items-center gap-1.5 shrink-0">
-        <Link to="/upload" className="flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors">
+        <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
           <Upload className="w-3.5 h-3.5" /> Upload Art
         </Link>
 
