@@ -323,19 +323,19 @@ const BoardDetailPage = () => {
                         <p className="px-4 py-1.5 text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Manage</p>
                         <button onClick={() => { setShowMenu(false); setShowMerge(true); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
                           <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><GitMerge className="w-4 h-4 text-muted" /></div>
-                          <div><div className="text-[0.82rem] font-medium">Merge into another board</div><div className="text-[0.68rem] text-muted">Move all images to a different board</div></div>
+                          <div><div className="text-[0.82rem] font-medium capitalize">Merge Into Another Board</div><div className="text-[0.68rem] text-muted capitalize">Move All Images to a Different Board</div></div>
                         </button>
                         <button onClick={() => { setShowMenu(false); setShowArchiveConfirm(true); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
                           <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><Archive className="w-4 h-4 text-muted" /></div>
-                          <div><div className="text-[0.82rem] font-medium">Archive board</div><div className="text-[0.68rem] text-muted">Hide without deleting</div></div>
+                          <div><div className="text-[0.82rem] font-medium capitalize">Archive Board</div><div className="text-[0.68rem] text-muted capitalize">Hide Without Deleting</div></div>
                         </button>
                         <button onClick={() => { setShowMenu(false); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
                           <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><Download className="w-4 h-4 text-muted" /></div>
-                          <div><div className="text-[0.82rem] font-medium">Download all images</div><div className="text-[0.68rem] text-muted">Save a ZIP of this board</div></div>
+                          <div><div className="text-[0.82rem] font-medium capitalize">Download All Images</div><div className="text-[0.68rem] text-muted capitalize">Save a ZIP of This Board</div></div>
                         </button>
                         <button onClick={() => { setShowMenu(false); setShowDeleteConfirm(true); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-destructive/10 transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
                           <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0"><Trash2 className="w-4 h-4 text-destructive" /></div>
-                          <div><div className="text-[0.82rem] font-medium text-destructive">Delete board</div><div className="text-[0.68rem] text-destructive/60">Cannot be undone</div></div>
+                          <div><div className="text-[0.82rem] font-medium text-destructive capitalize">Delete Board</div><div className="text-[0.68rem] text-destructive/60 capitalize">Cannot Be Undone</div></div>
                         </button>
                       </>
                     ) : (
