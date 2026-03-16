@@ -231,7 +231,7 @@ export default function QuickViewPanel() {
             </Link>
 
             {/* Stats */}
-            <div className="flex items-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06] flex-wrap">
+            <div className="flex items-center justify-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06] flex-wrap">
               <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
                 <Eye className="w-3.5 h-3.5" /> {stat.views} <span className="text-[0.68rem]">views</span>
               </div>
