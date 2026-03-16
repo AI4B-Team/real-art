@@ -97,6 +97,11 @@ export default function QuickViewPanel() {
   const [commentText, setCommentText] = useState("");
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const [copyModifier, setCopyModifier] = useState(false);
+  const [showModifierMenu, setShowModifierMenu] = useState(false);
+  const [showRecreateModal, setShowRecreateModal] = useState(false);
+  const [promptVisible, setPromptVisible] = useState(true);
 
   const idx = image ? (parseInt(image.id) || 0) : 0;
   const creator = creators[idx % creators.length];
