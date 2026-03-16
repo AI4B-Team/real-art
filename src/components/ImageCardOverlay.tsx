@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark, Maximize2 } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark, Maximize2, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -50,6 +50,7 @@ interface ImageCardOverlayProps {
 const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
+  const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const cr = creators[index % creators.length];
   const prompt = prompts[index % prompts.length];
@@ -73,19 +74,19 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
+                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setLiked(!liked); }} className={iconBtnClass}>
+                  <Heart className={`w-3.5 h-3.5 ${liked ? "fill-accent text-accent" : ""}`} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs"><p>{liked ? "Unlike" : "Like"}</p></TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass}>
                   <Download className="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs"><p>Download</p></TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}#prompts`); }} className={iconBtnClass}>
-                  <FileText className="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>Prompt</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
