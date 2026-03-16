@@ -363,9 +363,9 @@ export default function CollectionsPage() {
   });
 
   const filteredMine = myCollections
-    .filter(c => !query || c.name.toLowerCase().includes(query.toLowerCase()))
+    .filter(c => !query || c.title.toLowerCase().includes(query.toLowerCase()))
     .sort((a, b) => {
-      if (sortMine === "name") return a.name.localeCompare(b.name);
+      if (sortMine === "name") return a.title.localeCompare(b.title);
       if (sortMine === "size") return b.items.length - a.items.length;
       return 0; // newest = default insertion order
     });
