@@ -485,7 +485,7 @@ const UploadPage = () => {
                     onClick={() => { setAutoTagsDone(false); runAutoTag(); }}
                     className="text-[0.76rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
                   >
-                    <Sparkles className="w-3 h-3" /> Re-analyse
+                    <Sparkles className="w-3 h-3" /> Re-Analyse
                   </button>
                 </div>
               )}
