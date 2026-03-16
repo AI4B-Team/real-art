@@ -131,12 +131,9 @@ const TopicPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <PageShell>
       {/* JSON-LD */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-
-      <div className="pt-16">
         {/* ── Hero ── */}
         <div className="relative overflow-hidden">
           <div className="absolute inset-0 opacity-[0.04]" style={{ background: "radial-gradient(ellipse 800px 400px at 50% 60%, hsl(var(--accent)), transparent 70%)" }} />
