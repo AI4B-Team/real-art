@@ -619,7 +619,7 @@ const UploadPage = () => {
                 {/* Add to Collection */}
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <label className="text-[0.84rem] font-semibold">Add to Collection <span className="text-muted font-normal">(optional)</span></label>
+                    <label className="text-[0.84rem] font-semibold">Add To Collection <span className="text-muted font-normal">(Optional)</span></label>
                     {selectedCollection !== "none" && selectedCollection !== "new" && (
                       <button onClick={() => setSelectedCollection("none")} className="text-[0.74rem] text-muted hover:text-foreground transition-colors">
                         Clear
