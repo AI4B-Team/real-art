@@ -8,6 +8,7 @@ import {
   DollarSign, Megaphone, Bell
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NavItem {
   id: string;
@@ -146,13 +147,19 @@ const AppSidebar = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center mb-6">
-          <button
-            onClick={() => setSidebarCollapsed(false)}
-            className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
-            title="Expand sidebar"
-          >
-            {initials}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setSidebarCollapsed(false)}
+                className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
+              >
+                {initials}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
+              <p>Expand Sidebar</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       )}
 
@@ -167,17 +174,22 @@ const AppSidebar = () => {
             const active = isActive(item);
             if (sidebarCollapsed) {
               return (
-                <button
-                  key={item.id}
-                  onClick={() => navigate("/communities")}
-                  className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                  title="Communities"
-                >
-                  <item.icon className="w-4 h-4 shrink-0" />
-                  {hasNewPosts && !active && (
-                    <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
-                  )}
-                </button>
+                <Tooltip key={item.id}>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={() => navigate("/communities")}
+                      className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                    >
+                      <item.icon className="w-4 h-4 shrink-0" />
+                      {hasNewPosts && !active && (
+                        <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
+                      )}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
+                    <p>Communities</p>
+                  </TooltipContent>
+                </Tooltip>
               );
             }
             return (
@@ -286,15 +298,31 @@ const AppSidebar = () => {
           }
 
           const active = isActive(item);
+          if (sidebarCollapsed) {
+            return (
+              <Tooltip key={item.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => handleClick(item)}
+                    className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
+                  <p>{item.label}</p>
+                </TooltipContent>
+              </Tooltip>
+            );
+          }
           return (
             <button
               key={item.id}
               onClick={() => handleClick(item)}
-              className={`flex items-center ${sidebarCollapsed ? "justify-center" : "gap-3 px-3"} py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-              title={sidebarCollapsed ? item.label : undefined}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
             >
               <item.icon className="w-4 h-4 shrink-0" />
-              {!sidebarCollapsed && item.label}
+              {item.label}
             </button>
           );
         })}
