@@ -63,7 +63,7 @@ const collectionsData: Record<string, {
   "g3": {
     id: "g3", name: "Avatar Collection",
     desc: "AI avatar styles and portrait prompts.",
-    free: false, code: "RT7P4Q", members: 64, slug: "avatar-collection",
+    visibility: "private", accessCode: "RT7P4Q", members: 64, slug: "avatar-collection",
     items: [
       { id: "i1", type: "image", title: "Cyberpunk Avatar", photo: "photo-1579546929518-9e396f3cc809", downloads: "720", likes: "298", views: "10,200" },
       { id: "i2", type: "image", title: "Ethereal Portrait", photo: "photo-1604881991720-f91add269bed", downloads: "580", likes: "241", views: "7,800" },
