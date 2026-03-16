@@ -88,8 +88,8 @@ const App = () => (
             <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
             <Route path="/creators" element={<CreatorsPage />} />
-            <Route path="/boards" element={<BoardsPage />} />
-            <Route path="/boards/:id" element={<BoardDetailPage />} />
+            <Route path="/boards" element={<Navigate to="/collections" replace />} />
+            <Route path="/boards/:id" element={<Navigate to="/collections" replace />} />
             <Route path="/topic/:slug" element={<TopicPage />} />
 
             {/* Round 3 — Creator Tools */}

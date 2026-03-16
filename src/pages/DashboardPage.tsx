@@ -409,7 +409,7 @@ const GalleriesSection = () => {
   const handleChangeCode = (id: string) => {
     if (newCode.length < 4) { setCodeError("Code must be at least 4 characters"); return; }
     if (!/^[A-Z0-9]+$/.test(newCode)) { setCodeError("Only uppercase letters and numbers"); return; }
-    updateCol(id, { code: newCode });
+    updateCol(id, { accessCode: newCode });
     setGalData(getCollections());
     setChangingCode(null);
     setNewCode("");
@@ -454,20 +454,20 @@ const GalleriesSection = () => {
                 <div>
                   <div className="flex items-center gap-2 mb-1">
                     <h3 className="font-semibold text-[0.92rem]">{g.name}</h3>
-                    <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${g.free ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
-                      {g.free ? "Public" : "Private"}
+                    <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${g.visibility === "public" ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
+                      {g.visibility === "public" ? "Public" : "Private"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-[0.78rem] text-muted flex-wrap">
                     <span className="flex items-center gap-1"><Image className="w-3 h-3" />{g.images} images</span>
                     {g.videos > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{g.videos} videos</span>}
                     {g.music > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{g.music} tracks</span>}
-                    {!g.free && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{g.members} members</span></>}
-                    {g.code && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1 font-mono text-muted"><Key className="w-3 h-3" />{g.code}</span></>}
+                    {g.visibility === "private" && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{g.members} members</span></>}
+                    {g.accessCode && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1 font-mono text-muted"><Key className="w-3 h-3" />{g.accessCode}</span></>}
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {g.code && (
+                  {g.accessCode && (
                     <button
                       onClick={() => { setChangingCode(changingCode === g.id ? null : g.id); setNewCode(""); setCodeError(""); }}
                       className="text-[0.78rem] font-medium text-muted border border-foreground/[0.12] px-4 py-2 rounded-lg hover:border-foreground/30 hover:text-foreground transition-colors"

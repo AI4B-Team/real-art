@@ -26,13 +26,13 @@ interface MediaItem {
 
 // Collection data
 const collectionsData: Record<string, {
-  id: string; name: string; desc: string; free: boolean;
-  code: string; members: number; slug: string; items: MediaItem[];
+  id: string; name: string; desc: string; visibility: "public" | "private";
+  accessCode: string; members: number; slug: string; items: MediaItem[];
 }> = {
   "g1": {
     id: "g1", name: "Main Collection",
     desc: "My primary public portfolio — best work across all categories.",
-    free: true, code: "", members: 0, slug: "main-collection",
+    visibility: "public", accessCode: "", members: 0, slug: "main-collection",
     items: [
       { id: "i1", type: "image", title: "Cosmic Dreamscape", photo: "photo-1618005182384-a83a8bd57fbe", downloads: "3,412", likes: "847", views: "48,201", pinned: true },
       { id: "i2", type: "image", title: "Neon Boulevard", photo: "photo-1557682250-33bd709cbe85", downloads: "2,180", likes: "612", views: "31,400" },
@@ -52,7 +52,7 @@ const collectionsData: Record<string, {
   "g2": {
     id: "g2", name: "Premium Prompts",
     desc: "Curated prompt library — exclusive access.",
-    free: false, code: "XK9F2M", members: 127, slug: "premium-prompts",
+    visibility: "private", accessCode: "XK9F2M", members: 127, slug: "premium-prompts",
     items: [
       { id: "i1", type: "image", title: "Avatar Series 01", photo: "photo-1604881991720-f91add269bed", downloads: "980", likes: "420", views: "14,200" },
       { id: "i2", type: "image", title: "Neon Portrait", photo: "photo-1557682250-33bd709cbe85", downloads: "740", likes: "318", views: "9,800" },
@@ -63,7 +63,7 @@ const collectionsData: Record<string, {
   "g3": {
     id: "g3", name: "Avatar Collection",
     desc: "AI avatar styles and portrait prompts.",
-    free: false, code: "RT7P4Q", members: 64, slug: "avatar-collection",
+    visibility: "private", accessCode: "RT7P4Q", members: 64, slug: "avatar-collection",
     items: [
       { id: "i1", type: "image", title: "Cyberpunk Avatar", photo: "photo-1579546929518-9e396f3cc809", downloads: "720", likes: "298", views: "10,200" },
       { id: "i2", type: "image", title: "Ethereal Portrait", photo: "photo-1604881991720-f91add269bed", downloads: "580", likes: "241", views: "7,800" },
@@ -299,17 +299,17 @@ export default function DashboardCollectionPage() {
 
               {/* Meta row */}
               <div className="flex items-center gap-3 mt-3 flex-wrap text-[0.78rem] text-muted">
-                <span className={`flex items-center gap-1 font-bold text-[0.68rem] px-2.5 py-1 rounded-full ${col.free ? "bg-green-100 text-green-700" : "bg-accent/10 text-accent"}`}>
-                  {col.free ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
-                  {col.free ? "Public" : "Private"}
+                <span className={`flex items-center gap-1 font-bold text-[0.68rem] px-2.5 py-1 rounded-full ${col.visibility === "public" ? "bg-green-100 text-green-700" : "bg-accent/10 text-accent"}`}>
+                  {col.visibility === "public" ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                  {col.visibility === "public" ? "Public" : "Private"}
                 </span>
                 <span className="flex items-center gap-1"><Image className="w-3 h-3" />{imageCount} images</span>
                 {videoCount > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{videoCount} videos</span>}
                 {musicCount > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{musicCount} tracks</span>}
-                {!col.free && col.members > 0 && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span>}
-                {!col.free && col.code && (
+                {col.visibility === "private" && col.members > 0 && <span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span>}
+                {col.visibility === "private" && col.accessCode && (
                   <span className="flex items-center gap-1 font-mono font-bold text-foreground">
-                    <Key className="w-3 h-3 text-muted" />{col.code}
+                    <Key className="w-3 h-3 text-muted" />{col.accessCode}
                   </span>
                 )}
               </div>
@@ -318,13 +318,13 @@ export default function DashboardCollectionPage() {
             {/* Header actions */}
             <div className="flex items-center gap-2 flex-wrap">
               <button
-                onClick={() => { setCol(c => ({ ...c, free: !c.free })); showToast(col.free ? "Set to Private" : "Set to Public"); }}
+                onClick={() => { setCol(c => ({ ...c, visibility: c.visibility === "public" ? "private" : "public" })); showToast(col.visibility === "public" ? "Set to Private" : "Set to Public"); }}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors"
               >
-                {col.free ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
-                {col.free ? "Make Private" : "Make Public"}
+                {col.visibility === "public" ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
+                {col.visibility === "public" ? "Make Private" : "Make Public"}
               </button>
-              {!col.free && (
+              {col.visibility === "private" && (
                 <button onClick={() => setChangingCode(!changingCode)} className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors">
                   <Key className="w-3.5 h-3.5" /> Change Code
                 </button>
