@@ -159,7 +159,7 @@ const ImagePage = () => {
           <ChevronRight className="w-3 h-3 opacity-30" />
           <Link to="/explore" className="hover:text-foreground transition-colors">Explore</Link>
           <ChevronRight className="w-3 h-3 opacity-30" />
-          <span className="text-foreground">Cosmic Dreamscape</span>
+          <span className="text-foreground">{imageTitle}</span>
         </div>
 
         <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
