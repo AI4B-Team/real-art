@@ -801,11 +801,11 @@ const ImagePage = () => {
                   {imageTitle}
                 </h1>
                 <div className="flex items-center gap-4 mt-3 text-[0.82rem] text-muted flex-wrap">
-                  <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> 24.8K views</span>
-                  <span className="flex items-center gap-1.5"><Download className="w-3.5 h-3.5" /> 3,412 downloads</span>
-                  <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> 847 likes</span>
-                  <span className="flex items-center gap-1.5"><Bookmark className="w-3.5 h-3.5" /> 234 saves</span>
-                  <span className="flex items-center gap-1.5"><Share2 className="w-3.5 h-3.5" /> 128 shares</span>
+                  <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> {imageStatData.views} views</span>
+                  <span className="flex items-center gap-1.5"><Download className="w-3.5 h-3.5" /> {imageStatData.downloads} downloads</span>
+                  <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> {imageStatData.likes} likes</span>
+                  <span className="flex items-center gap-1.5"><Bookmark className="w-3.5 h-3.5" /> {imageStatData.saves} saves</span>
+                  <span className="flex items-center gap-1.5"><Share2 className="w-3.5 h-3.5" /> {imageStatData.shares} shares</span>
                 </div>
               </div>
 
