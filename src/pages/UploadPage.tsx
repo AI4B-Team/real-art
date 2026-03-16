@@ -472,7 +472,7 @@ const UploadPage = () => {
               {autoTagsLoading && (
                 <div className="flex items-center gap-2 text-[0.82rem] text-accent bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  AI is analysing your image for tags, title & categories…
+                  AI Is Analysing Your Image For Tags, Title & Categories…
                 </div>
               )}
               {autoTagsDone && (
