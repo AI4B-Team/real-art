@@ -60,7 +60,7 @@ const filters = [
 const sortOptions = ["Most Relevant", "Newest First", "Most Downloaded", "Most Liked"];
 
 const searchTypes = [
-  { label: "Photos", icon: Image },
+  { label: "Images", icon: Image },
   { label: "Videos", icon: Video },
   { label: "Music", icon: Music },
 ];
