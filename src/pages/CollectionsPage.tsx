@@ -543,7 +543,7 @@ const CommunityCard = ({ col, onNeedAccess }: {
             <div className="w-6 h-6 rounded-full flex items-center justify-center text-[0.55rem] font-bold text-white" style={{ background: col.creatorColor }}>
               {col.creatorInit}
             </div>
-            <span className="text-[0.8rem] text-muted">by {col.creator}</span>
+            <span className="text-[0.8rem] text-muted">by {col.creator.toLowerCase()}</span>
           </div>
           <div className="flex items-center gap-1 text-[0.72rem] text-muted"><Users className="w-3 h-3" />{col.followers}</div>
         </div>
