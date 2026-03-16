@@ -627,7 +627,7 @@ export default function QuickViewPanel() {
         >
           <div className="columns-2 lg:columns-3 gap-3" onClick={(e) => e.stopPropagation()}>
             {shuffledRelated.map((item, i) => {
-              const globalIdx = relatedPhotos.findIndex(p => p.photo === item.photo);
+              const globalIdx = allPhotos.findIndex(p => p.photo === item.photo);
               const overlayIdx = globalIdx >= 0 ? globalIdx : i;
               return (
                 <div
