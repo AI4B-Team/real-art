@@ -328,7 +328,7 @@ export default function QuickViewPanel() {
             className="w-full mt-6 flex items-center justify-center gap-2 py-3.5 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors group"
           >
             <Maximize2 className="w-4 h-4 group-hover:scale-110 transition-transform" />
-            Open full image page
+            Open Full Image Page
           </button>
         </div>
       </div>
