@@ -61,7 +61,11 @@ const CollectionDetailPage = () => {
   const [isStatic, setIsStatic] = useState(false);
   const [accessGranted, setAccessGranted] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("Newest");
   const moreRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
 
   // Access gate state
   const [accessTab, setAccessTab] = useState<"code" | "pay">("code");
