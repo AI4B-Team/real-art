@@ -587,7 +587,7 @@ const ImagePage = () => {
                   ) : (
                     <div className="text-center py-8">
                       <Eye className="w-5 h-5 text-muted opacity-40 mx-auto mb-3" />
-                      <div className="font-display text-[1.1rem] font-bold mb-2">Unlock all prompts</div>
+                      <div className="font-display text-[1.1rem] font-bold mb-2">Unlock All Prompts</div>
                       <p className="text-[0.82rem] text-muted mb-4 max-w-[320px] mx-auto">
                         Join REAL ART free to see the exact prompt, AI tool, and settings used to create every image.
                       </p>
