@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Upload, Image, X, Plus,
-  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search, ExternalLink, Star, MessageCircle
+  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search, ExternalLink, Star, MessageCircle, ShoppingBag
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import { getCollections, addCollection, type Collection } from "@/lib/collectionStore";
