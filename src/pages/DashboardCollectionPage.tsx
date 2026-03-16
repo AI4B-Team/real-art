@@ -199,7 +199,7 @@ export default function DashboardCollectionPage() {
         </div>
       )}
 
-      <div className="pt-16">
+      <div>
         {/* Header */}
         <div className="px-6 md:px-10 pt-6 pb-0 max-w-[1440px] mx-auto">
           {/* Breadcrumb */}
