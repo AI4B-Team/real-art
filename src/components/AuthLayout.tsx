@@ -2,12 +2,12 @@ import { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import AppSidebar from "@/components/AppSidebar";
+import { LayoutContext } from "@/components/LayoutContext";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
-/** Pages where the sidebar should NOT appear even when logged in */
 const NO_SIDEBAR_ROUTES = ["/login", "/signup"];
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
@@ -30,21 +30,23 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   const showSidebar = isLoggedIn && !NO_SIDEBAR_ROUTES.includes(location.pathname);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
-        {showSidebar ? (
-          <div className="flex min-h-[calc(100vh-4rem)]">
-            <AppSidebar />
-            <main className="flex-1 min-w-0">
-              {children}
-            </main>
-          </div>
-        ) : (
-          <>{children}</>
-        )}
+    <LayoutContext.Provider value={{ hasGlobalNavbar: true }}>
+      <div className="min-h-screen bg-background">
+        <Navbar />
+        <div className="pt-16">
+          {showSidebar ? (
+            <div className="flex min-h-[calc(100vh-4rem)]">
+              <AppSidebar />
+              <main className="flex-1 min-w-0">
+                {children}
+              </main>
+            </div>
+          ) : (
+            <>{children}</>
+          )}
+        </div>
       </div>
-    </div>
+    </LayoutContext.Provider>
   );
 };
 
