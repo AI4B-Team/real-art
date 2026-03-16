@@ -1138,6 +1138,9 @@ const MyBoardsSection = () => {
 
 const DashboardPage = () => {
   const [activeSection, setActiveSection] = useState("overview");
+  const [commentsDefault, setCommentsDefault] = useState(() => {
+    try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; }
+  });
 
   return (
     <div className="min-h-screen bg-background">
