@@ -587,7 +587,7 @@ const UploadPage = () => {
                         <div className="font-semibold text-[0.86rem]">Public</div>
                         <div className="text-[0.75rem] text-muted">Anyone can view, download, and use this image for free</div>
                       </div>
-                      {visibility === "public" && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                      {visibility === "public" && <Check className="w-4 h-4 text-accent ml-auto shrink-0 mt-0.5" />}
                     </button>
 
                     {/* Private option */}
