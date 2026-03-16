@@ -376,6 +376,7 @@ const UploadPage = () => {
                   <div className="flex items-center gap-2 mb-4">
                     <Sparkles className="w-4 h-4 text-accent" />
                     <h3 className="font-display text-[1.1rem] font-bold">AI-Generated Prompts</h3>
+
                     <span className="text-[0.72rem] text-muted bg-accent/10 text-accent font-semibold px-2 py-0.5 rounded-md">Auto</span>
                   </div>
                   <div className="flex flex-col gap-4">
