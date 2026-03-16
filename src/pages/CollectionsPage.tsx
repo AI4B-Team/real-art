@@ -259,8 +259,7 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
             <img src={`https://images.unsplash.com/${cover}?w=400&h=180&fit=crop&q=80`} alt={col.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
-              <Image className="w-8 h-8 text-muted opacity-25" />
-              <span className="text-[0.75rem] text-muted/40 ml-2">No images yet</span>
+              <Bookmark className="w-8 h-8 text-muted opacity-25" />
             </div>
           )}
           {/* Privacy badge */}
