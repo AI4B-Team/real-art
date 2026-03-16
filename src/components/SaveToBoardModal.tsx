@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { X, Plus, Bookmark, Check, Search, Lock, Globe } from "lucide-react";
-import { getBoards, createBoard, addToBoard, type Board } from "@/lib/boardStore";
+import { getCollections, addCollection, addToCollection, type Collection } from "@/lib/collectionStore";
 
 interface SaveToBoardModalProps {
   open: boolean;
@@ -16,39 +16,44 @@ const SaveToBoardModal = ({
   imagePhoto = "photo-1618005182384-a83a8bd57fbe",
   imageTitle = "Untitled",
 }: SaveToBoardModalProps) => {
-  const [boards, setBoards] = useState<Board[]>([]);
+  const [collections, setCollections] = useState<Collection[]>([]);
   const [search, setSearch] = useState("");
   const [savedTo, setSavedTo] = useState<string | null>(null);
   const [showCreate, setShowCreate] = useState(false);
-  const [newBoardName, setNewBoardName] = useState("");
+  const [newName, setNewName] = useState("");
   const [newVisibility, setNewVisibility] = useState<"public" | "private">("private");
 
   useEffect(() => {
-    if (open) setBoards(getBoards());
+    if (open) setCollections(getCollections());
   }, [open]);
 
   if (!open) return null;
 
-  const filtered = boards.filter(b =>
-    b.title.toLowerCase().includes(search.toLowerCase())
+  const filtered = collections.filter(c =>
+    c.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const alreadySaved = (boardId: string) =>
-    boards.find(b => b.id === boardId)?.items.some(i => i.imageId === imageId) ?? false;
+  const alreadySaved = (colId: string) =>
+    collections.find(c => c.id === colId)?.items.some(i => i.imageId === imageId) ?? false;
 
-  const handleSave = (boardId: string) => {
-    addToBoard(boardId, { imageId, photo: imagePhoto, title: imageTitle });
-    setSavedTo(boardId);
+  const handleSave = (colId: string) => {
+    addToCollection(colId, { imageId, photo: imagePhoto, title: imageTitle });
+    setSavedTo(colId);
     setTimeout(() => { onClose(); setSavedTo(null); setSearch(""); }, 900);
   };
 
   const handleCreate = () => {
-    if (!newBoardName.trim()) return;
-    const board = createBoard(newBoardName.trim(), newVisibility);
-    addToBoard(board.id, { imageId, photo: imagePhoto, title: imageTitle });
-    setBoards(getBoards());
-    setSavedTo(board.id);
-    setTimeout(() => { onClose(); setSavedTo(null); setSearch(""); setNewBoardName(""); setShowCreate(false); }, 900);
+    if (!newName.trim()) return;
+    const col = addCollection({
+      name: newName.trim(),
+      visibility: newVisibility,
+      members: 0, images: 0, videos: 0, music: 0,
+      thumbs: [], items: [],
+    });
+    addToCollection(col.id, { imageId, photo: imagePhoto, title: imageTitle });
+    setCollections(getCollections());
+    setSavedTo(col.id);
+    setTimeout(() => { onClose(); setSavedTo(null); setSearch(""); setNewName(""); setShowCreate(false); }, 900);
   };
 
   return (
@@ -61,7 +66,7 @@ const SaveToBoardModal = ({
         <div className="flex items-center justify-between px-5 py-4 border-b border-foreground/[0.06]">
           <div className="flex items-center gap-2">
             <Bookmark className="w-4 h-4 text-accent" />
-            <h3 className="font-display text-[1.05rem] font-bold">Save to Board</h3>
+            <h3 className="font-display text-[1.05rem] font-bold">Save to Collection</h3>
           </div>
           <button onClick={onClose} className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
             <X className="w-3.5 h-3.5" />
@@ -76,30 +81,32 @@ const SaveToBoardModal = ({
               type="text"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              placeholder="Search boards..."
+              placeholder="Search collections..."
               className="w-full pl-9 pr-4 py-2.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] text-[0.84rem] font-body outline-none focus:border-accent/30 transition-colors"
             />
           </div>
         </div>
 
-        {/* Board list */}
+        {/* Collection list */}
         <div className="px-5 py-2 max-h-[240px] overflow-y-auto">
           {filtered.length === 0 && !showCreate && (
-            <p className="text-[0.82rem] text-muted text-center py-4">No boards found</p>
+            <p className="text-[0.82rem] text-muted text-center py-4">No collections found</p>
           )}
-          {filtered.map(board => {
-            const done = savedTo === board.id;
-            const already = alreadySaved(board.id);
+          {filtered.map(col => {
+            const done = savedTo === col.id;
+            const already = alreadySaved(col.id);
             return (
               <button
-                key={board.id}
-                onClick={() => !already && !done && handleSave(board.id)}
+                key={col.id}
+                onClick={() => !already && !done && handleSave(col.id)}
                 disabled={already || !!done}
                 className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-colors text-left group ${done ? "bg-green-50" : already ? "opacity-50 cursor-default" : "hover:bg-foreground/[0.04] cursor-pointer"}`}
               >
                 <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-foreground/[0.06]">
-                  {board.items[0] ? (
-                    <img src={`https://images.unsplash.com/${board.items[0].photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                  {col.items[0] ? (
+                    <img src={`https://images.unsplash.com/${col.items[0].photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                  ) : col.thumbs[0] ? (
+                    <img src={`https://images.unsplash.com/${col.thumbs[0]}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
                       <Bookmark className="w-4 h-4 text-muted" />
@@ -107,37 +114,37 @@ const SaveToBoardModal = ({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[0.84rem] font-semibold truncate">{board.title}</div>
+                  <div className="text-[0.84rem] font-semibold truncate">{col.name}</div>
                   <div className="text-[0.72rem] text-muted flex items-center gap-1">
-                    {board.visibility === "private" ?
+                    {col.visibility === "private" ?
                       <Lock className="w-2.5 h-2.5" /> :
                       <Globe className="w-2.5 h-2.5" />
                     }
-                    {board.items.length} saved
+                    {col.items.length} saved
                   </div>
                 </div>
-                <Check className={`w-3.5 h-3.5 ${done || already ? "text-white" : "text-muted opacity-0 group-hover:opacity-100"}`} />
+                <Check className={`w-3.5 h-3.5 ${done || already ? "text-accent" : "text-muted opacity-0 group-hover:opacity-100"}`} />
               </button>
             );
           })}
         </div>
 
-        {/* Create new board */}
+        {/* Create new collection */}
         <div className="px-5 pb-4 pt-2 border-t border-foreground/[0.06]">
           {!showCreate ? (
             <button
               onClick={() => setShowCreate(true)}
               className="flex items-center gap-2 w-full text-[0.84rem] font-semibold text-accent hover:text-accent/80 transition-colors py-1"
             >
-              <Plus className="w-4 h-4" /> Create New Board
+              <Plus className="w-4 h-4" /> Create New Collection
             </button>
           ) : (
             <div className="flex flex-col gap-3">
               <input
                 type="text"
-                value={newBoardName}
-                onChange={e => setNewBoardName(e.target.value)}
-                placeholder="Board name..."
+                value={newName}
+                onChange={e => setNewName(e.target.value)}
+                placeholder="Collection name..."
                 autoFocus
                 className="w-full px-3 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.84rem] font-body outline-none focus:border-accent/40 transition-colors"
                 onKeyDown={e => e.key === "Enter" && handleCreate()}
@@ -166,7 +173,7 @@ const SaveToBoardModal = ({
                   Create & Save
                 </button>
                 <button
-                  onClick={() => { setShowCreate(false); setNewBoardName(""); }}
+                  onClick={() => { setShowCreate(false); setNewName(""); }}
                   className="px-4 py-2 rounded-xl border border-foreground/[0.12] text-[0.82rem] hover:border-foreground/30 transition-colors"
                 >
                   Cancel
