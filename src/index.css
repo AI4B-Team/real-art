@@ -83,8 +83,8 @@
   columns: 5;
   column-gap: 12px;
 }
-@media (max-width: 1300px) { .masonry-grid { columns: 4; } }
-@media (max-width: 900px) { .masonry-grid { columns: 3; } }
+@media (max-width: 1024px) { .masonry-grid { columns: 4; } }
+@media (max-width: 768px) { .masonry-grid { columns: 3; } }
 @media (max-width: 600px) { .masonry-grid { columns: 2; } }
 
 .masonry-item {
