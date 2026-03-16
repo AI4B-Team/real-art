@@ -379,7 +379,7 @@ export default function QuickViewPanel() {
         </div>
       </div>
 
-      <SaveToBoardModal open={boardOpen} onClose={() => setBoardOpen(false)} />
+      <SaveToBoardModal open={boardOpen} onClose={() => setBoardOpen(false)} imageId={String(idx)} imagePhoto={image?.photo || ""} imageTitle={title} />
 
       <style>{`
         @keyframes slideInRight {
