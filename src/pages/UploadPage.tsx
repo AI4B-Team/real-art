@@ -751,7 +751,7 @@ const UploadPage = () => {
                       <ShoppingBag className="w-4 h-4 text-muted shrink-0" />
                       <div>
                         <div className="font-semibold text-[0.86rem]">{similarProducts ? "Similar Products Enabled" : "Similar Products Disabled"}</div>
-                        <div className="text-[0.75rem] text-muted">{similarProducts ? "Show related products viewers can shop below this post" : "No product suggestions shown on this post"}</div>
+                        <div className="text-[0.75rem] text-muted">{similarProducts ? "Show related products viewers can shop on this page" : "No product suggestions shown on this post"}</div>
                       </div>
                     </div>
                     <div className={`w-10 h-[22px] rounded-full relative transition-colors ${similarProducts ? "bg-accent" : "bg-foreground/[0.12]"}`}>
