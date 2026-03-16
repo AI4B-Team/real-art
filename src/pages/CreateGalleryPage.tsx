@@ -109,7 +109,7 @@ const CreateGalleryPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
