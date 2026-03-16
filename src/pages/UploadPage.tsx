@@ -47,6 +47,7 @@ const UploadPage = () => {
     try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; }
   });
   const [published, setPublished] = useState(false);
+  const [similarProducts, setSimilarProducts] = useState(true);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Collection targeting
