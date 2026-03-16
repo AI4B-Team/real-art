@@ -282,8 +282,10 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
               {col.visibility === "public" ? "Public" : "Private"}
             </span>
           </div>
-          <div className="flex items-center gap-2 text-[0.75rem] text-muted flex-wrap">
-            <span>{itemCount} items</span>
+          <div className="flex items-center gap-3 text-[0.75rem] text-muted flex-wrap">
+            {col.images > 0 && <span className="flex items-center gap-1"><Image className="w-3 h-3" />{col.images} images</span>}
+            {col.videos > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{col.videos} videos</span>}
+            {col.music > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{col.music} tracks</span>}
             {col.visibility === "private" && col.members > 0 && (
               <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span></>
             )}
