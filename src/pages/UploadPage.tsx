@@ -901,7 +901,7 @@ const UploadPage = () => {
                     ["Visibility", visibility === "public" ? "Public — Free For Everyone" : "Private Collection"],
                     ["Comments", commentsEnabled ? "Enabled" : "Disabled"],
                     ["Collection", selectedCollectionName || "None"],
-                    ["AI Tool", tool || "Not specified"],
+                    ["AI Tool", tool || "Not Specified"],
                     ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} Images`],
                   ].map(([k, v]) => (
                     <div key={k} className="flex items-start gap-4 text-[0.82rem]">
