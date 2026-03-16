@@ -73,10 +73,11 @@ const CollectionDetailPage = () => {
   const [codeErr, setCodeErr] = useState("");
   const [paying, setPaying] = useState(false);
 
-  // Close more menu on outside click
+  // Close more/filter menus on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) setFilterOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
