@@ -201,7 +201,7 @@ const AppSidebar = () => {
                     {hasNewPosts && !active && (
                       <span className="w-2 h-2 rounded-full bg-accent" />
                     )}
-                    <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? '-rotate-90' : 'rotate-[-90deg]'}`} />
+                    <ChevronDown className={`w-3 h-3 opacity-50 transition-transform -rotate-90`} />
                   </div>
                 </button>
                 {communitiesOpen && createPortal(
