@@ -1794,21 +1794,13 @@ const DashboardPage = () => {
                     </div>
                     <button
                       onClick={() => {
-                        const current = (() => { try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; } })();
-                        const next = !current;
+                        const next = !commentsDefault;
+                        setCommentsDefault(next);
                         try { next ? localStorage.removeItem("ra_comments_default") : localStorage.setItem("ra_comments_default", "0"); } catch {}
-                        // Force re-render
-                        window.dispatchEvent(new Event("storage"));
-                        const el = document.querySelector('[data-comments-default-toggle]') as HTMLElement;
-                        if (el) el.dataset.state = next ? "on" : "off";
                       }}
-                      data-comments-default-toggle
-                      data-state={(() => { try { return localStorage.getItem("ra_comments_default") !== "0" ? "on" : "off"; } catch { return "on"; } })()}
-                      className="w-10 h-[22px] rounded-full relative transition-colors data-[state=on]:bg-accent data-[state=off]:bg-foreground/[0.12] shrink-0 cursor-pointer"
+                      className={`w-10 h-[22px] rounded-full relative transition-colors shrink-0 cursor-pointer ${commentsDefault ? "bg-accent" : "bg-foreground/[0.12]"}`}
                     >
-                      <div className="absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform data-[state=on]:translate-x-[22px] data-[state=off]:translate-x-[3px]"
-                        data-state={(() => { try { return localStorage.getItem("ra_comments_default") !== "0" ? "on" : "off"; } catch { return "on"; } })()}
-                      />
+                      <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform ${commentsDefault ? "translate-x-[22px]" : "translate-x-[3px]"}`} />
                     </button>
                   </div>
                 </div>
