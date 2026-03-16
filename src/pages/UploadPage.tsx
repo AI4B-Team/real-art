@@ -735,7 +735,7 @@ const UploadPage = () => {
                         <ExternalLink className="w-4 h-4 shrink-0 opacity-40" />
                         Link to your Etsy shop, print store, course page, or any URL. A "Shop" button appears on the image.
                       </button>
-                      <p className="text-[0.72rem] text-muted mb-2">Quick select a partner — or paste any URL:</p>
+                      <p className="text-[0.72rem] text-muted mb-2">Quick Select A Partner — Or Paste Any URL:</p>
                       <div className="flex flex-wrap gap-2">
                         {popularPartners.slice(0, 8).map(p => (
                           <button
