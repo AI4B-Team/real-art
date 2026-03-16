@@ -352,7 +352,7 @@ const MediaSection = () => {
 };
 
 /* ═══ GALLERIES SECTION COMPONENT ═══ */
-const totalMedia = (g: Collection) => g.images + g.videos + g.music;
+const totalMedia = (g: Collection) => (g.imageCount || 0) + (g.videoCount || 0) + (g.musicCount || 0);
 
 const GalleriesSection = () => {
   const [galData, setGalData] = useState<Collection[]>(() => getCollections());
