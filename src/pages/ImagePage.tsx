@@ -247,6 +247,12 @@ const ImagePage = () => {
                 >
                   <Download className="w-4 h-4" /> Download
                 </a>
+                <button onClick={() => {
+                  const embedCode = `<iframe src="${window.location.origin}/image/${idx}" width="600" height="400" frameborder="0" allowfullscreen></iframe>`;
+                  navigator.clipboard.writeText(embedCode).catch(() => {});
+                }} className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                  <Code className="w-4 h-4" /> Embed
+                </button>
                 <button onClick={() => setShareModalOpen(true)} className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Share2 className="w-4 h-4" /> Share
                 </button>
