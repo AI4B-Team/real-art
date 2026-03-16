@@ -13,7 +13,7 @@ const trendingTerms = ["avatars", "luxury homes", "cyberpunk", "podcast studio",
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [selectedType, setSelectedType] = useState("Photos");
+  const [selectedType, setSelectedType] = useState("Images");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [query, setQuery] = useState("");
   const dropRef = useRef<HTMLDivElement>(null);
