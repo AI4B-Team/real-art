@@ -713,7 +713,7 @@ const ImagePage = () => {
               {/* Title + meta */}
               <div>
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">
-                  Cosmic Dreamscape
+                  {imageTitle}
                 </h1>
                 <div className="flex items-center gap-4 mt-3 text-[0.82rem] text-muted flex-wrap">
                   <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> 24.8K views</span>
