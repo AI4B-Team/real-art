@@ -356,7 +356,7 @@ const ImagePage = () => {
               )}
 
               {/* Prompts section — Image & Video tabs */}
-              <div className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
+              <div id="prompts" className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden scroll-mt-24">
                 <div className="flex items-center justify-between px-5 pt-4 pb-0">
                   <div className="flex items-center gap-3">
                     <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Prompts</h2>
