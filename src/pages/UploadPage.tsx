@@ -60,6 +60,8 @@ const UploadPage = () => {
   const [linkSite, setLinkSite] = useState("");
   const [linkPrice, setLinkPrice] = useState("");
   const [linkIsAffiliate, setLinkIsAffiliate] = useState(false);
+  const [detectedPartner, setDetectedPartner] = useState<AffiliatePartner | null>(null);
+  const [autoAffiliate, setAutoAffiliate] = useState(false);
   // Per-image AI prompts
   const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
 
