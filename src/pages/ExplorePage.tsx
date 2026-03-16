@@ -173,7 +173,7 @@ const ExplorePage = () => {
               </div>
 
               {/* Sort */}
-              <div className="relative">
+              <div ref={sortDropRef} className="relative">
                 <button
                   onClick={() => setSortOpen(!sortOpen)}
                   className="flex items-center gap-2 px-4 h-11 rounded-xl border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors bg-background"

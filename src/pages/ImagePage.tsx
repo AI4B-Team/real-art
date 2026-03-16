@@ -258,7 +258,7 @@ const ImagePage = () => {
                   className={`flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border transition-colors ${liked ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
                 >
                   <Heart className={`w-4 h-4 ${liked ? "fill-destructive text-destructive" : ""}`} />
-                  {liked ? "847" : "847"}
+                  {imageStatData.likes}
                 </button>
                 <button
                   onClick={() => setBoardModalOpen(true)}

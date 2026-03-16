@@ -121,8 +121,20 @@ const CollectionDetailPage = () => {
   if (loading) {
     return (
       <PageShell>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin text-muted" />
+        <div className="px-6 md:px-12 pt-8 pb-16 max-w-[1440px] mx-auto">
+          {/* Skeleton banner */}
+          <div className="w-full h-[220px] rounded-2xl bg-foreground/[0.06] animate-pulse mb-6" />
+          {/* Skeleton title row */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-8 w-[280px] rounded-lg bg-foreground/[0.06] animate-pulse" />
+            <div className="h-6 w-[120px] rounded-lg bg-foreground/[0.06] animate-pulse" />
+          </div>
+          {/* Skeleton masonry grid */}
+          <div className="masonry-grid">
+            {Array.from({ length: 8 }, (_, i) => (
+              <div key={i} className="masonry-item rounded-xl bg-foreground/[0.06] animate-pulse" style={{ height: heights[i % heights.length] }} />
+            ))}
+          </div>
         </div>
       </PageShell>
     );
