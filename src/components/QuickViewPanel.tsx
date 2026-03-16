@@ -99,9 +99,10 @@ const relatedHeights = [220, 280, 180, 240, 195, 260, 170, 230, 205, 250, 185, 2
 
 export default function QuickViewPanel() {
   const { image, open, close, isOpen } = useQuickView();
-  const { sidebarCollapsed } = useLayoutContext();
+  const { sidebarCollapsed, setSidebarCollapsed } = useLayoutContext();
   const navigate = useNavigate();
   const panelRef = useRef<HTMLDivElement>(null);
+  const prevSidebarState = useRef<boolean | null>(null);
   const creatorId = image ? creators[parseInt(image.id || "1") % creators.length].id : "1";
   const { followed: creatorFollowed, toggle: toggleCreatorFollow } = useFollow(creatorId);
   const [liked, setLiked] = useState(() => { try { return image ? localStorage.getItem(`ra_liked_${image.id}`) === "1" : false; } catch { return false; } });
@@ -121,6 +122,17 @@ export default function QuickViewPanel() {
   const [showRecreateModal, setShowRecreateModal] = useState(false);
   const [promptVisible, setPromptVisible] = useState(true);
 
+  // Auto-collapse sidebar when QuickView opens, restore when it closes
+  useEffect(() => {
+    if (isOpen) {
+      prevSidebarState.current = sidebarCollapsed;
+      if (!sidebarCollapsed) setSidebarCollapsed(true);
+    } else if (prevSidebarState.current !== null) {
+      if (!prevSidebarState.current) setSidebarCollapsed(false);
+      prevSidebarState.current = null;
+    }
+  }, [isOpen]);
+
   const idx = image ? (parseInt(image.id) || 0) : 0;
   const creator = creators[idx % creators.length];
   const title = image?.title || titles[idx % titles.length];
@@ -130,7 +142,7 @@ export default function QuickViewPanel() {
   const stat = stats[idx % stats.length];
   const shopLink = image ? resolveLink(image.id) : null;
   const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
-  const sidebarOffset = isLoggedIn ? (sidebarCollapsed ? 68 : 260) : 0;
+  const sidebarOffset = isLoggedIn ? 68 : 0; // Always use collapsed width when QuickView is open
 
   const aiTools = ["Midjourney", "DALL-E 3", "Stable Diffusion XL", "Adobe Firefly", "Midjourney", "Leonardo AI",
     "Ideogram", "Midjourney", "Flux", "DALL-E 3", "Stable Diffusion XL", "Midjourney"];
