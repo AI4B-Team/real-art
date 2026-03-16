@@ -190,8 +190,7 @@ export default function DashboardCollectionPage() {
   const heights = [200, 240, 190, 260, 175, 220, 250, 185, 210, 235, 170, 245, 195];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <PageShell>
 
       {/* Toast */}
       {toast && (
