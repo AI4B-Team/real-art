@@ -255,102 +255,11 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Logo + Communities group — always left-aligned */}
+      {/* Logo — always left-aligned */}
       <div className="hidden md:flex items-center gap-0 shrink-0">
         <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
           Real<span className="text-accent">.</span>Art
         </Link>
-
-        {/* Desktop Communities Dropdown */}
-        <div className="relative ml-4" ref={communitiesRef}>
-          <button
-            onClick={() => setCommunitiesOpen(!communitiesOpen)}
-            className="relative flex items-center gap-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
-          >
-            <Users className="w-3.5 h-3.5 opacity-60" />
-            Communities
-            <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? 'rotate-180' : ''}`} />
-            <span className="absolute top-1.5 right-1 w-2 h-2 rounded-full bg-accent" />
-          </button>
-          {communitiesOpen && (
-            <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[270px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
-              <div className="px-1 pb-2">
-                <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
-                  <Search className="w-3.5 h-3.5 text-muted shrink-0" />
-                  <input
-                    autoFocus
-                    value={communitySearch}
-                    onChange={e => setCommunitySearch(e.target.value)}
-                    placeholder="Search communities…"
-                    className="flex-1 border-none outline-none bg-transparent text-[0.82rem] font-body"
-                  />
-                  {communitySearch && (
-                    <button onClick={() => setCommunitySearch("")} className="shrink-0">
-                      <X className="w-3 h-3 text-muted hover:text-foreground" />
-                    </button>
-                  )}
-                </div>
-              </div>
-              {(() => {
-                const q = communitySearch.toLowerCase();
-                const filtered = sortedCommunities.filter(c => !q || c.name.toLowerCase().includes(q));
-                const pinnedFiltered = filtered.filter(c => c.pinned);
-                const otherFiltered = filtered.filter(c => !c.pinned);
-                return (
-                  <>
-                    {pinnedFiltered.length > 0 && (
-                      <>
-                        <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Pinned</div>
-                        {pinnedFiltered.map(c => (
-                          <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
-                            <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
-                              <Star className="w-3 h-3 text-accent fill-accent shrink-0" />
-                              {c.name}
-                            </Link>
-                            <div className="flex items-center gap-2">
-                              {c.newPosts ? <span className="text-[0.7rem] text-accent font-medium">{c.newPosts} new</span> : null}
-                              <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" title="Unpin">
-                                <X className="w-3 h-3 text-muted hover:text-foreground" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {otherFiltered.length > 0 && (
-                      <>
-                        <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Other Communities</div>
-                        {otherFiltered.map(c => (
-                          <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
-                            <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
-                              {c.name}
-                            </Link>
-                            <div className="flex items-center gap-2">
-                              {c.newPosts ? <span className="text-[0.7rem] text-accent font-medium">{c.newPosts} new</span> : null}
-                              <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" title="Pin">
-                                <Star className="w-3 h-3 text-muted hover:text-accent" />
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {filtered.length === 0 && (
-                      <div className="px-3.5 py-3 text-[0.82rem] text-muted">No communities found</div>
-                    )}
-                    <div className="h-px bg-foreground/[0.06] my-1.5" />
-                    <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-                      <Compass className="w-3.5 h-3.5 opacity-40 shrink-0" /> Browse Communities
-                    </Link>
-                    <Link to="/communities/create" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-                      <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> Create Community
-                    </Link>
-                  </>
-                );
-              })()}
-            </div>
-          )}
-        </div>
       </div>
 
       {/* Mobile logo — centered */}
