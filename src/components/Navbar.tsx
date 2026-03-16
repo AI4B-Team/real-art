@@ -64,12 +64,20 @@ const Navbar = () => {
   const [navSearchType, setNavSearchType] = useState("Images");
   const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const [unreadCount] = useState(() => {
-    try {
-      const n = localStorage.getItem("ra_unread_notifs");
-      return n !== null ? parseInt(n, 10) : 3;
-    } catch { return 3; }
-  });
+  const [notifications, setNotifications] = useState(initialNotifs);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifFilter, setNotifFilter] = useState<"all" | "unread">("all");
+  const notifRef = useRef<HTMLDivElement>(null);
+  const unreadNotifs = notifications.filter(n => !n.read);
+
+  const markAllNotifRead = () => {
+    setNotifications(prev => prev.map(n => ({ ...n, read: true })));
+    try { localStorage.setItem("ra_unread_notifs", "0"); } catch {}
+  };
+
+  const markNotifRead = (id: string) => {
+    setNotifications(prev => prev.map(n => n.id === id ? { ...n, read: true } : n));
+  };
 
   // Simulated auth state — persists across pages via localStorage
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
