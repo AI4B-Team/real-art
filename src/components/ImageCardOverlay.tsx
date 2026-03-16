@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark, Maximize2 } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark, Maximize2, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
