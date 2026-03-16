@@ -1187,8 +1187,11 @@ const DashboardPage = () => {
             </div>
 
             <nav className="flex flex-col gap-1">
-              {navItems.map(item => (
-                item.internal === false ? (
+              {navItems.map(item => {
+                if (item.id.startsWith("divider")) {
+                  return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
+                }
+                return item.internal === false ? (
                   <Link
                     key={item.id}
                     to={item.href!}
@@ -1210,8 +1213,8 @@ const DashboardPage = () => {
                       <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
                     )}
                   </button>
-                )
-              ))}
+                );
+              })}
             </nav>
 
             <Link to="/upload" className="flex items-center justify-center gap-2 bg-foreground text-primary-foreground py-2.5 rounded-xl text-[0.84rem] font-semibold hover:bg-accent transition-colors mt-6 w-full no-underline">
