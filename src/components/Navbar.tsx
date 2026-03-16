@@ -26,6 +26,12 @@ const Navbar = () => {
   const [navSearchType, setNavSearchType] = useState("Images");
   const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [unreadCount] = useState(() => {
+    try {
+      const n = localStorage.getItem("ra_unread_notifs");
+      return n !== null ? parseInt(n, 10) : 3;
+    } catch { return 3; }
+  });
 
   // Simulated auth state — persists across pages via localStorage
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
