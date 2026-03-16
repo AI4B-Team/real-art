@@ -239,8 +239,9 @@ const CommunityCard = ({ board }: { board: typeof communityCollections[0] }) => 
           </div>
         </div>
         <div className="flex items-center gap-4 text-[0.75rem] text-muted">
-          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {board.followers} followers</span>
-          <span>{board.images} images</span>
+          <span className="flex items-center gap-1"><Image className="w-3 h-3" /> {board.images}</span>
+          <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {board.videos}</span>
+          <span className="flex items-center gap-1"><Music className="w-3 h-3" /> {board.tracks}</span>
         </div>
       </div>
     </div>
