@@ -71,9 +71,21 @@ const ExplorePage = () => {
   const [query, setQuery] = useState(initialQuery);
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeType, setActiveType] = useState("Photos");
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [sort, setSort] = useState("Most Relevant");
   const [sortOpen, setSortOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(20);
+  const typeDropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (typeDropRef.current && !typeDropRef.current.contains(e.target as Node)) {
+        setTypeDropdownOpen(false);
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
 
   const filteredImages = imageData.filter(img => {
     const q = query.trim().toLowerCase();
