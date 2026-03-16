@@ -43,6 +43,8 @@ const iconBtnClass = "flex items-center justify-center w-8 h-8 rounded-full bord
 interface ImageCardOverlayProps {
   index: number;
   isVideo?: boolean;
+  photo?: string;
+  title?: string;
 }
 
 const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
