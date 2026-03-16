@@ -4,6 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import AuthLayout from "@/components/AuthLayout";
 
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
@@ -57,60 +58,62 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
-        <Routes>
-          {/* Home */}
-          <Route path="/" element={<Index />} />
+        <AuthLayout>
+          <Routes>
+            {/* Home */}
+            <Route path="/" element={<Index />} />
 
-          {/* Round 1 — Core browse */}
-          <Route path="/image/:id" element={<ImagePage />} />
-          <Route path="/creator/:id" element={<CreatorPage />} />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route path="/photos" element={<ExplorePage />} />
-          <Route path="/videos" element={<ExplorePage />} />
-          <Route path="/music" element={<ExplorePage />} />
-          <Route path="/trending" element={<ExplorePage />} />
-          <Route path="/3d-art" element={<ExplorePage />} />
-          <Route path="/collections" element={<CollectionsPage />} />
-          <Route path="/collections/create" element={<CreateCollectionPage />} />
-          <Route path="/collections/:id" element={<CollectionDetailPage />} />
+            {/* Round 1 — Core browse */}
+            <Route path="/image/:id" element={<ImagePage />} />
+            <Route path="/creator/:id" element={<CreatorPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/photos" element={<ExplorePage />} />
+            <Route path="/videos" element={<ExplorePage />} />
+            <Route path="/music" element={<ExplorePage />} />
+            <Route path="/trending" element={<ExplorePage />} />
+            <Route path="/3d-art" element={<ExplorePage />} />
+            <Route path="/collections" element={<CollectionsPage />} />
+            <Route path="/collections/create" element={<CreateCollectionPage />} />
+            <Route path="/collections/:id" element={<CollectionDetailPage />} />
 
-          {/* Round 2 — Community */}
-          <Route path="/communities" element={<CommunitiesPage />} />
-          <Route path="/communities/:id" element={<CommunityDetailPage />} />
-          <Route path="/challenges" element={<ChallengesPage />} />
-          <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
-          <Route path="/creators" element={<CreatorsPage />} />
-          <Route path="/boards" element={<BoardsPage />} />
-          <Route path="/boards/:id" element={<BoardDetailPage />} />
-          <Route path="/topic/:slug" element={<TopicPage />} />
+            {/* Round 2 — Community */}
+            <Route path="/communities" element={<CommunitiesPage />} />
+            <Route path="/communities/:id" element={<CommunityDetailPage />} />
+            <Route path="/challenges" element={<ChallengesPage />} />
+            <Route path="/challenges/:id" element={<ChallengeDetailPage />} />
+            <Route path="/leaderboard" element={<LeaderboardPage />} />
+            <Route path="/creators" element={<CreatorsPage />} />
+            <Route path="/boards" element={<BoardsPage />} />
+            <Route path="/boards/:id" element={<BoardDetailPage />} />
+            <Route path="/topic/:slug" element={<TopicPage />} />
 
-          {/* Round 3 — Creator Tools */}
-          <Route path="/upload" element={<UploadPage />} />
-          <Route path="/create-gallery" element={<CreateGalleryPage />} />
-          <Route path="/prompts" element={<PromptLibraryPage />} />
-          <Route path="/prompt-packs" element={<PromptLibraryPage />} />
-          <Route path="/affiliates" element={<AffiliatesPage />} />
-          <Route path="/vaults" element={<Navigate to="/create-gallery" replace />} />
-          <Route path="/style-transfer" element={<Navigate to="/explore" replace />} />
+            {/* Round 3 — Creator Tools */}
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/create-gallery" element={<CreateGalleryPage />} />
+            <Route path="/prompts" element={<PromptLibraryPage />} />
+            <Route path="/prompt-packs" element={<PromptLibraryPage />} />
+            <Route path="/affiliates" element={<AffiliatesPage />} />
+            <Route path="/vaults" element={<Navigate to="/create-gallery" replace />} />
+            <Route path="/style-transfer" element={<Navigate to="/explore" replace />} />
 
-          {/* Round 4 — Company */}
-          <Route path="/about" element={<AboutPage />} />
-          <Route path="/license" element={<LicensePage />} />
-          <Route path="/privacy" element={<PrivacyPage />} />
-          <Route path="/terms" element={<TermsPage />} />
-          <Route path="/blog" element={<BlogPage />} />
+            {/* Round 4 — Company */}
+            <Route path="/about" element={<AboutPage />} />
+            <Route path="/license" element={<LicensePage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/blog" element={<BlogPage />} />
 
-          {/* Round 5 — Auth + Dashboard */}
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
-          <Route path="/dashboard/collections/:id" element={<DashboardCollectionPage />} />
-          <Route path="/ads" element={<AdsPage />} />
+            {/* Round 5 — Auth + Dashboard */}
+            <Route path="/signup" element={<SignUpPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/dashboard/collections/:id" element={<DashboardCollectionPage />} />
+            <Route path="/ads" element={<AdsPage />} />
 
-          {/* Catch-all */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* Catch-all */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthLayout>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

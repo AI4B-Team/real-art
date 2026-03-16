@@ -6,7 +6,7 @@ import {
   Camera, Edit3, Trash2, MoreHorizontal, Archive, GitMerge,
   Download, Flag, EyeOff, FolderOpen
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { getBoards, updateBoard, removeFromBoard, addToBoard, deleteBoard, type Board } from "@/lib/boardStore";
 
@@ -159,9 +159,8 @@ const BoardDetailPage = () => {
   /* ── Not found ── */
   if (!userBoard && !publicBoard) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-16 flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
+      <PageShell>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
           <Bookmark className="w-12 h-12 text-muted mb-4 opacity-30" />
           <h1 className="font-display text-2xl font-bold mb-2">Board not found</h1>
           <Link to="/boards" className="text-accent text-[0.88rem] font-semibold hover:underline mt-2 flex items-center gap-1">
@@ -169,7 +168,7 @@ const BoardDetailPage = () => {
           </Link>
         </div>
         <Footer />
-      </div>
+      </PageShell>
     );
   }
 
@@ -245,9 +244,7 @@ const BoardDetailPage = () => {
   const otherBoards = getBoards().filter(b => b.id !== id);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* ── Board Header (no banner) ── */}
         <div className="px-6 md:px-12 max-w-[1440px] mx-auto pt-6 pb-4">
           {/* Breadcrumb */}
@@ -725,8 +722,7 @@ const BoardDetailPage = () => {
         )}
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

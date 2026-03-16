@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2, Sparkles } from "lucide-react";
 import CoverImageEditor from "@/components/CoverImageEditor";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -196,9 +196,7 @@ const CreateCollectionPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Breadcrumb */}
         <div className="px-6 md:px-12 py-4 flex items-center gap-2 text-[0.8rem] text-muted max-w-[1440px] mx-auto">
           <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
@@ -376,8 +374,7 @@ const CreateCollectionPage = () => {
         </div>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

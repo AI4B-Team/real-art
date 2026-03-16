@@ -6,7 +6,7 @@ import {
   Grid3X3, Rows3, SlidersHorizontal, Search, Image,
   Video, Music, Play, ChevronDown, AlertTriangle, Users, ExternalLink
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { getCollectionLink, setCollectionLink, removeCollectionLink, type CollectionLink } from "@/lib/linkStore";
 
@@ -190,8 +190,7 @@ export default function DashboardCollectionPage() {
   const heights = [200, 240, 190, 260, 175, 220, 250, 185, 210, 235, 170, 245, 195];
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <PageShell>
 
       {/* Toast */}
       {toast && (
@@ -200,7 +199,7 @@ export default function DashboardCollectionPage() {
         </div>
       )}
 
-      <div className="pt-16">
+      
         {/* Header */}
         <div className="px-6 md:px-10 pt-6 pb-0 max-w-[1440px] mx-auto">
           {/* Breadcrumb */}
@@ -625,7 +624,6 @@ export default function DashboardCollectionPage() {
         </div>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 }

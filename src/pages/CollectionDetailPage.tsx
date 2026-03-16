@@ -1,7 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { supabase } from "@/integrations/supabase/client";
@@ -74,26 +74,24 @@ const CollectionDetailPage = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-16 flex items-center justify-center min-h-[60vh]">
+      <PageShell>
+        <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="w-8 h-8 animate-spin text-muted" />
         </div>
-      </div>
+      </PageShell>
     );
   }
 
   if (!collection) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-16 flex items-center justify-center min-h-[60vh]">
+      <PageShell>
+        <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <h1 className="font-display text-[2rem] font-black mb-2">Collection not found</h1>
             <Link to="/collections" className="text-accent text-[0.88rem] hover:underline">Browse collections</Link>
           </div>
         </div>
-      </div>
+      </PageShell>
     );
   }
 
@@ -101,9 +99,7 @@ const CollectionDetailPage = () => {
   const curatorName = creator?.display_name || creator?.username || "Unknown";
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Cover */}
         <div className="h-[240px] md:h-[320px] relative overflow-hidden bg-card">
           {coverUrl && (
@@ -167,8 +163,7 @@ const CollectionDetailPage = () => {
         </div>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

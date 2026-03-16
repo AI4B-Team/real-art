@@ -6,7 +6,7 @@ import {
   UserCheck, MessageCircle, Heart, Lock, Globe2, Play
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { getBoards, type Board } from "@/lib/boardStore";
@@ -212,9 +212,7 @@ const CreatorPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Breadcrumb */}
         <div className="px-6 md:px-12 py-4 flex items-center gap-2 text-[0.8rem] text-muted max-w-[1440px] mx-auto">
           <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
@@ -669,7 +667,6 @@ const CreatorPage = () => {
           )}
         </div>
         <Footer />
-      </div>
 
       {/* ═══ SHARE MODAL ═══ */}
       {showShare && (
@@ -810,7 +807,7 @@ const CreatorPage = () => {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 };
 

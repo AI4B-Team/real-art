@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import SponsoredCard from "@/components/SponsoredCard";
 
@@ -80,9 +80,7 @@ const ExplorePage = () => {
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
 
         {/* Search header */}
         <div className="border-b border-foreground/[0.06] bg-card px-6 md:px-12 py-5">
@@ -252,8 +250,7 @@ const ExplorePage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

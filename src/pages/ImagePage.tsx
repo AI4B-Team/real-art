@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import SponsoredCard from "@/components/SponsoredCard";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import { resolveLink, trackClick, seedDemoLinks, type ImageLink } from "@/lib/linkStore";
 import Footer from "@/components/Footer";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
@@ -117,9 +117,7 @@ const ImagePage = () => {
 
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Breadcrumb */}
         <div className="px-6 md:px-12 py-4 flex items-center gap-2 text-[0.8rem] text-muted max-w-[1440px] mx-auto">
           <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
@@ -801,7 +799,6 @@ const ImagePage = () => {
           </div>
         </div>
         <Footer />
-      </div>
       <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} imageId={String(idx)} imagePhoto={photo} imageTitle="Cosmic Dreamscape" />
       <ShareModal
         open={shareModalOpen}
@@ -813,7 +810,7 @@ const ImagePage = () => {
         recreations="1,247"
         imageId={id || "0"}
       />
-    </div>
+    </PageShell>
   );
 };
 

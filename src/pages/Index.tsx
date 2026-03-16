@@ -1,4 +1,3 @@
-import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import FilterBar from "@/components/FilterBar";
 
@@ -10,11 +9,11 @@ import ChallengesSection from "@/components/ChallengesSection";
 import CreatorEarningsSection from "@/components/CreatorEarningsSection";
 import BottomCTA from "@/components/BottomCTA";
 import Footer from "@/components/Footer";
+import PageShell from "@/components/PageShell";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <PageShell>
       <HeroSection />
       
       <FilterBar />
@@ -30,7 +29,7 @@ const Index = () => {
       </section>
       <BottomCTA />
       <Footer />
-    </div>
+    </PageShell>
   );
 };
 

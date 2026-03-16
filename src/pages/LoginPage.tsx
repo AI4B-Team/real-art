@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 
 const recentImages = [
   "photo-1618005182384-a83a8bd57fbe",
@@ -37,9 +37,8 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16 min-h-screen grid grid-cols-1 lg:grid-cols-2">
+    <PageShell>
+      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
         {/* Left — Photo Collage */}
         <div className="hidden lg:block relative bg-foreground overflow-hidden">
           <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">
@@ -166,7 +165,7 @@ const LoginPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 };
 

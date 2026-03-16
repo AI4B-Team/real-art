@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Image, Users, Download, DollarSign, Heart, Zap, FileText, Sparkles } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 const stats = [
@@ -37,9 +37,7 @@ const team = [
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Breadcrumb */}
         <div className="px-6 md:px-12 py-4 flex items-center gap-2 text-[0.8rem] text-muted max-w-[1440px] mx-auto">
           <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1"><ArrowLeft className="w-3.5 h-3.5" /> Home</Link>
@@ -149,8 +147,7 @@ const AboutPage = () => {
         </section>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

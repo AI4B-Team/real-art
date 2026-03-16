@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Search, Download, Users, Image } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 const allCreators = [
@@ -28,8 +28,7 @@ const CreatorsPage = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
+    <PageShell>
       <main className="pt-24 pb-20 px-6 md:px-12 max-w-[1200px] mx-auto">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-8">
@@ -87,7 +86,7 @@ const CreatorsPage = () => {
         </div>
       </main>
       <Footer />
-    </div>
+    </PageShell>
   );
 };
 

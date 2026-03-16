@@ -5,7 +5,7 @@ import {
   Check, ChevronDown, Link2, ShoppingBag, Zap, TrendingUp,
   Users, Globe, Shield, Star, Sparkles, Package
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { affiliateNetwork, affiliateCategories } from "@/lib/affiliateNetwork";
 
@@ -81,9 +81,7 @@ const AffiliatesPage = () => {
     : affiliateNetwork.filter(p => p.category === partnerFilter);
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Hero */}
         <div className="px-6 md:px-12 py-16 max-w-[1440px] mx-auto text-center">
           <div className="flex items-center gap-2 text-[0.8rem] text-muted mb-8 justify-center">
@@ -277,8 +275,7 @@ const AffiliatesPage = () => {
         </div>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

@@ -4,7 +4,7 @@ import {
   ArrowLeft, ChevronRight, Search, Eye, Copy, Check,
   Shuffle, Sparkles, BookOpen, Filter, Lock, Plus
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 const categories = ["All", "Avatars", "Landscapes", "Interiors", "Fashion", "Abstract", "Architecture", "Sci-Fi", "Fantasy", "Products", "Portraits"];
@@ -118,9 +118,7 @@ const PromptLibraryPage = () => {
     .filter(p => !freeOnly || p.price === "Free");
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         <div className="px-6 md:px-12 py-8 max-w-[1440px] mx-auto">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 text-[0.8rem] text-muted mb-6">
@@ -268,8 +266,7 @@ const PromptLibraryPage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 
