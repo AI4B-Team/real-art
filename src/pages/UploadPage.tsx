@@ -326,7 +326,7 @@ const UploadPage = () => {
           {/* STEP 0: Upload */}
           {step === 0 && (
             <div>
-              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Upload your art</h1>
+              <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-2">Upload Your Art</h1>
               <p className="text-muted text-[0.88rem] mb-8">Up to 10 images at once. JPG, PNG, WebP up to 20MB each.</p>
 
               <div
