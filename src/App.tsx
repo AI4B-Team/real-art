@@ -110,6 +110,7 @@ const App = () => (
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/dashboard/collections/:id" element={<DashboardCollectionPage />} />
             <Route path="/ads" element={<AdsPage />} />
+            <Route path="/account" element={<AccountPage />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

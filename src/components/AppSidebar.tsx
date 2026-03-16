@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
-  Upload, Users, Award, Eye, Bookmark, Megaphone, ChevronDown,
+  LayoutDashboard, Image, FolderOpen, Settings,
+  Users, Award, Eye, Bookmark, ChevronDown,
   Search, X, Star, Compass, Plus
 } from "lucide-react";
 
