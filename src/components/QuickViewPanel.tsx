@@ -275,13 +275,13 @@ export default function QuickViewPanel() {
 
             {/* Quick actions */}
             <div className="grid grid-cols-3 gap-2 mb-5">
-              <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+              <button onClick={() => { close(); navigate(`/image/${image.id}?recreate=1&photo=${encodeURIComponent(image.photo)}`); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Recreate
               </button>
-              <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+              <button onClick={() => { close(); navigate(`/image/${image.id}#prompts&photo=${encodeURIComponent(image.photo)}`); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
                 <Video className="w-3.5 h-3.5" /> Animate
               </button>
-              <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+              <button onClick={() => { close(); navigate(`/image/${image.id}?photo=${encodeURIComponent(image.photo)}`); }} className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
                 <Pencil className="w-3.5 h-3.5" /> Edit
               </button>
             </div>
