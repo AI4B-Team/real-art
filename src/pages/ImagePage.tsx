@@ -843,7 +843,7 @@ const ImagePage = () => {
                   ))}
                 </div>
                 <Link to="/license" className="inline-block mt-3 text-[0.75rem] font-medium text-accent hover:underline">
-                  Read full license →
+                  Read Full License →
                 </Link>
               </div>
 
