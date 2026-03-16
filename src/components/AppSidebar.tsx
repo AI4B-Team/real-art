@@ -1,23 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
-  Upload, Users, Award, Eye, Bookmark, Megaphone, ExternalLink
+  Upload, Users, Award, Eye, Bookmark, Megaphone, ChevronDown,
+  Search, X, Star, Compass, Plus
 } from "lucide-react";
 
 interface NavItem {
   id: string;
   label: string;
   icon: typeof LayoutDashboard;
-  type: "route" | "dashboard-section" | "divider";
+  type: "route" | "dashboard-section" | "divider" | "communities-dropdown";
   href?: string;
 }
+
+type Community = {
+  id: string;
+  name: string;
+  to: string;
+  newPosts?: number;
+  pinned: boolean;
+};
 
 const navItems: NavItem[] = [
   { id: "overview", label: "Dashboard", icon: LayoutDashboard, type: "route", href: "/dashboard" },
   { id: "explore", label: "Explore", icon: Eye, type: "route", href: "/explore" },
   { id: "collections-browse", label: "Collections", icon: FolderOpen, type: "route", href: "/collections" },
-  { id: "communities-browse", label: "Communities", icon: Users, type: "route", href: "/communities" },
+  { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
   { id: "challenges-browse", label: "Challenges", icon: Award, type: "route", href: "/challenges" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
@@ -34,6 +43,15 @@ const AppSidebar = () => {
   const navigate = useNavigate();
   const [display, setDisplay] = useState("aiverse");
   const [handle, setHandle] = useState("aiverse");
+  const [communitiesOpen, setCommunitiesOpen] = useState(false);
+  const [communitySearch, setCommunitySearch] = useState("");
+  const communitiesRef = useRef<HTMLDivElement>(null);
+
+  const [communities, setCommunities] = useState<Community[]>([
+    { id: "1", name: "Avatar Architects", to: "/communities/1", newPosts: 3, pinned: true },
+    { id: "2", name: "PromptVault Pro", to: "/communities/2", newPosts: 0, pinned: true },
+    { id: "3", name: "Abstract Minds", to: "/communities/3", newPosts: 1, pinned: false },
+  ]);
 
   useEffect(() => {
     const sync = () => {
@@ -51,9 +69,19 @@ const AppSidebar = () => {
     };
   }, []);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (communitiesRef.current && !communitiesRef.current.contains(e.target as Node)) {
+        setCommunitiesOpen(false);
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
+
   const initials = display.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
-  // Determine active state
   const isDashboard = location.pathname === "/dashboard";
   const currentSection = isDashboard
     ? new URLSearchParams(location.search).get("section") || "overview"
@@ -63,6 +91,9 @@ const AppSidebar = () => {
     if (item.type === "route") {
       if (item.href === "/dashboard") return isDashboard && (currentSection === "overview" || currentSection === null);
       return location.pathname.startsWith(item.href!);
+    }
+    if (item.type === "communities-dropdown") {
+      return location.pathname.startsWith("/communities");
     }
     if (item.type === "dashboard-section") {
       return isDashboard && currentSection === item.id;
@@ -77,6 +108,17 @@ const AppSidebar = () => {
       navigate(`/dashboard?section=${item.id}`);
     }
   };
+
+  const togglePin = (id: string) => {
+    setCommunities(prev => prev.map(c => c.id === id ? { ...c, pinned: !c.pinned } : c));
+  };
+
+  const sortedCommunities = [...communities].sort((a, b) => {
+    if (a.pinned !== b.pinned) return a.pinned ? -1 : 1;
+    return 0;
+  });
+
+  const hasNewPosts = communities.some(c => c.newPosts && c.newPosts > 0);
 
   return (
     <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col w-[260px] shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
@@ -93,6 +135,107 @@ const AppSidebar = () => {
           if (item.type === "divider") {
             return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
           }
+
+          // Communities dropdown
+          if (item.type === "communities-dropdown") {
+            const active = isActive(item);
+            return (
+              <div key={item.id} className="relative" ref={communitiesRef}>
+                <button
+                  onClick={() => setCommunitiesOpen(!communitiesOpen)}
+                  className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                >
+                  <item.icon className="w-4 h-4 shrink-0" />
+                  Communities
+                  <div className="ml-auto flex items-center gap-1.5">
+                    {hasNewPosts && !active && (
+                      <span className="w-2 h-2 rounded-full bg-accent" />
+                    )}
+                    <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+                {communitiesOpen && (
+                  <div className="absolute left-full top-0 ml-2 bg-card border border-foreground/[0.07] rounded-2xl min-w-[270px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
+                    <div className="px-1 pb-2">
+                      <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
+                        <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                        <input
+                          autoFocus
+                          value={communitySearch}
+                          onChange={e => setCommunitySearch(e.target.value)}
+                          placeholder="Search communities…"
+                          className="flex-1 border-none outline-none bg-transparent text-[0.82rem] font-body"
+                        />
+                        {communitySearch && (
+                          <button onClick={() => setCommunitySearch("")} className="shrink-0">
+                            <X className="w-3 h-3 text-muted hover:text-foreground" />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                    {(() => {
+                      const q = communitySearch.toLowerCase();
+                      const filtered = sortedCommunities.filter(c => !q || c.name.toLowerCase().includes(q));
+                      const pinnedFiltered = filtered.filter(c => c.pinned);
+                      const otherFiltered = filtered.filter(c => !c.pinned);
+                      return (
+                        <>
+                          {pinnedFiltered.length > 0 && (
+                            <>
+                              <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Pinned</div>
+                              {pinnedFiltered.map(c => (
+                                <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
+                                  <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
+                                    <Star className="w-3 h-3 text-accent fill-accent shrink-0" />
+                                    {c.name}
+                                  </Link>
+                                  <div className="flex items-center gap-2">
+                                    {c.newPosts ? <span className="text-[0.7rem] text-accent font-medium">{c.newPosts} new</span> : null}
+                                    <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" title="Unpin">
+                                      <X className="w-3 h-3 text-muted hover:text-foreground" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          )}
+                          {otherFiltered.length > 0 && (
+                            <>
+                              <div className="px-3.5 pt-2 pb-1 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Other Communities</div>
+                              {otherFiltered.map(c => (
+                                <div key={c.id} className="flex items-center justify-between px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors group">
+                                  <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 no-underline text-foreground">
+                                    {c.name}
+                                  </Link>
+                                  <div className="flex items-center gap-2">
+                                    {c.newPosts ? <span className="text-[0.7rem] text-accent font-medium">{c.newPosts} new</span> : null}
+                                    <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity" title="Pin">
+                                      <Star className="w-3 h-3 text-muted hover:text-accent" />
+                                    </button>
+                                  </div>
+                                </div>
+                              ))}
+                            </>
+                          )}
+                          {filtered.length === 0 && (
+                            <div className="px-3.5 py-3 text-[0.82rem] text-muted">No communities found</div>
+                          )}
+                          <div className="h-px bg-foreground/[0.06] my-1.5" />
+                          <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+                            <Compass className="w-3.5 h-3.5 opacity-40 shrink-0" /> Browse Communities
+                          </Link>
+                          <Link to="/communities/create" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+                            <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> Create Community
+                          </Link>
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           const active = isActive(item);
           return (
             <button
@@ -109,7 +252,6 @@ const AppSidebar = () => {
           );
         })}
       </nav>
-
     </aside>
   );
 };
