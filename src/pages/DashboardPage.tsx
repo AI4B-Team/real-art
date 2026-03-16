@@ -15,6 +15,11 @@ import { useNavigate } from "react-router-dom";
 
 const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
   { id: "overview", label: "Dashboard", icon: LayoutDashboard, internal: true },
+  { id: "explore", label: "Explore", icon: Eye, internal: false, href: "/explore" },
+  { id: "collections", label: "Collections", icon: FolderOpen, internal: false, href: "/collections" },
+  { id: "communities", label: "Communities", icon: Users, internal: false, href: "/communities" },
+  { id: "challenges", label: "Challenges", icon: Award, internal: false, href: "/challenges" },
+  { id: "divider1", label: "", icon: LayoutDashboard, internal: true },
   { id: "media", label: "Media", icon: Image, internal: true },
   { id: "galleries", label: "Collections", icon: FolderOpen, internal: true },
   { id: "boards", label: "Boards", icon: Bookmark, internal: true },
