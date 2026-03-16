@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Clock, Users, Trophy, Heart, Upload, Shield, Check, ThumbsUp } from "lucide-react";
 import PageShell from "@/components/PageShell";
@@ -42,11 +42,41 @@ const creators = [
 ];
 const entryTabs = ["Top Voted", "Newest", "Most Liked"];
 
+const useCountdown = (days: number, hours: number, minutes: number) => {
+  const [timeLeft, setTimeLeft] = useState(() => {
+    return days * 86400 + hours * 3600 + minutes * 60;
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimeLeft(prev => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const d = Math.floor(timeLeft / 86400);
+  const h = Math.floor((timeLeft % 86400) / 3600);
+  const m = Math.floor((timeLeft % 3600) / 60);
+  const s = timeLeft % 60;
+
+  return { d, h, m, s };
+};
+
+const CountdownBlock = ({ value, label }: { value: number; label: string }) => (
+  <div className="flex flex-col items-center">
+    <div className="bg-foreground text-primary-foreground font-display text-[1.8rem] font-black tracking-[-0.02em] leading-none w-[52px] h-[52px] rounded-lg flex items-center justify-center">
+      {String(value).padStart(2, "0")}
+    </div>
+    <span className="text-[0.62rem] text-muted uppercase tracking-[0.1em] mt-1.5">{label}</span>
+  </div>
+);
+
 const ChallengeDetailPage = () => {
   const { id } = useParams();
   const c = challengeData;
   const [activeTab, setActiveTab] = useState("Top Voted");
   const [votedEntries, setVotedEntries] = useState<Set<number>>(new Set());
+  const countdown = useCountdown(c.daysLeft, c.hours, c.minutes);
 
   const toggleVote = (index: number) => {
     setVotedEntries(prev => {
@@ -63,11 +93,15 @@ const ChallengeDetailPage = () => {
         {/* Stats + CTA bar */}
         <div className="flex flex-wrap items-center justify-between gap-4 py-5 border-b border-foreground/[0.06]">
           <div className="flex flex-wrap items-center gap-6">
-            <div className="text-center">
-              <div className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">
-                {c.daysLeft}<span className="text-[1rem] font-bold text-muted">d</span> {c.hours}<span className="text-[1rem] font-bold text-muted">h</span> {c.minutes}<span className="text-[1rem] font-bold text-muted">m</span>
-              </div>
-              <div className="text-[0.68rem] text-muted uppercase tracking-[0.1em]">Remaining</div>
+            {/* Countdown */}
+            <div className="flex items-center gap-1.5">
+              <CountdownBlock value={countdown.d} label="Days" />
+              <span className="text-muted font-display text-[1.4rem] font-bold mb-4">:</span>
+              <CountdownBlock value={countdown.h} label="Hours" />
+              <span className="text-muted font-display text-[1.4rem] font-bold mb-4">:</span>
+              <CountdownBlock value={countdown.m} label="Min" />
+              <span className="text-muted font-display text-[1.4rem] font-bold mb-4">:</span>
+              <CountdownBlock value={countdown.s} label="Sec" />
             </div>
             <div className="w-px h-8 bg-foreground/[0.08]" />
             <div className="text-center">
@@ -81,10 +115,10 @@ const ChallengeDetailPage = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[0.82rem] font-semibold">
-              <ThumbsUp className="w-4 h-4" /> Vote for your favorite
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent/10 border border-accent/20 text-accent text-[0.82rem] font-semibold capitalize">
+              <ThumbsUp className="w-4 h-4" /> Vote For Your Favorite
             </div>
-            <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-6 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors">
+            <button className="flex items-center gap-2 bg-foreground text-primary-foreground px-6 py-3 rounded-lg text-[0.86rem] font-semibold hover:bg-accent transition-colors capitalize">
               <Upload className="w-4 h-4" /> Submit Your Entry
             </button>
           </div>
@@ -94,7 +128,7 @@ const ChallengeDetailPage = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-10 py-10">
           <div>
             {/* Description */}
-            <h2 className="font-display text-[1.6rem] font-black tracking-[-0.03em] mb-4">The Brief</h2>
+            <h2 className="font-display text-[1.6rem] font-black tracking-[-0.03em] mb-4 capitalize">The Brief</h2>
             {c.longDesc.split("\n").map((p, i) => (
               <p key={i} className="text-[0.88rem] text-muted leading-[1.75] mb-4">{p}</p>
             ))}
@@ -102,13 +136,13 @@ const ChallengeDetailPage = () => {
             {/* Entries */}
             <div className="mt-10">
               <div className="flex items-center justify-between mb-5">
-                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em]">Entries</h2>
+                <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] capitalize">Entries</h2>
                 <div className="flex items-center gap-1">
                   {entryTabs.map(tab => (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(tab)}
-                      className={`px-3 py-1.5 rounded-md text-[0.78rem] font-medium transition-colors ${activeTab === tab ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}
+                      className={`px-3 py-1.5 rounded-md text-[0.78rem] font-medium transition-colors capitalize ${activeTab === tab ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}
                     >
                       {tab}
                     </button>
@@ -128,7 +162,6 @@ const ChallengeDetailPage = () => {
                           style={{ height: heights[i % heights.length], objectFit: "cover" }}
                         />
                       </Link>
-                      {/* Vote button - always visible */}
                       <button
                         onClick={(e) => { e.preventDefault(); toggleVote(i); }}
                         className={`absolute top-2.5 right-2.5 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.72rem] font-bold transition-all ${
@@ -161,7 +194,7 @@ const ChallengeDetailPage = () => {
             <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Trophy className="w-4 h-4 text-accent" />
-                <span className="font-semibold text-[0.9rem]">Prize Breakdown</span>
+                <span className="font-semibold text-[0.9rem] capitalize">Prize Breakdown</span>
               </div>
               <div className="flex flex-col gap-3">
                 {c.prizes.map((p, i) => (
@@ -180,7 +213,7 @@ const ChallengeDetailPage = () => {
             <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
               <div className="flex items-center gap-2 mb-4">
                 <Shield className="w-4 h-4 text-accent" />
-                <span className="font-semibold text-[0.9rem]">Rules</span>
+                <span className="font-semibold text-[0.9rem] capitalize">Rules</span>
               </div>
               <div className="flex flex-col gap-2">
                 {c.rules.map((rule, i) => (
@@ -196,9 +229,9 @@ const ChallengeDetailPage = () => {
             <div className="bg-foreground rounded-xl p-5 relative overflow-hidden">
               <div className="absolute -right-6 -top-6 w-28 h-28 rounded-full opacity-10"
                 style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
-              <div className="font-display text-[1.3rem] font-black text-primary-foreground mb-2">Ready to enter?</div>
+              <div className="font-display text-[1.3rem] font-black text-primary-foreground mb-2 capitalize">Ready To Enter?</div>
               <p className="text-[0.78rem] text-primary-foreground/50 leading-[1.6] mb-4">Free to enter. {c.daysLeft} days remaining. Up to 3 submissions.</p>
-              <button className="w-full flex items-center justify-center gap-2 bg-accent text-primary-foreground text-[0.84rem] font-semibold py-2.5 rounded-lg hover:bg-accent/90 transition-colors">
+              <button className="w-full flex items-center justify-center gap-2 bg-accent text-primary-foreground text-[0.84rem] font-semibold py-2.5 rounded-lg hover:bg-accent/90 transition-colors capitalize">
                 <Upload className="w-4 h-4" /> Submit Entry
               </button>
             </div>
