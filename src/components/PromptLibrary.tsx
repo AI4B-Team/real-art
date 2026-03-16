@@ -77,7 +77,7 @@ const PromptLibrary = () => {
                   </div>
                   <div>
                     <div className="font-semibold text-[0.88rem]">{pack.title}</div>
-                    <div className="text-[0.7rem] text-muted">by {pack.creator}</div>
+                    <div className="text-[0.7rem] text-muted">by {pack.creator.toLowerCase()}</div>
                   </div>
                 </div>
                 <span className={`text-[0.75rem] font-bold px-3 py-1 rounded-md ${pack.price === "Free" ? "bg-accent/10 text-accent" : "bg-foreground/[0.06] text-foreground"}`}>

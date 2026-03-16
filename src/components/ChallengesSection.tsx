@@ -70,7 +70,7 @@ const ChallengesSection = () => {
               )}
               <div className="absolute bottom-0 left-0 right-0 p-3.5" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.82), transparent)" }}>
                 <div className="text-[0.78rem] text-primary-foreground font-semibold">{w.name}</div>
-                <div className="text-[0.7rem] text-primary-foreground/55">{w.creator}</div>
+                <div className="text-[0.7rem] text-primary-foreground/55">{w.creator.toLowerCase()}</div>
               </div>
             </div>
           ))}

@@ -95,7 +95,7 @@ const LeaderboardPage = () => {
                     <div className={`font-bold text-[0.75rem] px-2.5 py-0.5 rounded-full inline-block mb-2 ${rankBadge(creator.rank)}`}>
                       #{creator.rank}
                     </div>
-                    <div className="font-semibold text-primary-foreground text-[0.88rem]">{creator.name}</div>
+                    <div className="font-semibold text-primary-foreground text-[0.88rem]">{creator.name.toLowerCase()}</div>
                     <div className="text-[0.72rem] text-primary-foreground/40 mb-3">{creator.handle}</div>
                     <div className="font-display font-black text-[1.5rem] tracking-[-0.02em] text-primary-foreground leading-none">{creator.pts}</div>
                     <div className="text-[0.65rem] text-primary-foreground/30 uppercase tracking-[0.1em]">Points</div>
@@ -154,7 +154,7 @@ const LeaderboardPage = () => {
                       {creator.init}
                     </div>
                     <div>
-                      <div className="font-semibold text-[0.88rem]">{creator.name}</div>
+                      <div className="font-semibold text-[0.88rem]">{creator.name.toLowerCase()}</div>
                       <div className="text-[0.73rem] text-muted">{creator.handle}</div>
                     </div>
                     <div className="ml-1">{changeIcon(creator.change)}</div>

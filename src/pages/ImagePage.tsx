@@ -423,7 +423,7 @@ const ImagePage = () => {
                         <img src={`https://images.unsplash.com/${photo}?w=120&h=120&fit=crop&q=80`} alt="" className="w-20 h-20 rounded-xl object-cover shrink-0" />
                         <div>
                           <div className="font-semibold text-[0.9rem] mb-1">{imageTitle}</div>
-                          <div className="text-[0.75rem] text-muted">by {creator.name}</div>
+                          <div className="text-[0.75rem] text-muted">by {creator.name.toLowerCase()}</div>
                         </div>
                       </div>
                       <div className="bg-card border border-foreground/[0.06] rounded-xl p-4 mb-5">
@@ -670,7 +670,7 @@ const ImagePage = () => {
                         {r.style}
                       </div>
                       <div className="absolute bottom-0 left-0 right-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
-                        <div className="text-[0.72rem] text-primary-foreground/80">{r.creator}</div>
+                        <div className="text-[0.72rem] text-primary-foreground/80">{r.creator.toLowerCase()}</div>
                       </div>
                     </Link>
                   ))}

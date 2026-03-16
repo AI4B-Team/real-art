@@ -280,7 +280,7 @@ const CreatorPage = () => {
           <ChevronRight className="w-3 h-3 opacity-30" />
           <Link to="/creators" className="hover:text-foreground transition-colors">Creators</Link>
           <ChevronRight className="w-3 h-3 opacity-30" />
-          <span className="text-foreground">{creator.name}</span>
+          <span className="text-foreground">{creator.name.toLowerCase()}</span>
         </div>
 
         <div className="px-6 md:px-12 pb-8 max-w-[1440px] mx-auto">
@@ -308,7 +308,7 @@ const CreatorPage = () => {
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3">
                   <div>
                     <div className="flex items-center gap-3 mb-1 flex-wrap">
-                      <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-none">{creator.name}</h1>
+                      <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-none">{creator.name.toLowerCase()}</h1>
                       {/* Top badges */}
                       {creator.badges.slice(0, 2).map(b => {
                         const Icon = b.icon;
@@ -458,7 +458,7 @@ const CreatorPage = () => {
                 </Link>
                 <div>
                   <h3 className="font-display text-[1.4rem] font-black text-primary-foreground mb-1">
-                    Signature piece by {creator.name}
+                    Signature piece by {creator.name.toLowerCase()}
                   </h3>
                   <p className="text-[0.82rem] text-primary-foreground/40 mb-3">{creator.pinnedImage.title}</p>
                   <div className="flex gap-5 mb-4">
@@ -640,7 +640,7 @@ const CreatorPage = () => {
           {activeTab === "about" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h2 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-3">About {creator.name}</h2>
+                <h2 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-3">About {creator.name.toLowerCase()}</h2>
                 <p className="text-[0.88rem] text-muted leading-[1.7] mb-6">{creator.bio}</p>
 
                 {/* Tools */}
@@ -733,7 +733,7 @@ const CreatorPage = () => {
         <div className="fixed inset-0 z-[500] flex items-center justify-center bg-foreground/50 backdrop-blur-sm px-4" onClick={() => setShowShare(false)}>
           <div className="bg-card rounded-2xl w-full max-w-[400px] shadow-2xl p-6" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-display text-[1.1rem] font-bold">Share {creator.name}'s profile</h2>
+              <h2 className="font-display text-[1.1rem] font-bold">Share {creator.name.toLowerCase()}'s Profile</h2>
               <button onClick={() => setShowShare(false)} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors text-muted">
                 <X className="w-3.5 h-3.5" />
               </button>
@@ -773,7 +773,7 @@ const CreatorPage = () => {
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-primary-foreground" style={{ background: creator.color }}>
                   {creator.avatar}
                 </div>
-                <h2 className="font-semibold text-[0.95rem]">Message {creator.name}</h2>
+                <h2 className="font-semibold text-[0.95rem]">Message {creator.name.toLowerCase()}</h2>
               </div>
               <button onClick={() => setShowContact(false)} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors text-muted">
                 <X className="w-3.5 h-3.5" />
