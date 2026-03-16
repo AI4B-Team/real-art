@@ -160,7 +160,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
                     <div className="font-display text-[2rem] font-black">${(price! / 100).toFixed(2)}</div>
                   </div>
                   <div className="space-y-2 mb-5">
-                    {["Full collection access forever", "Download all images", "Access on any device"].map(f => (
+                    {["Full Collection Access Forever", "Download All Images", "Access On Any Device"].map(f => (
                       <div key={f} className="flex items-center gap-2.5 text-[0.82rem]">
                         <Check className="w-3 h-3 text-green-500 shrink-0" />{f}
                       </div>
