@@ -240,8 +240,9 @@ const ImagePage = () => {
                 <img
                   src={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
                   alt={imageTitle}
-                  className="w-full block"
+                  className={`w-full block transition-opacity duration-500 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
                   style={{ maxHeight: "75vh", objectFit: "cover" }}
+                  onLoad={() => setImgLoaded(true)}
                 />
                 {hasShop && (
                   <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-accent text-primary-foreground text-[0.68rem] font-bold tracking-[0.08em] uppercase px-3 py-1.5 rounded-lg shadow-md">
