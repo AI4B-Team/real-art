@@ -57,12 +57,16 @@ const CommunitiesSection = () => {
                     <Users className="w-[11px] h-[11px]" />
                     {com.members.toLocaleString()}
                   </span>
-                  <span
-                    onClick={(e) => e.preventDefault()}
-                    className="text-[0.76rem] font-bold px-4 py-[7px] rounded-lg border-none cursor-pointer bg-foreground text-primary-foreground hover:bg-accent transition-colors"
+                  <button
+                    onClick={(e) => handleJoin(e, i, com.free)}
+                    className={`text-[0.76rem] font-bold px-4 py-[7px] rounded-lg border-none cursor-pointer transition-colors ${
+                      joined[i]
+                        ? "bg-green-600/10 text-green-700 cursor-default"
+                        : "bg-foreground text-primary-foreground hover:bg-accent"
+                    }`}
                   >
-                    Join Now
-                  </span>
+                    {joined[i] ? <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Joined</span> : com.free ? "Join Free" : "Enter Code"}
+                  </button>
                 </div>
               </div>
             </Link>
