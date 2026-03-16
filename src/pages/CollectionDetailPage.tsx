@@ -84,9 +84,8 @@ const CollectionDetailPage = () => {
 
   if (!collection) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-16 flex items-center justify-center min-h-[60vh]">
+      <PageShell>
+        <div className="flex items-center justify-center min-h-[60vh]">
           <div className="text-center">
             <h1 className="font-display text-[2rem] font-black mb-2">Collection not found</h1>
             <Link to="/collections" className="text-accent text-[0.88rem] hover:underline">Browse collections</Link>
