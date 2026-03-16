@@ -278,15 +278,15 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
         </div>
         <div className="p-4">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-[0.92rem]">{col.name}</h3>
+             <h3 className="font-semibold text-[0.92rem]">{col.title}</h3>
             <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${col.visibility === "public" ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
               {col.visibility === "public" ? "Public" : "Private"}
             </span>
           </div>
           <div className="flex items-center gap-3 text-[0.75rem] text-muted flex-wrap">
-            {col.images > 0 && <span className="flex items-center gap-1"><Image className="w-3 h-3" />{col.images} images</span>}
-            {col.videos > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{col.videos} videos</span>}
-            {col.music > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{col.music} tracks</span>}
+            {(col.imageCount || 0) > 0 && <span className="flex items-center gap-1"><Image className="w-3 h-3" />{col.imageCount} images</span>}
+            {(col.videoCount || 0) > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{col.videoCount} videos</span>}
+            {(col.musicCount || 0) > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{col.musicCount} tracks</span>}
             {col.visibility === "private" && col.members > 0 && (
               <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span></>
             )}
