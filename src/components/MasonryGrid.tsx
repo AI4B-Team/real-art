@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Star, TrendingUp, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
@@ -24,7 +24,6 @@ const photoPool = [
   "photo-1535378917042-10a22c95931a", "photo-1516116216299-8a41f1bab3e0",
 ];
 
-// Generate 100 images by cycling through the pool
 const photos = Array.from({ length: 100 }, (_, i) => photoPool[i % photoPool.length]);
 
 const isVideo = (i: number) => [3, 7, 14, 22, 31, 38, 45, 53, 62, 71, 78, 85, 93].includes(i);
@@ -45,7 +44,6 @@ const badgeMap: Record<number, { label: string; Icon: React.FC<{ className?: str
 
 const categories = ["Abstract", "Portraits", "People", "Nature", "Architecture", "Fantasy", "3D Art", "Fashion", "Sci-Fi", "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal", "Trending", "New", "Popular"];
 
-// Deterministic category assignment
 const categoryMap: Record<number, string[]> = {};
 for (let i = 0; i < 100; i++) {
   const cats: string[] = [];
@@ -57,7 +55,6 @@ for (let i = 0; i < 100; i++) {
   categoryMap[i] = [...new Set(cats)];
 }
 
-// Sponsored ad positions (inserted after these indices)
 const sponsoredAds = [
   { afterIndex: 9, brandName: "Adobe Firefly", imageUrl: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&h=500&fit=crop&q=80", destinationUrl: "https://firefly.adobe.com" },
   { afterIndex: 29, brandName: "Midjourney", imageUrl: "https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=400&h=500&fit=crop&q=80", destinationUrl: "https://midjourney.com" },
@@ -73,8 +70,25 @@ interface MasonryGridProps {
 }
 
 const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
-  const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; }
+  });
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+
+  useEffect(() => {
+    const sync = () => {
+      try { setIsLoggedIn(localStorage.getItem("ra_auth") === "1"); } catch {}
+    };
+
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener("ra_auth_changed", sync);
+
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("ra_auth_changed", sync);
+    };
+  }, []);
 
   const allImages = photos.map((photo, i) => ({ photo, index: i, isVideo: isVideo(i) }));
 
@@ -104,7 +118,6 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
     );
   }
 
-  // Build items with sponsored ads interleaved
   const itemsWithAds: Array<{ type: "image"; data: typeof visible[0] } | { type: "ad"; data: typeof sponsoredAds[0] }> = [];
   let adIdx = 0;
   visible.forEach((img) => {
