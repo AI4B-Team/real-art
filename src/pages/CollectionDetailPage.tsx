@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Bookmark, Lock, Globe, Plus, Check, Copy, X, Link2 } from "lucide-react";
+import { getCollections, type UnifiedCollection } from "@/lib/collectionStore";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
