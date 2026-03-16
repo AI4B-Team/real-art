@@ -52,7 +52,7 @@ const collectionsData: Record<string, {
   "g2": {
     id: "g2", name: "Premium Prompts",
     desc: "Curated prompt library — exclusive access.",
-    free: false, code: "XK9F2M", members: 127, slug: "premium-prompts",
+    visibility: "private", accessCode: "XK9F2M", members: 127, slug: "premium-prompts",
     items: [
       { id: "i1", type: "image", title: "Avatar Series 01", photo: "photo-1604881991720-f91add269bed", downloads: "980", likes: "420", views: "14,200" },
       { id: "i2", type: "image", title: "Neon Portrait", photo: "photo-1557682250-33bd709cbe85", downloads: "740", likes: "318", views: "9,800" },
