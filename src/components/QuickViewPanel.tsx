@@ -114,7 +114,7 @@ export default function QuickViewPanel() {
     if (!image) return;
     seedDemoComments(image.id);
     setComments(getCommentsForImage(image.id));
-    setLiked(false);
+    try { setLiked(localStorage.getItem(`ra_liked_${image.id}`) === "1"); } catch { setLiked(false); }
     setLikeCount(parseInt(stat.likes.replace(",", "")));
     const sync = () => setComments(getCommentsForImage(image.id));
     window.addEventListener("ra_comments_changed", sync);
