@@ -91,7 +91,7 @@ const HeroSection = () => {
           </div>
           <input
             className="flex-1 border-none outline-none font-body text-[0.97rem] font-light px-[22px] bg-transparent text-foreground placeholder:text-foreground/30"
-            placeholder="Search millions of free visuals…"
+            placeholder={`Search millions of free ${selectedType.toLowerCase()}…`}
             value={query}
             onChange={e => setQuery(e.target.value)}
             onKeyDown={e => e.key === "Enter" && handleSearch()}
