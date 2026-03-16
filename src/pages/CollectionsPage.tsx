@@ -156,7 +156,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
               ) : (
                 <>
                   <div className="text-center mb-5">
-                    <div className="text-[0.78rem] text-muted mb-1">Lifetime access</div>
+                    <div className="text-[0.78rem] text-muted mb-1">Lifetime Access</div>
                     <div className="font-display text-[2rem] font-black">${(price! / 100).toFixed(2)}</div>
                   </div>
                   <div className="space-y-2 mb-5">
