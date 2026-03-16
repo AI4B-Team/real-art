@@ -9,10 +9,12 @@ interface AuthLayoutProps {
 }
 
 const NO_SIDEBAR_ROUTES = ["/login", "/signup"];
+const COLLAPSED_SIDEBAR_PATTERNS = [/^\/image\//];
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [userOverride, setUserOverride] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -28,10 +30,30 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
     };
   }, [location.pathname]);
 
+  // Auto-collapse sidebar on certain routes
+  const shouldAutoCollapse = COLLAPSED_SIDEBAR_PATTERNS.some(p => p.test(location.pathname));
+
+  useEffect(() => {
+    if (shouldAutoCollapse) {
+      setSidebarCollapsed(true);
+      setUserOverride(false);
+    } else {
+      // Restore expanded when navigating away from auto-collapse routes
+      if (!userOverride) {
+        setSidebarCollapsed(false);
+      }
+    }
+  }, [shouldAutoCollapse]);
+
+  const handleSetCollapsed = (v: boolean) => {
+    setSidebarCollapsed(v);
+    setUserOverride(true);
+  };
+
   const showSidebar = isLoggedIn && !NO_SIDEBAR_ROUTES.includes(location.pathname);
 
   return (
-    <LayoutContext.Provider value={{ hasGlobalNavbar: true, sidebarCollapsed, setSidebarCollapsed }}>
+    <LayoutContext.Provider value={{ hasGlobalNavbar: true, sidebarCollapsed, setSidebarCollapsed: handleSetCollapsed }}>
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="pt-16">
