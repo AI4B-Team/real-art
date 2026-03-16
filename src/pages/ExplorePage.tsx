@@ -107,6 +107,9 @@ const ExplorePage = () => {
       if (typeDropRef.current && !typeDropRef.current.contains(e.target as Node)) {
         setTypeDropdownOpen(false);
       }
+      if (sortDropRef.current && !sortDropRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
