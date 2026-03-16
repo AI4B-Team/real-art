@@ -43,6 +43,21 @@ const imageTitles = [
   "Cyberpunk City","Digital Avatar","Forest Canopy","Abstract Fluid",
 ];
 
+const imageStats = [
+  { views: "24.8K", downloads: "3,412", likes: "847", saves: "234", shares: "128" },
+  { views: "31.4K", downloads: "2,180", likes: "612", saves: "189", shares: "94" },
+  { views: "18.6K", downloads: "1,940", likes: "534", saves: "156", shares: "73" },
+  { views: "22.1K", downloads: "1,620", likes: "441", saves: "129", shares: "61" },
+  { views: "14.9K", downloads: "1,280", likes: "388", saves: "107", shares: "52" },
+  { views: "19.3K", downloads: "1,090", likes: "302", saves: "88", shares: "44" },
+  { views: "27.7K", downloads: "2,640", likes: "723", saves: "201", shares: "112" },
+  { views: "11.2K", downloads: "890", likes: "256", saves: "74", shares: "38" },
+  { views: "35.1K", downloads: "3,820", likes: "982", saves: "287", shares: "149" },
+  { views: "16.4K", downloads: "1,410", likes: "407", saves: "118", shares: "57" },
+  { views: "9.8K", downloads: "740", likes: "213", saves: "61", shares: "29" },
+  { views: "28.9K", downloads: "2,950", likes: "801", saves: "222", shares: "118" },
+];
+
 const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
 
 // Shop similar items (static for now)
@@ -62,6 +77,8 @@ const ImagePage = () => {
   const photo = searchParams.get("photo") || photos[idx];
   const creator = creators[idx % creators.length];
   const imageTitle = imageTitles[idx % imageTitles.length];
+  const imageStatData = imageStats[idx % imageStats.length];
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   // Seed demo links on first load, then resolve for this image
   useEffect(() => { seedDemoLinks(); }, []);
@@ -223,8 +240,9 @@ const ImagePage = () => {
                 <img
                   src={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
                   alt={imageTitle}
-                  className="w-full block"
+                  className={`w-full block transition-opacity duration-500 ${imgLoaded ? "opacity-100" : "opacity-0"}`}
                   style={{ maxHeight: "75vh", objectFit: "cover" }}
+                  onLoad={() => setImgLoaded(true)}
                 />
                 {hasShop && (
                   <div className="absolute top-4 left-4 flex items-center gap-1.5 bg-accent text-primary-foreground text-[0.68rem] font-bold tracking-[0.08em] uppercase px-3 py-1.5 rounded-lg shadow-md">
@@ -240,7 +258,7 @@ const ImagePage = () => {
                   className={`flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border transition-colors ${liked ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
                 >
                   <Heart className={`w-4 h-4 ${liked ? "fill-destructive text-destructive" : ""}`} />
-                  {liked ? "847" : "847"}
+                  {imageStatData.likes}
                 </button>
                 <button
                   onClick={() => setBoardModalOpen(true)}
@@ -783,11 +801,11 @@ const ImagePage = () => {
                   {imageTitle}
                 </h1>
                 <div className="flex items-center gap-4 mt-3 text-[0.82rem] text-muted flex-wrap">
-                  <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> 24.8K views</span>
-                  <span className="flex items-center gap-1.5"><Download className="w-3.5 h-3.5" /> 3,412 downloads</span>
-                  <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> 847 likes</span>
-                  <span className="flex items-center gap-1.5"><Bookmark className="w-3.5 h-3.5" /> 234 saves</span>
-                  <span className="flex items-center gap-1.5"><Share2 className="w-3.5 h-3.5" /> 128 shares</span>
+                  <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> {imageStatData.views} views</span>
+                  <span className="flex items-center gap-1.5"><Download className="w-3.5 h-3.5" /> {imageStatData.downloads} downloads</span>
+                  <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> {imageStatData.likes} likes</span>
+                  <span className="flex items-center gap-1.5"><Bookmark className="w-3.5 h-3.5" /> {imageStatData.saves} saves</span>
+                  <span className="flex items-center gap-1.5"><Share2 className="w-3.5 h-3.5" /> {imageStatData.shares} shares</span>
                 </div>
               </div>
 

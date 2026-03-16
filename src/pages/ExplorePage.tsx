@@ -67,6 +67,9 @@ const filters = [
   "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal",
 ];
 
+const downloadWeights = [3412,2180,1940,1620,1410,1120,842,3820,890,2950,1280,1090,2640,740,1820,960,1530,680,2100,1250,900,600,1100,800,1300,700,500,400];
+const likesWeights = [847,612,534,441,407,302,256,982,213,801,388,302,723,188,541,267,412,156,634,345,200,150,300,220,380,180,120,100];
+
 const sortOptions = ["Most Relevant", "Newest First", "Most Downloaded", "Most Liked"];
 
 const searchTypes = [
@@ -87,24 +90,34 @@ const ExplorePage = () => {
   const [sortOpen, setSortOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(20);
   const typeDropRef = useRef<HTMLDivElement>(null);
+  const sortDropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (typeDropRef.current && !typeDropRef.current.contains(e.target as Node)) {
         setTypeDropdownOpen(false);
       }
+      if (sortDropRef.current && !sortDropRef.current.contains(e.target as Node)) {
+        setSortOpen(false);
+      }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
   }, []);
 
-  const filteredImages = imageData.filter(img => {
+  const filteredImages = (() => {
     const q = query.trim().toLowerCase();
     const cat = activeFilter.toLowerCase();
-    const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
-    const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
-    return matchQuery && matchCat;
-  });
+    const base = imageData.filter(img => {
+      const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
+      const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
+      return matchQuery && matchCat;
+    });
+    if (sort === "Newest First") return [...base].sort((a, b) => imageData.indexOf(b) - imageData.indexOf(a));
+    if (sort === "Most Downloaded") return [...base].sort((a, b) => (downloadWeights[imageData.indexOf(b)] || 0) - (downloadWeights[imageData.indexOf(a)] || 0));
+    if (sort === "Most Liked") return [...base].sort((a, b) => (likesWeights[imageData.indexOf(b)] || 0) - (likesWeights[imageData.indexOf(a)] || 0));
+    return base;
+  })();
 
   return (
     <PageShell>
@@ -150,7 +163,7 @@ const ExplorePage = () => {
               </div>
 
               {/* Sort */}
-              <div className="relative">
+              <div ref={sortDropRef} className="relative">
                 <button
                   onClick={() => setSortOpen(!sortOpen)}
                   className="flex items-center gap-2 px-4 h-11 rounded-xl border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors bg-background"
@@ -208,6 +221,19 @@ const ExplorePage = () => {
         {/* Grid */}
         <div className="px-6 md:px-12 pb-16">
           <div className="max-w-[1440px] mx-auto">
+            {filteredImages.length === 0 && (
+              <div className="text-center py-20">
+                <Search className="w-7 h-7 text-muted opacity-40 mx-auto mb-3" />
+                <h3 className="font-display text-[1.4rem] font-black mb-2">No results</h3>
+                <p className="text-[0.84rem] text-muted mb-5">Try a different keyword, category, or clear your filters.</p>
+                <button
+                  onClick={() => { setQuery(""); setActiveType("Images"); setActiveFilter("All"); }}
+                  className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors mx-auto"
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
             <div className="masonry-grid">
               {filteredImages.slice(0, visibleCount).map((img, i) => {
                 const cr = creators[i % creators.length];
@@ -237,6 +263,18 @@ const ExplorePage = () => {
                         style={{ height: h, objectFit: "cover" }}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                       />
+                      {/* Badge */}
+                      {badgeMap[i] && (
+                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-foreground/80 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-bold px-2.5 py-1 rounded-lg">
+                          {badgeMap[i].icon} {badgeMap[i].label}
+                        </div>
+                      )}
+                      {/* AI label */}
+                      {!badgeMap[i] && (
+                        <div className="absolute top-2.5 left-2.5 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-md">
+                          {isVideo(i) ? "AI Video" : "AI Art"}
+                        </div>
+                      )}
                       {/* Hover overlay with all actions */}
                       <ImageCardOverlay index={i} isVideo={isVideo(i)} photo={img.photo} title={img.title} />
                     </div>

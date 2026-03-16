@@ -1,6 +1,7 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { ArrowLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Bookmark, Lock, Globe, Plus, Check, Copy, X, Link2 } from "lucide-react";
+import { getCollections, type UnifiedCollection } from "@/lib/collectionStore";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
@@ -61,12 +62,31 @@ const CollectionDetailPage = () => {
   useEffect(() => {
     if (!id) return;
 
-    // Check static collections first
+    // Priority 1: User's own collections from localStorage
+    const userCols = getCollections();
+    const userCol = userCols.find(c => c.id === id);
+    if (userCol) {
+      setCollection({ id: userCol.id, name: userCol.title, description: userCol.description || null, cover_url:
+        userCol.coverPhoto ? `https://images.unsplash.com/${userCol.coverPhoto}?w=1200&h=400&fit=crop&q=80` : userCol.thumbs[0]
+        ? `https://images.unsplash.com/${userCol.thumbs[0]}?w=1200&h=400&fit=crop&q=80` : null, is_public: userCol.visibility
+        === "public", user_id: "me" });
+      const userDisplay = (() => { try { return localStorage.getItem("ra_display") || "You"; } catch { return "You"; } })();
+      setCreator({ display_name: userDisplay, username: localStorage.getItem("ra_username") });
+      const imgs: CollectionImage[] = userCol.items.map((item, i) => ({
+        id: item.imageId, image_url: `https://images.unsplash.com/${item.photo}?w=400&h=${heights[i %
+        heights.length]}&fit=crop&q=78`, title: item.title, sort_order: i,
+      }));
+      setImages(imgs);
+      setIsStatic(false);
+      setLoading(false);
+      return;
+    }
+
+    // Priority 2: Static collections
     const sc = staticCollections[id];
     if (sc) {
       setCollection({ id, name: sc.name, description: sc.description || null, cover_url: `https://images.unsplash.com/${sc.photo}?w=1200&h=400&fit=crop&q=80`, is_public: true, user_id: "" });
       setCreator({ display_name: sc.curator, username: null });
-      // Generate sample images for this collection
       const count = Math.min(sc.count, 16);
       const imgs: CollectionImage[] = Array.from({ length: count }, (_, i) => ({
         id: `static-${i}`,
@@ -80,6 +100,7 @@ const CollectionDetailPage = () => {
       return;
     }
 
+    // Priority 3: Supabase
     const fetchData = async () => {
       setLoading(true);
       const { data: col } = await supabase.from("collections").select("*").eq("id", id).single();
@@ -100,8 +121,20 @@ const CollectionDetailPage = () => {
   if (loading) {
     return (
       <PageShell>
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-8 h-8 animate-spin text-muted" />
+        <div className="px-6 md:px-12 pt-8 pb-16 max-w-[1440px] mx-auto">
+          {/* Skeleton banner */}
+          <div className="w-full h-[220px] rounded-2xl bg-foreground/[0.06] animate-pulse mb-6" />
+          {/* Skeleton title row */}
+          <div className="flex items-center gap-4 mb-6">
+            <div className="h-8 w-[280px] rounded-lg bg-foreground/[0.06] animate-pulse" />
+            <div className="h-6 w-[120px] rounded-lg bg-foreground/[0.06] animate-pulse" />
+          </div>
+          {/* Skeleton masonry grid */}
+          <div className="masonry-grid">
+            {Array.from({ length: 8 }, (_, i) => (
+              <div key={i} className="masonry-item rounded-xl bg-foreground/[0.06] animate-pulse" style={{ height: heights[i % heights.length] }} />
+            ))}
+          </div>
         </div>
       </PageShell>
     );
