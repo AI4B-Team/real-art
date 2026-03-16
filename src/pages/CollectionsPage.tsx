@@ -415,7 +415,7 @@ export default function CollectionsPage() {
         <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex items-center gap-0">
           {TABS.map(t => {
             const Icon = t.icon;
-            const count = t.id === "mine" ? myCollections.length : t.id === "curated" ? curatedCollections.length : communityCollections.length + curatedCollections.length;
+            const count = t.id === "mine" ? myCollections.length : communityCollections.length + curatedCollections.length;
             return (
               <button
                 key={t.id}
