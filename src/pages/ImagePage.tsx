@@ -6,6 +6,7 @@ import {
   Briefcase, Youtube, Instagram, Globe2, Package, Monitor, Megaphone, MessageCircleOff, MessageCircle
 } from "lucide-react";
 import SponsoredCard from "@/components/SponsoredCard";
+import { supabase } from "@/integrations/supabase/client";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
 import PageShell from "@/components/PageShell";
 import { resolveLink, trackClick, seedDemoLinks, type ImageLink } from "@/lib/linkStore";
@@ -68,6 +69,13 @@ const ImagePage = () => {
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [promptVisible, setPromptVisible] = useState(false);
+
+  // Auto-reveal prompts for logged-in users
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setPromptVisible(true);
+    });
+  }, []);
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
   const [creditCopied, setCreditCopied] = useState(false);
