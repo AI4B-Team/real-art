@@ -478,7 +478,11 @@ export default function CollectionsPage() {
                           </div>
                           <div className="absolute top-2.5 right-2.5 bg-accent text-white text-[0.6rem] font-bold px-2 py-0.5 rounded-md">Featured</div>
                         </div>
-                        <div className="p-3 text-[0.75rem] text-muted">{col.count.toLocaleString()} images</div>
+                        <div className="p-3 flex items-center gap-3 text-[0.75rem] text-muted">
+                          <span className="flex items-center gap-1"><Image className="w-3 h-3" /> {col.images}</span>
+                          <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {col.videos}</span>
+                          <span className="flex items-center gap-1"><Music className="w-3 h-3" /> {col.tracks}</span>
+                        </div>
                       </div>
                     </Link>
                   ))}
