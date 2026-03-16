@@ -225,7 +225,7 @@ const ImagePage = () => {
                 )}
               </div>
 
-              {/* Action buttons — 2x2 grid */}
+              {/* Action buttons */}
               <div className="grid grid-cols-2 gap-2 mt-4">
                 <button
                   onClick={() => setLiked(!liked)}
@@ -240,21 +240,23 @@ const ImagePage = () => {
                 >
                   <Bookmark className="w-4 h-4" /> Save
                 </button>
+              </div>
+              <div className="grid grid-cols-3 gap-2 mt-2">
                 <a
                   href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
                   download={`realart-${idx}.jpg`}
-                  className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors no-underline text-foreground"
+                  className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors no-underline text-foreground"
                 >
-                  <Download className="w-4 h-4" /> Download
+                  <Download className="w-3.5 h-3.5" /> Download
                 </a>
                 <button onClick={() => {
                   const embedCode = `<iframe src="${window.location.origin}/image/${idx}" width="600" height="400" frameborder="0" allowfullscreen></iframe>`;
                   navigator.clipboard.writeText(embedCode).catch(() => {});
-                }} className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
-                  <Code className="w-4 h-4" /> Embed
+                }} className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                  <Code className="w-3.5 h-3.5" /> Embed
                 </button>
-                <button onClick={() => setShareModalOpen(true)} className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
-                  <Share2 className="w-4 h-4" /> Share
+                <button onClick={() => setShareModalOpen(true)} className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                  <Share2 className="w-3.5 h-3.5" /> Share
                 </button>
               </div>
 
