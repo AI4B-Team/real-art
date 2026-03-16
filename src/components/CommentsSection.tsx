@@ -192,9 +192,8 @@ export default function CommentsSection({ imageId }: CommentsSectionProps) {
               <Link to="/signup" className="text-accent font-semibold hover:underline">create an account</Link>
               {" "}to leave a comment.
             </div>
-          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
