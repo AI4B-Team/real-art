@@ -231,7 +231,7 @@ export default function QuickViewPanel() {
             </Link>
 
             {/* Stats */}
-            <div className="flex items-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06]">
+            <div className="flex items-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06] flex-wrap">
               <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
                 <Eye className="w-3.5 h-3.5" /> {stat.views} <span className="text-[0.68rem]">views</span>
               </div>
@@ -240,6 +240,12 @@ export default function QuickViewPanel() {
               </div>
               <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
                 <Heart className="w-3.5 h-3.5" /> {stat.likes} <span className="text-[0.68rem]">likes</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+                <Bookmark className="w-3.5 h-3.5" /> 234 <span className="text-[0.68rem]">saves</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+                <Share2 className="w-3.5 h-3.5" /> 128 <span className="text-[0.68rem]">shares</span>
               </div>
             </div>
 
