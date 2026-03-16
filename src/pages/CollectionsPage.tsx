@@ -755,8 +755,8 @@ export default function CollectionsPage() {
                 className={`flex items-center gap-2 px-5 py-3.5 text-[0.86rem] font-medium border-b-2 -mb-px transition-colors ${activeTab === t.id ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"}`}>
                 <Icon className="w-3.5 h-3.5" />
                 {t.label}
-                {t.id === "mine" && activeCollections.length > 0 && (
-                  <span className="text-[0.68rem] bg-foreground/10 text-foreground px-1.5 py-0.5 rounded-md font-bold">{activeCollections.length}</span>
+                {count > 0 && (
+                  <span className="text-[0.68rem] bg-foreground/10 text-foreground px-1.5 py-0.5 rounded-md font-bold">{count}</span>
                 )}
               </button>
             );
