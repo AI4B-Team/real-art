@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useFollow } from "@/hooks/useFollow";
 import { useParams, Link } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Globe, Link2, Grid3X3, Bookmark, Download, Share2, Award, Eye, RefreshCw, Star,
@@ -171,7 +172,7 @@ const CreatorPage = () => {
   const { id } = useParams();
   const creator = creatorsData.find(c => c.id === id) || creatorsData[0];
   const [activeTab, setActiveTab] = useState("images");
-  const [followed, setFollowed] = useState(false);
+  const { followed, toggle: toggleFollow, loading: followLoading } = useFollow(creator.id);
   const [bioExpanded, setBioExpanded] = useState(false);
 
   // Modals
@@ -275,7 +276,8 @@ const CreatorPage = () => {
                     {!isOwnProfile && (
                       <>
                         <button
-                          onClick={() => setFollowed(!followed)}
+                          onClick={toggleFollow}
+                          disabled={followLoading}
                           className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold transition-all ${followed ? "bg-foreground/[0.08] text-foreground border border-foreground/20" : "bg-foreground text-primary-foreground hover:bg-accent"}`}
                         >
                           <UserCheck className={`w-4 h-4 ${followed ? "text-accent" : ""}`} />

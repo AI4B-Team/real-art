@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   X, Download, Heart, Bookmark, Share2, RefreshCw, Video, Pencil,
@@ -6,6 +6,7 @@ import {
   MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image, Code
 } from "lucide-react";
 import { useQuickView } from "@/context/QuickViewContext";
+import { useFollow } from "@/hooks/useFollow";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
 import { getCommentsForImage, seedDemoComments, formatRelativeTime, toggleLikeComment, type Comment } from "@/lib/commentStore";
 import { resolveLink } from "@/lib/linkStore";
@@ -82,6 +83,8 @@ export default function QuickViewPanel() {
   const { image, open, close, isOpen } = useQuickView();
   const navigate = useNavigate();
   const panelRef = useRef<HTMLDivElement>(null);
+  const creatorId = image ? creators[parseInt(image.id || "1") % creators.length].id : "1";
+  const { followed: creatorFollowed, toggle: toggleCreatorFollow } = useFollow(creatorId);
   const [liked, setLiked] = useState(false);
   const [likeCount, setLikeCount] = useState(0);
   const [boardOpen, setBoardOpen] = useState(false);
@@ -227,8 +230,11 @@ export default function QuickViewPanel() {
                 <div className="text-[0.88rem] font-semibold text-foreground">{creator.n}</div>
                 <div className="text-[0.72rem] text-muted">{creator.handle}</div>
               </div>
-              <button className="ml-auto text-[0.78rem] font-semibold text-accent border border-accent/30 px-4 py-1.5 rounded-lg hover:bg-accent/10 transition-colors" onClick={(e) => e.preventDefault()}>
-                Follow
+              <button
+                className={`ml-auto text-[0.78rem] font-semibold px-4 py-1.5 rounded-lg transition-colors ${creatorFollowed ? "bg-accent/15 text-accent border border-accent/30" : "text-accent border border-accent/30 hover:bg-accent/10"}`}
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleCreatorFollow(); }}
+              >
+                {creatorFollowed ? "Following" : "Follow"}
               </button>
             </Link>
 
