@@ -842,7 +842,7 @@ const ImagePage = () => {
           </div>
         </div>
         <Footer />
-      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} imageId={String(idx)} imagePhoto={photo} imageTitle="Cosmic Dreamscape" />
+      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} imageId={String(idx)} imagePhoto={photo} imageTitle={imageTitles[idx % imageTitles.length]} />
       <ShareModal
         open={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
