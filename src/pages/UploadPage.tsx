@@ -898,7 +898,7 @@ const UploadPage = () => {
                     ["Title", title || "—"],
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
-                    ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private collection"],
+                    ["Visibility", visibility === "public" ? "Public — Free For Everyone" : "Private Collection"],
                     ["Comments", commentsEnabled ? "Enabled" : "Disabled"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
