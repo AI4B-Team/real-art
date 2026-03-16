@@ -174,45 +174,63 @@ const ImagePage = () => {
                 )}
               </div>
 
-              {/* Action bar — Recreate dominates, Download smaller */}
-              <div className="flex items-center gap-2 mt-4 flex-wrap">
+              {/* Action buttons — 2x2 grid */}
+              <div className="grid grid-cols-2 gap-2 mt-4">
+                <button
+                  onClick={() => setLiked(!liked)}
+                  className={`flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border transition-colors ${liked ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
+                >
+                  <Heart className={`w-4 h-4 ${liked ? "fill-destructive text-destructive" : ""}`} />
+                  {liked ? "847" : "847"}
+                </button>
+                <button
+                  onClick={() => setBoardModalOpen(true)}
+                  className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors"
+                >
+                  <Bookmark className="w-4 h-4" /> Save
+                </button>
+                <a
+                  href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
+                  download={`realart-${idx}.jpg`}
+                  className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors no-underline text-foreground"
+                >
+                  <Download className="w-4 h-4" /> Download
+                </a>
+                <button onClick={() => setShareModalOpen(true)} className="flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                  <Share2 className="w-4 h-4" /> Share
+                </button>
+              </div>
+
+              {/* Recreate / Animate / Edit — full width */}
+              <div className="flex items-center gap-2 mt-3">
                 <TooltipProvider delayDuration={200}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <button
                         onClick={() => setShowRecreateModal(true)}
-                        className="flex items-center gap-2 bg-accent text-primary-foreground rounded-lg text-[0.88rem] font-bold px-6 py-3 hover:bg-accent/85 transition-colors shadow-md"
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors"
                       >
-                        <Sparkles className="w-4.5 h-4.5" /> Recreate
+                        <RefreshCw className="w-4 h-4" /> Recreate
                       </button>
                     </TooltipTrigger>
                     <TooltipContent side="bottom" className="bg-foreground text-primary-foreground border-none max-w-[240px] p-3">
                       <p className="text-[0.75rem] font-semibold mb-1">One-click recreate</p>
-                      <p className="text-[0.7rem] opacity-70 leading-[1.5]">Opens REAL CREATOR with prompt, style & settings preloaded. Just hit generate.</p>
+                      <p className="text-[0.7rem] opacity-70 leading-[1.5]">Opens REAL CREATOR with prompt, style & settings preloaded.</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
-                <button className="flex items-center gap-2 bg-foreground/[0.08] text-foreground rounded-lg text-[0.8rem] font-medium px-4 py-2.5 hover:bg-foreground/[0.14] transition-colors border border-foreground/[0.1]">
-                  <Download className="w-3.5 h-3.5" /> Download Free
+                <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                  <Layout className="w-4 h-4" /> Animate
                 </button>
-                <button
-                  onClick={() => setLiked(!liked)}
-                  className={`flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border transition-colors ${liked ? "bg-destructive/10 border-destructive/30 text-destructive" : "bg-card border-foreground/[0.12] hover:border-foreground/30"}`}
-                >
-                  <Heart className={`w-3.5 h-3.5 ${liked ? "fill-destructive text-destructive" : ""}`} />
-                  {liked ? "Liked" : "Like"}
+                <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                  <Pencil className="w-4 h-4" /> Edit
                 </button>
-                <button
-                  onClick={() => setBoardModalOpen(true)}
-                  className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors"
-                >
-                  <Bookmark className="w-3.5 h-3.5" /> Save
-                </button>
-                <button onClick={() => setShareModalOpen(true)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
-                  <Share2 className="w-3.5 h-3.5" /> Share
-                </button>
-                <button onClick={() => setShowEmbed(true)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-accent/40 hover:text-accent transition-colors">
-                  <Code className="w-3.5 h-3.5" /> Embed
+              </div>
+
+              {/* Embed */}
+              <div className="mt-1">
+                <button onClick={() => setShowEmbed(true)} className="flex items-center gap-2 text-[0.78rem] font-medium text-muted hover:text-accent transition-colors">
+                  <Code className="w-3.5 h-3.5" /> Embed This Image
                 </button>
               </div>
 
