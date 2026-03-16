@@ -113,7 +113,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
         {price && price > 0 && (
           <div className="flex border-b border-foreground/[0.06]">
             {([{ id: "pay" as const, label: `Buy Access — $${(price / 100).toFixed(2)}`, icon: CreditCard },
-              { id: "code" as const, label: "Enter Code", icon: Key }]).map(t => (
+              { id: "code" as const, label: "Free Access", icon: Key }]).map(t => (
               <button key={t.id} onClick={() => setTab(t.id)}
                 className={`flex-1 flex items-center justify-center gap-1.5 py-3.5 text-[0.8rem] font-medium border-b-2 transition-colors ${tab === t.id ? "border-accent text-accent" : "border-transparent text-muted hover:text-foreground"}`}>
                 <t.icon className="w-3.5 h-3.5" />{t.label}
