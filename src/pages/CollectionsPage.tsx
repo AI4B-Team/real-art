@@ -592,7 +592,7 @@ export default function CollectionsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setDeleteTarget(null)}>
           <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] shadow-2xl animate-drop-in p-6 text-center" onClick={e => e.stopPropagation()}>
             <Trash2 className="w-5 h-5 text-red-500 mx-auto mb-4" />
-            <h3 className="font-display text-[1.2rem] font-bold mb-2">Delete "{deleteTarget.name}"?</h3>
+            <h3 className="font-display text-[1.2rem] font-bold mb-2">Delete "{deleteTarget.title}"?</h3>
             <p className="text-[0.85rem] text-muted mb-1">All {deleteTarget.items.length} saved images will be permanently removed.</p>
             <p className="text-[0.78rem] text-muted/70 mb-6">This cannot be undone.</p>
             <div className="flex gap-3">
