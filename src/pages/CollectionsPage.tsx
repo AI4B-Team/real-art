@@ -15,30 +15,30 @@ const categories = [
 ];
 
 const curatedCollections = [
-  { id: "e1", name: "CEO / Boss Babe", count: 152, category: "People & Portraits", curator: "REAL ART", photo: "photo-1573496359142-b8d87734a5a2", featured: true },
-  { id: "e2", name: "Luxury Lifestyle", count: 239, category: "Luxury", curator: "REAL ART", photo: "photo-1600210492486-724fe5c67fb0", featured: true },
-  { id: "e3", name: "Cosmic Worlds", count: 412, category: "Sci-Fi & Fantasy", curator: "AI.Verse", photo: "photo-1618005182384-a83a8bd57fbe", featured: true },
-  { id: "e4", name: "Digital Avatars", count: 520, category: "Avatars", curator: "LuminaAI", photo: "photo-1579546929518-9e396f3cc809", featured: true },
-  { id: "e5", name: "Street Fashion", count: 185, category: "Fashion & Style", curator: "REAL ART", photo: "photo-1509631179647-0177331693ae", featured: false },
-  { id: "e6", name: "Runway Inspired", count: 130, category: "Fashion & Style", curator: "REAL ART", photo: "photo-1558618666-fcd25c85cd64", featured: false },
-  { id: "e7", name: "Neon Cities", count: 267, category: "Cyberpunk", curator: "NeoPixel", photo: "photo-1557682250-33bd709cbe85", featured: false },
-  { id: "e8", name: "Ancient Forests", count: 198, category: "Nature & Earth", curator: "DreamForge", photo: "photo-1470071459604-3b5ec3a7fe05", featured: false },
-  { id: "e9", name: "Modern Architecture", count: 344, category: "Architecture", curator: "ChromaLab", photo: "photo-1506905925346-21bda4d32df4", featured: false },
-  { id: "e10", name: "Abstract Fluid", count: 189, category: "Abstract", curator: "SpectraGen", photo: "photo-1541701494587-cb58502866ab", featured: false },
-  { id: "e11", name: "Minimal Spaces", count: 143, category: "Architecture", curator: "VoidArt", photo: "photo-1549880338-65ddcdfd017b", featured: false },
-  { id: "e12", name: "Retro Futures", count: 231, category: "Sci-Fi & Fantasy", curator: "REAL ART", photo: "photo-1547036967-23d11aacaee0", featured: false },
+  { id: "e1", name: "CEO / Boss Babe", count: 152, images: 120, videos: 24, tracks: 8, category: "People & Portraits", curator: "REAL ART", photo: "photo-1573496359142-b8d87734a5a2", featured: true },
+  { id: "e2", name: "Luxury Lifestyle", count: 239, images: 180, videos: 42, tracks: 17, category: "Luxury", curator: "REAL ART", photo: "photo-1600210492486-724fe5c67fb0", featured: true },
+  { id: "e3", name: "Cosmic Worlds", count: 412, images: 340, videos: 58, tracks: 14, category: "Sci-Fi & Fantasy", curator: "AI.Verse", photo: "photo-1618005182384-a83a8bd57fbe", featured: true },
+  { id: "e4", name: "Digital Avatars", count: 520, images: 460, videos: 48, tracks: 12, category: "Avatars", curator: "LuminaAI", photo: "photo-1579546929518-9e396f3cc809", featured: true },
+  { id: "e5", name: "Street Fashion", count: 185, images: 150, videos: 28, tracks: 7, category: "Fashion & Style", curator: "REAL ART", photo: "photo-1509631179647-0177331693ae", featured: false },
+  { id: "e6", name: "Runway Inspired", count: 130, images: 98, videos: 22, tracks: 10, category: "Fashion & Style", curator: "REAL ART", photo: "photo-1558618666-fcd25c85cd64", featured: false },
+  { id: "e7", name: "Neon Cities", count: 267, images: 210, videos: 45, tracks: 12, category: "Cyberpunk", curator: "NeoPixel", photo: "photo-1557682250-33bd709cbe85", featured: false },
+  { id: "e8", name: "Ancient Forests", count: 198, images: 165, videos: 25, tracks: 8, category: "Nature & Earth", curator: "DreamForge", photo: "photo-1470071459604-3b5ec3a7fe05", featured: false },
+  { id: "e9", name: "Modern Architecture", count: 344, images: 290, videos: 38, tracks: 16, category: "Architecture", curator: "ChromaLab", photo: "photo-1506905925346-21bda4d32df4", featured: false },
+  { id: "e10", name: "Abstract Fluid", count: 189, images: 155, videos: 26, tracks: 8, category: "Abstract", curator: "SpectraGen", photo: "photo-1541701494587-cb58502866ab", featured: false },
+  { id: "e11", name: "Minimal Spaces", count: 143, images: 120, videos: 18, tracks: 5, category: "Architecture", curator: "VoidArt", photo: "photo-1549880338-65ddcdfd017b", featured: false },
+  { id: "e12", name: "Retro Futures", count: 231, images: 185, videos: 34, tracks: 12, category: "Sci-Fi & Fantasy", curator: "REAL ART", photo: "photo-1547036967-23d11aacaee0", featured: false },
 ];
 
 const communityCollections = [
-  { id: "b1", title: "Cyberpunk Cities", creator: "VoidArt", creatorColor: "#023e8a", creatorInit: "VA", followers: "1,248", images: 128, cover: "photo-1557682250-33bd709cbe85", category: "Cyberpunk", type: "public" },
-  { id: "b2", title: "Surreal Dreamscapes", creator: "DreamForge", creatorColor: "#2a9d8f", creatorInit: "DF", followers: "892", images: 94, cover: "photo-1579546929518-9e396f3cc809", category: "Sci-Fi & Fantasy", type: "public" },
-  { id: "b3", title: "Dark Fantasy", creator: "NeoPixel", creatorColor: "#c9184a", creatorInit: "NP", followers: "1,034", images: 156, cover: "photo-1541701494587-cb58502866ab", category: "Sci-Fi & Fantasy", type: "public" },
-  { id: "b4", title: "Abstract Minimalism", creator: "ChromaLab", creatorColor: "#f4a261", creatorInit: "CL", followers: "674", images: 82, cover: "photo-1618005182384-a83a8bd57fbe", category: "Abstract", type: "public" },
-  { id: "b5", title: "Cosmic Visions", creator: "AI.Verse", creatorColor: "#4361ee", creatorInit: "AV", followers: "2,118", images: 241, cover: "photo-1462275646964-a0e3386b89fa", category: "Sci-Fi & Fantasy", type: "public" },
-  { id: "b6", title: "Neon Portraits", creator: "LuminaAI", creatorColor: "#e76f51", creatorInit: "LA", followers: "561", images: 67, cover: "photo-1547036967-23d11aacaee0", category: "People & Portraits", type: "public" },
-  { id: "b7", title: "Nature Reimagined", creator: "SpectraGen", creatorColor: "#7b2d8b", creatorInit: "SG", followers: "723", images: 109, cover: "photo-1470071459604-3b5ec3a7fe05", category: "Nature & Earth", type: "public" },
-  { id: "b8", title: "Retro Futurism", creator: "Synthetix", creatorColor: "#06d6a0", creatorInit: "SX", followers: "498", images: 73, cover: "photo-1518020382113-a7e8fc38eac9", category: "Sci-Fi & Fantasy", type: "public" },
-  { id: "b9", title: "Liquid Metal", creator: "AI.Verse", creatorColor: "#4361ee", creatorInit: "AV", followers: "1,390", images: 88, cover: "photo-1558618666-fcd25c85cd64", category: "Abstract", type: "public" },
+  { id: "b1", title: "Cyberpunk Cities", creator: "VoidArt", creatorColor: "#023e8a", creatorInit: "VA", followers: "1,248", images: 128, videos: 32, tracks: 9, cover: "photo-1557682250-33bd709cbe85", category: "Cyberpunk", type: "public" },
+  { id: "b2", title: "Surreal Dreamscapes", creator: "DreamForge", creatorColor: "#2a9d8f", creatorInit: "DF", followers: "892", images: 94, videos: 18, tracks: 6, cover: "photo-1579546929518-9e396f3cc809", category: "Sci-Fi & Fantasy", type: "public" },
+  { id: "b3", title: "Dark Fantasy", creator: "NeoPixel", creatorColor: "#c9184a", creatorInit: "NP", followers: "1,034", images: 156, videos: 41, tracks: 14, cover: "photo-1541701494587-cb58502866ab", category: "Sci-Fi & Fantasy", type: "public" },
+  { id: "b4", title: "Abstract Minimalism", creator: "ChromaLab", creatorColor: "#f4a261", creatorInit: "CL", followers: "674", images: 82, videos: 12, tracks: 4, cover: "photo-1618005182384-a83a8bd57fbe", category: "Abstract", type: "public" },
+  { id: "b5", title: "Cosmic Visions", creator: "AI.Verse", creatorColor: "#4361ee", creatorInit: "AV", followers: "2,118", images: 241, videos: 56, tracks: 18, cover: "photo-1462275646964-a0e3386b89fa", category: "Sci-Fi & Fantasy", type: "public" },
+  { id: "b6", title: "Neon Portraits", creator: "LuminaAI", creatorColor: "#e76f51", creatorInit: "LA", followers: "561", images: 67, videos: 15, tracks: 3, cover: "photo-1547036967-23d11aacaee0", category: "People & Portraits", type: "public" },
+  { id: "b7", title: "Nature Reimagined", creator: "SpectraGen", creatorColor: "#7b2d8b", creatorInit: "SG", followers: "723", images: 109, videos: 22, tracks: 7, cover: "photo-1470071459604-3b5ec3a7fe05", category: "Nature & Earth", type: "public" },
+  { id: "b8", title: "Retro Futurism", creator: "Synthetix", creatorColor: "#06d6a0", creatorInit: "SX", followers: "498", images: 73, videos: 14, tracks: 5, cover: "photo-1518020382113-a7e8fc38eac9", category: "Sci-Fi & Fantasy", type: "public" },
+  { id: "b9", title: "Liquid Metal", creator: "AI.Verse", creatorColor: "#4361ee", creatorInit: "AV", followers: "1,390", images: 88, videos: 20, tracks: 6, cover: "photo-1558618666-fcd25c85cd64", category: "Abstract", type: "public" },
 ];
 
 const TABS = [
@@ -239,8 +239,9 @@ const CommunityCard = ({ board }: { board: typeof communityCollections[0] }) => 
           </div>
         </div>
         <div className="flex items-center gap-4 text-[0.75rem] text-muted">
-          <span className="flex items-center gap-1"><Users className="w-3 h-3" /> {board.followers} followers</span>
-          <span>{board.images} images</span>
+          <span className="flex items-center gap-1"><Image className="w-3 h-3" /> {board.images}</span>
+          <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {board.videos}</span>
+          <span className="flex items-center gap-1"><Music className="w-3 h-3" /> {board.tracks}</span>
         </div>
       </div>
     </div>
@@ -477,7 +478,11 @@ export default function CollectionsPage() {
                           </div>
                           <div className="absolute top-2.5 right-2.5 bg-accent text-white text-[0.6rem] font-bold px-2 py-0.5 rounded-md">Featured</div>
                         </div>
-                        <div className="p-3 text-[0.75rem] text-muted">{col.count.toLocaleString()} images</div>
+                        <div className="p-3 flex items-center gap-3 text-[0.75rem] text-muted">
+                          <span className="flex items-center gap-1"><Image className="w-3 h-3" /> {col.images}</span>
+                          <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {col.videos}</span>
+                          <span className="flex items-center gap-1"><Music className="w-3 h-3" /> {col.tracks}</span>
+                        </div>
                       </div>
                     </Link>
                   ))}
@@ -515,7 +520,12 @@ export default function CollectionsPage() {
                         </div>
                         <div className="p-3">
                           <div className="font-semibold text-[0.88rem]">{col.name}</div>
-                          <div className="text-[0.75rem] text-muted">{col.curator} · {col.count.toLocaleString()} images</div>
+                          <div className="text-[0.72rem] text-muted mb-1.5">{col.curator}</div>
+                          <div className="flex items-center gap-3 text-[0.72rem] text-muted">
+                            <span className="flex items-center gap-1"><Image className="w-3 h-3" /> {col.images}</span>
+                            <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {col.videos}</span>
+                            <span className="flex items-center gap-1"><Music className="w-3 h-3" /> {col.tracks}</span>
+                          </div>
                         </div>
                       </div>
                     </Link>
