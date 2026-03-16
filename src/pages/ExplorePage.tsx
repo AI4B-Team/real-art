@@ -91,16 +91,6 @@ const ExplorePage = () => {
   const [visibleCount, setVisibleCount] = useState(20);
   const typeDropRef = useRef<HTMLDivElement>(null);
   const sortDropRef = useRef<HTMLDivElement>(null);
-  const initialQuery = searchParams.get("q") || "";
-  const { open } = useQuickView();
-  const [query, setQuery] = useState(initialQuery);
-  const [activeFilter, setActiveFilter] = useState("All");
-  const [activeType, setActiveType] = useState("Images");
-  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
-  const [sort, setSort] = useState("Most Relevant");
-  const [sortOpen, setSortOpen] = useState(false);
-  const [visibleCount, setVisibleCount] = useState(20);
-  const typeDropRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
