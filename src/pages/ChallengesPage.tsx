@@ -104,9 +104,11 @@ const ChallengesPage = () => {
                           <div className="text-[0.68rem] text-white/30 uppercase tracking-[0.1em]">Entries</div>
                         </div>
                       </div>
-                      <button className="inline-flex items-center gap-2 bg-white text-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-bold hover:bg-accent hover:text-white transition-colors">
-                        Enter Now — Free <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
+                      <div className="mt-auto">
+                        <button className="inline-flex items-center gap-2 bg-white text-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-bold hover:bg-accent hover:text-white transition-colors">
+                          Enter Now — Free <ArrowRight className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </Link>
