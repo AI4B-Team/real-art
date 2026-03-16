@@ -80,6 +80,7 @@ const searchTypes = [
 const ExplorePage = () => {
   const [searchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
+  const { open } = useQuickView();
   const [query, setQuery] = useState(initialQuery);
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeType, setActiveType] = useState("Images");
