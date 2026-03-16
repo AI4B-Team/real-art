@@ -287,10 +287,11 @@ const AppSidebar = () => {
             <button
               key={item.id}
               onClick={() => handleClick(item)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+              className={`flex items-center ${sidebarCollapsed ? "justify-center" : "gap-3 px-3"} py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+              title={sidebarCollapsed ? item.label : undefined}
             >
               <item.icon className="w-4 h-4 shrink-0" />
-              {item.label}
+              {!sidebarCollapsed && item.label}
             </button>
           );
         })}
