@@ -640,7 +640,7 @@ const CreatorPage = () => {
           {activeTab === "about" && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <h2 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-3">About {creator.name}</h2>
+                <h2 className="font-display text-[1.4rem] font-black tracking-[-0.03em] mb-3">About {creator.name.toLowerCase()}</h2>
                 <p className="text-[0.88rem] text-muted leading-[1.7] mb-6">{creator.bio}</p>
 
                 {/* Tools */}
