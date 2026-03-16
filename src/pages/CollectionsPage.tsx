@@ -329,7 +329,7 @@ const EmptyState = ({ message }: { message: string }) => (
 /* ── Main Page ── */
 export default function CollectionsPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<"discover" | "curated" | "mine">("discover");
+  const [activeTab, setActiveTab] = useState<"discover" | "mine">("discover");
   const [activeCategory, setActiveCategory] = useState("All");
   const [query, setQuery] = useState("");
   const [showCreate, setShowCreate] = useState(false);
