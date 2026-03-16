@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark, Maximize2, Heart } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, Bookmark, Maximize2, Heart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -15,7 +15,6 @@ const creators = [
   { n: "ChromaLab", i: "CL", c: "#f4a261", id: "7" },
   { n: "Synthetix", i: "SX", c: "#06d6a0", id: "8" },
 ];
-
 
 const imagePhotos = [
   "photo-1618005182384-a83a8bd57fbe","photo-1558618666-fcd25c85cd64",
@@ -46,7 +45,6 @@ interface ImageCardOverlayProps {
   isVideo?: boolean;
 }
 
-
 const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
@@ -54,6 +52,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
   const navigate = useNavigate();
   const cr = creators[index % creators.length];
   const prompt = prompts[index % prompts.length];
+  const photo = imagePhotos[index % imagePhotos.length];
 
   return (
     <>
@@ -62,7 +61,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
         style={{ background: "var(--gradient-overlay)" }}
       >
         <TooltipProvider>
-          {/* Top right: Heart + Download + Bookmark + Prompt */}
+          {/* Top right: Save + Like + Download + Open */}
           <div className="flex gap-1.5 justify-end">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -82,9 +81,14 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass}>
+                <a
+                  href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
+                  download={`realart-${index}.jpg`}
+                  onClick={(e) => e.stopPropagation()}
+                  className={iconBtnClass + " no-underline"}
+                >
                   <Download className="w-3.5 h-3.5" />
-                </button>
+                </a>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs"><p>Download</p></TooltipContent>
             </Tooltip>
@@ -119,7 +123,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
             <div className="flex gap-1.5">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass}>
+                  <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}?recreate=1`); }} className={iconBtnClass}>
                     <RefreshCw className="w-3.5 h-3.5" />
                   </button>
                 </TooltipTrigger>
@@ -129,7 +133,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
                 <>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass}>
+                      <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}#prompts`); }} className={iconBtnClass}>
                         <Video className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger>
@@ -137,7 +141,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass}>
+                      <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}`); }} className={iconBtnClass}>
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger>
@@ -160,19 +164,19 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
               <button onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(prompt); }} className="text-[0.62rem] text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 bg-transparent border-none cursor-pointer">
                 <Copy className="w-[10px] h-[10px]" /> Copy
               </button>
-              <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className="text-[0.62rem] text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 bg-transparent border-none cursor-pointer">
+              <button onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(prompt).catch(() => {}); navigate(`/image/${index}`); }} className="text-[0.62rem] text-primary-foreground/60 hover:text-primary-foreground flex items-center gap-1 bg-transparent border-none cursor-pointer">
                 <Shuffle className="w-[10px] h-[10px]" /> Remix
               </button>
             </div>
           </div>
         )}
       </div>
-      <SaveToBoardModal 
-        open={boardModalOpen} 
-        onClose={() => setBoardModalOpen(false)} 
-        imageId={String(index)} 
-        imagePhoto={imagePhotos[index % imagePhotos.length]} 
-        imageTitle={imageTitles[index % imageTitles.length]} 
+      <SaveToBoardModal
+        open={boardModalOpen}
+        onClose={() => setBoardModalOpen(false)}
+        imageId={String(index)}
+        imagePhoto={photo}
+        imageTitle={imageTitles[index % imageTitles.length]}
       />
     </>
   );
