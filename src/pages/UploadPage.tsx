@@ -2,8 +2,9 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Upload, Image, X, Plus,
-  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search, ExternalLink, Star, MessageCircle, ShoppingBag
+  Check, Info, Tag, Globe, Lock, ChevronDown, Sparkles, Video, Loader2, Search, ExternalLink, Star, MessageCircle, ShoppingBag, Move
 } from "lucide-react";
+import ImagePositionEditor from "@/components/ImagePositionEditor";
 import PageShell from "@/components/PageShell";
 import { getCollections, addCollection, type Collection } from "@/lib/collectionStore";
 import { setCollectionLink } from "@/lib/linkStore";
@@ -48,6 +49,8 @@ const UploadPage = () => {
   });
   const [published, setPublished] = useState(false);
   const [similarProducts, setSimilarProducts] = useState(true);
+  const [imagePositions, setImagePositions] = useState<Record<number, { x: number; y: number; scale: number }>>({});
+  const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Collection targeting
@@ -349,17 +352,32 @@ const UploadPage = () => {
 
               {previews.length > 0 && (
                 <div className="grid grid-cols-3 md:grid-cols-5 gap-3 mb-8">
-                  {previews.map((src, i) => (
-                    <div key={i} className="aspect-square rounded-xl overflow-hidden relative group">
-                      <img src={src} alt="" className="w-full h-full object-cover" />
-                      <button
-                        onClick={() => removeFile(i)}
-                        className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
-                      >
-                        <X className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
+                  {previews.map((src, i) => {
+                    const imgPos = imagePositions[i] || { x: 0, y: 0, scale: 1 };
+                    return (
+                      <div key={i} className="aspect-square rounded-xl overflow-hidden relative group">
+                        <img
+                          src={src}
+                          alt=""
+                          className="w-full h-full object-cover"
+                          style={{ transform: `translate(${imgPos.x}%, ${imgPos.y}%) scale(${imgPos.scale})` }}
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                        <button
+                          onClick={() => setEditingImageIndex(i)}
+                          className="absolute bottom-1.5 left-1.5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+                        >
+                          <Move className="w-3 h-3" />
+                        </button>
+                        <button
+                          onClick={() => removeFile(i)}
+                          className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    );
+                  })}
                   {previews.length < 10 && (
                     <button
                       onClick={() => fileRef.current?.click()}
@@ -959,6 +977,19 @@ const UploadPage = () => {
           )}
         </div>
         <Footer />
+
+        {/* Image Position Editor Modal */}
+        {editingImageIndex !== null && previews[editingImageIndex] && (
+          <ImagePositionEditor
+            src={previews[editingImageIndex]}
+            position={imagePositions[editingImageIndex] || { x: 0, y: 0, scale: 1 }}
+            onSave={(pos) => {
+              setImagePositions(prev => ({ ...prev, [editingImageIndex]: pos }));
+              setEditingImageIndex(null);
+            }}
+            onClose={() => setEditingImageIndex(null)}
+          />
+        )}
     </PageShell>
   );
 };
