@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import SponsoredCard from "@/components/SponsoredCard";
 
