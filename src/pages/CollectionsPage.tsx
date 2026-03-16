@@ -460,6 +460,13 @@ const MergeModal = ({ col, myCollections, onClose, onMerged }: {
 };
 
 /* ── Featured Card ── */
+const curatorColors: Record<string, string> = {
+  "REAL ART": "#E8472A", "AI.Verse": "#4361ee", "LuminaAI": "#e76f51",
+  "NeoPixel": "#c9184a", "DreamForge": "#2a9d8f", "ChromaLab": "#f4a261",
+  "SpectraGen": "#7b2d8b", "VoidArt": "#023e8a", "Synthetix": "#06d6a0",
+};
+const curatorInits = (name: string) => name.split(/[\s.]+/).map(w => w[0]).join("").slice(0, 2).toUpperCase();
+
 const FeaturedCard = ({ col, onNeedAccess, large = false }: {
   col: typeof curatedCollections[0];
   onNeedAccess: (info: { id: string; title: string; price?: number }) => void;
@@ -476,26 +483,39 @@ const FeaturedCard = ({ col, onNeedAccess, large = false }: {
   };
 
   return (
-    <div onClick={handleClick} className={`group relative rounded-2xl overflow-hidden cursor-pointer hover:-translate-y-1 transition-all ${large ? "h-[240px]" : "h-[200px]"}`}>
-      <img src={`https://images.unsplash.com/${col.photo}?w=600&h=${large ? 480 : 400}&fit=crop&q=78`} alt={col.name}
-        className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300" />
-      <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%)" }} />
-      <div className="absolute top-3 left-3">
-        <VisBadge visibility={col.visibility} price={col.price} />
-      </div>
-      {needsGate && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-          <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-            <Lock className="w-5 h-5 text-white" />
-          </div>
+    <div onClick={handleClick} className="group rounded-2xl overflow-hidden border border-foreground/[0.08] bg-card hover:border-foreground/20 hover:-translate-y-1 transition-all cursor-pointer">
+      <div className={`relative overflow-hidden ${large ? "h-[240px]" : "h-[200px]"}`}>
+        <img src={`https://images.unsplash.com/${col.photo}?w=600&h=${large ? 480 : 400}&fit=crop&q=78`} alt={col.name}
+          className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300" />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%)" }} />
+        <div className="absolute top-3 left-3">
+          <VisBadge visibility={col.visibility} price={col.price} />
         </div>
-      )}
-      <div className="absolute bottom-3 left-4 right-4">
-        <h3 className="font-display font-black text-white text-[1.05rem] leading-tight mb-0.5">{col.name}</h3>
-        <div className="flex items-center gap-2 text-[0.7rem] text-white/60">
-          <span>{col.count} images</span>
-          <span>·</span>
-          <span>{col.curator}</span>
+        {needsGate && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+            <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
+              <Lock className="w-5 h-5 text-white" />
+            </div>
+          </div>
+        )}
+        <div className="absolute bottom-3 left-4 right-4">
+          <h3 className="font-display font-black text-white text-[1.05rem] leading-tight">{col.name}</h3>
+        </div>
+      </div>
+      <div className="p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="w-6 h-6 rounded-full flex items-center justify-center text-[0.55rem] font-bold text-white" style={{ background: curatorColors[col.curator] || "#666" }}>
+              {curatorInits(col.curator)}
+            </div>
+            <span className="text-[0.8rem] text-muted">by {col.curator.toLowerCase()}</span>
+          </div>
+          <div className="flex items-center gap-1 text-[0.72rem] text-muted"><Users className="w-3 h-3" />{col.count}</div>
+        </div>
+        <div className="flex items-center gap-4 text-[0.75rem] text-muted">
+          <span className="flex items-center gap-1"><Image className="w-3 h-3" /> {col.images}</span>
+          <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {col.videos}</span>
+          <span className="flex items-center gap-1"><Music className="w-3 h-3" /> {col.tracks}</span>
         </div>
       </div>
     </div>
