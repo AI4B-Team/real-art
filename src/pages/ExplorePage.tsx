@@ -221,6 +221,19 @@ const ExplorePage = () => {
         {/* Grid */}
         <div className="px-6 md:px-12 pb-16">
           <div className="max-w-[1440px] mx-auto">
+            {filteredImages.length === 0 && (
+              <div className="text-center py-20">
+                <Search className="w-7 h-7 text-muted opacity-40 mx-auto mb-3" />
+                <h3 className="font-display text-[1.4rem] font-black mb-2">No results</h3>
+                <p className="text-[0.84rem] text-muted mb-5">Try a different keyword, category, or clear your filters.</p>
+                <button
+                  onClick={() => { setQuery(""); setActiveType("Images"); setActiveFilter("All"); }}
+                  className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors mx-auto"
+                >
+                  Clear filters
+                </button>
+              </div>
+            )}
             <div className="masonry-grid">
               {filteredImages.slice(0, visibleCount).map((img, i) => {
                 const cr = creators[i % creators.length];
