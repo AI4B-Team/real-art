@@ -110,9 +110,6 @@ const AppSidebar = () => {
         })}
       </nav>
 
-      <Link to="/upload" className="flex items-center justify-center gap-2 bg-foreground text-primary-foreground py-2.5 rounded-xl text-[0.84rem] font-semibold hover:bg-accent transition-colors mt-6 w-full no-underline">
-        <Upload className="w-3.5 h-3.5" /> Upload Art
-      </Link>
     </aside>
   );
 };
