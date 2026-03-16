@@ -127,11 +127,6 @@ const AccountPage = () => {
                 {t.label}
               </button>
             ))}
-            <div className="h-px bg-foreground/[0.06] my-2" />
-            <button onClick={handleLogout}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium text-red-500 hover:bg-red-500/[0.06] transition-colors w-full text-left">
-              <LogOut className="w-4 h-4" /> Log Out
-            </button>
           </div>
 
           {/* Content */}
