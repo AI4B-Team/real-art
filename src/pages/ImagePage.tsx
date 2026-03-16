@@ -119,6 +119,8 @@ const ImagePage = () => {
   const creator = creators[idx % creators.length];
   const imageTitle = imageTitles[idx % imageTitles.length];
   const imageStatData = imageStats[idx % imageStats.length];
+  const samplePrompt = imagePrompts[idx % imagePrompts.length];
+  const sampleVideoPrompt = imageVideoPrompts[idx % imageVideoPrompts.length];
   const [imgLoaded, setImgLoaded] = useState(false);
 
   // Seed demo links on first load, then resolve for this image
