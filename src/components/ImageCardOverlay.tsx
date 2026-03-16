@@ -48,6 +48,14 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
           <div className="flex gap-1.5 justify-end">
             <Tooltip>
               <TooltipTrigger asChild>
+                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}`); }} className={iconBtnClass}>
+                  <Maximize2 className="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs"><p>Open full page</p></TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBoardModalOpen(true); }} className={iconBtnClass}>
                   <Bookmark className="w-3.5 h-3.5" />
                 </button>

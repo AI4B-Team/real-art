@@ -237,8 +237,8 @@ const ExplorePage = () => {
                         <SponsoredCard imageUrl={ad.imageUrl} brandName={ad.brandName} destinationUrl={ad.destinationUrl} />
                       </div>
                     )}
-                    <Link
-                      to={`/image/${i}`}
+                    <div
+                      onClick={() => open({ id: String(i), photo: img.photo, title: img.title })}
                       className="masonry-item rounded-xl overflow-hidden block cursor-pointer group relative"
                       style={{ background: "#e0e0de" }}
                     >
@@ -248,29 +248,23 @@ const ExplorePage = () => {
                         loading="lazy"
                         className="w-full block rounded-xl group-hover:scale-[1.03] transition-transform duration-[350ms] ease-out"
                         style={{ height: h, objectFit: "cover" }}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                       />
-                      <div className="absolute inset-0 rounded-xl flex flex-col justify-end p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200" style={{ background: "var(--gradient-overlay)" }}>
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-1.5">
-                            <div
-                              className="w-[22px] h-[22px] rounded-full flex items-center justify-center text-[0.58rem] font-bold text-primary-foreground border border-primary-foreground/30"
-                              style={{ background: cr.c }}
-                            >
-                              {cr.i}
-                            </div>
-                            <span className="text-[0.72rem] text-primary-foreground/90">{cr.n}</span>
-                          </div>
-                          <div className="flex gap-1.5">
-                            <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
-                              <Heart className="w-3 h-3" />
-                            </button>
-                            <button onClick={e => e.preventDefault()} className="w-7 h-7 rounded-full border-none bg-primary-foreground/[0.18] backdrop-blur-sm cursor-pointer text-primary-foreground flex items-center justify-center hover:bg-primary-foreground/[0.38] transition-colors">
-                              <Download className="w-3 h-3" />
-                            </button>
-                          </div>
+                      {/* Badge */}
+                      {badgeMap[i] && (
+                        <div className="absolute top-2.5 left-2.5 bg-primary-foreground/90 backdrop-blur-sm text-foreground text-[0.62rem] font-bold px-2 py-1 rounded-md flex items-center gap-1 z-10">
+                          {badgeMap[i].icon} {badgeMap[i].label}
                         </div>
-                      </div>
-                    </Link>
+                      )}
+                      {/* AI label (only when no badge) */}
+                      {!badgeMap[i] && (
+                        <div className="absolute top-2.5 left-2.5 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.58rem] font-semibold px-2 py-0.5 rounded-md">
+                          {isVideo(i) ? "AI Video" : "AI Art"}
+                        </div>
+                      )}
+                      {/* Hover overlay with all actions */}
+                      <ImageCardOverlay index={i} isVideo={isVideo(i)} />
+                    </div>
                   </div>
                 );
               })}
