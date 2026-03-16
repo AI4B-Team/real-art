@@ -69,12 +69,18 @@ const ImagePage = () => {
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [promptVisible, setPromptVisible] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Auto-reveal prompts for logged-in users
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setPromptVisible(true);
+      if (session) { setPromptVisible(true); setIsLoggedIn(true); }
     });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) { setPromptVisible(true); setIsLoggedIn(true); }
+      else { setPromptVisible(false); setIsLoggedIn(false); }
+    });
+    return () => subscription.unsubscribe();
   }, []);
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
