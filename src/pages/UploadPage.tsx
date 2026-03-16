@@ -580,7 +580,7 @@ const UploadPage = () => {
                     {/* Public option */}
                     <button
                       onClick={() => { setVisibility("public"); setSelectedCollection("none"); setShowNewCol(false); }}
-                      className={`flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${visibility === "public" ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                      className={`flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${visibility === "public" ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
                     >
                       <Globe className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
                       <div className="flex-1">
