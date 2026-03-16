@@ -33,9 +33,50 @@ const creators = [
   { id: "3", name: "DreamForge", handle: "@dreamforge", avatar: "DF", color: "#2a9d8f", bio: "Fantasy landscapes, mythical worlds, and surreal dreamscapes.", followers: "7.3K", images: 421, downloads: "1.9M" },
 ];
 
-const samplePrompt = "A cosmic dreamscape with swirling nebula clouds and floating crystalline structures, cinematic lighting, dramatic shadows, 8k ultra-detailed, photorealistic render, deep space background with stars and aurora borealis, editorial photography style";
+const imagePrompts = [
+  "A cosmic dreamscape with swirling nebula clouds and floating crystalline structures, cinematic lighting, dramatic shadows, 8k ultra-detailed, photorealistic render, deep space background with stars and aurora borealis, editorial photography style",
+  "Neon-drenched cyberpunk street scene with holographic billboards, rain-soaked pavement, moody atmosphere, volumetric fog, cinematic color grading, ultra-detailed, 8K",
+  "Abstract liquid metal flowing through crystalline structures, iridescent reflections, macro photography, studio lighting, high contrast, ultra-detailed render",
+  "Misty mountain landscape at golden hour, ethereal fog rolling through valleys, photorealistic render, Unreal Engine 5, editorial photography, hyperdetailed",
+  "Futuristic metropolis at night, aerial view, city lights stretching to horizon, flying vehicles, cyberpunk aesthetic, cinematic drone shot, 4K, ultra-wide",
+  "Serene forest bathed in bioluminescent light, glowing mushrooms, magical realism, fantasy art, volumetric fog, Artstation trending, ultra-detailed",
+  "Impossible architecture, impossible geometry, Escher-inspired, brutalist megastructure, golden hour, cinematic, dramatic shadows, 8K render",
+  "Deep space nebula with stellar nurseries, Hubble-style photography, vibrant color palette, ultra-detailed, cosmic scale, Milky Way background",
+  "Rain-soaked cyberpunk alley, neon reflections on wet pavement, holographic ads, atmospheric perspective, cinematic, ultra-detailed, 8K",
+  "AI-generated digital portrait, photorealistic, studio lighting, sharp focus, high resolution, editorial photography style, black background",
+  "Scottish highlands at dawn, morning mist, ancient stone ruins, atmospheric perspective, golden hour, photorealistic, drone shot, 4K",
+  "Fluid simulation abstract art, iridescent colors, macro lens, studio lighting, ultra-high resolution, generative art, gradient mesh",
+];
 
-const sampleVideoPrompt = "Slow dolly-in through swirling nebula clouds as crystalline structures rotate and refract light. Camera drifts weightlessly through deep space, aurora borealis ribbons dancing across the frame. Cinematic orchestral score swells. Cut to macro shot of crystal facets catching starlight, then pull back to reveal the full cosmic dreamscape. 4K, 24fps, anamorphic lens flares, volumetric fog.";
+const imageVideoPrompts = [
+  "Slow dolly-in through swirling nebula clouds as crystalline structures rotate and refract light. Camera drifts weightlessly through deep space, aurora borealis ribbons dancing. 4K, 24fps, anamorphic lens flares, volumetric fog.",
+  "Tracking shot down rain-soaked cyberpunk alley, neon signs flickering, holographic ads glitching. Moody atmosphere, volumetric fog. Cinematic 24fps.",
+  "Macro camera orbiting liquid metal surface, iridescent reflections shifting. Pull back to reveal full abstract sculpture. Slow motion, 60fps.",
+  "Aerial drone sweeping over misty mountains at golden hour. Fog rolls through valleys, sun rays pierce clouds. Cinematic orchestral score. 4K.",
+  "Bird's eye time-lapse over futuristic city, flying vehicles weaving between towers, lights flickering to life at dusk. 4K, smooth motion.",
+  "Camera drifts through bioluminescent forest floor, glowing spores rising in slow motion, ethereal atmosphere. 60fps, anamorphic lenses.",
+  "Slow pan across impossible architectural structure, camera reveals new impossible geometry at each angle. Disorienting, beautiful. 24fps.",
+  "Hubble telescope style timelapse of nebula formation, gases swirling, stars igniting. 4K, ultra-slow motion, orchestral score.",
+  "Handheld tracking shot through neon cyberpunk alley in rain, reflections blooming on wet ground. Cinematic 24fps, rack focus.",
+  "Portrait lighting sequence on digital face, shadows shifting dramatically, skin texture hyperreal. Studio quality, slow rotation. 60fps.",
+  "Aerial sweep over Scottish highlands at sunrise, mist burning off in real time, ancient ruins emerging. Cinematic, 4K drone.",
+  "Fluid simulation in slow motion, iridescent liquid morphing through abstract forms, studio lighting shifts. 120fps, 4K.",
+];
+
+const imageTags = [
+  ["abstract", "cosmic", "generative", "space"],
+  ["cyberpunk", "neon", "urban", "night"],
+  ["abstract", "fire", "color", "fluid"],
+  ["landscape", "nature", "cinematic", "fog"],
+  ["city", "sci-fi", "aerial", "night"],
+  ["fantasy", "nature", "bioluminescent", "forest"],
+  ["architecture", "impossible", "brutalist", "render"],
+  ["space", "nebula", "astronomy", "cosmic"],
+  ["cyberpunk", "rain", "neon", "urban"],
+  ["portrait", "avatar", "photorealistic", "editorial"],
+  ["landscape", "nature", "scotland", "highlands"],
+  ["abstract", "fluid", "generative", "gradient"],
+];
 
 const imageTitles = [
   "Cosmic Dreamscape","Neon Gradient","Abstract Fire","Mountain Vista",

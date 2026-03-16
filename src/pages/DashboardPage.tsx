@@ -46,14 +46,37 @@ const topImages = [
   { photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire", downloads: "1,410", likes: "388", views: "18,600", remixes: "94", embeds: "256", affClicks: "89", earnings: "$51.26", pinned: false },
 ];
 
-const earningsData = [
-  { month: "Oct", amount: 142 },
-  { month: "Nov", amount: 218 },
-  { month: "Dec", amount: 189 },
-  { month: "Jan", amount: 304 },
-  { month: "Feb", amount: 276 },
-  { month: "Mar", amount: 412 },
-];
+const earningsDataByPeriod: Record<string, { month: string; amount: number }[]> = {
+  "3m": [
+    { month: "Jan", amount: 304 },
+    { month: "Feb", amount: 276 },
+    { month: "Mar", amount: 412 },
+  ],
+  "6m": [
+    { month: "Oct", amount: 142 },
+    { month: "Nov", amount: 218 },
+    { month: "Dec", amount: 189 },
+    { month: "Jan", amount: 304 },
+    { month: "Feb", amount: 276 },
+    { month: "Mar", amount: 412 },
+  ],
+  "1y": [
+    { month: "Apr", amount: 98 },
+    { month: "May", amount: 124 },
+    { month: "Jun", amount: 156 },
+    { month: "Jul", amount: 178 },
+    { month: "Aug", amount: 201 },
+    { month: "Sep", amount: 167 },
+    { month: "Oct", amount: 142 },
+    { month: "Nov", amount: 218 },
+    { month: "Dec", amount: 189 },
+    { month: "Jan", amount: 304 },
+    { month: "Feb", amount: 276 },
+    { month: "Mar", amount: 412 },
+  ],
+};
+
+const earningsData = earningsDataByPeriod["6m"];
 
 const maxEarning = Math.max(...earningsData.map(d => d.amount));
 
