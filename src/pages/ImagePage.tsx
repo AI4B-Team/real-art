@@ -595,7 +595,30 @@ const ImagePage = () => {
               </div>
 
               {/* Comments */}
-              <CommentsSection imageId={id || "0"} />
+              <div className="mt-10">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    {commentsOff ? <MessageCircleOff className="w-4 h-4 text-muted" /> : <MessageCircle className="w-4 h-4 text-muted" />}
+                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Comments</h2>
+                  </div>
+                  <button
+                    onClick={toggleComments}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[0.76rem] font-medium transition-colors ${commentsOff ? "border-accent/30 text-accent bg-accent/[0.06]" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}
+                  >
+                    {commentsOff ? <MessageCircleOff className="w-3.5 h-3.5" /> : <MessageCircle className="w-3.5 h-3.5" />}
+                    {commentsOff ? "Comments Off" : "Turn Off"}
+                  </button>
+                </div>
+                {commentsOff ? (
+                  <div className="text-center py-8 text-[0.84rem] text-muted border border-foreground/[0.06] rounded-xl bg-card">
+                    <MessageCircleOff className="w-6 h-6 mx-auto mb-2 text-muted/50" />
+                    Comments are turned off for this image.
+                    <button onClick={toggleComments} className="block mx-auto mt-2 text-accent text-[0.78rem] font-semibold hover:underline">Turn on</button>
+                  </div>
+                ) : (
+                  <CommentsSection imageId={id || "0"} />
+                )}
+              </div>
 
               {/* More Art Using This Style */}
               <div className="mt-10">
