@@ -458,7 +458,7 @@ const CreatorPage = () => {
                 </Link>
                 <div>
                   <h3 className="font-display text-[1.4rem] font-black text-primary-foreground mb-1">
-                    Signature piece by {creator.name}
+                    Signature piece by {creator.name.toLowerCase()}
                   </h3>
                   <p className="text-[0.82rem] text-primary-foreground/40 mb-3">{creator.pinnedImage.title}</p>
                   <div className="flex gap-5 mb-4">
