@@ -16,6 +16,22 @@ const creators = [
   { n: "Synthetix", i: "SX", c: "#06d6a0", id: "8" },
 ];
 
+
+const imagePhotos = [
+  "photo-1618005182384-a83a8bd57fbe","photo-1558618666-fcd25c85cd64",
+  "photo-1541701494587-cb58502866ab","photo-1549880338-65ddcdfd017b",
+  "photo-1557682250-33bd709cbe85","photo-1506905925346-21bda4d32df4",
+  "photo-1604881991720-f91add269bed","photo-1462275646964-a0e3386b89fa",
+  "photo-1579546929518-9e396f3cc809","photo-1547036967-23d11aacaee0",
+  "photo-1518020382113-a7e8fc38eac9","photo-1576091160550-2173dba999ef",
+];
+
+const imageTitles = [
+  "Cosmic Dreamscape","Neon Gradient","Abstract Fire","Mountain Vista",
+  "Neon Boulevard","Sunset Peak","Digital Avatar","Celestial Dance",
+  "Cyberpunk City","Holographic Portrait","Ocean Depths","Abstract Fluid",
+];
+
 const prompts = [
   "A cosmic dreamscape with swirling nebula clouds, cinematic lighting, 8k ultra-detailed",
   "Neon-drenched cyberpunk street scene with holographic billboards, rain-soaked pavement",
@@ -29,6 +45,7 @@ interface ImageCardOverlayProps {
   index: number;
   isVideo?: boolean;
 }
+
 
 const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
@@ -149,7 +166,13 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
           </div>
         )}
       </div>
-      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} />
+      <SaveToBoardModal 
+        open={boardModalOpen} 
+        onClose={() => setBoardModalOpen(false)} 
+        imageId={String(index)} 
+        imagePhoto={imagePhotos[index % imagePhotos.length]} 
+        imageTitle={imageTitles[index % imageTitles.length]} 
+      />
     </>
   );
 };
