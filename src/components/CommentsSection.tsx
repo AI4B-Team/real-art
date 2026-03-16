@@ -78,25 +78,8 @@ export default function CommentsSection({ imageId }: CommentsSectionProps) {
   };
 
   return (
-    <div className="mt-10">
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="flex items-center justify-between w-full mb-4 group"
-      >
-        <div className="flex items-center gap-2">
-          <MessageCircle className="w-4 h-4 text-muted" />
-          <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Comments</h2>
-          <span className="text-[0.75rem] text-muted ml-1">{comments.length}</span>
-        </div>
-        {expanded ? (
-          <ChevronUp className="w-4 h-4 text-muted group-hover:text-foreground transition-colors" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-muted group-hover:text-foreground transition-colors" />
-        )}
-      </button>
-
-      {expanded && (
-        <div className="space-y-4">
+    <div>
+      <div className="space-y-4">
           {/* Comment list */}
           {comments.length > 0 ? (
             <div className="space-y-3">
@@ -210,8 +193,7 @@ export default function CommentsSection({ imageId }: CommentsSectionProps) {
               {" "}to leave a comment.
             </div>
           )}
-        </div>
-      )}
+      </div>
     </div>
   );
 }
