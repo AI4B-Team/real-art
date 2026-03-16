@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Check, Download, DollarSign, Users, Eye, EyeOff } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 
 const photos = [
   "photo-1618005182384-a83a8bd57fbe",
