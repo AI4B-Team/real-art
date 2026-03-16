@@ -231,7 +231,7 @@ export default function QuickViewPanel() {
             </Link>
 
             {/* Stats */}
-            <div className="flex items-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06]">
+            <div className="flex items-center gap-5 mb-5 pb-5 border-b border-foreground/[0.06] flex-wrap">
               <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
                 <Eye className="w-3.5 h-3.5" /> {stat.views} <span className="text-[0.68rem]">views</span>
               </div>
@@ -240,6 +240,12 @@ export default function QuickViewPanel() {
               </div>
               <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
                 <Heart className="w-3.5 h-3.5" /> {stat.likes} <span className="text-[0.68rem]">likes</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+                <Bookmark className="w-3.5 h-3.5" /> 234 <span className="text-[0.68rem]">saves</span>
+              </div>
+              <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+                <Share2 className="w-3.5 h-3.5" /> 128 <span className="text-[0.68rem]">shares</span>
               </div>
             </div>
 
@@ -263,14 +269,14 @@ export default function QuickViewPanel() {
             </div>
 
             {/* Quick actions */}
-            <div className="flex gap-2 mb-5">
-              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+            <div className="grid grid-cols-3 gap-2 mb-5">
+              <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
                 <RefreshCw className="w-3.5 h-3.5" /> Recreate
               </button>
-              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+              <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
                 <Video className="w-3.5 h-3.5" /> Animate
               </button>
-              <button className="flex items-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
+              <button className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] text-muted hover:text-foreground hover:border-foreground/25 transition-colors">
                 <Pencil className="w-3.5 h-3.5" /> Edit
               </button>
             </div>
