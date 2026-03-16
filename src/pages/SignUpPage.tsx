@@ -219,7 +219,7 @@ const SignUpPage = () => {
                 </div>
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-3">Welcome To REAL ART</h1>
                 <p className="text-[0.88rem] text-muted mb-8">Your account is ready. Start browsing, downloading, or upload your first image.</p>
-                <button onClick={() => navigate("/explore")} className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mb-3">
+                <button onClick={() => navigate("/dashboard")} className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mb-3">
                   Start Browsing
                 </button>
                 <button onClick={() => navigate("/upload")} className="w-full border border-foreground/[0.14] py-3.5 rounded-xl text-[0.9rem] font-medium hover:border-foreground/30 transition-colors">
