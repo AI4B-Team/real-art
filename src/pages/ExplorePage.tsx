@@ -88,6 +88,9 @@ const ExplorePage = () => {
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [sort, setSort] = useState("Most Relevant");
   const [sortOpen, setSortOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; }
+  });
   const [visibleCount, setVisibleCount] = useState(20);
   const typeDropRef = useRef<HTMLDivElement>(null);
   const sortDropRef = useRef<HTMLDivElement>(null);
@@ -103,6 +106,21 @@ const ExplorePage = () => {
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
+  }, []);
+
+  useEffect(() => {
+    const sync = () => {
+      try { setIsLoggedIn(localStorage.getItem("ra_auth") === "1"); } catch {}
+    };
+
+    sync();
+    window.addEventListener("storage", sync);
+    window.addEventListener("ra_auth_changed", sync);
+
+    return () => {
+      window.removeEventListener("storage", sync);
+      window.removeEventListener("ra_auth_changed", sync);
+    };
   }, []);
 
   const filteredImages = (() => {
@@ -235,7 +253,7 @@ const ExplorePage = () => {
               </div>
             )}
             <div className="masonry-grid">
-              {filteredImages.slice(0, visibleCount).map((img, i) => {
+              {(isLoggedIn ? filteredImages : filteredImages.slice(0, visibleCount)).map((img, i) => {
                 const cr = creators[i % creators.length];
                 const h = heights[i % heights.length];
 
@@ -270,7 +288,7 @@ const ExplorePage = () => {
                 );
               })}
             </div>
-            {visibleCount < filteredImages.length && (
+            {!isLoggedIn && visibleCount < filteredImages.length && (
               <div className="text-center mt-8">
                 <button
                   onClick={() => setVisibleCount(c => c + 20)}
