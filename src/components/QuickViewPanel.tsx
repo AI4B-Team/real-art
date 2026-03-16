@@ -265,7 +265,7 @@ export default function QuickViewPanel() {
               <button className="flex items-center gap-1.5 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
                 <Download className="w-3.5 h-3.5" /> Download
               </button>
-              <button className="flex items-center gap-1.5 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
+              <button onClick={() => setShowEmbed(true)} className="flex items-center gap-1.5 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
                 <Code className="w-3.5 h-3.5" /> Embed
               </button>
               <button className="flex items-center gap-1.5 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
