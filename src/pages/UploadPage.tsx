@@ -921,6 +921,7 @@ const UploadPage = () => {
                     ["Tags", tags.join(", ") || "—"],
                     ["Visibility", visibility === "public" ? "Public — Free For Everyone" : "Private Collection"],
                     ["Comments", commentsEnabled ? "Enabled" : "Disabled"],
+                    ["Similar Products", similarProducts ? "Enabled" : "Disabled"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not Specified"],
                     ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} Images`],
