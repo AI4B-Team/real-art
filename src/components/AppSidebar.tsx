@@ -159,9 +159,24 @@ const AppSidebar = () => {
             return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
           }
 
-          // Communities dropdown
+          // Communities dropdown - show icon-only when collapsed
           if (item.type === "communities-dropdown") {
             const active = isActive(item);
+            if (sidebarCollapsed) {
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => navigate("/communities")}
+                  className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  title="Communities"
+                >
+                  <item.icon className="w-4 h-4 shrink-0" />
+                  {hasNewPosts && !active && (
+                    <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
+                  )}
+                </button>
+              );
+            }
             return (
               <div key={item.id} className="relative" ref={communitiesRef}>
                 <button
