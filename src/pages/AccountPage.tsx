@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Bell, Shield, Lock, DollarSign, Eye, EyeOff, Camera, Trash2, Check, MapPin, Image } from "lucide-react";
+import { User, Bell, Shield, Lock, DollarSign, Eye, EyeOff, Camera, Trash2, Check, MapPin, Image, Loader2 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
 type TabId = "profile" | "notifications" | "privacy" | "account" | "payouts";
 
@@ -18,6 +19,8 @@ const AccountPage = () => {
   const [avatarUrl, setAvatarUrl] = useState("");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -141,8 +144,46 @@ const AccountPage = () => {
                 <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center text-accent text-[1.2rem] font-bold overflow-hidden shrink-0">
                   {avatarUrl ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" /> : (displayName || "U").charAt(0).toUpperCase()}
                 </div>
-                <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.1] text-[0.82rem] font-medium text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors">
-                  <Image className="w-4 h-4" /> Upload photo
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    if (file.size > 5 * 1024 * 1024) {
+                      toast({ title: "File too large", description: "Max 5MB", variant: "destructive" });
+                      return;
+                    }
+                    setUploading(true);
+                    try {
+                      const { data: { user } } = await supabase.auth.getUser();
+                      if (!user) throw new Error("Not authenticated");
+                      const ext = file.name.split(".").pop() || "jpg";
+                      const path = `${user.id}/avatar.${ext}`;
+                      const { error: upErr } = await supabase.storage.from("avatars").upload(path, file, { upsert: true });
+                      if (upErr) throw upErr;
+                      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
+                      const publicUrl = urlData.publicUrl + "?t=" + Date.now();
+                      setAvatarUrl(publicUrl);
+                      await supabase.from("profiles").update({ avatar_url: publicUrl }).eq("user_id", user.id);
+                      toast({ title: "Photo uploaded!" });
+                    } catch (err: any) {
+                      console.error("Avatar upload error:", err);
+                      toast({ title: "Upload failed", description: err.message, variant: "destructive" });
+                    }
+                    setUploading(false);
+                    e.target.value = "";
+                  }}
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={uploading}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.1] text-[0.82rem] font-medium text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors disabled:opacity-50"
+                >
+                  {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Image className="w-4 h-4" />}
+                  {uploading ? "Uploading…" : "Upload photo"}
                 </button>
               </div>
 
