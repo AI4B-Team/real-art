@@ -6,7 +6,7 @@ import {
   UserCheck, MessageCircle, Heart, Lock, Globe2, Play
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { getBoards, type Board } from "@/lib/boardStore";
