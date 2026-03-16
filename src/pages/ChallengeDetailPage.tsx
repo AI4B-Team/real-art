@@ -58,34 +58,6 @@ const ChallengeDetailPage = () => {
   };
   return (
     <PageShell>
-        {/* Hero */}
-        <div className="relative h-[320px] md:h-[420px] overflow-hidden">
-          <img
-            src={`https://images.unsplash.com/${c.photo}?w=1400&h=420&fit=crop&q=85`}
-            alt={c.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/60" />
-          <div className="absolute inset-0 flex flex-col justify-end px-6 md:px-12 pb-10 max-w-[1440px] mx-auto">
-            <div className="flex items-center gap-2 text-[0.78rem] text-white/60 mb-4">
-              <Link to="/" className="hover:text-white transition-colors flex items-center gap-1"><ArrowLeft className="w-3.5 h-3.5" /> Home</Link>
-              <ChevronRight className="w-3 h-3 opacity-40" />
-              <Link to="/challenges" className="hover:text-white transition-colors">Challenges</Link>
-              <ChevronRight className="w-3 h-3 opacity-40" />
-              <span className="text-white">{c.title}</span>
-            </div>
-            <div className="flex items-center gap-2 mb-3">
-              <span className="flex items-center gap-1.5 text-[0.68rem] font-bold tracking-[0.12em] uppercase bg-accent text-white px-2.5 py-1 rounded-full">
-                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-dot" /> Live Challenge
-              </span>
-              <span className="text-[0.72rem] text-white/50">{c.category}</span>
-            </div>
-            <h1 className="font-display text-[2.8rem] md:text-[4rem] font-black text-white tracking-[-0.03em] leading-none mb-3">{c.title}</h1>
-            <p className="text-[0.88rem] text-white/65 max-w-[560px] leading-[1.65]">{c.desc}</p>
-          </div>
-        </div>
-
-        <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
           {/* Stats + CTA bar */}
           <div className="flex flex-wrap items-center justify-between gap-4 py-5 border-b border-foreground/[0.06]">
             <div className="flex flex-wrap items-center gap-6">
