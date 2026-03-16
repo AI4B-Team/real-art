@@ -1,4 +1,5 @@
-import { Users } from "lucide-react";
+import { useState } from "react";
+import { Users, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const comPhotos = [
