@@ -1177,10 +1177,6 @@ const DashboardPage = () => {
           { id: "media", label: "Media" },
           { id: "galleries", label: "Collections" },
           { id: "boards", label: "Boards" },
-          { id: "earnings", label: "Earnings" },
-          { id: "ads", label: "Ads" },
-          { id: "notifications", label: "Notifications" },
-          { id: "settings", label: "Settings" },
         ].map(item => (
           <button
             key={item.id}

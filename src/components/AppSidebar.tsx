@@ -243,9 +243,6 @@ const AppSidebar = () => {
             >
               <item.icon className="w-4 h-4 shrink-0" />
               {item.label}
-              {item.id === "notifications" && (
-                <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
-              )}
             </button>
           );
         })}
