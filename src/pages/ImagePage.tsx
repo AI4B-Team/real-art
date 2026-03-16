@@ -36,6 +36,12 @@ const samplePrompt = "A cosmic dreamscape with swirling nebula clouds and floati
 
 const sampleVideoPrompt = "Slow dolly-in through swirling nebula clouds as crystalline structures rotate and refract light. Camera drifts weightlessly through deep space, aurora borealis ribbons dancing across the frame. Cinematic orchestral score swells. Cut to macro shot of crystal facets catching starlight, then pull back to reveal the full cosmic dreamscape. 4K, 24fps, anamorphic lens flares, volumetric fog.";
 
+const imageTitles = [
+  "Cosmic Dreamscape","Neon Gradient","Abstract Fire","Mountain Vista",
+  "Neon Boulevard","Sunset Peak","Ocean Depths","Holographic Portrait",
+  "Cyberpunk City","Digital Avatar","Forest Canopy","Abstract Fluid",
+];
+
 const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
 
 // Shop similar items (static for now)
@@ -54,6 +60,7 @@ const ImagePage = () => {
   const idx = parseInt(id || "0") % photos.length;
   const photo = searchParams.get("photo") || photos[idx];
   const creator = creators[idx % creators.length];
+  const imageTitle = imageTitles[idx % imageTitles.length];
 
   // Seed demo links on first load, then resolve for this image
   useEffect(() => { seedDemoLinks(); }, []);
@@ -152,7 +159,7 @@ const ImagePage = () => {
           <ChevronRight className="w-3 h-3 opacity-30" />
           <Link to="/explore" className="hover:text-foreground transition-colors">Explore</Link>
           <ChevronRight className="w-3 h-3 opacity-30" />
-          <span className="text-foreground">Cosmic Dreamscape</span>
+          <span className="text-foreground">{imageTitle}</span>
         </div>
 
         <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
@@ -163,7 +170,7 @@ const ImagePage = () => {
               <div className="rounded-2xl overflow-hidden bg-card border border-foreground/[0.06] relative">
                 <img
                   src={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
-                  alt="Cosmic Dreamscape"
+                  alt={imageTitle}
                   className="w-full block"
                   style={{ maxHeight: "75vh", objectFit: "cover" }}
                 />
@@ -354,7 +361,7 @@ const ImagePage = () => {
                       <div className="flex gap-4 mb-5">
                         <img src={`https://images.unsplash.com/${photo}?w=120&h=120&fit=crop&q=80`} alt="" className="w-20 h-20 rounded-xl object-cover shrink-0" />
                         <div>
-                          <div className="font-semibold text-[0.9rem] mb-1">Cosmic Dreamscape</div>
+                          <div className="font-semibold text-[0.9rem] mb-1">{imageTitle}</div>
                           <div className="text-[0.75rem] text-muted">by {creator.name}</div>
                         </div>
                       </div>
@@ -706,7 +713,7 @@ const ImagePage = () => {
               {/* Title + meta */}
               <div>
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">
-                  Cosmic Dreamscape
+                  {imageTitle}
                 </h1>
                 <div className="flex items-center gap-4 mt-3 text-[0.82rem] text-muted flex-wrap">
                   <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> 24.8K views</span>
@@ -836,12 +843,12 @@ const ImagePage = () => {
           </div>
         </div>
         <Footer />
-      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} imageId={String(idx)} imagePhoto={photo} imageTitle="Cosmic Dreamscape" />
+      <SaveToBoardModal open={boardModalOpen} onClose={() => setBoardModalOpen(false)} imageId={String(idx)} imagePhoto={photo} imageTitle={imageTitles[idx % imageTitles.length]} />
       <ShareModal
         open={shareModalOpen}
         onClose={() => setShareModalOpen(false)}
         imageUrl={`https://images.unsplash.com/${photo}?w=1200&fit=crop&q=90`}
-        title="Cosmic Dreamscape"
+        title={imageTitle}
         creator={creator}
         prompt={samplePrompt}
         recreations="1,247"
