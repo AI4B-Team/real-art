@@ -41,6 +41,7 @@ const navItems: NavItem[] = [
 const AppSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { sidebarCollapsed, setSidebarCollapsed } = useLayoutContext();
   const [display, setDisplay] = useState("aiverse");
   const [handle, setHandle] = useState("aiverse");
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
