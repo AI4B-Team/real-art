@@ -170,7 +170,40 @@ const heights = [220, 260, 190, 240, 180, 210, 250, 170, 230, 200, 265, 185];
 
 const CreatorPage = () => {
   const { id } = useParams();
-  const creator = creatorsData.find(c => c.id === id) || creatorsData[0];
+  
+  // Match by id, handle, or name (case-insensitive)
+  const matchedCreator = creatorsData.find(c => 
+    c.id === id || 
+    c.handle.replace("@", "").toLowerCase() === id?.toLowerCase() ||
+    c.name.toLowerCase().replace(/[^a-z0-9]/g, "") === id?.toLowerCase().replace(/[^a-z0-9]/g, "")
+  );
+
+  // Own profile check
+  const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+  const loggedInUsername = (() => { try { return localStorage.getItem("ra_username") || ""; } catch { return ""; } })();
+  const loggedInDisplay = (() => { try { return localStorage.getItem("ra_display") || loggedInUsername; } catch { return loggedInUsername; } })();
+  
+  // If no creator matched and the URL matches the logged-in user, show own profile
+  const isOwnProfileByUrl = isLoggedIn && !matchedCreator && id?.toLowerCase() === loggedInUsername.toLowerCase();
+  
+  const creator = matchedCreator || (isOwnProfileByUrl ? {
+    ...creatorsData[0],
+    id: loggedInUsername,
+    name: loggedInDisplay,
+    handle: `@${loggedInUsername}`,
+    avatar: loggedInDisplay.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "U",
+    color: "#4361ee",
+    bio: "Your creative profile on REAL ART.",
+    followers: 0, following: 0, images: 0, downloads: "0", views: "0", remixes: "0",
+    badges: [],
+    photos: [],
+    collections: [],
+    boards: [],
+    communities: [],
+    liked: [],
+    pinnedImage: null as any,
+  } : creatorsData[0]);
+
   const [activeTab, setActiveTab] = useState("images");
   const { followed, toggle: toggleFollow, loading: followLoading } = useFollow(creator.id);
   const [bioExpanded, setBioExpanded] = useState(false);
@@ -185,10 +218,7 @@ const CreatorPage = () => {
   const [tipAmount, setTipAmount] = useState(5);
   const [tipSent, setTipSent] = useState(false);
 
-  // Own profile check
-  const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
-  const loggedInUsername = (() => { try { return localStorage.getItem("ra_username") || ""; } catch { return ""; } })();
-  const isOwnProfile = isLoggedIn && loggedInUsername.toLowerCase() === creator.handle.replace("@", "").toLowerCase();
+  const isOwnProfile = isOwnProfileByUrl || (isLoggedIn && matchedCreator && loggedInUsername.toLowerCase() === matchedCreator.handle.replace("@", "").toLowerCase());
 
   // Merge boards/collections from stores for own profile
   const displayBoards = isOwnProfile ? getBoards() : creator.boards.map((b, i) => ({
