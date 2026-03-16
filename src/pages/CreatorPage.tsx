@@ -172,7 +172,7 @@ const CreatorPage = () => {
   const { id } = useParams();
   const creator = creatorsData.find(c => c.id === id) || creatorsData[0];
   const [activeTab, setActiveTab] = useState("images");
-  const [followed, setFollowed] = useState(false);
+  const { followed, toggle: toggleFollow, loading: followLoading } = useFollow(creator.id);
   const [bioExpanded, setBioExpanded] = useState(false);
 
   // Modals
