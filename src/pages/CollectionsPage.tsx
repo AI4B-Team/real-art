@@ -128,7 +128,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
         <div className="px-6 py-5">
           {tab === "code" ? (
             <>
-              <p className="text-[0.82rem] text-muted mb-4">Enter the access code from the collection owner to unlock this collection for free.</p>
+              <p className="text-[0.82rem] text-muted mb-4">Enter The Access Code From The Collection Owner To Unlock This Collection For Free.</p>
               <div className="flex items-center gap-2 h-12 border border-foreground/[0.12] rounded-xl px-4 bg-background focus-within:border-accent transition-colors mb-3">
                 <Key className="w-4 h-4 text-muted shrink-0" />
                 <input value={code} onChange={e => { setCode(e.target.value.toUpperCase()); setCodeErr(""); }}
