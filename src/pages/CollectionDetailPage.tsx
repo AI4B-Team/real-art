@@ -299,7 +299,7 @@ const CollectionDetailPage = () => {
       {/* Stats */}
       <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
         <div className="flex items-center gap-6 py-5 border-b border-foreground/[0.06] text-[0.82rem] text-muted flex-wrap">
-          <span>Curated by <strong className="text-foreground">{curatorName}</strong></span>
+          <span>Curated by <strong className="text-foreground">{curatorName.toLowerCase()}</strong></span>
           <span><strong className="text-foreground">{isStatic ? staticCollections[id!]?.count.toLocaleString() : images.length}</strong> {images.length !== 1 ? "images" : "image"}</span>
           {!collection.is_public && (
             <span className="px-2.5 py-1 rounded-md bg-card border border-foreground/[0.1] text-[0.75rem] font-medium flex items-center gap-1">
