@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw,
   Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag, Video, Image,
