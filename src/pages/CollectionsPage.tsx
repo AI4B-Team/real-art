@@ -486,7 +486,7 @@ const FeaturedCard = ({ col, onNeedAccess, large = false }: {
       {needsGate && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/20">
           <div className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center">
-            {col.price && col.price > 0 ? <CreditCard className="w-5 h-5 text-white" /> : <Lock className="w-5 h-5 text-white" />}
+            <Lock className="w-5 h-5 text-white" />
           </div>
         </div>
       )}
