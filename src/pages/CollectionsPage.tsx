@@ -168,7 +168,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
                   </div>
                   <button onClick={handlePay} disabled={paying}
                     className="w-full py-3 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors flex items-center justify-center gap-2 disabled:opacity-60">
-                    {paying ? <><Loader2 className="w-4 h-4 animate-spin" />Processing…</> : <><CreditCard className="w-4 h-4" />Pay ${(price! / 100).toFixed(2)} — Get Access</>}
+                     {paying ? <><Loader2 className="w-4 h-4 animate-spin" />Processing…</> : <><CreditCard className="w-4 h-4" />Pay ${(price! / 100).toFixed(2)} — Get Access</>}
                   </button>
                   <button onClick={() => setTab("code")} className="w-full mt-2.5 text-[0.78rem] text-muted hover:text-foreground transition-colors">
                     Have a code? Enter it free →
