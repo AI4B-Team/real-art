@@ -177,10 +177,10 @@ const Navbar = () => {
   };
 
   const navLinks = [
-    { icon: Grid3X3, label: "Explore", to: "/explore" },
-    { icon: Star, label: "Collections", to: "/collections" },
+    { icon: Eye, label: "Explore", to: "/explore" },
+    { icon: FolderOpen, label: "Collections", to: "/collections" },
     { icon: Users, label: "Communities", to: "/communities" },
-    { icon: Trophy, label: "Challenges", to: "/challenges" },
+    { icon: Award, label: "Challenges", to: "/challenges" },
     { icon: BarChart3, label: "Leaderboard", to: "/leaderboard" },
   ];
 
