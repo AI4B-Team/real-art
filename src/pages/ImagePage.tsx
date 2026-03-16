@@ -110,6 +110,49 @@ const ImagePage = () => {
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [activePromptTab, setActivePromptTab] = useState<"image" | "video">("image");
   const [videoCopied, setVideoCopied] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const [copyModifier, setCopyModifier] = useState(false);
+  const [showModifierMenu, setShowModifierMenu] = useState(false);
+
+  const aiTools = ["Midjourney", "DALL-E 3", "Stable Diffusion XL", "Adobe Firefly", "Midjourney", "Leonardo AI",
+    "Ideogram", "Midjourney", "Flux", "DALL-E 3", "Stable Diffusion XL", "Midjourney"];
+  const aiTool = aiTools[idx % aiTools.length];
+  const negativePrompts: Record<string, string> = {
+    "Stable Diffusion XL": "blurry, low quality, deformed, ugly, bad anatomy, watermark, signature, text, low resolution, oversaturated",
+  };
+  const negativePrompt = negativePrompts[aiTool] || null;
+
+  const modifierSets: Record<string, { label: string; suffix: string }[]> = {
+    "Midjourney": [
+      { label: "Portrait 4:5", suffix: " --q 2 --ar 4:5 --style raw" },
+      { label: "Square", suffix: " --q 2 --ar 1:1 --style raw" },
+      { label: "Wide 16:9", suffix: " --q 2 --ar 16:9" },
+    ],
+    "Stable Diffusion XL": [
+      { label: "High quality", suffix: ", masterpiece, best quality, highly detailed" },
+      { label: "+ Photorealistic", suffix: ", photorealistic, hyperrealistic, 8k" },
+    ],
+    "DALL-E 3": [
+      { label: "Vivid style", suffix: "" },
+      { label: "Natural style", suffix: "" },
+    ],
+  };
+  const modifiers = modifierSets[aiTool] || [{ label: "Copy plain", suffix: "" }];
+
+  const promptParts = [
+    { label: "Subject", text: samplePrompt.split(",")[0] || "" },
+    { label: "Style", text: "cinematic" },
+    { label: "Lighting", text: "cinematic lighting" },
+    { label: "Quality", text: "8k ultra-detailed" },
+    { label: "Camera", text: "editorial photography style" },
+  ];
+
+  const handleCopyWithModifier = (suffix: string) => {
+    navigator.clipboard.writeText(samplePrompt + suffix).catch(() => {});
+    setCopyModifier(true);
+    setShowModifierMenu(false);
+    setTimeout(() => setCopyModifier(false), 2000);
+  };
 
   // Comments toggle
   const commentsKey = `ra_comments_off_${id || "0"}`;
