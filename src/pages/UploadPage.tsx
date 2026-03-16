@@ -725,7 +725,7 @@ const UploadPage = () => {
                   <label className="block text-[0.84rem] font-semibold mb-2">Comments</label>
                   <button
                     onClick={() => setCommentsEnabled(!commentsEnabled)}
-                    className={`flex items-center justify-between w-full p-4 rounded-xl border text-left transition-all ${commentsEnabled ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1]"}`}
+                    className={`flex items-center justify-between w-full p-4 rounded-xl border text-left transition-all ${commentsEnabled ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.1]"}`}
                   >
                     <div className="flex items-center gap-3">
                       <MessageCircle className="w-4 h-4 text-muted shrink-0" />
