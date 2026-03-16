@@ -267,9 +267,8 @@ const UploadPage = () => {
 
   if (published) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-16 flex items-center justify-center min-h-[80vh] px-6">
+      <PageShell>
+        <div className="flex items-center justify-center min-h-[80vh] px-6">
           <div className="text-center max-w-[440px]">
             <div className="w-20 h-20 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-6">
               <Check className="w-9 h-9 text-accent" />
