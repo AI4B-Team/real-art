@@ -720,7 +720,46 @@ const UploadPage = () => {
                   </div>
                 </div>
 
-                {/* Shop / Affiliate Link */}
+                {/* Comments Toggle */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Comments</label>
+                  <button
+                    onClick={() => setCommentsEnabled(!commentsEnabled)}
+                    className={`flex items-center justify-between w-full p-4 rounded-xl border text-left transition-all ${commentsEnabled ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1]"}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <MessageCircle className="w-4 h-4 text-muted shrink-0" />
+                      <div>
+                        <div className="font-semibold text-[0.86rem]">{commentsEnabled ? "Comments Enabled" : "Comments Disabled"}</div>
+                        <div className="text-[0.75rem] text-muted">{commentsEnabled ? "Viewers can leave comments on this post" : "No one can comment on this post"}</div>
+                      </div>
+                    </div>
+                    <div className={`w-10 h-[22px] rounded-full relative transition-colors ${commentsEnabled ? "bg-accent" : "bg-foreground/[0.12]"}`}>
+                      <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform ${commentsEnabled ? "left-[22px]" : "left-[3px]"}`} />
+                    </div>
+                  </button>
+                </div>
+
+                {/* Similar Products Toggle */}
+                <div>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Similar Products</label>
+                  <button
+                    onClick={() => setSimilarProducts(!similarProducts)}
+                    className={`flex items-center justify-between w-full p-4 rounded-xl border text-left transition-all ${similarProducts ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1]"}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <ShoppingBag className="w-4 h-4 text-muted shrink-0" />
+                      <div>
+                        <div className="font-semibold text-[0.86rem]">{similarProducts ? "Similar Products Enabled" : "Similar Products Disabled"}</div>
+                        <div className="text-[0.75rem] text-muted">{similarProducts ? "Show related products viewers can shop below this post" : "No product suggestions shown on this post"}</div>
+                      </div>
+                    </div>
+                    <div className={`w-10 h-[22px] rounded-full relative transition-colors ${similarProducts ? "bg-accent" : "bg-foreground/[0.12]"}`}>
+                      <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform ${similarProducts ? "left-[22px]" : "left-[3px]"}`} />
+                    </div>
+                  </button>
+                </div>
+
                 <div>
                   <div className="flex items-center justify-between mb-2">
                     <label className="text-[0.84rem] font-semibold">Shop / Affiliate Link <span className="text-muted font-normal">(Optional)</span></label>
