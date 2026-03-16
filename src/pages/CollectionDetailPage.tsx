@@ -125,27 +125,23 @@ const CollectionDetailPage = () => {
 
   return (
     <PageShell>
-      {/* Cover */}
-      <div className="h-[240px] md:h-[320px] relative overflow-hidden bg-card">
-        {coverUrl && (
-          <img src={coverUrl} alt={collection.name} className="w-full h-full object-cover" />
+      {/* Breadcrumb */}
+      <div className="px-6 md:px-12 py-4 flex items-center gap-2 text-[0.8rem] text-muted max-w-[1440px] mx-auto">
+        <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
+          <ArrowLeft className="w-3.5 h-3.5" /> Home
+        </Link>
+        <ChevronRight className="w-3 h-3 opacity-30" />
+        <Link to="/collections" className="hover:text-foreground transition-colors">Collections</Link>
+        <ChevronRight className="w-3 h-3 opacity-30" />
+        <span className="text-foreground">{collection.name}</span>
+      </div>
+
+      {/* Header */}
+      <div className="px-6 md:px-12 pb-5 max-w-[1440px] mx-auto">
+        <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-2">{collection.name}</h1>
+        {collection.description && (
+          <p className="text-[0.88rem] text-muted max-w-[520px]">{collection.description}</p>
         )}
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.65) 100%)" }} />
-        <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 pb-6 max-w-[1440px] mx-auto">
-          <div className="flex items-center gap-2 text-[0.8rem] text-white/70 mb-2">
-            <Link to="/" className="hover:text-white transition-colors flex items-center gap-1">
-              <ArrowLeft className="w-3.5 h-3.5" /> Home
-            </Link>
-            <ChevronRight className="w-3 h-3 opacity-50" />
-            <Link to="/collections" className="hover:text-white transition-colors">Collections</Link>
-            <ChevronRight className="w-3 h-3 opacity-50" />
-            <span className="text-white">{collection.name}</span>
-          </div>
-          <h1 className="font-display text-[2.4rem] md:text-[3rem] font-black text-white tracking-[-0.03em] leading-none">{collection.name}</h1>
-          {collection.description && (
-            <p className="text-white/70 text-[0.85rem] mt-2 max-w-[520px]">{collection.description}</p>
-          )}
-        </div>
       </div>
 
       {/* Stats */}
