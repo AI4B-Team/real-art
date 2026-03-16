@@ -34,10 +34,8 @@ const navItems: NavItem[] = [
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "galleries", label: "My Collections", icon: FolderOpen, type: "dashboard-section" },
-  { id: "earnings", label: "Earnings", icon: DollarSign, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
-  { id: "notifications", label: "Notifications", icon: Bell, type: "dashboard-section" },
-  { id: "settings", label: "Settings", icon: Settings, type: "dashboard-section" },
+  { id: "earnings", label: "Earnings", icon: DollarSign, type: "dashboard-section" },
 ];
 
 const AppSidebar = () => {
