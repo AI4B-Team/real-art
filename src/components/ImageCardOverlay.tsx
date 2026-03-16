@@ -66,7 +66,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
                   <Bookmark className="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>Save to Board</p></TooltipContent>
+              <TooltipContent side="bottom" className="text-xs"><p>Save</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
