@@ -91,7 +91,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
       grantAccess(id);
       onGranted();
     } else {
-      setCodeErr("Invalid code — check with the collection owner");
+      setCodeErr("Invalid Code — Check With The Collection Owner");
     }
   };
 
@@ -128,7 +128,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
         <div className="px-6 py-5">
           {tab === "code" ? (
             <>
-              <p className="text-[0.82rem] text-muted mb-4">Enter the access code from the collection owner to unlock this collection for free.</p>
+              <p className="text-[0.82rem] text-muted mb-4">Enter The Access Code From The Collection Owner To Unlock This Collection For Free.</p>
               <div className="flex items-center gap-2 h-12 border border-foreground/[0.12] rounded-xl px-4 bg-background focus-within:border-accent transition-colors mb-3">
                 <Key className="w-4 h-4 text-muted shrink-0" />
                 <input value={code} onChange={e => { setCode(e.target.value.toUpperCase()); setCodeErr(""); }}
@@ -137,11 +137,11 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
               </div>
               {codeErr && <p className="text-[0.78rem] text-destructive mb-3">{codeErr}</p>}
               <button onClick={tryCode} className="w-full py-3 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors">
-                Unlock with Code
+                Unlock With Code
               </button>
               {price && price > 0 && (
                 <button onClick={() => setTab("pay")} className="w-full mt-2.5 text-[0.78rem] text-muted hover:text-foreground transition-colors">
-                  No code? Buy access for ${(price / 100).toFixed(2)} →
+                  No Code? Buy Access For ${(price / 100).toFixed(2)} →
                 </button>
               )}
             </>
@@ -150,17 +150,17 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
               {paid ? (
                 <div className="text-center py-6">
                   <Check className="w-7 h-7 text-green-600 mx-auto mb-2" />
-                  <div className="font-semibold text-[0.92rem]">Payment complete!</div>
-                  <div className="text-[0.78rem] text-muted mt-1">Unlocking collection…</div>
+                  <div className="font-semibold text-[0.92rem]">Payment Complete!</div>
+                  <div className="text-[0.78rem] text-muted mt-1">Unlocking Collection…</div>
                 </div>
               ) : (
                 <>
                   <div className="text-center mb-5">
-                    <div className="text-[0.78rem] text-muted mb-1">Lifetime access</div>
+                    <div className="text-[0.78rem] text-muted mb-1">Lifetime Access</div>
                     <div className="font-display text-[2rem] font-black">${(price! / 100).toFixed(2)}</div>
                   </div>
                   <div className="space-y-2 mb-5">
-                    {["Full collection access forever", "Download all images", "Access on any device"].map(f => (
+                    {["Full Collection Access Forever", "Download All Images", "Access On Any Device"].map(f => (
                       <div key={f} className="flex items-center gap-2.5 text-[0.82rem]">
                         <Check className="w-3 h-3 text-green-500 shrink-0" />{f}
                       </div>
@@ -168,10 +168,10 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
                   </div>
                   <button onClick={handlePay} disabled={paying}
                     className="w-full py-3 rounded-xl bg-foreground text-primary-foreground text-[0.88rem] font-semibold hover:bg-accent transition-colors flex items-center justify-center gap-2 disabled:opacity-60">
-                    {paying ? <><Loader2 className="w-4 h-4 animate-spin" />Processing…</> : <><CreditCard className="w-4 h-4" />Pay ${(price! / 100).toFixed(2)} — Get Access</>}
+                     {paying ? <><Loader2 className="w-4 h-4 animate-spin" />Processing…</> : <><CreditCard className="w-4 h-4" />Pay ${(price! / 100).toFixed(2)} — Get Access</>}
                   </button>
                   <button onClick={() => setTab("code")} className="w-full mt-2.5 text-[0.78rem] text-muted hover:text-foreground transition-colors">
-                    Have a code? Enter it free →
+                    Have A Code? Enter It Free →
                   </button>
                 </>
               )}
