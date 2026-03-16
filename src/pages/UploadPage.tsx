@@ -889,6 +889,7 @@ const UploadPage = () => {
                     ["Categories", selectedCats.join(", ") || "—"],
                     ["Tags", tags.join(", ") || "—"],
                     ["Visibility", visibility === "public" ? "Public — free for everyone" : "Private collection"],
+                    ["Comments", commentsEnabled ? "Enabled" : "Disabled"],
                     ["Collection", selectedCollectionName || "None"],
                     ["AI Tool", tool || "Not specified"],
                     ["AI Prompts", `${Object.values(imagePrompts).filter(p => p.image_prompt).length}/${previews.length} images`],
