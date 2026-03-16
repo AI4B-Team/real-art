@@ -40,6 +40,13 @@ const prompts = [
   "Misty mountain landscape at golden hour, ethereal fog, photorealistic render, Unreal Engine 5",
 ];
 
+const videoPrompts = [
+  "Slow dolly-in through swirling nebula clouds as crystalline structures rotate. Camera drifts weightlessly, aurora borealis ribbons dancing. 4K, 24fps, anamorphic lens flares.",
+  "Tracking shot down rain-soaked cyberpunk alley, neon signs flickering, holographic ads glitching. Moody atmosphere, volumetric fog. Cinematic 24fps.",
+  "Macro camera orbiting liquid metal surface, iridescent reflections shifting. Pull back to reveal full abstract sculpture. Slow motion, 60fps.",
+  "Aerial drone sweeping over misty mountains at golden hour. Fog rolls through valleys, sun rays pierce clouds. Cinematic orchestral score. 4K.",
+];
+
 const stats = [
   { views: "24.8K", downloads: "3,412", likes: "847" },
   { views: "31.4K", downloads: "2,180", likes: "612" },
