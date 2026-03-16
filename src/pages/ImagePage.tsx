@@ -121,7 +121,7 @@ const ImagePage = () => {
     setTimeout(() => setCreditCopied(false), 2500);
   };
 
-  const embedCode = `<iframe src="https://realart.com/embed/${id}" width="600" height="600" frameborder="0" style="border-radius:12px;overflow:hidden" allowfullscreen></iframe>`;
+  const embedCode = `<iframe src="https://realart.ai/embed/${id}" width="600" height="600" frameborder="0" style="border-radius:12px;overflow:hidden" allowfullscreen></iframe>`;
 
   const handleCopyEmbed = () => {
     navigator.clipboard.writeText(embedCode).catch(() => {});
