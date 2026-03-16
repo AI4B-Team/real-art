@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   X, Download, Heart, Bookmark, Share2, RefreshCw, Video, Pencil,
   Expand, Eye, Copy, Check, ChevronDown, ChevronUp, ExternalLink,
-  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image
+  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image, Code
 } from "lucide-react";
 import { useQuickView } from "@/context/QuickViewContext";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
@@ -259,12 +259,15 @@ export default function QuickViewPanel() {
                 <Bookmark className="w-4 h-4" /> Save
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2 mb-5">
-              <button className={actionBtnClass}>
-                <Download className="w-4 h-4" /> Download
+            <div className="grid grid-cols-3 gap-2 mb-5">
+              <button className="flex items-center gap-1.5 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
+                <Download className="w-3.5 h-3.5" /> Download
               </button>
-              <button className={actionBtnClass}>
-                <Share2 className="w-4 h-4" /> Share
+              <button className="flex items-center gap-1.5 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
+                <Code className="w-3.5 h-3.5" /> Embed
+              </button>
+              <button className="flex items-center gap-1.5 justify-center py-2.5 rounded-xl border border-foreground/[0.12] hover:border-foreground/25 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
+                <Share2 className="w-3.5 h-3.5" /> Share
               </button>
             </div>
 
