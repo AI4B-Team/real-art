@@ -263,18 +263,6 @@ const ExplorePage = () => {
                         style={{ height: h, objectFit: "cover" }}
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
                       />
-                      {/* Badge */}
-                      {badgeMap[i] && (
-                        <div className="absolute top-2.5 left-2.5 flex items-center gap-1 bg-foreground/80 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-bold px-2.5 py-1 rounded-lg">
-                          {badgeMap[i].icon} {badgeMap[i].label}
-                        </div>
-                      )}
-                      {/* AI label */}
-                      {!badgeMap[i] && (
-                        <div className="absolute top-2.5 left-2.5 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-md">
-                          {isVideo(i) ? "AI Video" : "AI Art"}
-                        </div>
-                      )}
                       {/* Hover overlay with all actions */}
                       <ImageCardOverlay index={i} isVideo={isVideo(i)} photo={img.photo} title={img.title} />
                     </div>

@@ -104,19 +104,6 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
               className="w-full h-full object-cover rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
               onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
             />
-            {badgeMap[index] && (() => {
-              const BadgeIcon = badgeMap[index].Icon;
-              return (
-                <div className={`absolute top-2 left-2 flex items-center gap-1 text-[0.58rem] font-bold tracking-[0.08em] uppercase px-2.5 py-1 rounded-lg shadow-sm z-10 ${badgeMap[index].style}`}>
-                  <BadgeIcon className="w-3 h-3" /> {badgeMap[index].label}
-                </div>
-              );
-            })()}
-            {!badgeMap[index] && (
-              <div className="absolute top-2 left-2 text-[0.58rem] font-semibold tracking-[0.08em] uppercase bg-foreground/60 backdrop-blur-sm text-primary-foreground px-2 py-0.5 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                {isVideo ? "AI Video" : "AI Art"}
-              </div>
-            )}
             <ImageCardOverlay index={index} isVideo={isVideo} />
           </Link>
         ))}
