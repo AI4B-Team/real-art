@@ -405,9 +405,9 @@ const CreatorPage = () => {
                   <p className="text-[0.82rem] text-primary-foreground/40 mb-3">{creator.pinnedImage.title}</p>
                   <div className="flex gap-5 mb-4">
                     {[
-                      { icon: Eye, value: creator.pinnedImage.views, label: "views" },
-                      { icon: Download, value: creator.pinnedImage.downloads, label: "downloads" },
-                      { icon: Heart, value: creator.pinnedImage.likes, label: "likes" },
+                      { icon: Eye, value: creator.pinnedImage.views, label: "Views" },
+                      { icon: Download, value: creator.pinnedImage.downloads, label: "Downloads" },
+                      { icon: Heart, value: creator.pinnedImage.likes, label: "Likes" },
                     ].map(s => (
                       <div key={s.label}>
                         <div className="flex items-center gap-1.5">
