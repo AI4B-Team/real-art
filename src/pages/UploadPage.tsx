@@ -479,7 +479,7 @@ const UploadPage = () => {
                 <div className="flex items-center justify-between bg-accent/[0.06] border border-accent/20 rounded-xl px-4 py-3 mb-6">
                   <div className="flex items-center gap-2 text-[0.82rem] text-accent">
                     <Sparkles className="w-4 h-4" />
-                    AI auto-filled title, tags & categories
+                    AI Auto-Filled Title, Tags & Categories
                   </div>
                   <button
                     onClick={() => { setAutoTagsDone(false); runAutoTag(); }}
