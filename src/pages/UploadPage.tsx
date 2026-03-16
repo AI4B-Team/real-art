@@ -69,13 +69,13 @@ const UploadPage = () => {
   const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
 
   const filteredCollections = collections.filter(c =>
-    !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase())
+    !collectionSearch || c.title.toLowerCase().includes(collectionSearch.toLowerCase())
   );
 
   const selectedCollectionName =
     selectedCollection === "none" ? "" :
     selectedCollection === "new" ? newCollectionName :
-    collections.find(c => c.id === selectedCollection)?.name || "";
+    collections.find(c => c.id === selectedCollection)?.title || "";
 
   const generatePromptsForImage = async (dataUrl: string, index: number) => {
     setImagePrompts(prev => ({
