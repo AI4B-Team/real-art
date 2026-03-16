@@ -580,18 +580,18 @@ const UploadPage = () => {
                     {/* Public option */}
                     <button
                       onClick={() => { setVisibility("public"); setSelectedCollection("none"); setShowNewCol(false); }}
-                      className={`flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${visibility === "public" ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                      className={`flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${visibility === "public" ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
                     >
                       <Globe className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
                       <div className="flex-1">
                         <div className="font-semibold text-[0.86rem]">Public</div>
                         <div className="text-[0.75rem] text-muted">Anyone can view, download, and use this image for free</div>
                       </div>
-                      {visibility === "public" && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                      {visibility === "public" && <Check className="w-4 h-4 text-accent ml-auto shrink-0 mt-0.5" />}
                     </button>
 
                     {/* Private option */}
-                    <div className={`rounded-xl border transition-all ${visibility === "private" ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}>
+                    <div className={`rounded-xl border transition-all ${visibility === "private" ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}>
                       <button
                         onClick={() => setVisibility("private")}
                         className="flex items-start gap-4 p-5 text-left w-full"
@@ -601,7 +601,7 @@ const UploadPage = () => {
                           <div className="font-semibold text-[0.86rem]">Private Collection</div>
                           <div className="text-[0.75rem] text-muted">Only accessible via your collection with an access code</div>
                         </div>
-                        {visibility === "private" && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                        {visibility === "private" && <Check className="w-4 h-4 text-accent ml-auto shrink-0 mt-0.5" />}
                       </button>
 
                       {/* Collection picker — only when private */}
