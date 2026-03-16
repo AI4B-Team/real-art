@@ -73,7 +73,11 @@ const AppSidebar = () => {
   // Close dropdown on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (communitiesRef.current && !communitiesRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      if (communitiesRef.current && !communitiesRef.current.contains(target)) {
+        // Check if click is inside the portalled flyout
+        const flyout = document.querySelector('[data-community-flyout]');
+        if (flyout && flyout.contains(target)) return;
         setCommunitiesOpen(false);
       }
     };
