@@ -4,7 +4,7 @@ import {
   ArrowLeft, ChevronRight, Search, Eye, Copy, Check,
   Shuffle, Sparkles, BookOpen, Filter, Lock, Plus
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 const categories = ["All", "Avatars", "Landscapes", "Interiors", "Fashion", "Abstract", "Architecture", "Sci-Fi", "Fantasy", "Products", "Portraits"];
