@@ -113,9 +113,7 @@ const CommunityDetailPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Cover image */}
         <div className="h-[260px] md:h-[340px] relative overflow-hidden">
           <img
