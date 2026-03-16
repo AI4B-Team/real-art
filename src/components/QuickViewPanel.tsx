@@ -287,6 +287,13 @@ export default function QuickViewPanel() {
               </div>
             )}
           </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-5">
+            {tagList.map(tag => (
+              <Link key={tag} to={`/explore?q=${tag}`} onClick={close} className="text-[0.75rem] font-medium text-muted bg-foreground/[0.04] border border-foreground/[0.08] px-3 py-1.5 rounded-lg hover:border-foreground/20 hover:text-foreground transition-colors no-underline">
+                #{tag}
+              </Link>
             ))}
           </div>
 
