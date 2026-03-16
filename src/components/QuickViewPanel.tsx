@@ -417,25 +417,26 @@ export default function QuickViewPanel() {
           onClick={close}
         >
           <div className="columns-2 lg:columns-3 gap-3" onClick={(e) => e.stopPropagation()}>
-            {shuffledRelated.map((item, i) => (
-              <div
-                key={`${item.photo}-${i}`}
-                className="break-inside-avoid mb-3 relative group rounded-xl overflow-hidden cursor-pointer"
-                onClick={() => handleRelatedClick(item.photo, i)}
-              >
-                <img
-                  src={`https://images.unsplash.com/${item.photo}?w=400&h=${relatedHeights[i % relatedHeights.length]}&fit=crop&q=75`}
-                  alt={item.title}
-                  className="w-full object-cover rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
-                  style={{ height: relatedHeights[i % relatedHeights.length] }}
-                  loading="lazy"
-                />
-                {/* Hover overlay */}
-                <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/30 transition-colors rounded-xl flex items-end p-3 opacity-0 group-hover:opacity-100">
-                  <span className="text-[0.75rem] font-semibold text-primary-foreground drop-shadow-md">{item.title}</span>
+            {shuffledRelated.map((item, i) => {
+              const globalIdx = relatedPhotos.findIndex(p => p.photo === item.photo);
+              const overlayIdx = globalIdx >= 0 ? globalIdx : i;
+              return (
+                <div
+                  key={`${item.photo}-${i}`}
+                  className="break-inside-avoid mb-3 relative group rounded-xl overflow-hidden cursor-pointer"
+                  onClick={() => handleRelatedClick(item.photo, i)}
+                >
+                  <img
+                    src={`https://images.unsplash.com/${item.photo}?w=400&h=${relatedHeights[i % relatedHeights.length]}&fit=crop&q=75`}
+                    alt={item.title}
+                    className="w-full object-cover rounded-xl group-hover:scale-[1.03] transition-transform duration-300"
+                    style={{ height: relatedHeights[i % relatedHeights.length] }}
+                    loading="lazy"
+                  />
+                  <ImageCardOverlay index={overlayIdx} />
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>
