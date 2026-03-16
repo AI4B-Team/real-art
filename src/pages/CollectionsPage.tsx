@@ -133,7 +133,7 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
 
 /* ── Edit Collection Modal ── */
 const EditCollectionModal = ({ col, onClose, onSave }: { col: Collection; onClose: () => void; onSave: () => void }) => {
-  const [name, setName] = useState(col.name);
+  const [name, setName] = useState(col.title);
   const [desc, setDesc] = useState(col.description || "");
   const [visibility, setVisibility] = useState<"public" | "private">(col.visibility);
   const [code, setCode] = useState(col.accessCode || "");
@@ -141,7 +141,7 @@ const EditCollectionModal = ({ col, onClose, onSave }: { col: Collection; onClos
   const handleSave = () => {
     if (!name.trim()) return;
     updateCollection(col.id, {
-      name: name.trim(),
+      title: name.trim(),
       description: desc || undefined,
       visibility,
       accessCode: visibility === "private" ? code.trim() : undefined,
