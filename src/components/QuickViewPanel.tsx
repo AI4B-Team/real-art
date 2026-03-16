@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   X, Download, Heart, Bookmark, Share2, RefreshCw, Video, Pencil,
   Expand, Eye, Copy, Check, ChevronDown, ChevronUp, ExternalLink,
-  MessageCircle, ShoppingBag, Maximize2, ZoomIn
+  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image
 } from "lucide-react";
 import { useQuickView } from "@/context/QuickViewContext";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
