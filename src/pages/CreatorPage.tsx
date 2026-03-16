@@ -667,7 +667,6 @@ const CreatorPage = () => {
           )}
         </div>
         <Footer />
-      </div>
 
       {/* ═══ SHARE MODAL ═══ */}
       {showShare && (
