@@ -837,7 +837,7 @@ const UploadPage = () => {
                         </button>
                         <div>
                           <div className="text-[0.82rem] font-medium">
-                            This is an affiliate link
+                            This Is An Affiliate Link
                             {autoAffiliate && detectedPartner && (
                               <span className="ml-2 text-[0.68rem] text-accent bg-accent/10 px-1.5 py-0.5 rounded font-semibold">Auto-detected</span>
                             )}
