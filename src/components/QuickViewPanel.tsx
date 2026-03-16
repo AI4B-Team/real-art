@@ -85,7 +85,7 @@ export default function QuickViewPanel() {
   const panelRef = useRef<HTMLDivElement>(null);
   const creatorId = image ? creators[parseInt(image.id || "1") % creators.length].id : "1";
   const { followed: creatorFollowed, toggle: toggleCreatorFollow } = useFollow(creatorId);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(() => { try { return image ? localStorage.getItem(`ra_liked_${image.id}`) === "1" : false; } catch { return false; } });
   const [likeCount, setLikeCount] = useState(0);
   const [boardOpen, setBoardOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
@@ -114,7 +114,7 @@ export default function QuickViewPanel() {
     if (!image) return;
     seedDemoComments(image.id);
     setComments(getCommentsForImage(image.id));
-    setLiked(false);
+    try { setLiked(localStorage.getItem(`ra_liked_${image.id}`) === "1"); } catch { setLiked(false); }
     setLikeCount(parseInt(stat.likes.replace(",", "")));
     const sync = () => setComments(getCommentsForImage(image.id));
     window.addEventListener("ra_comments_changed", sync);
@@ -135,8 +135,10 @@ export default function QuickViewPanel() {
   if (!image) return null;
 
   const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount(c => liked ? c - 1 : c + 1);
+    const next = !liked;
+    setLiked(next);
+    setLikeCount(c => next ? c + 1 : c - 1);
+    try { next ? localStorage.setItem(`ra_liked_${image.id}`, "1") : localStorage.removeItem(`ra_liked_${image.id}`); } catch {}
   };
 
   const handleCopyPrompt = () => {
