@@ -6,7 +6,7 @@ import {
   Grid3X3, Rows3, SlidersHorizontal, Search, Image,
   Video, Music, Play, ChevronDown, AlertTriangle, Users, ExternalLink
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { getCollectionLink, setCollectionLink, removeCollectionLink, type CollectionLink } from "@/lib/linkStore";
 
