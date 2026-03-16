@@ -52,9 +52,7 @@ const ChallengesPage = () => {
   const filtered = activeTab === "All" ? challenges : challenges.filter(c => c.status === activeTab.toLowerCase());
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Header */}
         <div className="px-6 md:px-12 py-10 max-w-[1440px] mx-auto">
           <div className="flex items-center gap-2 text-[0.8rem] text-muted mb-6">
