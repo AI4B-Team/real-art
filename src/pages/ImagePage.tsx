@@ -60,6 +60,7 @@ const ImagePage = () => {
   const idx = parseInt(id || "0") % photos.length;
   const photo = searchParams.get("photo") || photos[idx];
   const creator = creators[idx % creators.length];
+  const imageTitle = imageTitles[idx % imageTitles.length];
 
   // Seed demo links on first load, then resolve for this image
   useEffect(() => { seedDemoLinks(); }, []);
