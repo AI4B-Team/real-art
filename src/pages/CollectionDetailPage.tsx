@@ -99,9 +99,7 @@ const CollectionDetailPage = () => {
   const curatorName = creator?.display_name || creator?.username || "Unknown";
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Cover */}
         <div className="h-[240px] md:h-[320px] relative overflow-hidden bg-card">
           {coverUrl && (

@@ -105,8 +105,7 @@ const AdsPage = () => {
   const totalSpent = mockCampaigns.reduce((s, c) => s + c.spent, 0);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
+    <PageShell>
       <main className="px-6 md:px-12 max-w-[1200px] mx-auto py-10">
         {/* Breadcrumb */}
         <Link to="/dashboard" className="inline-flex items-center gap-1.5 text-[0.78rem] text-muted hover:text-foreground mb-6 no-underline">
