@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal } from "lucide-react";
+import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal, Image, Video, Music } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import SponsoredCard from "@/components/SponsoredCard";
@@ -59,7 +59,11 @@ const filters = [
 
 const sortOptions = ["Most Relevant", "Newest First", "Most Downloaded", "Most Liked"];
 
-const types = ["Photos", "Videos", "Music"];
+const searchTypes = [
+  { label: "Photos", icon: Image },
+  { label: "Videos", icon: Video },
+  { label: "Music", icon: Music },
+];
 
 const ExplorePage = () => {
   const [searchParams] = useSearchParams();
@@ -67,9 +71,21 @@ const ExplorePage = () => {
   const [query, setQuery] = useState(initialQuery);
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeType, setActiveType] = useState("Photos");
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [sort, setSort] = useState("Most Relevant");
   const [sortOpen, setSortOpen] = useState(false);
   const [visibleCount, setVisibleCount] = useState(20);
+  const typeDropRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (typeDropRef.current && !typeDropRef.current.contains(e.target as Node)) {
+        setTypeDropdownOpen(false);
+      }
+    };
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, []);
 
   const filteredImages = imageData.filter(img => {
     const q = query.trim().toLowerCase();
@@ -86,31 +102,40 @@ const ExplorePage = () => {
         <div className="border-b border-foreground/[0.06] bg-card px-6 md:px-12 py-5">
           <div className="max-w-[1440px] mx-auto">
             <div className="flex items-center gap-3 flex-wrap">
-              {/* Type toggle */}
-              <div className="flex items-center gap-1 bg-background border border-foreground/[0.1] rounded-lg p-1">
-                {types.map(t => (
-                  <button
-                    key={t}
-                    onClick={() => setActiveType(t)}
-                    className={`px-4 py-1.5 rounded-md text-[0.8rem] font-medium transition-colors ${activeType === t ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}
-                  >
-                    {t}
-                  </button>
-                ))}
-              </div>
-
-              {/* Search */}
-              <div className="flex-1 min-w-[260px] flex items-center gap-3 bg-background border border-foreground/[0.12] rounded-xl px-4 h-11 focus-within:border-foreground transition-colors">
-                <Search className="w-4 h-4 text-muted shrink-0" />
+              {/* Search bar with type dropdown */}
+              <div className="flex-1 min-w-[260px] flex items-center bg-background border-[1.5px] border-foreground/[0.13] rounded-xl h-[50px] focus-within:border-foreground transition-all relative">
+                {/* Type dropdown inside search */}
+                <div ref={typeDropRef} className="relative flex items-center gap-[7px] px-5 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setTypeDropdownOpen(!typeDropdownOpen)}>
+                  {(() => { const SelIcon = searchTypes.find(t => t.label === activeType)?.icon || Image; return <SelIcon className="w-3.5 h-3.5" />; })()}
+                  <span className="text-[0.84rem] font-semibold whitespace-nowrap">{activeType}</span>
+                  <ChevronDown className={`w-3 h-3 transition-transform ${typeDropdownOpen ? "rotate-180" : ""}`} />
+                  {typeDropdownOpen && (
+                    <div className="absolute top-[calc(100%+12px)] left-0 bg-card border border-foreground/[0.08] rounded-[14px] min-w-[176px] shadow-[var(--shadow-card)] p-1.5 z-[100] animate-drop-in">
+                      {searchTypes.map(({ label, icon: Icon }) => (
+                        <div
+                          key={label}
+                          onClick={(e) => { e.stopPropagation(); setActiveType(label); setTypeDropdownOpen(false); }}
+                          className={`flex items-center gap-[9px] px-3 py-2.5 rounded-lg cursor-pointer text-[0.85rem] font-medium transition-colors ${activeType === label ? "bg-accent text-primary-foreground" : "hover:bg-background"}`}
+                        >
+                          <Icon className="w-3 h-3" />
+                          {label}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
                 <input
-                  className="flex-1 border-none outline-none font-body text-[0.9rem] bg-transparent"
+                  className="flex-1 border-none outline-none font-body text-[0.9rem] bg-transparent px-4"
                   placeholder="Search millions of free visuals…"
                   value={query}
                   onChange={e => setQuery(e.target.value)}
                 />
                 {query && (
-                  <button onClick={() => setQuery("")} className="text-muted hover:text-foreground text-lg leading-none">×</button>
+                  <button onClick={() => setQuery("")} className="text-muted hover:text-foreground text-lg leading-none mr-2">×</button>
                 )}
+                <button className="w-[42px] h-[42px] rounded-lg bg-accent cursor-pointer flex items-center justify-center mr-[4px] shrink-0 hover:bg-accent/85 hover:scale-105 transition-all">
+                  <Search className="w-4 h-4 text-primary-foreground" />
+                </button>
               </div>
 
               {/* Sort */}
