@@ -318,13 +318,13 @@ export default function DashboardCollectionPage() {
             {/* Header actions */}
             <div className="flex items-center gap-2 flex-wrap">
               <button
-                onClick={() => { setCol(c => ({ ...c, free: !c.free })); showToast(col.free ? "Set to Private" : "Set to Public"); }}
+                onClick={() => { setCol(c => ({ ...c, visibility: c.visibility === "public" ? "private" : "public" })); showToast(col.visibility === "public" ? "Set to Private" : "Set to Public"); }}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors"
               >
-                {col.free ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
-                {col.free ? "Make Private" : "Make Public"}
+                {col.visibility === "public" ? <Lock className="w-3.5 h-3.5" /> : <Globe className="w-3.5 h-3.5" />}
+                {col.visibility === "public" ? "Make Private" : "Make Public"}
               </button>
-              {!col.free && (
+              {col.visibility === "private" && (
                 <button onClick={() => setChangingCode(!changingCode)} className="flex items-center gap-1.5 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.82rem] font-medium hover:border-foreground/30 transition-colors">
                   <Key className="w-3.5 h-3.5" /> Change Code
                 </button>
