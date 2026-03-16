@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Search, Users, Lock, ArrowLeft, ChevronRight, Plus } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 const comPhotos = [
