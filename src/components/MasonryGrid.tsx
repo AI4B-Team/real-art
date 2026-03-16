@@ -73,6 +73,7 @@ interface MasonryGridProps {
 }
 
 const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
+  const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 
   const allImages = photos.map((photo, i) => ({ photo, index: i, isVideo: isVideo(i) }));
@@ -81,7 +82,7 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
     ? allImages
     : allImages.filter(img => (categoryMap[img.index] || []).includes(activeFilter));
 
-  const visible = filtered.slice(0, visibleCount);
+  const visible = isLoggedIn ? filtered : filtered.slice(0, visibleCount);
 
   if (filtered.length === 0) {
     return (
@@ -156,7 +157,7 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
           );
         })}
       </div>
-      {visibleCount < filtered.length && (
+      {!isLoggedIn && visibleCount < filtered.length && (
         <div className="text-center mt-5">
           <button
             onClick={() => setVisibleCount(c => c + PAGE_SIZE)}
