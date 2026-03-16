@@ -577,186 +577,147 @@ const UploadPage = () => {
                 <div>
                   <label className="block text-[0.84rem] font-semibold mb-2">Visibility</label>
                   <div className="flex flex-col gap-3">
-                    {([
-                      { val: "public" as const, icon: Globe, title: "Public", desc: "Anyone can view, download, and use this image for free" },
-                      { val: "private" as const, icon: Lock, title: "Private Collection", desc: "Only accessible via your collection with an access code" },
-                    ]).map(opt => (
+                    {/* Public option */}
+                    <button
+                      onClick={() => { setVisibility("public"); setSelectedCollection("none"); setShowNewCol(false); }}
+                      className={`flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${visibility === "public" ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                    >
+                      <Globe className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
+                      <div className="flex-1">
+                        <div className="font-semibold text-[0.86rem]">Public</div>
+                        <div className="text-[0.75rem] text-muted">Anyone can view, download, and use this image for free</div>
+                      </div>
+                      {visibility === "public" && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                    </button>
+
+                    {/* Private option */}
+                    <div className={`rounded-xl border transition-all ${visibility === "private" ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}>
                       <button
-                        key={opt.val}
-                        onClick={() => setVisibility(opt.val)}
-                        className={`flex items-start gap-4 p-5 rounded-xl border text-left transition-all ${visibility === opt.val ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                        onClick={() => setVisibility("private")}
+                        className="flex items-start gap-4 p-5 text-left w-full"
                       >
-                        <opt.icon className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
+                        <Lock className="w-4 h-4 mt-0.5 shrink-0 text-muted" />
                         <div className="flex-1">
-                          <div className="font-semibold text-[0.86rem]">{opt.title}</div>
-                          <div className="text-[0.75rem] text-muted">{opt.desc}</div>
+                          <div className="font-semibold text-[0.86rem]">Private Collection</div>
+                          <div className="text-[0.75rem] text-muted">Only accessible via your collection with an access code</div>
                         </div>
-                        {visibility === opt.val && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Comments toggle */}
-                <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">Comments</label>
-                  <button
-                    onClick={() => setCommentsEnabled(!commentsEnabled)}
-                    className={`flex items-center justify-between w-full p-4 rounded-xl border text-left transition-all ${commentsEnabled ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1]"}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <MessageCircle className="w-4 h-4 text-muted shrink-0" />
-                      <div>
-                        <div className="font-semibold text-[0.86rem]">{commentsEnabled ? "Comments Enabled" : "Comments Disabled"}</div>
-                        <div className="text-[0.75rem] text-muted">{commentsEnabled ? "Viewers can leave comments on this post" : "No one can comment on this post"}</div>
-                      </div>
-                    </div>
-                    <div className={`w-10 h-[22px] rounded-full relative transition-colors ${commentsEnabled ? "bg-accent" : "bg-foreground/[0.12]"}`}>
-                      <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform ${commentsEnabled ? "left-[22px]" : "left-[3px]"}`} />
-                    </div>
-                  </button>
-                </div>
-
-                {/* Similar Products toggle */}
-                <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">Similar Products</label>
-                  <button
-                    onClick={() => setSimilarProducts(!similarProducts)}
-                    className={`flex items-center justify-between w-full p-4 rounded-xl border text-left transition-all ${similarProducts ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1]"}`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <ShoppingBag className="w-4 h-4 text-muted shrink-0" />
-                      <div>
-                        <div className="font-semibold text-[0.86rem]">{similarProducts ? "Similar Products Enabled" : "Similar Products Disabled"}</div>
-                        <div className="text-[0.75rem] text-muted">{similarProducts ? "Show related products viewers can shop below this post" : "No product suggestions shown on this post"}</div>
-                      </div>
-                    </div>
-                    <div className={`w-10 h-[22px] rounded-full relative transition-colors ${similarProducts ? "bg-accent" : "bg-foreground/[0.12]"}`}>
-                      <div className={`absolute top-[3px] w-4 h-4 rounded-full bg-primary-foreground shadow transition-transform ${similarProducts ? "left-[22px]" : "left-[3px]"}`} />
-                    </div>
-                  </button>
-                </div>
-
-                {/* Add to Collection */}
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-[0.84rem] font-semibold">Add To Collection <span className="text-muted font-normal">(Optional)</span></label>
-                    {selectedCollection !== "none" && selectedCollection !== "new" && (
-                      <button onClick={() => setSelectedCollection("none")} className="text-[0.74rem] text-muted hover:text-foreground transition-colors">
-                        Clear
-                      </button>
-                    )}
-                  </div>
-
-                  <div className="border border-foreground/[0.08] rounded-xl overflow-hidden">
-                    {/* Search */}
-                    <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06]">
-                      <Search className="w-3.5 h-3.5 text-muted shrink-0" />
-                      <input
-                        value={collectionSearch}
-                        onChange={e => setCollectionSearch(e.target.value)}
-                        placeholder="Search collections…"
-                        className="flex-1 text-[0.84rem] bg-transparent outline-none font-body"
-                      />
-                      {collectionSearch && (
-                        <button onClick={() => setCollectionSearch("")} className="text-muted hover:text-foreground">
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      )}
-                    </div>
-
-                    {/* Scrollable list */}
-                    <div className="max-h-[260px] overflow-y-auto">
-                      {/* None option */}
-                      <button
-                        onClick={() => setSelectedCollection("none")}
-                        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-foreground/[0.06] ${selectedCollection === "none" ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
-                          <X className="w-4 h-4 text-muted" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-[0.84rem] font-medium">Don't Add To A Collection</div>
-                          <div className="text-[0.72rem] text-muted">Publish As A Standalone Upload</div>
-                        </div>
-                        {selectedCollection === "none" && <Check className="w-4 h-4 text-accent shrink-0" />}
+                        {visibility === "private" && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
                       </button>
 
-                      {/* No results */}
-                      {filteredCollections.length === 0 && collectionSearch && (
-                        <div className="p-4 text-center text-[0.82rem] text-muted">No collections match "{collectionSearch}"</div>
-                      )}
-
-                      {/* Collection items */}
-                      {filteredCollections.map(c => (
-                        <button
-                          key={c.id}
-                          onClick={() => { setSelectedCollection(c.id); setShowNewCol(false); }}
-                          className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-foreground/[0.04] last:border-none ${selectedCollection === c.id ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
-                        >
-                          <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0">
-                            {c.thumbs?.[0] ? (
-                              <img src={`https://images.unsplash.com/${c.thumbs[0]}?w=64&h=64&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
-                            ) : (
-                              <div className="w-full h-full bg-foreground/[0.06] flex items-center justify-center"><Image className="w-4 h-4 text-muted" /></div>
+                      {/* Collection picker — only when private */}
+                      {visibility === "private" && (
+                        <div className="px-5 pb-5">
+                          <div className="flex items-center justify-between mb-2">
+                            <label className="text-[0.78rem] font-semibold text-muted">Select Collection</label>
+                            {selectedCollection !== "none" && selectedCollection !== "new" && (
+                              <button onClick={() => setSelectedCollection("none")} className="text-[0.72rem] text-muted hover:text-foreground transition-colors">
+                                Clear
+                              </button>
                             )}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="text-[0.84rem] font-medium truncate">{c.title}</div>
-                            <div className="text-[0.72rem] text-muted">
-                              {c.imageCount} images{(c.videoCount || 0) > 0 ? ` · ${c.videoCount} videos` : ""}{(c.musicCount || 0) > 0 ? ` · ${c.musicCount} tracks` : ""} · {c.visibility === "public" ? "Public" : "Private"}
+
+                          <div className="border border-foreground/[0.08] rounded-xl overflow-hidden">
+                            {/* Search */}
+                            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06]">
+                              <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                              <input
+                                value={collectionSearch}
+                                onChange={e => setCollectionSearch(e.target.value)}
+                                placeholder="Search Collections…"
+                                className="flex-1 text-[0.84rem] bg-transparent outline-none font-body"
+                              />
+                              {collectionSearch && (
+                                <button onClick={() => setCollectionSearch("")} className="text-muted hover:text-foreground">
+                                  <X className="w-3.5 h-3.5" />
+                                </button>
+                              )}
                             </div>
+
+                            {/* Scrollable list */}
+                            <div className="max-h-[220px] overflow-y-auto">
+                              {/* No results */}
+                              {filteredCollections.length === 0 && collectionSearch && (
+                                <div className="p-4 text-center text-[0.82rem] text-muted">No collections match "{collectionSearch}"</div>
+                              )}
+
+                              {filteredCollections.length === 0 && !collectionSearch && (
+                                <div className="p-4 text-center text-[0.82rem] text-muted">No collections yet. Create one below.</div>
+                              )}
+
+                              {/* Collection items */}
+                              {filteredCollections.map(c => (
+                                <button
+                                  key={c.id}
+                                  onClick={() => { setSelectedCollection(c.id); setShowNewCol(false); }}
+                                  className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-colors border-b border-foreground/[0.04] last:border-none ${selectedCollection === c.id ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
+                                >
+                                  <div className="w-8 h-8 rounded-lg overflow-hidden shrink-0">
+                                    {c.thumbs?.[0] ? (
+                                      <img src={`https://images.unsplash.com/${c.thumbs[0]}?w=64&h=64&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+                                    ) : (
+                                      <div className="w-full h-full bg-foreground/[0.06] flex items-center justify-center"><Image className="w-4 h-4 text-muted" /></div>
+                                    )}
+                                  </div>
+                                  <div className="flex-1 min-w-0">
+                                    <div className="text-[0.84rem] font-medium truncate">{c.title}</div>
+                                    <div className="text-[0.72rem] text-muted">
+                                      {c.imageCount} images{(c.videoCount || 0) > 0 ? ` · ${c.videoCount} videos` : ""}{(c.musicCount || 0) > 0 ? ` · ${c.musicCount} tracks` : ""} · {c.visibility === "public" ? "Public" : "Private"}
+                                    </div>
+                                  </div>
+                                  {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
+                                </button>
+                              ))}
+                            </div>
+
+                            {/* Create new */}
+                            {!showNewCol ? (
+                              <button
+                                onClick={() => { setShowNewCol(true); setSelectedCollection("new"); }}
+                                className={`w-full flex items-center gap-3 px-4 py-3 border-t border-foreground/[0.06] transition-colors ${selectedCollection === "new" ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
+                              >
+                                <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
+                                  <Plus className="w-4 h-4 text-muted" />
+                                </div>
+                                <div className="text-[0.84rem] font-medium">Create New Collection…</div>
+                              </button>
+                            ) : (
+                              <div className="px-4 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
+                                <div className="flex items-center gap-2">
+                                  <input
+                                    autoFocus
+                                    value={newCollectionName}
+                                    onChange={e => setNewCollectionName(e.target.value)}
+                                    onKeyDown={e => { if (e.key === "Escape") { setShowNewCol(false); setSelectedCollection("none"); } }}
+                                    maxLength={60}
+                                    placeholder="Collection Name…"
+                                    className="flex-1 h-10 px-3 rounded-lg border border-foreground/[0.1] bg-background text-[0.84rem] font-body outline-none focus:border-foreground transition-colors"
+                                  />
+                                  <button onClick={() => { setShowNewCol(false); setSelectedCollection("none"); setNewCollectionName(""); }} className="ml-auto text-muted hover:text-foreground transition-colors">
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                                <p className="text-[0.72rem] text-muted mt-1.5">
+                                  {newCollectionName.trim().length > 0
+                                    ? `Will create "${newCollectionName.trim()}" and add your images to it`
+                                    : "Enter a name for the new collection"}
+                                </p>
+                              </div>
+                            )}
                           </div>
-                          {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
-                        </button>
-                      ))}
-                    </div>
 
-                    {/* Create new */}
-                    {!showNewCol ? (
-                      <button
-                        onClick={() => { setShowNewCol(true); setSelectedCollection("new"); }}
-                        className={`w-full flex items-center gap-3 px-4 py-3 border-t border-foreground/[0.06] transition-colors ${selectedCollection === "new" ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.02]"}`}
-                      >
-                        <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0">
-                          <Plus className="w-4 h-4 text-muted" />
+                          {/* Selection confirmation */}
+                          {selectedCollection !== "none" && (
+                            <div className="mt-2.5 flex items-center gap-2 text-[0.78rem] text-green-600 bg-green-50 dark:bg-green-500/10 px-3 py-2 rounded-lg">
+                              <Check className="w-3.5 h-3.5" />
+                              {selectedCollection === "new"
+                                ? newCollectionName.trim() ? `Will create and add to "${newCollectionName.trim()}"` : "Enter a collection name above"
+                                : `Will add to "${collections.find(c => c.id === selectedCollection)?.title}"`}
+                            </div>
+                          )}
                         </div>
-                        <div className="text-[0.84rem] font-medium">Create New Collection…</div>
-                      </button>
-                    ) : (
-                      <div className="px-4 py-3 border-t border-foreground/[0.06] bg-foreground/[0.02]">
-                        <div className="flex items-center gap-2">
-                          <input
-                            autoFocus
-                            value={newCollectionName}
-                            onChange={e => setNewCollectionName(e.target.value)}
-                            onKeyDown={e => { if (e.key === "Escape") { setShowNewCol(false); setSelectedCollection("none"); } }}
-                            maxLength={60}
-                            placeholder="Collection name…"
-                            className="flex-1 h-10 px-3 rounded-lg border border-foreground/[0.1] bg-background text-[0.84rem] font-body outline-none focus:border-foreground transition-colors"
-                          />
-                          <button onClick={() => { setShowNewCol(false); setSelectedCollection("none"); setNewCollectionName(""); }} className="ml-auto text-muted hover:text-foreground transition-colors">
-                            <X className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                        <p className="text-[0.72rem] text-muted mt-1.5">
-                          {newCollectionName.trim().length > 0
-                            ? `Will create "${newCollectionName.trim()}" and add your images to it`
-                            : "Enter a name for the new collection"}
-                        </p>
-                      </div>
-                    )}
+                      )}
+                    </div>
                   </div>
-
-                  {/* Selection confirmation */}
-                  {selectedCollection !== "none" && (
-                    <div className="mt-2.5 flex items-center gap-2 text-[0.78rem] text-green-600 bg-green-50 dark:bg-green-500/10 px-3 py-2 rounded-lg">
-                      <Check className="w-3.5 h-3.5" />
-                      {selectedCollection === "new"
-                        ? newCollectionName.trim() ? `Will create and add to "${newCollectionName.trim()}"` : "Enter a collection name above"
-                        : `Will add to "${collections.find(c => c.id === selectedCollection)?.title}"`}
-                    </div>
-                  )}
                 </div>
 
                 {/* Shop / Affiliate Link */}
