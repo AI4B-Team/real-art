@@ -59,12 +59,9 @@ const TABS = [
 ];
 
 /* ── VisBadge ── */
-const VisBadge = ({ visibility, price }: { visibility: string; price?: number }) => {
-  if (visibility === "private" && price && price > 0) {
-    return <span className="flex items-center gap-1 bg-accent/90 backdrop-blur-sm text-white text-[0.6rem] font-bold px-2.5 py-1 rounded-md"><CreditCard className="w-2.5 h-2.5" /> ${(price / 100).toFixed(2)}</span>;
-  }
+const VisBadge = ({ visibility }: { visibility: string; price?: number }) => {
   if (visibility === "private") {
-    return <span className="flex items-center gap-1 bg-foreground/70 backdrop-blur-sm text-white text-[0.6rem] font-bold px-2.5 py-1 rounded-md"><Lock className="w-2.5 h-2.5" /> Private</span>;
+    return <span className="flex items-center gap-1 bg-accent/90 backdrop-blur-sm text-white text-[0.6rem] font-bold px-2.5 py-1 rounded-md"><Lock className="w-2.5 h-2.5" /> Private</span>;
   }
   return <span className="flex items-center gap-1 bg-green-600/90 backdrop-blur-sm text-white text-[0.6rem] font-bold px-2.5 py-1 rounded-md"><Globe className="w-2.5 h-2.5" /> Public</span>;
 };
