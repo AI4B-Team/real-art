@@ -74,19 +74,19 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
+                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setLiked(!liked); }} className={iconBtnClass}>
+                  <Heart className={`w-3.5 h-3.5 ${liked ? "fill-accent text-accent" : ""}`} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="text-xs"><p>{liked ? "Unlike" : "Like"}</p></TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass}>
                   <Download className="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent side="bottom" className="text-xs"><p>Download</p></TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}#prompts`); }} className={iconBtnClass}>
-                  <FileText className="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>Prompt</p></TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
