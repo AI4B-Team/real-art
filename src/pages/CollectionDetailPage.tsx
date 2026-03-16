@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X, MoreHorizontal, Merge, Archive } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X, MoreHorizontal, Merge, Archive, LayoutGrid, List, SlidersHorizontal, Image, Video, Music, FileText, Globe, ChevronDown } from "lucide-react";
 import { getCollections, grantAccess, type UnifiedCollection } from "@/lib/collectionStore";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
@@ -61,7 +61,11 @@ const CollectionDetailPage = () => {
   const [isStatic, setIsStatic] = useState(false);
   const [accessGranted, setAccessGranted] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [activeFilter, setActiveFilter] = useState("Newest");
   const moreRef = useRef<HTMLDivElement>(null);
+  const filterRef = useRef<HTMLDivElement>(null);
 
   // Access gate state
   const [accessTab, setAccessTab] = useState<"code" | "pay">("code");
@@ -69,10 +73,11 @@ const CollectionDetailPage = () => {
   const [codeErr, setCodeErr] = useState("");
   const [paying, setPaying] = useState(false);
 
-  // Close more menu on outside click
+  // Close more/filter menus on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+      if (filterRef.current && !filterRef.current.contains(e.target as Node)) setFilterOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -296,36 +301,50 @@ const CollectionDetailPage = () => {
         )}
       </div>
 
-      {/* Stats */}
+      {/* Stats & Controls */}
       <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
         <div className="flex items-center gap-6 py-5 border-b border-foreground/[0.06] text-[0.82rem] text-muted flex-wrap">
           <span>Curated by <strong className="text-foreground">{curatorName.toLowerCase()}</strong></span>
-          <span><strong className="text-foreground">{isStatic ? staticCollections[id!]?.count.toLocaleString() : images.length}</strong> {images.length !== 1 ? "images" : "image"}</span>
-          {!collection.is_public && (
+          <span><strong className="text-foreground">{isStatic ? staticCollections[id!]?.count.toLocaleString() : images.length}</strong> media files</span>
+
+          {/* Media type breakdown */}
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1"><Image className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.7) : Math.floor(images.length * 0.7)}</strong> Photos</span>
+            <span className="flex items-center gap-1"><Video className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.2) : Math.floor(images.length * 0.2)}</strong> Videos</span>
+            <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.1) : Math.ceil(images.length * 0.1)}</strong> Other</span>
+          </div>
+
+          {/* Public / Private label */}
+          {collection.is_public ? (
+            <span className="px-2.5 py-1 rounded-md bg-card border border-foreground/[0.1] text-[0.75rem] font-medium flex items-center gap-1">
+              <Globe className="w-3 h-3" /> Public
+            </span>
+          ) : (
             <span className="px-2.5 py-1 rounded-md bg-card border border-foreground/[0.1] text-[0.75rem] font-medium flex items-center gap-1">
               <Lock className="w-3 h-3" /> Private
             </span>
           )}
+
           <div className="ml-auto flex items-center gap-3">
-            <button className="flex items-center gap-2 px-4 py-2 rounded-xl border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
-              <Heart className="w-4 h-4" /> Follow Collection
+            <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
+              <Heart className="w-4 h-4" /> Follow
             </button>
             <button onClick={() => navigator.clipboard.writeText(window.location.href).catch(() => {})}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
               <Share2 className="w-4 h-4" /> Share
             </button>
             <div className="relative" ref={moreRef}>
               <button onClick={() => setMoreOpen(o => !o)}
-                className="flex items-center justify-center w-9 h-9 rounded-xl border border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                className="flex items-center justify-center w-9 h-9 rounded-lg border border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                 <MoreHorizontal className="w-4 h-4" />
               </button>
               {moreOpen && (
                 <div className="absolute right-0 top-full mt-1.5 w-[180px] bg-card border border-foreground/[0.1] rounded-xl shadow-lg py-1.5 z-50">
-                  <button onClick={() => { setMoreOpen(false); /* merge logic placeholder */ }}
+                  <button onClick={() => { setMoreOpen(false); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.84rem] text-foreground hover:bg-background transition-colors text-left">
                     <Merge className="w-4 h-4" /> Merge Collection
                   </button>
-                  <button onClick={() => { setMoreOpen(false); /* archive logic placeholder */ }}
+                  <button onClick={() => { setMoreOpen(false); }}
                     className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.84rem] text-foreground hover:bg-background transition-colors text-left">
                     <Archive className="w-4 h-4" /> Archive Collection
                   </button>
@@ -336,13 +355,57 @@ const CollectionDetailPage = () => {
         </div>
       </div>
 
+      {/* Toolbar: View toggle + Filter */}
+      <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
+        <div className="flex items-center justify-between py-4">
+          <div className="flex items-center gap-2">
+            {/* View toggles */}
+            <button onClick={() => setViewMode("grid")}
+              className={`flex items-center justify-center w-9 h-9 rounded-lg border transition-colors ${viewMode === "grid" ? "bg-foreground text-background border-foreground" : "border-foreground/[0.12] hover:border-foreground/30 text-muted"}`}>
+              <LayoutGrid className="w-4 h-4" />
+            </button>
+            <button onClick={() => setViewMode("list")}
+              className={`flex items-center justify-center w-9 h-9 rounded-lg border transition-colors ${viewMode === "list" ? "bg-foreground text-background border-foreground" : "border-foreground/[0.12] hover:border-foreground/30 text-muted"}`}>
+              <List className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Filter */}
+          <div className="relative" ref={filterRef}>
+            <button onClick={() => setFilterOpen(o => !o)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
+              <SlidersHorizontal className="w-4 h-4" /> Filter <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+            </button>
+            {filterOpen && (
+              <div className="absolute right-0 top-full mt-1.5 w-[200px] bg-card border border-foreground/[0.1] rounded-xl shadow-lg py-1.5 z-50">
+                <div className="px-3 py-1.5 text-[0.72rem] font-semibold text-muted uppercase tracking-wider">Sort By</div>
+                {["Newest", "Most Downloads", "Most Likes", "Most Views"].map(f => (
+                  <button key={f} onClick={() => { setActiveFilter(f); setFilterOpen(false); }}
+                    className={`w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.84rem] hover:bg-background transition-colors text-left ${activeFilter === f ? "text-accent font-medium" : "text-foreground"}`}>
+                    {f}
+                  </button>
+                ))}
+                <div className="border-t border-foreground/[0.06] my-1" />
+                <div className="px-3 py-1.5 text-[0.72rem] font-semibold text-muted uppercase tracking-wider">Media Type</div>
+                {[{ label: "Photos", icon: Image }, { label: "Videos", icon: Video }, { label: "Audio", icon: Music }, { label: "Other", icon: FileText }].map(({ label, icon: Icon }) => (
+                  <button key={label} onClick={() => setFilterOpen(false)}
+                    className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.84rem] text-foreground hover:bg-background transition-colors text-left">
+                    <Icon className="w-3.5 h-3.5 text-muted" /> {label}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
       {/* Gallery */}
-      <div className="px-6 md:px-12 py-8 max-w-[1440px] mx-auto">
+      <div className="px-6 md:px-12 pb-8 max-w-[1440px] mx-auto">
         {images.length === 0 ? (
           <div className="text-center py-16 text-muted text-[0.88rem]">
             No images in this collection yet.
           </div>
-        ) : (
+        ) : viewMode === "grid" ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {images.map((img, i) => {
               const photo = isStatic ? samplePhotos[i % samplePhotos.length] : "";
@@ -350,10 +413,29 @@ const CollectionDetailPage = () => {
                 <div key={img.id}
                   onClick={() => open({ id: String(i), photo: photo || img.image_url, title: img.title || collection.name })}
                   className="rounded-xl overflow-hidden block cursor-pointer group relative aspect-square"
-                  style={{ background: "#e0e0de" }}>
+                  style={{ background: "hsl(var(--muted))" }}>
                   <img src={img.image_url} alt={img.title || ""} loading="lazy"
                     className="w-full h-full object-cover rounded-xl group-hover:scale-[1.03] transition-transform duration-300" />
                   <ImageCardOverlay index={i} />
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2">
+            {images.map((img, i) => {
+              const photo = isStatic ? samplePhotos[i % samplePhotos.length] : "";
+              return (
+                <div key={img.id}
+                  onClick={() => open({ id: String(i), photo: photo || img.image_url, title: img.title || collection.name })}
+                  className="flex items-center gap-4 p-2 rounded-xl cursor-pointer group hover:bg-card transition-colors border border-transparent hover:border-foreground/[0.06]">
+                  <div className="w-16 h-16 rounded-lg overflow-hidden shrink-0" style={{ background: "hsl(var(--muted))" }}>
+                    <img src={img.image_url} alt={img.title || ""} loading="lazy" className="w-full h-full object-cover" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[0.88rem] font-medium truncate">{img.title || `Image ${i + 1}`}</p>
+                    <p className="text-[0.78rem] text-muted flex items-center gap-1"><Image className="w-3 h-3" /> Photo</p>
+                  </div>
                 </div>
               );
             })}
