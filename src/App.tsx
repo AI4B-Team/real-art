@@ -61,6 +61,8 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <QuickViewProvider>
+        <QuickViewPanel />
         <AuthLayout>
           <Routes>
             {/* Home */}
