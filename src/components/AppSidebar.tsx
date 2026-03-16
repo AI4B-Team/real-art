@@ -238,7 +238,8 @@ const AppSidebar = () => {
                         </>
                       );
                     })()}
-                  </div>
+                  </div>,
+                  document.body
                 )}
               </div>
             );
