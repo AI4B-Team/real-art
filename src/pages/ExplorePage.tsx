@@ -48,6 +48,14 @@ const imageData = [
 
 const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
 
+const isVideo = (i: number) => i % 7 === 3;
+
+const badgeMap: Record<number, { label: string; icon: string }> = {
+  0: { label: "Staff Pick", icon: "⭐" },
+  4: { label: "Trending", icon: "🔥" },
+  9: { label: "New", icon: "✨" },
+};
+
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee" }, { n: "NeoPixel", i: "NP", c: "#c9184a" },
   { n: "DreamForge", i: "DF", c: "#2a9d8f" }, { n: "LuminaAI", i: "LA", c: "#e76f51" },
