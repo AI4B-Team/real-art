@@ -811,8 +811,7 @@ const ImagePage = () => {
         recreations="1,247"
         imageId={id || "0"}
       />
-    </div>
-  );
+    </PageShell>
 };
 
 export default ImagePage;

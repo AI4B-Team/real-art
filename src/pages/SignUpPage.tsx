@@ -54,9 +54,8 @@ const SignUpPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16 min-h-screen grid grid-cols-1 lg:grid-cols-2">
+    <PageShell>
+      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
         {/* Left — Photo Collage */}
         <div className="hidden lg:block relative bg-foreground overflow-hidden">
           <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">

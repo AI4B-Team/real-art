@@ -808,8 +808,7 @@ const CreatorPage = () => {
           </div>
         </div>
       )}
-    </div>
-  );
+    </PageShell>
 };
 
 export default CreatorPage;
