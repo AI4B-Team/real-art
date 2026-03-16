@@ -45,10 +45,13 @@ const SaveToBoardModal = ({
   const handleCreate = () => {
     if (!newName.trim()) return;
     const col = addCollection({
-      name: newName.trim(),
+      title: newName.trim(),
+      description: "", type: "saved" as const,
       visibility: newVisibility,
-      members: 0, images: 0, videos: 0, music: 0,
+      members: 0, slug: newName.trim().toLowerCase().replace(/\s+/g, "-"),
+      imageCount: 0, videoCount: 0, musicCount: 0,
       thumbs: [], items: [],
+      createdAt: new Date().toISOString(),
     });
     addToCollection(col.id, { imageId, photo: imagePhoto, title: imageTitle });
     setCollections(getCollections());
