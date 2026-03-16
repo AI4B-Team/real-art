@@ -242,6 +242,34 @@ const CreatorPage = () => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const [pageReady, setPageReady] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setPageReady(true), 50);
+    return () => clearTimeout(t);
+  }, []);
+
+  if (!pageReady) {
+    return (
+      <PageShell>
+        <div className="px-6 md:px-12 py-8 max-w-[1440px] mx-auto">
+          <div className="flex gap-5 mb-8">
+            <div className="w-24 h-24 rounded-full bg-foreground/[0.07] animate-pulse shrink-0" />
+            <div className="flex-1 flex flex-col gap-3 pt-2">
+              <div className="h-7 w-48 rounded-xl bg-foreground/[0.07] animate-pulse" />
+              <div className="h-4 w-32 rounded-lg bg-foreground/[0.05] animate-pulse" />
+              <div className="h-4 w-64 rounded-lg bg-foreground/[0.04] animate-pulse" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {Array.from({ length: 10 }).map((_, i) => (
+              <div key={i} className="aspect-square rounded-xl bg-foreground/[0.06] animate-pulse" />
+            ))}
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
+
   return (
     <PageShell>
         {/* Breadcrumb */}

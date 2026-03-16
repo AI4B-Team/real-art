@@ -135,8 +135,10 @@ export default function QuickViewPanel() {
   if (!image) return null;
 
   const handleLike = () => {
-    setLiked(!liked);
-    setLikeCount(c => liked ? c - 1 : c + 1);
+    const next = !liked;
+    setLiked(next);
+    setLikeCount(c => next ? c + 1 : c - 1);
+    try { next ? localStorage.setItem(`ra_liked_${image.id}`, "1") : localStorage.removeItem(`ra_liked_${image.id}`); } catch {}
   };
 
   const handleCopyPrompt = () => {
