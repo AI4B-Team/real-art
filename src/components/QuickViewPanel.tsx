@@ -3,7 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   X, Download, Heart, Bookmark, Share2, RefreshCw, Video, Pencil,
   Expand, Eye, Copy, Check, ChevronDown, ChevronUp, ExternalLink,
-  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image, Code
+  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image, Code,
+  Sparkles, Wand2, Zap, Cpu
 } from "lucide-react";
 import { useQuickView } from "@/context/QuickViewContext";
 import { useFollow } from "@/hooks/useFollow";
@@ -96,6 +97,11 @@ export default function QuickViewPanel() {
   const [commentText, setCommentText] = useState("");
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
+  const [showBreakdown, setShowBreakdown] = useState(false);
+  const [copyModifier, setCopyModifier] = useState(false);
+  const [showModifierMenu, setShowModifierMenu] = useState(false);
+  const [showRecreateModal, setShowRecreateModal] = useState(false);
+  const [promptVisible, setPromptVisible] = useState(true);
 
   const idx = image ? (parseInt(image.id) || 0) : 0;
   const creator = creators[idx % creators.length];
@@ -106,6 +112,35 @@ export default function QuickViewPanel() {
   const stat = stats[idx % stats.length];
   const shopLink = image ? resolveLink(image.id) : null;
   const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+
+  const aiTools = ["Midjourney", "DALL-E 3", "Stable Diffusion XL", "Adobe Firefly", "Midjourney", "Leonardo AI",
+    "Ideogram", "Midjourney", "Flux", "DALL-E 3", "Stable Diffusion XL", "Midjourney"];
+  const aiTool = aiTools[idx % aiTools.length];
+
+  const modifierSets: Record<string, { label: string; suffix: string }[]> = {
+    "Midjourney": [
+      { label: "Portrait 4:5", suffix: " --q 2 --ar 4:5 --style raw" },
+      { label: "Square", suffix: " --q 2 --ar 1:1 --style raw" },
+      { label: "Wide 16:9", suffix: " --q 2 --ar 16:9" },
+    ],
+    "Stable Diffusion XL": [
+      { label: "High quality", suffix: ", masterpiece, best quality, highly detailed" },
+      { label: "+ Photorealistic", suffix: ", photorealistic, hyperrealistic, 8k" },
+    ],
+    "DALL-E 3": [
+      { label: "Vivid style", suffix: "" },
+      { label: "Natural style", suffix: "" },
+    ],
+  };
+  const modifiers = modifierSets[aiTool] || [{ label: "Copy plain", suffix: "" }];
+
+  const promptParts = [
+    { label: "Subject", text: prompt.split(",")[0] || "" },
+    { label: "Style", text: "cinematic" },
+    { label: "Lighting", text: "cinematic lighting" },
+    { label: "Quality", text: "8k ultra-detailed" },
+    { label: "Camera", text: "editorial photography style" },
+  ];
 
   // Shuffle related photos based on current image to avoid showing same image
   const shuffledRelated = relatedPhotos.filter(p => p.photo !== image?.photo);
@@ -151,6 +186,13 @@ export default function QuickViewPanel() {
     navigator.clipboard.writeText(videoPrompt).catch(() => {});
     setVideoCopied(true);
     setTimeout(() => setVideoCopied(false), 2000);
+  };
+
+  const handleCopyWithModifier = (suffix: string) => {
+    navigator.clipboard.writeText(prompt + suffix).catch(() => {});
+    setCopyModifier(true);
+    setShowModifierMenu(false);
+    setTimeout(() => setCopyModifier(false), 2000);
   };
 
   const handleExpandToFullPage = () => {
@@ -294,14 +336,34 @@ export default function QuickViewPanel() {
               </button>
             </div>
 
-            <div className="border border-foreground/[0.08] rounded-xl mb-5 overflow-hidden">
-              <button onClick={() => setPromptOpen(!promptOpen)} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-foreground/[0.02] transition-colors">
-                <span className="text-[0.84rem] font-semibold">AI Prompt</span>
-                {promptOpen ? <ChevronUp className="w-4 h-4 text-muted" /> : <ChevronDown className="w-4 h-4 text-muted" />}
-              </button>
+            <div className="bg-card border border-foreground/[0.08] rounded-xl mb-5 overflow-hidden">
+              <div className="flex items-center justify-between px-4 pt-3 pb-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <button onClick={() => setPromptOpen(!promptOpen)} className="flex items-center gap-1">
+                    <span className="font-display text-[1.1rem] font-black tracking-[-0.02em]">AI Prompt</span>
+                    {promptOpen ? <ChevronUp className="w-4 h-4 text-muted" /> : <ChevronDown className="w-4 h-4 text-muted" />}
+                  </button>
+                  <span className="flex items-center gap-1 text-[0.65rem] text-muted bg-foreground/[0.04] border border-foreground/[0.08] px-2 py-0.5 rounded-md">
+                    <Cpu className="w-2.5 h-2.5 text-muted" />
+                    {aiTool}
+                  </span>
+                  <span className="text-[0.65rem] text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-md">Used 1,247 times</span>
+                </div>
+                {promptOpen && (
+                  <button
+                    onClick={() => setPromptVisible(!promptVisible)}
+                    className="text-[0.72rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1 shrink-0"
+                  >
+                    <Eye className="w-3 h-3" />
+                    {promptVisible ? "Hide" : "Reveal"}
+                  </button>
+                )}
+              </div>
+
               {promptOpen && (
-                <div className="px-4 pb-4">
-                  <div className="flex gap-0 mb-3 border-b border-foreground/[0.06]">
+                <>
+                  {/* Tabs */}
+                  <div className="flex gap-0 px-4 mt-2 border-b border-foreground/[0.06]">
                     {([
                       { key: "image" as const, label: "Image Prompt", icon: Image },
                       { key: "video" as const, label: "Video Prompt", icon: Video },
@@ -320,24 +382,130 @@ export default function QuickViewPanel() {
                     ))}
                   </div>
 
-                  {activePromptTab === "image" ? (
-                    <>
-                      <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{prompt}</p>
-                      <button onClick={handleCopyPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
-                        {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{videoPrompt}</p>
-                      <button onClick={handleCopyVideoPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
-                        {videoCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
-                      </button>
-                    </>
-                  )}
-                </div>
+                  <div className="px-4 py-3">
+                    {promptVisible ? (
+                      <>
+                        {activePromptTab === "image" ? (
+                          <>
+                            <div className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-xl p-3 mb-3 font-mono text-[0.78rem] text-muted leading-[1.65]">
+                              {prompt}
+                            </div>
+
+                            {/* Action row */}
+                            <div className="flex items-center gap-2 flex-wrap mb-3">
+                              <button
+                                onClick={handleCopyPrompt}
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                              >
+                                {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                                {copied ? "Copied!" : "Copy Prompt"}
+                              </button>
+
+                              {/* Copy with modifiers */}
+                              <div className="relative">
+                                <button
+                                  onClick={() => setShowModifierMenu(!showModifierMenu)}
+                                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.75rem] font-medium transition-colors border ${copyModifier ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-400 dark:border-green-800" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                                >
+                                  {copyModifier ? <Check className="w-3 h-3" /> : <Wand2 className="w-3 h-3" />}
+                                  {copyModifier ? "Copied!" : `Copy for ${aiTool}`}
+                                  {!copyModifier && <ChevronDown className="w-2.5 h-2.5 ml-0.5" />}
+                                </button>
+                                {showModifierMenu && (
+                                  <div className="absolute top-full left-0 mt-1 w-[240px] bg-background border border-foreground/[0.1] rounded-xl shadow-xl z-20 p-1.5" onClick={() => setShowModifierMenu(false)}>
+                                    {modifiers.map(m => (
+                                      <button key={m.label} onClick={() => handleCopyWithModifier(m.suffix)} className="flex flex-col w-full px-3 py-2 rounded-lg hover:bg-foreground/[0.04] transition-colors text-left">
+                                        <span className="text-[0.75rem] font-medium">{m.label}</span>
+                                        {m.suffix && <span className="text-[0.65rem] text-muted font-mono mt-0.5">{m.suffix.trim()}</span>}
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+
+                              <button onClick={() => setShowRecreateModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-accent text-primary-foreground text-[0.75rem] font-semibold hover:bg-accent/85 transition-colors ml-auto">
+                                <Sparkles className="w-3 h-3" /> Recreate This Image
+                              </button>
+                            </div>
+
+                            {/* Breakdown toggle */}
+                            <button onClick={() => setShowBreakdown(!showBreakdown)} className="flex items-center gap-1.5 text-[0.72rem] font-medium text-muted hover:text-foreground transition-colors mb-2">
+                              <Zap className="w-3 h-3" />
+                              {showBreakdown ? "Hide breakdown" : "Breakdown this prompt"}
+                              <ChevronDown className={`w-3 h-3 transition-transform ${showBreakdown ? "rotate-180" : ""}`} />
+                            </button>
+                            {showBreakdown && (
+                              <div className="grid grid-cols-2 gap-2 mb-3">
+                                {promptParts.map(part => (
+                                  <div key={part.label} className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-lg p-2.5">
+                                    <div className="text-[0.6rem] font-bold tracking-[0.1em] uppercase text-muted mb-0.5">{part.label}</div>
+                                    <div className="text-[0.75rem] font-medium">{part.text}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            <div className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-xl p-3 mb-3 font-mono text-[0.78rem] text-muted leading-[1.65]">
+                              {videoPrompt}
+                            </div>
+                            <button
+                              onClick={handleCopyVideoPrompt}
+                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                            >
+                              {videoCopied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
+                              {videoCopied ? "Copied!" : "Copy Video Prompt"}
+                            </button>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <div className="text-center py-6">
+                        <Eye className="w-5 h-5 text-muted opacity-40 mx-auto mb-2" />
+                        <div className="font-display text-[1rem] font-bold mb-1">Unlock All Prompts</div>
+                        <p className="text-[0.78rem] text-muted mb-3 max-w-[280px] mx-auto">
+                          Join REAL ART free to see the exact prompt, AI tool, and settings used to create every image.
+                        </p>
+                        <Link to="/signup" onClick={close} className="inline-flex items-center gap-2 bg-accent text-primary-foreground text-[0.78rem] font-semibold px-4 py-2 rounded-lg hover:bg-accent/85 transition-colors no-underline">
+                          Join Free — Unlock Prompts
+                        </Link>
+                      </div>
+                    )}
+                  </div>
+                </>
               )}
             </div>
+
+            {/* Recreate Modal */}
+            {showRecreateModal && (
+              <div className="fixed inset-0 z-[600] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setShowRecreateModal(false)}>
+                <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[420px] overflow-hidden shadow-2xl animate-drop-in" onClick={e => e.stopPropagation()}>
+                  <div className="flex items-center justify-between px-5 py-3 border-b border-foreground/[0.06]">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-4 h-4 text-accent" />
+                      <h3 className="font-display text-[1rem] font-black">Create This Image In REAL CREATOR?</h3>
+                    </div>
+                    <button onClick={() => setShowRecreateModal(false)} className="text-muted hover:text-foreground transition-colors">
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="px-5 py-4">
+                    <div className="flex gap-3 mb-4">
+                      <img src={`https://images.unsplash.com/${image.photo}?w=100&h=100&fit=crop&q=80`} alt="" className="w-16 h-16 rounded-xl object-cover shrink-0" />
+                      <div>
+                        <div className="font-semibold text-[0.85rem] mb-0.5">{title}</div>
+                        <div className="text-[0.72rem] text-muted">by {creator.n.toLowerCase()}</div>
+                      </div>
+                    </div>
+                    <button className="w-full bg-accent text-primary-foreground text-[0.85rem] font-bold py-3 rounded-lg hover:bg-accent/85 transition-colors flex items-center justify-center gap-2">
+                      <Sparkles className="w-4 h-4" /> Open in REAL CREATOR
+                    </button>
+                    <p className="text-[0.68rem] text-muted text-center mt-2">All settings preloaded — just hit generate</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Tags */}
             <div className="flex flex-wrap gap-2 mb-5">
