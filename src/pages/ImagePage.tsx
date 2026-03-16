@@ -206,7 +206,7 @@ const ImagePage = () => {
                   onClick={() => setBoardModalOpen(true)}
                   className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors"
                 >
-                  <Bookmark className="w-3.5 h-3.5" /> Save to Board
+                  <Bookmark className="w-3.5 h-3.5" /> Save
                 </button>
                 <button onClick={() => setShareModalOpen(true)} className="flex items-center gap-2 px-3.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Share2 className="w-3.5 h-3.5" /> Share
