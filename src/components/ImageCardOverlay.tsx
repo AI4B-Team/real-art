@@ -50,6 +50,7 @@ interface ImageCardOverlayProps {
 const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
+  const [liked, setLiked] = useState(false);
   const navigate = useNavigate();
   const cr = creators[index % creators.length];
   const prompt = prompts[index % prompts.length];
