@@ -193,7 +193,6 @@ export default function CommentsSection({ imageId }: CommentsSectionProps) {
               {" "}to leave a comment.
             </div>
           )}
-        </div>
       </div>
     </div>
   );
