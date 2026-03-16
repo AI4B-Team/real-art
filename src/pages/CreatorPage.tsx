@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { useFollow } from "@/hooks/useFollow";
 import { useParams, Link } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Globe, Link2, Grid3X3, Bookmark, Download, Share2, Award, Eye, RefreshCw, Star,
