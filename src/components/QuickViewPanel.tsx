@@ -113,6 +113,35 @@ export default function QuickViewPanel() {
   const shopLink = image ? resolveLink(image.id) : null;
   const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
 
+  const aiTools = ["Midjourney", "DALL-E 3", "Stable Diffusion XL", "Adobe Firefly", "Midjourney", "Leonardo AI",
+    "Ideogram", "Midjourney", "Flux", "DALL-E 3", "Stable Diffusion XL", "Midjourney"];
+  const aiTool = aiTools[idx % aiTools.length];
+
+  const modifierSets: Record<string, { label: string; suffix: string }[]> = {
+    "Midjourney": [
+      { label: "Portrait 4:5", suffix: " --q 2 --ar 4:5 --style raw" },
+      { label: "Square", suffix: " --q 2 --ar 1:1 --style raw" },
+      { label: "Wide 16:9", suffix: " --q 2 --ar 16:9" },
+    ],
+    "Stable Diffusion XL": [
+      { label: "High quality", suffix: ", masterpiece, best quality, highly detailed" },
+      { label: "+ Photorealistic", suffix: ", photorealistic, hyperrealistic, 8k" },
+    ],
+    "DALL-E 3": [
+      { label: "Vivid style", suffix: "" },
+      { label: "Natural style", suffix: "" },
+    ],
+  };
+  const modifiers = modifierSets[aiTool] || [{ label: "Copy plain", suffix: "" }];
+
+  const promptParts = [
+    { label: "Subject", text: prompt.split(",")[0] || "" },
+    { label: "Style", text: "cinematic" },
+    { label: "Lighting", text: "cinematic lighting" },
+    { label: "Quality", text: "8k ultra-detailed" },
+    { label: "Camera", text: "editorial photography style" },
+  ];
+
   // Shuffle related photos based on current image to avoid showing same image
   const shuffledRelated = relatedPhotos.filter(p => p.photo !== image?.photo);
 
