@@ -43,6 +43,9 @@ const UploadPage = () => {
   const [prompt, setPrompt] = useState("");
   const [tool, setTool] = useState("");
   const [visibility, setVisibility] = useState<"public" | "private">("public");
+  const [commentsEnabled, setCommentsEnabled] = useState(() => {
+    try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; }
+  });
   const [published, setPublished] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
 
