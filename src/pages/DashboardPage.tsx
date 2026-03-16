@@ -352,7 +352,7 @@ const MediaSection = () => {
 };
 
 /* ═══ GALLERIES SECTION COMPONENT ═══ */
-const totalMedia = (g: Collection) => g.images + g.videos + g.music;
+const totalMedia = (g: Collection) => (g.imageCount || 0) + (g.videoCount || 0) + (g.musicCount || 0);
 
 const GalleriesSection = () => {
   const [galData, setGalData] = useState<Collection[]>(() => getCollections());
@@ -413,15 +413,15 @@ const GalleriesSection = () => {
               <div className="flex items-start justify-between flex-wrap gap-4">
                 <div>
                   <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold text-[0.92rem]">{g.name}</h3>
+                    <h3 className="font-semibold text-[0.92rem]">{g.title}</h3>
                     <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${g.visibility === "public" ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
                       {g.visibility === "public" ? "Public" : "Private"}
                     </span>
                   </div>
                   <div className="flex items-center gap-2 text-[0.78rem] text-muted flex-wrap">
-                    <span className="flex items-center gap-1"><Image className="w-3 h-3" />{g.images} images</span>
-                    {g.videos > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{g.videos} videos</span>}
-                    {g.music > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{g.music} tracks</span>}
+                    <span className="flex items-center gap-1"><Image className="w-3 h-3" />{g.imageCount} images</span>
+                    {(g.videoCount || 0) > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{g.videoCount} videos</span>}
+                    {(g.musicCount || 0) > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{g.musicCount} tracks</span>}
                     {g.visibility === "private" && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{g.members} members</span></>}
                     {g.accessCode && <><span className="text-foreground/20">·</span><span className="flex items-center gap-1 font-mono text-muted"><Key className="w-3 h-3" />{g.accessCode}</span></>}
                   </div>

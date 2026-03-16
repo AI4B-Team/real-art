@@ -69,13 +69,13 @@ const UploadPage = () => {
   const [imagePrompts, setImagePrompts] = useState<Record<number, ImagePrompts>>({});
 
   const filteredCollections = collections.filter(c =>
-    !collectionSearch || c.name.toLowerCase().includes(collectionSearch.toLowerCase())
+    !collectionSearch || c.title.toLowerCase().includes(collectionSearch.toLowerCase())
   );
 
   const selectedCollectionName =
     selectedCollection === "none" ? "" :
     selectedCollection === "new" ? newCollectionName :
-    collections.find(c => c.id === selectedCollection)?.name || "";
+    collections.find(c => c.id === selectedCollection)?.title || "";
 
   const generatePromptsForImage = async (dataUrl: string, index: number) => {
     setImagePrompts(prev => ({
@@ -668,9 +668,9 @@ const UploadPage = () => {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-[0.84rem] font-medium truncate">{c.name}</div>
+                            <div className="text-[0.84rem] font-medium truncate">{c.title}</div>
                             <div className="text-[0.72rem] text-muted">
-                              {c.images} images{c.videos > 0 ? ` · ${c.videos} videos` : ""}{c.music > 0 ? ` · ${c.music} tracks` : ""} · {c.visibility === "public" ? "Public" : "Private"}
+                              {c.imageCount} images{(c.videoCount || 0) > 0 ? ` · ${c.videoCount} videos` : ""}{(c.musicCount || 0) > 0 ? ` · ${c.musicCount} tracks` : ""} · {c.visibility === "public" ? "Public" : "Private"}
                             </div>
                           </div>
                           {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
@@ -720,7 +720,7 @@ const UploadPage = () => {
                       <Check className="w-3.5 h-3.5" />
                       {selectedCollection === "new"
                         ? newCollectionName.trim() ? `Will create and add to "${newCollectionName.trim()}"` : "Enter a collection name above"
-                        : `Will add to "${collections.find(c => c.id === selectedCollection)?.name}"`}
+                        : `Will add to "${collections.find(c => c.id === selectedCollection)?.title}"`}
                     </div>
                   )}
                 </div>

@@ -30,7 +30,7 @@ const SaveToBoardModal = ({
   if (!open) return null;
 
   const filtered = collections.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase())
+    c.title.toLowerCase().includes(search.toLowerCase())
   );
 
   const alreadySaved = (colId: string) =>
@@ -45,10 +45,13 @@ const SaveToBoardModal = ({
   const handleCreate = () => {
     if (!newName.trim()) return;
     const col = addCollection({
-      name: newName.trim(),
+      title: newName.trim(),
+      description: "", type: "saved" as const,
       visibility: newVisibility,
-      members: 0, images: 0, videos: 0, music: 0,
+      members: 0, slug: newName.trim().toLowerCase().replace(/\s+/g, "-"),
+      imageCount: 0, videoCount: 0, musicCount: 0,
       thumbs: [], items: [],
+      createdAt: new Date().toISOString(),
     });
     addToCollection(col.id, { imageId, photo: imagePhoto, title: imageTitle });
     setCollections(getCollections());
@@ -114,7 +117,7 @@ const SaveToBoardModal = ({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[0.84rem] font-semibold truncate">{col.name}</div>
+                  <div className="text-[0.84rem] font-semibold truncate">{col.title}</div>
                   <div className="text-[0.72rem] text-muted flex items-center gap-1">
                     {col.visibility === "private" ?
                       <Lock className="w-2.5 h-2.5" /> :

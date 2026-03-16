@@ -56,10 +56,12 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   const handleCreate = () => {
     if (!name.trim()) return;
     const newCol = addCollection({
-      name: name.trim(), description: desc, visibility,
+      title: name.trim(), description: desc, type: "saved" as const, visibility,
       accessCode: visibility === "private" ? code.trim() : undefined,
-      members: 0, images: 0, videos: 0, music: 0,
+      members: 0, slug: name.trim().toLowerCase().replace(/\s+/g, "-"),
+      imageCount: 0, videoCount: 0, musicCount: 0,
       thumbs: [], items: [],
+      createdAt: new Date().toISOString(),
     });
     onCreate(newCol);
     onClose();
@@ -131,7 +133,7 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
 
 /* ── Edit Collection Modal ── */
 const EditCollectionModal = ({ col, onClose, onSave }: { col: Collection; onClose: () => void; onSave: () => void }) => {
-  const [name, setName] = useState(col.name);
+  const [name, setName] = useState(col.title);
   const [desc, setDesc] = useState(col.description || "");
   const [visibility, setVisibility] = useState<"public" | "private">(col.visibility);
   const [code, setCode] = useState(col.accessCode || "");
@@ -139,7 +141,7 @@ const EditCollectionModal = ({ col, onClose, onSave }: { col: Collection; onClos
   const handleSave = () => {
     if (!name.trim()) return;
     updateCollection(col.id, {
-      name: name.trim(),
+      title: name.trim(),
       description: desc || undefined,
       visibility,
       accessCode: visibility === "private" ? code.trim() : undefined,
@@ -255,7 +257,7 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
       <div className="rounded-2xl overflow-hidden border border-foreground/[0.06] bg-card hover:border-foreground/[0.14] transition-all hover:-translate-y-1">
         <div className="h-[180px] overflow-hidden bg-foreground/[0.04] relative">
           {cover ? (
-            <img src={`https://images.unsplash.com/${cover}?w=400&h=180&fit=crop&q=80`} alt={col.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+            <img src={`https://images.unsplash.com/${cover}?w=400&h=180&fit=crop&q=80`} alt={col.title} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
           ) : (
             <div className="w-full h-full flex items-center justify-center">
               <Bookmark className="w-8 h-8 text-muted opacity-25" />
@@ -276,15 +278,15 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
         </div>
         <div className="p-4">
           <div className="flex items-center gap-2 mb-1">
-            <h3 className="font-semibold text-[0.92rem]">{col.name}</h3>
+             <h3 className="font-semibold text-[0.92rem]">{col.title}</h3>
             <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${col.visibility === "public" ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
               {col.visibility === "public" ? "Public" : "Private"}
             </span>
           </div>
           <div className="flex items-center gap-3 text-[0.75rem] text-muted flex-wrap">
-            {col.images > 0 && <span className="flex items-center gap-1"><Image className="w-3 h-3" />{col.images} images</span>}
-            {col.videos > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{col.videos} videos</span>}
-            {col.music > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{col.music} tracks</span>}
+            {(col.imageCount || 0) > 0 && <span className="flex items-center gap-1"><Image className="w-3 h-3" />{col.imageCount} images</span>}
+            {(col.videoCount || 0) > 0 && <span className="flex items-center gap-1"><Video className="w-3 h-3" />{col.videoCount} videos</span>}
+            {(col.musicCount || 0) > 0 && <span className="flex items-center gap-1"><Music className="w-3 h-3" />{col.musicCount} tracks</span>}
             {col.visibility === "private" && col.members > 0 && (
               <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span></>
             )}
@@ -361,9 +363,9 @@ export default function CollectionsPage() {
   });
 
   const filteredMine = myCollections
-    .filter(c => !query || c.name.toLowerCase().includes(query.toLowerCase()))
+    .filter(c => !query || c.title.toLowerCase().includes(query.toLowerCase()))
     .sort((a, b) => {
-      if (sortMine === "name") return a.name.localeCompare(b.name);
+      if (sortMine === "name") return a.title.localeCompare(b.title);
       if (sortMine === "size") return b.items.length - a.items.length;
       return 0; // newest = default insertion order
     });
@@ -590,7 +592,7 @@ export default function CollectionsPage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={() => setDeleteTarget(null)}>
           <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] shadow-2xl animate-drop-in p-6 text-center" onClick={e => e.stopPropagation()}>
             <Trash2 className="w-5 h-5 text-red-500 mx-auto mb-4" />
-            <h3 className="font-display text-[1.2rem] font-bold mb-2">Delete "{deleteTarget.name}"?</h3>
+            <h3 className="font-display text-[1.2rem] font-bold mb-2">Delete "{deleteTarget.title}"?</h3>
             <p className="text-[0.85rem] text-muted mb-1">All {deleteTarget.items.length} saved images will be permanently removed.</p>
             <p className="text-[0.78rem] text-muted/70 mb-6">This cannot be undone.</p>
             <div className="flex gap-3">
