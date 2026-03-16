@@ -242,7 +242,6 @@ export default function QuickViewPanel() {
             </button>
           </div>
 
-          {/* Prompt accordion */}
           <div className="border border-foreground/[0.08] rounded-xl mb-5 overflow-hidden">
             <button onClick={() => setPromptOpen(!promptOpen)} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-foreground/[0.02] transition-colors">
               <span className="text-[0.84rem] font-semibold">AI Prompt</span>
@@ -250,20 +249,44 @@ export default function QuickViewPanel() {
             </button>
             {promptOpen && (
               <div className="px-4 pb-4">
-                <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{prompt}</p>
-                <button onClick={handleCopyPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
-                  {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy prompt</>}
-                </button>
+                {/* Tabs */}
+                <div className="flex gap-0 mb-3 border-b border-foreground/[0.06]">
+                  {([
+                    { key: "image" as const, label: "Image Prompt", icon: Image },
+                    { key: "video" as const, label: "Video Prompt", icon: Video },
+                  ]).map(tab => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setActivePromptTab(tab.key)}
+                      className={`flex items-center gap-1.5 px-3 py-2 text-[0.75rem] font-medium border-b-2 transition-colors -mb-px ${
+                        activePromptTab === tab.key
+                          ? "border-accent text-accent"
+                          : "border-transparent text-muted hover:text-foreground"
+                      }`}
+                    >
+                      <tab.icon className="w-3 h-3" /> {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {activePromptTab === "image" ? (
+                  <>
+                    <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{prompt}</p>
+                    <button onClick={handleCopyPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
+                      {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{videoPrompt}</p>
+                    <button onClick={handleCopyVideoPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
+                      {videoCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-5">
-            {tagList.map(tag => (
-              <Link key={tag} to={`/explore?q=${tag}`} onClick={close} className="text-[0.75rem] font-medium text-muted bg-foreground/[0.04] border border-foreground/[0.08] px-3 py-1.5 rounded-lg hover:border-foreground/20 hover:text-foreground transition-colors no-underline">
-                #{tag}
-              </Link>
             ))}
           </div>
 
