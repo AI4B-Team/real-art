@@ -147,13 +147,19 @@ const AppSidebar = () => {
         </div>
       ) : (
         <div className="flex flex-col items-center mb-6">
-          <button
-            onClick={() => setSidebarCollapsed(false)}
-            className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
-            title="Expand sidebar"
-          >
-            {initials}
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => setSidebarCollapsed(false)}
+                className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
+              >
+                {initials}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
+              <p>Expand Sidebar</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       )}
 
