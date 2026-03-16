@@ -232,8 +232,7 @@ const ChallengeDetailPage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

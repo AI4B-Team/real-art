@@ -85,8 +85,7 @@ const TermsPage = () => {
         </section>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

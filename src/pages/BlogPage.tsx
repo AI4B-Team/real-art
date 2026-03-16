@@ -192,8 +192,7 @@ const BlogPage = () => {
         </section>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

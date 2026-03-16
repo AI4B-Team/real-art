@@ -275,8 +275,7 @@ const AffiliatesPage = () => {
         </div>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

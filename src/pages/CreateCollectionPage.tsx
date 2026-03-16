@@ -374,8 +374,7 @@ const CreateCollectionPage = () => {
         </div>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

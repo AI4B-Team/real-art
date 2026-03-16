@@ -214,8 +214,7 @@ const LicensePage = () => {
         </section>
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 
