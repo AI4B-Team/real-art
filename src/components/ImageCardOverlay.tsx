@@ -179,7 +179,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
         onClose={() => setBoardModalOpen(false)}
         imageId={String(index)}
         imagePhoto={photo}
-        imageTitle={imageTitles[index % imageTitles.length]}
+        imageTitle={title}
       />
     </>
   );
