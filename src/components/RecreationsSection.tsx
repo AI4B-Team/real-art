@@ -49,7 +49,7 @@ const RecreationsSection = () => {
                 {r.style}
               </div>
               <div className="absolute bottom-0 left-0 right-0 p-2.5" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
-                <div className="text-[0.72rem] text-primary-foreground/80">{r.creator}</div>
+                <div className="text-[0.72rem] text-primary-foreground/80">{r.creator.toLowerCase()}</div>
               </div>
             </div>
           ))}

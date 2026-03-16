@@ -182,7 +182,7 @@ const ChallengesPage = () => {
                   </div>
                   <div className="p-3">
                     <div className="font-semibold text-[0.82rem]">{w.title}</div>
-                    <div className="text-[0.72rem] text-muted">{w.creator} · {w.challenge}</div>
+                    <div className="text-[0.72rem] text-muted">{w.creator.toLowerCase()} · {w.challenge}</div>
                     <div className="text-[0.72rem] font-bold text-accent mt-1">{w.prize}</div>
                   </div>
                 </div>

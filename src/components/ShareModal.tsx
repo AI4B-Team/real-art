@@ -116,7 +116,7 @@ const ShareModal = ({ open, onClose, imageUrl, title, creator, prompt, recreatio
                     <div className="w-5 h-5 rounded-full flex items-center justify-center text-[0.5rem] font-bold text-primary-foreground" style={{ background: creator.color }}>
                       {creator.avatar}
                     </div>
-                    <span className="text-[0.78rem] text-muted">by {creator.name}</span>
+                    <span className="text-[0.78rem] text-muted">by {creator.name.toLowerCase()}</span>
                   </div>
                   <div className="flex items-center gap-3 text-[0.75rem] text-muted">
                     <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3" /> Recreated {recreations} times</span>

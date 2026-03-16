@@ -88,7 +88,7 @@ const TrendingCreatorsSection = () => {
                   <div className="w-6 h-6 rounded-full flex items-center justify-center text-[0.55rem] font-bold text-primary-foreground" style={{ background: imageOfWeek.creator.color }}>
                     {imageOfWeek.creator.init}
                   </div>
-                  <span className="text-[0.8rem] text-muted">by {imageOfWeek.creator.name}</span>
+                  <span className="text-[0.8rem] text-muted">by {imageOfWeek.creator.name.toLowerCase()}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-4">
                   <div>

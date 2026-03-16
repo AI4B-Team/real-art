@@ -123,7 +123,7 @@ const BoardsPage = () => {
                         >
                           {board.creatorInit}
                         </div>
-                        <span className="text-[0.8rem] text-muted">by {board.creator}</span>
+                        <span className="text-[0.8rem] text-muted">by {board.creator.toLowerCase()}</span>
                       </div>
                     </div>
                     <div className="flex items-center gap-4 text-[0.75rem] text-muted">

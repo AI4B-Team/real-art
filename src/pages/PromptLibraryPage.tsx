@@ -202,7 +202,7 @@ const PromptLibraryPage = () => {
                       </div>
                       <h3 className="font-bold text-[0.92rem] truncate">{pack.title}</h3>
                     </div>
-                    <div className="text-[0.72rem] text-muted mb-1">by {pack.creator}</div>
+                    <div className="text-[0.72rem] text-muted mb-1">by {pack.creator.toLowerCase()}</div>
                     <p className="text-[0.76rem] text-muted leading-[1.55] line-clamp-2 mb-2">{pack.preview}</p>
                     <div className="flex items-center gap-3">
                       <span className="text-[0.72rem] text-muted flex items-center gap-1">

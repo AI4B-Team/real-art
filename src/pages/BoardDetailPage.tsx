@@ -367,7 +367,7 @@ const BoardDetailPage = () => {
               >
                 {creatorInit}
               </div>
-              <span className="text-[0.85rem] text-muted">by {creator}</span>
+              <span className="text-[0.85rem] text-muted">by {creator.toLowerCase()}</span>
             </Link>
             <span className="text-muted/30">·</span>
             <span className="flex items-center gap-1 text-[0.8rem] text-muted">
