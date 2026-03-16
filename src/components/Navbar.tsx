@@ -239,7 +239,7 @@ const Navbar = () => {
   );
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[300] h-16 px-4 md:px-12 flex items-center justify-between bg-background/96 backdrop-blur-xl border-b border-foreground/[0.08]">
+    <nav className="fixed top-0 left-0 right-0 z-[600] h-16 px-4 md:px-12 flex items-center justify-between bg-background/96 backdrop-blur-xl border-b border-foreground/[0.08]">
       {/* Mobile: ☰ left */}
       <div className="md:hidden relative" ref={menuRef}>
         <button
