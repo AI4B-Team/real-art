@@ -89,7 +89,7 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setShowPrompt(!showPrompt); }} className={iconBtnClass}>
+                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}#prompts`); }} className={iconBtnClass}>
                   <FileText className="w-3.5 h-3.5" />
                 </button>
               </TooltipTrigger>
