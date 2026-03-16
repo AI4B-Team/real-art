@@ -149,8 +149,7 @@ const CollectionsPage = () => {
           )}
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

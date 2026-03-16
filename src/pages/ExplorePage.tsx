@@ -250,8 +250,7 @@ const ExplorePage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

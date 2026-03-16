@@ -189,8 +189,7 @@ const ChallengesPage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

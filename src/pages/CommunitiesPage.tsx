@@ -169,8 +169,7 @@ const CommunitiesPage = () => {
           )}
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

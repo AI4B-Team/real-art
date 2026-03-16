@@ -30,8 +30,7 @@ const Index = () => {
       </section>
       <BottomCTA />
       <Footer />
-    </div>
-  );
+    </PageShell>
 };
 
 export default Index;
