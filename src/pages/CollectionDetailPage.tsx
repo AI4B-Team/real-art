@@ -62,12 +62,31 @@ const CollectionDetailPage = () => {
   useEffect(() => {
     if (!id) return;
 
-    // Check static collections first
+    // Priority 1: User's own collections from localStorage
+    const userCols = getCollections();
+    const userCol = userCols.find(c => c.id === id);
+    if (userCol) {
+      setCollection({ id: userCol.id, name: userCol.title, description: userCol.description || null, cover_url:
+        userCol.coverPhoto ? `https://images.unsplash.com/${userCol.coverPhoto}?w=1200&h=400&fit=crop&q=80` : userCol.thumbs[0]
+        ? `https://images.unsplash.com/${userCol.thumbs[0]}?w=1200&h=400&fit=crop&q=80` : null, is_public: userCol.visibility
+        === "public", user_id: "me" });
+      const userDisplay = (() => { try { return localStorage.getItem("ra_display") || "You"; } catch { return "You"; } })();
+      setCreator({ display_name: userDisplay, username: localStorage.getItem("ra_username") });
+      const imgs: CollectionImage[] = userCol.items.map((item, i) => ({
+        id: item.imageId, image_url: `https://images.unsplash.com/${item.photo}?w=400&h=${heights[i %
+        heights.length]}&fit=crop&q=78`, title: item.title, sort_order: i,
+      }));
+      setImages(imgs);
+      setIsStatic(false);
+      setLoading(false);
+      return;
+    }
+
+    // Priority 2: Static collections
     const sc = staticCollections[id];
     if (sc) {
       setCollection({ id, name: sc.name, description: sc.description || null, cover_url: `https://images.unsplash.com/${sc.photo}?w=1200&h=400&fit=crop&q=80`, is_public: true, user_id: "" });
       setCreator({ display_name: sc.curator, username: null });
-      // Generate sample images for this collection
       const count = Math.min(sc.count, 16);
       const imgs: CollectionImage[] = Array.from({ length: count }, (_, i) => ({
         id: `static-${i}`,
@@ -81,6 +100,7 @@ const CollectionDetailPage = () => {
       return;
     }
 
+    // Priority 3: Supabase
     const fetchData = async () => {
       setLoading(true);
       const { data: col } = await supabase.from("collections").select("*").eq("id", id).single();
