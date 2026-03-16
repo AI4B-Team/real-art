@@ -43,7 +43,6 @@ const communityCollections = [
 
 const TABS = [
   { id: "discover" as const, label: "All Collections", icon: Compass },
-  { id: "curated" as const, label: "By REAL ART", icon: Star },
   { id: "mine" as const, label: "My Collections", icon: Bookmark },
 ];
 
