@@ -773,7 +773,7 @@ const CreatorPage = () => {
                 <div className="w-8 h-8 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-primary-foreground" style={{ background: creator.color }}>
                   {creator.avatar}
                 </div>
-                <h2 className="font-semibold text-[0.95rem]">Message {creator.name}</h2>
+                <h2 className="font-semibold text-[0.95rem]">Message {creator.name.toLowerCase()}</h2>
               </div>
               <button onClick={() => setShowContact(false)} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors text-muted">
                 <X className="w-3.5 h-3.5" />

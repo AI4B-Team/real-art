@@ -154,7 +154,7 @@ const LeaderboardPage = () => {
                       {creator.init}
                     </div>
                     <div>
-                      <div className="font-semibold text-[0.88rem]">{creator.name}</div>
+                      <div className="font-semibold text-[0.88rem]">{creator.name.toLowerCase()}</div>
                       <div className="text-[0.73rem] text-muted">{creator.handle}</div>
                     </div>
                     <div className="ml-1">{changeIcon(creator.change)}</div>
