@@ -147,12 +147,16 @@ const Navbar = () => {
   ];
 
   const userMenuLinks = [
-    { icon: LayoutDashboard, label: "Account", to: "/account" },
+    { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
+    { icon: User, label: "My Profile", to: `/creator/${userHandle}` },
+    { icon: Upload, label: "Upload Art", to: "/upload" },
+    { icon: Image, label: "My Collections", to: "/collections" },
   ];
 
   const userMenuSecondary = [
-    { icon: Bell, label: "Notifications", to: "/dashboard" },
-    { icon: Settings, label: "Settings", to: "/dashboard" },
+    { icon: DollarSign, label: "Earnings", to: "/account?section=earnings" },
+    { icon: Bell, label: "Notifications", to: "/account?section=notifications" },
+    { icon: Settings, label: "Account Settings", to: "/account" },
   ];
 
   const menuContent = (
