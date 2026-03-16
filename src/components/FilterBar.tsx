@@ -13,7 +13,7 @@ interface FilterBarProps {
 
 const FilterBar = ({ active, onChange }: FilterBarProps) => {
   return (
-    <div className="px-6 md:px-12 pt-6 pb-5">
+    <div className="px-6 md:px-12 pt-6 pb-8">
       <div className="flex items-center gap-2.5 overflow-x-auto no-scrollbar">
         <div className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase text-muted flex items-center gap-1.5 shrink-0 mr-1">
           <Filter className="w-3 h-3" /> Filter
