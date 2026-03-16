@@ -162,7 +162,7 @@ export default function QuickViewPanel() {
   ];
 
   // Shuffle related photos based on current image to avoid showing same image
-  const shuffledRelated = relatedPhotos.filter(p => p.photo !== image?.photo);
+  const shuffledRelated = allPhotos.filter(p => p.photo !== image?.photo);
 
   useEffect(() => {
     if (!image) return;
