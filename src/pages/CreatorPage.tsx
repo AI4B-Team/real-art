@@ -308,7 +308,7 @@ const CreatorPage = () => {
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-3">
                   <div>
                     <div className="flex items-center gap-3 mb-1 flex-wrap">
-                      <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-none">{creator.name}</h1>
+                      <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-none">{creator.name.toLowerCase()}</h1>
                       {/* Top badges */}
                       {creator.badges.slice(0, 2).map(b => {
                         const Icon = b.icon;
