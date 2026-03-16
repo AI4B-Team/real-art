@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Link, useNavigate } from "react-router-dom";
 
 const searchTypes = [
-  { label: "Photos", icon: Image },
+  { label: "Images", icon: Image },
   { label: "Videos", icon: Video },
   { label: "Music", icon: Music },
 ];
