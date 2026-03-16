@@ -4,7 +4,7 @@ import {
   Upload, Sparkles, FileText, X, Layout, ChevronDown, Plus,
   Compass, Image, Video, Music, LayoutDashboard, DollarSign,
   LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
-  Megaphone, LayoutGrid, User, Bell
+  Megaphone, LayoutGrid, User
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
