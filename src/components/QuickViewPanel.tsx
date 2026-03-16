@@ -105,7 +105,7 @@ export default function QuickViewPanel() {
 
   const handleExpandToFullPage = () => {
     close();
-    navigate(`/image/${image.id}`);
+    navigate(`/image/${image.id}?photo=${encodeURIComponent(image.photo)}`);
   };
 
   const handleSubmitComment = () => {
