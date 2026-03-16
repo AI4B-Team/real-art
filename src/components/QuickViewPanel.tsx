@@ -113,6 +113,12 @@ export default function QuickViewPanel() {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCopyVideoPrompt = () => {
+    navigator.clipboard.writeText(videoPrompt).catch(() => {});
+    setVideoCopied(true);
+    setTimeout(() => setVideoCopied(false), 2000);
+  };
+
   const handleExpandToFullPage = () => {
     close();
     navigate(`/image/${image.id}?photo=${encodeURIComponent(image.photo)}`);
