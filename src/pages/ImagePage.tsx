@@ -435,20 +435,24 @@ const ImagePage = () => {
                 </div>
               )}
 
-              {/* Prompts section — Image & Video tabs */}
+              {/* Prompts section — Enhanced */}
               <div id="prompts" className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden scroll-mt-24">
                 <div className="flex items-center justify-between px-5 pt-4 pb-0">
                   <div className="flex items-center gap-3">
-                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Prompts</h2>
+                    <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">AI Prompt</h2>
+                    <span className="flex items-center gap-1 text-[0.72rem] text-muted bg-foreground/[0.04] border border-foreground/[0.08] px-2 py-0.5 rounded-md">
+                      <Cpu className="w-3 h-3 text-muted" />
+                      {aiTool}
+                    </span>
                     <span className="text-[0.72rem] text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-md">Used 1,247 times</span>
                   </div>
                   {!isLoggedIn && (
                     <button
                       onClick={() => setPromptVisible(!promptVisible)}
-                      className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                      className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1 shrink-0"
                     >
                       <Eye className="w-3.5 h-3.5" />
-                      {promptVisible ? "Hide" : "Reveal Prompts"}
+                      {promptVisible ? "Hide" : "Reveal"}
                     </button>
                   )}
                 </div>
@@ -478,38 +482,101 @@ const ImagePage = () => {
                     <>
                       {activePromptTab === "image" ? (
                         <>
-                          <p className="text-[0.82rem] text-muted leading-[1.65] mb-3">{samplePrompt}</p>
-                          <div className="flex gap-2">
+                          <div className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-xl p-4 mb-4 font-mono text-[0.82rem] text-muted leading-[1.65]">
+                            {samplePrompt}
+                          </div>
+
+                          {/* Action row */}
+                          <div className="flex items-center gap-2 flex-wrap mb-4">
                             <button
                               onClick={handleCopy}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-foreground/[0.06] text-[0.8rem] font-medium hover:bg-foreground/[0.12] transition-colors"
                             >
-                              {copied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
-                              {copied ? "Copied!" : "Copy"}
+                              {copied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                              {copied ? "Copied!" : "Copy Prompt"}
                             </button>
-                            <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-primary-foreground text-[0.75rem] font-medium hover:bg-accent/80 transition-colors">
-                              <RefreshCw className="w-3 h-3" /> Remix in REAL CREATOR
+
+                            {/* Copy with modifiers */}
+                            <div className="relative">
+                              <button
+                                onClick={() => setShowModifierMenu(!showModifierMenu)}
+                                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-[0.8rem] font-medium transition-colors border ${copyModifier ? "bg-green-50 text-green-700 border-green-200 dark:bg-green-950/20 dark:text-green-400 dark:border-green-800" : "border-foreground/[0.1] hover:border-foreground/25"}`}
+                              >
+                                {copyModifier ? <Check className="w-3.5 h-3.5" /> : <Wand2 className="w-3.5 h-3.5" />}
+                                {copyModifier ? "Copied with modifiers!" : `Copy for ${aiTool}`}
+                                {!copyModifier && <ChevronDown className="w-3 h-3 ml-0.5" />}
+                              </button>
+                              {showModifierMenu && (
+                                <div className="absolute top-full left-0 mt-1 w-[260px] bg-background border border-foreground/[0.1] rounded-xl shadow-xl z-20 p-1.5" onClick={() => setShowModifierMenu(false)}>
+                                  {modifiers.map(m => (
+                                    <button key={m.label} onClick={() => handleCopyWithModifier(m.suffix)} className="flex flex-col w-full px-3 py-2.5 rounded-lg hover:bg-foreground/[0.04] transition-colors text-left">
+                                      <span className="text-[0.8rem] font-medium">{m.label}</span>
+                                      {m.suffix && (
+                                        <span className="text-[0.7rem] text-muted font-mono mt-0.5">{m.suffix.trim()}</span>
+                                      )}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <button onClick={() => setShowRecreateModal(true)} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-accent text-primary-foreground text-[0.8rem] font-semibold hover:bg-accent/85 transition-colors ml-auto">
+                              <Sparkles className="w-3.5 h-3.5" /> Recreate This Image
                             </button>
                           </div>
+
+                          {/* Breakdown toggle */}
+                          <button onClick={() => setShowBreakdown(!showBreakdown)} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors mb-3">
+                            <Zap className="w-3.5 h-3.5" />
+                            {showBreakdown ? "Hide breakdown" : "Breakdown this prompt"}
+                            <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showBreakdown ? "rotate-180" : ""}`} />
+                          </button>
+                          {showBreakdown && (
+                            <div className="grid grid-cols-2 gap-2 mb-4">
+                              {promptParts.map(part => (
+                                <div key={part.label} className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-lg p-3">
+                                  <div className="text-[0.65rem] font-bold tracking-[0.1em] uppercase text-muted mb-1">{part.label}</div>
+                                  <div className="text-[0.8rem] font-medium">{part.text}</div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+
+                          {/* Negative prompt (SD only) */}
+                          {negativePrompt && (
+                            <div className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-lg p-3 mt-2">
+                              <div className="text-[0.68rem] font-bold tracking-[0.1em] uppercase text-muted mb-1">Negative Prompt</div>
+                              <p className="text-[0.78rem] text-muted/70 font-mono leading-[1.5]">{negativePrompt}</p>
+                            </div>
+                          )}
                         </>
                       ) : (
                         <>
-                          <p className="text-[0.82rem] text-muted leading-[1.65] mb-3">{sampleVideoPrompt}</p>
+                          <div className="bg-foreground/[0.03] border border-foreground/[0.06] rounded-xl p-4 mb-4 font-mono text-[0.82rem] text-muted leading-[1.65]">
+                            {sampleVideoPrompt}
+                          </div>
                           <div className="flex gap-2">
                             <button
                               onClick={handleCopyVideo}
-                              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-[0.75rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-foreground/[0.06] text-[0.8rem] font-medium hover:bg-foreground/[0.12] transition-colors"
                             >
-                              {videoCopied ? <Check className="w-3 h-3 text-green-600" /> : <Copy className="w-3 h-3" />}
-                              {videoCopied ? "Copied!" : "Copy"}
+                              {videoCopied ? <Check className="w-3.5 h-3.5 text-green-600" /> : <Copy className="w-3.5 h-3.5" />}
+                              {videoCopied ? "Copied!" : "Copy Video Prompt"}
                             </button>
                           </div>
                         </>
                       )}
                     </>
                   ) : (
-                    <div className="text-[0.82rem] text-muted">
-                      Join REAL ART free to unlock prompts for every image on the platform.
+                    <div className="text-center py-8">
+                      <Eye className="w-5 h-5 text-muted opacity-40 mx-auto mb-3" />
+                      <div className="font-display text-[1.1rem] font-bold mb-2">Unlock all prompts</div>
+                      <p className="text-[0.82rem] text-muted mb-4 max-w-[320px] mx-auto">
+                        Join REAL ART free to see the exact prompt, AI tool, and settings used to create every image.
+                      </p>
+                      <Link to="/signup" className="inline-flex items-center gap-2 bg-accent text-primary-foreground text-[0.82rem] font-semibold px-5 py-2.5 rounded-lg hover:bg-accent/85 transition-colors no-underline">
+                        Join Free — Unlock Prompts
+                      </Link>
                     </div>
                   )}
                 </div>
