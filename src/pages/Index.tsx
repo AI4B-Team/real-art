@@ -31,5 +31,6 @@ const Index = () => {
       <Footer />
     </PageShell>
   );
+};
 
 export default Index;
