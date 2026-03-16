@@ -647,15 +647,24 @@ const MyCollectionCard = ({ col, onEdit, onDelete, onShare, onMerge, onArchive }
         </div>
       </div>
       {/* Thumb strip */}
-      {col.thumbs.length > 1 && (
-        <div className="flex gap-1 px-2 -mt-5 relative z-10">
-          {col.thumbs.slice(1, 4).map((t, i) => (
-            <div key={i} className="aspect-square w-[38px] rounded-md overflow-hidden border-2 border-card flex-shrink-0">
-              <img src={`https://images.unsplash.com/${t}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
-            </div>
-          ))}
-        </div>
-      )}
+      {col.thumbs.length > 1 && (() => {
+        const totalItems = col.items.length || col.imageCount;
+        const showCount = totalItems > 7 ? 6 : Math.min(col.thumbs.length - 1, 3);
+        const thumbsToShow = col.thumbs.slice(1, showCount + 1);
+        // If we need more thumbs than available, cycle through them
+        while (thumbsToShow.length < showCount && col.thumbs.length > 1) {
+          thumbsToShow.push(col.thumbs[(thumbsToShow.length % (col.thumbs.length - 1)) + 1]);
+        }
+        return (
+          <div className="flex gap-1 px-2 -mt-5 relative z-10">
+            {thumbsToShow.map((t, i) => (
+              <div key={i} className="flex-1 aspect-square rounded-md overflow-hidden border-2 border-card">
+                <img src={`https://images.unsplash.com/${t}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
+              </div>
+            ))}
+          </div>
+        );
+      })()}
       <div className="p-4">
         <h3 className="font-semibold text-[0.92rem] truncate">{col.title}</h3>
         <div className="flex items-center gap-2 text-[0.72rem] text-muted mt-1">
