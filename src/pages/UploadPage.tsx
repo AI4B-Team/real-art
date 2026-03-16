@@ -506,7 +506,7 @@ const UploadPage = () => {
 
                 {/* Categories */}
                 <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">Categories <span className="text-accent">*</span> <span className="text-muted font-normal">(up to 5)</span></label>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Categories <span className="text-accent">*</span> <span className="text-muted font-normal">(Up To 5)</span></label>
                   <div className="flex flex-wrap gap-2">
                     {categories.map(cat => (
                       <button
