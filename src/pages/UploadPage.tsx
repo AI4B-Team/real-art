@@ -547,7 +547,7 @@ const UploadPage = () => {
                   <div className="flex items-center gap-2 mb-3">
                     <Sparkles className="w-4 h-4 text-accent" />
                     <span className="font-semibold text-[0.86rem]">AI Prompts</span>
-                    <span className="text-[0.72rem] text-accent bg-accent/10 px-2 py-0.5 rounded-md font-semibold">Auto-generated</span>
+                    <span className="text-[0.72rem] text-accent bg-accent/10 px-2 py-0.5 rounded-md font-semibold">Auto-Generated</span>
                   </div>
                   <p className="text-[0.78rem] text-muted mb-3">Image and video prompts were automatically generated for each image. You can edit them in the Upload step.</p>
                   <div className="text-[0.8rem]">
