@@ -91,6 +91,8 @@ export default function QuickViewPanel() {
   const [videoCopied, setVideoCopied] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
+  const [showEmbed, setShowEmbed] = useState(false);
+  const [embedCopied, setEmbedCopied] = useState(false);
 
   const idx = image ? (parseInt(image.id) || 0) : 0;
   const creator = creators[idx % creators.length];
