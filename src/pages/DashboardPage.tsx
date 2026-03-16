@@ -1157,98 +1157,40 @@ const MyBoardsSection = () => {
 };
 
 const DashboardPage = () => {
-  const [activeSection, setActiveSection] = useState("overview");
+  const location = useLocation();
+  const navigate = useNavigate();
+  const activeSection = new URLSearchParams(location.search).get("section") || "overview";
+  const setActiveSection = (s: string) => {
+    if (s === "overview") navigate("/dashboard");
+    else navigate(`/dashboard?section=${s}`);
+  };
   const [commentsDefault, setCommentsDefault] = useState(() => {
     try { return localStorage.getItem("ra_comments_default") !== "0"; } catch { return true; }
   });
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
-        <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] min-h-[calc(100vh-4rem)]">
-          {/* Sidebar */}
-          <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:block">
-            <div className="flex items-center gap-3 mb-8 px-3">
-              {(() => {
-                const display = (() => { try { return (localStorage.getItem("ra_display") || "AI.Verse").toLowerCase(); } catch { return "aiverse"; } })();
-                const handle = (() => { try { return (localStorage.getItem("ra_username") || "aiverse").toLowerCase(); } catch { return "aiverse"; } })();
-                const initials = display.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
-                return (
-                  <>
-                    <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{initials}</div>
-                    <div>
-                      <div className="font-semibold text-[0.88rem] lowercase">{display}</div>
-                      <div className="text-[0.72rem] text-muted lowercase">@{handle}</div>
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-
-            <nav className="flex flex-col gap-1">
-              {navItems.map(item => {
-                if (item.id.startsWith("divider")) {
-                  return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
-                }
-                return item.internal === false ? (
-                  <Link
-                    key={item.id}
-                    to={item.href!}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors text-muted hover:text-foreground hover:bg-foreground/[0.04] no-underline"
-                  >
-                    <item.icon className="w-4 h-4 shrink-0" />
-                    {item.label}
-                    <ExternalLink className="w-3 h-3 ml-auto opacity-30" />
-                  </Link>
-                ) : (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                  >
-                    <item.icon className="w-4 h-4 shrink-0" />
-                    {item.label}
-                    {item.id === "notifications" && (
-                      <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
-                    )}
-                  </button>
-                );
-              })}
-            </nav>
-
-            <Link to="/upload" className="flex items-center justify-center gap-2 bg-foreground text-primary-foreground py-2.5 rounded-xl text-[0.84rem] font-semibold hover:bg-accent transition-colors mt-6 w-full no-underline">
-              <Upload className="w-3.5 h-3.5" /> Upload Art
-            </Link>
-          </aside>
-
-          {/* Main Content */}
-          <main className="px-6 md:px-10 py-8 overflow-y-auto">
-            {/* Mobile Nav */}
-            <div className="flex items-center gap-2 mb-6 lg:hidden overflow-x-auto pb-2 no-scrollbar">
-              {navItems.map(item => (
-                item.internal === false ? (
-                  <Link
-                    key={item.id}
-                    to={item.href!}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap bg-card border border-foreground/[0.1] text-muted no-underline"
-                  >
-                    <item.icon className="w-3.5 h-3.5" />
-                    {item.label}
-                    <ExternalLink className="w-2.5 h-2.5 opacity-30" />
-                  </Link>
-                ) : (
-                  <button
-                    key={item.id}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted"}`}
-                  >
-                    <item.icon className="w-3.5 h-3.5" />
-                    {item.label}
-                  </button>
-                )
-              ))}
-            </div>
+    <div className="px-6 md:px-10 py-8 overflow-y-auto">
+      {/* Mobile Nav */}
+      <div className="flex items-center gap-2 mb-6 lg:hidden overflow-x-auto pb-2 no-scrollbar">
+        {[
+          { id: "overview", label: "Dashboard" },
+          { id: "media", label: "Media" },
+          { id: "galleries", label: "Collections" },
+          { id: "boards", label: "Boards" },
+          { id: "earnings", label: "Earnings" },
+          { id: "ads", label: "Ads" },
+          { id: "notifications", label: "Notifications" },
+          { id: "settings", label: "Settings" },
+        ].map(item => (
+          <button
+            key={item.id}
+            onClick={() => setActiveSection(item.id)}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg text-[0.78rem] font-medium whitespace-nowrap transition-colors ${activeSection === item.id ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted"}`}
+          >
+            {item.label}
+          </button>
+        ))}
+      </div>
 
             {/* ═══ OVERVIEW ═══ */}
             {activeSection === "overview" && (
