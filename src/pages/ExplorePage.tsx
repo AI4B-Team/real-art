@@ -202,19 +202,8 @@ const ExplorePage = () => {
           </div>
         </div>
 
-        {/* Results count */}
-        <div className="px-6 md:px-12 py-4">
-          <div className="max-w-[1440px] mx-auto flex items-center justify-between">
-            <div className="text-[0.82rem] text-muted">
-              {(() => {
-                const count = filteredImages.length;
-                if (query) return <>Showing results for <strong className="text-foreground">"{query}"</strong> · {count} images</>;
-                if (activeFilter !== "All") return <><strong className="text-foreground">{activeFilter}</strong> · {count} images</>;
-                return <>All · {count.toLocaleString()}+ images</>;
-              })()}
-            </div>
-          </div>
-        </div>
+
+
 
         {/* Grid */}
         <div className="px-6 md:px-12 pb-16">
