@@ -601,7 +601,7 @@ const UploadPage = () => {
                           <div className="font-semibold text-[0.86rem]">Private Collection</div>
                           <div className="text-[0.75rem] text-muted">Only accessible via your collection with an access code</div>
                         </div>
-                        {visibility === "private" && <Check className="w-4 h-4 text-foreground ml-auto shrink-0 mt-0.5" />}
+                        {visibility === "private" && <Check className="w-4 h-4 text-accent ml-auto shrink-0 mt-0.5" />}
                       </button>
 
                       {/* Collection picker — only when private */}
