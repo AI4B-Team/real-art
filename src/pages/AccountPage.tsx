@@ -38,17 +38,29 @@ const AccountPage = () => {
   const [showCollections, setShowCollections] = useState(true);
 
   useEffect(() => {
+    const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+    if (!isLoggedIn) { navigate("/login"); return; }
+
+    // Try Supabase profile first, fall back to localStorage
     const loadProfile = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { navigate("/login"); return; }
-      setEmail(user.email || "");
-      const { data: profile } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
-      if (profile) {
-        setDisplayName(profile.display_name || "");
-        setUsername(profile.username || "");
-        setBio(profile.bio || "");
-        setAvatarUrl(profile.avatar_url || "");
+      if (user) {
+        setEmail(user.email || "");
+        const { data: profile } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
+        if (profile) {
+          setDisplayName(profile.display_name || "");
+          setUsername(profile.username || "");
+          setBio(profile.bio || "");
+          setAvatarUrl(profile.avatar_url || "");
+          return;
+        }
       }
+      // Fallback to localStorage
+      try {
+        setDisplayName(localStorage.getItem("ra_display") || "");
+        setUsername(localStorage.getItem("ra_username") || "");
+        setEmail(localStorage.getItem("ra_email") || "");
+      } catch {}
     };
     loadProfile();
   }, [navigate]);
