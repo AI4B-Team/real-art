@@ -82,6 +82,17 @@ const ImagePage = () => {
     });
     return () => subscription.unsubscribe();
   }, []);
+
+  // Scroll to hash anchor (e.g. #prompts)
+  useEffect(() => {
+    if (window.location.hash) {
+      setTimeout(() => {
+        const el = document.querySelector(window.location.hash);
+        el?.scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    }
+  }, []);
+
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
   const [creditCopied, setCreditCopied] = useState(false);
@@ -356,7 +367,7 @@ const ImagePage = () => {
               )}
 
               {/* Prompts section — Image & Video tabs */}
-              <div className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden">
+              <div id="prompts" className="mt-8 bg-card border border-foreground/[0.08] rounded-xl overflow-hidden scroll-mt-24">
                 <div className="flex items-center justify-between px-5 pt-4 pb-0">
                   <div className="flex items-center gap-3">
                     <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Prompts</h2>
