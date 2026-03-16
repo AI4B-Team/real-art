@@ -467,7 +467,7 @@ const GalleriesSection = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  {g.code && (
+                  {g.accessCode && (
                     <button
                       onClick={() => { setChangingCode(changingCode === g.id ? null : g.id); setNewCode(""); setCodeError(""); }}
                       className="text-[0.78rem] font-medium text-muted border border-foreground/[0.12] px-4 py-2 rounded-lg hover:border-foreground/30 hover:text-foreground transition-colors"
