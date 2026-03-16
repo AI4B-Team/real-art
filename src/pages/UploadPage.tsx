@@ -655,8 +655,8 @@ const UploadPage = () => {
                           <X className="w-4 h-4 text-muted" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <div className="text-[0.84rem] font-medium">Don't add to a collection</div>
-                          <div className="text-[0.72rem] text-muted">Publish as a standalone upload</div>
+                          <div className="text-[0.84rem] font-medium">Don't Add To A Collection</div>
+                          <div className="text-[0.72rem] text-muted">Publish As A Standalone Upload</div>
                         </div>
                         {selectedCollection === "none" && <Check className="w-4 h-4 text-accent shrink-0" />}
                       </button>
