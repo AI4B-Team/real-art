@@ -1,4 +1,5 @@
-import { Users } from "lucide-react";
+import { useState } from "react";
+import { Users, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const comPhotos = [
@@ -17,6 +18,17 @@ const communities = [
 ];
 
 const CommunitiesSection = () => {
+  const [joined, setJoined] = useState<Record<number, boolean>>({});
+
+  const handleJoin = (e: React.MouseEvent, i: number, free: boolean) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (joined[i]) return;
+    if (!free) {
+      // For non-free communities, could show code entry - for now just join
+    }
+    setJoined(prev => ({ ...prev, [i]: true }));
+  };
   return (
     <section className="py-12 px-6 md:px-12">
       <div className="max-w-[1440px] mx-auto">
@@ -45,12 +57,16 @@ const CommunitiesSection = () => {
                     <Users className="w-[11px] h-[11px]" />
                     {com.members.toLocaleString()}
                   </span>
-                  <span
-                    onClick={(e) => e.preventDefault()}
-                    className="text-[0.76rem] font-bold px-4 py-[7px] rounded-lg border-none cursor-pointer bg-foreground text-primary-foreground hover:bg-accent transition-colors"
+                  <button
+                    onClick={(e) => handleJoin(e, i, com.free)}
+                    className={`text-[0.76rem] font-bold px-4 py-[7px] rounded-lg border-none cursor-pointer transition-colors ${
+                      joined[i]
+                        ? "bg-green-600/10 text-green-700 cursor-default"
+                        : "bg-foreground text-primary-foreground hover:bg-accent"
+                    }`}
                   >
-                    Join Now
-                  </span>
+                    {joined[i] ? <span className="flex items-center gap-1"><Check className="w-3 h-3" /> Joined</span> : com.free ? "Join Free" : "Enter Code"}
+                  </button>
                 </div>
               </div>
             </Link>
