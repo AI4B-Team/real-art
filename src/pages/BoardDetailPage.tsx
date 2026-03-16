@@ -159,9 +159,8 @@ const BoardDetailPage = () => {
   /* ── Not found ── */
   if (!userBoard && !publicBoard) {
     return (
-      <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-16 flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
+      <PageShell>
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
           <Bookmark className="w-12 h-12 text-muted mb-4 opacity-30" />
           <h1 className="font-display text-2xl font-bold mb-2">Board not found</h1>
           <Link to="/boards" className="text-accent text-[0.88rem] font-semibold hover:underline mt-2 flex items-center gap-1">
