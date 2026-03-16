@@ -690,21 +690,12 @@ const ImagePage = () => {
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none mb-2">
                   Cosmic Dreamscape
                 </h1>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4">
-                  {[
-                    { icon: Eye, label: "Views", value: "24,800", suffix: "" },
-                    { icon: Download, label: "Downloads", value: "3,412", suffix: "" },
-                    { icon: RefreshCw, label: "Recreated", value: "1,247", suffix: "×" },
-                    { icon: Code, label: "Embeds", value: "1,032", suffix: "" },
-                  ].map((stat) => (
-                    <div key={stat.label} className="bg-card border border-foreground/[0.08] rounded-xl p-4 flex flex-col items-center justify-center">
-                      <stat.icon className="w-4 h-4 mb-2 text-accent" />
-                      <div className="font-display font-black text-[1.15rem] tracking-[-0.02em] leading-tight text-center">
-                        {stat.value}{stat.suffix && <sup className="text-[0.7rem] ml-0.5">{stat.suffix}</sup>}
-                      </div>
-                      <div className="text-[0.68rem] text-muted uppercase tracking-[0.08em] mt-1">{stat.label}</div>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-4 mt-3 text-[0.82rem] text-muted flex-wrap">
+                  <span className="flex items-center gap-1.5"><Eye className="w-3.5 h-3.5" /> 24.8K views</span>
+                  <span className="flex items-center gap-1.5"><Download className="w-3.5 h-3.5" /> 3,412 downloads</span>
+                  <span className="flex items-center gap-1.5"><Heart className="w-3.5 h-3.5" /> 847 likes</span>
+                  <span className="flex items-center gap-1.5"><Bookmark className="w-3.5 h-3.5" /> 234 saves</span>
+                  <span className="flex items-center gap-1.5"><Share2 className="w-3.5 h-3.5" /> 128 shares</span>
                 </div>
               </div>
 
