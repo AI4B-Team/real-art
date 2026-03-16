@@ -135,7 +135,7 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
 
 /* ── Community Card ── */
 const CommunityCard = ({ board }: { board: typeof communityCollections[0] }) => (
-  <Link to={`/boards/${board.id}`} className="group block no-underline">
+  <Link to={`/collections/${board.id}`} className="group block no-underline">
     <div className="rounded-2xl overflow-hidden border border-foreground/[0.06] bg-card hover:border-foreground/[0.14] transition-all hover:-translate-y-1">
       <div className="relative h-[200px] overflow-hidden">
         <img
