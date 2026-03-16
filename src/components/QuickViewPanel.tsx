@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   X, Download, Heart, Bookmark, Share2, RefreshCw, Video, Pencil,
   Expand, Eye, Copy, Check, ChevronDown, ChevronUp, ExternalLink,
-  MessageCircle, ShoppingBag, Maximize2, ZoomIn
+  MessageCircle, ShoppingBag, Maximize2, ZoomIn, Image
 } from "lucide-react";
 import { useQuickView } from "@/context/QuickViewContext";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
@@ -40,6 +40,13 @@ const prompts = [
   "Misty mountain landscape at golden hour, ethereal fog, photorealistic render, Unreal Engine 5",
 ];
 
+const videoPrompts = [
+  "Slow dolly-in through swirling nebula clouds as crystalline structures rotate. Camera drifts weightlessly, aurora borealis ribbons dancing. 4K, 24fps, anamorphic lens flares.",
+  "Tracking shot down rain-soaked cyberpunk alley, neon signs flickering, holographic ads glitching. Moody atmosphere, volumetric fog. Cinematic 24fps.",
+  "Macro camera orbiting liquid metal surface, iridescent reflections shifting. Pull back to reveal full abstract sculpture. Slow motion, 60fps.",
+  "Aerial drone sweeping over misty mountains at golden hour. Fog rolls through valleys, sun rays pierce clouds. Cinematic orchestral score. 4K.",
+];
+
 const stats = [
   { views: "24.8K", downloads: "3,412", likes: "847" },
   { views: "31.4K", downloads: "2,180", likes: "612" },
@@ -56,6 +63,8 @@ export default function QuickViewPanel() {
   const [boardOpen, setBoardOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activePromptTab, setActivePromptTab] = useState<"image" | "video">("image");
+  const [videoCopied, setVideoCopied] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
 
@@ -63,6 +72,7 @@ export default function QuickViewPanel() {
   const creator = creators[idx % creators.length];
   const title = image?.title || titles[idx % titles.length];
   const prompt = prompts[idx % prompts.length];
+  const videoPrompt = videoPrompts[idx % videoPrompts.length];
   const tagList = tags[idx % tags.length];
   const stat = stats[idx % stats.length];
   const shopLink = image ? resolveLink(image.id) : null;
@@ -101,6 +111,12 @@ export default function QuickViewPanel() {
     navigator.clipboard.writeText(prompt).catch(() => {});
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const handleCopyVideoPrompt = () => {
+    navigator.clipboard.writeText(videoPrompt).catch(() => {});
+    setVideoCopied(true);
+    setTimeout(() => setVideoCopied(false), 2000);
   };
 
   const handleExpandToFullPage = () => {
@@ -226,7 +242,6 @@ export default function QuickViewPanel() {
             </button>
           </div>
 
-          {/* Prompt accordion */}
           <div className="border border-foreground/[0.08] rounded-xl mb-5 overflow-hidden">
             <button onClick={() => setPromptOpen(!promptOpen)} className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-foreground/[0.02] transition-colors">
               <span className="text-[0.84rem] font-semibold">AI Prompt</span>
@@ -234,10 +249,41 @@ export default function QuickViewPanel() {
             </button>
             {promptOpen && (
               <div className="px-4 pb-4">
-                <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{prompt}</p>
-                <button onClick={handleCopyPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
-                  {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy prompt</>}
-                </button>
+                {/* Tabs */}
+                <div className="flex gap-0 mb-3 border-b border-foreground/[0.06]">
+                  {([
+                    { key: "image" as const, label: "Image Prompt", icon: Image },
+                    { key: "video" as const, label: "Video Prompt", icon: Video },
+                  ]).map(tab => (
+                    <button
+                      key={tab.key}
+                      onClick={() => setActivePromptTab(tab.key)}
+                      className={`flex items-center gap-1.5 px-3 py-2 text-[0.75rem] font-medium border-b-2 transition-colors -mb-px ${
+                        activePromptTab === tab.key
+                          ? "border-accent text-accent"
+                          : "border-transparent text-muted hover:text-foreground"
+                      }`}
+                    >
+                      <tab.icon className="w-3 h-3" /> {tab.label}
+                    </button>
+                  ))}
+                </div>
+
+                {activePromptTab === "image" ? (
+                  <>
+                    <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{prompt}</p>
+                    <button onClick={handleCopyPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
+                      {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-[0.82rem] text-muted leading-[1.6] mb-3">{videoPrompt}</p>
+                    <button onClick={handleCopyVideoPrompt} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors">
+                      {videoCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy Prompt</>}
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
