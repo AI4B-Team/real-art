@@ -630,7 +630,7 @@ const MyCollectionCard = ({ col, onEdit, onDelete, onShare, onMerge, onArchive }
       {col.thumbs.length > 1 && (
         <div className="flex gap-1 px-2 -mt-5 relative z-10">
           {col.thumbs.slice(1, 4).map((t, i) => (
-            <div key={i} className="h-[38px] rounded-md overflow-hidden flex-1 border-2 border-card">
+            <div key={i} className="aspect-square w-[38px] rounded-md overflow-hidden border-2 border-card flex-shrink-0">
               <img src={`https://images.unsplash.com/${t}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
             </div>
           ))}
