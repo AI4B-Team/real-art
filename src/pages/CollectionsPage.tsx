@@ -648,17 +648,16 @@ const MyCollectionCard = ({ col, onEdit, onDelete, onShare, onMerge, onArchive }
       </div>
       {/* Thumb strip */}
       {col.thumbs.length > 1 && (() => {
-        const totalItems = col.items.length || col.imageCount;
-        const showCount = totalItems > 7 ? 6 : Math.min(col.thumbs.length - 1, 3);
-        const thumbsToShow = col.thumbs.slice(1, showCount + 1);
-        // If we need more thumbs than available, cycle through them
-        while (thumbsToShow.length < showCount && col.thumbs.length > 1) {
-          thumbsToShow.push(col.thumbs[(thumbsToShow.length % (col.thumbs.length - 1)) + 1]);
+        const availableThumbs = col.thumbs.slice(1);
+        const showCount = availableThumbs.length > 0 ? Math.min(Math.max(availableThumbs.length, 1), 6) : 0;
+        const thumbsToShow = [...availableThumbs];
+        while (thumbsToShow.length < showCount && availableThumbs.length > 0) {
+          thumbsToShow.push(availableThumbs[thumbsToShow.length % availableThumbs.length]);
         }
         return (
           <div className="flex gap-1 px-2 -mt-5 relative z-10">
-            {thumbsToShow.map((t, i) => (
-              <div key={i} className="flex-1 aspect-square rounded-md overflow-hidden border-2 border-card">
+            {thumbsToShow.slice(0, showCount).map((t, i) => (
+              <div key={i} className="w-[48px] h-[48px] rounded-md overflow-hidden border-2 border-card shrink-0">
                 <img src={`https://images.unsplash.com/${t}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
               </div>
             ))}
