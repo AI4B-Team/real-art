@@ -375,6 +375,16 @@ const Navbar = () => {
           <Upload className="w-3.5 h-3.5" /> Upload Art
         </Link>
 
+        {isLoggedIn && (
+          <Link to="/account?section=notifications" className="relative w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
+            <Bell className="w-[17px] h-[17px] opacity-60" />
+            {unreadCount > 0 && (
+              <span className="absolute top-1 right-1 min-w-[16px] h-[16px] rounded-full bg-accent text-primary-foreground text-[0.6rem] font-bold flex items-center justify-center px-1">
+                {unreadCount > 9 ? "9+" : unreadCount}
+              </span>
+            )}
+          </Link>
+        )}
         {isLoggedIn ? (
           /* Logged-in: Avatar + name dropdown */
           <div className="relative" ref={userMenuRef}>

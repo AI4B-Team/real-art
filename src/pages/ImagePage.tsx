@@ -73,7 +73,15 @@ const ImagePage = () => {
     label: imageLink.label,
   } : undefined;
 
-  const [liked, setLiked] = useState(false);
+  const likedKey = `ra_liked_${id || "0"}`;
+  const [liked, setLiked] = useState(() => {
+    try { return localStorage.getItem(likedKey) === "1"; } catch { return false; }
+  });
+  const toggleLiked = () => {
+    const next = !liked;
+    setLiked(next);
+    try { next ? localStorage.setItem(likedKey, "1") : localStorage.removeItem(likedKey); } catch {}
+  };
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [promptVisible, setPromptVisible] = useState(false);
