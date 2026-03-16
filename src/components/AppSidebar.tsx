@@ -143,7 +143,14 @@ const AppSidebar = () => {
             return (
               <div key={item.id} className="relative" ref={communitiesRef}>
                 <button
-                  onClick={() => setCommunitiesOpen(!communitiesOpen)}
+                  ref={communityBtnRef}
+                  onClick={() => {
+                    if (!communitiesOpen && communityBtnRef.current) {
+                      const rect = communityBtnRef.current.getBoundingClientRect();
+                      setFlyoutPos({ top: rect.top, left: rect.right + 8 });
+                    }
+                    setCommunitiesOpen(!communitiesOpen);
+                  }}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
                 >
                   <item.icon className="w-4 h-4 shrink-0" />
@@ -155,8 +162,8 @@ const AppSidebar = () => {
                     <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? 'rotate-180' : ''}`} />
                   </div>
                 </button>
-                {communitiesOpen && (
-                  <div className="absolute left-full top-0 ml-2 bg-card border border-foreground/[0.07] rounded-2xl min-w-[270px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
+                {communitiesOpen && createPortal(
+                  <div className="fixed bg-card border border-foreground/[0.07] rounded-2xl min-w-[270px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]" style={{ top: flyoutPos.top, left: flyoutPos.left }}>
                     <div className="px-1 pb-2">
                       <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
                         <Search className="w-3.5 h-3.5 text-muted shrink-0" />
