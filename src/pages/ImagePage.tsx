@@ -117,9 +117,7 @@ const ImagePage = () => {
 
 
   return (
-    <div className="min-h-screen bg-background">
-      <Navbar />
-      <div className="pt-16">
+    <PageShell>
         {/* Breadcrumb */}
         <div className="px-6 md:px-12 py-4 flex items-center gap-2 text-[0.8rem] text-muted max-w-[1440px] mx-auto">
           <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
