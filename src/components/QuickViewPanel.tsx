@@ -13,6 +13,7 @@ import { getCommentsForImage, seedDemoComments, formatRelativeTime, toggleLikeCo
 import { resolveLink } from "@/lib/linkStore";
 import { addComment } from "@/lib/commentStore";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
+import { useLayoutContext } from "@/components/LayoutContext";
 
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee", id: "1", handle: "@aiverse" },
