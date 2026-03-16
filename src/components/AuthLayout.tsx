@@ -12,6 +12,7 @@ const NO_SIDEBAR_ROUTES = ["/login", "/signup"];
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   const showSidebar = isLoggedIn && !NO_SIDEBAR_ROUTES.includes(location.pathname);
 
   return (
-    <LayoutContext.Provider value={{ hasGlobalNavbar: true }}>
+    <LayoutContext.Provider value={{ hasGlobalNavbar: true, sidebarCollapsed, setSidebarCollapsed }}>
       <div className="min-h-screen bg-background">
         <Navbar />
         <div className="pt-16">

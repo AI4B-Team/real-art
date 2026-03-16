@@ -4,8 +4,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, Settings,
   Users, Award, Eye, Bookmark, ChevronDown,
-  Search, X, Star, Compass, Plus
+  Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen
 } from "lucide-react";
+import { useLayoutContext } from "@/components/LayoutContext";
 
 interface NavItem {
   id: string;
@@ -40,6 +41,7 @@ const navItems: NavItem[] = [
 const AppSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { sidebarCollapsed, setSidebarCollapsed } = useLayoutContext();
   const [display, setDisplay] = useState("aiverse");
   const [handle, setHandle] = useState("aiverse");
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
@@ -126,14 +128,30 @@ const AppSidebar = () => {
   const hasNewPosts = communities.some(c => c.newPosts && c.newPosts > 0);
 
   return (
-    <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col w-[260px] shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
-      <div className="flex items-center gap-3 mb-8 px-3">
-        <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{initials}</div>
-        <div>
-          <div className="font-semibold text-[0.88rem] lowercase">{display}</div>
-          <div className="text-[0.72rem] text-muted lowercase">@{handle}</div>
+    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto transition-all duration-200 ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
+      {/* Collapse toggle */}
+      <button
+        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors mb-4 mx-auto shrink-0"
+        title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {sidebarCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+      </button>
+
+      {!sidebarCollapsed && (
+        <div className="flex items-center gap-3 mb-8 px-3">
+          <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent shrink-0">{initials}</div>
+          <div>
+            <div className="font-semibold text-[0.88rem] lowercase">{display}</div>
+            <div className="text-[0.72rem] text-muted lowercase">@{handle}</div>
+          </div>
         </div>
-      </div>
+      )}
+      {sidebarCollapsed && (
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent">{initials}</div>
+        </div>
+      )}
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(item => {
@@ -141,9 +159,24 @@ const AppSidebar = () => {
             return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
           }
 
-          // Communities dropdown
+          // Communities dropdown - show icon-only when collapsed
           if (item.type === "communities-dropdown") {
             const active = isActive(item);
+            if (sidebarCollapsed) {
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => navigate("/communities")}
+                  className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  title="Communities"
+                >
+                  <item.icon className="w-4 h-4 shrink-0" />
+                  {hasNewPosts && !active && (
+                    <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
+                  )}
+                </button>
+              );
+            }
             return (
               <div key={item.id} className="relative" ref={communitiesRef}>
                 <button
@@ -254,10 +287,11 @@ const AppSidebar = () => {
             <button
               key={item.id}
               onClick={() => handleClick(item)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+              className={`flex items-center ${sidebarCollapsed ? "justify-center" : "gap-3 px-3"} py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+              title={sidebarCollapsed ? item.label : undefined}
             >
               <item.icon className="w-4 h-4 shrink-0" />
-              {item.label}
+              {!sidebarCollapsed && item.label}
             </button>
           );
         })}
