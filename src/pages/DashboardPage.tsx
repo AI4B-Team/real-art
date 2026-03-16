@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 
 const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
   { id: "overview", label: "Dashboard", icon: LayoutDashboard, internal: true },
-  { id: "exposure", label: "Exposure", icon: TrendingUp, internal: true },
   { id: "media", label: "Media", icon: Image, internal: true },
   { id: "galleries", label: "Collections", icon: FolderOpen, internal: true },
   { id: "boards", label: "Boards", icon: Bookmark, internal: true },
@@ -513,6 +512,22 @@ const GalleriesSection = () => {
     </>
   );
 };
+
+                {/* Weekly Views Chart */}
+                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-8">
+                  <h3 className="font-semibold text-[0.9rem] mb-5">Views This Week</h3>
+                  <div className="flex items-end gap-4 h-[160px]">
+                    {weeklyExposure.map(d => (
+                      <div key={d.day} className="flex-1 flex flex-col items-center gap-1.5">
+                        <span className="text-[0.65rem] text-muted">{(d.views / 1000).toFixed(1)}K</span>
+                        <div className="w-full bg-accent/15 rounded-t-lg relative" style={{ height: `${(d.views / maxWeekly) * 100}%` }}>
+                          <div className="absolute inset-0 bg-accent/80 rounded-t-lg" />
+                        </div>
+                        <span className="text-[0.72rem] text-muted font-medium">{d.day}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
 
 /* ═══ ADS SECTION COMPONENT ═══ */
@@ -1232,7 +1247,7 @@ const DashboardPage = () => {
               <>
                 <div className="flex items-center justify-between mb-6">
                   <div>
-                    <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Overview</h1>
+                    <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Dashboard</h1>
                     <p className="text-[0.82rem] text-muted mt-1">March 2026 · Last 30 Days</p>
                   </div>
                   <Link to="/upload" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
@@ -1357,6 +1372,24 @@ const DashboardPage = () => {
                       </div>
                       <p className="text-[0.75rem] text-primary-foreground/50">Your most viewed image · Pinned to profile</p>
                     </div>
+                  </div>
+                </div>
+
+                {/* Real-world Impact */}
+                <div className="bg-foreground rounded-2xl p-6 mb-8 relative overflow-hidden">
+                  <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full opacity-[0.06]"
+                    style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
+                  <div className="flex items-center gap-2 mb-4">
+                    <Globe className="w-4 h-4 text-accent" />
+                    <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Real-world Impact</span>
+                  </div>
+                  <h3 className="font-display text-[1.4rem] font-black text-primary-foreground mb-3">Your Images Are Embedded On</h3>
+                  <div className="font-display text-[3rem] font-black text-accent leading-none mb-2">1,032</div>
+                  <p className="text-[0.82rem] text-primary-foreground/40 mb-4">websites across blogs, newsletters, and social media</p>
+                  <div className="flex flex-wrap gap-2">
+                    {["Medium.com", "Dev.to", "Notion pages", "WordPress blogs", "Substack", "And 1,027 more…"].map(s => (
+                      <span key={s} className="text-[0.72rem] text-primary-foreground/50 bg-primary-foreground/[0.06] px-3 py-1.5 rounded-lg">{s}</span>
+                    ))}
                   </div>
                 </div>
 
@@ -1521,132 +1554,6 @@ const DashboardPage = () => {
               </>
             )}
 
-            {/* ═══ EXPOSURE DASHBOARD ═══ */}
-            {activeSection === "exposure" && (
-              <>
-                <div className="mb-6">
-                  <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Your Reach This Month</h1>
-                  <p className="text-[0.82rem] text-muted mt-1">Real-time exposure stats for all your images</p>
-                </div>
-
-                {/* Big stats */}
-                <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
-                  {[
-                    { label: "Views", value: "248,421", icon: Eye, color: "text-blue-500" },
-                    { label: "Downloads", value: "18,204", icon: Download, color: "text-green-500" },
-                    { label: "Remixes", value: "1,347", icon: RefreshCw, color: "text-purple-500" },
-                    { label: "Embeds", value: "93 websites", icon: Globe, color: "text-orange-500" },
-                    { label: "New Followers", value: "+2,431", icon: Users, color: "text-pink-500" },
-                  ].map(stat => (
-                    <div key={stat.label} className="bg-card border border-foreground/[0.08] rounded-xl p-5 text-center">
-                      <stat.icon className={`w-5 h-5 mx-auto mb-2 ${stat.color}`} />
-                      <div className="font-display text-[1.6rem] font-black tracking-[-0.03em] leading-none mb-1">{stat.value}</div>
-                      <div className="text-[0.72rem] text-muted uppercase tracking-[0.08em]">{stat.label}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Weekly views chart */}
-                <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 mb-8">
-                  <h3 className="font-semibold text-[0.9rem] mb-5">Views This Week</h3>
-                  <div className="flex items-end gap-4 h-[160px]">
-                    {weeklyExposure.map(d => (
-                      <div key={d.day} className="flex-1 flex flex-col items-center gap-1.5">
-                        <span className="text-[0.65rem] text-muted">{(d.views / 1000).toFixed(1)}K</span>
-                        <div className="w-full bg-accent/15 rounded-t-lg relative" style={{ height: `${(d.views / maxWeekly) * 100}%` }}>
-                          <div className="absolute inset-0 bg-accent/80 rounded-t-lg" />
-                        </div>
-                        <span className="text-[0.72rem] text-muted font-medium">{d.day}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Image Performance */}
-                <div className="mb-8">
-                  <h3 className="font-semibold text-[0.95rem] mb-4 flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-accent" /> Image Performance
-                  </h3>
-                  <div className="flex flex-col gap-3">
-                    {topImages.map((img, i) => (
-                      <div key={i} className="bg-card border border-foreground/[0.08] rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4">
-                        <img src={`https://images.unsplash.com/${img.photo}?w=100&h=70&fit=crop&q=75`} alt="" className="w-20 h-14 rounded-lg object-cover shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-[0.88rem]">{img.title}</span>
-                            {img.pinned && <span className="text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-lg">Pinned</span>}
-                          </div>
-                          <div className="flex flex-wrap gap-4 text-[0.78rem] text-muted">
-                            <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {img.views} views</span>
-                            <span className="flex items-center gap-1"><Download className="w-3 h-3" /> {img.downloads} downloads</span>
-                            <span className="flex items-center gap-1"><RefreshCw className="w-3 h-3" /> {img.remixes} remixes</span>
-                            <span className="flex items-center gap-1"><Globe className="w-3 h-3" /> {img.embeds} websites</span>
-                            <span className="flex items-center gap-1"><MousePointerClick className="w-3 h-3" /> {img.affClicks} aff. clicks</span>
-                          </div>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <div className="font-display font-black text-accent text-[1.1rem]">{img.earnings}</div>
-                          <div className="text-[0.65rem] text-muted">earned</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Where your images are used */}
-                <div className="bg-foreground rounded-2xl p-6 mb-8 relative overflow-hidden">
-                  <div className="absolute -right-10 -top-10 w-40 h-40 rounded-full opacity-[0.06]"
-                    style={{ background: "radial-gradient(circle, hsl(11 80% 53%), transparent)" }} />
-                  <div className="flex items-center gap-2 mb-4">
-                    <Globe className="w-4 h-4 text-accent" />
-                    <span className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-primary-foreground/40">Real-world Impact</span>
-                  </div>
-                  <h3 className="font-display text-[1.4rem] font-black text-primary-foreground mb-3">Your Images Are Embedded On</h3>
-                  <div className="font-display text-[3rem] font-black text-accent leading-none mb-2">1,032</div>
-                  <p className="text-[0.82rem] text-primary-foreground/40 mb-4">websites across blogs, newsletters, and social media</p>
-                  <div className="flex flex-wrap gap-2">
-                    {["Medium.com", "Dev.to", "Notion pages", "WordPress blogs", "Substack", "And 1,027 more…"].map(s => (
-                      <span key={s} className="text-[0.72rem] text-primary-foreground/50 bg-primary-foreground/[0.06] px-3 py-1.5 rounded-lg">{s}</span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Achievements in exposure tab too */}
-                <div>
-                  <h3 className="font-semibold text-[0.95rem] mb-4 flex items-center gap-2">
-                    <Award className="w-4 h-4 text-accent" /> Achievements
-                  </h3>
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                    {achievements.map(a => (
-                      <div key={a.title} className={`border rounded-xl p-4 transition-colors ${a.unlocked ? "border-accent/20 bg-accent/[0.03]" : "border-foreground/[0.06] bg-card opacity-60"}`}>
-                        <div className="flex items-center gap-2 mb-1.5">
-                          <a.icon className="w-5 h-5 text-accent shrink-0" />
-                          <span className="text-[0.82rem] font-semibold">{a.title}</span>
-                          {a.unlocked && <span className="ml-auto text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-lg">✓</span>}
-                        </div>
-                        <p className="text-[0.72rem] text-muted">{a.desc}</p>
-                        {"level" in a && a.level && a.maxLevel && (
-                          <div className="flex items-center gap-1 mt-2">
-                            {Array.from({ length: a.maxLevel }).map((_, i) => (
-                              <div key={i} className={`h-1.5 flex-1 rounded-full ${i < a.level! ? "bg-accent" : "bg-foreground/[0.08]"}`} />
-                            ))}
-                            <span className="text-[0.6rem] text-muted ml-1">Lv {a.level}/{a.maxLevel}</span>
-                          </div>
-                        )}
-                        {!a.unlocked && a.progress && !("level" in a && a.level) && (
-                          <div className="mt-2">
-                            <div className="h-1.5 bg-foreground/[0.06] rounded-full overflow-hidden">
-                              <div className="h-full bg-accent rounded-full" style={{ width: `${a.progress}%` }} />
-                            </div>
-                            <span className="text-[0.65rem] text-muted mt-1 block">{a.progress}%</span>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
-            )}
 
             {/* ═══ MEDIA ═══ */}
             {activeSection === "media" && <MediaSection />}
