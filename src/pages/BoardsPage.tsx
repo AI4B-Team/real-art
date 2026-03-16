@@ -137,8 +137,7 @@ const BoardsPage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

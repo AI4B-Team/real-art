@@ -266,8 +266,7 @@ const PromptLibraryPage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

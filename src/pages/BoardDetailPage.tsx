@@ -722,8 +722,7 @@ const BoardDetailPage = () => {
         )}
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 

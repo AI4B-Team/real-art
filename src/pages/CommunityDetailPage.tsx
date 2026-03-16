@@ -686,8 +686,7 @@ const CommunityDetailPage = () => {
         )}
 
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 
