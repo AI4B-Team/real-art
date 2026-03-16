@@ -6,6 +6,7 @@ import {
   Briefcase, Youtube, Instagram, Globe2, Package, Monitor, Megaphone, MessageCircleOff, MessageCircle
 } from "lucide-react";
 import SponsoredCard from "@/components/SponsoredCard";
+import { supabase } from "@/integrations/supabase/client";
 import ShopSection, { type ShopLink, type ShopSimilarItem } from "@/components/ShopSection";
 import PageShell from "@/components/PageShell";
 import { resolveLink, trackClick, seedDemoLinks, type ImageLink } from "@/lib/linkStore";
