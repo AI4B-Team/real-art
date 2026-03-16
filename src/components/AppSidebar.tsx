@@ -4,7 +4,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, Settings,
   Users, Award, Eye, Bookmark, ChevronDown,
-  Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen
+  Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen,
+  DollarSign, Megaphone, Bell
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
 
