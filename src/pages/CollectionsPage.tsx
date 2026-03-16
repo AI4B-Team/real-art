@@ -141,7 +141,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
               </button>
               {price && price > 0 && (
                 <button onClick={() => setTab("pay")} className="w-full mt-2.5 text-[0.78rem] text-muted hover:text-foreground transition-colors">
-                  No code? Buy access for ${(price / 100).toFixed(2)} →
+                  No Code? Buy Access For ${(price / 100).toFixed(2)} →
                 </button>
               )}
             </>
