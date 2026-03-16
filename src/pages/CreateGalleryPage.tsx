@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Lock, Globe, Key, Check, Info, Image, Users, ChevronDown, Upload, Plus, X } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 const categories = [
