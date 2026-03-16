@@ -668,9 +668,9 @@ const UploadPage = () => {
                             )}
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-[0.84rem] font-medium truncate">{c.name}</div>
+                            <div className="text-[0.84rem] font-medium truncate">{c.title}</div>
                             <div className="text-[0.72rem] text-muted">
-                              {c.images} images{c.videos > 0 ? ` · ${c.videos} videos` : ""}{c.music > 0 ? ` · ${c.music} tracks` : ""} · {c.visibility === "public" ? "Public" : "Private"}
+                              {c.imageCount} images{(c.videoCount || 0) > 0 ? ` · ${c.videoCount} videos` : ""}{(c.musicCount || 0) > 0 ? ` · ${c.musicCount} tracks` : ""} · {c.visibility === "public" ? "Public" : "Private"}
                             </div>
                           </div>
                           {selectedCollection === c.id && <Check className="w-4 h-4 text-accent shrink-0" />}
