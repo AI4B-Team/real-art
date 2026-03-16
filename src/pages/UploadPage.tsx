@@ -523,7 +523,7 @@ const UploadPage = () => {
 
                 {/* Tags */}
                 <div>
-                  <label className="block text-[0.84rem] font-semibold mb-2">Tags <span className="text-muted font-normal">(type and press Enter)</span></label>
+                  <label className="block text-[0.84rem] font-semibold mb-2">Tags <span className="text-muted font-normal">(Type And Press Enter)</span></label>
                   <div className="flex flex-wrap items-center gap-2 border border-foreground/[0.13] rounded-xl px-3 py-2 bg-card focus-within:border-foreground transition-colors">
                     {tags.map(t => (
                       <span key={t} className="flex items-center gap-1.5 bg-foreground/[0.06] text-[0.78rem] font-medium px-2.5 py-1 rounded-md">
