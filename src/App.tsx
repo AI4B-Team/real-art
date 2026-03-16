@@ -43,6 +43,7 @@ import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import DashboardCollectionPage from "./pages/DashboardCollectionPage";
 import AdsPage from "./pages/AdsPage";
+import AccountPage from "./pages/AccountPage";
 
 import CreatorsPage from "./pages/CreatorsPage";
 import BoardsPage from "./pages/BoardsPage";
@@ -109,6 +110,7 @@ const App = () => (
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/dashboard/collections/:id" element={<DashboardCollectionPage />} />
             <Route path="/ads" element={<AdsPage />} />
+            <Route path="/account" element={<AccountPage />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />

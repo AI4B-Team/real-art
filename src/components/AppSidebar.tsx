@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
-  Upload, Users, Award, Eye, Bookmark, Megaphone, ChevronDown,
+  LayoutDashboard, Image, FolderOpen, Settings,
+  Users, Award, Eye, Bookmark, ChevronDown,
   Search, X, Star, Compass, Plus
 } from "lucide-react";
 
@@ -32,10 +32,8 @@ const navItems: NavItem[] = [
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "galleries", label: "My Collections", icon: FolderOpen, type: "dashboard-section" },
   { id: "boards", label: "Boards", icon: Bookmark, type: "dashboard-section" },
-  { id: "earnings", label: "Earnings", icon: DollarSign, type: "dashboard-section" },
-  { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
-  { id: "notifications", label: "Notifications", icon: Bell, type: "dashboard-section" },
-  { id: "settings", label: "Settings", icon: Settings, type: "dashboard-section" },
+  { id: "divider2", label: "", icon: LayoutDashboard, type: "divider" },
+  { id: "account", label: "Account", icon: Settings, type: "route", href: "/account" },
 ];
 
 const AppSidebar = () => {
@@ -245,9 +243,6 @@ const AppSidebar = () => {
             >
               <item.icon className="w-4 h-4 shrink-0" />
               {item.label}
-              {item.id === "notifications" && (
-                <span className="ml-auto text-[0.65rem] font-bold bg-accent text-primary-foreground w-5 h-5 rounded-full flex items-center justify-center">3</span>
-              )}
             </button>
           );
         })}
