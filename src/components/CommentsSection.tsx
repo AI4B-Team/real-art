@@ -85,7 +85,7 @@ export default function CommentsSection({ imageId }: CommentsSectionProps) {
       >
         <div className="flex items-center gap-2">
           <MessageCircle className="w-4 h-4 text-muted" />
-          <h2 className="font-display text-[1.4rem] font-black tracking-[-0.02em]">Comments</h2>
+          <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Comments</h2>
           <span className="text-[0.75rem] text-muted ml-1">{comments.length}</span>
         </div>
         {expanded ? (
