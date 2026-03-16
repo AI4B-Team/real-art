@@ -85,7 +85,7 @@ export default function QuickViewPanel() {
   const panelRef = useRef<HTMLDivElement>(null);
   const creatorId = image ? creators[parseInt(image.id || "1") % creators.length].id : "1";
   const { followed: creatorFollowed, toggle: toggleCreatorFollow } = useFollow(creatorId);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(() => { try { return image ? localStorage.getItem(`ra_liked_${image.id}`) === "1" : false; } catch { return false; } });
   const [likeCount, setLikeCount] = useState(0);
   const [boardOpen, setBoardOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
