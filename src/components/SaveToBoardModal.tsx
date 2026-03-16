@@ -129,7 +129,7 @@ const SaveToBoardModal = ({
               onClick={() => setShowCreate(true)}
               className="flex items-center gap-2 w-full text-[0.84rem] font-semibold text-accent hover:text-accent/80 transition-colors py-1"
             >
-              <Plus className="w-4 h-4" /> Create new board
+              <Plus className="w-4 h-4" /> Create New Board
             </button>
           ) : (
             <div className="flex flex-col gap-3">
