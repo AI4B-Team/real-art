@@ -59,7 +59,11 @@ const filters = [
 
 const sortOptions = ["Most Relevant", "Newest First", "Most Downloaded", "Most Liked"];
 
-const types = ["Photos", "Videos", "Music"];
+const searchTypes = [
+  { label: "Photos", icon: Image },
+  { label: "Videos", icon: Video },
+  { label: "Music", icon: Music },
+];
 
 const ExplorePage = () => {
   const [searchParams] = useSearchParams();
