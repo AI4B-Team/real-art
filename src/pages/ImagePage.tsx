@@ -242,9 +242,9 @@ const ImagePage = () => {
               <div className="mt-5 p-4 rounded-xl border border-foreground/[0.08] bg-card">
                 <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-3">
                   <Shield className="w-3.5 h-3.5" />
-                  <span>Free to use · No attribution required · <strong className="text-foreground">AI-generated art</strong></span>
+                  <span>Free To Use · No Attribution Required · <strong className="text-foreground">AI-Generated Art</strong></span>
                 </div>
-                <p className="text-[0.75rem] text-muted mb-3">Credit the creator (optional)</p>
+                <p className="text-[0.75rem] text-muted mb-3">Credit The Creator (Optional)</p>
                 <div className="bg-background border border-foreground/[0.06] rounded-lg p-3 mb-3">
                   <p className="text-[0.8rem] text-foreground/80 leading-[1.6] whitespace-pre-line font-mono">{creditText}</p>
                 </div>
