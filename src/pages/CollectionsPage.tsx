@@ -171,7 +171,7 @@ const AccessModal = ({ id, title, price, onClose, onGranted }: {
                      {paying ? <><Loader2 className="w-4 h-4 animate-spin" />Processing…</> : <><CreditCard className="w-4 h-4" />Pay ${(price! / 100).toFixed(2)} — Get Access</>}
                   </button>
                   <button onClick={() => setTab("code")} className="w-full mt-2.5 text-[0.78rem] text-muted hover:text-foreground transition-colors">
-                    Have a code? Enter it free →
+                    Have A Code? Enter It Free →
                   </button>
                 </>
               )}
