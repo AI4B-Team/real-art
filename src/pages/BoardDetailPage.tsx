@@ -248,219 +248,109 @@ const BoardDetailPage = () => {
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="pt-16">
-        {/* ── Banner ── */}
-        <div className="relative h-[320px] md:h-[400px] overflow-hidden group">
-          <img
-            src={`https://images.unsplash.com/${bannerPhoto}?w=1400&h=400&fit=crop&q=80`}
-            alt={title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-foreground/90 via-foreground/40 to-transparent" />
+        {/* ── Board Header (no banner) ── */}
+        <div className="px-6 md:px-12 max-w-[1440px] mx-auto pt-6 pb-4">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-4">
+            <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
+              <ArrowLeft className="w-3 h-3" /> Home
+            </Link>
+            <ChevronRight className="w-3 h-3 opacity-30" />
+            <Link to="/boards" className="hover:text-foreground transition-colors">Boards</Link>
+            <ChevronRight className="w-3 h-3 opacity-30" />
+            <span className="text-foreground">{title}</span>
+          </div>
 
-          {/* Change Banner button (owner only) */}
-          {isOwner && (
-            <button
-              onClick={() => setShowBannerPicker(!showBannerPicker)}
-              className="absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/50 backdrop-blur-sm text-white text-[0.75rem] font-medium hover:bg-black/70 transition-colors opacity-0 group-hover:opacity-100"
-            >
-              <Camera className="w-3.5 h-3.5" /> Change Banner
-            </button>
-          )}
+          {/* Title + privacy + actions on same row */}
+          <div className="flex items-center gap-3 mb-3">
+            <h1 className="font-display text-[clamp(2rem,4vw,3rem)] font-black tracking-[-0.03em] leading-none">
+              {title}
+            </h1>
+            {isPrivate && (
+              <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.06] text-muted text-[0.7rem] font-medium">
+                <Lock className="w-3 h-3" /> Private
+              </span>
+            )}
+            {!isPrivate && (
+              <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.06] text-muted text-[0.7rem] font-medium">
+                <Globe className="w-3 h-3" /> Public
+              </span>
+            )}
 
-          {/* Banner picker dropdown */}
-          {showBannerPicker && (
-            <div
-              ref={bannerPickerRef}
-              onClick={e => e.stopPropagation()}
-              className="absolute top-14 right-4 bg-background border border-foreground/[0.08] rounded-xl shadow-2xl p-4 w-[320px] z-10"
-            >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-[0.82rem] font-semibold">Choose banner</span>
-                <button onClick={() => setShowBannerPicker(false)} className="text-muted hover:text-foreground">
-                  <X className="w-4 h-4" />
+            {/* Actions — pushed to far right */}
+            <div className="flex items-center gap-3 ml-auto">
+              {!isOwner && (
+                <button
+                  onClick={() => setFollowing(!following)}
+                  className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold transition-colors ${
+                    following
+                      ? "bg-foreground/[0.06] border border-foreground/[0.08]"
+                      : "bg-foreground text-primary-foreground hover:bg-accent"
+                  }`}
+                >
+                  <Heart className={`w-4 h-4 ${following ? "fill-accent text-accent" : ""}`} />
+                  {following ? "Following" : "Follow Board"}
                 </button>
-              </div>
-              <div className="grid grid-cols-4 gap-2">
-                {userBoard?.items.slice(0, 4).map(item => (
-                  <button key={item.imageId} onClick={() => setBanner(item.photo)} className={`aspect-square rounded-xl overflow-hidden transition-all ${bannerPhoto === item.photo ? "ring-2 ring-accent ring-offset-1" : "hover:opacity-90"}`}>
-                    <img src={`https://images.unsplash.com/${item.photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-                {bannerPickerPhotos.slice(0, 8).map(photo => (
-                  <button key={photo} onClick={() => setBanner(photo)} className={`aspect-square rounded-xl overflow-hidden transition-all ${bannerPhoto === photo ? "ring-2 ring-accent ring-offset-1" : "opacity-70 hover:opacity-100"}`}>
-                    <img src={`https://images.unsplash.com/${photo}?w=80&h=80&fit=crop&q=70`} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Banner overlay content */}
-          <div className="absolute bottom-0 left-0 right-0 px-6 md:px-12 pb-8 max-w-[1440px] mx-auto">
-            {/* Breadcrumb */}
-            <div className="flex items-center gap-2 text-[0.78rem] text-white/50 mb-4">
-              <Link to="/" className="hover:text-white transition-colors flex items-center gap-1">
-                <ArrowLeft className="w-3 h-3" /> Home
-              </Link>
-              <ChevronRight className="w-3 h-3 opacity-30" />
-              <Link to="/boards" className="hover:text-white transition-colors">Boards</Link>
-              <ChevronRight className="w-3 h-3 opacity-30" />
-              <span className="text-white">{title}</span>
-            </div>
-
-            {/* Title + privacy + actions on same row */}
-            <div className="flex items-center gap-3 mb-3">
-              <h1 className="font-display text-[clamp(2.2rem,5vw,3.6rem)] font-black text-white tracking-[-0.03em] leading-none">
-                {title}
-              </h1>
-              {isPrivate && (
-                <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/15 backdrop-blur-sm text-white text-[0.7rem] font-medium">
-                  <Lock className="w-3 h-3" /> Private
-                </span>
               )}
-              {!isPrivate && (
-                <span className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/15 backdrop-blur-sm text-white text-[0.7rem] font-medium">
-                  <Globe className="w-3 h-3" /> Public
-                </span>
-              )}
-
-              {/* Actions — pushed to far right */}
-              <div className="flex items-center gap-3 ml-auto">
-                {!isOwner && (
-                  <button
-                    onClick={() => setFollowing(!following)}
-                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold transition-colors ${
-                      following
-                        ? "bg-white/15 backdrop-blur-sm text-white border border-white/20"
-                        : "bg-white text-foreground hover:bg-white/90"
-                    }`}
-                  >
-                    <Heart className={`w-4 h-4 ${following ? "fill-accent text-accent" : ""}`} />
-                    {following ? "Following" : "Follow Board"}
-                  </button>
-                )}
+              <button
+                onClick={() => setShowShare(true)}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium bg-foreground/[0.06] border border-foreground/[0.08] hover:bg-foreground/[0.1] transition-colors"
+              >
+                <Share2 className="w-4 h-4" /> Share
+              </button>
+              {isOwner && (
                 <button
                   onClick={() => setShowShare(true)}
-                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
+                  className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium bg-foreground/[0.06] border border-foreground/[0.08] hover:bg-foreground/[0.1] transition-colors"
                 >
-                  <Share2 className="w-4 h-4" /> Share
+                  <UserPlus className="w-4 h-4" /> Invite
                 </button>
-                {isOwner && (
-                  <button
-                    onClick={() => setShowShare(true)}
-                    className="flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-medium bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
-                  >
-                    <UserPlus className="w-4 h-4" /> Invite
-                  </button>
-                )}
+              )}
 
-                {/* 3-dot menu */}
-                <div className="relative" ref={menuRef}>
-                  <button
-                    onClick={() => setShowMenu(!showMenu)}
-                    className="w-10 h-10 rounded-lg flex items-center justify-center bg-white/15 backdrop-blur-sm text-white border border-white/20 hover:bg-white/25 transition-colors"
-                  >
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
+              {/* 3-dot menu */}
+              <div className="relative" ref={menuRef}>
+                <button
+                  onClick={() => setShowMenu(!showMenu)}
+                  className="w-10 h-10 rounded-lg flex items-center justify-center bg-foreground/[0.06] border border-foreground/[0.08] hover:bg-foreground/[0.1] transition-colors"
+                >
+                  <MoreHorizontal className="w-4 h-4" />
+                </button>
 
                 {showMenu && (
                   <div className="absolute top-12 right-0 bg-background border border-foreground/[0.08] rounded-xl shadow-2xl w-[260px] py-2 z-20">
                     {isOwner ? (
                       <>
-                        {/* Owner menu */}
                         <p className="px-4 py-1.5 text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Manage</p>
-
-                        <button
-                          onClick={() => { setShowMenu(false); setShowMerge(true); }}
-                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
-                          style={{ width: "calc(100% - 8px)" }}
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
-                            <GitMerge className="w-4 h-4 text-muted" />
-                          </div>
-                          <div>
-                            <div className="text-[0.82rem] font-medium">Merge into another board</div>
-                            <div className="text-[0.68rem] text-muted">Move all images to a different board</div>
-                          </div>
+                        <button onClick={() => { setShowMenu(false); setShowMerge(true); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><GitMerge className="w-4 h-4 text-muted" /></div>
+                          <div><div className="text-[0.82rem] font-medium">Merge into another board</div><div className="text-[0.68rem] text-muted">Move all images to a different board</div></div>
                         </button>
-
-                        <button
-                          onClick={() => { setShowMenu(false); setShowArchiveConfirm(true); }}
-                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
-                          style={{ width: "calc(100% - 8px)" }}
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
-                            <Archive className="w-4 h-4 text-muted" />
-                          </div>
-                          <div>
-                            <div className="text-[0.82rem] font-medium">Archive board</div>
-                            <div className="text-[0.68rem] text-muted">Hide without deleting</div>
-                          </div>
+                        <button onClick={() => { setShowMenu(false); setShowArchiveConfirm(true); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><Archive className="w-4 h-4 text-muted" /></div>
+                          <div><div className="text-[0.82rem] font-medium">Archive board</div><div className="text-[0.68rem] text-muted">Hide without deleting</div></div>
                         </button>
-
-                        <button
-                          onClick={() => { setShowMenu(false); /* TODO: download ZIP */ }}
-                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
-                          style={{ width: "calc(100% - 8px)" }}
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
-                            <Download className="w-4 h-4 text-muted" />
-                          </div>
-                          <div>
-                            <div className="text-[0.82rem] font-medium">Download all images</div>
-                            <div className="text-[0.68rem] text-muted">Save a ZIP of this board</div>
-                          </div>
+                        <button onClick={() => { setShowMenu(false); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><Download className="w-4 h-4 text-muted" /></div>
+                          <div><div className="text-[0.82rem] font-medium">Download all images</div><div className="text-[0.68rem] text-muted">Save a ZIP of this board</div></div>
                         </button>
-
-                        <button
-                          onClick={() => { setShowMenu(false); setShowDeleteConfirm(true); }}
-                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-red-50 transition-colors text-left group mx-1"
-                          style={{ width: "calc(100% - 8px)" }}
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
-                            <Trash2 className="w-4 h-4 text-red-500" />
-                          </div>
-                          <div>
-                            <div className="text-[0.82rem] font-medium text-red-600">Delete board</div>
-                            <div className="text-[0.68rem] text-red-400">Cannot be undone</div>
-                          </div>
+                        <button onClick={() => { setShowMenu(false); setShowDeleteConfirm(true); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-destructive/10 transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
+                          <div className="w-8 h-8 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0"><Trash2 className="w-4 h-4 text-destructive" /></div>
+                          <div><div className="text-[0.82rem] font-medium text-destructive">Delete board</div><div className="text-[0.68rem] text-destructive/60">Cannot be undone</div></div>
                         </button>
                       </>
                     ) : (
                       <>
-                        {/* Visitor menu */}
                         <p className="px-4 py-1.5 text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Actions</p>
-
-                        <button
-                          onClick={() => { setShowMenu(false); /* TODO: add to own board */ }}
-                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
-                          style={{ width: "calc(100% - 8px)" }}
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
-                            <FolderOpen className="w-4 h-4 text-muted" />
-                          </div>
+                        <button onClick={() => { setShowMenu(false); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><FolderOpen className="w-4 h-4 text-muted" /></div>
                           <div className="text-[0.82rem] font-medium">Save board to my profile</div>
                         </button>
-
-                        <button
-                          onClick={() => { setShowMenu(false); handleCopyLink(); }}
-                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
-                          style={{ width: "calc(100% - 8px)" }}
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
-                            <Link2 className="w-4 h-4 text-muted" />
-                          </div>
+                        <button onClick={() => { setShowMenu(false); handleCopyLink(); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><Link2 className="w-4 h-4 text-muted" /></div>
                           <div className="text-[0.82rem] font-medium">Copy link</div>
                         </button>
-
-                        <button
-                          onClick={() => { setShowMenu(false); }}
-                          className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1"
-                          style={{ width: "calc(100% - 8px)" }}
-                        >
-                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0">
-                            <Flag className="w-4 h-4 text-muted" />
-                          </div>
+                        <button onClick={() => { setShowMenu(false); }} className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors text-left group mx-1" style={{ width: "calc(100% - 8px)" }}>
+                          <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><Flag className="w-4 h-4 text-muted" /></div>
                           <div className="text-[0.82rem] font-medium">Report</div>
                         </button>
                       </>
@@ -469,32 +359,31 @@ const BoardDetailPage = () => {
                 )}
               </div>
             </div>
-            </div>
+          </div>
 
-            {/* Owner + stats */}
-            <div className="flex items-center gap-4 flex-wrap">
-              <Link to={isOwner ? "/dashboard" : `/creator/${creatorId}`} className="flex items-center gap-2 no-underline">
-                <div
-                  className="w-7 h-7 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-white border border-white/20"
-                  style={{ background: creatorColor }}
-                >
-                  {creatorInit}
-                </div>
-                <span className="text-[0.85rem] text-white/80">by {creator}</span>
-              </Link>
-              <span className="text-white/30">·</span>
-              <span className="flex items-center gap-1 text-[0.8rem] text-white/50">
-                <Bookmark className="w-3.5 h-3.5" /> {boardItems.length} saved
-              </span>
-              {collabs.length > 0 && (
-                <>
-                  <span className="text-white/30">·</span>
-                  <span className="flex items-center gap-1 text-[0.8rem] text-white/50">
-                    <Users className="w-3.5 h-3.5" /> {collabs.length} collaborator{collabs.length !== 1 ? "s" : ""}
-                  </span>
-                </>
-              )}
-            </div>
+          {/* Owner + stats */}
+          <div className="flex items-center gap-4 flex-wrap">
+            <Link to={isOwner ? "/dashboard" : `/creator/${creatorId}`} className="flex items-center gap-2 no-underline">
+              <div
+                className="w-7 h-7 rounded-full flex items-center justify-center text-[0.6rem] font-bold text-primary-foreground border border-foreground/10"
+                style={{ background: creatorColor }}
+              >
+                {creatorInit}
+              </div>
+              <span className="text-[0.85rem] text-muted">by {creator}</span>
+            </Link>
+            <span className="text-muted/30">·</span>
+            <span className="flex items-center gap-1 text-[0.8rem] text-muted">
+              <Bookmark className="w-3.5 h-3.5" /> {boardItems.length} saved
+            </span>
+            {collabs.length > 0 && (
+              <>
+                <span className="text-muted/30">·</span>
+                <span className="flex items-center gap-1 text-[0.8rem] text-muted">
+                  <Users className="w-3.5 h-3.5" /> {collabs.length} collaborator{collabs.length !== 1 ? "s" : ""}
+                </span>
+              </>
+            )}
           </div>
         </div>
 
