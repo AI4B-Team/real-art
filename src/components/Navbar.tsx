@@ -141,7 +141,7 @@ const Navbar = () => {
   ];
 
   const userMenuLinks = [
-    { icon: LayoutDashboard, label: "Account", to: "/dashboard" },
+    { icon: LayoutDashboard, label: "Account", to: "/account" },
   ];
 
   const userMenuSecondary = [
