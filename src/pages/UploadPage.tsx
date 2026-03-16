@@ -977,6 +977,19 @@ const UploadPage = () => {
           )}
         </div>
         <Footer />
+
+        {/* Image Position Editor Modal */}
+        {editingImageIndex !== null && previews[editingImageIndex] && (
+          <ImagePositionEditor
+            src={previews[editingImageIndex]}
+            position={imagePositions[editingImageIndex] || { x: 0, y: 0, scale: 1 }}
+            onSave={(pos) => {
+              setImagePositions(prev => ({ ...prev, [editingImageIndex]: pos }));
+              setEditingImageIndex(null);
+            }}
+            onClose={() => setEditingImageIndex(null)}
+          />
+        )}
     </PageShell>
   );
 };
