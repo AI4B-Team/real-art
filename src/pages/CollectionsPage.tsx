@@ -276,17 +276,25 @@ const MyCollectionCard = ({ col, onEdit, onDelete }: { col: Collection; onEdit: 
           </div>
         </div>
         <div className="p-4">
-          <div className="text-[0.72rem] text-muted mb-1">{itemCount} items</div>
-          <h3 className="font-semibold text-[0.92rem]">{col.name}</h3>
+          <div className="flex items-center gap-2 mb-1">
+            <h3 className="font-semibold text-[0.92rem]">{col.name}</h3>
+            <span className={`text-[0.65rem] font-bold px-2 py-0.5 rounded-full ${col.visibility === "public" ? "bg-green-600/10 text-green-600" : "bg-accent/10 text-accent"}`}>
+              {col.visibility === "public" ? "Public" : "Private"}
+            </span>
+          </div>
+          <div className="flex items-center gap-2 text-[0.75rem] text-muted flex-wrap">
+            <span>{itemCount} items</span>
+            {col.visibility === "private" && col.members > 0 && (
+              <><span className="text-foreground/20">·</span><span className="flex items-center gap-1"><Users className="w-3 h-3" />{col.members} members</span></>
+            )}
+            {col.accessCode && (
+              <><span className="text-foreground/20">·</span><span className="flex items-center gap-1 font-mono"><Key className="w-2.5 h-2.5" />{col.accessCode}</span></>
+            )}
+          </div>
           {col.description ? (
-            <p className="text-[0.75rem] text-muted line-clamp-1 mt-0.5">{col.description}</p>
+            <p className="text-[0.75rem] text-muted line-clamp-1 mt-1">{col.description}</p>
           ) : (
-            <p className="text-[0.75rem] text-muted/50 mt-0.5 italic">No description</p>
-          )}
-          {col.accessCode && (
-            <div className="flex items-center gap-1 mt-1.5 text-[0.7rem] text-muted font-mono">
-              <Key className="w-2.5 h-2.5" /> {col.accessCode}
-            </div>
+            <p className="text-[0.75rem] text-muted/50 mt-1 italic">No description</p>
           )}
           {/* Edit / Delete */}
           <div className="flex items-center gap-2 mt-3 pt-3 border-t border-foreground/[0.06]">
