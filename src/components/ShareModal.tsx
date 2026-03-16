@@ -19,7 +19,7 @@ const ShareModal = ({ open, onClose, imageUrl, title, creator, prompt, recreatio
 
   if (!open) return null;
 
-  const shareUrl = `https://realart.com/image/${imageId}`;
+  const shareUrl = `https://realart.ai/image/${imageId}`;
   const shareText = `${title} by ${creator.name} — Recreated ${recreations} times. Recreate this artwork on REAL ART`;
   const promptShareText = `AI Prompt: "${prompt.slice(0, 120)}…" — View & recreate on REAL ART`;
 

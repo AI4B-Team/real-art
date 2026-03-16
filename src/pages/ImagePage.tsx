@@ -113,7 +113,7 @@ const ImagePage = () => {
     setCommentsOff(next);
     try { next ? localStorage.setItem(commentsKey, "1") : localStorage.removeItem(commentsKey); } catch {}
   };
-  const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.com/image/${id}`;
+  const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.ai/image/${id}`;
 
   const handleCopyCredit = () => {
     navigator.clipboard.writeText(creditText).catch(() => {});
@@ -121,7 +121,7 @@ const ImagePage = () => {
     setTimeout(() => setCreditCopied(false), 2500);
   };
 
-  const embedCode = `<iframe src="https://realart.com/embed/${id}" width="600" height="600" frameborder="0" style="border-radius:12px;overflow:hidden" allowfullscreen></iframe>`;
+  const embedCode = `<iframe src="https://realart.ai/embed/${id}" width="600" height="600" frameborder="0" style="border-radius:12px;overflow:hidden" allowfullscreen></iframe>`;
 
   const handleCopyEmbed = () => {
     navigator.clipboard.writeText(embedCode).catch(() => {});

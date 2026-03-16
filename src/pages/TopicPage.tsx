@@ -126,8 +126,8 @@ const TopicPage = () => {
     "@type": "CollectionPage",
     name: topic.longTitle,
     description: topic.description,
-    url: `https://realart.com/topic/${slug}`,
-    provider: { "@type": "Organization", name: "REAL ART", url: "https://realart.com" },
+    url: `https://realart.ai/topic/${slug}`,
+    provider: { "@type": "Organization", name: "REAL ART", url: "https://realart.ai" },
   };
 
   return (
