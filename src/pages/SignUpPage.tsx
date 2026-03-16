@@ -230,7 +230,7 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </PageShell>
   );
 };
 

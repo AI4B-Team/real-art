@@ -812,6 +812,6 @@ const ImagePage = () => {
         imageId={id || "0"}
       />
     </PageShell>
-};
+  );
 
 export default ImagePage;
