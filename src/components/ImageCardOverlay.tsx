@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Heart, Eye, Copy, Shuffle, FileText, Bookmark } from "lucide-react";
+import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, FileText, Bookmark } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
@@ -44,14 +44,6 @@ const ImageCardOverlay = ({ index, isVideo = false }: ImageCardOverlayProps) => 
         <TooltipProvider>
           {/* Top right: Heart + Download + Bookmark + Prompt */}
           <div className="flex gap-1.5 justify-end">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass + " hover:bg-accent hover:text-primary-foreground"}>
-                  <Heart className="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>Favorite</p></TooltipContent>
-            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); }} className={iconBtnClass}>
