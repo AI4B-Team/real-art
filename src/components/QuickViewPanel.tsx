@@ -63,6 +63,8 @@ export default function QuickViewPanel() {
   const [boardOpen, setBoardOpen] = useState(false);
   const [promptOpen, setPromptOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [activePromptTab, setActivePromptTab] = useState<"image" | "video">("image");
+  const [videoCopied, setVideoCopied] = useState(false);
   const [comments, setComments] = useState<Comment[]>([]);
   const [commentText, setCommentText] = useState("");
 
