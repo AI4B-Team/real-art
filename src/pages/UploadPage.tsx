@@ -711,46 +711,110 @@ const UploadPage = () => {
                     <label className="text-[0.84rem] font-semibold">Shop / Affiliate Link <span className="text-muted font-normal">(optional)</span></label>
                   </div>
 
-                  {!showLinkField ? (
-                    <button
-                      onClick={() => setShowLinkField(true)}
-                      className="flex items-center gap-3 w-full p-4 rounded-xl border border-dashed border-foreground/[0.14] text-[0.82rem] text-muted hover:border-foreground/30 hover:bg-foreground/[0.01] transition-all text-left"
-                    >
-                      <ExternalLink className="w-4 h-4 shrink-0 opacity-40" />
-                      Link to your Etsy shop, print store, course page, or any URL. A "Shop" button appears on the image.
-                    </button>
-                  ) : (
+                  {!showLinkField && (
+                    <>
+                      <button
+                        onClick={() => setShowLinkField(true)}
+                        className="flex items-center gap-3 w-full p-4 rounded-xl border border-dashed border-foreground/[0.14] text-[0.82rem] text-muted hover:border-foreground/30 hover:bg-foreground/[0.01] transition-all text-left mb-3"
+                      >
+                        <ExternalLink className="w-4 h-4 shrink-0 opacity-40" />
+                        Link to your Etsy shop, print store, course page, or any URL. A "Shop" button appears on the image.
+                      </button>
+                      <p className="text-[0.72rem] text-muted mb-2">Quick select a partner — or paste any URL:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {popularPartners.slice(0, 8).map(p => (
+                          <button
+                            key={p.id}
+                            onClick={() => {
+                              setShowLinkField(true);
+                              setLinkLabel(p.defaultLabel);
+                              setLinkSite(p.name);
+                              setLinkIsAffiliate(true);
+                              setDetectedPartner(p);
+                              setAutoAffiliate(true);
+                            }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-foreground/[0.1] text-[0.76rem] font-medium hover:border-foreground/30 transition-all"
+                          >
+                            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: p.color }} />
+                            <span>{p.name}</span>
+                            <span className="text-muted text-[0.68rem]">{p.commission}</span>
+                          </button>
+                        ))}
+                        <button
+                          onClick={() => setShowLinkField(true)}
+                          className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-dashed border-foreground/[0.14] text-[0.76rem] text-muted hover:border-foreground/30 transition-all"
+                        >
+                          <Plus className="w-3 h-3" /> Other URL
+                        </button>
+                      </div>
+                    </>
+                  )}
+
+                  {showLinkField && (
                     <div className="border border-foreground/[0.08] rounded-xl p-4 flex flex-col gap-3">
                       <div>
                         <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Destination URL</label>
-                        <input value={linkUrl} onChange={e => setLinkUrl(e.target.value)} placeholder="https://etsy.com/your-shop" className="w-full h-10 border border-foreground/[0.13] rounded-lg px-3 font-body text-[0.84rem] bg-card outline-none focus:border-foreground transition-colors" autoFocus />
+                        <input
+                          value={linkUrl}
+                          onChange={e => {
+                            const url = e.target.value;
+                            setLinkUrl(url);
+                            const partner = detectAffiliatePartner(url);
+                            setDetectedPartner(partner);
+                            if (partner) {
+                              setAutoAffiliate(true);
+                              setLinkIsAffiliate(true);
+                              if (!linkLabel) setLinkLabel(partner.defaultLabel);
+                              if (!linkSite) setLinkSite(partner.name);
+                            } else {
+                              setAutoAffiliate(false);
+                            }
+                          }}
+                          placeholder="https://etsy.com/your-listing, amazon link, course URL…"
+                          className="w-full h-10 border border-foreground/[0.13] rounded-xl px-4 text-[0.86rem] bg-background outline-none focus:border-accent transition-colors"
+                          autoFocus
+                        />
+                        {detectedPartner && linkUrl && (
+                          <div className="flex items-center gap-2 mt-2 text-[0.76rem]">
+                            <span className="w-2 h-2 rounded-full shrink-0" style={{ background: detectedPartner.color }} />
+                            <span className="font-semibold">{detectedPartner.name} detected</span>
+                            <span className="text-muted">·</span>
+                            <span className="text-muted">{detectedPartner.commission} commission · {detectedPartner.cookieDays}-day cookie</span>
+                            <span className="text-muted">·</span>
+                            <span className="text-accent font-semibold">You keep 100%</span>
+                          </div>
+                        )}
+                        {linkUrl && !detectedPartner && (
+                          <p className="text-[0.72rem] text-muted mt-1.5">Not in our network — you can still add this as a manual link.</p>
+                        )}
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
                           <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Button label</label>
-                          <input value={linkLabel} onChange={e => setLinkLabel(e.target.value)} placeholder="Shop this look" maxLength={40} className="w-full h-10 border border-foreground/[0.13] rounded-lg px-3 font-body text-[0.84rem] bg-card outline-none focus:border-foreground transition-colors" />
+                          <input value={linkLabel} onChange={e => setLinkLabel(e.target.value)} placeholder="Shop this look" maxLength={40} className="w-full h-9 border border-foreground/[0.13] rounded-xl px-3 text-[0.83rem] bg-background outline-none focus:border-accent transition-colors" />
                         </div>
                         <div>
-                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Site / brand</label>
-                          <input value={linkSite} onChange={e => setLinkSite(e.target.value)} placeholder="Etsy" maxLength={30} className="w-full h-10 border border-foreground/[0.13] rounded-lg px-3 font-body text-[0.84rem] bg-card outline-none focus:border-foreground transition-colors" />
+                          <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Price (optional)</label>
+                          <input value={linkPrice} onChange={e => setLinkPrice(e.target.value)} placeholder="$49.99" maxLength={15} className="w-full h-9 border border-foreground/[0.13] rounded-xl px-3 text-[0.83rem] bg-background outline-none focus:border-accent transition-colors" />
                         </div>
-                      </div>
-                      <div>
-                        <label className="text-[0.76rem] font-semibold text-muted mb-1 block">Price (optional)</label>
-                        <input value={linkPrice} onChange={e => setLinkPrice(e.target.value)} placeholder="$49.99" maxLength={15} className="w-full h-10 border border-foreground/[0.13] rounded-lg px-3 font-body text-[0.84rem] bg-card outline-none focus:border-foreground transition-colors" />
                       </div>
                       <div className="flex items-start gap-3">
                         <button onClick={() => setLinkIsAffiliate(!linkIsAffiliate)} className={`w-5 h-5 rounded-md border-2 flex items-center justify-center cursor-pointer shrink-0 mt-0.5 transition-colors ${linkIsAffiliate ? "bg-foreground border-foreground" : "border-foreground/20 hover:border-foreground/40"}`}>
                           {linkIsAffiliate && <Check className="w-3 h-3 text-primary-foreground" />}
                         </button>
                         <div>
-                          <div className="text-[0.82rem] font-medium">This is an affiliate link</div>
-                          <p className="text-[0.72rem] text-muted leading-[1.5]">Check if you earn a commission from purchases. An "Affiliate" disclosure will show on the image (FTC compliance).</p>
+                          <div className="text-[0.82rem] font-medium">
+                            This is an affiliate link
+                            {autoAffiliate && detectedPartner && (
+                              <span className="ml-2 text-[0.68rem] text-accent bg-accent/10 px-1.5 py-0.5 rounded font-semibold">Auto-detected</span>
+                            )}
+                          </div>
+                          <p className="text-[0.72rem] text-muted leading-[1.5]">FTC requires disclosure when you earn a commission. We'll add an "AD · Affiliate" badge on the image.</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2 text-[0.72rem] text-muted">
-                        <Info className="w-3.5 h-3.5 shrink-0 mt-0.5 opacity-60" />
-                        Applies to all {files.length} image{files.length !== 1 ? "s" : ""} in this upload. Override per image later in the collection manager.
+                        <Info className="w-3.5 h-3.5 shrink-0 opacity-60" />
+                        Applies to all {files.length} image{files.length !== 1 ? "s" : ""} in this batch. You keep 100% of any commission — REAL ART takes nothing.
                       </div>
                     </div>
                   )}
@@ -758,8 +822,9 @@ const UploadPage = () => {
                   {showLinkField && linkUrl && (
                     <div className="mt-2.5 flex items-center gap-2 text-[0.78rem] text-green-600 bg-green-50 dark:bg-green-500/10 px-3 py-2 rounded-lg">
                       <Check className="w-3.5 h-3.5" />
-                      Link set{linkIsAffiliate ? " · affiliate disclosure enabled" : ""}
-                      <button onClick={() => { setShowLinkField(false); setLinkUrl(""); setLinkLabel(""); setLinkSite(""); setLinkPrice(""); setLinkIsAffiliate(false); }} className="ml-auto text-[0.72rem] text-muted hover:text-foreground transition-colors">Remove</button>
+                      {detectedPartner ? `${detectedPartner.name} affiliate link set` : "Link set"}
+                      {linkIsAffiliate && " · disclosure enabled"}
+                      <button onClick={() => { setShowLinkField(false); setLinkUrl(""); setLinkLabel(""); setLinkSite(""); setLinkPrice(""); setLinkIsAffiliate(false); setDetectedPartner(null); setAutoAffiliate(false); }} className="ml-auto text-[0.72rem] text-muted hover:text-foreground transition-colors">Remove</button>
                     </div>
                   )}
                 </div>
