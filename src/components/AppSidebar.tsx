@@ -128,14 +128,30 @@ const AppSidebar = () => {
   const hasNewPosts = communities.some(c => c.newPosts && c.newPosts > 0);
 
   return (
-    <aside className="bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col w-[260px] shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto">
-      <div className="flex items-center gap-3 mb-8 px-3">
-        <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{initials}</div>
-        <div>
-          <div className="font-semibold text-[0.88rem] lowercase">{display}</div>
-          <div className="text-[0.72rem] text-muted lowercase">@{handle}</div>
+    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto transition-all duration-200 ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
+      {/* Collapse toggle */}
+      <button
+        onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
+        className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors mb-4 mx-auto shrink-0"
+        title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+      >
+        {sidebarCollapsed ? <PanelLeftOpen className="w-4 h-4" /> : <PanelLeftClose className="w-4 h-4" />}
+      </button>
+
+      {!sidebarCollapsed && (
+        <div className="flex items-center gap-3 mb-8 px-3">
+          <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent shrink-0">{initials}</div>
+          <div>
+            <div className="font-semibold text-[0.88rem] lowercase">{display}</div>
+            <div className="text-[0.72rem] text-muted lowercase">@{handle}</div>
+          </div>
         </div>
-      </div>
+      )}
+      {sidebarCollapsed && (
+        <div className="flex items-center justify-center mb-6">
+          <div className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent">{initials}</div>
+        </div>
+      )}
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(item => {
