@@ -49,6 +49,8 @@ const UploadPage = () => {
   });
   const [published, setPublished] = useState(false);
   const [similarProducts, setSimilarProducts] = useState(true);
+  const [imagePositions, setImagePositions] = useState<Record<number, { x: number; y: number; scale: number }>>({});
+  const [editingImageIndex, setEditingImageIndex] = useState<number | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   // Collection targeting
