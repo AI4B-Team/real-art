@@ -145,7 +145,7 @@ export default function QuickViewPanel() {
             <span className="text-[0.72rem]">Press Esc To Close</span>
           </button>
           <button onClick={handleExpandToFullPage} className="flex items-center gap-1.5 text-[0.82rem] text-muted hover:text-foreground transition-colors">
-            <Maximize2 className="w-3.5 h-3.5" /> Open full page
+            <Maximize2 className="w-3.5 h-3.5" /> Open Full Page
           </button>
         </div>
 
