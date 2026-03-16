@@ -60,12 +60,23 @@ const CollectionDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [isStatic, setIsStatic] = useState(false);
   const [accessGranted, setAccessGranted] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   // Access gate state
   const [accessTab, setAccessTab] = useState<"code" | "pay">("code");
   const [codeInput, setCodeInput] = useState("");
   const [codeErr, setCodeErr] = useState("");
   const [paying, setPaying] = useState(false);
+
+  // Close more menu on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   // Determine if this is a locked collection
   const sc = id ? staticCollections[id] : undefined;
