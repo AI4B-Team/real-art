@@ -520,7 +520,12 @@ export default function CollectionsPage() {
                         </div>
                         <div className="p-3">
                           <div className="font-semibold text-[0.88rem]">{col.name}</div>
-                          <div className="text-[0.75rem] text-muted">{col.curator} · {col.count.toLocaleString()} images</div>
+                          <div className="text-[0.72rem] text-muted mb-1.5">{col.curator}</div>
+                          <div className="flex items-center gap-3 text-[0.72rem] text-muted">
+                            <span className="flex items-center gap-1"><Image className="w-3 h-3" /> {col.images}</span>
+                            <span className="flex items-center gap-1"><Video className="w-3 h-3" /> {col.videos}</span>
+                            <span className="flex items-center gap-1"><Music className="w-3 h-3" /> {col.tracks}</span>
+                          </div>
                         </div>
                       </div>
                     </Link>
