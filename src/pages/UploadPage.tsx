@@ -608,7 +608,7 @@ const UploadPage = () => {
                       {visibility === "private" && (
                         <div className="px-5 pb-5">
                           <div className="flex items-center justify-between mb-2">
-                            <label className="text-[0.78rem] font-semibold text-muted">Select Collection</label>
+                            <label className="text-[0.78rem] font-semibold text-accent">Select Collection</label>
                             {selectedCollection !== "none" && selectedCollection !== "new" && (
                               <button onClick={() => setSelectedCollection("none")} className="text-[0.72rem] text-muted hover:text-foreground transition-colors">
                                 Clear
