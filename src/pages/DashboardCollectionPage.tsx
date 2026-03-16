@@ -621,7 +621,7 @@ export default function DashboardCollectionPage() {
               </div>
             )}
           </div>
-        
+        </div>
 
         <Footer />
     </PageShell>
