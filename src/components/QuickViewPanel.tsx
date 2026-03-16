@@ -114,6 +114,7 @@ export default function QuickViewPanel() {
   const stat = stats[idx % stats.length];
   const shopLink = image ? resolveLink(image.id) : null;
   const isLoggedIn = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+  const sidebarOffset = isLoggedIn ? (sidebarCollapsed ? 68 : 260) : 0;
 
   const aiTools = ["Midjourney", "DALL-E 3", "Stable Diffusion XL", "Adobe Firefly", "Midjourney", "Leonardo AI",
     "Ideogram", "Midjourney", "Flux", "DALL-E 3", "Stable Diffusion XL", "Midjourney"];
