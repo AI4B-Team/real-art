@@ -6,7 +6,7 @@ import {
   Camera, Edit3, Trash2, MoreHorizontal, Archive, GitMerge,
   Download, Flag, EyeOff, FolderOpen
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
+import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { getBoards, updateBoard, removeFromBoard, addToBoard, deleteBoard, type Board } from "@/lib/boardStore";
 
