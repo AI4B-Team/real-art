@@ -524,58 +524,7 @@ export default function CollectionsPage() {
           </>
         )}
 
-        {/* BY REAL ART TAB */}
-        {activeTab === "curated" && (
-          <>
-            {filteredCurated.filter(c => c.featured).length > 0 && (
-              <div className="mb-10">
-                <div className="flex items-center gap-2 mb-5">
-                  <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-accent">Featured</div>
-                  <div className="flex-1 h-px bg-foreground/[0.06]" />
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
-                  {filteredCurated.filter(c => c.featured).map(col => (
-                    <Link key={col.id} to={`/collections/${col.id}`} className="group block no-underline">
-                      <div className="rounded-2xl overflow-hidden border border-foreground/[0.06] bg-card hover:border-foreground/[0.14] transition-all hover:-translate-y-1">
-                        <div className="h-[200px] overflow-hidden relative">
-                          <img src={`https://images.unsplash.com/${col.photo}?w=400&h=200&fit=crop&q=80`} alt={col.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                          <div className="absolute inset-0" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.5) 0%, transparent 50%)" }} />
-                          <div className="absolute bottom-3 left-3 right-3">
-                            <div className="text-[0.68rem] text-white/60 mb-0.5">by {col.curator}</div>
-                            <div className="font-display text-[1.1rem] font-black text-white leading-tight">{col.name}</div>
-                          </div>
-                          <div className="absolute top-2.5 right-2.5 bg-accent text-white text-[0.6rem] font-bold px-2 py-0.5 rounded-md">Featured</div>
-                        </div>
-                        <div className="p-3 text-[0.75rem] text-muted">{col.count.toLocaleString()} images</div>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="flex items-center gap-2 mb-5">
-              <div className="text-[0.68rem] font-bold tracking-[0.14em] uppercase text-muted">All Curated · {filteredCurated.length}</div>
-              <div className="flex-1 h-px bg-foreground/[0.06]" />
-            </div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-              {filteredCurated.filter(c => !c.featured).map(col => (
-                <Link key={col.id} to={`/collections/${col.id}`} className="group block no-underline">
-                  <div className="rounded-2xl overflow-hidden border border-foreground/[0.06] bg-card hover:border-foreground/[0.14] transition-all hover:-translate-y-1">
-                    <div className="h-[160px] overflow-hidden">
-                      <img src={`https://images.unsplash.com/${col.photo}?w=400&h=160&fit=crop&q=80`} alt={col.name} className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                    </div>
-                    <div className="p-3">
-                      <div className="font-semibold text-[0.88rem]">{col.name}</div>
-                      <div className="text-[0.75rem] text-muted">{col.curator} · {col.count.toLocaleString()} images</div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-            {filteredCurated.length === 0 && <EmptyState message="No curated collections match your search." />}
-          </>
-        )}
+        {/* (curated tab removed — content merged into All Collections) */}
 
         {/* MY COLLECTIONS TAB */}
         {activeTab === "mine" && (
