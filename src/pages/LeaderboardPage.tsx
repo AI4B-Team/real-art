@@ -170,8 +170,7 @@ const LeaderboardPage = () => {
           </div>
         </div>
         <Footer />
-      </div>
-    </div>
+    </PageShell>
   );
 };
 
