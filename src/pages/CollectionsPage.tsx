@@ -56,10 +56,12 @@ const CreateModal = ({ onClose, onCreate }: { onClose: () => void; onCreate: (c:
   const handleCreate = () => {
     if (!name.trim()) return;
     const newCol = addCollection({
-      name: name.trim(), description: desc, visibility,
+      title: name.trim(), description: desc, type: "saved" as const, visibility,
       accessCode: visibility === "private" ? code.trim() : undefined,
-      members: 0, images: 0, videos: 0, music: 0,
+      members: 0, slug: name.trim().toLowerCase().replace(/\s+/g, "-"),
+      imageCount: 0, videoCount: 0, musicCount: 0,
       thumbs: [], items: [],
+      createdAt: new Date().toISOString(),
     });
     onCreate(newCol);
     onClose();
