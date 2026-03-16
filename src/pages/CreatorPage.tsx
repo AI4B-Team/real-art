@@ -197,7 +197,7 @@ const CreatorPage = () => {
   }));
 
   const displayCollections = isOwnProfile
-    ? getCollections().map(c => ({ name: c.name, cover: c.coverUrl || "photo-1618005182384-a83a8bd57fbe", count: 0, free: true }))
+    ? getCollections().map(c => ({ name: c.name, cover: c.thumbs?.[0] || "photo-1618005182384-a83a8bd57fbe", count: c.images || 0, free: c.free }))
     : creator.collections;
 
   const commissionBadge = commissionLabels[creator.commissions];
