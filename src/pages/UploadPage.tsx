@@ -533,7 +533,7 @@ const UploadPage = () => {
                     ))}
                     <input
                       className="flex-1 min-w-[120px] border-none outline-none font-body text-[0.88rem] bg-transparent py-1"
-                      placeholder="Add a tag…"
+                      placeholder="Add A Tag…"
                       value={tagInput}
                       onChange={e => setTagInput(e.target.value)}
                       onKeyDown={addTag}
