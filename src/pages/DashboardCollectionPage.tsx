@@ -26,13 +26,13 @@ interface MediaItem {
 
 // Collection data
 const collectionsData: Record<string, {
-  id: string; name: string; desc: string; free: boolean;
-  code: string; members: number; slug: string; items: MediaItem[];
+  id: string; name: string; desc: string; visibility: "public" | "private";
+  accessCode: string; members: number; slug: string; items: MediaItem[];
 }> = {
   "g1": {
     id: "g1", name: "Main Collection",
     desc: "My primary public portfolio — best work across all categories.",
-    free: true, code: "", members: 0, slug: "main-collection",
+    visibility: "public", accessCode: "", members: 0, slug: "main-collection",
     items: [
       { id: "i1", type: "image", title: "Cosmic Dreamscape", photo: "photo-1618005182384-a83a8bd57fbe", downloads: "3,412", likes: "847", views: "48,201", pinned: true },
       { id: "i2", type: "image", title: "Neon Boulevard", photo: "photo-1557682250-33bd709cbe85", downloads: "2,180", likes: "612", views: "31,400" },
