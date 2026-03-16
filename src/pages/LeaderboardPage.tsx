@@ -51,7 +51,7 @@ const LeaderboardPage = () => {
         {/* Header */}
         <div className="px-6 md:px-12 py-10 max-w-[1440px] mx-auto">
           <div className="flex items-center gap-2 text-[0.8rem] text-muted mb-6">
-            <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
+            <Link to="/dashboard" className="hover:text-foreground transition-colors flex items-center gap-1">
               <ArrowLeft className="w-3.5 h-3.5" /> Home
             </Link>
             <ChevronRight className="w-3 h-3 opacity-30" />
