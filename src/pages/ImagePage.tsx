@@ -69,12 +69,18 @@ const ImagePage = () => {
   const [saved, setSaved] = useState(false);
   const [copied, setCopied] = useState(false);
   const [promptVisible, setPromptVisible] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   // Auto-reveal prompts for logged-in users
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) setPromptVisible(true);
+      if (session) { setPromptVisible(true); setIsLoggedIn(true); }
     });
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) { setPromptVisible(true); setIsLoggedIn(true); }
+      else { setPromptVisible(false); setIsLoggedIn(false); }
+    });
+    return () => subscription.unsubscribe();
   }, []);
   const [showEmbed, setShowEmbed] = useState(false);
   const [embedCopied, setEmbedCopied] = useState(false);
@@ -356,13 +362,15 @@ const ImagePage = () => {
                     <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Prompts</h2>
                     <span className="text-[0.72rem] text-accent font-semibold bg-accent/10 px-2 py-0.5 rounded-md">Used 1,247 times</span>
                   </div>
-                  <button
-                    onClick={() => setPromptVisible(!promptVisible)}
-                    className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
-                  >
-                    <Eye className="w-3.5 h-3.5" />
-                    {promptVisible ? "Hide" : "Reveal Prompts"}
-                  </button>
+                  {!isLoggedIn && (
+                    <button
+                      onClick={() => setPromptVisible(!promptVisible)}
+                      className="text-[0.78rem] font-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-1"
+                    >
+                      <Eye className="w-3.5 h-3.5" />
+                      {promptVisible ? "Hide" : "Reveal Prompts"}
+                    </button>
+                  )}
                 </div>
 
                 {/* Tabs */}
