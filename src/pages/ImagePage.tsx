@@ -36,6 +36,12 @@ const samplePrompt = "A cosmic dreamscape with swirling nebula clouds and floati
 
 const sampleVideoPrompt = "Slow dolly-in through swirling nebula clouds as crystalline structures rotate and refract light. Camera drifts weightlessly through deep space, aurora borealis ribbons dancing across the frame. Cinematic orchestral score swells. Cut to macro shot of crystal facets catching starlight, then pull back to reveal the full cosmic dreamscape. 4K, 24fps, anamorphic lens flares, volumetric fog.";
 
+const imageTitles = [
+  "Cosmic Dreamscape","Neon Gradient","Abstract Fire","Mountain Vista",
+  "Neon Boulevard","Sunset Peak","Ocean Depths","Holographic Portrait",
+  "Cyberpunk City","Digital Avatar","Forest Canopy","Abstract Fluid",
+];
+
 const tags = ["Abstract", "Cosmic", "Fantasy", "8K", "Cinematic", "Space"];
 
 // Shop similar items (static for now)
