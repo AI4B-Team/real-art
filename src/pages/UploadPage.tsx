@@ -591,7 +591,7 @@ const UploadPage = () => {
                     </button>
 
                     {/* Private option */}
-                    <div className={`rounded-xl border transition-all ${visibility === "private" ? "border-foreground bg-foreground/[0.03]" : "border-foreground/[0.1] hover:border-foreground/25"}`}>
+                    <div className={`rounded-xl border transition-all ${visibility === "private" ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.1] hover:border-foreground/25"}`}>
                       <button
                         onClick={() => setVisibility("private")}
                         className="flex items-start gap-4 p-5 text-left w-full"
