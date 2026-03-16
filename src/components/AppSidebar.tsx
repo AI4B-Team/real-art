@@ -45,6 +45,8 @@ const AppSidebar = () => {
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [communitySearch, setCommunitySearch] = useState("");
   const communitiesRef = useRef<HTMLDivElement>(null);
+  const communityBtnRef = useRef<HTMLButtonElement>(null);
+  const [flyoutPos, setFlyoutPos] = useState({ top: 0, left: 0 });
 
   const [communities, setCommunities] = useState<Community[]>([
     { id: "1", name: "Avatar Architects", to: "/communities/1", newPosts: 3, pinned: true },
