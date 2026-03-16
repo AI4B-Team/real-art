@@ -49,8 +49,9 @@ const shopSimilarItems: ShopSimilarItem[] = [
 
 const ImagePage = () => {
   const { id } = useParams();
+  const [searchParams] = useSearchParams();
   const idx = parseInt(id || "0") % photos.length;
-  const photo = photos[idx];
+  const photo = searchParams.get("photo") || photos[idx];
   const creator = creators[idx % creators.length];
 
   // Seed demo links on first load, then resolve for this image
