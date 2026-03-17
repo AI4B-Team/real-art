@@ -51,23 +51,29 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   };
 
   const showSidebar = isLoggedIn && !NO_SIDEBAR_ROUTES.includes(location.pathname);
+  const sidebarWidth = sidebarCollapsed ? 68 : 260;
 
   return (
     <LayoutContext.Provider value={{ hasGlobalNavbar: true, sidebarCollapsed, setSidebarCollapsed: handleSetCollapsed }}>
       <div className="min-h-screen bg-background">
-        <Navbar />
-        <div className="pt-16">
-          {showSidebar ? (
-            <div className="flex min-h-[calc(100vh-4rem)]">
-              <AppSidebar />
-              <main className="flex-1 min-w-0">
-                {children}
-              </main>
+        {showSidebar ? (
+          <div className="flex min-h-screen">
+            <AppSidebar />
+            <div className="flex-1 min-w-0 flex flex-col">
+              <Navbar hideLogo sidebarOffset={sidebarWidth} />
+              <div className="pt-16 flex-1">
+                <main>{children}</main>
+              </div>
             </div>
-          ) : (
-            <>{children}</>
-          )}
-        </div>
+          </div>
+        ) : (
+          <>
+            <Navbar />
+            <div className="pt-16">
+              {children}
+            </div>
+          </>
+        )}
       </div>
     </LayoutContext.Provider>
   );

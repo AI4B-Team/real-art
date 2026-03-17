@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Image, FolderOpen, Settings,
+  LayoutDashboard, Image, FolderOpen,
   Users, Award, Eye, Bookmark, ChevronDown,
-  Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen,
-  DollarSign, Megaphone, Bell, Zap, Clock, Upload, Sparkles, Check
+  Search, X, Star, Compass, Plus, PanelLeftClose,
+  DollarSign, Megaphone, Zap, Clock, Upload, Sparkles, Check
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
 
@@ -53,8 +53,6 @@ const AppSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { sidebarCollapsed, setSidebarCollapsed } = useLayoutContext();
-  const [display, setDisplay] = useState("aiverse");
-  const [handle, setHandle] = useState("aiverse");
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [communitySearch, setCommunitySearch] = useState("");
   const communitiesRef = useRef<HTMLDivElement>(null);
@@ -84,7 +82,7 @@ const AppSidebar = () => {
     } catch {
       start = Date.now();
     }
-    const LIMIT = 18 * 60 * 60 * 1000; // 18 hours
+    const LIMIT = 18 * 60 * 60 * 1000;
     const tick = () => {
       const elapsed = Date.now() - start;
       const remaining = Math.max(0, LIMIT - elapsed);
@@ -103,22 +101,11 @@ const AppSidebar = () => {
   const showWidget = isNewUser && !onboardSkipped && onboardDone.length < totalSteps;
 
   useEffect(() => {
-    const syncAuth = () => {
-      try {
-        setDisplay((localStorage.getItem("ra_display") || "AI.Verse").toLowerCase());
-        setHandle((localStorage.getItem("ra_username") || "aiverse").toLowerCase());
-      } catch {}
-    };
     const syncOnboard = () => setOnboardState(readOnboardState());
-    syncAuth();
     syncOnboard();
-    window.addEventListener("storage", syncAuth);
-    window.addEventListener("ra_auth_changed", syncAuth);
     window.addEventListener("ra_onboard_updated", syncOnboard);
     window.addEventListener("storage", syncOnboard);
     return () => {
-      window.removeEventListener("storage", syncAuth);
-      window.removeEventListener("ra_auth_changed", syncAuth);
       window.removeEventListener("ra_onboard_updated", syncOnboard);
       window.removeEventListener("storage", syncOnboard);
     };
@@ -137,8 +124,6 @@ const AppSidebar = () => {
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
   }, []);
-
-  const initials = display.split(" ").map((w: string) => w[0]).join("").slice(0, 2).toUpperCase();
 
   const isDashboard = location.pathname === "/dashboard";
   const currentSection = isDashboard
@@ -188,34 +173,34 @@ const AppSidebar = () => {
   };
 
   return (
-    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto transition-all duration-200 ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
-      {!sidebarCollapsed ? (
-        <div className="flex items-center gap-3 mb-8 px-3">
-          <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent shrink-0">{initials}</div>
-          <div className="flex-1 min-w-0">
-            <div className="font-semibold text-[0.88rem] lowercase truncate">{display}</div>
-            <div className="text-[0.72rem] text-muted lowercase truncate">@{handle}</div>
-          </div>
-          <button
-            onClick={() => setSidebarCollapsed(true)}
-            className="flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0"
-            title="Collapse sidebar"
-          >
-            <PanelLeftClose className="w-4 h-4" />
-          </button>
-        </div>
-      ) : null}
-      {sidebarCollapsed ? (
-        <div className="flex flex-col items-center mb-6">
+    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-0 hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto transition-all duration-200 ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
+      {/* Logo header */}
+      <div className={`flex items-center h-16 shrink-0 ${sidebarCollapsed ? "justify-center" : "px-3 gap-3"}`}>
+        {sidebarCollapsed ? (
           <button
             onClick={() => setSidebarCollapsed(false)}
-            className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
+            className="font-display text-xl font-black tracking-[0.06em] uppercase text-foreground hover:text-accent transition-colors cursor-pointer"
             title="Expand sidebar"
           >
-            {initials}
+            R<span className="text-accent">.</span>
           </button>
-        </div>
-      ) : null}
+        ) : (
+          <>
+            <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
+              Real<span className="text-accent">.</span>Art
+            </Link>
+            <button
+              onClick={() => setSidebarCollapsed(true)}
+              className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0"
+              title="Collapse sidebar"
+            >
+              <PanelLeftClose className="w-4 h-4" />
+            </button>
+          </>
+        )}
+      </div>
+
+      <div className="h-px bg-foreground/[0.06] mx-1 mb-4" />
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(item => {
@@ -259,7 +244,7 @@ const AppSidebar = () => {
                     {hasNewPosts && !active && (
                       <span className="w-2 h-2 rounded-full bg-accent" />
                     )}
-                    <ChevronDown className={`w-3 h-3 opacity-50 transition-transform -rotate-90`} />
+                    <ChevronDown className="w-3 h-3 opacity-50 transition-transform -rotate-90" />
                   </div>
                 </button>
                 {communitiesOpen && createPortal(
@@ -373,7 +358,7 @@ const AppSidebar = () => {
 
       {/* Onboarding Widget */}
       {showWidget && !sidebarCollapsed && (
-        <div className="mt-4 mx-1 rounded-2xl border border-accent/20 bg-accent/[0.04] p-4">
+        <div className="mt-4 mx-1 mb-4 rounded-2xl border border-accent/20 bg-accent/[0.04] p-4">
           <div className="flex items-start justify-between mb-3">
             <div className="flex items-center gap-2">
               <Zap className="w-4 h-4 text-accent" />
