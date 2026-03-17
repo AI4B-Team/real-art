@@ -64,6 +64,12 @@ const Navbar = () => {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [navSearchType, setNavSearchType] = useState("Images");
   const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
+  const [searchSuggestOpen, setSearchSuggestOpen] = useState(false);
+  const searchSuggestRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("ra_recent_searches") || "[]"); } catch { return []; }
+  });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifs);
   const [notifOpen, setNotifOpen] = useState(false);
