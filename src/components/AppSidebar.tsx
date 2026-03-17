@@ -177,18 +177,10 @@ const AppSidebar = () => {
       {/* Logo header */}
       <div className={`flex items-center h-16 shrink-0 ${sidebarCollapsed ? "justify-center" : "px-3 gap-3"}`}>
         {sidebarCollapsed ? (
-          <button
-            onClick={() => setSidebarCollapsed(false)}
-            className="font-display text-xl font-black tracking-[0.06em] uppercase text-foreground hover:text-accent transition-colors cursor-pointer"
-            title="Expand sidebar"
-          >
-            R<span className="text-accent">.</span>
-          </button>
+          <Logo collapsed as="button" onClick={() => setSidebarCollapsed(false)} />
         ) : (
           <>
-            <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
-              Real<span className="text-accent">.</span>Art
-            </Link>
+            <Logo />
             <button
               onClick={() => setSidebarCollapsed(true)}
               className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0"
