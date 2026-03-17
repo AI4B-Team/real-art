@@ -201,6 +201,7 @@ const UploadPage = () => {
           type: "published" as const,
           visibility: visibility as "public" | "private",
           members: 0,
+          collaborators: [],
           slug: (title || "upload").toLowerCase().replace(/\s+/g, "-"),
           imageCount: files.length, videoCount: 0, musicCount: 0,
           thumbs: [], items: [],
