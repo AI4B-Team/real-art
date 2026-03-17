@@ -252,7 +252,7 @@ const ExplorePage = () => {
                   onClick={() => { setQuery(""); setActiveType("Images"); setActiveFilter("All"); }}
                   className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors mx-auto"
                 >
-                  Clear filters
+                  Clear Filters
                 </button>
               </div>
             )}
