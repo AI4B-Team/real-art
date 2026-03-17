@@ -128,8 +128,6 @@ const Navbar = () => {
   const [activeIndex, setActiveIndex] = useState(-1);
   const [ghostText, setGhostText] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
-  const createMenuRef = useRef<HTMLDivElement>(null);
-  const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifs);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifFilter, setNotifFilter] = useState<"all" | "unread">("all");
