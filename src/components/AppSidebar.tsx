@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Logo from "@/components/Logo";
 import {
   LayoutDashboard, Image, FolderOpen,
   Users, Award, Eye, Bookmark, ChevronDown,
