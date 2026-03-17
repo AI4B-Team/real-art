@@ -182,13 +182,13 @@ const MediaSection = () => {
 
       <div className="flex flex-wrap items-center gap-3 mb-5">
         <div className="flex gap-1.5">
-          {(["all", "image", "video", "music"] as const).map(f => (
+          {(["all", "image", "video", "music", "standalone"] as const).map(f => (
             <button
               key={f}
               onClick={() => { setFilter(f); setSelected([]); }}
               className={`px-3.5 py-1.5 rounded-lg text-[0.78rem] font-medium transition-colors ${filter === f ? "bg-foreground text-primary-foreground" : "bg-card border border-foreground/[0.1] text-muted hover:text-foreground"}`}
             >
-              {f === "all" ? "All" : f === "image" ? "Images" : f === "video" ? "Videos" : "Music"} <span className="ml-1 opacity-60">{counts[f]}</span>
+              {f === "all" ? "All" : f === "image" ? "Images" : f === "video" ? "Videos" : f === "music" ? "Music" : "Standalone"} <span className="ml-1 opacity-60">{counts[f]}</span>
             </button>
           ))}
         </div>
