@@ -695,7 +695,18 @@ const Navbar = () => {
               </button>
             )}
             <button
-              onClick={(e) => { e.stopPropagation(); setSearchSuggestOpen(!searchSuggestOpen); searchInputRef.current?.focus(); }}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (searchSuggestOpen) {
+                  setSearchSuggestOpen(false);
+                  setActiveIndex(-1);
+                  searchInputRef.current?.blur();
+                  return;
+                }
+
+                setSearchSuggestOpen(true);
+                searchInputRef.current?.focus();
+              }}
               className={`w-8 h-full flex items-center justify-center border-l border-foreground/[0.09] shrink-0 transition-colors ${searchSuggestOpen ? "text-accent" : "text-muted hover:text-foreground"}`}
             >
               <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${searchSuggestOpen ? "rotate-180" : ""}`} />
