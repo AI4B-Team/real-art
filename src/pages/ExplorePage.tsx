@@ -166,6 +166,8 @@ const ExplorePage = () => {
   const typeDropRef = useRef<HTMLDivElement>(null);
   const sortDropRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => { try { sessionStorage.setItem("ra_visited_explore", "1"); } catch {} }, []);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (typeDropRef.current && !typeDropRef.current.contains(e.target as Node)) {
