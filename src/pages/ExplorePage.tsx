@@ -243,7 +243,7 @@ const ExplorePage = () => {
 
 
         {/* Grid */}
-        <div className="px-6 md:px-12 pb-16">
+        <div className="px-4 md:px-5 pb-16">
           <div className="max-w-[1440px] mx-auto">
             {filteredImages.length === 0 && (
               <div className="text-center py-20">
