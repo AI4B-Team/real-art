@@ -129,7 +129,7 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
   });
 
   return (
-    <div className="px-6 md:px-12 py-6 pb-16">
+    <div className="px-6 md:px-12 pt-2 pb-16">
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
         {itemsWithAds.map((item, i) => {
           if (item.type === "ad") {
