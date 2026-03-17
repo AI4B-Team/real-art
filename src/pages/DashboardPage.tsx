@@ -118,21 +118,22 @@ interface MediaItem {
   pinned: boolean;
   published: string;
   size: string;
+  inCollection: boolean;
 }
 
 const mediaItems: MediaItem[] = [
-  { id: "i1", type: "image", photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", remixes: "247", likes: "847", views: "48,201", earnings: "$124.40", pinned: true, published: "Mar 10, 2026", size: "4096×4096" },
-  { id: "i2", type: "image", photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", remixes: "189", likes: "612", views: "31,400", earnings: "$79.20", pinned: false, published: "Mar 8, 2026", size: "4096×4096" },
-  { id: "i3", type: "image", photo: "photo-1604881991720-f91add269bed", title: "Digital Avatar 01", downloads: "1,940", remixes: "156", likes: "534", views: "26,800", earnings: "$70.56", pinned: false, published: "Mar 5, 2026", size: "2048×2048" },
-  { id: "i4", type: "image", photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City Night", downloads: "1,620", remixes: "121", likes: "441", views: "22,100", earnings: "$58.90", pinned: false, published: "Feb 28, 2026", size: "4096×4096" },
-  { id: "i5", type: "image", photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire", downloads: "1,410", remixes: "94", likes: "388", views: "18,600", earnings: "$51.26", pinned: false, published: "Feb 22, 2026", size: "3840×2160" },
-  { id: "i6", type: "image", photo: "photo-1558618666-fcd25c85cd64", title: "Forest Spirit", downloads: "1,120", remixes: "78", likes: "302", views: "14,200", earnings: "$40.70", pinned: false, published: "Feb 18, 2026", size: "4096×4096" },
-  { id: "v1", type: "video", photo: "photo-1558591710-4b4a1ae0f04d", title: "Liquid Chrome Loop", downloads: "842", remixes: "34", likes: "291", views: "12,800", earnings: "$30.62", pinned: false, published: "Mar 6, 2026", size: "1920×1080 · 0:12" },
-  { id: "v2", type: "video", photo: "photo-1550684848-fac1c5b4e853", title: "Neon Rain Cinemagraph", downloads: "619", remixes: "22", likes: "178", views: "8,400", earnings: "$22.50", pinned: false, published: "Feb 24, 2026", size: "1920×1080 · 0:08" },
-  { id: "v3", type: "video", photo: "photo-1506259091721-2c27eb6c768f", title: "Fractal Expansion", downloads: "390", remixes: "11", likes: "94", views: "4,100", earnings: "$14.18", pinned: false, published: "Feb 10, 2026", size: "3840×2160 · 0:24" },
-  { id: "m1", type: "music", photo: "photo-1511379938547-c1f69419868d", title: "Midnight Synthwave", downloads: "1,240", remixes: "0", likes: "512", views: "9,300", earnings: "$45.10", pinned: false, published: "Mar 1, 2026", size: "3:42 · 128 BPM · Am" },
-  { id: "m2", type: "music", photo: "photo-1493225457124-a3eb161ffa5f", title: "Cosmic Ambience", downloads: "870", remixes: "0", likes: "334", views: "6,100", earnings: "$31.64", pinned: false, published: "Feb 14, 2026", size: "5:18 · 90 BPM · Dm" },
-  { id: "m3", type: "music", photo: "photo-1470225620780-dba8ba36b745", title: "Neural Drift", downloads: "420", remixes: "0", likes: "187", views: "3,200", earnings: "$15.28", pinned: false, published: "Jan 30, 2026", size: "4:07 · 140 BPM · Cm" },
+  { id: "i1", type: "image", photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", downloads: "3,412", remixes: "247", likes: "847", views: "48,201", earnings: "$124.40", pinned: true, published: "Mar 10, 2026", size: "4096×4096", inCollection: true },
+  { id: "i2", type: "image", photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", downloads: "2,180", remixes: "189", likes: "612", views: "31,400", earnings: "$79.20", pinned: false, published: "Mar 8, 2026", size: "4096×4096", inCollection: true },
+  { id: "i3", type: "image", photo: "photo-1604881991720-f91add269bed", title: "Digital Avatar 01", downloads: "1,940", remixes: "156", likes: "534", views: "26,800", earnings: "$70.56", pinned: false, published: "Mar 5, 2026", size: "2048×2048", inCollection: false },
+  { id: "i4", type: "image", photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City Night", downloads: "1,620", remixes: "121", likes: "441", views: "22,100", earnings: "$58.90", pinned: false, published: "Feb 28, 2026", size: "4096×4096", inCollection: false },
+  { id: "i5", type: "image", photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire", downloads: "1,410", remixes: "94", likes: "388", views: "18,600", earnings: "$51.26", pinned: false, published: "Feb 22, 2026", size: "3840×2160", inCollection: false },
+  { id: "i6", type: "image", photo: "photo-1558618666-fcd25c85cd64", title: "Forest Spirit", downloads: "1,120", remixes: "78", likes: "302", views: "14,200", earnings: "$40.70", pinned: false, published: "Feb 18, 2026", size: "4096×4096", inCollection: false },
+  { id: "v1", type: "video", photo: "photo-1558591710-4b4a1ae0f04d", title: "Liquid Chrome Loop", downloads: "842", remixes: "34", likes: "291", views: "12,800", earnings: "$30.62", pinned: false, published: "Mar 6, 2026", size: "1920×1080 · 0:12", inCollection: false },
+  { id: "v2", type: "video", photo: "photo-1550684848-fac1c5b4e853", title: "Neon Rain Cinemagraph", downloads: "619", remixes: "22", likes: "178", views: "8,400", earnings: "$22.50", pinned: false, published: "Feb 24, 2026", size: "1920×1080 · 0:08", inCollection: false },
+  { id: "v3", type: "video", photo: "photo-1506259091721-2c27eb6c768f", title: "Fractal Expansion", downloads: "390", remixes: "11", likes: "94", views: "4,100", earnings: "$14.18", pinned: false, published: "Feb 10, 2026", size: "3840×2160 · 0:24", inCollection: false },
+  { id: "m1", type: "music", photo: "photo-1511379938547-c1f69419868d", title: "Midnight Synthwave", downloads: "1,240", remixes: "0", likes: "512", views: "9,300", earnings: "$45.10", pinned: false, published: "Mar 1, 2026", size: "3:42 · 128 BPM · Am", inCollection: false },
+  { id: "m2", type: "music", photo: "photo-1493225457124-a3eb161ffa5f", title: "Cosmic Ambience", downloads: "870", remixes: "0", likes: "334", views: "6,100", earnings: "$31.64", pinned: false, published: "Feb 14, 2026", size: "5:18 · 90 BPM · Dm", inCollection: false },
+  { id: "m3", type: "music", photo: "photo-1470225620780-dba8ba36b745", title: "Neural Drift", downloads: "420", remixes: "0", likes: "187", views: "3,200", earnings: "$15.28", pinned: false, published: "Jan 30, 2026", size: "4:07 · 140 BPM · Cm", inCollection: false },
 ];
 
 const typeIcon: Record<MediaType, typeof Image> = {
