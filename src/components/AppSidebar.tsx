@@ -358,52 +358,46 @@ const AppSidebar = () => {
 
       {/* Onboarding Widget */}
       {showWidget && !sidebarCollapsed && (
-        <div className="mt-4 mx-1 mb-4 rounded-2xl border border-accent/20 bg-accent/[0.04] p-4">
-          <div className="flex items-start justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Zap className="w-4 h-4 text-accent" />
-              <span className="text-[0.78rem] font-bold text-foreground">Get 1,000 free credits</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              {timeLeft && (
-                <span className="flex items-center gap-1 text-[0.68rem] text-accent font-medium">
-                  <Clock className="w-3 h-3 text-accent" />
-                  {timeLeft}
-                </span>
-              )}
-              <button
-                onClick={dismissWidget}
-                className="w-6 h-6 rounded-full flex items-center justify-center text-muted/50 hover:text-muted hover:bg-foreground/[0.06] transition-colors shrink-0 -mr-1 -mt-1"
-                title="Dismiss"
-              >
-                <X className="w-3 h-3" />
-              </button>
-            </div>
+        <div className="mt-4 mx-1 mb-4 rounded-2xl border border-accent/20 bg-accent/[0.04] px-3.5 py-3">
+          {/* Single-row header: icon + title + timer + dismiss */}
+          <div className="flex items-center gap-1.5 mb-2.5">
+            <Zap className="w-3.5 h-3.5 text-accent shrink-0" />
+            <span className="text-[0.76rem] font-bold text-foreground whitespace-nowrap">Get 1,000 Free Credits</span>
+            {timeLeft && (
+              <span className="flex items-center gap-1 text-[0.65rem] text-accent font-medium ml-auto shrink-0">
+                <Clock className="w-2.5 h-2.5 text-accent" />
+                {timeLeft}
+              </span>
+            )}
+            <button
+              onClick={dismissWidget}
+              className="w-5 h-5 rounded-full flex items-center justify-center text-muted/40 hover:text-muted hover:bg-foreground/[0.07] transition-colors shrink-0"
+              title="Dismiss"
+            >
+              <X className="w-3 h-3" />
+            </button>
           </div>
 
-          <p className="text-[0.74rem] text-muted mb-3 leading-[1.5]">
-            Complete setup to unlock AI generation credits.
-          </p>
-
-          <div className="flex items-center justify-between mb-2">
-            <span className="text-[0.7rem] text-muted">{onboardDone.length}/{totalSteps} steps done</span>
-            <span className="text-[0.7rem] font-semibold text-foreground">{pct}%</span>
+          {/* Progress */}
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-[0.68rem] text-muted">{onboardDone.length}/{totalSteps} Steps Done</span>
+            <span className="text-[0.68rem] font-semibold text-foreground">{pct}%</span>
           </div>
-          <div className="h-1 bg-foreground/[0.06] rounded-full overflow-hidden mb-3">
+          <div className="h-[3px] bg-foreground/[0.06] rounded-full overflow-hidden mb-2.5">
             <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
           </div>
 
-          <div className="flex flex-col gap-1.5 mb-3">
+          {/* Steps */}
+          <div className="flex flex-col gap-1 mb-2.5">
             {[
-              { id: "upload", icon: Upload, label: "Upload or generate" },
-              { id: "collection", icon: Bookmark, label: "Create a collection" },
-              { id: "explore", icon: Eye, label: "Explore the gallery" },
+              { id: "upload", label: "Upload Or Generate" },
+              { id: "collection", label: "Create A Collection" },
+              { id: "explore", label: "Explore The Gallery" },
             ].map(step => {
               const done = onboardDone.includes(step.id);
               return (
-                <div key={step.id} className={`flex items-center gap-2 text-[0.74rem] ${done ? "text-muted line-through" : "text-foreground"}`}>
-                  {done && <Check className="w-3 h-3 text-green-500 shrink-0" />}
-                  {!done && <div className="w-3 h-3 rounded-full border border-foreground/20 shrink-0" />}
+                <div key={step.id} className={`flex items-center gap-2 text-[0.72rem] ${done ? "text-muted line-through" : "text-foreground"}`}>
+                  {done ? <Check className="w-3 h-3 text-green-500 shrink-0" /> : <div className="w-3 h-3 rounded-full border border-foreground/20 shrink-0" />}
                   {step.label}
                 </div>
               );
@@ -412,10 +406,10 @@ const AppSidebar = () => {
 
           <Link
             to="/welcome"
-            className="flex items-center justify-center gap-1.5 w-full bg-accent text-white py-2 rounded-lg text-[0.78rem] font-semibold hover:bg-accent/90 transition-colors no-underline"
+            className="flex items-center justify-center gap-1.5 w-full bg-accent text-white py-1.5 rounded-lg text-[0.76rem] font-semibold hover:bg-accent/90 transition-colors no-underline"
           >
             <Sparkles className="w-3.5 h-3.5 text-white" />
-            Continue setup
+            Continue Setup
           </Link>
         </div>
       )}
