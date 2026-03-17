@@ -9,22 +9,22 @@ import PageShell from "@/components/PageShell";
 const samplePhotos = [
   "photo-1618005182384-a83a8bd57fbe",
   "photo-1579546929518-9e396f3cc809",
-  "photo-1604881991720-f91add269bed",
   "photo-1557682250-33bd709cbe85",
-  "photo-1501854140801-50d01698950b",
-  "photo-1543722530-d2c3201371e7",
+  "photo-1541701494587-cb58502866ab",
+  "photo-1604881991720-f91add269bed",
+  "photo-1470071459604-3b5ec3a7fe05",
 ];
 
 interface Step {
   id: string;
-  number: number;
+  num: number;
   icon: typeof Upload;
   title: string;
-  description: string;
+  desc: string;
   cta: string;
-  secondaryCta?: string;
+  ctaSecondary?: string;
   to: string;
-  secondaryTo?: string;
+  toSecondary?: string;
   color: string;
   bg: string;
   border: string;
@@ -33,26 +33,26 @@ interface Step {
 const steps: Step[] = [
   {
     id: "upload",
-    number: 1,
+    num: 1,
     icon: Upload,
     title: "Upload or generate your first piece",
-    description: "Add an image, video, or music track — or generate one with AI in seconds.",
+    desc: "Add an image, video, or music track — or generate one with AI in seconds.",
     cta: "Upload Art",
-    secondaryCta: "Generate with AI",
+    ctaSecondary: "Generate with AI",
     to: "/upload",
-    secondaryTo: "/create?type=image",
+    toSecondary: "/create?type=image",
     color: "text-violet-500",
     bg: "bg-violet-50 dark:bg-violet-950/40",
     border: "border-violet-200 dark:border-violet-800/40",
   },
   {
     id: "collection",
-    number: 2,
+    num: 2,
     icon: FolderPlus,
     title: "Create your first collection",
-    description: "Group your work into public galleries or private vaults — set your own pricing and access codes.",
+    desc: "Group your work into public galleries or private vaults — set your own pricing and access codes.",
     cta: "Create a Collection",
-    secondaryCta: "Skip for now",
+    ctaSecondary: "Skip for now",
     to: "/collections",
     color: "text-accent",
     bg: "bg-accent/10",
@@ -60,10 +60,10 @@ const steps: Step[] = [
   },
   {
     id: "explore",
-    number: 3,
+    num: 3,
     icon: Compass,
     title: "Discover what others are making",
-    description: "Browse 2.4M+ AI-generated images, videos, and music. Save anything to your boards.",
+    desc: "Browse 2.4M+ AI-generated images, videos, and music. Save anything to your boards.",
     cta: "Start Exploring",
     to: "/explore",
     color: "text-blue-500",
@@ -75,42 +75,61 @@ const steps: Step[] = [
 const WelcomePage = () => {
   const navigate = useNavigate();
   const [completedSteps, setCompletedSteps] = useState<string[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem("ra_onboard_done") || "[]");
-    } catch {
-      return [];
-    }
+    try { return JSON.parse(localStorage.getItem("ra_onboard_done") || "[]"); } catch { return []; }
   });
-
-  const username = (() => {
-    try { return localStorage.getItem("ra_display") || ""; } catch { return ""; }
-  })();
-
-  const allDone = completedSteps.length >= steps.length;
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     try {
-      localStorage.setItem("ra_onboard_done", JSON.stringify(completedSteps));
+      setUsername(localStorage.getItem("ra_display") || localStorage.getItem("ra_username") || "");
     } catch {}
-  }, [completedSteps]);
+  }, []);
 
-  const markDone = (stepId: string) => {
-    if (!completedSteps.includes(stepId)) {
-      setCompletedSteps(prev => [...prev, stepId]);
+  // Auto-detect completed steps from sessionStorage on mount
+  useEffect(() => {
+    const visitedUpload = sessionStorage.getItem("ra_visited_upload") === "1";
+    const visitedCollect = sessionStorage.getItem("ra_visited_collections") === "1";
+    const visitedExplore = sessionStorage.getItem("ra_visited_explore") === "1";
+    const hasUploads = parseInt(localStorage.getItem("ra_uploads") || "0", 10) > 0;
+    const autoComplete: string[] = [...completedSteps];
+    if ((visitedUpload && hasUploads) && !autoComplete.includes("upload")) autoComplete.push("upload");
+    if (visitedCollect && !autoComplete.includes("collection")) autoComplete.push("collection");
+    if (visitedExplore && !autoComplete.includes("explore")) autoComplete.push("explore");
+    if (autoComplete.length > completedSteps.length) {
+      setCompletedSteps(autoComplete);
+      try {
+        localStorage.setItem("ra_onboard_done", JSON.stringify(autoComplete));
+        window.dispatchEvent(new CustomEvent("ra_onboard_updated", { detail: { done: autoComplete } }));
+      } catch {}
     }
-  };
+  }, []);
 
-  const handleSkipSetup = () => {
+  const markDone = (id: string) => {
+    const next = [...new Set([...completedSteps, id])];
+    setCompletedSteps(next);
     try {
-      localStorage.setItem("ra_onboard_skipped", "1");
+      localStorage.setItem("ra_onboard_done", JSON.stringify(next));
+      window.dispatchEvent(new CustomEvent("ra_onboard_updated", { detail: { done: next } }));
     } catch {}
-    navigate("/explore");
   };
 
-  const handleGoToDashboard = () => {
+  const allDone = steps.every(s => completedSteps.includes(s.id));
+
+  const handleSkipAll = () => {
     try {
-      localStorage.removeItem("ra_new_user");
       localStorage.setItem("ra_onboard_skipped", "1");
+      window.dispatchEvent(new CustomEvent("ra_onboard_updated", { detail: { skipped: true } }));
+    } catch {}
+    navigate("/");
+  };
+
+  const handleComplete = () => {
+    const allIds = steps.map(s => s.id);
+    try {
+      localStorage.setItem("ra_onboard_done", JSON.stringify(allIds));
+      localStorage.setItem("ra_uploads", "1");
+      localStorage.removeItem("ra_new_user");
+      window.dispatchEvent(new CustomEvent("ra_onboard_updated", { detail: { done: allIds, completed: true } }));
     } catch {}
     navigate("/dashboard");
   };
@@ -165,13 +184,13 @@ const WelcomePage = () => {
                         ? "bg-green-500 text-white"
                         : `bg-foreground/[0.06] ${step.color}`
                     }`}>
-                      {done ? <Check className="w-5 h-5 text-white" /> : step.number}
+                      {done ? <Check className="w-5 h-5 text-white" /> : <step.icon className={`w-5 h-5 ${step.color}`} />}
                     </div>
 
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
                         <span className="text-[0.72rem] font-semibold text-muted uppercase tracking-wider">
-                          Step {step.number}
+                          Step {step.num}
                         </span>
                         {done && (
                           <span className="text-[0.72rem] font-semibold text-green-500">Done</span>
@@ -182,7 +201,7 @@ const WelcomePage = () => {
                         {step.title}
                       </h3>
                       <p className="text-[0.84rem] text-muted leading-[1.55] mb-4">
-                        {step.description}
+                        {step.desc}
                       </p>
 
                       {!done && !locked && (
@@ -194,40 +213,23 @@ const WelcomePage = () => {
                           >
                             {step.cta} <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
-                          {step.secondaryCta && (
-                            step.secondaryTo ? (
-                              <Link
-                                to={step.secondaryTo}
-                                onClick={() => markDone(step.id)}
-                                className="text-[0.82rem] font-medium text-muted hover:text-foreground transition-colors no-underline"
-                              >
-                                {step.secondaryCta}
-                              </Link>
-                            ) : (
-                              <button
-                                onClick={() => markDone(step.id)}
-                                className="text-[0.82rem] font-medium text-muted hover:text-foreground transition-colors"
-                              >
-                                {step.secondaryCta}
-                              </button>
-                            )
+                          {step.ctaSecondary && step.toSecondary && (
+                            <Link
+                              to={step.toSecondary}
+                              onClick={() => markDone(step.id)}
+                              className="text-[0.82rem] font-medium text-muted hover:text-foreground transition-colors no-underline"
+                            >
+                              {step.ctaSecondary}
+                            </Link>
                           )}
-                        </div>
-                      )}
-
-                      {done && (
-                        <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => {
-                              const nextStep = steps[i + 1];
-                              if (nextStep && !completedSteps.includes(nextStep.id)) {
-                                // scroll or focus next
-                              }
-                            }}
-                            className="flex items-center gap-1.5 bg-foreground text-primary-foreground px-5 py-2.5 rounded-xl text-[0.84rem] font-semibold hover:bg-accent transition-colors"
-                          >
-                            Next Step <ArrowRight className="w-3.5 h-3.5" />
-                          </button>
+                          {step.ctaSecondary && !step.toSecondary && (
+                            <button
+                              onClick={() => markDone(step.id)}
+                              className="text-[0.82rem] font-medium text-muted hover:text-foreground transition-colors"
+                            >
+                              {step.ctaSecondary}
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>
@@ -256,14 +258,14 @@ const WelcomePage = () => {
 
             {allDone ? (
               <button
-                onClick={handleGoToDashboard}
+                onClick={handleComplete}
                 className="flex items-center justify-center gap-2 w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mt-6"
               >
                 <Star className="w-4 h-4" /> Go to My Dashboard
               </button>
             ) : (
               <button
-                onClick={handleSkipSetup}
+                onClick={handleSkipAll}
                 className="w-full text-center text-[0.82rem] text-muted hover:text-foreground transition-colors mt-4"
               >
                 Skip setup — explore first

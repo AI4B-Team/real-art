@@ -29,6 +29,7 @@ interface ImagePrompts {
 
 const UploadPage = () => {
   const navigate = useNavigate();
+  useEffect(() => { try { sessionStorage.setItem("ra_visited_upload", "1"); } catch {} }, []);
   const { toast } = useToast();
   const [publishing, setPublishing] = useState(false);
   const [step, setStep] = useState(0);

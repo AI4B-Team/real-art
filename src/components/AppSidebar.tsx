@@ -1,11 +1,11 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, Settings,
   Users, Award, Eye, Bookmark, ChevronDown,
   Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen,
-  DollarSign, Megaphone, Bell
+  DollarSign, Megaphone, Bell, Zap, Clock, Upload, Sparkles, Check
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
 
@@ -37,6 +37,18 @@ const navItems: NavItem[] = [
   { id: "earnings", label: "Earnings", icon: DollarSign, type: "dashboard-section" },
 ];
 
+const readOnboardState = () => ({
+  done: (() => {
+    try { return JSON.parse(localStorage.getItem("ra_onboard_done") || "[]") as string[]; } catch { return [] as string[]; }
+  })(),
+  skipped: (() => {
+    try { return localStorage.getItem("ra_onboard_skipped") === "1"; } catch { return false; }
+  })(),
+  isNew: (() => {
+    try { return localStorage.getItem("ra_new_user") === "1"; } catch { return false; }
+  })(),
+});
+
 const AppSidebar = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -55,19 +67,60 @@ const AppSidebar = () => {
     { id: "3", name: "Abstract Minds", to: "/communities/3", newPosts: 1, pinned: false },
   ]);
 
+  // Onboarding state
+  const [onboardState, setOnboardState] = useState(readOnboardState);
+  const onboardDone = onboardState.done;
+  const onboardSkipped = onboardState.skipped;
+  const isNewUser = onboardState.isNew;
+
+  const [timeLeft, setTimeLeft] = useState<string>("");
   useEffect(() => {
-    const sync = () => {
+    const startKey = "ra_onboard_start";
+    let start: number;
+    try {
+      const stored = localStorage.getItem(startKey);
+      start = stored ? parseInt(stored, 10) : Date.now();
+      if (!stored) localStorage.setItem(startKey, String(start));
+    } catch {
+      start = Date.now();
+    }
+    const LIMIT = 18 * 60 * 60 * 1000; // 18 hours
+    const tick = () => {
+      const elapsed = Date.now() - start;
+      const remaining = Math.max(0, LIMIT - elapsed);
+      const h = Math.floor(remaining / 3600000);
+      const m = Math.floor((remaining % 3600000) / 60000);
+      const s = Math.floor((remaining % 60000) / 1000);
+      setTimeLeft(`${h}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`);
+    };
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const totalSteps = 3;
+  const pct = Math.round((onboardDone.length / totalSteps) * 100);
+  const showWidget = isNewUser && !onboardSkipped && onboardDone.length < totalSteps;
+
+  useEffect(() => {
+    const syncAuth = () => {
       try {
         setDisplay((localStorage.getItem("ra_display") || "AI.Verse").toLowerCase());
         setHandle((localStorage.getItem("ra_username") || "aiverse").toLowerCase());
       } catch {}
     };
-    sync();
-    window.addEventListener("storage", sync);
-    window.addEventListener("ra_auth_changed", sync);
+    const syncOnboard = () => setOnboardState(readOnboardState());
+    syncAuth();
+    syncOnboard();
+    window.addEventListener("storage", syncAuth);
+    window.addEventListener("ra_auth_changed", syncAuth);
+    window.addEventListener("ra_onboard_updated", syncOnboard);
+    window.addEventListener("storage", syncOnboard);
     return () => {
-      window.removeEventListener("storage", sync);
-      window.removeEventListener("ra_auth_changed", sync);
+      window.removeEventListener("storage", syncAuth);
+      window.removeEventListener("ra_auth_changed", syncAuth);
+      window.removeEventListener("ra_onboard_updated", syncOnboard);
+      window.removeEventListener("storage", syncOnboard);
     };
   }, []);
 
@@ -76,7 +129,6 @@ const AppSidebar = () => {
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
       if (communitiesRef.current && !communitiesRef.current.contains(target)) {
-        // Check if click is inside the portalled flyout
         const flyout = document.querySelector('[data-community-flyout]');
         if (flyout && flyout.contains(target)) return;
         setCommunitiesOpen(false);
@@ -126,6 +178,15 @@ const AppSidebar = () => {
 
   const hasNewPosts = communities.some(c => c.newPosts && c.newPosts > 0);
 
+  const dismissWidget = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      localStorage.setItem("ra_onboard_skipped", "1");
+      window.dispatchEvent(new CustomEvent("ra_onboard_updated", { detail: { skipped: true } }));
+    } catch {}
+  };
+
   return (
     <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-6 hidden lg:flex flex-col shrink-0 h-[calc(100vh-4rem)] sticky top-16 overflow-y-auto transition-all duration-200 ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
       {!sidebarCollapsed ? (
@@ -162,7 +223,6 @@ const AppSidebar = () => {
             return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
           }
 
-          // Communities dropdown - show icon-only when collapsed
           if (item.type === "communities-dropdown") {
             const active = isActive(item);
             if (sidebarCollapsed) {
@@ -310,6 +370,70 @@ const AppSidebar = () => {
           );
         })}
       </nav>
+
+      {/* Onboarding Widget */}
+      {showWidget && !sidebarCollapsed && (
+        <div className="mt-4 mx-1 rounded-2xl border border-accent/20 bg-accent/[0.04] p-4">
+          <div className="flex items-start justify-between mb-3">
+            <div className="flex items-center gap-2">
+              <Zap className="w-4 h-4 text-accent" />
+              <span className="text-[0.78rem] font-bold text-foreground">Get 1,000 free credits</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {timeLeft && (
+                <span className="flex items-center gap-1 text-[0.68rem] text-accent font-medium">
+                  <Clock className="w-3 h-3 text-accent" />
+                  {timeLeft}
+                </span>
+              )}
+              <button
+                onClick={dismissWidget}
+                className="w-6 h-6 rounded-full flex items-center justify-center text-muted/50 hover:text-muted hover:bg-foreground/[0.06] transition-colors shrink-0 -mr-1 -mt-1"
+                title="Dismiss"
+              >
+                <X className="w-3 h-3" />
+              </button>
+            </div>
+          </div>
+
+          <p className="text-[0.74rem] text-muted mb-3 leading-[1.5]">
+            Complete setup to unlock AI generation credits.
+          </p>
+
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[0.7rem] text-muted">{onboardDone.length}/{totalSteps} steps done</span>
+            <span className="text-[0.7rem] font-semibold text-foreground">{pct}%</span>
+          </div>
+          <div className="h-1 bg-foreground/[0.06] rounded-full overflow-hidden mb-3">
+            <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+          </div>
+
+          <div className="flex flex-col gap-1.5 mb-3">
+            {[
+              { id: "upload", icon: Upload, label: "Upload or generate" },
+              { id: "collection", icon: Bookmark, label: "Create a collection" },
+              { id: "explore", icon: Eye, label: "Explore the gallery" },
+            ].map(step => {
+              const done = onboardDone.includes(step.id);
+              return (
+                <div key={step.id} className={`flex items-center gap-2 text-[0.74rem] ${done ? "text-muted line-through" : "text-foreground"}`}>
+                  {done && <Check className="w-3 h-3 text-green-500 shrink-0" />}
+                  {!done && <div className="w-3 h-3 rounded-full border border-foreground/20 shrink-0" />}
+                  {step.label}
+                </div>
+              );
+            })}
+          </div>
+
+          <Link
+            to="/welcome"
+            className="flex items-center justify-center gap-1.5 w-full bg-accent text-white py-2 rounded-lg text-[0.78rem] font-semibold hover:bg-accent/90 transition-colors no-underline"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-white" />
+            Continue setup
+          </Link>
+        </div>
+      )}
     </aside>
   );
 };
