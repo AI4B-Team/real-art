@@ -269,6 +269,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   const themeLabel = activeTheme === "light" ? "Light" : activeTheme === "dark" ? "Dark" : "System";
   const ThemeIcon = activeTheme === "light" ? Sun : activeTheme === "dark" ? Moon : Monitor;
 
+  const handleLogout = () => {
     try { localStorage.removeItem("ra_auth"); localStorage.removeItem("ra_display"); localStorage.removeItem("ra_username"); } catch {}
     setIsLoggedIn(false); setUserDisplay("AI.Verse"); setUserHandle("aiverse"); setUserMenuOpen(false);
     navigate("/");
