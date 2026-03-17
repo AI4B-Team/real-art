@@ -720,46 +720,14 @@ const Navbar = () => {
       {/* Desktop Right Actions */}
       <div className="hidden md:flex items-center gap-1.5 shrink-0">
         {isLoggedIn && (
-          <div className="relative" ref={createMenuRef}>
-            <div className="flex items-center">
-              <Link to="/create" className="flex items-center gap-1.5 px-4 py-2 rounded-l-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
-                <Sparkles className="w-3.5 h-3.5" /> Create
-              </Link>
-              <button onClick={() => setCreateMenuOpen(!createMenuOpen)}
-                className="flex items-center justify-center h-[36px] w-[30px] bg-accent text-primary-foreground rounded-r-lg border-l border-primary-foreground/20 hover:bg-accent/85 transition-colors">
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${createMenuOpen ? "rotate-180" : ""}`} />
-              </button>
-            </div>
-            {createMenuOpen && (
-              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl w-[280px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[500]">
-                <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Create with AI</div>
-                {[
-                  { icon: Wand2, label: "Generate Image", desc: "Text-to-image with AI", to: "/create?type=image", color: "text-violet-500", bg: "bg-violet-500/15" },
-                  { icon: Film, label: "Generate Video", desc: "Animate a scene or loop", to: "/create?type=video", color: "text-blue-500", bg: "bg-blue-500/15" },
-                  { icon: Music2, label: "Generate Music", desc: "AI soundtrack or sound effect", to: "/create?type=music", color: "text-emerald-500", bg: "bg-emerald-500/15" },
-                ].map(item => (
-                  <Link key={item.label} to={item.to} onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
-                    <div className={`w-8 h-8 rounded-lg ${item.bg} flex items-center justify-center shrink-0`}>
-                      <item.icon className={`w-4 h-4 ${item.color}`} />
-                    </div>
-                    <div>
-                      <div className="text-[0.82rem] font-semibold text-foreground">{item.label}</div>
-                      <div className="text-[0.7rem] text-muted">{item.desc}</div>
-                    </div>
-                  </Link>
-                ))}
-                <div className="h-px bg-foreground/[0.06] my-1.5" />
-                <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Or bring your own</div>
-                <Link to="/upload" onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
-                  <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0"><Upload className="w-4 h-4 text-foreground/60" /></div>
-                  <div>
-                    <div className="text-[0.82rem] font-semibold text-foreground">Upload Art</div>
-                    <div className="text-[0.7rem] text-muted">Images, video, or audio files</div>
-                  </div>
-                </Link>
-              </div>
-            )}
-          </div>
+          <>
+            <Link to="/create" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
+              <Sparkles className="w-3.5 h-3.5" /> Create
+            </Link>
+            <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold border border-foreground/[0.18] text-foreground hover:border-foreground/40 transition-colors no-underline">
+              <Upload className="w-3.5 h-3.5" /> Upload
+            </Link>
+          </>
         )}
 
         {isLoggedIn && (
