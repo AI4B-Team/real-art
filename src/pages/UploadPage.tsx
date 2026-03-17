@@ -258,6 +258,12 @@ const UploadPage = () => {
         });
       }
 
+      // Track upload count & clear new-user flag
+      try {
+        localStorage.setItem("ra_uploads", String(parseInt(localStorage.getItem("ra_uploads") || "0", 10) + 1));
+        localStorage.removeItem("ra_new_user");
+      } catch {}
+
       toast({ title: "Published!", description: `${files.length} image${files.length > 1 ? "s" : ""} uploaded successfully.` });
       navigate(`/collections/${collectionId}`);
     } catch (err: any) {

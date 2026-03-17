@@ -42,6 +42,7 @@ import BlogPage from "./pages/BlogPage";
 // Round 5 — Auth + Dashboard
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
+import WelcomePage from "./pages/WelcomePage";
 import DashboardPage from "./pages/DashboardPage";
 import DashboardCollectionPage from "./pages/DashboardCollectionPage";
 import AdsPage from "./pages/AdsPage";
@@ -112,6 +113,7 @@ const App = () => (
             {/* Round 5 — Auth + Dashboard */}
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/welcome" element={<WelcomePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/dashboard/collections/:id" element={<DashboardCollectionPage />} />
             <Route path="/ads" element={<AdsPage />} />

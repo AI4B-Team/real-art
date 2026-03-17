@@ -199,7 +199,7 @@ const SignUpPage = () => {
                 {errors.agreed && <p className="text-[0.75rem] text-red-500 mb-3">{errors.agreed}</p>}
 
                 <button
-                  onClick={() => { if (validateDetails()) { try { localStorage.setItem("ra_auth", "1"); localStorage.setItem("ra_username", username); const display = username.replace(/[._]/g, " ").replace(/\b\w/g, c => c.toUpperCase()); localStorage.setItem("ra_display", display); window.dispatchEvent(new Event("ra_auth_changed")); } catch {} setStep("done"); } }}
+                  onClick={() => { if (validateDetails()) { try { localStorage.setItem("ra_auth", "1"); localStorage.setItem("ra_username", username); const display = username.replace(/[._]/g, " ").replace(/\b\w/g, c => c.toUpperCase()); localStorage.setItem("ra_display", display); localStorage.setItem("ra_new_user", "1"); window.dispatchEvent(new Event("ra_auth_changed")); } catch {} setStep("done"); } }}
                   className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mt-5 mb-5"
                 >
                   Create Account — Free
@@ -219,8 +219,8 @@ const SignUpPage = () => {
                 </div>
                 <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-3">Welcome To REAL ART</h1>
                 <p className="text-[0.88rem] text-muted mb-8">Your account is ready. Start browsing, downloading, or upload your first image.</p>
-                <button onClick={() => navigate("/dashboard")} className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mb-3">
-                  Start Browsing
+                <button onClick={() => navigate("/welcome")} className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mb-3">
+                  Get Started
                 </button>
                 <button onClick={() => navigate("/upload")} className="w-full border border-foreground/[0.14] py-3.5 rounded-xl text-[0.9rem] font-medium hover:border-foreground/30 transition-colors">
                   Upload My First Image
