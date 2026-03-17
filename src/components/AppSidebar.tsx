@@ -5,10 +5,9 @@ import {
   LayoutDashboard, Image, FolderOpen, Settings,
   Users, Award, Eye, Bookmark, ChevronDown,
   Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen,
-  DollarSign, Megaphone, Bell, Trophy, BarChart3
+  DollarSign, Megaphone, Bell
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NavItem {
   id: string;
