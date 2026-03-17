@@ -48,7 +48,7 @@ const NotFound = () => {
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-[0.84rem] font-medium text-muted hover:text-foreground transition-colors"
         >
-          <ArrowLeft className="w-4 h-4" /> Go back
+          <ArrowLeft className="w-4 h-4" /> Go Back
         </button>
       </div>
     </PageShell>
