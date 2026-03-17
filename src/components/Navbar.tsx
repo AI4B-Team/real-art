@@ -145,6 +145,7 @@ const Navbar = () => {
       if (navSearchDropRef.current && !navSearchDropRef.current.contains(e.target as Node)) setNavSearchDropOpen(false);
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
+      if (searchSuggestRef.current && !searchSuggestRef.current.contains(e.target as Node)) setSearchSuggestOpen(false);
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
