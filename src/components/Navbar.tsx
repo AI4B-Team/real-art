@@ -377,7 +377,7 @@ const Navbar = () => {
                 {recentSearches.length > 0 && (
                   <>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-muted">Recent</span>
+                      <span className="flex items-center gap-1.5 text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-muted"><Clock className="w-3 h-3" /> Recent</span>
                       <button onClick={() => { setRecentSearches([]); try { localStorage.removeItem("ra_recent_searches"); } catch {} }} className="text-[0.68rem] text-muted hover:text-accent transition-colors">
                         Clear all
                       </button>
