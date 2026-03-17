@@ -6,7 +6,8 @@ import {
   LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
   Megaphone, LayoutGrid, User, Heart, Download, MessageCircle,
   RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
-  Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2
+  Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2,
+  Sun, Moon, Monitor, Languages, ChevronRight
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
@@ -128,6 +129,14 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   const [activeIndex, setActiveIndex] = useState(-1);
   const [ghostText, setGhostText] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [menuPanel, setMenuPanel] = useState<"main" | "language" | "theme">("main");
+  const [activeTheme, setActiveTheme] = useState<"light" | "dark" | "system">(() => {
+    try { return (localStorage.getItem("ra_theme") as "light" | "dark" | "system") ?? "light"; } catch { return "light"; }
+  });
+  const [activeLang, setActiveLang] = useState(() => {
+    try { return localStorage.getItem("ra_lang") ?? "en"; } catch { return "en"; }
+  });
+  const [langSearch, setLangSearch] = useState("");
   const [notifications, setNotifications] = useState(initialNotifs);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifFilter, setNotifFilter] = useState<"all" | "unread">("all");
@@ -192,7 +201,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
       if (communitiesRef.current && !communitiesRef.current.contains(e.target as Node)) setCommunitiesOpen(false);
       if (navSearchDropRef.current && !navSearchDropRef.current.contains(e.target as Node)) setNavSearchDropOpen(false);
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) { setUserMenuOpen(false); setMenuPanel("main"); setLangSearch(""); }
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
       if (searchSuggestRef.current && !searchSuggestRef.current.contains(e.target as Node)) setSearchSuggestOpen(false);
       
@@ -218,6 +227,47 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
   }, []);
+
+  // Apply theme to document
+  useEffect(() => {
+    const apply = (t: string) => {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = t === "dark" || (t === "system" && prefersDark);
+      document.documentElement.classList.toggle("dark", isDark);
+    };
+    apply(activeTheme);
+    if (activeTheme === "system") {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const handler = () => apply("system");
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }
+  }, [activeTheme]);
+
+  const setTheme = (t: "light" | "dark" | "system") => {
+    setActiveTheme(t);
+    try { localStorage.setItem("ra_theme", t); } catch {}
+  };
+
+  const languages = [
+    { code: "en", label: "English", flag: "🇺🇸" },
+    { code: "es", label: "Spanish", flag: "🇪🇸" },
+    { code: "fr", label: "French", flag: "🇫🇷" },
+    { code: "de", label: "German", flag: "🇩🇪" },
+    { code: "pt", label: "Portuguese", flag: "🇧🇷" },
+    { code: "it", label: "Italian", flag: "🇮🇹" },
+    { code: "zh", label: "Chinese", flag: "🇨🇳" },
+    { code: "ja", label: "Japanese", flag: "🇯🇵" },
+    { code: "ko", label: "Korean", flag: "🇰🇷" },
+    { code: "ar", label: "Arabic", flag: "🇸🇦" },
+    { code: "hi", label: "Hindi", flag: "🇮🇳" },
+    { code: "ru", label: "Russian", flag: "🇷🇺" },
+  ];
+
+  const filteredLangs = langSearch ? languages.filter(l => l.label.toLowerCase().includes(langSearch.toLowerCase())) : languages;
+  const currentLang = languages.find(l => l.code === activeLang) || languages[0];
+  const themeLabel = activeTheme === "light" ? "Light" : activeTheme === "dark" ? "Dark" : "System";
+  const ThemeIcon = activeTheme === "light" ? Sun : activeTheme === "dark" ? Moon : Monitor;
 
   const handleLogout = () => {
     try { localStorage.removeItem("ra_auth"); localStorage.removeItem("ra_display"); localStorage.removeItem("ra_username"); } catch {}
@@ -814,30 +864,111 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               <ChevronDown className={`w-3.5 h-3.5 text-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
             </button>
             {userMenuOpen && (
-              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[232px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
-                <div className="flex items-center gap-3 px-3.5 py-3 mb-1">
-                  <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{userInitials}</div>
-                  <div>
-                    <div className="text-[0.88rem] font-semibold">{userDisplay}</div>
-                    <div className="text-[0.75rem] text-muted lowercase">@{userHandle}</div>
-                  </div>
-                </div>
-                <div className="h-px bg-foreground/[0.06] my-1" />
-                {userMenuLinks.map(({ icon: Icon, label, to }) => (
-                  <Link key={label} to={to} onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-foreground hover:bg-background transition-colors no-underline">
-                    <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />{label}
-                  </Link>
-                ))}
-                {userMenuSecondary.length > 0 && <div className="h-px bg-foreground/[0.06] my-1" />}
-                {userMenuSecondary.map(({ icon: Icon, label, to }) => (
-                  <Link key={label} to={to} onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.84rem] text-foreground hover:bg-background transition-colors no-underline">
-                    <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />{label}
-                  </Link>
-                ))}
-                <div className="h-px bg-foreground/[0.06] my-1" />
-                <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors">
-                  <LogOut className="w-3.5 h-3.5" /> Log Out
-                </button>
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[232px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400] overflow-hidden">
+                {menuPanel === "main" && (
+                  <>
+                    <div className="flex items-center gap-3 px-3.5 py-3 mb-1">
+                      <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{userInitials}</div>
+                      <div>
+                        <div className="text-[0.88rem] font-semibold">{userDisplay}</div>
+                        <div className="text-[0.75rem] text-muted lowercase">@{userHandle}</div>
+                      </div>
+                    </div>
+                    <div className="h-px bg-foreground/[0.06] my-1" />
+                    {userMenuLinks.map(({ icon: Icon, label, to }) => (
+                      <Link key={label} to={to} onClick={() => { setUserMenuOpen(false); setMenuPanel("main"); }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] text-foreground hover:bg-foreground/[0.05] transition-colors no-underline">
+                        <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />{label}
+                      </Link>
+                    ))}
+                    {userMenuSecondary.length > 0 && <div className="h-px bg-foreground/[0.06] my-1" />}
+                    {userMenuSecondary.map(({ icon: Icon, label, to }) => (
+                      <Link key={label} to={to} onClick={() => { setUserMenuOpen(false); setMenuPanel("main"); }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] text-foreground hover:bg-foreground/[0.05] transition-colors no-underline">
+                        <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />{label}
+                      </Link>
+                    ))}
+                    <div className="h-px bg-foreground/[0.06] my-1" />
+                    {/* Language row */}
+                    <button onClick={() => setMenuPanel("language")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                      <Languages className="w-3.5 h-3.5 text-muted shrink-0" />
+                      <span className="text-[0.84rem]">Language</span>
+                      <span className="ml-auto flex items-center gap-1.5 text-[0.78rem] text-muted">
+                        {currentLang.flag} {currentLang.label}
+                        <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+                      </span>
+                    </button>
+                    {/* Theme row */}
+                    <button onClick={() => setMenuPanel("theme")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                      <ThemeIcon className="w-3.5 h-3.5 text-muted shrink-0" />
+                      <span className="text-[0.84rem]">Theme</span>
+                      <span className="ml-auto flex items-center gap-1.5 text-[0.78rem] text-muted">
+                        {themeLabel}
+                        <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+                      </span>
+                    </button>
+                    <div className="h-px bg-foreground/[0.06] my-1" />
+                    <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors">
+                      <LogOut className="w-3.5 h-3.5" /> Log Out
+                    </button>
+                  </>
+                )}
+
+                {menuPanel === "language" && (
+                  <>
+                    <div className="flex items-center gap-2 px-2 py-2.5">
+                      <button onClick={() => { setMenuPanel("main"); setLangSearch(""); }} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
+                        <ChevronRight className="w-4 h-4 rotate-180" />
+                      </button>
+                      <span className="text-[0.88rem] font-semibold">Language</span>
+                    </div>
+                    <div className="px-2 pb-2">
+                      <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
+                        <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                        <input autoFocus value={langSearch} onChange={e => setLangSearch(e.target.value)} placeholder="Search languages…" className="flex-1 bg-transparent border-none outline-none text-[0.84rem] font-body placeholder:text-muted" />
+                        {langSearch && <button onClick={() => setLangSearch("")}><X className="w-3.5 h-3.5 text-muted" /></button>}
+                      </div>
+                    </div>
+                    <div className="max-h-[280px] overflow-y-auto">
+                      {filteredLangs.length === 0 ? (
+                        <div className="px-3 py-4 text-[0.82rem] text-muted text-center">No languages found</div>
+                      ) : filteredLangs.map(lang => (
+                        <button key={lang.code} onClick={() => { setActiveLang(lang.code); try { localStorage.setItem("ra_lang", lang.code); } catch {} setMenuPanel("main"); setLangSearch(""); }}
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left transition-colors ${activeLang === lang.code ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
+                          <span className="text-base">{lang.flag}</span>
+                          <span className="text-[0.84rem]">{lang.label}</span>
+                          {activeLang === lang.code && <Check className="w-3.5 h-3.5 text-accent shrink-0 ml-auto" />}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {menuPanel === "theme" && (
+                  <>
+                    <div className="flex items-center gap-2 px-2 py-2.5">
+                      <button onClick={() => setMenuPanel("main")} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
+                        <ChevronRight className="w-4 h-4 rotate-180" />
+                      </button>
+                      <span className="text-[0.88rem] font-semibold">Theme</span>
+                    </div>
+                    <div className="flex flex-col gap-1 px-1 pb-1">
+                      {([
+                        { key: "light" as const, icon: Sun, label: "Light", desc: "Always use light mode" },
+                        { key: "dark" as const, icon: Moon, label: "Dark", desc: "Always use dark mode" },
+                        { key: "system" as const, icon: Monitor, label: "System", desc: "Follows your device setting" },
+                      ]).map(opt => (
+                        <button key={opt.key} onClick={() => setTheme(opt.key)}
+                          className={`flex items-center gap-3 px-3 py-3 rounded-xl w-full text-left transition-colors ${activeTheme === opt.key ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
+                          <opt.icon className="w-4 h-4 text-muted shrink-0" />
+                          <div>
+                            <div className="text-[0.84rem] font-medium">{opt.label}</div>
+                            <div className="text-[0.72rem] text-muted">{opt.desc}</div>
+                          </div>
+                          {activeTheme === opt.key && <Check className="w-3.5 h-3.5 text-accent shrink-0 ml-auto" />}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
               </div>
             )}
           </div>
