@@ -6,7 +6,8 @@ import {
   LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
   Megaphone, LayoutGrid, User, Heart, Download, MessageCircle,
   RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
-  Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2
+  Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2,
+  Sun, Moon, Monitor, Languages, ChevronRight
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
