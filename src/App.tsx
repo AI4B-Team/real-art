@@ -42,6 +42,7 @@ import BlogPage from "./pages/BlogPage";
 // Round 5 — Auth + Dashboard
 import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
+import WelcomePage from "./pages/WelcomePage";
 import DashboardPage from "./pages/DashboardPage";
 import DashboardCollectionPage from "./pages/DashboardCollectionPage";
 import AdsPage from "./pages/AdsPage";
