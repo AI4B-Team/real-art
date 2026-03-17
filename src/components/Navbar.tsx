@@ -635,90 +635,6 @@ const Navbar = () => {
         Real<span className="text-accent">.</span>Art
       </Link>
 
-      {/* Desktop Communities dropdown */}
-      {isLoggedIn && (
-        <div className="hidden md:block relative" ref={communitiesRef}>
-          <button
-            onClick={() => setCommunitiesOpen(!communitiesOpen)}
-            className="relative flex items-center gap-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
-          >
-            <Users className="w-3.5 h-3.5 opacity-60" />
-            Communities
-            <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? "rotate-180" : ""}`} />
-          </button>
-          {communitiesOpen && (
-            <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl w-[280px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[500]">
-              <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-foreground/[0.04] mb-2">
-                <Search className="w-3.5 h-3.5 text-muted shrink-0" />
-                <input
-                  value={communitySearch}
-                  onChange={(e) => setCommunitySearch(e.target.value)}
-                  placeholder="Search communities…"
-                  className="flex-1 border-none outline-none bg-transparent text-[0.82rem] font-body"
-                />
-                {communitySearch && (
-                  <button onClick={() => setCommunitySearch("")} className="shrink-0">
-                    <X className="w-3 h-3 text-muted hover:text-foreground" />
-                  </button>
-                )}
-              </div>
-              {(() => {
-                const cq = communitySearch.toLowerCase();
-                const filtered = sortedCommunities.filter(c => !cq || c.name.toLowerCase().includes(cq));
-                const pinnedFiltered = filtered.filter(c => c.pinned);
-                const otherFiltered = filtered.filter(c => !c.pinned);
-                return (
-                  <>
-                    {pinnedFiltered.length > 0 && (
-                      <>
-                        <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Pinned</div>
-                        {pinnedFiltered.map(c => (
-                          <div key={c.id} className="flex items-center gap-1 group rounded-[10px] hover:bg-foreground/[0.04] transition-colors">
-                            <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 px-3.5 py-2.5 no-underline text-foreground">
-                              <Star className="w-3 h-3 text-accent fill-accent shrink-0" />
-                              <span className="text-[0.82rem]">{c.name}</span>
-                            </Link>
-                            {c.newPosts ? <span className="text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">{c.newPosts} new</span> : null}
-                            <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity mr-2" title="Unpin">
-                              <X className="w-3 h-3 text-muted hover:text-foreground" />
-                            </button>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {otherFiltered.length > 0 && (
-                      <>
-                        <div className="px-3 pt-2 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Other Communities</div>
-                        {otherFiltered.map(c => (
-                          <div key={c.id} className="flex items-center gap-1 group rounded-[10px] hover:bg-foreground/[0.04] transition-colors">
-                            <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 px-3.5 py-2.5 no-underline text-foreground">
-                              <span className="text-[0.82rem]">{c.name}</span>
-                            </Link>
-                            {c.newPosts ? <span className="text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">{c.newPosts} new</span> : null}
-                            <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity mr-2" title="Pin">
-                              <Star className="w-3 h-3 text-muted hover:text-accent" />
-                            </button>
-                          </div>
-                        ))}
-                      </>
-                    )}
-                    {filtered.length === 0 && (
-                      <div className="py-4 text-center text-[0.82rem] text-muted">No communities found</div>
-                    )}
-                  </>
-                );
-              })()}
-              <div className="h-px bg-foreground/[0.06] my-1.5" />
-              <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-                <Compass className="w-3.5 h-3.5 opacity-40 shrink-0" /> Browse Communities
-              </Link>
-              <Link to="/communities/create" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
-                <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> Create Community
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Mobile: 🔍 right */}
       <button onClick={() => setMobileSearchOpen(!mobileSearchOpen)} className="md:hidden w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
@@ -727,7 +643,7 @@ const Navbar = () => {
 
       {/* Desktop Center Search */}
       {(!isHomePage || scrolled) && (
-        <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+        <div className="hidden md:flex flex-1 max-w-4xl mx-8">
           <div ref={searchSuggestRef} className="relative w-full flex items-center bg-foreground/[0.06] rounded-lg h-[42px] focus-within:ring-2 focus-within:ring-accent/20">
             {/* Type selector */}
             <div ref={navSearchDropRef} className="relative flex items-center gap-1.5 px-3 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setNavSearchDropOpen(!navSearchDropOpen)}>
