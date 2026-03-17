@@ -6,7 +6,7 @@ import {
   LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
   Megaphone, LayoutGrid, User, Heart, Download, MessageCircle,
   RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
-  Clock, Flame, ArrowUpRight, Hash
+  Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
@@ -71,6 +71,8 @@ const Navbar = () => {
     try { return JSON.parse(localStorage.getItem("ra_recent_searches") || "[]"); } catch { return []; }
   });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const createMenuRef = useRef<HTMLDivElement>(null);
+  const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifs);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifFilter, setNotifFilter] = useState<"all" | "unread">("all");
@@ -146,6 +148,7 @@ const Navbar = () => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
       if (searchSuggestRef.current && !searchSuggestRef.current.contains(e.target as Node)) setSearchSuggestOpen(false);
+      if (createMenuRef.current && !createMenuRef.current.contains(e.target as Node)) setCreateMenuOpen(false);
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
@@ -431,9 +434,62 @@ const Navbar = () => {
       {/* Desktop Right Actions */}
       <div className="hidden md:flex items-center gap-1.5 shrink-0">
         {isLoggedIn && (
-          <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
-            <Upload className="w-3.5 h-3.5" /> Upload Art
-          </Link>
+          <div className="relative" ref={createMenuRef}>
+            <div className="flex items-center">
+              <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-l-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
+                <Upload className="w-3.5 h-3.5" /> Upload Art
+              </Link>
+              <button
+                onClick={() => setCreateMenuOpen(!createMenuOpen)}
+                className="flex items-center justify-center h-[36px] w-[30px] bg-accent text-primary-foreground rounded-r-lg border-l border-primary-foreground/20 hover:bg-accent/85 transition-colors"
+              >
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${createMenuOpen ? "rotate-180" : ""}`} />
+              </button>
+            </div>
+            {createMenuOpen && (
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl w-[280px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[500]">
+                <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Create with AI</div>
+                <Link to="/create?type=image" onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
+                  <div className="w-8 h-8 rounded-lg bg-violet-500/15 flex items-center justify-center shrink-0">
+                    <Wand2 className="w-4 h-4 text-violet-500" />
+                  </div>
+                  <div>
+                    <div className="text-[0.82rem] font-semibold text-foreground">Generate Image</div>
+                    <div className="text-[0.7rem] text-muted">Create with AI prompts</div>
+                  </div>
+                </Link>
+                <Link to="/create?type=video" onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
+                  <div className="w-8 h-8 rounded-lg bg-blue-500/15 flex items-center justify-center shrink-0">
+                    <Film className="w-4 h-4 text-blue-500" />
+                  </div>
+                  <div>
+                    <div className="text-[0.82rem] font-semibold text-foreground">Generate Video</div>
+                    <div className="text-[0.7rem] text-muted">AI-powered video creation</div>
+                  </div>
+                </Link>
+                <Link to="/create?type=music" onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
+                  <div className="w-8 h-8 rounded-lg bg-green-500/15 flex items-center justify-center shrink-0">
+                    <Music2 className="w-4 h-4 text-green-500" />
+                  </div>
+                  <div>
+                    <div className="text-[0.82rem] font-semibold text-foreground">Generate Music</div>
+                    <div className="text-[0.7rem] text-muted">AI music & soundscapes</div>
+                  </div>
+                </Link>
+                <div className="h-px bg-foreground/[0.06] my-1.5" />
+                <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Or bring your own</div>
+                <Link to="/upload" onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
+                  <div className="w-8 h-8 rounded-lg bg-accent/15 flex items-center justify-center shrink-0">
+                    <Upload className="w-4 h-4 text-accent" />
+                  </div>
+                  <div>
+                    <div className="text-[0.82rem] font-semibold text-foreground">Upload Art</div>
+                    <div className="text-[0.7rem] text-muted">Share your own creations</div>
+                  </div>
+                </Link>
+              </div>
+            )}
+          </div>
         )}
 
         {isLoggedIn && (
