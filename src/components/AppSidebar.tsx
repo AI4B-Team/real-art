@@ -98,7 +98,7 @@ const AppSidebar = () => {
 
   const totalSteps = 3;
   const pct = Math.round((onboardDone.length / totalSteps) * 100);
-  const showWidget = isNewUser && !onboardSkipped && onboardDone.length < totalSteps;
+  const showWidget = !onboardSkipped && onboardDone.length < totalSteps;
 
   useEffect(() => {
     const syncOnboard = () => setOnboardState(readOnboardState());
