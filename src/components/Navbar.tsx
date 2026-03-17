@@ -322,7 +322,7 @@ const Navbar = () => {
       {/* Desktop Center Search */}
       {(!isHomePage || scrolled) && (
         <div className="hidden md:flex flex-1 max-w-2xl mx-8">
-          <div className="relative w-full flex items-center bg-foreground/[0.06] rounded-lg h-[42px] focus-within:ring-2 focus-within:ring-accent/20">
+          <div ref={searchSuggestRef} className="relative w-full flex items-center bg-foreground/[0.06] rounded-lg h-[42px] focus-within:ring-2 focus-within:ring-accent/20">
             <div ref={navSearchDropRef} className="relative flex items-center gap-1.5 px-3 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setNavSearchDropOpen(!navSearchDropOpen)}>
               {(() => { const Icon = navSearchType === "Images" ? Image : navSearchType === "Videos" ? Video : Music; return <Icon className="w-3.5 h-3.5 opacity-60" />; })()}
               <span className="text-[0.82rem] font-medium whitespace-nowrap">{navSearchType}</span>
@@ -343,24 +343,87 @@ const Navbar = () => {
               )}
             </div>
             <input
+              ref={searchInputRef}
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={handleKeyDown}
+              onFocus={() => setSearchSuggestOpen(true)}
               placeholder={`Search free ${navSearchType.toLowerCase()}...`}
               className="flex-1 border-none outline-none bg-transparent font-body text-[0.88rem] text-foreground placeholder:text-muted px-3"
             />
             {searchQuery && (
               <button
                 onClick={() => setSearchQuery("")}
-                className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-foreground/10 mr-2 shrink-0"
+                className="w-5 h-5 rounded-full flex items-center justify-center hover:bg-foreground/10 shrink-0"
               >
                 <X className="w-3 h-3 text-muted" />
               </button>
             )}
-            <button onClick={handleSearch} className="shrink-0 mr-2">
-              <Search className="w-4 h-4 text-muted hover:text-foreground transition-colors" />
+            <button
+              onClick={(e) => { e.stopPropagation(); setSearchSuggestOpen(!searchSuggestOpen); searchInputRef.current?.focus(); }}
+              className={`w-8 h-full flex items-center justify-center border-l border-foreground/[0.09] shrink-0 transition-colors ${searchSuggestOpen ? "text-accent" : "text-muted hover:text-foreground"}`}
+            >
+              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${searchSuggestOpen ? "rotate-180" : ""}`} />
             </button>
+
+            {/* Search suggestions dropdown */}
+            {searchSuggestOpen && (
+              <div className="absolute top-[calc(100%+8px)] left-0 right-0 bg-card border border-foreground/[0.08] rounded-2xl shadow-[var(--shadow-card)] p-4 z-[500] animate-drop-in">
+                {/* Recent searches */}
+                {recentSearches.length > 0 && (
+                  <>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-muted">Recent</span>
+                      <button onClick={() => { setRecentSearches([]); try { localStorage.removeItem("ra_recent_searches"); } catch {} }} className="text-[0.68rem] text-muted hover:text-accent transition-colors">
+                        Clear all
+                      </button>
+                    </div>
+                    {recentSearches.slice(0, 4).map(term => (
+                      <div key={term} className="flex items-center group hover:bg-foreground/[0.03] rounded-lg transition-colors">
+                        <button onClick={() => handleSearch(term)} className="flex items-center gap-2.5 flex-1 px-2 py-2 text-left">
+                          <Clock className="w-3.5 h-3.5 text-muted shrink-0 opacity-50" />
+                          <span className="text-[0.82rem]">{term}</span>
+                          <span className="text-[0.68rem] text-muted ml-auto">{navSearchType}</span>
+                        </button>
+                        <button onClick={() => clearRecent(term)} className="mr-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <X className="w-3 h-3 text-muted hover:text-foreground" />
+                        </button>
+                      </div>
+                    ))}
+                    <div className="h-px bg-foreground/[0.06] my-3" />
+                  </>
+                )}
+
+                {/* Trending suggestions */}
+                <div className="flex items-center gap-1.5 mb-2">
+                  <TrendingUp className="w-3 h-3 text-muted" />
+                  <span className="text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-muted">
+                    {searchQuery.trim() ? "Matching ideas" : `Trending ${navSearchType}`}
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-1 mb-3">
+                  {filteredSuggestions.slice(0, 6).map(s => (
+                    <button key={s.label} onClick={() => { setSearchQuery(s.label); handleSearch(s.label); }} className="flex items-center gap-2 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.05] transition-colors text-left group">
+                      <Hash className="w-3 h-3 text-muted opacity-40 shrink-0" />
+                      <span className="text-[0.8rem] truncate">{s.label}</span>
+                      <span className={`text-[0.6rem] font-semibold px-1.5 py-0.5 rounded-md ml-auto shrink-0 ${categoryColors[s.category] || ""}`}>{s.category}</span>
+                    </button>
+                  ))}
+                </div>
+
+                {/* Quick topic pills */}
+                <div className="h-px bg-foreground/[0.06] mb-3" />
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[0.68rem] text-muted font-medium">Try:</span>
+                  {(topicPills[navSearchType] || topicPills["Images"]).map(pill => (
+                    <button key={pill} onClick={() => { setSearchQuery(pill); handleSearch(pill); }} className="text-[0.72rem] font-medium px-3 py-1.5 rounded-lg bg-foreground/[0.05] hover:bg-foreground/[0.1] transition-colors">
+                      {pill}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
