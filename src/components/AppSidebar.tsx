@@ -167,22 +167,17 @@ const AppSidebar = () => {
             const active = isActive(item);
             if (sidebarCollapsed) {
               return (
-                <Tooltip key={item.id}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => navigate("/communities")}
-                      className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                    >
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      {hasNewPosts && !active && (
-                        <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
-                      )}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
-                    <p>Communities</p>
-                  </TooltipContent>
-                </Tooltip>
+                <button
+                  key={item.id}
+                  onClick={() => navigate("/communities")}
+                  className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  title="Communities"
+                >
+                  <item.icon className="w-4 h-4 shrink-0" />
+                  {hasNewPosts && !active && (
+                    <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
+                  )}
+                </button>
               );
             }
             return (
