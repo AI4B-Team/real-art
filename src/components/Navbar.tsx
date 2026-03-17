@@ -739,7 +739,7 @@ const Navbar = () => {
                 <div className="h-px bg-foreground/[0.06] my-1.5" />
                 <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Or bring your own</div>
                 <Link to="/upload" onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
-                  <div className="w-8 h-8 rounded-lg bg-accent/15 flex items-center justify-center shrink-0"><Upload className="w-4 h-4 text-accent" /></div>
+                  <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0"><Upload className="w-4 h-4 text-foreground/60" /></div>
                   <div>
                     <div className="text-[0.82rem] font-semibold text-foreground">Upload Art</div>
                     <div className="text-[0.7rem] text-muted">Images, video, or audio files</div>
