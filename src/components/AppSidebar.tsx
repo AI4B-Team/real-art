@@ -359,24 +359,25 @@ const AppSidebar = () => {
       {/* Onboarding Widget */}
       {showWidget && !sidebarCollapsed && (
         <div className="mt-4 mx-1 mb-4 rounded-2xl border border-accent/20 bg-accent/[0.04] px-3.5 py-3">
-          {/* Single-row header: icon + title + timer + dismiss */}
-          <div className="flex items-center gap-1.5 mb-2.5">
+          {/* Header: icon + title + dismiss */}
+          <div className="flex items-center gap-1.5 mb-1">
             <Zap className="w-3.5 h-3.5 text-accent shrink-0" />
             <span className="text-[0.76rem] font-bold text-foreground whitespace-nowrap">Get 1,000 Free Credits</span>
-            {timeLeft && (
-              <span className="flex items-center gap-1 text-[0.65rem] text-accent font-medium ml-auto shrink-0">
-                <Clock className="w-2.5 h-2.5 text-accent" />
-                {timeLeft}
-              </span>
-            )}
             <button
               onClick={dismissWidget}
-              className="w-5 h-5 rounded-full flex items-center justify-center text-muted/40 hover:text-muted hover:bg-foreground/[0.07] transition-colors shrink-0"
+              className="w-5 h-5 rounded-full flex items-center justify-center text-muted/40 hover:text-muted hover:bg-foreground/[0.07] transition-colors shrink-0 ml-auto"
               title="Dismiss"
             >
               <X className="w-3 h-3" />
             </button>
           </div>
+          {/* Countdown on its own row */}
+          {timeLeft && (
+            <div className="flex items-center gap-1 mb-2.5">
+              <Clock className="w-2.5 h-2.5 text-accent" />
+              <span className="text-[0.65rem] text-accent font-medium">{timeLeft}</span>
+            </div>
+          )}
 
           {/* Progress */}
           <div className="flex items-center justify-between mb-1.5">
