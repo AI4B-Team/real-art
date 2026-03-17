@@ -643,7 +643,7 @@ const Navbar = () => {
 
       {/* Desktop Center Search */}
       {(!isHomePage || scrolled) && (
-        <div className="hidden md:flex flex-1 max-w-2xl mx-8">
+        <div className="hidden md:flex flex-1 max-w-4xl mx-8">
           <div ref={searchSuggestRef} className="relative w-full flex items-center bg-foreground/[0.06] rounded-lg h-[42px] focus-within:ring-2 focus-within:ring-accent/20">
             {/* Type selector */}
             <div ref={navSearchDropRef} className="relative flex items-center gap-1.5 px-3 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setNavSearchDropOpen(!navSearchDropOpen)}>
