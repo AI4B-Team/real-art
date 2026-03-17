@@ -26,6 +26,8 @@ const photoPool = [
 
 const photos = Array.from({ length: 100 }, (_, i) => photoPool[i % photoPool.length]);
 
+const heights = [200, 260, 170, 230, 185, 255, 162, 215, 148, 238, 196, 172, 248, 182, 157, 226, 178, 262, 152, 212];
+
 const isVideo = (i: number) => [3, 7, 14, 22, 31, 38, 45, 53, 62, 71, 78, 85, 93].includes(i);
 
 const badgeMap: Record<number, { label: string; Icon: React.FC<{ className?: string }>; style: string }> = {
@@ -130,11 +132,11 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
 
   return (
     <div className="px-6 md:px-12 pt-2 pb-16">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+      <div className="masonry-grid">
         {itemsWithAds.map((item, i) => {
           if (item.type === "ad") {
             return (
-              <div key={`ad-${item.data.brandName}`} className="aspect-[4/3]">
+              <div key={`ad-${item.data.brandName}`} className="masonry-item mb-3">
                 <SponsoredCard
                   imageUrl={item.data.imageUrl}
                   brandName={item.data.brandName}
@@ -145,28 +147,31 @@ const MasonryGrid = ({ activeFilter = "All" }: MasonryGridProps) => {
             );
           }
           const { photo, index, isVideo: vid } = item.data;
+          const h = heights[index % heights.length];
           return (
-            <Link
-              key={index}
-              to={`/image/${index}`}
-              className="rounded-xl overflow-hidden relative cursor-pointer group no-underline block aspect-[4/3]"
-              style={{ background: "#e0e0de" }}
-            >
-              <img
-                src={`https://images.unsplash.com/${photo}?w=400&h=300&fit=crop&q=78`}
-                alt="AI-Generated Digital Art"
-                loading="lazy"
-                className="w-full h-full object-cover rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
-                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
-              />
-              {vid && (
-                <div className="absolute top-2 left-2 bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.55rem] font-bold tracking-[0.1em] uppercase px-2 py-0.5 rounded-md flex items-center gap-1">
-                  <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
-                  Video
-                </div>
-              )}
-              <ImageCardOverlay index={index} isVideo={vid} />
-            </Link>
+            <div key={index} className="masonry-item mb-3">
+              <Link
+                to={`/image/${index}`}
+                className="rounded-xl overflow-hidden relative cursor-pointer group no-underline block"
+                style={{ background: "#e0e0de" }}
+              >
+                <img
+                  src={`https://images.unsplash.com/${photo}?w=400&h=${h}&fit=crop&q=78`}
+                  alt="AI-Generated Digital Art"
+                  loading="lazy"
+                  className="w-full block rounded-xl transition-transform duration-[350ms] ease-out group-hover:scale-[1.03]"
+                  style={{ height: h, objectFit: "cover" }}
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+                />
+                {vid && (
+                  <div className="absolute top-2 left-2 bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.55rem] font-bold tracking-[0.1em] uppercase px-2 py-0.5 rounded-md flex items-center gap-1">
+                    <svg className="w-2.5 h-2.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+                    Video
+                  </div>
+                )}
+                <ImageCardOverlay index={index} isVideo={vid} />
+              </Link>
+            </div>
           );
         })}
       </div>
