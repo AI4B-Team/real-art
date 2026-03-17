@@ -828,8 +828,10 @@ const Navbar = () => {
 
         {isLoggedIn ? (
           <div className="relative" ref={userMenuRef}>
-            <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-foreground/[0.06] transition-colors ml-1">
+            <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full hover:bg-foreground/[0.06] transition-colors ml-1">
               <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-[0.7rem] font-bold text-accent">{userInitials}</div>
+              <span className="text-[0.82rem] font-medium hidden lg:inline">{userDisplay}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
             </button>
             {userMenuOpen && (
               <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[232px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
