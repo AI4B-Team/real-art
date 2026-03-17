@@ -16,6 +16,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [userOverride, setUserOverride] = useState(false);
+  const { isOpen: quickViewOpen } = useQuickView();
   const location = useLocation();
 
   useEffect(() => {
