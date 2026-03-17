@@ -1,571 +1,605 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useSearchParams, Link } from "react-router-dom";
 import {
-  Sparkles, Image, Video, Music2, Wand2, RefreshCw, Download,
-  ChevronDown, X, Plus, Shuffle, Lock, Check, Copy, Bookmark,
-  Sliders, ArrowRight, Star, Clock, Zap, Film,
+  Image, Video, Music, Palette,
+  Sparkles, Shuffle, Send, Mic, MicOff,
+  ChevronDown, X, Check, Loader2,
+  User, Copy, Hash, Clock, SlidersHorizontal,
+  Play, Pencil, MessageCircle, Move, RefreshCw,
+  Film, BookOpen, Presentation, Star,
+  Download, Bookmark, Zap, ArrowRight,
+  LayoutGrid, Layers, Lock, Package,
+  Headphones, AudioLines, Captions,
+  RatioIcon, Heart,
 } from "lucide-react";
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { useToast } from "@/hooks/use-toast";
 import PageShell from "@/components/PageShell";
 
-type MediaTab = "image" | "video" | "audio";
-
-interface StylePreset {
-  id: string;
-  label: string;
-  preview: string;
-  pro?: boolean;
-}
+type ContentType = "Image" | "Video" | "Audio" | "Design";
 
 interface GeneratedResult {
   id: string;
   prompt: string;
-  type: MediaTab;
+  type: ContentType;
   photo: string;
   model: string;
   liked: boolean;
 }
 
-/* ── Data ── */
-
-const imageStyles: StylePreset[] = [
-  { id: "none", label: "None", preview: "photo-1618005182384-a83a8bd57fbe" },
-  { id: "photorealism", label: "Photorealistic", preview: "photo-1573496359142-b8d87734a5a2" },
-  { id: "cinematic", label: "Cinematic", preview: "photo-1470071459604-3b5ec3a7fe05" },
-  { id: "anime", label: "Anime", preview: "photo-1579546929518-9e396f3cc809" },
-  { id: "concept", label: "Concept Art", preview: "photo-1541701494587-cb58502866ab" },
-  { id: "3d", label: "3D Render", preview: "photo-1604881991720-f91add269bed" },
-  { id: "watercolor", label: "Watercolor", preview: "photo-1462275646964-a0e3386b89fa", pro: true },
-  { id: "oil", label: "Oil Painting", preview: "photo-1501854140801-50d01698950b", pro: true },
+const CONTENT_TYPES = [
+  { key: "Image"  as ContentType, icon: Image,   accentColor: "text-blue-600",    accentBg: "bg-blue-50",    accentBorder: "border-blue-400" },
+  { key: "Video"  as ContentType, icon: Video,   accentColor: "text-red-500",     accentBg: "bg-red-50",     accentBorder: "border-red-400" },
+  { key: "Audio"  as ContentType, icon: Music,   accentColor: "text-emerald-600", accentBg: "bg-emerald-50", accentBorder: "border-emerald-400" },
+  { key: "Design" as ContentType, icon: Palette, accentColor: "text-amber-600",   accentBg: "bg-amber-50",   accentBorder: "border-amber-400" },
 ];
 
-const videoStyles: StylePreset[] = [
-  { id: "none", label: "None", preview: "photo-1557682250-33bd709cbe85" },
-  { id: "loop", label: "Seamless Loop", preview: "photo-1558618666-fcd25c85cd64" },
-  { id: "cinematic", label: "Cinematic", preview: "photo-1470071459604-3b5ec3a7fe05" },
-  { id: "timelapse", label: "Timelapse", preview: "photo-1506905925346-21bda4d32df4", pro: true },
+const IMAGE_MODES  = [{ value:"Create", icon:Sparkles },{ value:"Batch", icon:Layers },{ value:"Draw", icon:Pencil },{ value:"Swap", icon:RefreshCw },{ value:"Photoshoot", icon:Image }];
+const VIDEO_MODES  = [{ value:"Animate", icon:Play },{ value:"Draw", icon:Pencil },{ value:"Lip-Sync", icon:MessageCircle },{ value:"Motion-Sync", icon:Move },{ value:"Avatar Video", icon:User },{ value:"UGC", icon:Video },{ value:"Recast", icon:RefreshCw },{ value:"Story", icon:BookOpen },{ value:"Presentation", icon:Presentation },{ value:"Podcast", icon:Mic }];
+const AUDIO_MODES  = [{ value:"Voiceover", icon:Mic, color:"text-emerald-500" },{ value:"Clone", icon:User, color:"text-blue-500" },{ value:"Revoice", icon:RefreshCw, color:"text-cyan-500" },{ value:"Transcribe", icon:Captions, color:"text-orange-500" },{ value:"Sound Effects", icon:AudioLines, color:"text-red-500" },{ value:"Music", icon:Music, color:"text-pink-500" },{ value:"AudioBook", icon:Headphones, color:"text-blue-500" }];
+const DESIGN_TYPES = [{ value:"Logo", icon:Sparkles },{ value:"Poster", icon:Presentation },{ value:"Thumbnail", icon:Film },{ value:"Flyer", icon:BookOpen },{ value:"Business Card", icon:User },{ value:"Brochure", icon:BookOpen },{ value:"Infographic", icon:LayoutGrid },{ value:"Invitation", icon:Heart }];
+
+const IMAGE_MODELS  = ["Auto","Flux Pro","GPT-4o Image","Imagen 4 Ultra","Seedream 4.0","Grok Imagine"];
+const VIDEO_MODELS  = ["Auto","Veo 3.1 Fast","Veo 3.1 Quality","Kling 2.6","Sora 2","Wan 2.5"];
+const AUDIO_MODELS  = ["Auto","ElevenLabs Turbo","ElevenLabs Multilingual"];
+const DESIGN_MODELS = ["Auto","Flux Pro","GPT-4o Image","Imagen 4 Ultra"];
+
+const ASPECT_RATIOS   = ["1:1","16:9","9:16","4:3","3:4","3:2","2:3"];
+const VIDEO_DURATIONS = ["5s","10s","15s","25s"];
+
+const SAMPLE_PHOTOS = [
+  "photo-1618005182384-a83a8bd57fbe","photo-1557682250-33bd709cbe85",
+  "photo-1604881991720-f91add269bed","photo-1579546929518-9e396f3cc809",
+  "photo-1541701494587-cb58502866ab","photo-1470071459604-3b5ec3a7fe05",
 ];
 
-const audioStyles: StylePreset[] = [
-  { id: "lofi", label: "Lo-Fi", preview: "photo-1511379938547-c1f69419868d" },
-  { id: "ambient", label: "Ambient", preview: "photo-1470225620780-dba8ba36b745" },
-  { id: "cinematic", label: "Cinematic", preview: "photo-1493225457124-a3eb161ffa5f" },
-  { id: "electronic", label: "Electronic", preview: "photo-1571974599782-87624638275d" },
-  { id: "acoustic", label: "Acoustic", preview: "photo-1468421870903-4df1664ac249", pro: true },
-  { id: "orchestral", label: "Orchestral", preview: "photo-1507838153414-b4b713384a76", pro: true },
-];
+const PLACEHOLDERS: Record<ContentType,string> = {
+  Image:  "A lone astronaut standing on a neon-lit alien world, photorealistic, golden hour…",
+  Video:  "Camera slowly pushes into a cyberpunk cityscape at night, neon reflections in puddles…",
+  Audio:  "Chill lo-fi beats with soft piano, gentle vinyl crackle, and distant city ambience…",
+  Design: "Minimalist luxury brand logo for a high-end fashion house, gold on black…",
+};
 
-const imageModels = ["DALL-E 3", "Stable Diffusion XL", "Midjourney v6", "Flux Pro", "Adobe Firefly"];
-const videoModels = ["Sora", "Runway Gen-3", "Kling AI", "Pika Labs"];
-const audioModels = ["Suno v4", "Udio", "AudioCraft", "Stability Audio"];
+const EXAMPLES: Record<ContentType,string[]> = {
+  Image: ["A lone astronaut on a neon-lit alien planet at golden hour, photorealistic","Hyperrealistic portrait with bioluminescent tattoos, studio lighting","Cyberpunk street market at midnight, rain-soaked cobblestones, neon signs"],
+  Video: ["Camera slowly pushes into a cyberpunk cityscape at night, neon reflections","Underwater bioluminescent jellyfish drifting in dark water, seamless loop","Time-lapse of storm clouds rolling over mountain peaks at sunset"],
+  Audio: ["Chill lo-fi beats with soft piano, gentle vinyl crackle, city ambience","Cinematic orchestral swell building to an epic climax, 60 BPM, full strings","Dark ambient soundscape with distant thunder, metallic drones, slow pulse"],
+  Design: ["Minimalist luxury logo for a high-end fashion house, gold on black","Bold modernist poster for an art exhibition, geometric shapes, red accent","Clean tech startup business card, midnight blue and electric teal"],
+};
 
-const imageSizes = ["1:1 Square", "16:9 Landscape", "9:16 Portrait", "4:3 Standard", "3:2 Photo", "2:3 Tall"];
-const videoLengths = ["3 seconds", "5 seconds", "10 seconds", "15 seconds", "30 seconds"];
-const audioDurations = ["15 seconds", "30 seconds", "1 minute", "2 minutes", "5 minutes"];
+function useSpeech(onResult: (t: string) => void) {
+  const [isListening, setIsListening] = useState(false);
+  const [isSupported] = useState(() => typeof window !== "undefined" && ("webkitSpeechRecognition" in window || "SpeechRecognition" in window));
+  const recogRef = useRef<any>(null);
 
-const imagePlaceholders = [
-  "A lone astronaut standing on a neon-lit alien world, photorealistic, golden hour…",
-  "Abstract fluid painting in deep indigo and molten gold, 8K ultra-detailed…",
-  "Cyberpunk street market at midnight, rain-soaked cobblestones, neon signs…",
-  "Hyperrealistic portrait of a woman with bioluminescent tattoos, studio lighting…",
-  "Ancient temple ruins overgrown with glowing crystal formations, misty dawn…",
-];
-const videoPlaceholders = [
-  "Camera slowly pushes in on a cyberpunk cityscape at night, neon lights reflected in puddles…",
-  "Underwater footage of bioluminescent jellyfish drifting in dark water, seamless loop…",
-  "Time-lapse of storm clouds rolling over mountain peaks at sunset, wide angle…",
-];
-const audioPlaceholders = [
-  "Chill lo-fi beats with soft piano, gentle vinyl crackle, and distant city ambience…",
-  "Cinematic orchestral swell building to an epic climax, 60 BPM, full strings and brass…",
-  "Dark ambient soundscape with distant thunder, metallic drones, and slow pulse…",
-];
+  const startListening = useCallback(() => {
+    const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SR) return;
+    const r = new SR();
+    r.continuous = false;
+    r.interimResults = false;
+    r.onresult = (e: any) => { onResult(e.results[0][0].transcript); setIsListening(false); };
+    r.onerror = () => setIsListening(false);
+    r.onend   = () => setIsListening(false);
+    recogRef.current = r;
+    r.start();
+    setIsListening(true);
+  }, [onResult]);
 
-const recentPrompts = [
-  "cyberpunk city at night, neon reflections",
-  "abstract fluid painting, indigo and gold",
-  "bioluminescent forest, ethereal glow",
-];
+  const stopListening = useCallback(() => { recogRef.current?.stop(); setIsListening(false); }, []);
+  return { isListening, isSupported, startListening, stopListening };
+}
 
-const sampleResults: GeneratedResult[] = [
-  { id: "r1", prompt: "Cosmic dreamscape, swirling nebula, deep purple and gold", type: "image", photo: "photo-1618005182384-a83a8bd57fbe", model: "DALL-E 3", liked: false },
-  { id: "r2", prompt: "Neon city boulevard at midnight, rain-soaked streets", type: "image", photo: "photo-1557682250-33bd709cbe85", model: "Stable Diffusion XL", liked: true },
-  { id: "r3", prompt: "Dark fantasy landscape, ancient ruins glowing amber", type: "image", photo: "photo-1541701494587-cb58502866ab", model: "Flux Pro", liked: false },
-  { id: "r4", prompt: "AI avatar portrait, cyberpunk style, neon face paint", type: "image", photo: "photo-1579546929518-9e396f3cc809", model: "Midjourney v6", liked: false },
-];
+/* ─── GenerationInput ────────────────────────────────────────── */
 
-/* ── Style Grid Component ── */
-const StyleGrid = ({ styles, selected, onSelect }: { styles: StylePreset[]; selected: string; onSelect: (id: string) => void }) => (
-  <div className="grid grid-cols-4 gap-2">
-    {styles.map(s => (
-      <button
-        key={s.id}
-        onClick={() => !s.pro && onSelect(s.id)}
-        className={`relative rounded-xl overflow-hidden border-2 transition-all ${
-          selected === s.id ? "border-accent shadow-[0_0_0_1px_hsl(var(--accent))]" : "border-transparent hover:border-foreground/20"
-        } ${s.pro ? "opacity-60 cursor-not-allowed" : "cursor-pointer"}`}
-      >
-        <img
-          src={`https://images.unsplash.com/${s.preview}?w=120&h=120&fit=crop&q=60`}
-          alt={s.label}
-          className="w-full aspect-square object-cover"
-        />
-        {s.pro && (
-          <div className="absolute top-1 right-1 bg-foreground/80 text-primary-foreground text-[0.55rem] font-bold px-1.5 py-0.5 rounded-md flex items-center gap-0.5">
-            <Lock className="w-2.5 h-2.5" /> PRO
-          </div>
-        )}
-        {selected === s.id && (
-          <div className="absolute inset-0 bg-accent/20 flex items-center justify-center">
-            <Check className="w-5 h-5 text-white drop-shadow-md" />
-          </div>
-        )}
-        <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/60 to-transparent px-1.5 pb-1 pt-3">
-          <span className="text-[0.62rem] font-semibold text-white">{s.label}</span>
-        </div>
-      </button>
-    ))}
-  </div>
-);
-
-/* ── Main Component ── */
-const CreatePage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const initialType = (searchParams.get("type") || "image") as MediaTab;
-  const [activeTab, setActiveTab] = useState<MediaTab>(initialType);
-  const [prompt, setPrompt] = useState("");
-  const [negPrompt, setNegPrompt] = useState("");
-  const [showNeg, setShowNeg] = useState(false);
-  const [selectedStyle, setSelectedStyle] = useState("none");
-  const [selectedModel, setSelectedModel] = useState("");
-  const [selectedSize, setSelectedSize] = useState("");
-  const [outputCount, setOutputCount] = useState(4);
-  const [quality, setQuality] = useState<"draft" | "standard" | "hd">("standard");
-  const [generating, setGenerating] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [results, setResults] = useState<GeneratedResult[]>([]);
-  const [copied, setCopied] = useState<string | null>(null);
-  const [likedResults, setLikedResults] = useState<Set<string>>(new Set());
+function GenerationInput({ selectedType, onGenerationStart }: { selectedType: ContentType; onGenerationStart?: (r: GeneratedResult[]) => void }) {
+  const { toast } = useToast();
+  const [prompt,         setPrompt]         = useState("");
+  const [isGenerating,   setIsGenerating]   = useState(false);
+  const [imageMode,      setImageMode]      = useState("");
+  const [videoMode,      setVideoMode]      = useState("");
+  const [audioMode,      setAudioMode]      = useState<string|null>(null);
+  const [designType,     setDesignType]     = useState("");
+  const [selectedModel,  setSelectedModel]  = useState("Auto");
+  const [aspectRatio,    setAspectRatio]    = useState("1:1");
+  const [videoDuration,  setVideoDuration]  = useState("10s");
+  const [numberOfImages, setNumberOfImages] = useState(1);
+  const [modelOpen,      setModelOpen]      = useState(false);
+  const [ratioOpen,      setRatioOpen]      = useState(false);
+  const [numberOpen,     setNumberOpen]     = useState(false);
+  const [durationOpen,   setDurationOpen]   = useState(false);
+  const [imageModeOpen,  setImageModeOpen]  = useState(false);
+  const [videoModeOpen,  setVideoModeOpen]  = useState(false);
+  const [audioModeOpen,  setAudioModeOpen]  = useState(false);
+  const [designTypeOpen, setDesignTypeOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Update URL when tab changes
   useEffect(() => {
-    setSearchParams({ type: activeTab }, { replace: true });
-    setSelectedStyle("none");
-    setSelectedModel("");
-    setSelectedSize("");
-    setPrompt("");
-  }, [activeTab]);
+    setImageMode(""); setVideoMode(""); setAudioMode(null); setDesignType("");
+    setSelectedModel("Auto"); setPrompt("");
+  }, [selectedType]);
 
-  // Default model + size per tab
-  useEffect(() => {
-    if (activeTab === "image") { setSelectedModel(imageModels[0]); setSelectedSize(imageSizes[0]); }
-    if (activeTab === "video") { setSelectedModel(videoModels[0]); setSelectedSize(videoLengths[0]); }
-    if (activeTab === "audio") { setSelectedModel(audioModels[0]); setSelectedSize(audioDurations[0]); }
-  }, [activeTab]);
-
-  const currentStyles = activeTab === "image" ? imageStyles : activeTab === "video" ? videoStyles : audioStyles;
-  const currentModels = activeTab === "image" ? imageModels : activeTab === "video" ? videoModels : audioModels;
-  const currentSizes = activeTab === "image" ? imageSizes : activeTab === "video" ? videoLengths : audioDurations;
-  const currentPlaceholders = activeTab === "image" ? imagePlaceholders : activeTab === "video" ? videoPlaceholders : audioPlaceholders;
+  const currentModels =
+    selectedType === "Image"  ? IMAGE_MODELS  :
+    selectedType === "Video"  ? VIDEO_MODELS  :
+    selectedType === "Audio"  ? AUDIO_MODELS  :
+    DESIGN_MODELS;
 
   const handleShuffle = () => {
-    const p = currentPlaceholders[Math.floor(Math.random() * currentPlaceholders.length)];
-    setPrompt(p);
+    const list = EXAMPLES[selectedType];
+    setPrompt(list[Math.floor(Math.random() * list.length)]);
     textareaRef.current?.focus();
   };
 
   const handleGenerate = async () => {
-    if (!prompt.trim()) { textareaRef.current?.focus(); return; }
-    setGenerating(true);
-    setProgress(0);
-    setResults([]);
-
-    const interval = setInterval(() => {
-      setProgress(p => {
-        if (p >= 92) { clearInterval(interval); return 92; }
-        return p + Math.random() * 12;
-      });
-    }, 200);
-    await new Promise(r => setTimeout(r, 2800));
-    clearInterval(interval);
-    setProgress(100);
-
-    const photos = [
-      "photo-1618005182384-a83a8bd57fbe", "photo-1557682250-33bd709cbe85",
-      "photo-1604881991720-f91add269bed", "photo-1579546929518-9e396f3cc809",
-      "photo-1541701494587-cb58502866ab", "photo-1470071459604-3b5ec3a7fe05",
-    ];
-    const generated: GeneratedResult[] = Array.from({ length: outputCount }).map((_, i) => ({
-      id: `gen-${Date.now()}-${i}`,
-      prompt,
-      type: activeTab,
-      photo: photos[i % photos.length],
-      model: selectedModel,
-      liked: false,
+    if (!prompt.trim()) { textareaRef.current?.focus(); toast({ title: "Add a prompt first" }); return; }
+    setIsGenerating(true);
+    await new Promise(r => setTimeout(r, 2200));
+    const generated: GeneratedResult[] = Array.from({ length: numberOfImages }).map((_,i) => ({
+      id: `gen-${Date.now()}-${i}`, prompt, type: selectedType,
+      photo: SAMPLE_PHOTOS[i % SAMPLE_PHOTOS.length],
+      model: selectedModel, liked: false,
     }));
+    setIsGenerating(false);
+    onGenerationStart?.(generated);
+    toast({ title: "Created!", description: `${numberOfImages} ${selectedType.toLowerCase()}${numberOfImages > 1 ? "s" : ""} generated.` });
+  };
 
-    setTimeout(() => {
-      setResults(generated);
-      setGenerating(false);
-    }, 400);
+  const handleEnhance = async () => {
+    if (!prompt.trim()) return;
+    toast({ title: "Enhancing prompt…" });
+    await new Promise(r => setTimeout(r, 1000));
+    setPrompt(p => p.trimEnd() + ", ultra detailed, professional quality, award-winning composition.");
+    toast({ title: "Enhanced!" });
+  };
+
+  const handleSpeechResult = useCallback((t: string) => setPrompt(t), []);
+  const { isListening, isSupported, startListening, stopListening } = useSpeech(handleSpeechResult);
+
+  const CategoryIcon = selectedType === "Image" ? Image : selectedType === "Video" ? Video : selectedType === "Audio" ? Music : Palette;
+  const categoryColor = selectedType === "Image" ? "text-blue-600" : selectedType === "Video" ? "text-red-500" : selectedType === "Audio" ? "text-emerald-600" : "text-amber-600";
+  const borderColor   = selectedType === "Image" ? "border-blue-400" : selectedType === "Video" ? "border-red-400" : selectedType === "Audio" ? "border-emerald-500" : "border-amber-400";
+  const hasMode = imageMode || videoMode || audioMode || designType;
+
+  const ModeSelector = () => {
+    if (selectedType === "Image") return (
+      <Popover open={imageModeOpen} onOpenChange={setImageModeOpen}>
+        <PopoverTrigger asChild>
+          <button className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm font-semibold border transition-all ${imageMode ? "bg-blue-50 text-blue-700 border-blue-300" : "bg-foreground/[0.04] text-muted border-foreground/10 hover:border-foreground/25 hover:text-foreground"}`}>
+            <LayoutGrid size={14} />
+            {imageMode || "Type"}
+            {imageMode ? <X size={12} className="text-blue-500" onClick={e=>{e.stopPropagation();setImageMode("");}} /> : <ChevronDown size={12}/>}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-44 p-1.5" align="start">
+          {IMAGE_MODES.map(m=>(
+            <button key={m.value} onClick={()=>{setImageMode(m.value);setImageModeOpen(false);}}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${imageMode===m.value?"bg-blue-50 text-blue-700":"hover:bg-foreground/[0.04] text-foreground"}`}>
+              <m.icon size={14}/>{m.value}{imageMode===m.value&&<Check size={13} className="ml-auto text-blue-600"/>}
+            </button>
+          ))}
+        </PopoverContent>
+      </Popover>
+    );
+
+    if (selectedType === "Video") return (
+      <Popover open={videoModeOpen} onOpenChange={setVideoModeOpen}>
+        <PopoverTrigger asChild>
+          <button className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm font-semibold border transition-all ${videoMode ? "bg-red-50 text-red-700 border-red-300" : "bg-foreground/[0.04] text-muted border-foreground/10 hover:border-foreground/25 hover:text-foreground"}`}>
+            <LayoutGrid size={14}/>
+            {videoMode || "Type"}
+            {videoMode ? <X size={12} className="text-red-500" onClick={e=>{e.stopPropagation();setVideoMode("");}} /> : <ChevronDown size={12}/>}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-48 p-1.5" align="start">
+          {VIDEO_MODES.map(m=>(
+            <button key={m.value} onClick={()=>{setVideoMode(m.value);setVideoModeOpen(false);}}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${videoMode===m.value?"bg-red-50 text-red-700":"hover:bg-foreground/[0.04] text-foreground"}`}>
+              <m.icon size={14}/>{m.value}{videoMode===m.value&&<Check size={13} className="ml-auto text-red-600"/>}
+            </button>
+          ))}
+        </PopoverContent>
+      </Popover>
+    );
+
+    if (selectedType === "Audio") return (
+      <Popover open={audioModeOpen} onOpenChange={setAudioModeOpen}>
+        <PopoverTrigger asChild>
+          <button className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm font-semibold border transition-all ${audioMode ? "bg-emerald-50 text-emerald-700 border-emerald-300" : "bg-foreground/[0.04] text-muted border-foreground/10 hover:border-foreground/25 hover:text-foreground"}`}>
+            <LayoutGrid size={14}/>
+            {audioMode || "Type"}
+            {audioMode ? <X size={12} className="text-emerald-600" onClick={e=>{e.stopPropagation();setAudioMode(null);}} /> : <ChevronDown size={12}/>}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-52 p-3" align="start">
+          <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
+            {AUDIO_MODES.map(m=>(
+              <button key={m.value} onClick={()=>{setAudioMode(m.value);setAudioModeOpen(false);}}
+                className={`flex items-center gap-2 py-1.5 text-sm transition-colors ${audioMode===m.value?"text-emerald-700 font-semibold":"text-foreground hover:opacity-70"}`}>
+                <m.icon size={14} className={m.color}/>{m.value}
+              </button>
+            ))}
+          </div>
+        </PopoverContent>
+      </Popover>
+    );
+
+    return (
+      <Popover open={designTypeOpen} onOpenChange={setDesignTypeOpen}>
+        <PopoverTrigger asChild>
+          <button className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-sm font-semibold border transition-all ${designType ? "bg-amber-50 text-amber-700 border-amber-300" : "bg-foreground/[0.04] text-muted border-foreground/10 hover:border-foreground/25 hover:text-foreground"}`}>
+            <LayoutGrid size={14}/>
+            {designType || "Type"}
+            {designType ? <X size={12} className="text-amber-600" onClick={e=>{e.stopPropagation();setDesignType("");}} /> : <ChevronDown size={12}/>}
+          </button>
+        </PopoverTrigger>
+        <PopoverContent className="w-48 p-1.5" align="start">
+          {DESIGN_TYPES.map(m=>(
+            <button key={m.value} onClick={()=>{setDesignType(m.value);setDesignTypeOpen(false);}}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${designType===m.value?"bg-amber-50 text-amber-700":"hover:bg-foreground/[0.04] text-foreground"}`}>
+              <m.icon size={14}/>{m.value}{designType===m.value&&<Check size={13} className="ml-auto text-amber-600"/>}
+            </button>
+          ))}
+        </PopoverContent>
+      </Popover>
+    );
+  };
+
+  return (
+    <TooltipProvider>
+      <div className="w-full max-w-[860px] mx-auto mb-10">
+        <div className={`relative bg-white border-2 ${borderColor} rounded-2xl shadow-sm overflow-hidden`}>
+          {/* Top: icons + textarea */}
+          <div className="flex items-start gap-3 p-5 pb-2">
+            <div className="flex flex-col items-center gap-2 pt-0.5 shrink-0">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="p-1.5 hover:opacity-70 transition" onClick={handleShuffle}>
+                    <CategoryIcon size={19} className={categoryColor} strokeWidth={2.2}/>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Auto Prompt</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="p-1.5 hover:opacity-70 transition" onClick={handleShuffle}>
+                    <Shuffle size={17} className="text-emerald-500" strokeWidth={2.2}/>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Inspire Me</TooltipContent>
+              </Tooltip>
+            </div>
+            <div className="flex-1 relative">
+              <textarea
+                ref={textareaRef}
+                value={prompt}
+                onChange={e => setPrompt(e.target.value)}
+                onKeyDown={e => { if(e.key==="Enter" && (e.metaKey||e.ctrlKey)) handleGenerate(); }}
+                placeholder={PLACEHOLDERS[selectedType]}
+                className="w-full h-[115px] bg-transparent border-none outline-none resize-none text-[0.94rem] text-foreground placeholder:text-muted/50 leading-[1.65] font-body pt-0.5"
+              />
+              {prompt && (
+                <button onClick={()=>setPrompt("")} className="absolute top-1 right-0 text-muted hover:text-foreground transition">
+                  <X size={14}/>
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="px-5 pb-2">
+            <span className="text-[0.68rem] text-muted/40">{prompt.length}/1000 · ⌘↵ to generate</span>
+          </div>
+
+          {/* Bottom bar */}
+          <div className="border-t border-foreground/[0.06] px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
+            {/* Left */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <ModeSelector/>
+
+              {hasMode && <div className="w-px h-6 bg-foreground/10"/>}
+
+              {/* Model */}
+              <Popover open={modelOpen} onOpenChange={setModelOpen}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <PopoverTrigger asChild>
+                      <button className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${selectedModel!=="Auto"?"bg-purple-50 text-purple-700":"bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Zap size={13}/>{selectedModel}
+                      </button>
+                    </PopoverTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>Model</TooltipContent>
+                </Tooltip>
+                <PopoverContent className="w-52 p-1.5" align="start">
+                  {currentModels.map(m=>(
+                    <button key={m} onClick={()=>{setSelectedModel(m);setModelOpen(false);}}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedModel===m?"bg-foreground text-primary-foreground":"hover:bg-foreground/[0.04] text-foreground"}`}>
+                      {m}{selectedModel===m&&<Check size={13}/>}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+
+              {/* Character */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="p-2 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors"
+                    onClick={()=>toast({title:"Characters",description:"Select an AI character to feature in your creation."})}>
+                    <User size={15}/>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Character</TooltipContent>
+              </Tooltip>
+
+              {/* Reference */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button className="p-2 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors"
+                    onClick={()=>toast({title:"References",description:"Upload reference images to guide your generation."})}>
+                    <Copy size={15}/>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Reference</TooltipContent>
+              </Tooltip>
+
+              {/* Ratio — Image & Design */}
+              {(selectedType==="Image"||selectedType==="Design") && (
+                <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverTrigger asChild>
+                        <button className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${aspectRatio!=="1:1"?"bg-amber-50 text-amber-700":"bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <RatioIcon size={13}/>
+                          {aspectRatio!=="1:1"&&<span>{aspectRatio}</span>}
+                        </button>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Ratio</TooltipContent>
+                  </Tooltip>
+                  <PopoverContent className="w-40 p-1.5" align="start">
+                    {ASPECT_RATIOS.map(r=>(
+                      <button key={r} onClick={()=>{setAspectRatio(r);setRatioOpen(false);}}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${aspectRatio===r?"bg-foreground text-primary-foreground":"hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {r}{aspectRatio===r&&<Check size={13}/>}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+              )}
+
+              {/* Duration — Video */}
+              {selectedType==="Video" && (
+                <Popover open={durationOpen} onOpenChange={setDurationOpen}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverTrigger asChild>
+                        <button className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                          <Clock size={13}/>{videoDuration}
+                        </button>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Duration</TooltipContent>
+                  </Tooltip>
+                  <PopoverContent className="w-32 p-1.5" align="start">
+                    {VIDEO_DURATIONS.map(d=>(
+                      <button key={d} onClick={()=>{setVideoDuration(d);setDurationOpen(false);}}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${videoDuration===d?"bg-foreground text-primary-foreground":"hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {d}{videoDuration===d&&<Check size={13}/>}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+              )}
+
+              {/* Number — Image & Design */}
+              {(selectedType==="Image"||selectedType==="Design") && (
+                <Popover open={numberOpen} onOpenChange={setNumberOpen}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <PopoverTrigger asChild>
+                        <button className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${numberOfImages!==1?"bg-red-50 text-red-600":"bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Hash size={13}/>{numberOfImages!==1&&<span>{numberOfImages}</span>}
+                        </button>
+                      </PopoverTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>Count</TooltipContent>
+                  </Tooltip>
+                  <PopoverContent className="w-36 p-1.5" align="start">
+                    {[1,2,3,4].map(n=>(
+                      <button key={n} onClick={()=>{setNumberOfImages(n);setNumberOpen(false);}}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${numberOfImages===n?"bg-foreground text-primary-foreground":"hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {n} {n===1?"output":"outputs"}{numberOfImages===n&&<Check size={13}/>}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+              )}
+
+              {/* Quality knob — Audio */}
+              {selectedType==="Audio" && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button className="p-2 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors"
+                      onClick={()=>toast({title:"Quality",description:"Adjust audio generation quality settings."})}>
+                      <SlidersHorizontal size={15}/>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Quality</TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-2">
+              {prompt.trim() && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={handleEnhance}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.05] text-muted hover:text-foreground text-sm font-medium transition-colors">
+                      <Sparkles size={14} className="text-purple-500"/>AI
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Enhance Prompt</TooltipContent>
+                </Tooltip>
+              )}
+
+              {isSupported && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={isListening ? stopListening : startListening}
+                      className={`p-2 rounded-lg text-sm transition-colors ${isListening?"bg-red-50 text-red-500 animate-pulse":"bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      {isListening ? <MicOff size={16}/> : <Mic size={16}/>}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>{isListening?"Stop":"Speak"}</TooltipContent>
+                </Tooltip>
+              )}
+
+              <button onClick={handleGenerate} disabled={isGenerating||!prompt.trim()}
+                className="flex items-center gap-2 px-5 py-2 rounded-xl bg-accent text-white text-sm font-bold hover:bg-accent/85 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                {isGenerating ? (<><Loader2 size={14} className="animate-spin"/>Generating…</>) : (<><Send size={14}/>Generate</>)}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </TooltipProvider>
+  );
+}
+
+/* ─── Main Page ──────────────────────────────────────────────── */
+
+const CreatePage = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialType = searchParams.get("type") as ContentType | null;
+  const [selectedType, setSelectedType] = useState<ContentType | null>(initialType);
+  const [results, setResults] = useState<GeneratedResult[]>([]);
+  const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
+  const [copied, setCopied] = useState<string | null>(null);
+
+  const handleTypeChange = (t: ContentType) => {
+    setSelectedType(t);
+    setResults([]);
+    setSearchParams({ type: t }, { replace: true });
   };
 
   const toggleLike = (id: string) => {
-    setLikedResults(prev => {
-      const next = new Set(prev);
-      if (next.has(id)) next.delete(id); else next.add(id);
-      return next;
-    });
+    setLikedIds(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n; });
   };
 
   const copyPrompt = (text: string) => {
-    navigator.clipboard.writeText(text).catch(() => {});
+    navigator.clipboard.writeText(text).catch(()=>{});
     setCopied(text);
-    setTimeout(() => setCopied(null), 2000);
+    setTimeout(()=>setCopied(null), 1800);
   };
 
   return (
     <PageShell>
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-8">
+      <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-10">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-6">
+        <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-8">
           <Link to="/" className="hover:text-foreground transition-colors no-underline text-muted">Home</Link>
           <span className="opacity-30">/</span>
           <span className="text-foreground font-medium">Create</span>
         </div>
 
-        {/* Header */}
-        <div className="flex items-start justify-between mb-8">
-          <div>
-            <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.1] mb-2">Create with AI</h1>
-            <p className="text-[0.88rem] text-muted">Describe what you want. Our AI handles the rest.</p>
-          </div>
-          <button className="flex items-center gap-2 text-[0.8rem] font-medium text-muted hover:text-foreground transition-colors">
-            <Clock className="w-3.5 h-3.5" />Recent generations
-          </button>
+        {/* Headline */}
+        <div className="text-center mb-8">
+          <h1 className="font-display text-[2.2rem] md:text-[2.8rem] font-black tracking-[-0.03em] leading-[1.08] mb-3">
+            What Do You Want To Create Today?
+          </h1>
+          <p className="text-[0.9rem] text-muted">Describe your vision. Our AI handles the rest.</p>
         </div>
 
-        {/* Tabs */}
-        <div className="flex items-center gap-2 mb-8">
-          {([
-            { tab: "image" as MediaTab, icon: Image, label: "Image" },
-            { tab: "video" as MediaTab, icon: Film, label: "Video" },
-            { tab: "audio" as MediaTab, icon: Music2, label: "Audio" },
-          ]).map(({ tab, icon: Icon, label }) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-[0.84rem] font-semibold border transition-all ${
-                activeTab === tab
-                  ? "bg-foreground text-primary-foreground border-foreground shadow-lg"
-                  : "border-foreground/[0.12] text-muted hover:text-foreground hover:border-foreground/30"
-              }`}
-            >
-              <Icon className="w-4 h-4" /> {label}
+        {/* Pills */}
+        <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+          {CONTENT_TYPES.map(({ key, icon: Icon, accentColor, accentBg, accentBorder }) => (
+            <button key={key} onClick={() => handleTypeChange(key)}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold border transition-all ${
+                selectedType === key
+                  ? `${accentBg} ${accentBorder} ${accentColor}`
+                  : "bg-white border-foreground/[0.12] text-muted hover:text-foreground hover:border-foreground/30"
+              }`}>
+              <Icon size={15} className={selectedType === key ? accentColor : "text-muted"}/>
+              {key}
             </button>
           ))}
         </div>
 
-        {/* Main layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
-          {/* Left column — Prompt + Results */}
-          <div className="space-y-6">
-            {/* Prompt area */}
-            <div className="border border-foreground/[0.08] rounded-2xl bg-card overflow-hidden">
-              <div className="flex items-center gap-2 px-5 pt-4 pb-2">
-                <Sparkles className="w-4 h-4 text-accent" />
-                <span className="text-[0.82rem] font-semibold">
-                  Describe your {activeTab}
-                </span>
-              </div>
+        {/* Prompt box */}
+        {selectedType && (
+          <GenerationInput
+            selectedType={selectedType}
+            onGenerationStart={r => { setResults(r); window.scrollTo({ top: 500, behavior: "smooth" }); }}
+          />
+        )}
 
-              {/* Recent prompts */}
-              <div className="flex items-center gap-2 px-5 pb-3 overflow-x-auto">
-                <span className="text-[0.72rem] text-muted shrink-0">Recent:</span>
-                {recentPrompts.map((rp, i) => (
-                  <button key={i} onClick={() => { setPrompt(rp); textareaRef.current?.focus(); }}
-                    className="text-[0.72rem] font-medium px-2.5 py-1 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground hover:bg-foreground/[0.07] transition-colors shrink-0 truncate max-w-[180px]">
-                    {rp}
-                  </button>
-                ))}
-                <button onClick={handleShuffle} className="flex items-center gap-1 text-[0.72rem] font-medium px-2.5 py-1 rounded-lg text-accent hover:bg-accent/10 transition-colors shrink-0">
-                  <Shuffle className="w-3.5 h-3.5" /> Inspire me
-                </button>
-              </div>
-
-              <textarea
-                ref={textareaRef}
-                value={prompt}
-                onChange={e => setPrompt(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
-                placeholder={currentPlaceholders[0]}
-                rows={5}
-                className="w-full px-5 pt-4 pb-3 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 font-body leading-[1.7]"
-              />
-              <div className="flex items-center justify-between px-5 pb-4">
-                <span className="text-[0.7rem] text-muted/50">{prompt.length}/1000 · ⌘↵ to generate</span>
-                {prompt && (
-                  <button onClick={() => setPrompt("")} className="text-muted hover:text-foreground transition-colors">
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Negative prompt toggle */}
-              <div className="border-t border-foreground/[0.05]">
-                <button onClick={() => setShowNeg(!showNeg)} className="flex items-center gap-2 px-5 py-3 text-[0.76rem] font-medium text-muted hover:text-foreground transition-colors w-full text-left">
-                  <Plus className={`w-3.5 h-3.5 transition-transform ${showNeg ? "rotate-45" : ""}`} />
-                  {showNeg ? "Hide" : "Add"} negative prompt
-                  <span className="text-[0.68rem] text-muted/50 ml-1">(things to avoid)</span>
-                </button>
-                {showNeg && (
-                  <div className="px-5 pb-4">
-                    <textarea
-                      value={negPrompt}
-                      onChange={e => setNegPrompt(e.target.value)}
-                      placeholder="blurry, low quality, watermark, text, distorted faces…"
-                      rows={2}
-                      className="w-full bg-background/60 border border-foreground/[0.08] rounded-xl px-4 py-3 text-[0.84rem] placeholder:text-muted/40 outline-none focus:border-foreground/20 transition-colors resize-none"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* Generate button */}
-              <div className="border-t border-foreground/[0.06] px-5 py-4 flex items-center gap-3">
-                <button
-                  onClick={handleGenerate}
-                  disabled={generating || !prompt.trim()}
-                  className="flex-1 flex items-center justify-center gap-2 bg-accent text-primary-foreground py-3 rounded-xl text-[0.88rem] font-bold hover:bg-accent/85 transition-all disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden"
-                >
-                  {generating ? (
-                    <>
-                      <div className="absolute inset-0 bg-accent/30 origin-left transition-all duration-200" style={{ transform: `scaleX(${progress / 100})` }} />
-                      <RefreshCw className="w-4 h-4 animate-spin relative z-10" />
-                      <span className="relative z-10">Generating… {Math.round(progress)}%</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4" />
-                      Generate {activeTab === "image" ? "Images" : activeTab === "video" ? "Video" : "Audio"}
-                    </>
-                  )}
-                </button>
-                {activeTab !== "audio" && (
-                  <div className="flex items-center gap-1 border border-foreground/[0.1] rounded-xl overflow-hidden">
-                    {[1, 2, 4].map(n => (
-                      <button key={n} onClick={() => setOutputCount(n)}
-                        className={`w-9 h-[44px] text-[0.8rem] font-semibold transition-colors ${
-                          outputCount === n ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.05]"
-                        }`}>
-                        {n}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+        {/* No type selected */}
+        {!selectedType && (
+          <div className="text-center py-20">
+            <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
+              <Sparkles className="w-8 h-8 text-accent"/>
             </div>
-
-            {/* Results area */}
-            {(results.length > 0 || generating) && (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display font-black text-[1.2rem] tracking-[-0.02em]">
-                    {generating ? "Generating…" : `${results.length} result${results.length !== 1 ? "s" : ""}`}
-                  </h2>
-                  {results.length > 0 && (
-                    <button onClick={handleGenerate} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors">
-                      <RefreshCw className="w-3.5 h-3.5" /> Regenerate
-                    </button>
-                  )}
-                </div>
-
-                {generating ? (
-                  <div className="grid grid-cols-2 gap-3">
-                    {Array.from({ length: outputCount }).map((_, i) => (
-                      <div key={i} className="aspect-square rounded-2xl bg-foreground/[0.06] animate-pulse relative overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-foreground/[0.04] to-transparent animate-[shimmer_1.5s_infinite]" />
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-3">
-                    {results.map(result => (
-                      <div key={result.id} className="group relative rounded-2xl overflow-hidden">
-                        <img
-                          src={`https://images.unsplash.com/${result.photo}?w=600&h=600&fit=crop&q=80`}
-                          alt={result.prompt}
-                          className="w-full aspect-square object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                        {/* Model badge */}
-                        <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-md text-white text-[0.68rem] font-semibold px-2 py-0.5 rounded-md">
-                          {result.model}
-                        </div>
-                        {/* Like button */}
-                        <button onClick={() => toggleLike(result.id)}
-                          className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
-                            likedResults.has(result.id) ? "bg-accent text-white" : "bg-black/30 text-white hover:bg-accent"
-                          }`}>
-                          <Star className={`w-4 h-4 ${likedResults.has(result.id) ? "fill-current" : ""}`} />
-                        </button>
-                        {/* Bottom actions */}
-                        <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <a
-                            href={`https://images.unsplash.com/${result.photo}?w=2000&q=90`}
-                            download
-                            className="flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white px-3 py-2 rounded-xl text-[0.76rem] font-semibold hover:bg-white/30 transition-colors no-underline"
-                          >
-                            <Download className="w-3.5 h-3.5" /> Download
-                          </a>
-                          <button onClick={() => copyPrompt(result.prompt)}
-                            className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors text-white">
-                            {copied === result.prompt ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                          </button>
-                          <button className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors text-white">
-                            <Bookmark className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Empty state */}
-            {!generating && results.length === 0 && (
-              <div className="text-center py-16 px-8">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-7 h-7 text-accent" />
-                </div>
-                <h2 className="font-display text-[1.2rem] font-black tracking-[-0.02em] mb-2">Your creations appear here</h2>
-                <p className="text-[0.84rem] text-muted mb-6">
-                  Type a description above and hit Generate — or use "Inspire me" to start with an example.
-                </p>
-                <div className="flex items-center justify-center gap-2 flex-wrap">
-                  {["cosmic dreamscape", "cyberpunk portrait", "lo-fi chill beats", "neon city loop"].map(ex => (
-                    <button key={ex} onClick={() => { setPrompt(ex); textareaRef.current?.focus(); }}
-                      className="text-[0.76rem] font-medium px-3 py-1.5 rounded-lg border border-foreground/[0.1] text-muted hover:border-foreground/30 hover:text-foreground transition-colors">
-                      {ex}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Recent from community */}
-            {!generating && results.length === 0 && (
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Recent from the community</h2>
-                  <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">
-                    Explore all <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {sampleResults.map(r => (
-                    <div key={r.id} className="group relative rounded-2xl overflow-hidden cursor-pointer">
-                      <img src={`https://images.unsplash.com/${r.photo}?w=300&h=300&fit=crop&q=70`} alt={r.prompt} className="w-full aspect-square object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <p className="text-[0.7rem] text-white/80 truncate">{r.prompt}</p>
-                        <span className="text-[0.62rem] text-white/50">{r.model}</span>
-                      </div>
-                      <button onClick={() => setPrompt(r.prompt)}
-                        className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity w-7 h-7 rounded-full bg-black/50 flex items-center justify-center text-white hover:bg-accent">
-                        <Zap className="w-3 h-3" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+            <h2 className="font-display text-[1.3rem] font-black tracking-[-0.02em] mb-2">Choose a content type above</h2>
+            <p className="text-[0.85rem] text-muted">Pick Image, Video, Audio, or Design to get started.</p>
           </div>
+        )}
 
-          {/* Right column — Settings */}
-          <div className="space-y-5">
-            {/* Model selector */}
-            <div className="border border-foreground/[0.08] rounded-2xl bg-card p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Wand2 className="w-3 h-3 text-muted" />
-                <span className="text-[0.78rem] font-semibold">AI Model</span>
-              </div>
-              <div className="space-y-1">
-                {currentModels.map(m => (
-                  <button key={m} onClick={() => setSelectedModel(m)}
-                    className={`flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl text-[0.82rem] font-medium transition-colors ${
-                      selectedModel === m ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"
-                    }`}>
-                    {m}
-                    {selectedModel === m && <Check className="w-3.5 h-3.5 shrink-0" />}
+        {/* Results */}
+        {results.length > 0 && (
+          <div className="max-w-[860px] mx-auto">
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="font-display font-black text-[1.25rem] tracking-[-0.02em]">{results.length} result{results.length!==1?"s":""}</h2>
+              <button onClick={()=>setResults([])} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors"><X size={13}/>Clear</button>
+            </div>
+            <div className={`grid gap-4 ${results.length===1?"grid-cols-1 max-w-[420px]":results.length===2?"grid-cols-2":results.length===3?"grid-cols-3":"grid-cols-2 md:grid-cols-4"}`}>
+              {results.map(r => (
+                <div key={r.id} className="group relative rounded-2xl overflow-hidden">
+                  <img src={`https://images.unsplash.com/${r.photo}?w=600&h=600&fit=crop&q=80`} alt={r.prompt} className="w-full aspect-square object-cover"/>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"/>
+                  <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-md text-white text-[0.68rem] font-semibold px-2 py-0.5 rounded-md">{r.model}</div>
+                  <button onClick={()=>toggleLike(r.id)} className={`absolute top-2 right-2 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${likedIds.has(r.id)?"bg-accent text-white":"bg-black/30 text-white hover:bg-accent"}`}>
+                    <Star size={14} className={likedIds.has(r.id)?"fill-current":""}/>
                   </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Style preset */}
-            <div className="border border-foreground/[0.08] rounded-2xl bg-card p-5">
-              <div className="flex items-center gap-2 mb-3">
-                <Sliders className="w-3 h-3 text-muted" />
-                <span className="text-[0.78rem] font-semibold">Style Preset</span>
-              </div>
-              <StyleGrid styles={currentStyles} selected={selectedStyle} onSelect={setSelectedStyle} />
-            </div>
-
-            {/* Size / Duration */}
-            <div className="border border-foreground/[0.08] rounded-2xl bg-card p-5">
-              <span className="text-[0.78rem] font-semibold mb-3 block">
-                {activeTab === "image" ? "Size / Ratio" : "Duration"}
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {currentSizes.map(s => (
-                  <button key={s} onClick={() => setSelectedSize(s)}
-                    className={`px-3 py-1.5 rounded-lg text-[0.76rem] font-medium border transition-all ${
-                      selectedSize === s ? "bg-foreground text-primary-foreground border-foreground" : "border-foreground/[0.1] text-muted hover:border-foreground/25 hover:text-foreground"
-                    }`}>
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Quality */}
-            <div className="border border-foreground/[0.08] rounded-2xl bg-card p-5">
-              <span className="text-[0.78rem] font-semibold mb-3 block">Quality</span>
-              <div className="space-y-1.5">
-                {([
-                  { id: "draft" as const, label: "Draft", desc: "Fast · Free", cost: "Free" },
-                  { id: "standard" as const, label: "Standard", desc: "Balanced · 1 credit", cost: "" },
-                  { id: "hd" as const, label: "HD", desc: "Best · 3 credits", cost: "" },
-                ]).map(q => (
-                  <button key={q.id} onClick={() => setQuality(q.id)}
-                    className={`flex items-center justify-between w-full px-3.5 py-2.5 rounded-xl text-[0.82rem] font-medium border transition-all ${
-                      quality === q.id ? "bg-foreground text-primary-foreground border-foreground" : "border-foreground/[0.08] text-muted hover:text-foreground hover:border-foreground/20"
-                    }`}>
-                    <div>
-                      <div>{q.label}</div>
-                      <div className={`text-[0.68rem] ${quality === q.id ? "text-primary-foreground/60" : "text-muted/60"}`}>{q.desc}</div>
-                    </div>
-                    {q.cost && <span className={`text-[0.72rem] font-semibold ${quality === q.id ? "text-primary-foreground" : "text-accent"}`}>{q.cost}</span>}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Credits */}
-            <div className="border border-foreground/[0.08] rounded-2xl bg-card p-5">
-              <span className="text-[0.78rem] font-semibold mb-3 block">Your Credits</span>
-              <div className="flex items-center gap-3 mb-3">
-                <span className="font-display text-[2rem] font-black text-accent">12</span>
-                <span className="text-[0.82rem] text-muted">credits remaining</span>
-              </div>
-              <button className="w-full bg-foreground/[0.06] text-foreground py-2.5 rounded-xl text-[0.82rem] font-semibold hover:bg-foreground/[0.1] transition-colors">
-                Get More Credits
-              </button>
+                  <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <a href={`https://images.unsplash.com/${r.photo}?w=2000&q=90`} download className="flex items-center gap-1.5 bg-white/20 backdrop-blur-md text-white px-3 py-2 rounded-xl text-[0.76rem] font-semibold hover:bg-white/30 transition-colors no-underline">
+                      <Download size={13}/>Download
+                    </a>
+                    <button onClick={()=>copyPrompt(r.prompt)} className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors text-white">
+                      {copied===r.prompt?<Check size={14}/>:<Copy size={14}/>}
+                    </button>
+                    <button className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors text-white"><Bookmark size={14}/></button>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Community */}
+        {results.length===0 && selectedType && (
+          <div className="max-w-[860px] mx-auto mt-4">
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Recent from the community</h2>
+              <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">
+                Explore all<ArrowRight size={12}/>
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {SAMPLE_PHOTOS.slice(0,4).map((photo,i)=>(
+                <div key={i} className="group relative rounded-2xl overflow-hidden cursor-pointer">
+                  <img src={`https://images.unsplash.com/${photo}?w=300&h=300&fit=crop&q=70`} alt="Community creation" className="w-full aspect-square object-cover"/>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity"/>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </PageShell>
   );
