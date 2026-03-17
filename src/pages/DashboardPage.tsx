@@ -144,12 +144,16 @@ const typeIcon: Record<MediaType, typeof Image> = {
 
 /* ═══ MEDIA SECTION COMPONENT ═══ */
 const MediaSection = () => {
-  const [filter, setFilter] = useState<"all" | MediaType>("all");
+  const [filter, setFilter] = useState<"all" | MediaType | "standalone">("all");
   const [view, setView] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("recent");
   const [selected, setSelected] = useState<string[]>([]);
 
-  const filtered = filter === "all" ? mediaItems : mediaItems.filter(m => m.type === filter);
+  const filtered = filter === "all"
+    ? mediaItems
+    : filter === "standalone"
+    ? mediaItems.filter(m => !m.inCollection)
+    : mediaItems.filter(m => m.type === filter);
   const allSelected = selected.length === filtered.length && filtered.length > 0;
 
   const toggleSelect = (id: string) => {
@@ -161,6 +165,7 @@ const MediaSection = () => {
     image: mediaItems.filter(m => m.type === "image").length,
     video: mediaItems.filter(m => m.type === "video").length,
     music: mediaItems.filter(m => m.type === "music").length,
+    standalone: mediaItems.filter(m => !m.inCollection).length,
   };
 
   return (
