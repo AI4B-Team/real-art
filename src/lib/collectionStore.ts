@@ -143,6 +143,65 @@ export const hasAccess = (col: UnifiedCollection): boolean => {
   } catch { return false; }
 };
 
+// ── Smart Suggest ──
+
+const TOPIC_GROUPS: Record<string, string[]> = {
+  cosmic: ["cosmic", "space", "nebula", "galaxy", "celestial", "stars", "universe", "astral"],
+  cyber: ["cyberpunk", "neon", "futuristic", "holographic", "tech", "digital", "glitch", "synth"],
+  abstract: ["abstract", "fluid", "gradient", "generative", "fractal", "geometric", "surreal"],
+  nature: ["nature", "mountain", "landscape", "ocean", "forest", "water", "sunset", "sky"],
+  portrait: ["portrait", "face", "figure", "human", "model", "character", "person"],
+  fashion: ["fashion", "style", "outfit", "couture", "textile", "fabric", "wear"],
+  fantasy: ["fantasy", "magic", "mythical", "dragon", "fairy", "enchanted", "medieval"],
+  architecture: ["architecture", "building", "interior", "urban", "city", "structure"],
+  art3d: ["3d", "render", "blender", "sculpt", "cgi", "voxel", "lowpoly"],
+  music: ["music", "audio", "sound", "beat", "synth", "vinyl", "instrument"],
+};
+
+export const suggestCollection = (
+  title?: string,
+  prompt?: string,
+  tags?: string[]
+): UnifiedCollection | null => {
+  const cols = getCollections().filter(c => !c.archived);
+  if (cols.length === 0) return null;
+
+  const words = [
+    ...(title || "").toLowerCase().split(/\s+/),
+    ...(prompt || "").toLowerCase().split(/\s+/),
+    ...(tags || []).map(t => t.toLowerCase()),
+  ].filter(Boolean);
+
+  // Level 1: Direct title-word match
+  for (const col of cols) {
+    const colWords = col.title.toLowerCase().split(/\s+/);
+    if (colWords.some(cw => cw.length > 2 && words.includes(cw))) return col;
+  }
+
+  // Level 2: Topic group match
+  for (const col of cols) {
+    const colLower = col.title.toLowerCase();
+    for (const [, keywords] of Object.entries(TOPIC_GROUPS)) {
+      const colMatchesTopic = keywords.some(k => colLower.includes(k));
+      const imageMatchesTopic = keywords.some(k => words.includes(k));
+      if (colMatchesTopic && imageMatchesTopic) return col;
+    }
+  }
+
+  // Level 3: Most recently used (has items, sorted by latest savedAt)
+  const withItems = cols
+    .filter(c => c.items.length > 0)
+    .sort((a, b) => {
+      const aLatest = a.items[0]?.savedAt || a.createdAt;
+      const bLatest = b.items[0]?.savedAt || b.createdAt;
+      return bLatest.localeCompare(aLatest);
+    });
+  if (withItems.length > 0) return withItems[0];
+
+  // Level 4: First available
+  return cols[0];
+};
+
 // ── Board compat aliases ──
 export type Board = UnifiedCollection;
 export type BoardItem = CollectionItem;
@@ -229,17 +288,29 @@ function seedDefaults(): UnifiedCollection[] {
       items: [], createdAt: new Date(Date.now() - 20 * 86400000).toISOString(),
     },
     {
-      id: "uc_saved_1", title: "Inspiration", description: "Images that inspire my work.",
+      id: "uc_saved_1", title: "Cosmic Dreamscape", description: "",
       type: "saved", visibility: "private", coverPhoto: "photo-1618005182384-a83a8bd57fbe",
-      collaborators: [], members: 0, slug: "inspiration",
+      collaborators: [], members: 0, slug: "cosmic-dreamscape",
       imageCount: 3, videoCount: 0, musicCount: 0,
-      thumbs: ["photo-1618005182384-a83a8bd57fbe", "photo-1557682250-33bd709cbe85", "photo-1579546929518-9e396f3cc809"],
+      thumbs: ["photo-1618005182384-a83a8bd57fbe", "photo-1462275646964-a0e3386b89fa", "photo-1579546929518-9e396f3cc809"],
       items: [
         { imageId: "0", photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", savedAt: new Date(Date.now() - 5 * 86400000).toISOString() },
-        { imageId: "4", photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", savedAt: new Date(Date.now() - 3 * 86400000).toISOString() },
+        { imageId: "7", photo: "photo-1462275646964-a0e3386b89fa", title: "Celestial Dance", savedAt: new Date(Date.now() - 3 * 86400000).toISOString() },
         { imageId: "8", photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City", savedAt: new Date(Date.now() - 1 * 86400000).toISOString() },
       ],
       createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+    },
+    {
+      id: "uc_saved_2", title: "Color Studies", description: "Palettes and gradients I love.",
+      type: "saved", visibility: "private", coverPhoto: "photo-1557682250-33bd709cbe85",
+      collaborators: [], members: 0, slug: "color-studies",
+      imageCount: 2, videoCount: 0, musicCount: 0,
+      thumbs: ["photo-1557682250-33bd709cbe85", "photo-1576091160550-2173dba999ef"],
+      items: [
+        { imageId: "4", photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", savedAt: new Date(Date.now() - 10 * 86400000).toISOString() },
+        { imageId: "11", photo: "photo-1576091160550-2173dba999ef", title: "Abstract Fluid", savedAt: new Date(Date.now() - 8 * 86400000).toISOString() },
+      ],
+      createdAt: new Date(Date.now() - 12 * 86400000).toISOString(),
     },
   ];
   saveCollections(d);

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { X, Plus, Bookmark, Check, Search, Lock, Globe, Image } from "lucide-react";
+import { X, Plus, Bookmark, Check, Search, Lock, Globe } from "lucide-react";
 import {
   getCollections,
   addItemToCollection,
@@ -13,6 +13,9 @@ interface Props {
   imageId?: string;
   imagePhoto?: string;
   imageTitle?: string;
+  imageTags?: string[];
+  suggestedCollectionId?: string;
+  onSaved?: () => void;
 }
 
 export default function SaveToBoardModal({
@@ -21,6 +24,9 @@ export default function SaveToBoardModal({
   imageId = "0",
   imagePhoto = "photo-1618005182384-a83a8bd57fbe",
   imageTitle = "Untitled",
+  imageTags,
+  suggestedCollectionId,
+  onSaved,
 }: Props) {
   const [collections, setCollections] = useState<UnifiedCollection[]>([]);
   const [search, setSearch] = useState("");
@@ -28,6 +34,8 @@ export default function SaveToBoardModal({
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName] = useState("");
   const [newVisibility, setNewVisibility] = useState<"public" | "private">("private");
+
+  const suggestedId = suggestedCollectionId;
 
   useEffect(() => {
     if (open) {
@@ -51,6 +59,7 @@ export default function SaveToBoardModal({
   const handleSave = (colId: string) => {
     addItemToCollection(colId, { imageId, photo: imagePhoto, title: imageTitle });
     setSavedTo(colId);
+    onSaved?.();
     setTimeout(() => { onClose(); setSavedTo(null); setSearch(""); }, 900);
   };
 
@@ -60,8 +69,16 @@ export default function SaveToBoardModal({
     addItemToCollection(col.id, { imageId, photo: imagePhoto, title: imageTitle });
     setCollections(getCollections());
     setSavedTo(col.id);
+    onSaved?.();
     setTimeout(() => { onClose(); setSavedTo(null); setSearch(""); setNewName(""); setShowCreate(false); }, 900);
   };
+
+  // Sort: suggested first
+  const sorted = [...filtered].sort((a, b) => {
+    if (a.id === suggestedId) return -1;
+    if (b.id === suggestedId) return 1;
+    return 0;
+  });
 
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
@@ -112,16 +129,22 @@ export default function SaveToBoardModal({
               {search ? "No matching collections" : "No collections yet — create one below"}
             </p>
           )}
-          {filtered.map(col => {
+          {sorted.map(col => {
             const done = savedTo === col.id;
             const already = alreadySaved(col.id);
+            const isSuggested = col.id === suggestedId;
             const thumb = col.items?.[0]?.photo || col.thumbs?.[0];
             return (
               <button
                 key={col.id}
                 onClick={() => !already && !done && handleSave(col.id)}
                 disabled={already || !!done}
-                className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-colors text-left group ${done ? "bg-green-50 dark:bg-green-950/20" : already ? "opacity-50 cursor-default" : "hover:bg-foreground/[0.04] cursor-pointer"}`}
+                className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl transition-all text-left group mb-0.5 ${
+                  done ? "bg-green-50 dark:bg-green-950/30" :
+                  isSuggested ? "border border-accent/25 bg-accent/[0.03] hover:bg-accent/[0.06] cursor-pointer" :
+                  already ? "opacity-45 cursor-default" :
+                  "hover:bg-foreground/[0.04] cursor-pointer"
+                }`}
               >
                 <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-foreground/[0.06]">
                   {thumb ? (
@@ -133,17 +156,26 @@ export default function SaveToBoardModal({
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="text-[0.84rem] font-semibold truncate">{col.title}</div>
+                  <div className="text-[0.84rem] font-semibold truncate flex items-center gap-1.5">
+                    {col.title}
+                    {isSuggested && !done && !already && (
+                      <span className="text-[0.62rem] font-medium text-accent bg-accent/10 px-1.5 py-0.5 rounded-full">Suggested</span>
+                    )}
+                  </div>
                   <div className="text-[0.72rem] text-muted flex items-center gap-1">
                     {col.visibility === "private" ?
                       <Lock className="w-2.5 h-2.5" /> :
                       <Globe className="w-2.5 h-2.5" />
                     }
-                    {col.items?.length || 0} saved
+                    {col.items?.length ?? 0} saved
                     {col.accessCode && <span className="ml-1 opacity-60">· {col.accessCode}</span>}
                   </div>
                 </div>
-                <Check className={`w-4 h-4 shrink-0 transition-all ${done || already ? "text-accent" : "text-muted opacity-0 group-hover:opacity-60"}`} />
+                <Check className={`w-4 h-4 shrink-0 transition-all ${
+                  done ? "text-green-500 opacity-100" :
+                  already ? "text-accent opacity-100" :
+                  "text-muted opacity-0 group-hover:opacity-60"
+                }`} />
               </button>
             );
           })}

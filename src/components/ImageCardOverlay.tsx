@@ -1,9 +1,10 @@
-import { useState } from "react";
-import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, Bookmark, Maximize2, Heart } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Download, RefreshCw, Video, Pencil, Eye, Copy, Shuffle, Bookmark, Maximize2, Heart, Check, MoreHorizontal, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
+import { suggestCollection, addItemToCollection, getCollections } from "@/lib/collectionStore";
 
 const creators = [
   { n: "AI.Verse", i: "AV", c: "#4361ee", id: "1" },
@@ -31,6 +32,21 @@ const imageTitles = [
   "Cyberpunk City","Holographic Portrait","Ocean Depths","Abstract Fluid",
 ];
 
+const imageTags: string[][] = [
+  ["cosmic","space","abstract"],
+  ["neon","gradient","colorful"],
+  ["abstract","fire","warm"],
+  ["nature","mountain","landscape"],
+  ["cyberpunk","neon","city"],
+  ["nature","sunset","landscape"],
+  ["portrait","avatar","digital"],
+  ["cosmic","celestial","space"],
+  ["cyberpunk","city","futuristic"],
+  ["portrait","holographic","neon"],
+  ["nature","ocean","water"],
+  ["abstract","fluid","liquid"],
+];
+
 const prompts = [
   "A cosmic dreamscape with swirling nebula clouds, cinematic lighting, 8k ultra-detailed",
   "Neon-drenched cyberpunk street scene with holographic billboards, rain-soaked pavement",
@@ -50,12 +66,35 @@ interface ImageCardOverlayProps {
 const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: titleProp }: ImageCardOverlayProps) => {
   const [showPrompt, setShowPrompt] = useState(false);
   const [boardModalOpen, setBoardModalOpen] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(() => {
+    try { return localStorage.getItem(`ra_liked_${index}`) === "1"; } catch { return false; }
+  });
+  const [quickSaved, setQuickSaved] = useState(false);
   const navigate = useNavigate();
   const cr = creators[index % creators.length];
   const prompt = prompts[index % prompts.length];
   const photo = photoProp || imagePhotos[index % imagePhotos.length];
   const title = titleProp || imageTitles[index % imageTitles.length];
+  const tags = imageTags[index % imageTags.length];
+
+  const suggestedCol = useMemo(() => suggestCollection(title, prompt, tags), [title, prompt, tags]);
+
+  const handleQuickSave = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (quickSaved || !suggestedCol) return;
+    addItemToCollection(suggestedCol.id, { imageId: String(index), photo, title });
+    setQuickSaved(true);
+    setTimeout(() => setQuickSaved(false), 2000);
+  };
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    const next = !liked;
+    setLiked(next);
+    try { localStorage.setItem(`ra_liked_${index}`, next ? "1" : "0"); } catch {}
+  };
 
   return (
     <>
@@ -64,45 +103,55 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
         style={{ background: "var(--gradient-overlay)" }}
       >
         <TooltipProvider>
-          {/* Top right: Save + Like + Download + Open */}
-          <div className="flex gap-1.5 justify-end">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBoardModalOpen(true); }} className={iconBtnClass}>
-                  <Bookmark className="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>Save</p></TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); setLiked(!liked); }} className={iconBtnClass}>
-                  <Heart className={`w-3.5 h-3.5 ${liked ? "fill-accent text-accent" : ""}`} />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>{liked ? "Unlike" : "Like"}</p></TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <a
-                  href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
-                  download={`realart-${index}.jpg`}
-                  onClick={(e) => e.stopPropagation()}
-                  className={iconBtnClass + " no-underline"}
-                >
-                  <Download className="w-3.5 h-3.5" />
-                </a>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>Download</p></TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}`); }} className={iconBtnClass}>
-                  <Maximize2 className="w-3.5 h-3.5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom" className="text-xs"><p>Open full page</p></TooltipContent>
-            </Tooltip>
+          {/* Top row: Save pill + ... + Like */}
+          <div className="flex items-center justify-between">
+            {/* Left: Smart save pill */}
+            <button
+              onClick={handleQuickSave}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[0.72rem] font-semibold backdrop-blur-sm transition-all ${
+                quickSaved
+                  ? "bg-green-500/90 text-primary-foreground"
+                  : "bg-primary-foreground/[0.18] text-primary-foreground hover:bg-primary-foreground/[0.38]"
+              }`}
+            >
+              {quickSaved ? (
+                <>
+                  <Check className="w-3 h-3" /> Saved!
+                </>
+              ) : (
+                <>
+                  {suggestedCol ? (
+                    <>
+                      <Bookmark className="w-3 h-3" />
+                      {suggestedCol.title.length > 14 ? suggestedCol.title.slice(0, 14) + "…" : suggestedCol.title}
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-3 h-3" /> Save
+                    </>
+                  )}
+                </>
+              )}
+            </button>
+
+            {/* Right: More + Like */}
+            <div className="flex gap-1.5">
+              <button
+                onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBoardModalOpen(true); }}
+                className={iconBtnClass}
+                title="More options"
+              >
+                <MoreHorizontal className="w-3.5 h-3.5" />
+              </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={handleLike} className={iconBtnClass}>
+                    <Heart className={`w-3.5 h-3.5 ${liked ? "fill-accent text-accent" : ""}`} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs"><p>{liked ? "Unlike" : "Like"}</p></TooltipContent>
+              </Tooltip>
+            </div>
           </div>
 
           {/* Bottom row */}
@@ -180,6 +229,9 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
         imageId={String(index)}
         imagePhoto={photo}
         imageTitle={title}
+        imageTags={tags}
+        suggestedCollectionId={suggestedCol?.id}
+        onSaved={() => setQuickSaved(true)}
       />
     </>
   );
