@@ -8,3 +8,4 @@ Spec 5 - Dashboard: 7 sections (overview/media/collections/earnings/ads/notifica
 Spec 6 - Content Pages: BlogPage reader modal, ChallengeDetailPage submission, PromptLibraryPage pack detail, CommunityDetailPage feed tab
 Spec 7 - Creator Discovery: CreatorPage follow persist, LeaderboardPage user highlight, ExplorePage empty state, TopicPage QuickView, CreatorsPage sort
 Spec 8 - Upload & Image: UploadPage localStorage fallback, ImagePage download anchor, QuickViewPanel download/share wiring
+Sidebar+Media standalone spec: DONE — Sidebar reorder (Dashboard→Media→Explore→Collections→Communities→Challenges→divider→Ads→Earnings), removed My Collections & Leaderboard from sidebar, Tooltips replaced with title attr, DashboardPage navItems updated, Media standalone filter added

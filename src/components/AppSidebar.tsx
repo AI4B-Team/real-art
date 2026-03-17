@@ -5,10 +5,9 @@ import {
   LayoutDashboard, Image, FolderOpen, Settings,
   Users, Award, Eye, Bookmark, ChevronDown,
   Search, X, Star, Compass, Plus, PanelLeftClose, PanelLeftOpen,
-  DollarSign, Megaphone, Bell, Trophy, BarChart3
+  DollarSign, Megaphone, Bell
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 interface NavItem {
   id: string;
@@ -28,14 +27,12 @@ type Community = {
 
 const navItems: NavItem[] = [
   { id: "overview", label: "Dashboard", icon: LayoutDashboard, type: "route", href: "/dashboard" },
+  { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "explore", label: "Explore", icon: Eye, type: "route", href: "/explore" },
   { id: "collections-browse", label: "Collections", icon: FolderOpen, type: "route", href: "/collections" },
   { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
-  { id: "challenges-browse", label: "Challenges", icon: Trophy, type: "route", href: "/challenges" },
-  { id: "leaderboard-browse", label: "Leaderboard", icon: BarChart3, type: "route", href: "/leaderboard" },
+  { id: "challenges-browse", label: "Challenges", icon: Award, type: "route", href: "/challenges" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
-  { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
-  { id: "galleries", label: "My Collections", icon: FolderOpen, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
   { id: "earnings", label: "Earnings", icon: DollarSign, type: "dashboard-section" },
 ];
@@ -146,23 +143,18 @@ const AppSidebar = () => {
             <PanelLeftClose className="w-4 h-4" />
           </button>
         </div>
-      ) : (
+      ) : null}
+      {sidebarCollapsed ? (
         <div className="flex flex-col items-center mb-6">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => setSidebarCollapsed(false)}
-                className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
-              >
-                {initials}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
-              <p>Expand Sidebar</p>
-            </TooltipContent>
-          </Tooltip>
+          <button
+            onClick={() => setSidebarCollapsed(false)}
+            className="w-9 h-9 rounded-full bg-accent/15 flex items-center justify-center text-[0.72rem] font-bold text-accent hover:bg-accent/25 transition-colors cursor-pointer"
+            title="Expand sidebar"
+          >
+            {initials}
+          </button>
         </div>
-      )}
+      ) : null}
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(item => {
@@ -175,22 +167,17 @@ const AppSidebar = () => {
             const active = isActive(item);
             if (sidebarCollapsed) {
               return (
-                <Tooltip key={item.id}>
-                  <TooltipTrigger asChild>
-                    <button
-                      onClick={() => navigate("/communities")}
-                      className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                    >
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      {hasNewPosts && !active && (
-                        <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
-                      )}
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
-                    <p>Communities</p>
-                  </TooltipContent>
-                </Tooltip>
+                <button
+                  key={item.id}
+                  onClick={() => navigate("/communities")}
+                  className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors relative ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  title="Communities"
+                >
+                  <item.icon className="w-4 h-4 shrink-0" />
+                  {hasNewPosts && !active && (
+                    <span className="absolute top-1.5 right-2 w-2 h-2 rounded-full bg-accent" />
+                  )}
+                </button>
               );
             }
             return (
@@ -301,19 +288,14 @@ const AppSidebar = () => {
           const active = isActive(item);
           if (sidebarCollapsed) {
             return (
-              <Tooltip key={item.id}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => handleClick(item)}
-                    className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                  >
-                    <item.icon className="w-4 h-4 shrink-0" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right" className="bg-white text-foreground border border-foreground/[0.08] shadow-lg">
-                  <p>{item.label}</p>
-                </TooltipContent>
-              </Tooltip>
+              <button
+                key={item.id}
+                onClick={() => handleClick(item)}
+                className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                title={item.label}
+              >
+                <item.icon className="w-4 h-4 shrink-0" />
+              </button>
             );
           }
           return (
