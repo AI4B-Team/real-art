@@ -104,7 +104,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
       >
         <TooltipProvider>
           {/* Top row: Save pill + ... + Like */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-start justify-between">
             {/* Left: Smart save pill */}
             <button
               onClick={handleQuickSave}
@@ -134,8 +134,8 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
               )}
             </button>
 
-            {/* Right: More + Like */}
-            <div className="flex gap-1.5">
+            {/* Right: vertical icon strip */}
+            <div className="flex flex-col gap-1.5">
               <button
                 onClick={(e) => { e.stopPropagation(); e.preventDefault(); setBoardModalOpen(true); }}
                 className={iconBtnClass}
@@ -149,7 +149,28 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
                     <Heart className={`w-3.5 h-3.5 ${liked ? "fill-accent text-accent" : ""}`} />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs"><p>{liked ? "Unlike" : "Like"}</p></TooltipContent>
+                <TooltipContent side="left" className="text-xs"><p>{liked ? "Unlike" : "Like"}</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <a
+                    href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
+                    download={`realart-${index}.jpg`}
+                    onClick={(e) => e.stopPropagation()}
+                    className={iconBtnClass + " no-underline"}
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                  </a>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="text-xs"><p>Download</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={(e) => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}`); }} className={iconBtnClass}>
+                    <Maximize2 className="w-3.5 h-3.5" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="left" className="text-xs"><p>Open</p></TooltipContent>
               </Tooltip>
             </div>
           </div>
