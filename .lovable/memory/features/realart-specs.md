@@ -12,3 +12,5 @@ Sidebar+Media standalone spec: DONE — Sidebar reorder (Dashboard→Explore→M
 Smart Routing + Welcome spec: DONE — WelcomePage 3-step onboarding, SignUpPage sets ra_new_user=1 & navigates to /welcome, Index smart routing, UploadPage increments ra_uploads
 CreatePage spec: DONE — AI creation studio (Image/Video/Audio tabs), Navbar split into separate Create+Upload buttons, /create route now points to CreatePage
 OnboardSync spec: DONE — WelcomePage dispatches ra_onboard_updated + auto-detects via sessionStorage, AppSidebar onboarding widget (countdown, dismiss X, progress steps, cross-tab sync), UploadPage/CollectionsPage/ExplorePage set sessionStorage markers, UploadPage localStorage fallback publish
+SidebarWidgetFix spec: DONE — Compact widget header, Media before Explore nav order, Title Case labels, thinner progress bar
+SmartSave spec: DONE — suggestCollection() 4-level matching in collectionStore, ImageCardOverlay smart save pill (suggested collection name, quick-save click, green "Saved!" 2s), SaveToBoardModal suggested-first sort with "Suggested" badge, imageTags per-image array, seed collections updated (Cosmic Dreamscape + Color Studies)
