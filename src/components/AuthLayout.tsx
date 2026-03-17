@@ -33,14 +33,13 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   }, [location.pathname]);
 
   // Auto-collapse sidebar on certain routes
-  const shouldAutoCollapse = COLLAPSED_SIDEBAR_PATTERNS.some(p => p.test(location.pathname));
+  const shouldAutoCollapse = COLLAPSED_SIDEBAR_PATTERNS.some(p => p.test(location.pathname)) || quickViewOpen;
 
   useEffect(() => {
     if (shouldAutoCollapse) {
       setSidebarCollapsed(true);
       setUserOverride(false);
     } else {
-      // Restore expanded when navigating away from auto-collapse routes
       if (!userOverride) {
         setSidebarCollapsed(false);
       }
