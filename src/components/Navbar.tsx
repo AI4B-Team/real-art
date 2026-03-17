@@ -173,15 +173,68 @@ const Navbar = () => {
     return 0;
   });
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/explore?q=${encodeURIComponent(searchQuery.trim())}`);
-      setSearchQuery("");
-    }
+  const handleSearch = (q?: string) => {
+    const term = (q || searchQuery).trim();
+    if (!term) return;
+    const next = [term, ...recentSearches.filter(s => s !== term)].slice(0, 8);
+    setRecentSearches(next);
+    try { localStorage.setItem("ra_recent_searches", JSON.stringify(next)); } catch {}
+    setSearchSuggestOpen(false);
+    navigate(`/explore?q=${encodeURIComponent(term)}&type=${encodeURIComponent(navSearchType)}`);
+    setSearchQuery("");
+  };
+
+  const clearRecent = (term: string) => {
+    const next = recentSearches.filter(s => s !== term);
+    setRecentSearches(next);
+    try { localStorage.setItem("ra_recent_searches", JSON.stringify(next)); } catch {}
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") handleSearch();
+  };
+
+  const suggestions: Record<string, { label: string; category: string }[]> = {
+    "Images": [
+      { label: "cosmic abstract", category: "Trending" },
+      { label: "cyberpunk city at night", category: "Trending" },
+      { label: "luxury interior design", category: "Popular" },
+      { label: "ai avatar portrait", category: "Trending" },
+      { label: "neon botanical", category: "Rising" },
+      { label: "dark fantasy landscape", category: "Popular" },
+      { label: "minimalist architecture", category: "Popular" },
+      { label: "surreal dreamscape", category: "Rising" },
+    ],
+    "Videos": [
+      { label: "looping abstract animation", category: "Trending" },
+      { label: "cinematic drone footage", category: "Popular" },
+      { label: "particle effect loop", category: "Trending" },
+      { label: "neon light trails", category: "Rising" },
+      { label: "liquid simulation", category: "Popular" },
+      { label: "timelapse sky", category: "Popular" },
+    ],
+    "Music": [
+      { label: "lo-fi chill beats", category: "Trending" },
+      { label: "ambient soundscape", category: "Popular" },
+      { label: "cinematic orchestral", category: "Popular" },
+      { label: "electronic dark synth", category: "Trending" },
+      { label: "acoustic background", category: "Rising" },
+    ],
+  };
+  const currentSuggestions = suggestions[navSearchType] || suggestions["Images"];
+  const filteredSuggestions = searchQuery.trim()
+    ? currentSuggestions.filter(s => s.label.includes(searchQuery.toLowerCase()))
+    : currentSuggestions;
+  const categoryColors: Record<string, string> = {
+    "Trending": "text-accent bg-accent/10",
+    "Popular": "text-blue-500 bg-blue-50 dark:bg-blue-950/30",
+    "Rising": "text-green-600 bg-green-50 dark:bg-green-950/30",
+  };
+
+  const topicPills: Record<string, string[]> = {
+    "Images": ["cyberpunk", "portraits", "abstract", "luxury", "nature", "avatars"],
+    "Videos": ["animation", "timelapse", "particles", "cinematic"],
+    "Music": ["lo-fi", "ambient", "orchestral", "synth"],
   };
 
   const navLinks = [
