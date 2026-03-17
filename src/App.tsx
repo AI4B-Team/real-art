@@ -28,6 +28,7 @@ import LeaderboardPage from "./pages/LeaderboardPage";
 
 // Round 3 — Creator Tools
 import UploadPage from "./pages/UploadPage";
+import CreatePage from "./pages/CreatePage";
 import CreateGalleryPage from "./pages/CreateGalleryPage";
 import PromptLibraryPage from "./pages/PromptLibraryPage";
 import AffiliatesPage from "./pages/AffiliatesPage";
