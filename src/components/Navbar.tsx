@@ -228,7 +228,47 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
-  const handleLogout = () => {
+  // Apply theme to document
+  useEffect(() => {
+    const apply = (t: string) => {
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      const isDark = t === "dark" || (t === "system" && prefersDark);
+      document.documentElement.classList.toggle("dark", isDark);
+    };
+    apply(activeTheme);
+    if (activeTheme === "system") {
+      const mq = window.matchMedia("(prefers-color-scheme: dark)");
+      const handler = () => apply("system");
+      mq.addEventListener("change", handler);
+      return () => mq.removeEventListener("change", handler);
+    }
+  }, [activeTheme]);
+
+  const setTheme = (t: "light" | "dark" | "system") => {
+    setActiveTheme(t);
+    try { localStorage.setItem("ra_theme", t); } catch {}
+  };
+
+  const languages = [
+    { code: "en", label: "English", flag: "🇺🇸" },
+    { code: "es", label: "Spanish", flag: "🇪🇸" },
+    { code: "fr", label: "French", flag: "🇫🇷" },
+    { code: "de", label: "German", flag: "🇩🇪" },
+    { code: "pt", label: "Portuguese", flag: "🇧🇷" },
+    { code: "it", label: "Italian", flag: "🇮🇹" },
+    { code: "zh", label: "Chinese", flag: "🇨🇳" },
+    { code: "ja", label: "Japanese", flag: "🇯🇵" },
+    { code: "ko", label: "Korean", flag: "🇰🇷" },
+    { code: "ar", label: "Arabic", flag: "🇸🇦" },
+    { code: "hi", label: "Hindi", flag: "🇮🇳" },
+    { code: "ru", label: "Russian", flag: "🇷🇺" },
+  ];
+
+  const filteredLangs = langSearch ? languages.filter(l => l.label.toLowerCase().includes(langSearch.toLowerCase())) : languages;
+  const currentLang = languages.find(l => l.code === activeLang) || languages[0];
+  const themeLabel = activeTheme === "light" ? "Light" : activeTheme === "dark" ? "Dark" : "System";
+  const ThemeIcon = activeTheme === "light" ? Sun : activeTheme === "dark" ? Moon : Monitor;
+
     try { localStorage.removeItem("ra_auth"); localStorage.removeItem("ra_display"); localStorage.removeItem("ra_username"); } catch {}
     setIsLoggedIn(false); setUserDisplay("AI.Verse"); setUserHandle("aiverse"); setUserMenuOpen(false);
     navigate("/");
