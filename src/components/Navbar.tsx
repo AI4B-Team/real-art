@@ -660,7 +660,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   };
 
   return (
-    <nav className="fixed top-0 right-0 z-[600] h-16 px-4 md:px-12 flex items-center justify-between bg-background border-b border-foreground/[0.08]" style={{ left: sidebarOffset ? `${sidebarOffset}px` : 0 }}>
+    <nav className="fixed top-0 right-0 z-[600] h-16 px-3 md:px-5 flex items-center justify-between bg-background border-b border-foreground/[0.08]" style={{ left: sidebarOffset ? `${sidebarOffset}px` : 0 }}>
       {/* Mobile: ☰ left */}
       <div className="md:hidden relative" ref={menuRef}>
         <button onClick={() => setMenuOpen(!menuOpen)} className="w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
@@ -693,7 +693,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
 
       {/* Desktop Center Search */}
       {(!isHomePage || scrolled) && (
-        <div className="hidden md:flex flex-1 max-w-6xl ml-1 mr-8">
+        <div className="hidden md:flex flex-1 max-w-6xl ml-0 mr-4">
           <div ref={searchSuggestRef} className="relative w-full flex items-center bg-foreground/[0.06] rounded-lg h-[42px] focus-within:ring-2 focus-within:ring-accent/20">
             {/* Type selector */}
             <div ref={navSearchDropRef} className="relative flex items-center gap-1.5 px-3 h-full cursor-pointer border-r border-foreground/[0.09] shrink-0 select-none" onClick={() => setNavSearchDropOpen(!navSearchDropOpen)}>
