@@ -660,7 +660,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   };
 
   return (
-    <nav className="fixed top-0 right-0 z-[600] h-16 px-4 md:px-12 flex items-center justify-between bg-background border-b border-foreground/[0.08]" style={{ left: sidebarOffset ? `${sidebarOffset}px` : 0 }}>
+    <nav className="fixed top-0 right-0 z-[600] h-16 px-3 md:px-5 flex items-center justify-between bg-background border-b border-foreground/[0.08]" style={{ left: sidebarOffset ? `${sidebarOffset}px` : 0 }}>
       {/* Mobile: ☰ left */}
       <div className="md:hidden relative" ref={menuRef}>
         <button onClick={() => setMenuOpen(!menuOpen)} className="w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
