@@ -635,6 +635,91 @@ const Navbar = () => {
         Real<span className="text-accent">.</span>Art
       </Link>
 
+      {/* Desktop Communities dropdown */}
+      {isLoggedIn && (
+        <div className="hidden md:block relative" ref={communitiesRef}>
+          <button
+            onClick={() => setCommunitiesOpen(!communitiesOpen)}
+            className="relative flex items-center gap-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
+          >
+            <Users className="w-3.5 h-3.5 opacity-60" />
+            Communities
+            <ChevronDown className={`w-3 h-3 opacity-50 transition-transform ${communitiesOpen ? "rotate-180" : ""}`} />
+          </button>
+          {communitiesOpen && (
+            <div className="absolute top-[calc(100%+10px)] left-0 bg-card border border-foreground/[0.07] rounded-2xl w-[280px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[500]">
+              <div className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-foreground/[0.04] mb-2">
+                <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                <input
+                  value={communitySearch}
+                  onChange={(e) => setCommunitySearch(e.target.value)}
+                  placeholder="Search communities…"
+                  className="flex-1 border-none outline-none bg-transparent text-[0.82rem] font-body"
+                />
+                {communitySearch && (
+                  <button onClick={() => setCommunitySearch("")} className="shrink-0">
+                    <X className="w-3 h-3 text-muted hover:text-foreground" />
+                  </button>
+                )}
+              </div>
+              {(() => {
+                const cq = communitySearch.toLowerCase();
+                const filtered = sortedCommunities.filter(c => !cq || c.name.toLowerCase().includes(cq));
+                const pinnedFiltered = filtered.filter(c => c.pinned);
+                const otherFiltered = filtered.filter(c => !c.pinned);
+                return (
+                  <>
+                    {pinnedFiltered.length > 0 && (
+                      <>
+                        <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Pinned</div>
+                        {pinnedFiltered.map(c => (
+                          <div key={c.id} className="flex items-center gap-1 group rounded-[10px] hover:bg-foreground/[0.04] transition-colors">
+                            <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 px-3.5 py-2.5 no-underline text-foreground">
+                              <Star className="w-3 h-3 text-accent fill-accent shrink-0" />
+                              <span className="text-[0.82rem]">{c.name}</span>
+                            </Link>
+                            {c.newPosts ? <span className="text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">{c.newPosts} new</span> : null}
+                            <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity mr-2" title="Unpin">
+                              <X className="w-3 h-3 text-muted hover:text-foreground" />
+                            </button>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    {otherFiltered.length > 0 && (
+                      <>
+                        <div className="px-3 pt-2 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Other Communities</div>
+                        {otherFiltered.map(c => (
+                          <div key={c.id} className="flex items-center gap-1 group rounded-[10px] hover:bg-foreground/[0.04] transition-colors">
+                            <Link to={c.to} onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-2 flex-1 px-3.5 py-2.5 no-underline text-foreground">
+                              <span className="text-[0.82rem]">{c.name}</span>
+                            </Link>
+                            {c.newPosts ? <span className="text-[0.6rem] font-bold text-accent bg-accent/10 px-1.5 py-0.5 rounded-md">{c.newPosts} new</span> : null}
+                            <button onClick={() => togglePin(c.id)} className="opacity-0 group-hover:opacity-100 transition-opacity mr-2" title="Pin">
+                              <Star className="w-3 h-3 text-muted hover:text-accent" />
+                            </button>
+                          </div>
+                        ))}
+                      </>
+                    )}
+                    {filtered.length === 0 && (
+                      <div className="py-4 text-center text-[0.82rem] text-muted">No communities found</div>
+                    )}
+                  </>
+                );
+              })()}
+              <div className="h-px bg-foreground/[0.06] my-1.5" />
+              <Link to="/communities" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+                <Compass className="w-3.5 h-3.5 opacity-40 shrink-0" /> Browse Communities
+              </Link>
+              <Link to="/communities/create" onClick={() => setCommunitiesOpen(false)} className="flex items-center gap-3 px-3.5 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors no-underline">
+                <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> Create Community
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Mobile: 🔍 right */}
       <button onClick={() => setMobileSearchOpen(!mobileSearchOpen)} className="md:hidden w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
         <Search className="w-4 h-4" />
@@ -710,8 +795,8 @@ const Navbar = () => {
         {isLoggedIn && (
           <div className="relative" ref={createMenuRef}>
             <div className="flex items-center">
-              <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-l-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
-                <Upload className="w-3.5 h-3.5" /> Upload Art
+              <Link to="/create" className="flex items-center gap-1.5 px-4 py-2 rounded-l-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
+                <Upload className="w-3.5 h-3.5" /> Create
               </Link>
               <button onClick={() => setCreateMenuOpen(!createMenuOpen)}
                 className="flex items-center justify-center h-[36px] w-[30px] bg-accent text-primary-foreground rounded-r-lg border-l border-primary-foreground/20 hover:bg-accent/85 transition-colors">
@@ -739,7 +824,7 @@ const Navbar = () => {
                 <div className="h-px bg-foreground/[0.06] my-1.5" />
                 <div className="px-3 pt-1.5 pb-1 text-[0.62rem] font-semibold tracking-[0.14em] uppercase text-muted">Or bring your own</div>
                 <Link to="/upload" onClick={() => setCreateMenuOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors no-underline">
-                  <div className="w-8 h-8 rounded-lg bg-accent/15 flex items-center justify-center shrink-0"><Upload className="w-4 h-4 text-accent" /></div>
+                  <div className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center shrink-0"><Upload className="w-4 h-4 text-foreground/60" /></div>
                   <div>
                     <div className="text-[0.82rem] font-semibold text-foreground">Upload Art</div>
                     <div className="text-[0.7rem] text-muted">Images, video, or audio files</div>
@@ -818,8 +903,8 @@ const Navbar = () => {
                   })()}
                 </div>
                 <Link to="/dashboard?section=notifications" onClick={() => setNotifOpen(false)}
-                  className="flex items-center justify-center gap-1.5 px-4 py-3 border-t border-foreground/[0.06] text-[0.78rem] font-semibold text-accent hover:bg-foreground/[0.02] transition-colors no-underline">
-                  View All Notifications <ArrowRight className="w-3.5 h-3.5" />
+                  className="flex items-center justify-center gap-1.5 px-4 py-3 border-t border-foreground/[0.06] text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors no-underline">
+                  View all notifications <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
             )}
@@ -828,8 +913,10 @@ const Navbar = () => {
 
         {isLoggedIn ? (
           <div className="relative" ref={userMenuRef}>
-            <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center justify-center w-9 h-9 rounded-full hover:bg-foreground/[0.06] transition-colors ml-1">
+            <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full hover:bg-foreground/[0.06] transition-colors ml-1">
               <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-[0.7rem] font-bold text-accent">{userInitials}</div>
+              <span className="text-[0.82rem] font-medium hidden lg:inline">{userDisplay}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
             </button>
             {userMenuOpen && (
               <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[232px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]">
