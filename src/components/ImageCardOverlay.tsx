@@ -110,7 +110,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
               onClick={handleQuickSave}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[0.72rem] font-semibold backdrop-blur-sm transition-all ${
                 quickSaved
-                  ? "bg-green-500/90 text-primary-foreground"
+                  ? "bg-accent text-primary-foreground"
                   : "bg-primary-foreground/[0.18] text-primary-foreground hover:bg-primary-foreground/[0.38]"
               }`}
             >
