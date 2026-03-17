@@ -1339,10 +1339,10 @@ const DashboardPage = () => {
       {/* Mobile Nav */}
       <div className="flex items-center gap-2 mb-6 lg:hidden overflow-x-auto pb-2 no-scrollbar">
         {[
-          { id: "overview", label: "Dashboard" },
+          { id: "overview", label: "Overview" },
           { id: "media", label: "Media" },
-          { id: "galleries", label: "Collections" },
           { id: "earnings", label: "Earnings" },
+          { id: "ads", label: "Ads" },
           { id: "notifications", label: "Notifications" },
           { id: "settings", label: "Settings" },
         ].map(item => (
