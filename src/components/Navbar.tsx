@@ -9,7 +9,6 @@ import {
   Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import Logo from "@/components/Logo";
 
 type NotifEntry = {
   id: string;
@@ -626,13 +625,15 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
 
       {/* Logo — hidden when sidebar has logo */}
       {!hideLogo && (
-        <div className="hidden md:flex items-center shrink-0">
-          <Logo />
+        <div className="hidden md:flex items-center gap-0 shrink-0">
+          <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
+            Real<span className="text-accent">.</span>Art
+          </Link>
         </div>
       )}
-      <div className="absolute left-1/2 -translate-x-1/2 md:hidden">
-        <Logo />
-      </div>
+      <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0 absolute left-1/2 -translate-x-1/2 md:hidden">
+        Real<span className="text-accent">.</span>Art
+      </Link>
 
 
       {/* Mobile: 🔍 right */}
