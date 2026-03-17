@@ -29,6 +29,7 @@ interface ImagePrompts {
 
 const UploadPage = () => {
   const navigate = useNavigate();
+  useEffect(() => { try { sessionStorage.setItem("ra_visited_upload", "1"); } catch {} }, []);
   const { toast } = useToast();
   const [publishing, setPublishing] = useState(false);
   const [step, setStep] = useState(0);
@@ -186,6 +187,45 @@ const UploadPage = () => {
     setPublishing(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
+
+      // Fallback: save to collectionStore for demo/logged-in-locally users
+      const isLocalAuth = (() => { try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; } })();
+
+      if (!user && isLocalAuth && files.length > 0) {
+        const { addCollection, addItemToCollection } = await import("@/lib/collectionStore");
+        const demoPhotos = ["photo-1618005182384-a83a8bd57fbe", "photo-1557682250-33bd709cbe85", "photo-1604881991720-f91add269bed", "photo-1541701494587-cb58502866ab"];
+
+        const col = addCollection({
+          title: title || `Upload ${new Date().toLocaleDateString()}`,
+          description: "",
+          type: "published" as const,
+          visibility: visibility as "public" | "private",
+          members: 0,
+          collaborators: [],
+          slug: (title || "upload").toLowerCase().replace(/\s+/g, "-"),
+          imageCount: files.length, videoCount: 0, musicCount: 0,
+          thumbs: [], items: [],
+          createdAt: new Date().toISOString(),
+        });
+
+        files.forEach((_, i) => {
+          addItemToCollection(col.id, {
+            imageId: `upload-${Date.now()}-${i}`,
+            photo: demoPhotos[i % demoPhotos.length],
+            title: title || `Image ${i + 1}`,
+          });
+        });
+
+        toast({ title: "Published!", description: `${files.length} image${files.length > 1 ? "s" : ""} added to your collection.` });
+        try {
+          localStorage.setItem("ra_uploads", String(parseInt(localStorage.getItem("ra_uploads") || "0", 10) + 1));
+          localStorage.removeItem("ra_new_user");
+        } catch {}
+        navigate(`/collections/${col.id}`);
+        setPublishing(false);
+        return;
+      }
+
       if (!user) {
         toast({ title: "Please log in", description: "You need to be logged in to upload art.", variant: "destructive" });
         setPublishing(false);

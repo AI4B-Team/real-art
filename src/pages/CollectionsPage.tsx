@@ -695,6 +695,8 @@ export default function CollectionsPage() {
 
   const refresh = () => setMyCollections(getCollections());
 
+  useEffect(() => { try { sessionStorage.setItem("ra_visited_collections", "1"); } catch {} }, []);
+
   useEffect(() => {
     const sync = () => refresh();
     window.addEventListener("ra_collections_changed", sync);
