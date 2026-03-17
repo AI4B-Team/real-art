@@ -5,7 +5,8 @@ import {
   Compass, Image, Video, Music, LayoutDashboard, DollarSign,
   LogOut, Settings, Bookmark, TrendingUp, FolderOpen, Bell,
   Megaphone, LayoutGrid, User, Heart, Download, MessageCircle,
-  RefreshCw, Award, Eye, Check, ArrowRight, UserPlus
+  RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
+  Clock, Flame, ArrowUpRight, Hash
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
