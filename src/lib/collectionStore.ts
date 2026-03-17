@@ -288,17 +288,29 @@ function seedDefaults(): UnifiedCollection[] {
       items: [], createdAt: new Date(Date.now() - 20 * 86400000).toISOString(),
     },
     {
-      id: "uc_saved_1", title: "Inspiration", description: "Images that inspire my work.",
+      id: "uc_saved_1", title: "Cosmic Dreamscape", description: "",
       type: "saved", visibility: "private", coverPhoto: "photo-1618005182384-a83a8bd57fbe",
-      collaborators: [], members: 0, slug: "inspiration",
+      collaborators: [], members: 0, slug: "cosmic-dreamscape",
       imageCount: 3, videoCount: 0, musicCount: 0,
-      thumbs: ["photo-1618005182384-a83a8bd57fbe", "photo-1557682250-33bd709cbe85", "photo-1579546929518-9e396f3cc809"],
+      thumbs: ["photo-1618005182384-a83a8bd57fbe", "photo-1462275646964-a0e3386b89fa", "photo-1579546929518-9e396f3cc809"],
       items: [
         { imageId: "0", photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", savedAt: new Date(Date.now() - 5 * 86400000).toISOString() },
-        { imageId: "4", photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", savedAt: new Date(Date.now() - 3 * 86400000).toISOString() },
+        { imageId: "7", photo: "photo-1462275646964-a0e3386b89fa", title: "Celestial Dance", savedAt: new Date(Date.now() - 3 * 86400000).toISOString() },
         { imageId: "8", photo: "photo-1579546929518-9e396f3cc809", title: "Cyberpunk City", savedAt: new Date(Date.now() - 1 * 86400000).toISOString() },
       ],
       createdAt: new Date(Date.now() - 7 * 86400000).toISOString(),
+    },
+    {
+      id: "uc_saved_2", title: "Color Studies", description: "Palettes and gradients I love.",
+      type: "saved", visibility: "private", coverPhoto: "photo-1557682250-33bd709cbe85",
+      collaborators: [], members: 0, slug: "color-studies",
+      imageCount: 2, videoCount: 0, musicCount: 0,
+      thumbs: ["photo-1557682250-33bd709cbe85", "photo-1576091160550-2173dba999ef"],
+      items: [
+        { imageId: "4", photo: "photo-1557682250-33bd709cbe85", title: "Neon Boulevard", savedAt: new Date(Date.now() - 10 * 86400000).toISOString() },
+        { imageId: "11", photo: "photo-1576091160550-2173dba999ef", title: "Abstract Fluid", savedAt: new Date(Date.now() - 8 * 86400000).toISOString() },
+      ],
+      createdAt: new Date(Date.now() - 12 * 86400000).toISOString(),
     },
   ];
   saveCollections(d);
