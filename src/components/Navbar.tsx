@@ -201,7 +201,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) setMenuOpen(false);
       if (communitiesRef.current && !communitiesRef.current.contains(e.target as Node)) setCommunitiesOpen(false);
       if (navSearchDropRef.current && !navSearchDropRef.current.contains(e.target as Node)) setNavSearchDropOpen(false);
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) { setUserMenuOpen(false); setMenuPanel("main"); setLangSearch(""); }
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
       if (searchSuggestRef.current && !searchSuggestRef.current.contains(e.target as Node)) setSearchSuggestOpen(false);
       
