@@ -796,7 +796,7 @@ const Navbar = () => {
           <div className="relative" ref={createMenuRef}>
             <div className="flex items-center">
               <Link to="/create" className="flex items-center gap-1.5 px-4 py-2 rounded-l-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
-                <Upload className="w-3.5 h-3.5" /> Create
+                <Sparkles className="w-3.5 h-3.5" /> Create
               </Link>
               <button onClick={() => setCreateMenuOpen(!createMenuOpen)}
                 className="flex items-center justify-center h-[36px] w-[30px] bg-accent text-primary-foreground rounded-r-lg border-l border-primary-foreground/20 hover:bg-accent/85 transition-colors">
