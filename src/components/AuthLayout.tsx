@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import AppSidebar from "@/components/AppSidebar";
 import { LayoutContext } from "@/components/LayoutContext";
+import { useQuickView } from "@/context/QuickViewContext";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,7 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [userOverride, setUserOverride] = useState(false);
+  const { isOpen: quickViewOpen } = useQuickView();
   const location = useLocation();
 
   useEffect(() => {
@@ -31,14 +33,13 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   }, [location.pathname]);
 
   // Auto-collapse sidebar on certain routes
-  const shouldAutoCollapse = COLLAPSED_SIDEBAR_PATTERNS.some(p => p.test(location.pathname));
+  const shouldAutoCollapse = COLLAPSED_SIDEBAR_PATTERNS.some(p => p.test(location.pathname)) || quickViewOpen;
 
   useEffect(() => {
     if (shouldAutoCollapse) {
       setSidebarCollapsed(true);
       setUserOverride(false);
     } else {
-      // Restore expanded when navigating away from auto-collapse routes
       if (!userOverride) {
         setSidebarCollapsed(false);
       }
