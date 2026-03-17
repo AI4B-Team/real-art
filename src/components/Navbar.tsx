@@ -129,6 +129,14 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   const [activeIndex, setActiveIndex] = useState(-1);
   const [ghostText, setGhostText] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [menuPanel, setMenuPanel] = useState<"main" | "language" | "theme">("main");
+  const [activeTheme, setActiveTheme] = useState<"light" | "dark" | "system">(() => {
+    try { return (localStorage.getItem("ra_theme") as "light" | "dark" | "system") ?? "light"; } catch { return "light"; }
+  });
+  const [activeLang, setActiveLang] = useState(() => {
+    try { return localStorage.getItem("ra_lang") ?? "en"; } catch { return "en"; }
+  });
+  const [langSearch, setLangSearch] = useState("");
   const [notifications, setNotifications] = useState(initialNotifs);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifFilter, setNotifFilter] = useState<"all" | "unread">("all");
