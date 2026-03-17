@@ -28,6 +28,7 @@ import LeaderboardPage from "./pages/LeaderboardPage";
 
 // Round 3 — Creator Tools
 import UploadPage from "./pages/UploadPage";
+import CreatePage from "./pages/CreatePage";
 import CreateGalleryPage from "./pages/CreateGalleryPage";
 import PromptLibraryPage from "./pages/PromptLibraryPage";
 import AffiliatesPage from "./pages/AffiliatesPage";
@@ -94,7 +95,7 @@ const App = () => (
             <Route path="/topic/:slug" element={<TopicPage />} />
 
             {/* Round 3 — Creator Tools */}
-            <Route path="/create" element={<UploadPage />} />
+            <Route path="/create" element={<CreatePage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/create-gallery" element={<CreateGalleryPage />} />
             <Route path="/prompts" element={<PromptLibraryPage />} />
