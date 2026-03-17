@@ -113,6 +113,7 @@ const App = () => (
             {/* Round 5 — Auth + Dashboard */}
             <Route path="/signup" element={<SignUpPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/welcome" element={<WelcomePage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/dashboard/collections/:id" element={<DashboardCollectionPage />} />
             <Route path="/ads" element={<AdsPage />} />
