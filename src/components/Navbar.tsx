@@ -110,7 +110,7 @@ const topicPills: Record<string, string[]> = {
   Music: ["lo-fi", "ambient", "orchestral", "chill", "dark"],
 };
 
-const Navbar = () => {
+const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sidebarOffset?: number }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -610,7 +610,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[600] h-16 px-4 md:px-12 flex items-center justify-between bg-background border-b border-foreground/[0.08]">
+    <nav className="fixed top-0 right-0 z-[600] h-16 px-4 md:px-12 flex items-center justify-between bg-background border-b border-foreground/[0.08]" style={{ left: sidebarOffset ? `${sidebarOffset}px` : 0 }}>
       {/* Mobile: ☰ left */}
       <div className="md:hidden relative" ref={menuRef}>
         <button onClick={() => setMenuOpen(!menuOpen)} className="w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
@@ -623,12 +623,14 @@ const Navbar = () => {
         )}
       </div>
 
-      {/* Logo */}
-      <div className="hidden md:flex items-center gap-0 shrink-0">
-        <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
-          Real<span className="text-accent">.</span>Art
-        </Link>
-      </div>
+      {/* Logo — hidden when sidebar has logo */}
+      {!hideLogo && (
+        <div className="hidden md:flex items-center gap-0 shrink-0">
+          <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
+            Real<span className="text-accent">.</span>Art
+          </Link>
+        </div>
+      )}
       <Link to="/" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0 absolute left-1/2 -translate-x-1/2 md:hidden">
         Real<span className="text-accent">.</span>Art
       </Link>
