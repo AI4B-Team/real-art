@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import AppSidebar from "@/components/AppSidebar";
 import { LayoutContext } from "@/components/LayoutContext";
+import { useQuickView } from "@/context/QuickViewContext";
 
 interface AuthLayoutProps {
   children: React.ReactNode;
