@@ -338,7 +338,7 @@ const Navbar = () => {
     { icon: BarChart3, label: "Leaderboard", to: "/leaderboard" },
   ];
   const createLinks = [
-    { icon: Sparkles, label: "REAL CREATOR", to: "/real-creator" },
+    { icon: Sparkles, label: "REAL CREATOR", to: "/create" },
     { icon: Upload, label: "Upload Art", to: "/upload" },
   ];
   const infoLinks = [{ icon: FileText, label: "License Info", to: "/license" }];
