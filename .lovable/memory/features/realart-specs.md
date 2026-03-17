@@ -9,4 +9,5 @@ Spec 6 - Content Pages: BlogPage reader modal, ChallengeDetailPage submission, P
 Spec 7 - Creator Discovery: CreatorPage follow persist, LeaderboardPage user highlight, ExplorePage empty state, TopicPage QuickView, CreatorsPage sort
 Spec 8 - Upload & Image: UploadPage localStorage fallback, ImagePage download anchor, QuickViewPanel download/share wiring
 Sidebar+Media standalone spec: DONE — Sidebar reorder (Dashboard→Explore→Media→Collections→Communities→Challenges→divider→Ads→Earnings), removed My Collections & Leaderboard from sidebar, Tooltips replaced with title attr, DashboardPage navItems updated, Media standalone filter added
-Smart Routing + Welcome spec: DONE — WelcomePage 3-step onboarding, SignUpPage sets ra_new_user=1 & navigates to /welcome, Index smart routing (new user→/welcome, returning creator→/dashboard, browser→homepage), UploadPage increments ra_uploads & clears ra_new_user
+Smart Routing + Welcome spec: DONE — WelcomePage 3-step onboarding, SignUpPage sets ra_new_user=1 & navigates to /welcome, Index smart routing, UploadPage increments ra_uploads
+CreatePage spec: DONE — AI creation studio (Image/Video/Audio tabs), Navbar split into separate Create+Upload buttons, /create route now points to CreatePage
