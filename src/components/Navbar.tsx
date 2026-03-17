@@ -71,6 +71,8 @@ const Navbar = () => {
     try { return JSON.parse(localStorage.getItem("ra_recent_searches") || "[]"); } catch { return []; }
   });
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const createMenuRef = useRef<HTMLDivElement>(null);
+  const [createMenuOpen, setCreateMenuOpen] = useState(false);
   const [notifications, setNotifications] = useState(initialNotifs);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifFilter, setNotifFilter] = useState<"all" | "unread">("all");
