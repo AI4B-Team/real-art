@@ -110,7 +110,7 @@ const topicPills: Record<string, string[]> = {
   Music: ["lo-fi", "ambient", "orchestral", "chill", "dark"],
 };
 
-const Navbar = () => {
+const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sidebarOffset?: number }) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [communitiesOpen, setCommunitiesOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
