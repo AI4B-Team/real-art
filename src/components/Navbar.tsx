@@ -9,6 +9,7 @@ import {
   Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Logo from "@/components/Logo";
 
 type NotifEntry = {
   id: string;
