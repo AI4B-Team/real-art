@@ -93,6 +93,7 @@ const App = () => (
             <Route path="/topic/:slug" element={<TopicPage />} />
 
             {/* Round 3 — Creator Tools */}
+            <Route path="/create" element={<UploadPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/create-gallery" element={<CreateGalleryPage />} />
             <Route path="/prompts" element={<PromptLibraryPage />} />
