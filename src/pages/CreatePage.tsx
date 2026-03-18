@@ -448,33 +448,31 @@ function PromptBox({
 
           {/* Textarea OR Recording UI */}
           {isListening ? (
-            <div className="flex-1 flex items-center gap-3 py-[6px] mt-[2px] min-h-[36px]">
-              <div className="flex-1 flex flex-col gap-1">
-                <div className="flex items-center gap-3">
-                  <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shrink-0" />
-                  <AudioWaveAnimation />
-                  <span className="text-[0.78rem] text-muted font-medium">Listening…</span>
-                </div>
-                {currentTranscript && (
-                  <p className="text-[0.85rem] text-foreground/70 italic pl-[22px] leading-snug">{currentTranscript}</p>
-                )}
-              </div>
-              <div className="flex items-center gap-1.5 shrink-0">
+            <div className="flex-1 flex flex-col gap-1 py-[6px] mt-[2px] min-h-[36px]">
+              {currentTranscript && (
+                <p className="text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>
+              )}
+              <div className="flex items-center gap-1.5 shrink-0 self-end">
                 <button
                   type="button"
                   onClick={cancelSpeech}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors"
+                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors"
                   title="Cancel"
                 >
-                  <X size={15} />
+                  <X size={14} />
                 </button>
+                <div className="flex items-center gap-1.5 px-1">
+                  <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
+                  <AudioWaveAnimation small />
+                  <span className="text-[0.7rem] text-muted font-medium whitespace-nowrap">Listening…</span>
+                </div>
                 <button
                   type="button"
                   onClick={handleAcceptSpeech}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
                   title="Accept"
                 >
-                  <Check size={15} />
+                  <Check size={14} />
                 </button>
               </div>
             </div>
