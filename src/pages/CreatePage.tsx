@@ -307,7 +307,7 @@ function PromptBox({
                   {typeCfg ? (
                     <typeCfg.icon size={17} className={typeCfg.color} />
                   ) : (
-                    <SlidersHorizontal size={17} className="text-muted" />
+                    <SlidersHorizontal size={17} className="text-foreground" />
                   )}
                 </button>
               </TooltipTrigger>
