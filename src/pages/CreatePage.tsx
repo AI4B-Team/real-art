@@ -313,7 +313,7 @@ function GenerationInput({ selectedType, onGenerationStart }: { selectedType: Co
                   </TooltipTrigger>
                   <TooltipContent>Model</TooltipContent>
                 </Tooltip>
-                <PopoverContent className="w-52 p-1.5" align="start">
+                <PopoverContent className="w-52 p-1.5" align="start" side="bottom">
                   {currentModels.map(m=>(
                     <button key={m} onClick={()=>{setSelectedModel(m);setModelOpen(false);}}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedModel===m?"bg-foreground text-primary-foreground":"hover:bg-foreground/[0.04] text-foreground"}`}>
