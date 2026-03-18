@@ -155,7 +155,7 @@ const ExplorePage = () => {
   const initialQuery = searchParams.get("q") || "";
   const { open } = useQuickView();
   const [query, setQuery] = useState(initialQuery);
-  const [activeTab, setActiveTab] = useState("for-you");
+  
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeType, setActiveType] = useState("Images");
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
