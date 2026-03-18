@@ -5,7 +5,7 @@ import {
   Image, Video, Music, Palette, Calendar, FileText, Code,
   // Prompt box icons
   ChevronDown, ChevronUp, Send, Mic, MicOff, Sparkles, Shuffle,
-  X, Check, Loader2, Zap,
+  X, Check, Loader2, Zap, ImageIcon,
   // Sub-mode icons
   Layers, Pencil, RefreshCw, Camera,
   Play, MessageCircle, Move, User, BookOpen, Presentation,
