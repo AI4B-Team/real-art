@@ -10,7 +10,7 @@ interface AuthLayoutProps {
 }
 
 const NO_SIDEBAR_ROUTES = ["/login", "/signup"];
-const COLLAPSED_SIDEBAR_PATTERNS = [/^\/image\//];
+const COLLAPSED_SIDEBAR_PATTERNS = [/^\/image\//, /^\/explore$/];
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
