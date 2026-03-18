@@ -293,7 +293,7 @@ function PromptBox({
       <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background shadow-sm overflow-visible transition-all duration-200 ${borderCls}`}>
 
         {/* Textarea row */}
-        <div className="flex items-center gap-3 px-4 pt-4 pb-2 min-h-[56px]">
+        <div className="flex items-center gap-3 px-4 pt-3 pb-2 min-h-[56px]">
           {/* LEFT: type selector trigger — always visible */}
           <div className="relative shrink-0" ref={typeRef}>
             <Tooltip>
@@ -341,7 +341,7 @@ function PromptBox({
             onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
             placeholder={placeholder}
             rows={1}
-            className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[7px]"
+            className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px]"
             style={{ height: "36px" }}
             onInput={e => {
               const el = e.currentTarget;
