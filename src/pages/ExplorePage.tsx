@@ -221,8 +221,32 @@ const ExplorePage = () => {
     <PageShell>
 
 
+        {/* Feed tabs */}
+        <div className="px-4 md:px-5 pt-5 pb-0">
+          <div className="max-w-[1440px] mx-auto flex items-center gap-1">
+            {feedTabs.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-1.5 px-5 py-2 rounded-lg text-[0.84rem] font-semibold transition-all cursor-pointer border ${
+                    isActive
+                      ? "bg-foreground text-primary-foreground border-foreground"
+                      : "bg-transparent border-transparent text-muted hover:text-foreground hover:bg-muted/30"
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Filter bar */}
-        <div className="px-4 md:px-5 pt-5 pb-6">
+        <div className="px-4 md:px-5 pt-4 pb-6">
           <div className="max-w-[1440px] mx-auto flex items-center gap-2.5 overflow-x-auto no-scrollbar">
             <div className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase text-muted mr-1 flex items-center gap-1.5 shrink-0">
               <Filter className="w-3 h-3" /> Filter
