@@ -8,6 +8,7 @@ Spec 5 - Dashboard: 7 sections (overview/media/collections/earnings/ads/notifica
 Spec 6 - Content Pages: BlogPage reader modal, ChallengeDetailPage submission, PromptLibraryPage pack detail, CommunityDetailPage feed tab
 Spec 7 - Creator Discovery: CreatorPage follow persist, LeaderboardPage user highlight, ExplorePage empty state, TopicPage QuickView, CreatorsPage sort
 Spec 8 - Upload & Image: UploadPage localStorage fallback, ImagePage download anchor, QuickViewPanel download/share wiring
+VoiceImageSearch spec: DONE — Mic icon + SpeechRecognition full-screen overlay with ripple, Camera icon + dark modal (860px, 6 modes: search/reimagine/upscale/prompt/edit/video), drag-drop zone, file picker, URL paste, preview with action button
 Sidebar+Media standalone spec: DONE — Sidebar reorder (Dashboard→Explore→Media→Collections→Communities→Challenges→divider→Ads→Earnings), removed My Collections & Leaderboard from sidebar, Tooltips replaced with title attr, DashboardPage navItems updated, Media standalone filter added
 Smart Routing + Welcome spec: DONE — WelcomePage 3-step onboarding, SignUpPage sets ra_new_user=1 & navigates to /welcome, Index smart routing, UploadPage increments ra_uploads
 CreatePage spec: DONE — AI creation studio (Image/Video/Audio tabs), Navbar split into separate Create+Upload buttons, /create route now points to CreatePage
