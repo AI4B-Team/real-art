@@ -1130,141 +1130,144 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               </button>
             </div>
 
-            {/* Mode pills */}
-            <div className="px-6 pt-4 pb-3 flex flex-wrap gap-1.5">
-              {([
-                { id: "search" as const, icon: Search, label: "Find Similar", desc: "Discover visually related images", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-950/40" },
-                { id: "reimagine" as const, icon: RefreshCw, label: "Reimagine", desc: "Generate AI variations", color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-950/40" },
-                { id: "upscale" as const, icon: ArrowUpFromLine, label: "Upscale 4×", desc: "Enhance to ultra-HD resolution", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/40" },
-                { id: "prompt" as const, icon: ScanText, label: "Extract Prompt", desc: "Reverse-engineer the AI prompt", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/40" },
-                { id: "edit" as const, icon: SlidersHorizontal, label: "Edit with AI", desc: "Modify using natural language", color: "text-accent", bg: "bg-accent/10" },
-                { id: "video" as const, icon: Video, label: "Animate", desc: "Turn this image into a video loop", color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-950/40" },
-              ]).map(mode => (
-                <button
-                  key={mode.id}
-                  onClick={() => setImageSearchMode(mode.id)}
-                  className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left transition-all group ${imageSearchMode === mode.id ? "bg-foreground text-primary-foreground shadow-sm" : "hover:bg-foreground/[0.04] text-foreground"}`}
-                >
-                  <span className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${imageSearchMode === mode.id ? "bg-primary-foreground/20" : mode.bg}`}>
-                    <mode.icon className={`w-3.5 h-3.5 ${imageSearchMode === mode.id ? "text-primary-foreground" : mode.color}`} />
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-[0.82rem] font-medium block leading-tight">{mode.label}</span>
-                    <span className={`text-[0.7rem] block mt-0.5 ${imageSearchMode === mode.id ? "text-primary-foreground/60" : "text-muted"}`}>{mode.desc}</span>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            {/* Content area */}
-            <div className="px-6 pb-6 flex-1 flex flex-col">
-              {imageSearchPrev ? (
-                <div className="flex-1 flex flex-col items-center gap-4">
-                  {/* Preview */}
-                  <div className="relative">
-                    <img src={imageSearchPrev} alt="Preview" className="max-h-[240px] rounded-xl object-contain border border-foreground/[0.08]" />
-                    <button onClick={() => { setImageSearchFile(null); setImageSearchPrev(null); }} className="absolute -top-2.5 -right-2.5 w-7 h-7 rounded-full bg-foreground text-primary-foreground flex items-center justify-center hover:bg-accent transition-colors shadow-md">
-                      <X className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                  {/* File info */}
-                  <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-foreground/[0.04] border border-foreground/[0.08] w-full max-w-sm">
-                    <ImagePlus className="w-4 h-4 text-muted shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <span className="text-[0.78rem] text-foreground block truncate">{imageSearchFile?.name || "image.jpg"}</span>
-                      <span className="text-[0.68rem] text-muted">{imageSearchFile ? (imageSearchFile.size / 1024 / 1024).toFixed(2) + " MB" : ""}</span>
-                    </div>
-                    <button onClick={(e) => { e.stopPropagation(); imageInputRef.current?.click(); }} className="text-[0.74rem] font-medium text-accent hover:underline shrink-0">Change</button>
-                  </div>
-                  {/* CTA */}
-                  <button onClick={handleImageSearchAction} className="flex items-center justify-center gap-2 w-full max-w-sm py-3 rounded-xl bg-accent text-white font-semibold text-[0.88rem] hover:bg-accent/85 transition-colors">
-                    {imageSearchMode === "search" ? <><Search className="w-4 h-4" />Find Similar Images</>
-                      : imageSearchMode === "reimagine" ? <><RefreshCw className="w-4 h-4" />Reimagine This Image</>
-                      : imageSearchMode === "upscale" ? <><ArrowUpFromLine className="w-4 h-4" />Upscale to HD</>
-                      : imageSearchMode === "prompt" ? <><ScanText className="w-4 h-4" />Extract AI Prompt</>
-                      : imageSearchMode === "edit" ? <><SlidersHorizontal className="w-4 h-4" />Edit with AI</>
-                      : <><Video className="w-4 h-4" />Animate This Image</>}
-                  </button>
-                </div>
-              ) : (
-                <div className="flex-1 flex flex-col gap-4">
-                  {/* Drop zone */}
-                  <div
-                    onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                    onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false); }}
-                    onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f); }}
-                    onClick={() => imageInputRef.current?.click()}
-                    className={`relative flex-1 flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200 min-h-[220px] ${
-                      dragOver
-                        ? "border-accent bg-accent/[0.06] scale-[1.01]"
-                        : "border-foreground/[0.14] hover:border-foreground/30 hover:bg-foreground/[0.02]"
-                    }`}
+            {/* Two-panel layout */}
+            <div className="flex flex-1 overflow-hidden">
+              {/* Left panel - Mode pills */}
+              <div className="w-[320px] shrink-0 border-r border-foreground/[0.08] px-4 py-4 flex flex-col gap-1">
+                {([
+                  { id: "search" as const, icon: Search, label: "Find Similar", desc: "Discover visually related images", color: "text-blue-500", bg: "bg-blue-50 dark:bg-blue-950/40" },
+                  { id: "reimagine" as const, icon: RefreshCw, label: "Reimagine", desc: "Generate AI variations", color: "text-violet-500", bg: "bg-violet-50 dark:bg-violet-950/40" },
+                  { id: "upscale" as const, icon: ArrowUpFromLine, label: "Upscale 4×", desc: "Enhance to ultra-HD resolution", color: "text-emerald-500", bg: "bg-emerald-50 dark:bg-emerald-950/40" },
+                  { id: "prompt" as const, icon: ScanText, label: "Extract Prompt", desc: "Reverse-engineer the AI prompt", color: "text-amber-500", bg: "bg-amber-50 dark:bg-amber-950/40" },
+                  { id: "edit" as const, icon: SlidersHorizontal, label: "Edit with AI", desc: "Modify using natural language", color: "text-accent", bg: "bg-accent/10" },
+                  { id: "video" as const, icon: Video, label: "Animate", desc: "Turn this image into a video loop", color: "text-pink-500", bg: "bg-pink-50 dark:bg-pink-950/40" },
+                ]).map(mode => (
+                  <button
+                    key={mode.id}
+                    onClick={() => setImageSearchMode(mode.id)}
+                    className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left transition-all group ${imageSearchMode === mode.id ? "bg-foreground text-primary-foreground shadow-sm" : "hover:bg-foreground/[0.04] text-foreground"}`}
                   >
-                    {dragOver && (
-                      <div className="flex flex-col items-center gap-2">
-                        <ImagePlus className="w-7 h-7 text-accent" />
-                        <span className="text-[0.85rem] font-medium text-accent">Drop to upload</span>
-                      </div>
-                    )}
-                    {!dragOver && (
-                      <>
-                        <div className="w-12 h-12 rounded-2xl bg-foreground/[0.05] flex items-center justify-center">
-                          <ImagePlus className="w-7 h-7 text-muted" />
-                        </div>
-                        <div className="text-center">
-                          <p className="text-[0.88rem] text-foreground font-medium mb-0.5">Drop an image here</p>
-                          <p className="text-[0.74rem] text-muted">or click to browse files</p>
-                        </div>
-                        <button onClick={(e) => { e.stopPropagation(); imageInputRef.current?.click(); }} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground/[0.07] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.12] transition-colors">
-                          <Upload className="w-3.5 h-3.5" /> Choose File
-                        </button>
-                        <p className="text-[0.68rem] text-muted">JPG, PNG, WEBP · max 60 MB · min 224×224 px</p>
-                      </>
-                    )}
-                  </div>
-                  <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleImageFile(f); e.target.value = ""; }} />
+                    <span className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${imageSearchMode === mode.id ? "bg-primary-foreground/20" : mode.bg}`}>
+                      <mode.icon className={`w-3.5 h-3.5 ${imageSearchMode === mode.id ? "text-primary-foreground" : mode.color}`} />
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[0.82rem] font-medium block leading-tight">{mode.label}</span>
+                      <span className={`text-[0.7rem] block mt-0.5 ${imageSearchMode === mode.id ? "text-primary-foreground/60" : "text-muted"}`}>{mode.desc}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
 
-                  {/* URL input */}
-                  <div className="text-center">
-                    <p className="text-[0.72rem] text-muted mb-2">or paste an image URL</p>
-                    <div className="flex items-center gap-2 max-w-sm mx-auto">
-                      <div className="flex-1 flex items-center gap-2 bg-foreground/[0.04] border border-foreground/[0.1] rounded-xl px-3 py-2.5">
-                        <Link2 className="w-3.5 h-3.5 text-muted shrink-0" />
-                        <input
-                          type="text"
-                          placeholder="https://example.com/image.jpg"
-                          className="flex-1 bg-transparent border-none outline-none text-[0.82rem] text-foreground placeholder:text-muted/50 font-body"
-                          onKeyDown={async (e) => {
-                            if (e.key !== "Enter") return;
-                            const url = (e.target as HTMLInputElement).value.trim();
-                            if (!url) return;
-                            try {
-                              const res = await fetch(url);
-                              const blob = await res.blob();
-                              handleImageFile(new File([blob], "image.jpg", { type: blob.type }));
-                            } catch { setVoiceError("Couldn't load that image URL."); }
-                          }}
-                        />
-                      </div>
-                      <button
-                        onClick={async (e) => {
-                          const input = (e.currentTarget.previousElementSibling?.querySelector("input") as HTMLInputElement);
-                          if (!input?.value.trim()) return;
-                          try {
-                            const res = await fetch(input.value.trim());
-                            const blob = await res.blob();
-                            handleImageFile(new File([blob], "image.jpg", { type: blob.type }));
-                            input.value = "";
-                          } catch { setVoiceError("Couldn't load that URL."); }
-                        }}
-                        className="px-4 py-2.5 rounded-xl bg-foreground/[0.07] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.12] transition-colors"
-                      >
-                        Load
+              {/* Right panel - Drop zone / Preview */}
+              <div className="flex-1 px-6 py-4 flex flex-col">
+                {imageSearchPrev ? (
+                  <div className="flex-1 flex flex-col items-center justify-center gap-4">
+                    {/* Preview */}
+                    <div className="relative">
+                      <img src={imageSearchPrev} alt="Preview" className="max-h-[240px] rounded-xl object-contain border border-foreground/[0.08]" />
+                      <button onClick={() => { setImageSearchFile(null); setImageSearchPrev(null); }} className="absolute -top-2.5 -right-2.5 w-7 h-7 rounded-full bg-foreground text-primary-foreground flex items-center justify-center hover:bg-accent transition-colors shadow-md">
+                        <X className="w-3.5 h-3.5" />
                       </button>
                     </div>
+                    {/* File info */}
+                    <div className="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-foreground/[0.04] border border-foreground/[0.08] w-full max-w-sm">
+                      <ImagePlus className="w-4 h-4 text-muted shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[0.78rem] text-foreground block truncate">{imageSearchFile?.name || "image.jpg"}</span>
+                        <span className="text-[0.68rem] text-muted">{imageSearchFile ? (imageSearchFile.size / 1024 / 1024).toFixed(2) + " MB" : ""}</span>
+                      </div>
+                      <button onClick={(e) => { e.stopPropagation(); imageInputRef.current?.click(); }} className="text-[0.74rem] font-medium text-accent hover:underline shrink-0">Change</button>
+                    </div>
+                    {/* CTA */}
+                    <button onClick={handleImageSearchAction} className="flex items-center justify-center gap-2 w-full max-w-sm py-3 rounded-xl bg-accent text-white font-semibold text-[0.88rem] hover:bg-accent/85 transition-colors">
+                      {imageSearchMode === "search" ? <><Search className="w-4 h-4" />Find Similar Images</>
+                        : imageSearchMode === "reimagine" ? <><RefreshCw className="w-4 h-4" />Reimagine This Image</>
+                        : imageSearchMode === "upscale" ? <><ArrowUpFromLine className="w-4 h-4" />Upscale to HD</>
+                        : imageSearchMode === "prompt" ? <><ScanText className="w-4 h-4" />Extract AI Prompt</>
+                        : imageSearchMode === "edit" ? <><SlidersHorizontal className="w-4 h-4" />Edit with AI</>
+                        : <><Video className="w-4 h-4" />Animate This Image</>}
+                    </button>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div className="flex-1 flex flex-col gap-4">
+                    {/* Drop zone */}
+                    <div
+                      onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                      onDragLeave={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setDragOver(false); }}
+                      onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f); }}
+                      onClick={() => imageInputRef.current?.click()}
+                      className={`relative flex-1 flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed cursor-pointer transition-all duration-200 min-h-[220px] ${
+                        dragOver
+                          ? "border-accent bg-accent/[0.06] scale-[1.01]"
+                          : "border-foreground/[0.14] hover:border-foreground/30 hover:bg-foreground/[0.02]"
+                      }`}
+                    >
+                      {dragOver && (
+                        <div className="flex flex-col items-center gap-2">
+                          <ImagePlus className="w-7 h-7 text-accent" />
+                          <span className="text-[0.85rem] font-medium text-accent">Drop to upload</span>
+                        </div>
+                      )}
+                      {!dragOver && (
+                        <>
+                          <div className="w-12 h-12 rounded-2xl bg-foreground/[0.05] flex items-center justify-center">
+                            <ImagePlus className="w-7 h-7 text-muted" />
+                          </div>
+                          <div className="text-center">
+                            <p className="text-[0.88rem] text-foreground font-medium mb-0.5">Drop an image here</p>
+                            <p className="text-[0.74rem] text-muted">or click to browse files</p>
+                          </div>
+                          <button onClick={(e) => { e.stopPropagation(); imageInputRef.current?.click(); }} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground/[0.07] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.12] transition-colors">
+                            <Upload className="w-3.5 h-3.5" /> Choose File
+                          </button>
+                          <p className="text-[0.68rem] text-muted">JPG, PNG, WEBP · max 60 MB · min 224×224 px</p>
+                        </>
+                      )}
+                    </div>
+                    <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleImageFile(f); e.target.value = ""; }} />
+
+                    {/* URL input */}
+                    <div className="text-center">
+                      <p className="text-[0.72rem] text-muted mb-2">or paste an image URL</p>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 flex items-center gap-2 bg-foreground/[0.04] border border-foreground/[0.1] rounded-xl px-3 py-2.5">
+                          <Link2 className="w-3.5 h-3.5 text-muted shrink-0" />
+                          <input
+                            type="text"
+                            placeholder="https://example.com/image.jpg"
+                            className="flex-1 bg-transparent border-none outline-none text-[0.82rem] text-foreground placeholder:text-muted/50 font-body"
+                            onKeyDown={async (e) => {
+                              if (e.key !== "Enter") return;
+                              const url = (e.target as HTMLInputElement).value.trim();
+                              if (!url) return;
+                              try {
+                                const res = await fetch(url);
+                                const blob = await res.blob();
+                                handleImageFile(new File([blob], "image.jpg", { type: blob.type }));
+                              } catch { setVoiceError("Couldn't load that image URL."); }
+                            }}
+                          />
+                        </div>
+                        <button
+                          onClick={async (e) => {
+                            const input = (e.currentTarget.previousElementSibling?.querySelector("input") as HTMLInputElement);
+                            if (!input?.value.trim()) return;
+                            try {
+                              const res = await fetch(input.value.trim());
+                              const blob = await res.blob();
+                              handleImageFile(new File([blob], "image.jpg", { type: blob.type }));
+                              input.value = "";
+                            } catch { setVoiceError("Couldn't load that URL."); }
+                          }}
+                          className="px-4 py-2.5 rounded-xl bg-foreground/[0.07] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.12] transition-colors"
+                        >
+                          Load
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
