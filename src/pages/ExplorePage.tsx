@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal, Image, Video, Music, Sparkles, Users, TrendingUp } from "lucide-react";
+import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal, Image, Video, Music } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import SponsoredCard from "@/components/SponsoredCard";
@@ -133,7 +133,7 @@ const creators = [
 ];
 
 const filters = [
-  "All", "Trending", "New", "Popular", "Abstract", "Portraits", "People",
+  "All", "For You", "Following", "Trending", "New", "Popular", "Abstract", "Portraits", "People",
   "Nature", "Architecture", "Fantasy", "3D Art", "Fashion", "Sci-Fi",
   "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal",
 ];
@@ -149,18 +149,13 @@ const searchTypes = [
   { label: "Music", icon: Music },
 ];
 
-const feedTabs = [
-  { id: "for-you", label: "For You", icon: Sparkles },
-  { id: "following", label: "Following", icon: Users },
-  { id: "trending", label: "Trending", icon: TrendingUp },
-];
 
 const ExplorePage = () => {
   const [searchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const { open } = useQuickView();
   const [query, setQuery] = useState(initialQuery);
-  const [activeTab, setActiveTab] = useState("for-you");
+  
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeType, setActiveType] = useState("Images");
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
@@ -206,20 +201,21 @@ const ExplorePage = () => {
   const filteredImages = (() => {
     const q = query.trim().toLowerCase();
     const cat = activeFilter.toLowerCase();
+
+    // "For You" and "Following" are special personalization filters
+    const isPersonalization = activeFilter === "For You" || activeFilter === "Following";
+
     let base = imageData.filter(img => {
       const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
+      if (isPersonalization) return matchQuery;
       const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
       return matchQuery && matchCat;
     });
 
-    // Tab-based ordering (simulated personalization)
-    if (activeTab === "trending") {
-      base = [...base].sort((a, b) => (downloadWeights[imageData.indexOf(b)] || 0) - (downloadWeights[imageData.indexOf(a)] || 0));
-    } else if (activeTab === "following") {
-      // Simulate "following" feed — show a subset with different order
+    // Personalization ordering
+    if (activeFilter === "Following") {
       base = [...base].filter((_, i) => i % 3 === 0 || i % 5 === 0);
-    } else {
-      // "For You" — mix of liked + trending signals
+    } else if (activeFilter === "For You") {
       base = [...base].sort((a, b) => {
         const aScore = (likesWeights[imageData.indexOf(a)] || 0) * 2 + (downloadWeights[imageData.indexOf(a)] || 0);
         const bScore = (likesWeights[imageData.indexOf(b)] || 0) * 2 + (downloadWeights[imageData.indexOf(b)] || 0);
@@ -237,32 +233,8 @@ const ExplorePage = () => {
     <PageShell>
 
 
-        {/* Feed tabs */}
-        <div className="px-4 md:px-5 pt-5 pb-0">
-          <div className="max-w-[1440px] mx-auto flex items-center gap-1">
-            {feedTabs.map((tab) => {
-              const Icon = tab.icon;
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-5 py-2 rounded-lg text-[0.84rem] font-semibold transition-all cursor-pointer border ${
-                    isActive
-                      ? "bg-foreground text-primary-foreground border-foreground"
-                      : "bg-transparent border-transparent text-muted hover:text-foreground hover:bg-muted/30"
-                  }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-
         {/* Filter bar */}
-        <div className="px-4 md:px-5 pt-4 pb-6">
+        <div className="px-4 md:px-5 pt-5 pb-6">
           <div className="max-w-[1440px] mx-auto flex items-center gap-2.5 overflow-x-auto no-scrollbar">
             <div className="text-[0.72rem] font-semibold tracking-[0.1em] uppercase text-muted mr-1 flex items-center gap-1.5 shrink-0">
               <Filter className="w-3 h-3" /> Filter
