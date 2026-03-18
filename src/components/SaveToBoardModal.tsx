@@ -29,7 +29,23 @@ interface Props {
   imageTitle?: string;
 }
 
-export default function SaveToBoardModal({
+function ModalBackdrop({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+  const { sidebarCollapsed } = useLayoutContext();
+  // Check if sidebar is visible (logged in state uses sidebar)
+  const isLoggedIn = typeof window !== "undefined" && localStorage.getItem("ra_auth") === "1";
+  const sidebarWidth = isLoggedIn ? (sidebarCollapsed ? 68 : 260) : 0;
+
+  return (
+    <div
+      className="fixed top-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4"
+      style={{ left: sidebarWidth }}
+      onClick={onClose}
+    >
+      {children}
+    </div>
+  );
+}
+
   open,
   onClose,
   imageId = "0",
