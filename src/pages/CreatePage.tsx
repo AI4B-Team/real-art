@@ -345,7 +345,7 @@ function PromptBox({
             style={{ height: "36px" }}
             onInput={e => {
               const el = e.currentTarget;
-              el.style.height = "38px";
+              el.style.height = "36px";
               el.style.height = Math.min(el.scrollHeight, 140) + "px";
             }}
           />
