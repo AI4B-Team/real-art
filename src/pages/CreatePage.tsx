@@ -453,7 +453,7 @@ function PromptBox({
 
                   {/* Type dropdown */}
                   {typeDropdownOpen && (
-                    <div className="absolute bottom-full left-0 mb-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+                    <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
                       {CONTENT_TYPES.map(t => (
                         <button
                           key={t.id}
