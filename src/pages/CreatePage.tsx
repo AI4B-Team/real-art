@@ -562,7 +562,7 @@ const CreatePage = () => {
         {results.length===0 && selectedType && (
           <div className="max-w-[860px] mx-auto mt-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Recent from the community</h2>
+              <h2 className="font-body font-bold text-xl md:text-2xl">Recent From The Community</h2>
               <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">
                 Explore all<ArrowRight size={12}/>
               </Link>
