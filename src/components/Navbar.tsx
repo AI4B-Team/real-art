@@ -8,7 +8,7 @@ import {
   RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
   Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2,
   Sun, Moon, Monitor, Languages, ChevronRight,
-  Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal
+  Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
