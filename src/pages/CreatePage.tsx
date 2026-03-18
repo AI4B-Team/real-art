@@ -568,7 +568,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
               </>
             ) : null}
-            )}
           </div>
 
           {/* Char count */}
