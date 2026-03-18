@@ -892,14 +892,14 @@ export default function CreatePage() {
 
         {/* Tabs */}
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-1 p-1 bg-foreground/[0.04] rounded-xl border border-foreground/[0.06]">
+          <div className="flex items-center gap-1">
             {TABS.map(tab => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${
                   activeTab === tab.id
-                    ? "bg-background text-foreground shadow-sm border border-foreground/[0.08]"
+                    ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]"
                     : "text-muted hover:text-foreground"
                 }`}
               >
