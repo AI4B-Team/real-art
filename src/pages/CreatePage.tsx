@@ -942,7 +942,7 @@ export default function CreatePage() {
                 <p className="text-[0.84rem] text-muted">Use the prompt box above to generate your first {mediaFilter}.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {filteredCreations.map(item => (
                   <CreationCard key={item.id} item={item} />
                 ))}
