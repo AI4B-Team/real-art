@@ -506,7 +506,6 @@ const CreatePage = () => {
           <h1 className="font-display text-[2.2rem] md:text-[2.8rem] font-black tracking-[-0.03em] leading-[1.08] mb-3">
             What Would You Like To Create Today?
           </h1>
-          <p className="text-[0.9rem] text-muted">Describe your vision. Our AI handles the rest.</p>
         </div>
 
         {/* Pills */}
