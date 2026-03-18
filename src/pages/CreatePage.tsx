@@ -475,7 +475,56 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               </div>
             )}
 
-            {/* Textarea OR Recording UI */}
+            {/* Attachment chips for character & references */}
+            {!isListening && (selectedCharacter || references.length > 0) && (
+              <div className="flex-1 flex flex-col gap-1.5 pt-[2px]">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  {selectedCharacter && (() => {
+                    const CHARACTERS = [
+                      { id: "c1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
+                      { id: "c2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
+                      { id: "c3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7" },
+                      { id: "c4", name: "Suki", avatar: "photo-1438761681033-6461ffad8d80" },
+                      { id: "c5", name: "Marcus", avatar: "photo-1506794778202-cad84cf45f1d" },
+                      { id: "c6", name: "Leila", avatar: "photo-1487412720507-e7ab37603c6f" },
+                    ];
+                    const char = CHARACTERS.find(c => c.id === selectedCharacter);
+                    if (!char) return null;
+                    return (
+                      <div className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-lg bg-accent/10 border border-accent/20 text-[0.75rem] font-semibold text-accent">
+                        <img
+                          src={`https://images.unsplash.com/${char.avatar}?w=40&h=40&fit=crop&q=80`}
+                          alt={char.name}
+                          className="w-5 h-5 rounded-full object-cover"
+                        />
+                        {char.name}
+                        <button onClick={() => setSelectedCharacter(null)} className="ml-0.5 hover:text-accent/70"><X size={11} /></button>
+                      </div>
+                    );
+                  })()}
+                  {references.map(ref => (
+                    <div key={ref.id} className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-lg bg-foreground/[0.06] border border-foreground/[0.08] text-[0.75rem] font-medium text-foreground/70">
+                      <img src={ref.src} alt={ref.name} className="w-5 h-5 rounded object-cover" />
+                      <span className="max-w-[80px] truncate">{ref.name}</span>
+                      <button onClick={() => setReferences(prev => prev.filter(r => r.id !== ref.id))} className="ml-0.5 hover:text-foreground"><X size={11} /></button>
+                    </div>
+                  ))}
+                </div>
+                <textarea
+                  ref={textareaRef}
+                  value={prompt}
+                  onChange={e => setPrompt(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                  placeholder={placeholder}
+                  rows={1}
+                  className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto"
+                  style={{ height: "36px" }}
+                  onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
+                />
+              </div>
+            )}
+
+            {/* Textarea OR Recording UI (no attachments) */}
             {isListening ? (
               <div className="flex-1 flex flex-col gap-1 py-[6px] mt-[2px] min-h-[36px]">
                 {currentTranscript && <p className="text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
@@ -489,7 +538,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <button type="button" onClick={handleAcceptSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
                 </div>
               </div>
-            ) : (
+            ) : !selectedCharacter && references.length === 0 ? (
               <>
                 <textarea
                   ref={textareaRef}
@@ -518,7 +567,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </div>
                 )}
               </>
-            )}
+            ) : null}
           </div>
 
           {/* Char count */}
