@@ -1,10 +1,15 @@
 import { useState, useEffect } from "react";
-import { X, Plus, Search, Check, Loader2 } from "lucide-react";
+import { X, Plus, Search, Check, Loader2, User } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import CreateCharacterModal from "./CreateCharacterModal";
 
-const PRESET_CHARACTERS = [
-  { id: "none", name: "No Character", avatar: null, desc: "Generate without a character reference" },
+const FEATURED_CHARACTERS = [
+  { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d", desc: "Professional male, 30s, clean-cut" },
+  { id: "f2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb", desc: "Young woman, warm tones, editorial" },
+  { id: "f3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7", desc: "Business casual, confident, modern" },
+  { id: "f4", name: "Suki", avatar: "photo-1438761681033-6461ffad8d80", desc: "Creative, colorful, expressive" },
+  { id: "f5", name: "Marcus", avatar: "photo-1506794778202-cad84cf45f1d", desc: "Athletic build, outdoor style" },
+  { id: "f6", name: "Leila", avatar: "photo-1487412720507-e7ab37603c6f", desc: "Elegant, soft lighting, beauty" },
 ];
 
 interface DbCharacter {
@@ -20,11 +25,45 @@ interface CharacterPanelProps {
   onSelect: (characterId: string | null) => void;
 }
 
+type Section = "featured" | "mine";
+
+function CharacterCard({
+  id, name, avatar, isSelected, onClick,
+}: {
+  id: string; name: string; avatar: string | null; isSelected: boolean; onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all ${
+        isSelected
+          ? "border-accent bg-accent/5"
+          : "border-foreground/[0.06] hover:border-foreground/20 bg-foreground/[0.02]"
+      }`}
+    >
+      {avatar ? (
+        <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover" />
+      ) : (
+        <div className="w-12 h-12 rounded-full bg-foreground/[0.08] flex items-center justify-center text-muted">
+          <User size={18} />
+        </div>
+      )}
+      <span className="text-[0.72rem] font-semibold text-center leading-tight">{name}</span>
+      {isSelected && (
+        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-accent flex items-center justify-center">
+          <Check size={10} className="text-white" />
+        </div>
+      )}
+    </button>
+  );
+}
+
 export default function CharacterPanel({ onClose, selectedCharacter, onSelect }: CharacterPanelProps) {
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [userCharacters, setUserCharacters] = useState<DbCharacter[]>([]);
   const [loading, setLoading] = useState(true);
+  const [section, setSection] = useState<Section>("featured");
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -44,18 +83,18 @@ export default function CharacterPanel({ onClose, selectedCharacter, onSelect }:
     fetchCharacters();
   }, []);
 
-  const allCharacters = [
-    ...PRESET_CHARACTERS.map(p => ({ ...p, isPreset: true })),
-    ...userCharacters.map(c => ({ id: c.id, name: c.name, avatar: c.avatar_url, desc: c.description || "Custom character", isPreset: false })),
-  ];
+  const featuredFiltered = search
+    ? FEATURED_CHARACTERS.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+    : FEATURED_CHARACTERS;
 
-  const filtered = search
-    ? allCharacters.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
-    : allCharacters;
+  const myFiltered = search
+    ? userCharacters.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+    : userCharacters;
 
   const handleCreated = (char: { id: string; name: string; avatar_url: string | null }) => {
     setUserCharacters(prev => [{ ...char, description: null }, ...prev]);
     onSelect(char.id);
+    setSection("mine");
   };
 
   return (
@@ -71,6 +110,35 @@ export default function CharacterPanel({ onClose, selectedCharacter, onSelect }:
           </div>
         </div>
 
+        {/* Section tabs */}
+        <div className="flex items-center gap-1 mb-3">
+          {([
+            { id: "featured" as Section, label: "Featured" },
+            { id: "mine" as Section, label: `My Characters${userCharacters.length > 0 ? ` (${userCharacters.length})` : ""}` },
+          ]).map(tab => (
+            <button
+              key={tab.id}
+              onClick={() => setSection(tab.id)}
+              className={`px-3 py-1.5 rounded-lg text-[0.78rem] font-semibold transition-colors ${
+                section === tab.id
+                  ? "bg-foreground/[0.08] text-foreground"
+                  : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+          {/* No character option */}
+          {selectedCharacter && (
+            <button
+              onClick={() => onSelect(null)}
+              className="ml-auto px-3 py-1.5 rounded-lg text-[0.78rem] font-medium text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors"
+            >
+              Clear
+            </button>
+          )}
+        </div>
+
         <div className="relative mb-3">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
@@ -81,53 +149,68 @@ export default function CharacterPanel({ onClose, selectedCharacter, onSelect }:
           />
         </div>
 
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 size={20} className="animate-spin text-muted" />
-          </div>
-        ) : (
+        {/* Featured section */}
+        {section === "featured" && (
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
-            {filtered.map(char => (
-              <button
+            {featuredFiltered.map(char => (
+              <CharacterCard
                 key={char.id}
-                onClick={() => onSelect(char.id === "none" ? null : char.id)}
-                className={`relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all ${
-                  (selectedCharacter === char.id || (char.id === "none" && !selectedCharacter))
-                    ? "border-accent bg-accent/5"
-                    : "border-foreground/[0.06] hover:border-foreground/20 bg-foreground/[0.02]"
-                }`}
-              >
-                {char.avatar ? (
-                  <img
-                    src={char.isPreset ? `https://images.unsplash.com/${char.avatar}?w=120&h=120&fit=crop&q=80` : char.avatar}
-                    alt={char.name}
-                    className="w-12 h-12 rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-12 h-12 rounded-full bg-foreground/[0.08] flex items-center justify-center text-muted">
-                    <X size={16} />
-                  </div>
-                )}
-                <span className="text-[0.72rem] font-semibold text-center leading-tight">{char.name}</span>
-                {(selectedCharacter === char.id || (char.id === "none" && !selectedCharacter)) && (
-                  <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-accent flex items-center justify-center">
-                    <Check size={10} className="text-white" />
-                  </div>
-                )}
-              </button>
+                id={char.id}
+                name={char.name}
+                avatar={`https://images.unsplash.com/${char.avatar}?w=120&h=120&fit=crop&q=80`}
+                isSelected={selectedCharacter === char.id}
+                onClick={() => onSelect(char.id)}
+              />
             ))}
-
-            {/* Create new card */}
-            <button
-              onClick={() => setShowCreate(true)}
-              className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border border-dashed border-foreground/[0.12] hover:border-accent/40 hover:bg-accent/5 transition-all"
-            >
-              <div className="w-12 h-12 rounded-full bg-foreground/[0.06] flex items-center justify-center">
-                <Plus size={18} className="text-muted" />
-              </div>
-              <span className="text-[0.72rem] font-semibold text-center leading-tight text-muted">New</span>
-            </button>
           </div>
+        )}
+
+        {/* My Characters section */}
+        {section === "mine" && (
+          loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 size={20} className="animate-spin text-muted" />
+            </div>
+          ) : myFiltered.length === 0 && !search ? (
+            <div className="flex flex-col items-center justify-center py-10 gap-3">
+              <div className="w-14 h-14 rounded-full bg-foreground/[0.06] flex items-center justify-center">
+                <User size={24} className="text-muted" />
+              </div>
+              <p className="text-[0.85rem] font-semibold text-foreground/70">No Characters Yet</p>
+              <p className="text-[0.75rem] text-muted/60 text-center max-w-[260px]">Create your first character by uploading images, using your camera, or describing them.</p>
+              <button
+                onClick={() => setShowCreate(true)}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent text-white text-[0.8rem] font-bold hover:bg-accent/85 transition-colors"
+              >
+                <Plus size={14} /> Create Character
+              </button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+              {myFiltered.map(char => (
+                <CharacterCard
+                  key={char.id}
+                  id={char.id}
+                  name={char.name}
+                  avatar={char.avatar_url}
+                  isSelected={selectedCharacter === char.id}
+                  onClick={() => onSelect(char.id)}
+                />
+              ))}
+              <button
+                onClick={() => setShowCreate(true)}
+                className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl border border-dashed border-foreground/[0.12] hover:border-accent/40 hover:bg-accent/5 transition-all"
+              >
+                <div className="w-12 h-12 rounded-full bg-foreground/[0.06] flex items-center justify-center">
+                  <Plus size={18} className="text-muted" />
+                </div>
+                <span className="text-[0.72rem] font-semibold text-center leading-tight text-muted">New</span>
+              </button>
+              {search && myFiltered.length === 0 && (
+                <p className="col-span-full text-center text-[0.78rem] text-muted py-4">No characters match "{search}"</p>
+              )}
+            </div>
+          )
         )}
       </div>
 
