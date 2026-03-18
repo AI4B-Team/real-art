@@ -361,7 +361,7 @@ function PromptBox({
               >
                 {isEnhancing
                   ? <Loader2 size={17} className="animate-spin text-purple-500" />
-                  : <Sparkles size={17} />
+                  : <Send size={17} />
                 }
               </button>
             </TooltipTrigger>
