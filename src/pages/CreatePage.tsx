@@ -287,6 +287,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
+  const [characterInfo, setCharacterInfo] = useState<{ name: string; avatar: string | null } | null>(null);
+
+  // Fetch character info when selected
+  useEffect(() => {
+    if (!selectedCharacter) { setCharacterInfo(null); return; }
+    const fetchChar = async () => {
+      const { data } = await supabase.from("characters").select("name, avatar_url").eq("id", selectedCharacter).single();
+      if (data) setCharacterInfo({ name: data.name, avatar: data.avatar_url });
+    };
+    fetchChar();
+  }, [selectedCharacter]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -479,29 +490,19 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             {!isListening && (selectedCharacter || references.length > 0) && (
               <div className="flex-1 flex flex-col gap-1.5 pt-[2px]">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  {selectedCharacter && (() => {
-                    const CHARACTERS = [
-                      { id: "c1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
-                      { id: "c2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
-                      { id: "c3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7" },
-                      { id: "c4", name: "Suki", avatar: "photo-1438761681033-6461ffad8d80" },
-                      { id: "c5", name: "Marcus", avatar: "photo-1506794778202-cad84cf45f1d" },
-                      { id: "c6", name: "Leila", avatar: "photo-1487412720507-e7ab37603c6f" },
-                    ];
-                    const char = CHARACTERS.find(c => c.id === selectedCharacter);
-                    if (!char) return null;
-                    return (
-                      <div className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-lg bg-accent/10 border border-accent/20 text-[0.75rem] font-semibold text-accent">
+                  {selectedCharacter && characterInfo && (
+                    <div className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-lg bg-accent/10 border border-accent/20 text-[0.75rem] font-semibold text-accent">
+                      {characterInfo.avatar && (
                         <img
-                          src={`https://images.unsplash.com/${char.avatar}?w=40&h=40&fit=crop&q=80`}
-                          alt={char.name}
+                          src={characterInfo.avatar}
+                          alt={characterInfo.name}
                           className="w-5 h-5 rounded-full object-cover"
                         />
-                        {char.name}
-                        <button onClick={() => setSelectedCharacter(null)} className="ml-0.5 hover:text-accent/70"><X size={11} /></button>
-                      </div>
-                    );
-                  })()}
+                      )}
+                      {characterInfo.name}
+                      <button onClick={() => setSelectedCharacter(null)} className="ml-0.5 hover:text-accent/70"><X size={11} /></button>
+                    </div>
+                  )}
                   {references.map(ref => (
                     <div key={ref.id} className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-lg bg-foreground/[0.06] border border-foreground/[0.08] text-[0.75rem] font-medium text-foreground/70">
                       <img src={ref.src} alt={ref.name} className="w-5 h-5 rounded object-cover" />
