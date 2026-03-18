@@ -477,7 +477,7 @@ function GenerationInput({ selectedType, onGenerationStart }: { selectedType: Co
 const CreatePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialType = searchParams.get("type") as ContentType | null;
-  const [selectedType, setSelectedType] = useState<ContentType | null>(initialType);
+  const [selectedType, setSelectedType] = useState<ContentType>(initialType || "Image");
   const [results, setResults] = useState<GeneratedResult[]>([]);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
