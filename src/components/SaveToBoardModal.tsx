@@ -98,7 +98,7 @@ export default function SaveToBoardModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[500] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
       <div
         className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] overflow-hidden shadow-2xl animate-drop-in"
         onClick={e => e.stopPropagation()}
