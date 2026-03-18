@@ -880,12 +880,15 @@ export default function CreatePage() {
 
   return (
     <PageShell>
-      <div className="max-w-[1100px] mx-auto px-5 md:px-10 py-8 pb-20">
-
-        {/* Prompt Box */}
+      {/* Prompt Box — narrower */}
+      <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0">
         <div className="mb-10">
           <PromptBox onGenerate={() => setGenerated(true)} />
         </div>
+      </div>
+
+      {/* Gallery — wider, matching explore page */}
+      <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
 
         {/* Tabs */}
         <div className="flex items-center justify-between mb-6">
@@ -939,7 +942,7 @@ export default function CreatePage() {
                 <p className="text-[0.84rem] text-muted">Use the prompt box above to generate your first {mediaFilter}.</p>
               </div>
             ) : (
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 {filteredCreations.map(item => (
                   <CreationCard key={item.id} item={item} />
                 ))}
@@ -957,7 +960,7 @@ export default function CreatePage() {
                 Explore all <ArrowRight size={12} />
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {DUMMY_COMMUNITY.map(item => (
                 <div key={item.id} className="group relative rounded-2xl overflow-hidden">
                   <img
@@ -1020,7 +1023,7 @@ export default function CreatePage() {
                 ))}
               </div>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
               {DUMMY_TEMPLATES.map(t => (
                 <div key={t.id} className="group cursor-pointer">
                   <div className="relative rounded-2xl overflow-hidden mb-2.5">
@@ -1060,7 +1063,7 @@ export default function CreatePage() {
                 Browse all <ArrowRight size={12} />
               </Link>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {DUMMY_APPS.map(app => (
                 <button
                   key={app.id}
