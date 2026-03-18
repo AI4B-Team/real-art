@@ -196,7 +196,7 @@ function GenerationInput({ selectedType, onGenerationStart }: { selectedType: Co
             {videoMode ? <X size={12} className="text-red-500" onClick={e=>{e.stopPropagation();setVideoMode("");}} /> : <ChevronDown size={12}/>}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-48 p-1.5" align="start">
+        <PopoverContent className="w-48 p-1.5" align="start" side="bottom">
           {VIDEO_MODES.map(m=>(
             <button key={m.value} onClick={()=>{setVideoMode(m.value);setVideoModeOpen(false);}}
               className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${videoMode===m.value?"bg-red-50 text-red-700":"hover:bg-foreground/[0.04] text-foreground"}`}>
