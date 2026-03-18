@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLayoutContext } from "@/components/LayoutContext";
 import { X, Plus, Bookmark, Check, Search, Lock, Globe, Image, UserPlus, ChevronDown, Mail, Trash2, Users } from "lucide-react";
 import {
   getCollections,
@@ -26,6 +27,23 @@ interface Props {
   imageId?: string;
   imagePhoto?: string;
   imageTitle?: string;
+}
+
+function ModalBackdrop({ onClose, children }: { onClose: () => void; children: React.ReactNode }) {
+  const { sidebarCollapsed } = useLayoutContext();
+  // Check if sidebar is visible (logged in state uses sidebar)
+  const isLoggedIn = typeof window !== "undefined" && localStorage.getItem("ra_auth") === "1";
+  const sidebarWidth = isLoggedIn ? (sidebarCollapsed ? 68 : 260) : 0;
+
+  return (
+    <div
+      className="fixed top-0 right-0 bottom-0 z-[60] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4"
+      style={{ left: sidebarWidth }}
+      onClick={onClose}
+    >
+      {children}
+    </div>
+  );
 }
 
 export default function SaveToBoardModal({
@@ -98,7 +116,7 @@ export default function SaveToBoardModal({
   };
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
+    <ModalBackdrop onClose={onClose}>
       <div
         className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] overflow-hidden shadow-2xl animate-drop-in"
         onClick={e => e.stopPropagation()}
@@ -341,6 +359,6 @@ export default function SaveToBoardModal({
           )}
         </div>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
