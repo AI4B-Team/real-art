@@ -350,8 +350,12 @@ function PromptBox({
     toast({ title: "Generation complete!", description: "Your creation is ready below." });
   };
 
-  const handleSpeechResult = useCallback((t: string) => setPrompt(t), []);
-  const { isListening, isSupported, startListening, stopListening } = useSpeech(handleSpeechResult);
+  const { isListening, isSupported, startListening, stopListening, cancel: cancelSpeech, accept: acceptSpeech, currentTranscript } = useSpeech();
+
+  const handleAcceptSpeech = () => {
+    const result = acceptSpeech();
+    if (result) setPrompt(prev => prev ? prev + " " + result : result);
+  };
 
   const hasType = !!selectedType;
   const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "What would you like to create?";
