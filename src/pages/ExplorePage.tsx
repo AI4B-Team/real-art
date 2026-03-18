@@ -133,7 +133,10 @@ const creators = [
 ];
 
 const filters = [
-  "All", "Trending", "New", "Popular", "Abstract", "Portraits", "People",
+  "All", "For You", "Following", "Trending", "New", "Popular", "Abstract", "Portraits", "People",
+  "Nature", "Architecture", "Fantasy", "3D Art", "Fashion", "Sci-Fi",
+  "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal",
+];
   "Nature", "Architecture", "Fantasy", "3D Art", "Fashion", "Sci-Fi",
   "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal",
 ];
