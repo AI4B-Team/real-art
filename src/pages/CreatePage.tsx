@@ -122,13 +122,13 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
 /* ─── Placeholders ───────────────────────────────────────────── */
 
 const PLACEHOLDERS: Record<ContentType, string> = {
-  image:    "A lone astronaut standing on a neon-lit alien world, photorealistic, golden hour…",
-  video:    "Camera slowly pushes into a cyberpunk cityscape at night, neon reflections…",
-  audio:    "Chill lo-fi beats with soft piano, gentle vinyl crackle, and distant city ambience…",
-  design:   "Minimalist luxury brand logo for a high-end fashion house, gold on black…",
-  content:  "30-day social media content plan for a wellness brand, motivational tone…",
-  document: "Comprehensive business plan for an AI-powered SaaS startup in the creator economy…",
-  app:      "A beautiful web app for tracking daily habits with streaks and analytics…",
+  image:    "Describe the image you want to generate...",
+  video:    "Describe the video you want to create...",
+  audio:    "Describe your sound, music, or voiceover...",
+  design:   "Describe your design vision...",
+  content:  "Describe the theme or topic for your content plan...",
+  document: "Describe the document you want to create...",
+  app:      "Describe the app you want to build...",
 };
 
 const EXAMPLES: Record<ContentType, string[]> = {
