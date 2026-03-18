@@ -421,8 +421,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               <div className="flex flex-col gap-1 shrink-0 pt-[2px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors`}>
-                      <typeCfg.icon size={17} />
+                    <button
+                      type="button"
+                      onClick={() => (selectedType === "image" || selectedType === "video") ? promptFileRef.current?.click() : undefined}
+                      disabled={isExtractingPrompt}
+                      className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors ${(selectedType === "image" || selectedType === "video") ? "cursor-pointer" : ""}`}
+                    >
+                      {isExtractingPrompt ? <Loader2 size={17} className="animate-spin" /> : <typeCfg.icon size={17} />}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">{topLeftLabel(selectedType!)}</TooltipContent>
@@ -435,6 +440,16 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger>
                   <TooltipContent side="right">Inspire Me</TooltipContent>
                 </Tooltip>
+                <input
+                  ref={promptFileRef}
+                  type="file"
+                  accept={selectedType === "video" ? "image/*,video/*" : "image/*"}
+                  className="hidden"
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) handleExtractPrompt(file);
+                  }}
+                />
               </div>
             ) : (
               <div className="relative shrink-0 pt-[2px]" ref={typeRef}>
