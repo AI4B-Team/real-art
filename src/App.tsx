@@ -68,7 +68,8 @@ const App = () => (
         <AuthLayout>
           <Routes>
             {/* Home */}
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Navigate to="/home" replace />} />
+            <Route path="/home" element={<Index />} />
 
             {/* Round 1 — Core browse */}
             <Route path="/image/:id" element={<ImagePage />} />
