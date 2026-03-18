@@ -236,7 +236,7 @@ function GenerationInput({ selectedType, onGenerationStart }: { selectedType: Co
             {designType ? <X size={12} className="text-amber-600" onClick={e=>{e.stopPropagation();setDesignType("");}} /> : <ChevronDown size={12}/>}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-48 p-1.5" align="start">
+        <PopoverContent className="w-48 p-1.5" align="start" side="bottom">
           {DESIGN_TYPES.map(m=>(
             <button key={m.value} onClick={()=>{setDesignType(m.value);setDesignTypeOpen(false);}}
               className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${designType===m.value?"bg-amber-50 text-amber-700":"hover:bg-foreground/[0.04] text-foreground"}`}>
