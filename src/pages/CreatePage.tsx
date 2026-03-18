@@ -285,7 +285,7 @@ function PromptBox({
   const { isListening, isSupported, startListening, stopListening } = useSpeech(handleSpeechResult);
 
   const hasType = !!selectedType;
-  const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "What will you imagine?";
+  const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "What would you like to create?";
   const borderCls = typeCfg ? typeCfg.promptBorder : "border-foreground/[0.12]";
 
   return (
