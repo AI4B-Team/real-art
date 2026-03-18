@@ -94,7 +94,7 @@ export default function ReferencePanel({ onClose, references, onAdd, onRemove }:
   const refIds = new Set(references.map(r => r.id));
 
   /* helpers */
-  const filterItems = (items: { id: string; title: string; type: MediaFilter }[]) => {
+  const filterItems = <T extends { title: string; type: MediaFilter }>(items: T[]): T[] => {
     let out = items;
     if (mediaFilter !== "all") out = out.filter(i => i.type === mediaFilter);
     if (search) out = out.filter(i => i.title.toLowerCase().includes(search.toLowerCase()));
