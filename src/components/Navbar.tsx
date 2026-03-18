@@ -7,7 +7,8 @@ import {
   Megaphone, LayoutGrid, User, Heart, Download, MessageCircle,
   RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
   Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2,
-  Sun, Moon, Monitor, Languages, ChevronRight
+  Sun, Moon, Monitor, Languages, ChevronRight,
+  Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
