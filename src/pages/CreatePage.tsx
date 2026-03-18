@@ -760,15 +760,15 @@ function PromptBox({
                   <TooltipContent>Enhance Prompt</TooltipContent>
                 </Tooltip>
               )}
-              {isSupported && (
+              {isSupported && !isListening && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" onClick={isListening ? stopListening : startListening}
-                      className={`p-1.5 rounded-lg transition-colors ${isListening ? "bg-red-50 text-red-500" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                      {isListening ? <MicOff size={15} /> : <Mic size={15} />}
+                    <button type="button" onClick={startListening}
+                      className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground">
+                      <Mic size={15} />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent>
+                  <TooltipContent>Speak</TooltipContent>
                 </Tooltip>
               )}
               <button type="button" onClick={handleGenerate}
