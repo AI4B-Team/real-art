@@ -843,17 +843,80 @@ export default function CreatePage() {
           {activeTab === "creations" && (
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
               <PopoverTrigger asChild>
-                <button type="button" className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[0.82rem] font-medium transition-colors ${mediaFilter !== "all" ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
-                  <Filter size={14} />{mediaFilter === "all" ? "Filter" : MEDIA_FILTERS.find(f => f.id === mediaFilter)?.label}
+                <button type="button" className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[0.82rem] font-medium transition-colors ${hasActiveFilters ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
+                  <Filter size={14} />Filter{hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-accent" />}
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-40 p-1.5" align="end" sideOffset={6}>
-                {MEDIA_FILTERS.map(f => (
-                  <button key={f.id} type="button" onClick={() => { setMediaFilter(f.id); setFilterOpen(false); }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${mediaFilter === f.id ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                    {f.label}{mediaFilter === f.id && <Check size={12} />}
+              <PopoverContent className="w-[280px] p-0" align="end" sideOffset={6}>
+                <div className="p-4">
+                  <h3 className="text-[0.92rem] font-bold mb-4">Filter By</h3>
+
+                  {/* Media type pills */}
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {MEDIA_FILTERS.map(f => (
+                      <button key={f.id} type="button" onClick={() => setMediaFilter(f.id)}
+                        className={`px-3 py-1 rounded-lg text-[0.75rem] font-medium border transition-colors ${mediaFilter === f.id ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground"}`}>
+                        {f.label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Checkboxes */}
+                  <div className="space-y-2.5 mb-5">
+                    {[
+                      { label: "Likes", checked: filterLikes, set: setFilterLikes },
+                      { label: "Edits", checked: filterEdits, set: setFilterEdits },
+                      { label: "Upscales", checked: filterUpscales, set: setFilterUpscales },
+                    ].map(item => (
+                      <label key={item.label} className="flex items-center gap-3 cursor-pointer group">
+                        <div
+                          onClick={() => item.set(!item.checked)}
+                          className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${item.checked ? "bg-accent border-accent" : "border-foreground/20 group-hover:border-foreground/40"}`}
+                        >
+                          {item.checked && <Check size={12} className="text-white" />}
+                        </div>
+                        <span className="text-[0.85rem] font-medium">{item.label}</span>
+                      </label>
+                    ))}
+                  </div>
+
+                  {/* Date range */}
+                  <div className="mb-1">
+                    <h4 className="text-[0.85rem] font-bold mb-2">Date</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div>
+                        <label className="text-[0.7rem] text-muted font-medium mb-1 block">From</label>
+                        <input
+                          type="date"
+                          value={filterDateFrom}
+                          onChange={e => setFilterDateFrom(e.target.value)}
+                          className="w-full px-2.5 py-2 rounded-lg border border-foreground/[0.12] bg-background text-[0.78rem] outline-none focus:border-accent transition-colors"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[0.7rem] text-muted font-medium mb-1 block">To</label>
+                        <input
+                          type="date"
+                          value={filterDateTo}
+                          onChange={e => setFilterDateTo(e.target.value)}
+                          className="w-full px-2.5 py-2 rounded-lg border border-foreground/[0.12] bg-background text-[0.78rem] outline-none focus:border-accent transition-colors"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center gap-2 px-4 py-3 border-t border-foreground/[0.06]">
+                  <button type="button" onClick={clearFilters}
+                    className="flex-1 px-3 py-2 rounded-lg text-[0.82rem] font-medium text-muted hover:text-foreground transition-colors">
+                    Clear
                   </button>
-                ))}
+                  <button type="button" onClick={() => setFilterOpen(false)}
+                    className="flex-1 px-3 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-colors">
+                    Apply
+                  </button>
+                </div>
               </PopoverContent>
             </Popover>
           )}
