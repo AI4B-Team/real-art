@@ -361,9 +361,14 @@ const AppSidebar = () => {
         <div className="mt-4 mx-1 mb-4 rounded-2xl border border-accent/20 bg-accent/[0.04] px-3.5 py-3">
           {/* Header: title + dismiss */}
           <div className="flex items-start gap-1.5 mb-2">
-            <span className="text-[0.76rem] font-bold text-foreground leading-snug">
-              Start Creating — Get 1,000 Free Credits
-            </span>
+            <div className="flex-1 min-w-0">
+              <span className="text-[0.88rem] font-black text-foreground leading-snug block">
+                🎨 Start Creating
+              </span>
+              <span className="text-[0.72rem] font-semibold text-accent">
+                Get 1,000 Free Credits
+              </span>
+            </div>
             <button
               onClick={dismissWidget}
               className="w-5 h-5 rounded-full flex items-center justify-center text-muted/40 hover:text-muted hover:bg-foreground/[0.07] transition-colors shrink-0 ml-auto mt-0.5"
