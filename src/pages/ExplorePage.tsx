@@ -149,11 +149,6 @@ const searchTypes = [
   { label: "Music", icon: Music },
 ];
 
-const feedTabs = [
-  { id: "for-you", label: "For You", icon: Sparkles },
-  { id: "following", label: "Following", icon: Users },
-  { id: "trending", label: "Trending", icon: TrendingUp },
-];
 
 const ExplorePage = () => {
   const [searchParams] = useSearchParams();
