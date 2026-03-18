@@ -477,7 +477,7 @@ function GenerationInput({ selectedType, onGenerationStart }: { selectedType: Co
 const CreatePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialType = searchParams.get("type") as ContentType | null;
-  const [selectedType, setSelectedType] = useState<ContentType | null>(initialType);
+  const [selectedType, setSelectedType] = useState<ContentType>(initialType || "Image");
   const [results, setResults] = useState<GeneratedResult[]>([]);
   const [likedIds, setLikedIds] = useState<Set<string>>(new Set());
   const [copied, setCopied] = useState<string | null>(null);
@@ -501,21 +501,6 @@ const CreatePage = () => {
   return (
     <PageShell>
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-10">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-8">
-          <Link to="/" className="hover:text-foreground transition-colors no-underline text-muted">Home</Link>
-          <span className="opacity-30">/</span>
-          <span className="text-foreground font-medium">Create</span>
-        </div>
-
-        {/* Headline */}
-        <div className="text-center mb-8">
-          <h1 className="font-display text-[2.2rem] md:text-[2.8rem] font-black tracking-[-0.03em] leading-[1.08] mb-3">
-            What Do You Want To Create Today?
-          </h1>
-          <p className="text-[0.9rem] text-muted">Describe your vision. Our AI handles the rest.</p>
-        </div>
-
         {/* Pills */}
         <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
           {CONTENT_TYPES.map(({ key, icon: Icon, accentColor, accentBg, accentBorder }) => (
@@ -532,23 +517,10 @@ const CreatePage = () => {
         </div>
 
         {/* Prompt box */}
-        {selectedType && (
-          <GenerationInput
-            selectedType={selectedType}
-            onGenerationStart={r => { setResults(r); window.scrollTo({ top: 500, behavior: "smooth" }); }}
-          />
-        )}
-
-        {/* No type selected */}
-        {!selectedType && (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
-              <Sparkles className="w-8 h-8 text-accent"/>
-            </div>
-            <h2 className="font-display text-[1.3rem] font-black tracking-[-0.02em] mb-2">Choose a content type above</h2>
-            <p className="text-[0.85rem] text-muted">Pick Image, Video, Audio, or Design to get started.</p>
-          </div>
-        )}
+        <GenerationInput
+          selectedType={selectedType}
+          onGenerationStart={r => { setResults(r); window.scrollTo({ top: 500, behavior: "smooth" }); }}
+        />
 
         {/* Results */}
         {results.length > 0 && (
