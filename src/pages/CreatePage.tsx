@@ -189,22 +189,91 @@ const DUMMY_COMMUNITY = [
 
 /* ─── Speech hook ────────────────────────────────────────────── */
 
-function useSpeech(onResult: (t: string) => void) {
+function useSpeech() {
   const [isListening, setIsListening] = useState(false);
+  const [interimText, setInterimText] = useState("");
+  const [finalText, setFinalText] = useState("");
   const [isSupported] = useState(() => typeof window !== "undefined" && ("webkitSpeechRecognition" in window || "SpeechRecognition" in window));
   const recogRef = useRef<any>(null);
+
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return;
     const r = new SR();
-    r.continuous = false; r.interimResults = false;
-    r.onresult = (e: any) => { onResult(e.results[0][0].transcript); setIsListening(false); };
+    r.continuous = true;
+    r.interimResults = true;
+    r.onresult = (e: any) => {
+      let interim = "";
+      let final = "";
+      for (let i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          final += e.results[i][0].transcript;
+        } else {
+          interim += e.results[i][0].transcript;
+        }
+      }
+      setFinalText(final);
+      setInterimText(interim);
+    };
     r.onerror = () => setIsListening(false);
-    r.onend   = () => setIsListening(false);
-    recogRef.current = r; r.start(); setIsListening(true);
-  }, [onResult]);
-  const stopListening = useCallback(() => { recogRef.current?.stop(); setIsListening(false); }, []);
-  return { isListening, isSupported, startListening, stopListening };
+    r.onend = () => {
+      // don't auto-clear — let user accept/cancel
+    };
+    recogRef.current = r;
+    r.start();
+    setIsListening(true);
+    setInterimText("");
+    setFinalText("");
+  }, []);
+
+  const stopListening = useCallback(() => {
+    recogRef.current?.stop();
+  }, []);
+
+  const cancel = useCallback(() => {
+    recogRef.current?.stop();
+    setIsListening(false);
+    setInterimText("");
+    setFinalText("");
+  }, []);
+
+  const accept = useCallback(() => {
+    recogRef.current?.stop();
+    const result = (finalText + " " + interimText).trim();
+    setIsListening(false);
+    setInterimText("");
+    setFinalText("");
+    return result;
+  }, [finalText, interimText]);
+
+  const currentTranscript = (finalText + " " + interimText).trim();
+
+  return { isListening, isSupported, startListening, stopListening, cancel, accept, currentTranscript };
+}
+
+/* ─── Audio Wave Animation ──────────────────────────────────── */
+
+function AudioWaveAnimation() {
+  return (
+    <div className="flex items-center gap-[3px] h-6">
+      {[...Array(12)].map((_, i) => (
+        <div
+          key={i}
+          className="w-[3px] rounded-full bg-accent"
+          style={{
+            animation: `audioWave 1.2s ease-in-out ${i * 0.08}s infinite`,
+            height: "4px",
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes audioWave {
+          0%, 100% { height: 4px; opacity: 0.4; }
+          50% { height: ${20}px; opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
 }
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
@@ -281,8 +350,12 @@ function PromptBox({
     toast({ title: "Generation complete!", description: "Your creation is ready below." });
   };
 
-  const handleSpeechResult = useCallback((t: string) => setPrompt(t), []);
-  const { isListening, isSupported, startListening, stopListening } = useSpeech(handleSpeechResult);
+  const { isListening, isSupported, startListening, stopListening, cancel: cancelSpeech, accept: acceptSpeech, currentTranscript } = useSpeech();
+
+  const handleAcceptSpeech = () => {
+    const result = acceptSpeech();
+    if (result) setPrompt(prev => prev ? prev + " " + result : result);
+  };
 
   const hasType = !!selectedType;
   const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "What would you like to create?";
@@ -373,56 +446,92 @@ function PromptBox({
             </div>
           )}
 
-          {/* Textarea */}
-          <textarea
-            ref={textareaRef}
-            value={prompt}
-            onChange={e => setPrompt(e.target.value)}
-            onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
-            placeholder={placeholder}
-            rows={1}
-            className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px]"
-            style={{ height: "36px" }}
-            onInput={e => {
-              const el = e.currentTarget;
-              el.style.height = "36px";
-              el.style.height = Math.min(el.scrollHeight, 140) + "px";
-            }}
-          />
-
-          {/* RIGHT: mic + generate buttons — only when no type selected (bottom bar handles it otherwise) */}
-          {!hasType && (
-            <div className="flex items-center gap-0 shrink-0 pt-[2px]">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={isListening ? stopListening : startListening}
-                    disabled={!isSupported}
-                    className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${isListening ? "text-accent" : "text-foreground hover:bg-foreground/[0.06]"}`}
-                  >
-                    {isListening ? <MicOff size={17} /> : <Mic size={17} />}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">{isListening ? "Stop listening" : "Voice input"}</TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={handleGenerate}
-                    disabled={!prompt.trim() || isEnhancing}
-                    className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
-                  >
-                    {isEnhancing
-                      ? <Loader2 size={17} className="animate-spin text-purple-500" />
-                      : <Send size={17} />
-                    }
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Generate</TooltipContent>
-              </Tooltip>
+          {/* Textarea OR Recording UI */}
+          {isListening ? (
+            <div className="flex-1 flex items-center gap-3 py-[6px] mt-[2px] min-h-[36px]">
+              <div className="flex-1 flex flex-col gap-1">
+                <div className="flex items-center gap-3">
+                  <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse shrink-0" />
+                  <AudioWaveAnimation />
+                  <span className="text-[0.78rem] text-muted font-medium">Listening…</span>
+                </div>
+                {currentTranscript && (
+                  <p className="text-[0.85rem] text-foreground/70 italic pl-[22px] leading-snug">{currentTranscript}</p>
+                )}
+              </div>
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  type="button"
+                  onClick={cancelSpeech}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors"
+                  title="Cancel"
+                >
+                  <X size={15} />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleAcceptSpeech}
+                  className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
+                  title="Accept"
+                >
+                  <Check size={15} />
+                </button>
+              </div>
             </div>
+          ) : (
+            <>
+              <textarea
+                ref={textareaRef}
+                value={prompt}
+                onChange={e => setPrompt(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                placeholder={placeholder}
+                rows={1}
+                className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px]"
+                style={{ height: "36px" }}
+                onInput={e => {
+                  const el = e.currentTarget;
+                  el.style.height = "36px";
+                  el.style.height = Math.min(el.scrollHeight, 140) + "px";
+                }}
+              />
+
+              {/* RIGHT: mic + generate buttons — only when no type selected */}
+              {!hasType && (
+                <div className="flex items-center gap-0 shrink-0 pt-[2px]">
+                  {isSupported && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          type="button"
+                          onClick={startListening}
+                          className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"
+                        >
+                          <Mic size={17} />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Voice input</TooltipContent>
+                    </Tooltip>
+                  )}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        type="button"
+                        onClick={handleGenerate}
+                        disabled={!prompt.trim() || isEnhancing}
+                        className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
+                      >
+                        {isEnhancing
+                          ? <Loader2 size={17} className="animate-spin text-purple-500" />
+                          : <Send size={17} />
+                        }
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom">Generate</TooltipContent>
+                  </Tooltip>
+                </div>
+              )}
+            </>
           )}
         </div>
 
@@ -651,15 +760,15 @@ function PromptBox({
                   <TooltipContent>Enhance Prompt</TooltipContent>
                 </Tooltip>
               )}
-              {isSupported && (
+              {isSupported && !isListening && (
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" onClick={isListening ? stopListening : startListening}
-                      className={`p-1.5 rounded-lg transition-colors ${isListening ? "bg-red-50 text-red-500" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                      {isListening ? <MicOff size={15} /> : <Mic size={15} />}
+                    <button type="button" onClick={startListening}
+                      className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground">
+                      <Mic size={15} />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent>
+                  <TooltipContent>Speak</TooltipContent>
                 </Tooltip>
               )}
               <button type="button" onClick={handleGenerate}
