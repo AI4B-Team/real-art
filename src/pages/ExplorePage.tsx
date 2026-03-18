@@ -201,20 +201,21 @@ const ExplorePage = () => {
   const filteredImages = (() => {
     const q = query.trim().toLowerCase();
     const cat = activeFilter.toLowerCase();
+
+    // "For You" and "Following" are special personalization filters
+    const isPersonalization = activeFilter === "For You" || activeFilter === "Following";
+
     let base = imageData.filter(img => {
       const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
+      if (isPersonalization) return matchQuery;
       const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
       return matchQuery && matchCat;
     });
 
-    // Tab-based ordering (simulated personalization)
-    if (activeTab === "trending") {
-      base = [...base].sort((a, b) => (downloadWeights[imageData.indexOf(b)] || 0) - (downloadWeights[imageData.indexOf(a)] || 0));
-    } else if (activeTab === "following") {
-      // Simulate "following" feed — show a subset with different order
+    // Personalization ordering
+    if (activeFilter === "Following") {
       base = [...base].filter((_, i) => i % 3 === 0 || i % 5 === 0);
-    } else {
-      // "For You" — mix of liked + trending signals
+    } else if (activeFilter === "For You") {
       base = [...base].sort((a, b) => {
         const aScore = (likesWeights[imageData.indexOf(a)] || 0) * 2 + (downloadWeights[imageData.indexOf(a)] || 0);
         const bScore = (likesWeights[imageData.indexOf(b)] || 0) * 2 + (downloadWeights[imageData.indexOf(b)] || 0);
