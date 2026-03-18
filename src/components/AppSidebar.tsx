@@ -27,6 +27,7 @@ type Community = {
 
 const navItems: NavItem[] = [
   { id: "overview", label: "Dashboard", icon: LayoutDashboard, type: "route", href: "/dashboard" },
+  { id: "home", label: "Home", icon: Compass, type: "route", href: "/" },
   { id: "explore", label: "Explore", icon: Eye, type: "route", href: "/explore" },
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "collections-browse", label: "Collections", icon: FolderOpen, type: "route", href: "/collections" },
