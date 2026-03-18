@@ -501,7 +501,7 @@ const CreatePage = () => {
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-10">
         {/* Headline */}
         <div className="text-center mb-8">
-          <h1 className="font-display text-[2.2rem] md:text-[2.8rem] font-black tracking-[-0.03em] leading-[1.08] mb-3">
+          <h1 className="font-body text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-[-0.01em] leading-[1.15] mb-3">
             What Would You Like To Create Today?
           </h1>
         </div>
@@ -531,7 +531,7 @@ const CreatePage = () => {
         {results.length > 0 && (
           <div className="max-w-[860px] mx-auto">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-display font-black text-[1.25rem] tracking-[-0.02em]">{results.length} result{results.length!==1?"s":""}</h2>
+              <h2 className="font-body font-bold text-xl md:text-2xl">{results.length} result{results.length!==1?"s":""}</h2>
               <button onClick={()=>setResults([])} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors"><X size={13}/>Clear</button>
             </div>
             <div className={`grid gap-4 ${results.length===1?"grid-cols-1 max-w-[420px]":results.length===2?"grid-cols-2":results.length===3?"grid-cols-3":"grid-cols-2 md:grid-cols-4"}`}>
@@ -562,7 +562,7 @@ const CreatePage = () => {
         {results.length===0 && selectedType && (
           <div className="max-w-[860px] mx-auto mt-4">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Recent from the community</h2>
+              <h2 className="font-body font-bold text-xl md:text-2xl">Recent From The Community</h2>
               <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">
                 Explore all<ArrowRight size={12}/>
               </Link>
