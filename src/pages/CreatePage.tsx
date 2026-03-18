@@ -588,11 +588,6 @@ function PromptBox({
         )}
 
         {/* Prompt actions when no type selected */}
-        {!hasType && prompt.length === 0 && (
-          <div className="px-4 pb-3 flex items-center justify-end">
-            <span className="text-[0.72rem] text-muted/40">Select ⊞ above to choose what to create</span>
-          </div>
-        )}
       </div>
     </TooltipProvider>
   );
