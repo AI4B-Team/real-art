@@ -173,7 +173,7 @@ const AppSidebar = () => {
   };
 
   return (
-    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-0 hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto transition-all duration-200 ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
+    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-0 hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto transition-all duration-200 z-[70] ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
       {/* Logo header */}
       <div className={`flex items-center h-16 shrink-0 ${sidebarCollapsed ? "justify-center" : "px-3 gap-3"}`}>
         {sidebarCollapsed ? (
