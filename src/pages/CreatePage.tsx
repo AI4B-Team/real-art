@@ -416,7 +416,7 @@ function PromptBox({
                       </>
                     ) : (
                       <>
-                        <LayoutGrid size={13} />
+                        <SlidersHorizontal size={13} />
                         Type
                         <ChevronDown size={11} className="text-muted" />
                       </>
