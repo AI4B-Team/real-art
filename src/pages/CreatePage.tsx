@@ -531,7 +531,7 @@ const CreatePage = () => {
         {results.length > 0 && (
           <div className="max-w-[860px] mx-auto">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="font-display font-black text-[1.25rem] tracking-[-0.02em]">{results.length} result{results.length!==1?"s":""}</h2>
+              <h2 className="font-body font-bold text-xl md:text-2xl">{results.length} result{results.length!==1?"s":""}</h2>
               <button onClick={()=>setResults([])} className="flex items-center gap-1.5 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors"><X size={13}/>Clear</button>
             </div>
             <div className={`grid gap-4 ${results.length===1?"grid-cols-1 max-w-[420px]":results.length===2?"grid-cols-2":results.length===3?"grid-cols-3":"grid-cols-2 md:grid-cols-4"}`}>
