@@ -362,8 +362,8 @@ const AppSidebar = () => {
           {/* Header: title + dismiss */}
           <div className="flex items-start gap-1.5 mb-2">
             <div className="flex-1 min-w-0">
-              <span className="text-[0.88rem] font-black text-foreground leading-snug block">
-                🎨 Start Creating
+              <span className="text-[0.88rem] font-black text-foreground leading-snug flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5 text-accent" /> Start Creating
               </span>
               <span className="text-[0.72rem] font-semibold text-accent">
                 Get 1,000 Free Credits
