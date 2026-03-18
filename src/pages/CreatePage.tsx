@@ -341,8 +341,8 @@ function PromptBox({
             onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
             placeholder={placeholder}
             rows={1}
-            className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[38px] max-h-[140px] overflow-y-auto"
-            style={{ height: "38px" }}
+            className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[7px]"
+            style={{ height: "36px" }}
             onInput={e => {
               const el = e.currentTarget;
               el.style.height = "38px";
