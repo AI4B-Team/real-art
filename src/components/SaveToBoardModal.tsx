@@ -342,6 +342,6 @@ export default function SaveToBoardModal({
           )}
         </div>
       </div>
-    </div>
+    </ModalBackdrop>
   );
 }
