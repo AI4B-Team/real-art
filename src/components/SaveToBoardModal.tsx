@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useLayoutContext } from "@/components/LayoutContext";
 import { X, Plus, Bookmark, Check, Search, Lock, Globe, Image, UserPlus, ChevronDown, Mail, Trash2, Users } from "lucide-react";
 import {
   getCollections,
