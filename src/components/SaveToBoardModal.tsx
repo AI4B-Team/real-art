@@ -46,6 +46,7 @@ function ModalBackdrop({ onClose, children }: { onClose: () => void; children: R
   );
 }
 
+export default function SaveToBoardModal({
   open,
   onClose,
   imageId = "0",
