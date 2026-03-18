@@ -122,6 +122,14 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   const [navSearchType, setNavSearchType] = useState("Images");
   const [navSearchDropOpen, setNavSearchDropOpen] = useState(false);
   const [searchSuggestOpen, setSearchSuggestOpen] = useState(false);
+  const [voiceListening, setVoiceListening] = useState(false);
+  const [voiceError, setVoiceError] = useState("");
+  const [imageSearchOpen, setImageSearchOpen] = useState(false);
+  const [imageSearchMode, setImageSearchMode] = useState<"search" | "reimagine" | "upscale" | "prompt" | "edit" | "video">("search");
+  const [dragOver, setDragOver] = useState(false);
+  const [imageSearchFile, setImageSearchFile] = useState<File | null>(null);
+  const [imageSearchPrev, setImageSearchPrev] = useState<string | null>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
   const searchSuggestRef = useRef<HTMLDivElement>(null);
   const searchInputRef = useRef<HTMLInputElement>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
