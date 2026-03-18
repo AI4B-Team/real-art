@@ -307,11 +307,7 @@ function PromptBox({
                   {typeCfg ? (
                     <typeCfg.icon size={17} className={typeCfg.color} />
                   ) : (
-                    /* The icon from screenshot 2 — "create new" style icon */
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-muted">
-                      <rect x="3" y="3" width="18" height="18" rx="3"/>
-                      <path d="M12 8v8M8 12h8"/>
-                    </svg>
+                    <SlidersHorizontal size={17} className="text-muted" />
                   )}
                 </button>
               </TooltipTrigger>
