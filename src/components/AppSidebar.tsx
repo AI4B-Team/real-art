@@ -359,41 +359,26 @@ const AppSidebar = () => {
       {/* Onboarding Widget */}
       {showWidget && !sidebarCollapsed && (
         <div className="mt-4 mx-1 mb-4 rounded-2xl border border-accent/20 bg-accent/[0.04] px-3.5 py-3">
-          {/* Header: icon + title + dismiss */}
-          <div className="flex items-center gap-1.5 mb-1">
-            <Zap className="w-3.5 h-3.5 text-accent shrink-0" />
-            <span className="text-[0.76rem] font-bold text-foreground whitespace-nowrap">Get 1,000 Free Credits</span>
+          {/* Header: title + dismiss */}
+          <div className="flex items-start gap-1.5 mb-2">
+            <span className="text-[0.76rem] font-bold text-foreground leading-snug">
+              Start Creating — Get 1,000 Free Credits
+            </span>
             <button
               onClick={dismissWidget}
-              className="w-5 h-5 rounded-full flex items-center justify-center text-muted/40 hover:text-muted hover:bg-foreground/[0.07] transition-colors shrink-0 ml-auto"
+              className="w-5 h-5 rounded-full flex items-center justify-center text-muted/40 hover:text-muted hover:bg-foreground/[0.07] transition-colors shrink-0 ml-auto mt-0.5"
               title="Dismiss"
             >
               <X className="w-3 h-3" />
             </button>
           </div>
-          {/* Countdown on its own row */}
-          {timeLeft && (
-            <div className="flex items-center gap-1 mb-2.5">
-              <Clock className="w-2.5 h-2.5 text-accent" />
-              <span className="text-[0.65rem] text-accent font-medium">{timeLeft}</span>
-            </div>
-          )}
-
-          {/* Progress */}
-          <div className="flex items-center justify-between mb-1.5">
-            <span className="text-[0.68rem] text-muted">{onboardDone.length}/{totalSteps} Steps Done</span>
-            <span className="text-[0.68rem] font-semibold text-foreground">{pct}%</span>
-          </div>
-          <div className="h-[3px] bg-foreground/[0.06] rounded-full overflow-hidden mb-2.5">
-            <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
-          </div>
 
           {/* Steps */}
           <div className="flex flex-col gap-1 mb-2.5">
             {[
-              { id: "upload", label: "Upload Or Generate" },
-              { id: "collection", label: "Create A Collection" },
-              { id: "explore", label: "Explore The Gallery" },
+              { id: "upload", label: "Upload or Generate" },
+              { id: "collection", label: "Create a Collection" },
+              { id: "explore", label: "Explore & Save" },
             ].map(step => {
               const done = onboardDone.includes(step.id);
               return (
@@ -405,12 +390,16 @@ const AppSidebar = () => {
             })}
           </div>
 
+          {/* Progress */}
+          <div className="h-[3px] bg-foreground/[0.06] rounded-full overflow-hidden mb-2.5">
+            <div className="h-full bg-accent rounded-full transition-all duration-500" style={{ width: `${pct}%` }} />
+          </div>
+
           <Link
             to="/welcome"
             className="flex items-center justify-center gap-1.5 w-full bg-accent text-white py-1.5 rounded-lg text-[0.76rem] font-semibold hover:bg-accent/90 transition-colors no-underline"
           >
-            <Sparkles className="w-3.5 h-3.5 text-white" />
-            Continue Setup
+            Unlock Credits
           </Link>
         </div>
       )}
