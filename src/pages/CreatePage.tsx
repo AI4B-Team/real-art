@@ -216,15 +216,13 @@ function GenerationInput({ selectedType, onGenerationStart }: { selectedType: Co
             {audioMode ? <X size={12} className="text-emerald-600" onClick={e=>{e.stopPropagation();setAudioMode(null);}} /> : <ChevronDown size={12}/>}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-52 p-3" align="start">
-          <div className="grid grid-cols-2 gap-x-4 gap-y-0.5">
-            {AUDIO_MODES.map(m=>(
-              <button key={m.value} onClick={()=>{setAudioMode(m.value);setAudioModeOpen(false);}}
-                className={`flex items-center gap-2 py-1.5 text-sm transition-colors ${audioMode===m.value?"text-emerald-700 font-semibold":"text-foreground hover:opacity-70"}`}>
-                <m.icon size={14} className={m.color}/>{m.value}
-              </button>
-            ))}
-          </div>
+        <PopoverContent className="w-48 p-1.5" align="start">
+          {AUDIO_MODES.map(m=>(
+            <button key={m.value} onClick={()=>{setAudioMode(m.value);setAudioModeOpen(false);}}
+              className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${audioMode===m.value?"bg-emerald-50 text-emerald-700":"hover:bg-foreground/[0.04] text-foreground"}`}>
+              <m.icon size={14} className={m.color}/>{m.value}{audioMode===m.value&&<Check size={13} className="ml-auto text-emerald-600"/>}
+            </button>
+          ))}
         </PopoverContent>
       </Popover>
     );
