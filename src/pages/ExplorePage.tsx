@@ -137,9 +137,6 @@ const filters = [
   "Nature", "Architecture", "Fantasy", "3D Art", "Fashion", "Sci-Fi",
   "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal",
 ];
-  "Nature", "Architecture", "Fantasy", "3D Art", "Fashion", "Sci-Fi",
-  "Avatars", "Backgrounds", "Luxury", "Cyberpunk", "Minimal",
-];
 
 const downloadWeights = [3412,2180,1940,1620,1410,1120,842,3820,890,2950,1280,1090,2640,740,1820,960,1530,680,2100,1250,900,600,1100,800,1300,700,500,400];
 const likesWeights = [847,612,534,441,407,302,256,982,213,801,388,302,723,188,541,267,412,156,634,345,200,150,300,220,380,180,120,100];
