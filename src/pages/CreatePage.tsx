@@ -517,23 +517,10 @@ const CreatePage = () => {
         </div>
 
         {/* Prompt box */}
-        {selectedType && (
-          <GenerationInput
-            selectedType={selectedType}
-            onGenerationStart={r => { setResults(r); window.scrollTo({ top: 500, behavior: "smooth" }); }}
-          />
-        )}
-
-        {/* No type selected */}
-        {!selectedType && (
-          <div className="text-center py-20">
-            <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-5">
-              <Sparkles className="w-8 h-8 text-accent"/>
-            </div>
-            <h2 className="font-display text-[1.3rem] font-black tracking-[-0.02em] mb-2">Choose a content type above</h2>
-            <p className="text-[0.85rem] text-muted">Pick Image, Video, Audio, or Design to get started.</p>
-          </div>
-        )}
+        <GenerationInput
+          selectedType={selectedType}
+          onGenerationStart={r => { setResults(r); window.scrollTo({ top: 500, behavior: "smooth" }); }}
+        />
 
         {/* Results */}
         {results.length > 0 && (
