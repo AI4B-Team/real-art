@@ -501,7 +501,7 @@ const CreatePage = () => {
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-10">
         {/* Headline */}
         <div className="text-center mb-8">
-          <h1 className="font-display text-[2.2rem] md:text-[2.8rem] font-black tracking-[-0.03em] leading-[1.08] mb-3">
+          <h1 className="font-body text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-[-0.01em] leading-[1.15] mb-3">
             What Would You Like To Create Today?
           </h1>
         </div>
