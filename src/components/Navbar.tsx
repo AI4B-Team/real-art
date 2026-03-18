@@ -647,7 +647,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                 <div className="flex items-center justify-between mb-2">
                   <span className="flex items-center gap-1.5 text-[0.7rem] font-semibold tracking-[0.1em] uppercase text-muted"><Clock className="w-3 h-3" /> Recent</span>
                   <button onClick={() => { setRecentSearches([]); try { localStorage.removeItem("ra_recent_searches"); } catch {} }} className="text-[0.68rem] text-muted hover:text-accent transition-colors">
-                    Clear all
+                    Clear All
                   </button>
                 </div>
                 {recentSearches.slice(0, 4).map((term, i) => (
