@@ -23,30 +23,22 @@ const Index = () => {
     return () => window.removeEventListener("ra_filter_reset", reset);
   }, []);
 
-  // Smart routing decision tree
+  // Logged-in users always go to dashboard
   useEffect(() => {
     try {
       const isAuth = localStorage.getItem("ra_auth") === "1";
-      if (!isAuth) return; // Not logged in → stay on homepage
+      if (!isAuth) return;
 
       const isNewUser = localStorage.getItem("ra_new_user") === "1";
       const onboardDone = localStorage.getItem("ra_onboard_skipped") === "1" ||
         (JSON.parse(localStorage.getItem("ra_onboard_done") || "[]") as string[]).length >= 3;
 
-      // New user who hasn't finished onboarding → /welcome
       if (isNewUser && !onboardDone) {
         navigate("/welcome", { replace: true });
         return;
       }
 
-      // Returning creator (has uploads) → /dashboard
-      const hasUploads = parseInt(localStorage.getItem("ra_uploads") || "0", 10) > 0;
-      if (hasUploads) {
-        navigate("/dashboard", { replace: true });
-        return;
-      }
-
-      // Browser (logged in, no uploads) → stay on homepage
+      navigate("/dashboard", { replace: true });
     } catch {}
   }, [navigate]);
 
