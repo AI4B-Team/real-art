@@ -334,7 +334,7 @@ function PromptBox({
                     <Shuffle size={17} />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="right">Auto Prompt</TooltipContent>
+                <TooltipContent side="right">Inspire Me</TooltipContent>
               </Tooltip>
             </div>
           ) : (
