@@ -1083,6 +1083,137 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
           </div>
         </div>
       )}
+
+      {/* Voice listening overlay */}
+      {voiceListening && (
+        <div className="fixed inset-0 z-[9999] bg-background/95 backdrop-blur-sm flex items-center justify-center" onClick={() => setVoiceListening(false)}>
+          <div className="flex flex-col items-center" onClick={e => e.stopPropagation()}>
+            <div className="relative w-24 h-24 flex items-center justify-center mb-8">
+              <div className="absolute inset-0 rounded-full bg-accent/20 animate-ping" style={{ animationDuration: "1.5s" }} />
+              <div className="absolute inset-2 rounded-full bg-accent/30 animate-ping" style={{ animationDuration: "1.5s", animationDelay: "0.3s" }} />
+              <div className="absolute inset-4 rounded-full bg-accent/40 animate-ping" style={{ animationDuration: "1.5s", animationDelay: "0.6s" }} />
+              <div className="relative w-16 h-16 rounded-full bg-accent flex items-center justify-center">
+                <Mic className="w-8 h-8 text-white" />
+              </div>
+            </div>
+            <h2 className="text-xl font-display font-bold mb-2">Listening…</h2>
+            <p className="text-sm text-muted mb-6">Speak now — say what you're looking for</p>
+            <button onClick={() => setVoiceListening(false)} className="text-[0.8rem] text-muted hover:text-foreground transition-colors">Cancel</button>
+          </div>
+        </div>
+      )}
+
+      {/* Voice error toast */}
+      {voiceError && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] flex items-center gap-2.5 bg-foreground text-primary-foreground px-5 py-3 rounded-xl shadow-lg animate-drop-in">
+          <Mic className="w-4 h-4 text-accent shrink-0" />
+          <span className="text-[0.82rem] font-medium">{voiceError}</span>
+          <button onClick={() => setVoiceError("")} className="ml-2 text-primary-foreground/50 hover:text-primary-foreground">
+            <X className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
+      {/* Image search modal */}
+      {imageSearchOpen && (
+        <div className="fixed inset-0 z-[9999] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4" onClick={() => { setImageSearchOpen(false); setImageSearchFile(null); setImageSearchPrev(null); }}>
+          <div className="bg-[#1a1a1a] rounded-2xl w-full max-w-[860px] flex flex-col md:flex-row overflow-hidden" onClick={e => e.stopPropagation()}>
+            {/* Left: modes */}
+            <div className="w-full md:w-[240px] border-b md:border-b-0 md:border-r border-white/[0.08] p-4 flex flex-col gap-0.5">
+              <div className="flex items-center gap-2.5 mb-4">
+                <Camera className="w-5 h-5 text-white/60" />
+                <span className="text-[0.82rem] text-white/80 font-medium">Use an image to search, edit, or create</span>
+              </div>
+              {([
+                { id: "search" as const, icon: Search, label: "Search by image", desc: "Find similar images" },
+                { id: "reimagine" as const, icon: RefreshCw, label: "Reimagine", desc: "AI variations of your image" },
+                { id: "upscale" as const, icon: ArrowUpFromLine, label: "Upscale", desc: "Enhance resolution 4×" },
+                { id: "prompt" as const, icon: ScanText, label: "Get prompt from image", desc: "Reverse-engineer the prompt" },
+                { id: "edit" as const, icon: SlidersHorizontal, label: "Edit image", desc: "Adjust with AI instructions" },
+                { id: "video" as const, icon: Video, label: "Create a video", desc: "Animate this image" },
+              ]).map(mode => (
+                <button
+                  key={mode.id}
+                  onClick={() => setImageSearchMode(mode.id)}
+                  className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-left transition-colors mb-0.5 ${imageSearchMode === mode.id ? "bg-white/[0.1] text-white" : "text-white/50 hover:text-white/80 hover:bg-white/[0.05]"}`}
+                >
+                  <mode.icon className="w-4 h-4 shrink-0" />
+                  <span className="text-[0.82rem]">{mode.label}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Right: upload area */}
+            <div className="flex-1 p-6 flex flex-col">
+              <div className="flex justify-end mb-4">
+                <button onClick={() => { setImageSearchOpen(false); setImageSearchFile(null); setImageSearchPrev(null); }} className="w-8 h-8 rounded-full flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.08] transition-colors">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {imageSearchPrev ? (
+                <div className="flex-1 flex flex-col items-center justify-center gap-4">
+                  <div className="relative">
+                    <img src={imageSearchPrev} alt="Preview" className="max-h-[280px] rounded-xl object-contain" />
+                    <button onClick={() => { setImageSearchFile(null); setImageSearchPrev(null); }} className="absolute top-2 right-2 w-7 h-7 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black/80 transition-colors">
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <span className="text-[0.78rem] text-white/50">{imageSearchFile?.name}</span>
+                  <button onClick={handleImageSearchAction} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-white font-semibold text-[0.88rem] hover:bg-accent/85 transition-colors">
+                    {imageSearchMode === "search" ? "Search by this image"
+                      : imageSearchMode === "reimagine" ? "Reimagine"
+                      : imageSearchMode === "upscale" ? "Upscale image"
+                      : imageSearchMode === "prompt" ? "Get prompt"
+                      : imageSearchMode === "edit" ? "Edit with AI"
+                      : "Create video"}
+                  </button>
+                </div>
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center">
+                  <div
+                    onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={e => { e.preventDefault(); setDragOver(false); const f = e.dataTransfer.files[0]; if (f) handleImageFile(f); }}
+                    onClick={() => imageInputRef.current?.click()}
+                    className={`w-full flex flex-col items-center justify-center gap-4 py-14 px-8 rounded-2xl border-2 border-dashed cursor-pointer transition-all ${dragOver ? "border-accent bg-accent/10" : "border-white/[0.15] hover:border-white/30 hover:bg-white/[0.03]"}`}
+                  >
+                    <ImagePlus className="w-8 h-8 text-white/40" />
+                    <div className="text-center">
+                      <p className="text-[0.88rem] text-white/70 font-medium mb-1">Drag and drop an image or click to upload</p>
+                      <p className="text-[0.72rem] text-white/30">Supported formats: JPG, PNG, WEBP · Max 60 MB · Min 224×224px</p>
+                    </div>
+                    <button className="px-5 py-2.5 rounded-xl bg-white/[0.1] text-white text-[0.82rem] font-medium hover:bg-white/[0.15] transition-colors">
+                      Upload image
+                    </button>
+                    <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={e => { const f = e.target.files?.[0]; if (f) handleImageFile(f); }} />
+                  </div>
+
+                  <div className="mt-6 w-full max-w-sm">
+                    <p className="text-[0.72rem] text-white/30 text-center mb-2">or paste image URL</p>
+                    <input
+                      type="text"
+                      placeholder="https://example.com/image.jpg"
+                      className="w-full bg-white/[0.06] border border-white/[0.1] rounded-xl px-4 py-3 text-[0.82rem] text-white placeholder:text-white/20 outline-none focus:border-white/30 transition-colors"
+                      onKeyDown={async (e) => {
+                        if (e.key !== "Enter") return;
+                        const url = (e.target as HTMLInputElement).value.trim();
+                        if (!url) return;
+                        try {
+                          const res = await fetch(url);
+                          const blob = await res.blob();
+                          const file = new File([blob], "image.jpg", { type: blob.type });
+                          handleImageFile(file);
+                        } catch { setVoiceError("Couldn't load that image URL."); }
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
