@@ -189,22 +189,91 @@ const DUMMY_COMMUNITY = [
 
 /* ─── Speech hook ────────────────────────────────────────────── */
 
-function useSpeech(onResult: (t: string) => void) {
+function useSpeech() {
   const [isListening, setIsListening] = useState(false);
+  const [interimText, setInterimText] = useState("");
+  const [finalText, setFinalText] = useState("");
   const [isSupported] = useState(() => typeof window !== "undefined" && ("webkitSpeechRecognition" in window || "SpeechRecognition" in window));
   const recogRef = useRef<any>(null);
+
   const startListening = useCallback(() => {
     const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
     if (!SR) return;
     const r = new SR();
-    r.continuous = false; r.interimResults = false;
-    r.onresult = (e: any) => { onResult(e.results[0][0].transcript); setIsListening(false); };
+    r.continuous = true;
+    r.interimResults = true;
+    r.onresult = (e: any) => {
+      let interim = "";
+      let final = "";
+      for (let i = 0; i < e.results.length; i++) {
+        if (e.results[i].isFinal) {
+          final += e.results[i][0].transcript;
+        } else {
+          interim += e.results[i][0].transcript;
+        }
+      }
+      setFinalText(final);
+      setInterimText(interim);
+    };
     r.onerror = () => setIsListening(false);
-    r.onend   = () => setIsListening(false);
-    recogRef.current = r; r.start(); setIsListening(true);
-  }, [onResult]);
-  const stopListening = useCallback(() => { recogRef.current?.stop(); setIsListening(false); }, []);
-  return { isListening, isSupported, startListening, stopListening };
+    r.onend = () => {
+      // don't auto-clear — let user accept/cancel
+    };
+    recogRef.current = r;
+    r.start();
+    setIsListening(true);
+    setInterimText("");
+    setFinalText("");
+  }, []);
+
+  const stopListening = useCallback(() => {
+    recogRef.current?.stop();
+  }, []);
+
+  const cancel = useCallback(() => {
+    recogRef.current?.stop();
+    setIsListening(false);
+    setInterimText("");
+    setFinalText("");
+  }, []);
+
+  const accept = useCallback(() => {
+    recogRef.current?.stop();
+    const result = (finalText + " " + interimText).trim();
+    setIsListening(false);
+    setInterimText("");
+    setFinalText("");
+    return result;
+  }, [finalText, interimText]);
+
+  const currentTranscript = (finalText + " " + interimText).trim();
+
+  return { isListening, isSupported, startListening, stopListening, cancel, accept, currentTranscript };
+}
+
+/* ─── Audio Wave Animation ──────────────────────────────────── */
+
+function AudioWaveAnimation() {
+  return (
+    <div className="flex items-center gap-[3px] h-6">
+      {[...Array(12)].map((_, i) => (
+        <div
+          key={i}
+          className="w-[3px] rounded-full bg-accent"
+          style={{
+            animation: `audioWave 1.2s ease-in-out ${i * 0.08}s infinite`,
+            height: "4px",
+          }}
+        />
+      ))}
+      <style>{`
+        @keyframes audioWave {
+          0%, 100% { height: 4px; opacity: 0.4; }
+          50% { height: ${20}px; opacity: 1; }
+        }
+      `}</style>
+    </div>
+  );
 }
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
