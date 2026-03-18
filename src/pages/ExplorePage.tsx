@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal, Image, Video, Music } from "lucide-react";
+import { Search, Filter, ChevronDown, Download, Heart, SlidersHorizontal, Image, Video, Music, Sparkles, Users, TrendingUp } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import SponsoredCard from "@/components/SponsoredCard";
