@@ -289,6 +289,16 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
   const [characterInfo, setCharacterInfo] = useState<{ name: string; avatar: string | null } | null>(null);
 
+  // Fetch character info when selected
+  useEffect(() => {
+    if (!selectedCharacter) { setCharacterInfo(null); return; }
+    const fetchChar = async () => {
+      const { data } = await supabase.from("characters").select("name, avatar_url").eq("id", selectedCharacter).single();
+      if (data) setCharacterInfo({ name: data.name, avatar: data.avatar_url });
+    };
+    fetchChar();
+  }, [selectedCharacter]);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (typeRef.current && !typeRef.current.contains(e.target as Node)) setTypeDropdownOpen(false);
