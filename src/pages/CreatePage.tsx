@@ -288,50 +288,90 @@ function PromptBox({
   const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "What would you like to create?";
   const borderCls = typeCfg ? typeCfg.promptBorder : "border-foreground/[0.12]";
 
+  /* Top-left icon tooltips per type */
+  const topLeftLabel = (type: ContentType): string => {
+    switch (type) {
+      case "image": return "Image-To-Prompt";
+      case "video": return "Video-To-Video";
+      case "audio": return "Audio";
+      case "design": return "Design";
+      case "content": return "Content";
+      case "document": return "Document";
+      case "app": return "App";
+    }
+  };
+
   return (
     <TooltipProvider>
       <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background shadow-sm overflow-visible transition-all duration-200 ${borderCls}`}>
 
         {/* Textarea row */}
-        <div className="flex items-center gap-3 px-4 pt-3 pb-2 min-h-[56px]">
-          {/* LEFT: type selector trigger — always visible */}
-          <div className="relative shrink-0" ref={typeRef}>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={() => setTypeDropdownOpen(v => !v)}
-                  className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-foreground/[0.06] transition-colors"
-                  aria-label="Select content type"
-                >
-                  {typeCfg ? (
-                    <typeCfg.icon size={17} className={typeCfg.color} />
-                  ) : (
-                    <SlidersHorizontal size={17} className="text-foreground" />
-                  )}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">Select what to create</TooltipContent>
-            </Tooltip>
+        <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
 
-            {/* Type dropdown — same style as Image 1 */}
-            {typeDropdownOpen && (
-              <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-                {CONTENT_TYPES.map(t => (
+          {/* LEFT: top-left icons column when type selected, OR type selector */}
+          {hasType && typeCfg ? (
+            <div className="flex flex-col gap-1 shrink-0 pt-[2px]">
+              {/* Category icon (Image-To-Prompt, etc.) */}
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <button
-                    key={t.id}
                     type="button"
-                    onClick={() => handleTypeSelect(t.id)}
-                    className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}
+                    className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors`}
                   >
-                    <t.icon size={16} className={t.color} />
-                    {t.label}
-                    {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
+                    <typeCfg.icon size={17} />
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
+                </TooltipTrigger>
+                <TooltipContent side="right">{topLeftLabel(selectedType!)}</TooltipContent>
+              </Tooltip>
+              {/* Auto Prompt (was Inspire Me / Shuffle) */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={handleShuffle}
+                    className="p-1.5 rounded-lg bg-foreground/[0.06] text-emerald-500 hover:bg-emerald-50 transition-colors"
+                  >
+                    <Shuffle size={17} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Auto Prompt</TooltipContent>
+              </Tooltip>
+            </div>
+          ) : (
+            <div className="relative shrink-0 pt-[2px]" ref={typeRef}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => setTypeDropdownOpen(v => !v)}
+                    className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-foreground/[0.06] transition-colors"
+                    aria-label="Select content type"
+                  >
+                    <SlidersHorizontal size={17} className="text-foreground" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Select what to create</TooltipContent>
+              </Tooltip>
+
+              {/* Type dropdown */}
+              {typeDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+                  {CONTENT_TYPES.map(t => (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => handleTypeSelect(t.id)}
+                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}
+                    >
+                      <t.icon size={16} className={t.color} />
+                      {t.label}
+                      {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Textarea */}
           <textarea
@@ -341,7 +381,7 @@ function PromptBox({
             onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
             placeholder={placeholder}
             rows={1}
-            className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px]"
+            className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px]"
             style={{ height: "36px" }}
             onInput={e => {
               const el = e.currentTarget;
@@ -351,35 +391,37 @@ function PromptBox({
           />
 
           {/* RIGHT: mic + generate buttons */}
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={isListening ? stopListening : startListening}
-                disabled={!isSupported}
-                className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${isListening ? "text-accent" : "text-foreground hover:bg-foreground/[0.06]"}`}
-              >
-                {isListening ? <MicOff size={17} /> : <Mic size={17} />}
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">{isListening ? "Stop listening" : "Voice input"}</TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                type="button"
-                onClick={handleGenerate}
-                disabled={!prompt.trim() || isEnhancing}
-                className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
-              >
-                {isEnhancing
-                  ? <Loader2 size={17} className="animate-spin text-purple-500" />
-                  : <Send size={17} />
-                }
-              </button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Generate</TooltipContent>
-          </Tooltip>
+          <div className="flex items-center gap-0 shrink-0 pt-[2px]">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={isListening ? stopListening : startListening}
+                  disabled={!isSupported}
+                  className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${isListening ? "text-accent" : "text-foreground hover:bg-foreground/[0.06]"}`}
+                >
+                  {isListening ? <MicOff size={17} /> : <Mic size={17} />}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">{isListening ? "Stop listening" : "Voice input"}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  onClick={handleGenerate}
+                  disabled={!prompt.trim() || isEnhancing}
+                  className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
+                >
+                  {isEnhancing
+                    ? <Loader2 size={17} className="animate-spin text-purple-500" />
+                    : <Send size={17} />
+                  }
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Generate</TooltipContent>
+            </Tooltip>
+          </div>
         </div>
 
         {/* Char count */}
@@ -393,10 +435,45 @@ function PromptBox({
         {hasType && (
           <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center justify-between gap-2 flex-wrap">
 
-            {/* Left: sub-mode + controls */}
+            {/* Left: selected type chip + sub-mode + controls */}
             <div className="flex items-center gap-1.5 flex-wrap">
 
-              {/* Sub-mode selector */}
+              {/* Selected type chip with down caret to change */}
+              {typeCfg && (
+                <div className="relative" ref={typeRef}>
+                  <button
+                    type="button"
+                    onClick={() => setTypeDropdownOpen(v => !v)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}
+                  >
+                    <typeCfg.icon size={13} />
+                    {typeCfg.label}
+                    <ChevronDown size={11} />
+                  </button>
+
+                  {/* Type dropdown */}
+                  {typeDropdownOpen && (
+                    <div className="absolute bottom-full left-0 mb-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+                      {CONTENT_TYPES.map(t => (
+                        <button
+                          key={t.id}
+                          type="button"
+                          onClick={() => handleTypeSelect(t.id)}
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}
+                        >
+                          <t.icon size={16} className={t.color} />
+                          {t.label}
+                          {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+
+              {/* Sub-mode selector (Type button) */}
               <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
                 <PopoverTrigger asChild>
                   <button
@@ -554,20 +631,24 @@ function PromptBox({
                   </PopoverContent>
                 </Popover>
               )}
-
-              {/* Shuffle */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button type="button" onClick={handleShuffle} className="p-1.5 rounded-lg bg-foreground/[0.04] text-emerald-500 hover:bg-emerald-50 transition-colors">
-                    <Shuffle size={14} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent>Inspire me</TooltipContent>
-              </Tooltip>
             </div>
 
-            {/* Right: mic + generate */}
+            {/* Right: enhance prompt + mic + generate */}
             <div className="flex items-center gap-2">
+              {/* Enhance Prompt — only when text exists */}
+              {prompt.trim() && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button type="button" onClick={handleEnhance} disabled={isEnhancing}
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] hover:bg-foreground/[0.08] text-muted-foreground rounded-lg text-[0.78rem] font-medium transition-colors disabled:opacity-50">
+                      {isEnhancing ? <Loader2 size={14} className="animate-spin text-purple-500" /> : <Sparkles size={14} className="text-purple-500" />}
+                      <span>AI</span>
+                      <ChevronDown size={12} className="text-muted" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>Enhance Prompt</TooltipContent>
+                </Tooltip>
+              )}
               {isSupported && (
                 <Tooltip>
                   <TooltipTrigger asChild>
