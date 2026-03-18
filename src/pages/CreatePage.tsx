@@ -16,7 +16,7 @@ import {
   LayoutGrid, Filter, Star, Download, Bookmark, Plus,
   // App/Template/Community icons
   Bot, Globe, Heart, Users, Wand2, Lock,
-  ArrowRight, Search, Cpu,
+  ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush,
 } from "lucide-react";
 import {
@@ -350,30 +350,22 @@ function PromptBox({
             }}
           />
 
-          {/* RIGHT: settings icon (same position as Image 2 right icon) */}
+          {/* RIGHT: generate button */}
           <Tooltip>
             <TooltipTrigger asChild>
               <button
                 type="button"
-                onClick={handleEnhance}
+                onClick={handleGenerate}
                 disabled={!prompt.trim() || isEnhancing}
-                className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl bg-foreground/[0.05] hover:bg-foreground/[0.09] border border-foreground/[0.1] transition-colors disabled:opacity-30"
+                className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
               >
                 {isEnhancing
-                  ? <Loader2 size={15} className="animate-spin text-purple-500" />
-                  : (
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-muted">
-                      <line x1="4" y1="6" x2="20" y2="6"/>
-                      <line x1="4" y1="12" x2="14" y2="12"/>
-                      <line x1="4" y1="18" x2="20" y2="18"/>
-                      <circle cx="18" cy="6" r="2.5" fill="currentColor" stroke="none"/>
-                      <circle cx="17" cy="18" r="2.5" fill="currentColor" stroke="none"/>
-                    </svg>
-                  )
+                  ? <Loader2 size={17} className="animate-spin text-purple-500" />
+                  : <ArrowUp size={17} />
                 }
               </button>
             </TooltipTrigger>
-            <TooltipContent side="bottom">Enhance prompt</TooltipContent>
+            <TooltipContent side="bottom">Generate</TooltipContent>
           </Tooltip>
         </div>
 
