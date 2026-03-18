@@ -120,3 +120,11 @@
 .animate-drop-in {
   animation: drop-in 0.15s ease both;
 }
+
+@keyframes ticker {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-ticker {
+  animation: ticker 40s linear infinite;
+}
