@@ -800,6 +800,24 @@ export default function CreatePage() {
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
   const [generated, setGenerated] = useState(false);
 
+  // Advanced filter state
+  const [filterLikes, setFilterLikes] = useState(false);
+  const [filterEdits, setFilterEdits] = useState(false);
+  const [filterUpscales, setFilterUpscales] = useState(false);
+  const [filterDateFrom, setFilterDateFrom] = useState("");
+  const [filterDateTo, setFilterDateTo] = useState("");
+
+  const hasActiveFilters = filterLikes || filterEdits || filterUpscales || filterDateFrom || filterDateTo || mediaFilter !== "all";
+
+  const clearFilters = () => {
+    setMediaFilter("all");
+    setFilterLikes(false);
+    setFilterEdits(false);
+    setFilterUpscales(false);
+    setFilterDateFrom("");
+    setFilterDateTo("");
+  };
+
   const filteredCreations = mediaFilter === "all"
     ? DUMMY_CREATIONS
     : DUMMY_CREATIONS.filter(c => c.type === mediaFilter);
