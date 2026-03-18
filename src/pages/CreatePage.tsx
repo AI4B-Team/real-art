@@ -336,6 +336,37 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     toast({ title: "Prompt enhanced!" });
   };
 
+  const handleExtractPrompt = async (file: File) => {
+    setIsExtractingPrompt(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const { data, error } = await supabase.functions.invoke("generate-prompts", {
+        body: { imageUrl: base64 },
+      });
+
+      if (error) throw error;
+
+      if (selectedType === "video") {
+        setPrompt(data.video_prompt || "");
+      } else {
+        setPrompt(data.image_prompt || "");
+      }
+      toast({ title: "Prompt extracted!", description: "AI analyzed your file and generated a prompt." });
+    } catch (e: any) {
+      console.error("Extract prompt error:", e);
+      toast({ title: "Failed to extract prompt", description: e.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setIsExtractingPrompt(false);
+      if (promptFileRef.current) promptFileRef.current.value = "";
+    }
+  };
+
   const handleGenerate = async () => {
     if (!prompt.trim()) { textareaRef.current?.focus(); return; }
     setIsGenerating(true);
