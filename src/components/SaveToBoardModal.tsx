@@ -118,7 +118,7 @@ export default function SaveToBoardModal({
   return (
     <ModalBackdrop onClose={onClose}>
       <div
-        className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] overflow-hidden shadow-2xl animate-drop-in"
+        className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[400px] max-h-[85vh] overflow-y-auto shadow-2xl animate-drop-in"
         onClick={e => e.stopPropagation()}
       >
         {/* Header */}
