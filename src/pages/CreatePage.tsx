@@ -16,7 +16,7 @@ import {
   LayoutGrid, Filter, Star, Download, Bookmark, Plus,
   // App/Template/Community icons
   Bot, Globe, Heart, Users, Wand2, Lock,
-  ArrowRight, Search, Cpu,
+  ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush,
 } from "lucide-react";
 import {
