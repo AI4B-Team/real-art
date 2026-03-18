@@ -287,6 +287,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
+  const [characterInfo, setCharacterInfo] = useState<{ name: string; avatar: string | null } | null>(null);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
