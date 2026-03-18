@@ -253,13 +253,17 @@ function useSpeech() {
 
 /* ─── Audio Wave Animation ──────────────────────────────────── */
 
-function AudioWaveAnimation() {
+function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
+  const h = small ? 14 : 20;
+  const barW = small ? "w-[2px]" : "w-[3px]";
+  const gap = small ? "gap-[2px]" : "gap-[3px]";
+  const containerH = small ? "h-4" : "h-6";
   return (
-    <div className="flex items-center gap-[3px] h-6">
+    <div className={`flex items-center ${gap} ${containerH}`}>
       {[...Array(12)].map((_, i) => (
         <div
           key={i}
-          className="w-[3px] rounded-full bg-accent"
+          className={`${barW} rounded-full bg-accent`}
           style={{
             animation: `audioWave 1.2s ease-in-out ${i * 0.08}s infinite`,
             height: "4px",
@@ -269,7 +273,7 @@ function AudioWaveAnimation() {
       <style>{`
         @keyframes audioWave {
           0%, 100% { height: 4px; opacity: 0.4; }
-          50% { height: ${20}px; opacity: 1; }
+          50% { height: ${h}px; opacity: 1; }
         }
       `}</style>
     </div>
