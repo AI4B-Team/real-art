@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import {
   Image, Video, Music, Palette, Calendar, FileText, Code,
@@ -262,6 +263,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [prompt, setPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
+  const promptFileRef = useRef<HTMLInputElement>(null);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [subModeOpen, setSubModeOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
@@ -334,6 +337,37 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     toast({ title: "Prompt enhanced!" });
   };
 
+  const handleExtractPrompt = async (file: File) => {
+    setIsExtractingPrompt(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const { data, error } = await supabase.functions.invoke("generate-prompts", {
+        body: { imageUrl: base64 },
+      });
+
+      if (error) throw error;
+
+      if (selectedType === "video") {
+        setPrompt(data.video_prompt || "");
+      } else {
+        setPrompt(data.image_prompt || "");
+      }
+      toast({ title: "Prompt extracted!", description: "AI analyzed your file and generated a prompt." });
+    } catch (e: any) {
+      console.error("Extract prompt error:", e);
+      toast({ title: "Failed to extract prompt", description: e.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setIsExtractingPrompt(false);
+      if (promptFileRef.current) promptFileRef.current.value = "";
+    }
+  };
+
   const handleGenerate = async () => {
     if (!prompt.trim()) { textareaRef.current?.focus(); return; }
     setIsGenerating(true);
@@ -361,7 +395,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const topLeftLabel = (type: ContentType): string => {
     switch (type) {
       case "image": return "Image-To-Prompt";
-      case "video": return "Video-To-Video";
+      case "video": return "Video-To-Prompt";
       case "audio": return "Audio";
       case "design": return "Design";
       case "content": return "Content";
@@ -387,8 +421,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               <div className="flex flex-col gap-1 shrink-0 pt-[2px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button type="button" className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors`}>
-                      <typeCfg.icon size={17} />
+                    <button
+                      type="button"
+                      onClick={() => (selectedType === "image" || selectedType === "video") ? promptFileRef.current?.click() : undefined}
+                      disabled={isExtractingPrompt}
+                      className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors ${(selectedType === "image" || selectedType === "video") ? "cursor-pointer" : ""}`}
+                    >
+                      {isExtractingPrompt ? <Loader2 size={17} className="animate-spin" /> : <typeCfg.icon size={17} />}
                     </button>
                   </TooltipTrigger>
                   <TooltipContent side="right">{topLeftLabel(selectedType!)}</TooltipContent>
@@ -401,6 +440,16 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger>
                   <TooltipContent side="right">Inspire Me</TooltipContent>
                 </Tooltip>
+                <input
+                  ref={promptFileRef}
+                  type="file"
+                  accept={selectedType === "video" ? "image/*,video/*" : "image/*"}
+                  className="hidden"
+                  onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) handleExtractPrompt(file);
+                  }}
+                />
               </div>
             ) : (
               <div className="relative shrink-0 pt-[2px]" ref={typeRef}>
