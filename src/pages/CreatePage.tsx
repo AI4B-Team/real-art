@@ -395,7 +395,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const topLeftLabel = (type: ContentType): string => {
     switch (type) {
       case "image": return "Image-To-Prompt";
-      case "video": return "Video-To-Video";
+      case "video": return "Video-To-Prompt";
       case "audio": return "Audio";
       case "design": return "Design";
       case "content": return "Content";
