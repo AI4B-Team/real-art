@@ -206,11 +206,27 @@ const ExplorePage = () => {
   const filteredImages = (() => {
     const q = query.trim().toLowerCase();
     const cat = activeFilter.toLowerCase();
-    const base = imageData.filter(img => {
+    let base = imageData.filter(img => {
       const matchQuery = !q || img.title.toLowerCase().includes(q) || img.tags.some(t => t.includes(q));
       const matchCat = activeFilter === "All" || img.tags.some(t => t.toLowerCase() === cat || t.toLowerCase().includes(cat));
       return matchQuery && matchCat;
     });
+
+    // Tab-based ordering (simulated personalization)
+    if (activeTab === "trending") {
+      base = [...base].sort((a, b) => (downloadWeights[imageData.indexOf(b)] || 0) - (downloadWeights[imageData.indexOf(a)] || 0));
+    } else if (activeTab === "following") {
+      // Simulate "following" feed — show a subset with different order
+      base = [...base].filter((_, i) => i % 3 === 0 || i % 5 === 0);
+    } else {
+      // "For You" — mix of liked + trending signals
+      base = [...base].sort((a, b) => {
+        const aScore = (likesWeights[imageData.indexOf(a)] || 0) * 2 + (downloadWeights[imageData.indexOf(a)] || 0);
+        const bScore = (likesWeights[imageData.indexOf(b)] || 0) * 2 + (downloadWeights[imageData.indexOf(b)] || 0);
+        return bScore - aScore;
+      });
+    }
+
     if (sort === "Newest First") return [...base].sort((a, b) => imageData.indexOf(b) - imageData.indexOf(a));
     if (sort === "Most Downloaded") return [...base].sort((a, b) => (downloadWeights[imageData.indexOf(b)] || 0) - (downloadWeights[imageData.indexOf(a)] || 0));
     if (sort === "Most Liked") return [...base].sort((a, b) => (likesWeights[imageData.indexOf(b)] || 0) - (likesWeights[imageData.indexOf(a)] || 0));
