@@ -176,7 +176,7 @@ function GenerationInput({ selectedType, onGenerationStart }: { selectedType: Co
             {imageMode ? <X size={12} className="text-blue-500" onClick={e=>{e.stopPropagation();setImageMode("");}} /> : <ChevronDown size={12}/>}
           </button>
         </PopoverTrigger>
-        <PopoverContent className="w-44 p-1.5" align="start">
+        <PopoverContent className="w-44 p-1.5" align="start" side="bottom">
           {IMAGE_MODES.map(m=>(
             <button key={m.value} onClick={()=>{setImageMode(m.value);setImageModeOpen(false);}}
               className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${imageMode===m.value?"bg-blue-50 text-blue-700":"hover:bg-foreground/[0.04] text-foreground"}`}>
