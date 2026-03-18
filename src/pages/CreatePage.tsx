@@ -1,23 +1,18 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Link } from "react-router-dom";
 import {
-  // Category icons
   Image, Video, Music, Palette, Calendar, FileText, Code,
-  // Prompt box icons
   ChevronDown, ChevronUp, Send, Mic, MicOff, Sparkles, Shuffle,
   X, Check, Loader2, Zap, ImageIcon,
-  // Sub-mode icons
   Layers, Pencil, RefreshCw, Camera,
   Play, MessageCircle, Move, User, BookOpen, Presentation,
   Headphones, AudioLines, Captions,
-  // Control icons
   Copy, Hash, Clock, SlidersHorizontal,
-  // Tab / gallery icons
   LayoutGrid, Filter, Star, Download, Bookmark, Plus,
-  // App/Template/Community icons
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
-  Film, Package, BarChart2, ShoppingBag, Brush,
+  Film, Package, BarChart2, ShoppingBag, Brush, Link2,
+  Eye,
 } from "lucide-react";
 import {
   Popover, PopoverContent, PopoverTrigger,
@@ -27,12 +22,19 @@ import {
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import PageShell from "@/components/PageShell";
+import ReferencePanel from "@/components/create/ReferencePanel";
+import FramePanel from "@/components/create/FramePanel";
+import MusicSamples from "@/components/create/MusicSamples";
+import PhotoshootThemes from "@/components/create/PhotoshootThemes";
+import SocialContentPanel from "@/components/create/SocialContentPanel";
+import CharacterPanel from "@/components/create/CharacterPanel";
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
 type ContentType = "image" | "video" | "audio" | "design" | "content" | "document" | "app";
 type GalleryTab = "creations" | "apps" | "templates" | "community";
 type MediaFilter = "all" | "image" | "video" | "audio" | "design";
+type PanelType = "reference" | "character" | "frames" | "music" | "photoshoot" | "social" | null;
 
 /* ─── Content type config ────────────────────────────────────── */
 
@@ -206,19 +208,14 @@ function useSpeech() {
       let interim = "";
       let final = "";
       for (let i = 0; i < e.results.length; i++) {
-        if (e.results[i].isFinal) {
-          final += e.results[i][0].transcript;
-        } else {
-          interim += e.results[i][0].transcript;
-        }
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
       }
       setFinalText(final);
       setInterimText(interim);
     };
     r.onerror = () => setIsListening(false);
-    r.onend = () => {
-      // don't auto-clear — let user accept/cancel
-    };
+    r.onend = () => {};
     recogRef.current = r;
     r.start();
     setIsListening(true);
@@ -226,28 +223,16 @@ function useSpeech() {
     setFinalText("");
   }, []);
 
-  const stopListening = useCallback(() => {
-    recogRef.current?.stop();
-  }, []);
-
-  const cancel = useCallback(() => {
-    recogRef.current?.stop();
-    setIsListening(false);
-    setInterimText("");
-    setFinalText("");
-  }, []);
-
+  const stopListening = useCallback(() => { recogRef.current?.stop(); }, []);
+  const cancel = useCallback(() => { recogRef.current?.stop(); setIsListening(false); setInterimText(""); setFinalText(""); }, []);
   const accept = useCallback(() => {
     recogRef.current?.stop();
     const result = (finalText + " " + interimText).trim();
-    setIsListening(false);
-    setInterimText("");
-    setFinalText("");
+    setIsListening(false); setInterimText(""); setFinalText("");
     return result;
   }, [finalText, interimText]);
 
   const currentTranscript = (finalText + " " + interimText).trim();
-
   return { isListening, isSupported, startListening, stopListening, cancel, accept, currentTranscript };
 }
 
@@ -261,32 +246,16 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
   return (
     <div className={`flex items-center ${gap} ${containerH}`}>
       {[...Array(12)].map((_, i) => (
-        <div
-          key={i}
-          className={`${barW} rounded-full bg-accent`}
-          style={{
-            animation: `audioWave 1.2s ease-in-out ${i * 0.08}s infinite`,
-            height: "4px",
-          }}
-        />
+        <div key={i} className={`${barW} rounded-full bg-accent`} style={{ animation: `audioWave 1.2s ease-in-out ${i * 0.08}s infinite`, height: "4px" }} />
       ))}
-      <style>{`
-        @keyframes audioWave {
-          0%, 100% { height: 4px; opacity: 0.4; }
-          50% { height: ${h}px; opacity: 1; }
-        }
-      `}</style>
+      <style>{`@keyframes audioWave { 0%, 100% { height: 4px; opacity: 0.4; } 50% { height: ${h}px; opacity: 1; } }`}</style>
     </div>
   );
 }
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
 
-function PromptBox({
-  onGenerate,
-}: {
-  onGenerate: () => void;
-}) {
+function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const { toast } = useToast();
   const [selectedType, setSelectedType] = useState<ContentType | null>(null);
   const [selectedSubMode, setSelectedSubMode] = useState<string | null>(null);
@@ -303,15 +272,22 @@ function PromptBox({
   const [selectedRatio, setSelectedRatio] = useState("1:1");
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [selectedDuration, setSelectedDuration] = useState("10s");
+  const [brandToggle, setBrandToggle] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
-  // Close type dropdown when clicking outside
+  // Panel states
+  const [activePanel, setActivePanel] = useState<PanelType>(null);
+  const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
+  const [startFrame, setStartFrame] = useState<string | null>(null);
+  const [endFrame, setEndFrame] = useState<string | null>(null);
+  const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
+  const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
+  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
+
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (typeRef.current && !typeRef.current.contains(e.target as Node)) {
-        setTypeDropdownOpen(false);
-      }
+      if (typeRef.current && !typeRef.current.contains(e.target as Node)) setTypeDropdownOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -326,7 +302,20 @@ function PromptBox({
     setSelectedSubMode(null);
     setSelectedModel("Auto");
     setTypeDropdownOpen(false);
+    setActivePanel(null);
     textareaRef.current?.focus();
+  };
+
+  // Auto-open panels based on sub-mode selection
+  const handleSubModeSelect = (modeId: string) => {
+    setSelectedSubMode(modeId);
+    setSubModeOpen(false);
+    // Auto-show relevant panel
+    if (selectedType === "video" && modeId === "animate") setActivePanel("frames");
+    else if (selectedType === "audio" && modeId === "music") setActivePanel("music");
+    else if (selectedType === "image" && modeId === "photoshoot") setActivePanel("photoshoot");
+    else if (selectedType === "content" && modeId === "social") setActivePanel("social");
+    else setActivePanel(null);
   };
 
   const handleShuffle = () => {
@@ -354,18 +343,21 @@ function PromptBox({
     toast({ title: "Generation complete!", description: "Your creation is ready below." });
   };
 
-  const { isListening, isSupported, startListening, stopListening, cancel: cancelSpeech, accept: acceptSpeech, currentTranscript } = useSpeech();
+  const { isListening, isSupported, startListening, cancel: cancelSpeech, accept: acceptSpeech, currentTranscript } = useSpeech();
 
   const handleAcceptSpeech = () => {
     const result = acceptSpeech();
     if (result) setPrompt(prev => prev ? prev + " " + result : result);
   };
 
+  const togglePanel = (panel: PanelType) => {
+    setActivePanel(prev => prev === panel ? null : panel);
+  };
+
   const hasType = !!selectedType;
   const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "What would you like to create?";
   const borderCls = typeCfg ? typeCfg.promptBorder : "border-foreground/[0.12]";
 
-  /* Top-left icon tooltips per type */
   const topLeftLabel = (type: ContentType): string => {
     switch (type) {
       case "image": return "Image-To-Prompt";
@@ -378,411 +370,365 @@ function PromptBox({
     }
   };
 
+  // Determine which extra toolbar icons to show based on content type
+  const showFrames = selectedType === "video" && selectedSubMode === "animate";
+  const showMusic = selectedType === "audio" && selectedSubMode === "music";
+  const showPhotoshoot = selectedType === "image" && selectedSubMode === "photoshoot";
+  const showSocial = selectedType === "content" && selectedSubMode === "social";
+
   return (
     <TooltipProvider>
-      <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background shadow-sm overflow-visible transition-all duration-200 ${borderCls}`}>
+      <div>
+        <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background shadow-sm overflow-visible transition-all duration-200 ${borderCls}`}>
 
-        {/* Textarea row */}
-        <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
-
-          {/* LEFT: top-left icons column when type selected, OR type selector */}
-          {hasType && typeCfg ? (
-            <div className="flex flex-col gap-1 shrink-0 pt-[2px]">
-              {/* Category icon (Image-To-Prompt, etc.) */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors`}
-                  >
-                    <typeCfg.icon size={17} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">{topLeftLabel(selectedType!)}</TooltipContent>
-              </Tooltip>
-              {/* Auto Prompt (was Inspire Me / Shuffle) */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={handleShuffle}
-                    className="p-1.5 rounded-lg bg-foreground/[0.06] text-emerald-500 hover:bg-emerald-50 transition-colors"
-                  >
-                    <Shuffle size={17} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">Inspire Me</TooltipContent>
-              </Tooltip>
-            </div>
-          ) : (
-            <div className="relative shrink-0 pt-[2px]" ref={typeRef}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    onClick={() => setTypeDropdownOpen(v => !v)}
-                    className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-foreground/[0.06] transition-colors"
-                    aria-label="Select content type"
-                  >
-                    <SlidersHorizontal size={17} className="text-foreground" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">Select what to create</TooltipContent>
-              </Tooltip>
-
-              {/* Type dropdown */}
-              {typeDropdownOpen && (
-                <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-                  {CONTENT_TYPES.map(t => (
-                    <button
-                      key={t.id}
-                      type="button"
-                      onClick={() => handleTypeSelect(t.id)}
-                      className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}
-                    >
-                      <t.icon size={16} className={t.color} />
-                      {t.label}
-                      {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* Textarea OR Recording UI */}
-          {isListening ? (
-            <div className="flex-1 flex flex-col gap-1 py-[6px] mt-[2px] min-h-[36px]">
-              {currentTranscript && (
-                <p className="text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>
-              )}
-              <div className="flex items-center gap-1.5 shrink-0 self-end">
-                <button
-                  type="button"
-                  onClick={cancelSpeech}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors"
-                  title="Cancel"
-                >
-                  <X size={14} />
-                </button>
-                <div className="flex items-center gap-1.5 px-1">
-                  <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
-                  <AudioWaveAnimation small />
-                  <span className="text-[0.7rem] text-muted font-medium whitespace-nowrap">Listening…</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleAcceptSpeech}
-                  className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors"
-                  title="Accept"
-                >
-                  <Check size={14} />
-                </button>
-              </div>
-            </div>
-          ) : (
-            <>
-              <textarea
-                ref={textareaRef}
-                value={prompt}
-                onChange={e => setPrompt(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
-                placeholder={placeholder}
-                rows={1}
-                className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px]"
-                style={{ height: "36px" }}
-                onInput={e => {
-                  const el = e.currentTarget;
-                  el.style.height = "36px";
-                  el.style.height = Math.min(el.scrollHeight, 140) + "px";
-                }}
-              />
-
-              {/* RIGHT: mic + generate buttons — only when no type selected */}
-              {!hasType && (
-                <div className="flex items-center gap-0 shrink-0 pt-[2px]">
-                  {isSupported && (
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button
-                          type="button"
-                          onClick={startListening}
-                          className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"
-                        >
-                          <Mic size={17} />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Voice input</TooltipContent>
-                    </Tooltip>
-                  )}
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        type="button"
-                        onClick={handleGenerate}
-                        disabled={!prompt.trim() || isEnhancing}
-                        className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
-                      >
-                        {isEnhancing
-                          ? <Loader2 size={17} className="animate-spin text-purple-500" />
-                          : <Send size={17} />
-                        }
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="bottom">Generate</TooltipContent>
-                  </Tooltip>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        {/* Char count */}
-        {prompt.length > 0 && (
-          <div className="px-16 pb-1">
-            <span className="text-[0.68rem] text-muted/40">{prompt.length}/1000 · ⌘↵ to generate</span>
-          </div>
-        )}
-
-        {/* ── Bottom toolbar — only when type is selected ── */}
-        {hasType && (
-          <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center justify-between gap-2 flex-wrap">
-
-            {/* Left: selected type chip + sub-mode + controls */}
-            <div className="flex items-center gap-1.5 flex-wrap">
-
-              {/* Selected type chip with down caret to change */}
-              {typeCfg && (
-                <div className="relative" ref={typeRef}>
-                  <button
-                    type="button"
-                    onClick={() => setTypeDropdownOpen(v => !v)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}
-                  >
-                    <typeCfg.icon size={13} />
-                    {typeCfg.label}
-                    <ChevronDown size={11} />
-                  </button>
-
-                  {/* Type dropdown */}
-                  {typeDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-                      {CONTENT_TYPES.map(t => (
-                        <button
-                          key={t.id}
-                          type="button"
-                          onClick={() => handleTypeSelect(t.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}
-                        >
-                          <t.icon size={16} className={t.color} />
-                          {t.label}
-                          {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
-
-              {/* Sub-mode selector (Type button) */}
-              <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
-                <PopoverTrigger asChild>
-                  <button
-                    type="button"
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${
-                      selectedSubObj
-                        ? `${typeCfg!.bg} ${typeCfg!.border} ${typeCfg!.color}`
-                        : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
-                    }`}
-                  >
-                    {selectedSubObj ? (
-                      <>
-                        <selectedSubObj.icon size={13} />
-                        {selectedSubObj.label}
-                        <X size={11} className="opacity-60"
-                          onClick={e => { e.stopPropagation(); setSelectedSubMode(null); setSubModeOpen(false); }}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <SlidersHorizontal size={13} />
-                        Type
-                        <ChevronDown size={11} className="text-muted" />
-                      </>
-                    )}
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
-                  {subModes.map(m => (
-                    <button key={m.id} type="button"
-                      onClick={() => { setSelectedSubMode(m.id); setSubModeOpen(false); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedSubMode === m.id ? `${typeCfg!.bg} ${typeCfg!.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                      <m.icon size={14} />
-                      {m.label}
-                      {selectedSubMode === m.id && <Check size={12} className="ml-auto" />}
-                    </button>
-                  ))}
-                </PopoverContent>
-              </Popover>
-
-              <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
-
-              {/* Model */}
-              <Popover open={modelOpen} onOpenChange={setModelOpen}>
+          {/* Textarea row */}
+          <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
+            {hasType && typeCfg ? (
+              <div className="flex flex-col gap-1 shrink-0 pt-[2px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedModel !== "Auto" ? "bg-purple-50 text-purple-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <Zap size={12} />{selectedModel}
-                      </button>
-                    </PopoverTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>Model</TooltipContent>
-                </Tooltip>
-                <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
-                  {["Auto", "Flux Pro", "GPT-4o Image", "Imagen 4 Ultra", "Seedream 4.0"].map(m => (
-                    <button key={m} type="button" onClick={() => { setSelectedModel(m); setModelOpen(false); }}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedModel === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                      {m}{selectedModel === m && <Check size={12} />}
+                    <button type="button" className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors`}>
+                      <typeCfg.icon size={17} />
                     </button>
-                  ))}
-                </PopoverContent>
-              </Popover>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">{topLeftLabel(selectedType!)}</TooltipContent>
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button type="button" onClick={handleShuffle} className="p-1.5 rounded-lg bg-foreground/[0.06] text-emerald-500 hover:bg-emerald-50 transition-colors">
+                      <Shuffle size={17} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Inspire Me</TooltipContent>
+                </Tooltip>
+              </div>
+            ) : (
+              <div className="relative shrink-0 pt-[2px]" ref={typeRef}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button type="button" onClick={() => setTypeDropdownOpen(v => !v)} className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-foreground/[0.06] transition-colors" aria-label="Select content type">
+                      <SlidersHorizontal size={17} className="text-foreground" />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="bottom">Select what to create</TooltipContent>
+                </Tooltip>
+                {typeDropdownOpen && (
+                  <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+                    {CONTENT_TYPES.map(t => (
+                      <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
+                        className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
+                        <t.icon size={16} className={t.color} />{t.label}
+                        {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
 
-              {/* Character */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors"
-                    onClick={() => toast({ title: "Characters", description: "Select an AI character." })}>
+            {/* Textarea OR Recording UI */}
+            {isListening ? (
+              <div className="flex-1 flex flex-col gap-1 py-[6px] mt-[2px] min-h-[36px]">
+                {currentTranscript && <p className="text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
+                <div className="flex items-center gap-1.5 shrink-0 self-end">
+                  <button type="button" onClick={cancelSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors" title="Cancel"><X size={14} /></button>
+                  <div className="flex items-center gap-1.5 px-1">
+                    <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
+                    <AudioWaveAnimation small />
+                    <span className="text-[0.7rem] text-muted font-medium whitespace-nowrap">Listening…</span>
+                  </div>
+                  <button type="button" onClick={handleAcceptSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
+                </div>
+              </div>
+            ) : (
+              <>
+                <textarea
+                  ref={textareaRef}
+                  value={prompt}
+                  onChange={e => setPrompt(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                  placeholder={placeholder}
+                  rows={1}
+                  className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px]"
+                  style={{ height: "36px" }}
+                  onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
+                />
+                {!hasType && (
+                  <div className="flex items-center gap-0 shrink-0 pt-[2px]">
+                    {isSupported && (
+                      <Tooltip><TooltipTrigger asChild>
+                        <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"><Mic size={17} /></button>
+                      </TooltipTrigger><TooltipContent side="bottom">Voice input</TooltipContent></Tooltip>
+                    )}
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" onClick={handleGenerate} disabled={!prompt.trim() || isEnhancing}
+                        className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}>
+                        {isEnhancing ? <Loader2 size={17} className="animate-spin text-purple-500" /> : <Send size={17} />}
+                      </button>
+                    </TooltipTrigger><TooltipContent side="bottom">Generate</TooltipContent></Tooltip>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+
+          {/* Char count */}
+          {prompt.length > 0 && (
+            <div className="px-16 pb-1">
+              <span className="text-[0.68rem] text-muted/40">{prompt.length}/1000 · ⌘↵ to generate</span>
+            </div>
+          )}
+
+          {/* ── Bottom toolbar ── */}
+          {hasType && (
+            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center justify-between gap-2 flex-wrap">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {/* Type chip */}
+                {typeCfg && (
+                  <div className="relative" ref={typeRef}>
+                    <button type="button" onClick={() => setTypeDropdownOpen(v => !v)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
+                      <typeCfg.icon size={13} />{typeCfg.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
+                    </button>
+                    {typeDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+                        {CONTENT_TYPES.map(t => (
+                          <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
+                            <t.icon size={16} className={t.color} />{t.label}
+                            {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+
+                {/* Sub-mode selector */}
+                <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
+                  <PopoverTrigger asChild>
+                    <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${
+                      selectedSubObj ? `${typeCfg!.bg} ${typeCfg!.border} ${typeCfg!.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
+                    }`}>
+                      {selectedSubObj ? (
+                        <><selectedSubObj.icon size={13} />{selectedSubObj.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedSubMode(null); setSubModeOpen(false); setActivePanel(null); }} /></>
+                      ) : (
+                        <><SlidersHorizontal size={13} />Type<ChevronDown size={11} className="text-muted" /></>
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                    {subModes.map(m => (
+                      <button key={m.id} type="button" onClick={() => handleSubModeSelect(m.id)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedSubMode === m.id ? `${typeCfg!.bg} ${typeCfg!.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        <m.icon size={14} />{m.label}{selectedSubMode === m.id && <Check size={12} className="ml-auto" />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+
+                {/* Model */}
+                <Popover open={modelOpen} onOpenChange={setModelOpen}>
+                  <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                    <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedModel !== "Auto" ? "bg-purple-50 text-purple-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Zap size={12} />{selectedModel}
+                    </button>
+                  </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
+                  <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
+                    {["Auto", "Flux Pro", "GPT-4o Image", "Imagen 4 Ultra", "Seedream 4.0"].map(m => (
+                      <button key={m} type="button" onClick={() => { setSelectedModel(m); setModelOpen(false); }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedModel === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {m}{selectedModel === m && <Check size={12} />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                {/* Character */}
+                <Tooltip><TooltipTrigger asChild>
+                  <button type="button" onClick={() => togglePanel("character")}
+                    className={`p-1.5 rounded-lg transition-colors ${activePanel === "character" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <User size={14} />
                   </button>
-                </TooltipTrigger>
-                <TooltipContent>Character</TooltipContent>
-              </Tooltip>
+                </TooltipTrigger><TooltipContent>Character</TooltipContent></Tooltip>
 
-              {/* Reference */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors"
-                    onClick={() => toast({ title: "References", description: "Upload reference images." })}>
+                {/* Reference */}
+                <Tooltip><TooltipTrigger asChild>
+                  <button type="button" onClick={() => togglePanel("reference")}
+                    className={`p-1.5 rounded-lg transition-colors ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <Layers size={14} />
+                    {references.length > 0 && <span className="sr-only">{references.length} refs</span>}
                   </button>
-                </TooltipTrigger>
-                <TooltipContent>Reference</TooltipContent>
-              </Tooltip>
+                </TooltipTrigger><TooltipContent>Reference{references.length > 0 ? ` (${references.length})` : ""}</TooltipContent></Tooltip>
 
-              {/* Ratio — image & design */}
-              {(selectedType === "image" || selectedType === "design") && (
-                <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedRatio !== "1:1" ? "bg-amber-50 text-amber-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Copy size={12} />{selectedRatio}
-                        </button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Ratio</TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
-                    {["1:1","16:9","9:16","4:3","3:4","3:2","2:3"].map(r => (
-                      <button key={r} type="button" onClick={() => { setSelectedRatio(r); setRatioOpen(false); }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedRatio === r ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                        {r}{selectedRatio === r && <Check size={12} />}
+                {/* Ratio — image & design */}
+                {(selectedType === "image" || selectedType === "design") && (
+                  <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedRatio !== "1:1" ? "bg-amber-50 text-amber-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Copy size={12} />{selectedRatio}
                       </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-              )}
-
-              {/* Duration — video */}
-              {selectedType === "video" && (
-                <Popover open={durationOpen} onOpenChange={setDurationOpen}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
-                          <Clock size={12} />{selectedDuration}
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Ratio</TooltipContent></Tooltip>
+                    <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                      {["1:1","16:9","9:16","4:3","3:4","3:2","2:3"].map(r => (
+                        <button key={r} type="button" onClick={() => { setSelectedRatio(r); setRatioOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedRatio === r ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {r}{selectedRatio === r && <Check size={12} />}
                         </button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Duration</TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-32 p-1.5" align="start" sideOffset={6}>
-                    {["5s","10s","15s","25s"].map(d => (
-                      <button key={d} type="button" onClick={() => { setSelectedDuration(d); setDurationOpen(false); }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedDuration === d ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                        {d}{selectedDuration === d && <Check size={12} />}
-                      </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-              )}
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
 
-              {/* Count — image, design */}
-              {(selectedType === "image" || selectedType === "design") && (
-                <Popover open={numberOpen} onOpenChange={setNumberOpen}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedNumber > 1 ? "bg-red-50 text-red-600" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Hash size={12} />{selectedNumber > 1 ? selectedNumber : ""}
+                {/* Duration — video */}
+                {selectedType === "video" && (
+                  <Popover open={durationOpen} onOpenChange={setDurationOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                        <Clock size={12} />{selectedDuration}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Duration</TooltipContent></Tooltip>
+                    <PopoverContent className="w-32 p-1.5" align="start" sideOffset={6}>
+                      {["5s","10s","15s","25s"].map(d => (
+                        <button key={d} type="button" onClick={() => { setSelectedDuration(d); setDurationOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedDuration === d ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {d}{selectedDuration === d && <Check size={12} />}
                         </button>
-                      </PopoverTrigger>
-                    </TooltipTrigger>
-                    <TooltipContent>Count</TooltipContent>
-                  </Tooltip>
-                  <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                    {[1,2,3,4].map(n => (
-                      <button key={n} type="button" onClick={() => { setSelectedNumber(n); setNumberOpen(false); }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedNumber === n ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                        {n} {n === 1 ? "output" : "outputs"}{selectedNumber === n && <Check size={12} />}
-                      </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-              )}
-            </div>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
 
-            {/* Right: enhance prompt + mic + generate */}
-            <div className="flex items-center gap-2">
-              {/* Enhance Prompt — only when text exists */}
-              {prompt.trim() && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
+                {/* Resolution — video */}
+                {selectedType === "video" && (
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                      <SlidersHorizontal size={12} />1080p
+                    </button>
+                  </TooltipTrigger><TooltipContent>Resolution</TooltipContent></Tooltip>
+                )}
+
+                {/* Count — image, design */}
+                {(selectedType === "image" || selectedType === "design") && (
+                  <Popover open={numberOpen} onOpenChange={setNumberOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedNumber > 1 ? "bg-red-50 text-red-600" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Hash size={12} />{selectedNumber > 1 ? selectedNumber : ""}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Count</TooltipContent></Tooltip>
+                    <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                      {[1,2,3,4].map(n => (
+                        <button key={n} type="button" onClick={() => { setSelectedNumber(n); setNumberOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedNumber === n ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {n} {n === 1 ? "output" : "outputs"}{selectedNumber === n && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Brand toggle — content */}
+                {selectedType === "content" && (
+                  <div className="flex items-center gap-1.5 ml-1">
+                    <Eye size={13} className="text-muted" />
+                    <span className="text-[0.72rem] text-muted font-medium">Brand</span>
+                    <div
+                      onClick={() => setBrandToggle(v => !v)}
+                      className={`w-8 h-[18px] rounded-full transition-colors cursor-pointer relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}
+                    >
+                      <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Right: enhance + mic + generate */}
+              <div className="flex items-center gap-2">
+                {prompt.trim() && (
+                  <Tooltip><TooltipTrigger asChild>
                     <button type="button" onClick={handleEnhance} disabled={isEnhancing}
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] hover:bg-foreground/[0.08] text-muted-foreground rounded-lg text-[0.78rem] font-medium transition-colors disabled:opacity-50">
                       {isEnhancing ? <Loader2 size={14} className="animate-spin text-purple-500" /> : <Sparkles size={14} className="text-purple-500" />}
-                      <span>AI</span>
-                      <ChevronDown size={12} className="text-muted" />
+                      <span>AI</span><ChevronDown size={12} className="text-muted" />
                     </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Enhance Prompt</TooltipContent>
-                </Tooltip>
-              )}
-              {isSupported && !isListening && (
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button type="button" onClick={startListening}
-                      className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground">
-                      <Mic size={15} />
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent>Speak</TooltipContent>
-                </Tooltip>
-              )}
-              <button type="button" onClick={handleGenerate}
-                disabled={isGenerating || !prompt.trim()}
-                className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
-                {isGenerating ? <><Loader2 size={13} className="animate-spin" />Generating…</> : <><Send size={13} />Generate</>}
-              </button>
+                  </TooltipTrigger><TooltipContent>Enhance Prompt</TooltipContent></Tooltip>
+                )}
+                {isSupported && !isListening && (
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={startListening} className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground"><Mic size={15} /></button>
+                  </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
+                )}
+                <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
+                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                  {isGenerating ? <><Loader2 size={13} className="animate-spin" />Generating…</> : <><Send size={13} />Generate For Free!</>}
+                </button>
+              </div>
             </div>
+          )}
+        </div>
+
+        {/* ── Panels below prompt box ── */}
+        <div className="max-w-[820px] mx-auto">
+          {activePanel === "reference" && (
+            <ReferencePanel
+              onClose={() => setActivePanel(null)}
+              references={references}
+              onAdd={ref => setReferences(prev => [...prev, ref])}
+              onRemove={id => setReferences(prev => prev.filter(r => r.id !== id))}
+            />
+          )}
+          {activePanel === "character" && (
+            <CharacterPanel
+              onClose={() => setActivePanel(null)}
+              selectedCharacter={selectedCharacter}
+              onSelect={setSelectedCharacter}
+            />
+          )}
+          {activePanel === "frames" && showFrames && (
+            <FramePanel
+              onClose={() => setActivePanel(null)}
+              startFrame={startFrame}
+              endFrame={endFrame}
+              onStartFrameChange={setStartFrame}
+              onEndFrameChange={setEndFrame}
+            />
+          )}
+          {activePanel === "music" && showMusic && (
+            <MusicSamples
+              onClose={() => setActivePanel(null)}
+              selectedGenre={selectedGenre}
+              onGenreSelect={setSelectedGenre}
+              onUseStyle={genre => {
+                setPrompt(prev => prev ? `${prev} — ${genre} style` : `Generate ${genre} music`);
+              }}
+            />
+          )}
+          {activePanel === "photoshoot" && showPhotoshoot && (
+            <PhotoshootThemes
+              onClose={() => setActivePanel(null)}
+              selectedTheme={selectedTheme}
+              onThemeSelect={id => {
+                setSelectedTheme(id);
+                if (id) {
+                  const theme = ["EDITORIAL SHOTS","OLD MONEY","WINTER SPECIAL","CHRISTMAS MAGIC","HAIR GOALS","MAKEUP GLAM","FALL AESTHETIC","SPRING BLOOM"];
+                  const idx = ["editorial","oldmoney","winter","christmas","hair","makeup","fall","spring"].indexOf(id);
+                  if (idx >= 0) setPrompt(`Photoshoot in ${theme[idx]} theme`);
+                }
+              }}
+            />
+          )}
+        </div>
+
+        {/* Social content panel — full width */}
+        {activePanel === "social" && showSocial && (
+          <div className="mt-3">
+            <SocialContentPanel onClose={() => setActivePanel(null)} />
           </div>
         )}
-
-        {/* Prompt actions when no type selected */}
       </div>
     </TooltipProvider>
   );
@@ -804,44 +750,22 @@ function CreationCard({ item }: { item: typeof DUMMY_CREATIONS[0] }) {
 
   return (
     <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03]">
-      <img
-        src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`}
-        alt={item.title}
-        className="w-full aspect-square object-cover"
-      />
-      {/* Overlay */}
+      <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.title} className="w-full aspect-square object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-
-      {/* Type badge */}
-      <div className={`absolute top-2 left-2 text-white text-[0.62rem] font-bold px-2 py-0.5 rounded-md ${typeColors[item.type] || "bg-black/50"} backdrop-blur-sm`}>
-        {item.type.toUpperCase()}
-      </div>
-
-      {/* Top-right: like */}
-      <button
-        onClick={() => setLiked(v => !v)}
-        className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all ${liked ? "bg-accent text-white scale-110" : "bg-black/30 text-white opacity-0 group-hover:opacity-100"}`}
-      >
+      <div className={`absolute top-2 left-2 text-white text-[0.62rem] font-bold px-2 py-0.5 rounded-md ${typeColors[item.type] || "bg-black/50"} backdrop-blur-sm`}>{item.type.toUpperCase()}</div>
+      <button onClick={() => setLiked(v => !v)} className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all ${liked ? "bg-accent text-white scale-110" : "bg-black/30 text-white opacity-0 group-hover:opacity-100"}`}>
         <Star size={12} className={liked ? "fill-current" : ""} />
       </button>
-
-      {/* Bottom actions */}
       <div className="absolute bottom-2 left-2 right-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <div className="flex-1 min-w-0">
           <p className="text-[0.7rem] text-white font-medium truncate">{item.title}</p>
           <p className="text-[0.62rem] text-white/60">{item.model}</p>
         </div>
-        <button
-          onClick={() => { setSaved(v => !v); toast({ title: saved ? "Removed from collection" : "Saved to collection!" }); }}
-          className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors"
-        >
+        <button onClick={() => { setSaved(v => !v); toast({ title: saved ? "Removed from collection" : "Saved to collection!" }); }}
+          className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
           <Bookmark size={11} className={saved ? "fill-current" : ""} />
         </button>
-        <a
-          href={`https://images.unsplash.com/${item.photo}?w=2000&q=90`}
-          download
-          className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors"
-        >
+        <a href={`https://images.unsplash.com/${item.photo}?w=2000&q=90`} download className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
           <Download size={11} />
         </a>
       </div>
@@ -882,42 +806,27 @@ export default function CreatePage() {
 
   return (
     <PageShell>
-      {/* Prompt Box — narrower */}
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0">
         <div className="mb-10">
           <PromptBox onGenerate={() => setGenerated(true)} />
         </div>
       </div>
 
-      {/* Gallery — wider, matching explore page */}
       <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
-
-        {/* Tabs */}
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-1">
             {TABS.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${
-                  activeTab === tab.id
-                    ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]"
-                    : "text-muted hover:text-foreground"
-                }`}
-              >
-                <tab.icon size={13} />
-                {tab.label}
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                <tab.icon size={13} />{tab.label}
               </button>
             ))}
           </div>
-
-          {/* Filter — only on Creations tab */}
           {activeTab === "creations" && (
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
               <PopoverTrigger asChild>
                 <button type="button" className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[0.82rem] font-medium transition-colors ${mediaFilter !== "all" ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
-                  <Filter size={14} />
-                  {mediaFilter === "all" ? "Filter" : MEDIA_FILTERS.find(f => f.id === mediaFilter)?.label}
+                  <Filter size={14} />{mediaFilter === "all" ? "Filter" : MEDIA_FILTERS.find(f => f.id === mediaFilter)?.label}
                 </button>
               </PopoverTrigger>
               <PopoverContent className="w-40 p-1.5" align="end" sideOffset={6}>
@@ -932,96 +841,66 @@ export default function CreatePage() {
           )}
         </div>
 
-        {/* ── CREATIONS TAB ── */}
+        {/* CREATIONS */}
         {activeTab === "creations" && (
           <div>
             {filteredCreations.length === 0 ? (
               <div className="text-center py-20">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4">
-                  <Sparkles className="w-7 h-7 text-accent" />
-                </div>
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4"><Sparkles className="w-7 h-7 text-accent" /></div>
                 <h3 className="font-display font-black text-[1.1rem] mb-2">No {mediaFilter} creations yet</h3>
                 <p className="text-[0.84rem] text-muted">Use the prompt box above to generate your first {mediaFilter}.</p>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {filteredCreations.map(item => (
-                  <CreationCard key={item.id} item={item} />
-                ))}
+                {filteredCreations.map(item => <CreationCard key={item.id} item={item} />)}
               </div>
             )}
           </div>
         )}
 
-        {/* ── COMMUNITY TAB ── */}
+        {/* COMMUNITY */}
         {activeTab === "community" && (
           <div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Trending Now</h2>
-              <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">
-                Explore all <ArrowRight size={12} />
-              </Link>
+              <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">Explore all <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {DUMMY_COMMUNITY.map(item => (
                 <div key={item.id} className="group relative rounded-2xl overflow-hidden">
-                  <img
-                    src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`}
-                    alt={item.prompt}
-                    className="w-full aspect-square object-cover"
-                  />
+                  <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.prompt} className="w-full aspect-square object-cover" />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-
-                  {/* Creator avatar */}
                   <div className="absolute top-2 left-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[0.6rem] font-black">
-                      {item.creator[0].toUpperCase()}
-                    </div>
+                    <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[0.6rem] font-black">{item.creator[0].toUpperCase()}</div>
                     <span className="text-[0.65rem] text-white font-semibold drop-shadow">@{item.creator}</span>
                   </div>
-
-                  {/* Like button */}
-                  <button
-                    onClick={() => setLikedCommunity(prev => { const n = new Set(prev); n.has(item.id) ? n.delete(item.id) : n.add(item.id); return n; })}
-                    className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 ${likedCommunity.has(item.id) ? "bg-accent text-white" : "bg-black/30 text-white"}`}
-                  >
+                  <button onClick={() => setLikedCommunity(prev => { const n = new Set(prev); n.has(item.id) ? n.delete(item.id) : n.add(item.id); return n; })}
+                    className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 ${likedCommunity.has(item.id) ? "bg-accent text-white" : "bg-black/30 text-white"}`}>
                     <Heart size={11} className={likedCommunity.has(item.id) ? "fill-current" : ""} />
                   </button>
-
-                  {/* Bottom info */}
                   <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
                     <p className="text-[0.7rem] text-white/85 truncate mb-0.5">{item.prompt}</p>
                     <div className="flex items-center justify-between">
                       <span className="text-[0.62rem] text-white/50">{item.model}</span>
-                      <span className="flex items-center gap-1 text-[0.62rem] text-white/70">
-                        <Heart size={9} className="fill-current text-red-400" /> {item.likes.toLocaleString()}
-                      </span>
+                      <span className="flex items-center gap-1 text-[0.62rem] text-white/70"><Heart size={9} className="fill-current text-red-400" /> {item.likes.toLocaleString()}</span>
                     </div>
                   </div>
-
-                  {/* Use prompt */}
-                  <button
-                    onClick={() => toast({ title: "Prompt loaded!", description: item.prompt.slice(0, 60) + "…" })}
-                    className="absolute bottom-2 right-2 w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors opacity-0 group-hover:opacity-100"
-                  >
-                    <Zap size={11} />
-                  </button>
+                  <button onClick={() => toast({ title: "Prompt loaded!", description: item.prompt.slice(0, 60) + "…" })}
+                    className="absolute bottom-2 right-2 w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors opacity-0 group-hover:opacity-100"><Zap size={11} /></button>
                 </div>
               ))}
             </div>
           </div>
         )}
 
-        {/* ── TEMPLATES TAB ── */}
+        {/* TEMPLATES */}
         {activeTab === "templates" && (
           <div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Start with a Template</h2>
               <div className="flex items-center gap-1 p-0.5 bg-foreground/[0.04] rounded-lg border border-foreground/[0.06]">
                 {["All","Design","Video","Image","Audio","Content"].map(cat => (
-                  <button key={cat} className="px-2.5 py-1 rounded-md text-[0.74rem] font-medium text-muted hover:text-foreground hover:bg-background transition-colors first:text-foreground first:bg-background first:shadow-sm">
-                    {cat}
-                  </button>
+                  <button key={cat} className="px-2.5 py-1 rounded-md text-[0.74rem] font-medium text-muted hover:text-foreground hover:bg-background transition-colors first:text-foreground first:bg-background first:shadow-sm">{cat}</button>
                 ))}
               </div>
             </div>
@@ -1029,22 +908,11 @@ export default function CreatePage() {
               {DUMMY_TEMPLATES.map(t => (
                 <div key={t.id} className="group cursor-pointer">
                   <div className="relative rounded-2xl overflow-hidden mb-2.5">
-                    <img
-                      src={`https://images.unsplash.com/${t.photo}?w=400&h=300&fit=crop&q=80`}
-                      alt={t.name}
-                      className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform duration-300"
-                    />
+                    <img src={`https://images.unsplash.com/${t.photo}?w=400&h=300&fit=crop&q=80`} alt={t.name} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform duration-300" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <button
-                        onClick={() => toast({ title: `"${t.name}" template loaded!` })}
-                        className="flex items-center gap-1.5 bg-white text-foreground text-[0.78rem] font-bold px-4 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform"
-                      >
-                        <Zap size={13} /> Use Template
-                      </button>
+                      <button onClick={() => toast({ title: `"${t.name}" template loaded!` })} className="flex items-center gap-1.5 bg-white text-foreground text-[0.78rem] font-bold px-4 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform"><Zap size={13} /> Use Template</button>
                     </div>
-                    <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md">
-                      {t.category}
-                    </div>
+                    <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md">{t.category}</div>
                   </div>
                   <div className="flex items-center justify-between px-0.5">
                     <h3 className="text-[0.84rem] font-semibold">{t.name}</h3>
@@ -1056,52 +924,34 @@ export default function CreatePage() {
           </div>
         )}
 
-        {/* ── APPS TAB ── */}
+        {/* APPS */}
         {activeTab === "apps" && (
           <div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">AI-Powered Apps</h2>
-              <Link to="/apps" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">
-                Browse all <ArrowRight size={12} />
-              </Link>
+              <Link to="/apps" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">Browse all <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
               {DUMMY_APPS.map(app => (
-                <button
-                  key={app.id}
-                  type="button"
-                  onClick={() => toast({ title: `Opening ${app.name}…` })}
-                  className="group text-left p-5 rounded-2xl border border-foreground/[0.08] bg-background hover:border-foreground/20 hover:shadow-md transition-all"
-                >
-                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3.5 ${app.color} transition-transform group-hover:scale-110`}>
-                    <app.icon size={20} />
-                  </div>
+                <button key={app.id} type="button" onClick={() => toast({ title: `Opening ${app.name}…` })}
+                  className="group text-left p-5 rounded-2xl border border-foreground/[0.08] bg-background hover:border-foreground/20 hover:shadow-md transition-all">
+                  <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-3.5 ${app.color} transition-transform group-hover:scale-110`}><app.icon size={20} /></div>
                   <div className="flex items-start justify-between gap-1 mb-1">
                     <h3 className="text-[0.88rem] font-bold leading-tight">{app.name}</h3>
-                    {app.badge && (
-                      <span className={`shrink-0 text-[0.6rem] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wide ${app.badge === "Popular" ? "bg-accent/10 text-accent" : "bg-emerald-100 text-emerald-700"}`}>
-                        {app.badge}
-                      </span>
-                    )}
+                    {app.badge && <span className={`shrink-0 text-[0.6rem] font-black px-1.5 py-0.5 rounded-md uppercase tracking-wide ${app.badge === "Popular" ? "bg-accent/10 text-accent" : "bg-emerald-100 text-emerald-700"}`}>{app.badge}</span>}
                   </div>
                   <p className="text-[0.76rem] text-muted leading-snug mb-3">{app.desc}</p>
-                  <div className="flex items-center gap-1 text-[0.7rem] text-muted">
-                    <Users size={11} /> {app.users} users
-                  </div>
+                  <div className="flex items-center gap-1 text-[0.7rem] text-muted"><Users size={11} /> {app.users} users</div>
                 </button>
               ))}
             </div>
-
-            {/* Featured app banner */}
             <div className="mt-6 rounded-2xl border border-foreground/[0.08] bg-gradient-to-r from-accent/5 to-purple-50 p-6 flex items-center justify-between gap-4">
               <div>
                 <div className="text-[0.72rem] font-bold text-accent uppercase tracking-widest mb-1">Featured</div>
                 <h3 className="font-display font-black text-[1.2rem] tracking-[-0.02em] mb-1">REVVEN App Store</h3>
                 <p className="text-[0.84rem] text-muted">Discover 200+ AI-powered apps built for creators, marketers, and builders.</p>
               </div>
-              <button className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground text-primary-foreground text-[0.84rem] font-bold hover:bg-accent transition-colors">
-                <ArrowRight size={15} /> Browse Store
-              </button>
+              <button className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-foreground text-primary-foreground text-[0.84rem] font-bold hover:bg-accent transition-colors"><ArrowRight size={15} /> Browse Store</button>
             </div>
           </div>
         )}
