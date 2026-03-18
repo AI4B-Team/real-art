@@ -149,11 +149,18 @@ const searchTypes = [
   { label: "Music", icon: Music },
 ];
 
+const feedTabs = [
+  { id: "for-you", label: "For You", icon: Sparkles },
+  { id: "following", label: "Following", icon: Users },
+  { id: "trending", label: "Trending", icon: TrendingUp },
+];
+
 const ExplorePage = () => {
   const [searchParams] = useSearchParams();
   const initialQuery = searchParams.get("q") || "";
   const { open } = useQuickView();
   const [query, setQuery] = useState(initialQuery);
+  const [activeTab, setActiveTab] = useState("for-you");
   const [activeFilter, setActiveFilter] = useState("All");
   const [activeType, setActiveType] = useState("Images");
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
