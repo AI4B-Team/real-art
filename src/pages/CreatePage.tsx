@@ -762,8 +762,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
-                  className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
-                  {isGenerating ? <><Loader2 size={13} className="animate-spin" />Generating…</> : <><Send size={13} />Generate For Free!</>}
+                  className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white hover:bg-accent/85 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                  {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
                 </button>
               </div>
             </div>
