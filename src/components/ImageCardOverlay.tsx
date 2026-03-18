@@ -237,9 +237,6 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
         imageId={String(index)}
         imagePhoto={photo}
         imageTitle={title}
-        imageTags={tags}
-        suggestedCollectionId={suggestedCol?.id}
-        onSaved={() => { setQuickSaved(true); setTimeout(() => setQuickSaved(false), 2000); }}
       />
     </>
   );
