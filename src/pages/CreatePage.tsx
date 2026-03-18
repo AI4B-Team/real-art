@@ -390,38 +390,40 @@ function PromptBox({
             }}
           />
 
-          {/* RIGHT: mic + generate buttons */}
-          <div className="flex items-center gap-0 shrink-0 pt-[2px]">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={isListening ? stopListening : startListening}
-                  disabled={!isSupported}
-                  className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${isListening ? "text-accent" : "text-foreground hover:bg-foreground/[0.06]"}`}
-                >
-                  {isListening ? <MicOff size={17} /> : <Mic size={17} />}
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">{isListening ? "Stop listening" : "Voice input"}</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  type="button"
-                  onClick={handleGenerate}
-                  disabled={!prompt.trim() || isEnhancing}
-                  className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
-                >
-                  {isEnhancing
-                    ? <Loader2 size={17} className="animate-spin text-purple-500" />
-                    : <Send size={17} />
-                  }
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">Generate</TooltipContent>
-            </Tooltip>
-          </div>
+          {/* RIGHT: mic + generate buttons — only when no type selected (bottom bar handles it otherwise) */}
+          {!hasType && (
+            <div className="flex items-center gap-0 shrink-0 pt-[2px]">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={isListening ? stopListening : startListening}
+                    disabled={!isSupported}
+                    className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${isListening ? "text-accent" : "text-foreground hover:bg-foreground/[0.06]"}`}
+                  >
+                    {isListening ? <MicOff size={17} /> : <Mic size={17} />}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">{isListening ? "Stop listening" : "Voice input"}</TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={handleGenerate}
+                    disabled={!prompt.trim() || isEnhancing}
+                    className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}
+                  >
+                    {isEnhancing
+                      ? <Loader2 size={17} className="animate-spin text-purple-500" />
+                      : <Send size={17} />
+                    }
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">Generate</TooltipContent>
+              </Tooltip>
+            </div>
+          )}
         </div>
 
         {/* Char count */}
