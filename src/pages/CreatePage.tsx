@@ -960,7 +960,7 @@ export default function CreatePage() {
                 Explore all <ArrowRight size={12} />
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {DUMMY_COMMUNITY.map(item => (
                 <div key={item.id} className="group relative rounded-2xl overflow-hidden">
                   <img
