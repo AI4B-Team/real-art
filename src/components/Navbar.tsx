@@ -308,7 +308,54 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
     try { localStorage.setItem("ra_recent_searches", JSON.stringify(next)); } catch {}
   };
 
-  /* ── Derived search data ── */
+  /* ── Voice search ── */
+  const startVoiceSearch = () => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      setVoiceError("Voice search is not supported in this browser.");
+      setTimeout(() => setVoiceError(""), 4000);
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setSearchQuery(transcript);
+      setVoiceListening(false);
+      handleSearch(transcript);
+    };
+    recognition.onerror = (event: any) => {
+      setVoiceListening(false);
+      if (event.error === "not-allowed") {
+        setVoiceError("Microphone access denied. Please allow microphone permissions.");
+      } else {
+        setVoiceError("Could not recognize speech. Please try again.");
+      }
+      setTimeout(() => setVoiceError(""), 4000);
+    };
+    recognition.onend = () => setVoiceListening(false);
+    setVoiceListening(true);
+    recognition.start();
+  };
+
+  /* ── Image search handlers ── */
+  const handleImageFile = (file: File) => {
+    setImageSearchFile(file);
+    const reader = new FileReader();
+    reader.onload = e => setImageSearchPrev(e.target?.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageSearchAction = () => {
+    if (!imageSearchFile) return;
+    setImageSearchOpen(false);
+    setImageSearchFile(null);
+    setImageSearchPrev(null);
+    navigate(`/explore?mode=${imageSearchMode}&imageSearch=1`);
+  };
+
   const currentSuggestions = suggestions[navSearchType] || suggestions["Images"];
   const q = searchQuery.trim().toLowerCase();
   const filteredSuggestions = q ? currentSuggestions.filter(s => s.label.includes(q)) : currentSuggestions;
