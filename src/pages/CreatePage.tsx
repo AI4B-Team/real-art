@@ -350,7 +350,20 @@ function PromptBox({
             }}
           />
 
-          {/* RIGHT: generate button */}
+          {/* RIGHT: mic + generate buttons */}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                type="button"
+                onClick={isListening ? stopListening : startListening}
+                disabled={!isSupported}
+                className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${isListening ? "text-accent" : "text-foreground hover:bg-foreground/[0.06]"}`}
+              >
+                {isListening ? <MicOff size={17} /> : <Mic size={17} />}
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">{isListening ? "Stop listening" : "Voice input"}</TooltipContent>
+          </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <button
