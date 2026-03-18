@@ -800,6 +800,24 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                 <X className="w-3 h-3 text-muted" />
               </button>
             )}
+
+            {/* Mic button */}
+            <button
+              onClick={startVoiceSearch}
+              className="w-8 h-full flex items-center justify-center text-muted hover:text-foreground transition-colors shrink-0"
+              title="Search by voice (Ctrl+Shift+M)"
+            >
+              <Mic className="w-3.5 h-3.5" />
+            </button>
+
+            {/* Camera button */}
+            <button
+              onClick={() => setImageSearchOpen(true)}
+              className="w-8 h-full flex items-center justify-center text-muted hover:text-foreground transition-colors shrink-0"
+              title="Search by image"
+            >
+              <Camera className="w-3.5 h-3.5" />
+            </button>
             <button
               onClick={(e) => {
                 e.stopPropagation();
