@@ -134,7 +134,8 @@ const AppSidebar = () => {
 
   const isActive = (item: NavItem) => {
     if (item.type === "route") {
-      if (item.href === "/dashboard") return isDashboard && (currentSection === "overview" || currentSection === null);
+      if (item.href === "/") return location.pathname === "/";
+      if (item.href === "/dashboard") return isDashboard && (currentSection === null);
       return location.pathname.startsWith(item.href!);
     }
     if (item.type === "communities-dropdown") {
