@@ -1,11 +1,19 @@
 import { useState, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2, Sparkles } from "lucide-react";
+import { ArrowLeft, ChevronRight, Upload, X, Lock, Globe, Image, Loader2, Sparkles, UserPlus, Mail, ChevronDown, Check, Trash2, Users, Copy } from "lucide-react";
 import CoverImageEditor from "@/components/CoverImageEditor";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+
+type CollabRole = "viewer" | "editor" | "admin";
+interface PendingInvite { email: string; role: CollabRole; }
+const ROLE_META: Record<CollabRole, { label: string; desc: string; color: string }> = {
+  viewer: { label: "Viewer",  desc: "Can view only",             color: "bg-foreground/[0.06] text-muted" },
+  editor: { label: "Editor",  desc: "Can add & edit images",     color: "bg-blue-100 text-blue-700" },
+  admin:  { label: "Admin",   desc: "Full access & can invite",  color: "bg-purple-100 text-purple-700" },
+};
 
 const communities = [
   { id: "1", name: "Avatar Architects" },
@@ -35,6 +43,13 @@ const CreateCollectionPage = () => {
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPosition, setCoverPosition] = useState({ x: 50, y: 50, scale: 1 });
   const [aiWriting, setAiWriting] = useState(false);
+  // Collaborator state
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteRole, setInviteRole] = useState<CollabRole>("editor");
+  const [invites, setInvites] = useState<PendingInvite[]>([]);
+  const [roleDropdownIndex, setRoleDropdownIndex] = useState<number | null>(null);
+  const [addRoleOpen, setAddRoleOpen] = useState(false);
+  const [shareLink] = useState(() => `https://realart.ai/join/${Math.random().toString(36).slice(2, 10)}`);
 
   const generateDescription = async () => {
     if (!name.trim()) {
@@ -85,6 +100,31 @@ const CreateCollectionPage = () => {
     setDragActive(false);
     if (e.dataTransfer.files) handleFiles(e.dataTransfer.files);
   }, [handleFiles]);
+
+  const handleAddInvite = () => {
+    const email = inviteEmail.trim().toLowerCase();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({ title: "Invalid email", description: "Please enter a valid email address.", variant: "destructive" });
+      return;
+    }
+    if (invites.some(i => i.email === email)) {
+      toast({ title: "Already added", description: `${email} is already in the invite list.` });
+      return;
+    }
+    setInvites(prev => [...prev, { email, role: inviteRole }]);
+    setInviteEmail("");
+  };
+
+  const handleUpdateRole = (email: string, role: CollabRole) =>
+    setInvites(prev => prev.map(i => i.email === email ? { ...i, role } : i));
+
+  const handleRemoveInvite = (email: string) =>
+    setInvites(prev => prev.filter(i => i.email !== email));
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(shareLink).catch(() => {});
+    toast({ title: "Link copied!", description: "Share this link with collaborators." });
+  };
 
   const handleSubmit = async () => {
     if (!name.trim()) {
@@ -302,6 +342,142 @@ const CreateCollectionPage = () => {
             </div>
           )}
 
+          {/* Invite Collaborators */}
+          <div className="mb-8">
+            <div className="flex items-center gap-2 mb-1">
+              <label className="block text-[0.82rem] font-semibold">Invite Collaborators</label>
+              <span className="text-[0.72rem] text-muted font-normal">(optional)</span>
+              {invites.length > 0 && (
+                <span className="ml-auto text-[0.72rem] font-semibold text-accent">{invites.length} pending</span>
+              )}
+            </div>
+            <p className="text-[0.75rem] text-muted mb-4">Let others view, contribute, or co-manage this collection.</p>
+
+            {/* Add invite row */}
+            <div className="flex gap-2 mb-3">
+              <div className="relative flex-1">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted" />
+                <input
+                  type="email"
+                  value={inviteEmail}
+                  onChange={e => setInviteEmail(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handleAddInvite()}
+                  placeholder="colleague@example.com"
+                  className="w-full pl-9 pr-4 h-11 rounded-xl border border-foreground/[0.12] bg-card text-[0.88rem] font-body outline-none focus:border-foreground transition-colors"
+                />
+              </div>
+
+              {/* Role selector */}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setAddRoleOpen(v => !v)}
+                  className="flex items-center gap-1.5 h-11 px-3.5 rounded-xl border border-foreground/[0.12] bg-card text-[0.84rem] font-medium hover:border-foreground/30 transition-colors whitespace-nowrap"
+                >
+                  {ROLE_META[inviteRole].label}
+                  <ChevronDown className="w-3.5 h-3.5 text-muted" />
+                </button>
+                {addRoleOpen && (
+                  <div className="absolute right-0 top-full mt-1.5 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-20 w-44 overflow-hidden">
+                    {(Object.entries(ROLE_META) as [CollabRole, typeof ROLE_META[CollabRole]][]).map(([key, meta]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => { setInviteRole(key); setAddRoleOpen(false); }}
+                        className={`flex items-start gap-3 w-full px-4 py-3 text-left transition-colors hover:bg-foreground/[0.04] ${inviteRole === key ? "bg-foreground/[0.03]" : ""}`}
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className={`text-[0.8rem] font-semibold ${inviteRole === key ? "text-accent" : "text-foreground"}`}>{meta.label}</div>
+                          <div className="text-[0.7rem] text-muted mt-0.5">{meta.desc}</div>
+                        </div>
+                        {inviteRole === key && <Check className="w-3.5 h-3.5 text-accent mt-0.5 shrink-0" />}
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleAddInvite}
+                disabled={!inviteEmail.trim()}
+                className="h-11 px-5 rounded-xl bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
+              >
+                Invite
+              </button>
+            </div>
+
+            {/* Pending invites list */}
+            {invites.length > 0 && (
+              <div className="rounded-2xl border border-foreground/[0.08] overflow-hidden mb-4">
+                {invites.map((inv, idx) => (
+                  <div key={inv.email} className={`flex items-center gap-3 px-4 py-3 ${idx !== 0 ? "border-t border-foreground/[0.05]" : ""}`}>
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-accent/20 to-accent/5 flex items-center justify-center shrink-0">
+                      <UserPlus className="w-3.5 h-3.5 text-accent" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-[0.84rem] font-medium truncate">{inv.email}</div>
+                      <div className="text-[0.71rem] text-muted">Invite pending</div>
+                    </div>
+
+                    {/* Inline role changer */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setRoleDropdownIndex(roleDropdownIndex === idx ? null : idx)}
+                        className={`flex items-center gap-1 text-[0.72rem] font-semibold px-2 py-1 rounded-lg transition-colors ${ROLE_META[inv.role].color}`}
+                      >
+                        {ROLE_META[inv.role].label}
+                        <ChevronDown className="w-3 h-3 opacity-60" />
+                      </button>
+                      {roleDropdownIndex === idx && (
+                        <div className="absolute right-0 top-full mt-1 bg-background border border-foreground/[0.1] rounded-xl shadow-lg z-20 w-40 overflow-hidden">
+                          {(Object.entries(ROLE_META) as [CollabRole, typeof ROLE_META[CollabRole]][]).map(([key, meta]) => (
+                            <button
+                              key={key}
+                              type="button"
+                              onClick={() => { handleUpdateRole(inv.email, key); setRoleDropdownIndex(null); }}
+                              className={`flex items-center justify-between w-full px-3 py-2.5 text-[0.78rem] transition-colors hover:bg-foreground/[0.04] ${inv.role === key ? "text-accent font-semibold" : "text-foreground"}`}
+                            >
+                              <div>
+                                <div className="font-medium">{meta.label}</div>
+                                <div className="text-[0.67rem] text-muted">{meta.desc}</div>
+                              </div>
+                              {inv.role === key && <Check className="w-3.5 h-3.5 text-accent shrink-0" />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveInvite(inv.email)}
+                      className="text-muted hover:text-destructive transition-colors ml-1"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Share link */}
+            <div className="flex items-center gap-2 p-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02]">
+              <div className="flex-1 min-w-0">
+                <div className="text-[0.72rem] font-semibold text-muted mb-0.5">Shareable invite link</div>
+                <div className="text-[0.78rem] text-foreground font-mono truncate">{shareLink}</div>
+              </div>
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-foreground/[0.12] text-[0.76rem] font-semibold hover:border-foreground/30 hover:bg-foreground/[0.04] transition-colors whitespace-nowrap shrink-0"
+              >
+                <Copy className="w-3.5 h-3.5" /> Copy
+              </button>
+            </div>
+          </div>
+
           {/* Bulk Upload */}
           <div className="mb-8">
             <label className="block text-[0.82rem] font-semibold mb-3">Upload Images</label>
@@ -366,6 +542,11 @@ const CreateCollectionPage = () => {
             {uploading ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" /> Creating…
+              </>
+            ) : invites.length > 0 ? (
+              <>
+                <Users className="w-4 h-4" />
+                Create & Invite {invites.length} Collaborator{invites.length !== 1 ? "s" : ""}
               </>
             ) : (
               "Create Collection"
