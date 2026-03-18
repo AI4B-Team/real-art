@@ -301,7 +301,7 @@ function PromptBox({
                 <button
                   type="button"
                   onClick={() => setTypeDropdownOpen(v => !v)}
-                  className="flex items-center justify-center w-9 h-9 rounded-xl bg-foreground/[0.05] hover:bg-foreground/[0.09] border border-foreground/[0.1] transition-colors"
+                  className="flex items-center justify-center w-9 h-9 rounded-xl hover:bg-foreground/[0.06] transition-colors"
                   aria-label="Select content type"
                 >
                   {typeCfg ? (
