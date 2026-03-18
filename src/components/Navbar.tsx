@@ -849,14 +849,9 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       {/* Desktop Right Actions */}
       <div className="hidden md:flex items-center gap-1.5 shrink-0">
         {isLoggedIn && (
-          <>
-            <Link to="/create" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline">
-              <Sparkles className="w-3.5 h-3.5" /> Create
-            </Link>
             <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold border border-foreground/[0.18] text-foreground hover:border-foreground/40 transition-colors no-underline">
               <Upload className="w-3.5 h-3.5" /> Upload
             </Link>
-          </>
         )}
 
         {isLoggedIn && (
