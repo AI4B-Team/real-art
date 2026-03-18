@@ -693,12 +693,6 @@ export default function CreatePage() {
   return (
     <PageShell>
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 py-8 pb-20">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-[0.78rem] text-muted mb-8">
-          <Link to="/" className="hover:text-foreground transition-colors no-underline text-muted">Home</Link>
-          <span className="opacity-30">/</span>
-          <span className="text-foreground font-medium">Create</span>
-        </div>
 
         {/* Prompt Box */}
         <div className="mb-10">
