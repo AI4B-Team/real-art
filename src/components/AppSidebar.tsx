@@ -286,14 +286,14 @@ const AppSidebar = () => {
   return (
     <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-0 hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto transition-all duration-200 z-[70] ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
       {/* Logo header */}
-      <div className={`flex items-center h-16 shrink-0 ${sidebarCollapsed ? "justify-center" : "px-3 gap-3"}`}>
+      <div className={`flex items-center shrink-0 ${sidebarCollapsed ? "justify-center h-16" : "relative justify-center py-5"}`}>
         {sidebarCollapsed ? (
           <button
             onClick={() => setSidebarCollapsed(false)}
             title="Expand sidebar"
             className="cursor-pointer"
           >
-            <div className="bg-primary w-[36px] p-[3px]">
+            <div className="bg-accent w-[36px] p-[3px]">
               <div className="border-[1.5px] border-primary-foreground py-0.5 px-1 flex flex-col items-center">
                 <span className="font-body text-[0.85rem] font-black text-primary-foreground tracking-[0.05em] leading-none">R</span>
                 <span className="font-body text-[0.2rem] font-bold tracking-[0.2em] text-primary-foreground uppercase mt-[1px]">CRT</span>
@@ -302,10 +302,10 @@ const AppSidebar = () => {
           </button>
         ) : (
           <>
-            <Logo to="/dashboard" className="w-[100px] p-[5px]" />
+            <Logo to="/dashboard" className="w-[140px] p-[7px] !bg-accent" />
             <button
               onClick={() => setSidebarCollapsed(true)}
-              className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0"
+              className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0"
               title="Collapse sidebar"
             >
               <PanelLeftClose className="w-4 h-4" />
