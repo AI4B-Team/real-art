@@ -1504,13 +1504,34 @@ function CompletionStep() {
    ═══════════════════════════════════════════════════ */
 
 export default function BrandPage() {
+  // Resolve active brand from sidebar brand switcher
+  const getActiveBrand = (): { id: string; name: string } => {
+    try {
+      const s = localStorage.getItem("ra_brands");
+      if (s) {
+        const parsed = JSON.parse(s);
+        const active = parsed.brands?.find((b: any) => b.id === parsed.activeId);
+        if (active) return active;
+      }
+    } catch {}
+    return { id: "default", name: "" };
+  };
+
+  const activeBrand = getActiveBrand();
+  const storageKey = `ra_brand_wizard_${activeBrand.id}`;
+
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState<BrandFormData>(() => {
     try {
-      const stored = localStorage.getItem("ra_brand_wizard");
+      // Try per-brand key first, then fall back to legacy key
+      const stored = localStorage.getItem(storageKey) || localStorage.getItem("ra_brand_wizard");
       if (stored) {
         const parsed = JSON.parse(stored);
         return { ...DEFAULT_DATA, ...parsed };
+      }
+      // Pre-fill brand name from sidebar brand switcher
+      if (activeBrand.name && activeBrand.name !== "My Brand") {
+        return { ...DEFAULT_DATA, brandName: activeBrand.name };
       }
       return DEFAULT_DATA;
     } catch { return DEFAULT_DATA; }
