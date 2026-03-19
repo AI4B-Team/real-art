@@ -345,7 +345,7 @@ const AppSidebar = () => {
                     setWsDropdownOpen(!wsDropdownOpen);
                     setWsAdding(false); setWsEditing(null);
                   }}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-accent text-accent-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-accent/90"
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-accent text-accent-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-accent/90"
                 >
                   <span className="truncate flex-1">{activeWorkspace?.name || "Workspace"}</span>
                   <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${wsDropdownOpen ? "rotate-180" : ""}`} />
