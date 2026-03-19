@@ -51,6 +51,7 @@ const AccountPage = () => {
           setDisplayName(profile.display_name || "");
           setUsername(profile.username || "");
           setBio(profile.bio || "");
+          setLocation((profile as any).location || "");
           setAvatarUrl(profile.avatar_url || "");
           return;
         }
