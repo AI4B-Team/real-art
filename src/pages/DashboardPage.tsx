@@ -1334,6 +1334,18 @@ const DashboardPage = () => {
     else navigate(`/dashboard?section=${s}`);
   };
 
+  const activeWorkspaceName = (() => {
+    try {
+      const s = localStorage.getItem("ra_workspaces");
+      if (s) {
+        const parsed = JSON.parse(s);
+        const active = parsed.workspaces?.find((w: any) => w.id === parsed.activeId);
+        if (active) return active.name;
+      }
+    } catch {}
+    return "My Workspace";
+  })();
+
   return (
     <div className="px-6 md:px-10 py-8 overflow-y-auto">
       {/* Mobile Nav */}
