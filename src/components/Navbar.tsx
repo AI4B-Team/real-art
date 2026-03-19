@@ -11,6 +11,7 @@ import {
   Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+import Logo from "./Logo";
 
 type NotifEntry = {
   id: string;

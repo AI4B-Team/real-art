@@ -39,11 +39,9 @@ const Footer = () => {
       <div className="max-w-[1440px] mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-[2fr_1fr_1fr_1fr] gap-12 mb-[52px]">
           <div className="col-span-2 md:col-span-1">
-            <Link to="/" className="no-underline">
-              <div className="font-display text-2xl font-black text-primary-foreground tracking-[0.06em] uppercase mb-3.5">
-                Real<span className="text-accent"> </span>Creator
-              </div>
-            </Link>
+            <div className="mb-3.5">
+              <Logo to="/" />
+            </div>
             <p className="text-[0.8rem] text-primary-foreground/30 leading-[1.7] max-w-[240px]">
               The world's largest free visual library. Download, share, and create — no strings attached.
             </p>
