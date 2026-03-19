@@ -1074,7 +1074,7 @@ export default function CreatePage() {
 
   return (
     <PageShell>
-      <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0">
+      <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0 overflow-visible">
         <div className="mb-10">
           <PromptBox onGenerate={() => setGenerated(true)} />
         </div>
