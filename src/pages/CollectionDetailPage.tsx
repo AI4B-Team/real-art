@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
-import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X, MoreHorizontal, Merge, Archive, LayoutGrid, List, SlidersHorizontal, Image, Video, Music, FileText, Globe, ChevronDown } from "lucide-react";
+import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X, MoreHorizontal, Merge, Archive, LayoutGrid, List, SlidersHorizontal, Image, Video, Music, FileText, Globe, ChevronDown, Upload, Plus } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 import { getCollections, grantAccess, type UnifiedCollection } from "@/lib/collectionStore";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
@@ -66,6 +67,11 @@ const CollectionDetailPage = () => {
   const [activeFilter, setActiveFilter] = useState("Newest");
   const moreRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  // Upload state
+  const [uploading, setUploading] = useState(false);
 
   // Access gate state
   const [accessTab, setAccessTab] = useState<"code" | "pay">("code");
@@ -162,6 +168,43 @@ const CollectionDetailPage = () => {
   const handlePay = () => {
     setPaying(true);
     setTimeout(() => { grantAccess(id!); setAccessGranted(true); }, 1500);
+  };
+
+  const handleUploadImages = async (files: FileList | null) => {
+    if (!files || files.length === 0 || !id || !collection) return;
+    setUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ title: "Please sign in", description: "You need to be logged in to upload images.", variant: "destructive" });
+        setUploading(false);
+        return;
+      }
+      const newImages: CollectionImage[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext = file.name.split(".").pop() || "jpg";
+        const path = `${user.id}/${id}/${crypto.randomUUID()}.${ext}`;
+        const { error: uploadErr } = await supabase.storage.from("collection-images").upload(path, file);
+        if (uploadErr) continue;
+        const { data: urlData } = supabase.storage.from("collection-images").getPublicUrl(path);
+        const { data: row } = await supabase.from("collection_images").insert({
+          collection_id: id,
+          user_id: user.id,
+          image_url: urlData.publicUrl,
+          title: file.name.replace(/\.[^.]+$/, ""),
+          sort_order: images.length + i,
+        }).select("id, image_url, title, sort_order").single();
+        if (row) newImages.push(row);
+      }
+      if (newImages.length > 0) {
+        setImages(prev => [...prev, ...newImages]);
+        toast({ title: "Uploaded!", description: `${newImages.length} image${newImages.length > 1 ? "s" : ""} added to the collection.` });
+      }
+    } catch {
+      toast({ title: "Upload failed", description: "Something went wrong. Please try again.", variant: "destructive" });
+    }
+    setUploading(false);
   };
 
   if (loading) {
@@ -326,6 +369,15 @@ const CollectionDetailPage = () => {
           )}
 
           <div className="ml-auto flex items-center gap-3">
+            <input ref={uploadInputRef} type="file" accept="image/*" multiple className="hidden" onChange={e => { handleUploadImages(e.target.files); e.target.value = ""; }} />
+            <button
+              disabled={uploading}
+              onClick={() => uploadInputRef.current?.click()}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-medium hover:bg-accent transition-colors disabled:opacity-50"
+            >
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              {uploading ? "Uploading…" : "Upload Images"}
+            </button>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
               <Heart className="w-4 h-4" /> Follow
             </button>
