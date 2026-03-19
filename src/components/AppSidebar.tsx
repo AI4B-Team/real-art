@@ -318,7 +318,7 @@ const AppSidebar = () => {
         <div className="absolute bottom-0 left-1 right-1 h-px bg-foreground/[0.06]" />
       </div>
 
-      <div className="mt-4" />
+      <div className="mt-10" />
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(item => {
