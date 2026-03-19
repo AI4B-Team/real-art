@@ -1254,7 +1254,7 @@ export default function CreatePage() {
           <div>
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Trending Now</h2>
-              <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">Explore all <ArrowRight size={12} /></Link>
+              <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">Explore All <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
               {DUMMY_COMMUNITY.map(item => (

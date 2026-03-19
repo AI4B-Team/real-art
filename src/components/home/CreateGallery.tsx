@@ -40,7 +40,7 @@ const CreateGallery = () => {
                 to="/create"
                 className="inline-flex items-center gap-2 bg-accent text-primary-foreground px-5 py-2.5 rounded-lg font-semibold text-[0.82rem] hover:bg-accent/85 transition-all no-underline w-fit"
               >
-                Explore all tools <Sparkles className="w-3.5 h-3.5" />
+                Explore All Tools <Sparkles className="w-3.5 h-3.5" />
               </Link>
             </div>
 

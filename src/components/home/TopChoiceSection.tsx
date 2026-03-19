@@ -80,7 +80,7 @@ const TopChoiceSection = () => {
             to="/create"
             className="hidden md:inline-flex items-center gap-1 text-[0.78rem] font-semibold text-primary-foreground/50 hover:text-primary-foreground transition-colors no-underline border border-primary-foreground/10 px-3.5 py-2 rounded-lg"
           >
-            See all <ChevronRight className="w-3.5 h-3.5" />
+            See All <ChevronRight className="w-3.5 h-3.5" />
           </Link>
         </motion.div>
 
