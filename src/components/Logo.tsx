@@ -7,7 +7,7 @@ interface LogoProps {
 
 export const Logo = ({ to = "/", className = "" }: LogoProps) => {
   const content = (
-    <div className={`bg-primary w-[140px] p-[7px] ${className}`}>
+    <div className={`bg-accent w-[140px] p-[7px] ${className}`}>
       <div className="border-[2.5px] border-primary-foreground py-1.5 px-[18px] flex flex-col items-center">
         <span className="font-body text-[2.1rem] font-black text-primary-foreground tracking-[0.05em] leading-none text-center block">
           REAL
