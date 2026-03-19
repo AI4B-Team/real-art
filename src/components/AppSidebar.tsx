@@ -322,7 +322,7 @@ const AppSidebar = () => {
           if (item.id === "workspace") {
             if (sidebarCollapsed) {
               return (
-                <button key={item.id} onClick={() => navigate("/dashboard")}
+                <button key={item.id} onClick={() => setSidebarCollapsed(false)}
                   className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"
                   title={activeWorkspace?.name || "Workspace"}
                 >
