@@ -20,17 +20,6 @@ const positions = [
   { top: "30%", right: "50%", rotate: 3, width: "130px" },
 ];
 
-const floatVariants = (i: number) => ({
-  animate: {
-    y: [0, -8, 0, 6, 0],
-    rotate: [positions[i].rotate, positions[i].rotate + 2, positions[i].rotate, positions[i].rotate - 1.5, positions[i].rotate],
-    transition: {
-      duration: 5 + i * 0.8,
-      repeat: Infinity,
-      ease: "easeInOut",
-    },
-  },
-});
 
 const PhotodumpBanner = () => {
   const ref = useRef(null);
