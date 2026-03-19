@@ -5,7 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const featureCards = [
   {
-    title: "CINEMA STUDIO 2.5",
+    title: "REAL STUDIO 2.5",
     desc: "Director-level control over characters and locations with color grading built in",
     poster: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&h=450&fit=crop&q=80",
     video: "https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4",
