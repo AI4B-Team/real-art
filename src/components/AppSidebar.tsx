@@ -297,7 +297,7 @@ const AppSidebar = () => {
         ) : (
           <>
             <Link to="/dashboard" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
-              Real<span className="text-accent">.</span>Art
+              Real<span className="text-accent"> </span>Creator
             </Link>
             <button
               onClick={() => setSidebarCollapsed(true)}
