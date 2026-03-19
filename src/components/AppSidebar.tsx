@@ -18,22 +18,25 @@ interface NavItem {
   href?: string;
 }
 
-type Workspace = {
-  id: string;
-  name: string;
-};
+type Workspace = { id: string; name: string; };
+type Brand = { id: string; name: string; };
 
 const loadWorkspaces = (): { workspaces: Workspace[]; activeId: string } => {
-  try {
-    const stored = localStorage.getItem("ra_workspaces");
-    if (stored) return JSON.parse(stored);
-  } catch {}
-  const defaultWs = { id: "default", name: "My Workspace" };
-  return { workspaces: [defaultWs], activeId: "default" };
+  try { const s = localStorage.getItem("ra_workspaces"); if (s) return JSON.parse(s); } catch {}
+  const d = { id: "default", name: "My Workspace" };
+  return { workspaces: [d], activeId: "default" };
 };
-
 const saveWorkspaces = (data: { workspaces: Workspace[]; activeId: string }) => {
   try { localStorage.setItem("ra_workspaces", JSON.stringify(data)); } catch {}
+};
+
+const loadBrands = (): { brands: Brand[]; activeId: string } => {
+  try { const s = localStorage.getItem("ra_brands"); if (s) return JSON.parse(s); } catch {}
+  const d = { id: "default", name: "My Brand" };
+  return { brands: [d], activeId: "default" };
+};
+const saveBrands = (data: { brands: Brand[]; activeId: string }) => {
+  try { localStorage.setItem("ra_brands", JSON.stringify(data)); } catch {}
 };
 
 type Community = {
