@@ -448,11 +448,10 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
     { icon: Upload, label: "Upload Art", to: "/upload" },
   ];
   const infoLinks = [{ icon: FileText, label: "License Info", to: "/license" }];
-  const userMenuLinks = [
+  const userMenuLinks: { icon: typeof Settings; label: string; to: string; badge?: string }[] = [
     { icon: Settings, label: "Account", to: "/account" },
-    { icon: User, label: "Profile", to: `/creator/${userHandle}` },
-    { icon: Image, label: "Collections", to: "/collections" },
-    { icon: DollarSign, label: "Earnings", to: "/dashboard?section=earnings" },
+    { icon: CreditCard, label: "Subscription", to: "/account?tab=subscription", badge: "Pro" },
+    { icon: Mail, label: "Invites", to: "/account?tab=invites" },
   ];
   const userMenuSecondary: typeof userMenuLinks = [];
 
