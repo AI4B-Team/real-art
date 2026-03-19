@@ -220,8 +220,8 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             onClick={selectAll}
             className={`px-3 py-1.5 rounded-lg text-[0.78rem] font-medium border transition-colors ${
               selectedPlatforms.size === PLATFORMS.length
-                ? "bg-accent/10 border-accent text-accent"
-                : "border-foreground/[0.1] text-muted hover:text-foreground"
+                ? "bg-emerald-500 border-emerald-500 text-white"
+                : "bg-emerald-500 border-emerald-500 text-white hover:bg-emerald-600"
             }`}
           >
             {selectedPlatforms.size === PLATFORMS.length ? "Deselect All" : "Select All"}
