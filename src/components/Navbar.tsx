@@ -857,9 +857,31 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
         )}
 
         {isLoggedIn && (
-          <Link to="/about" className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors shrink-0 no-underline">
-            <HelpCircle className="w-[17px] h-[17px] opacity-60" />
-          </Link>
+          <div className="relative" ref={helpRef}>
+            <button onClick={() => { setHelpOpen(!helpOpen); setNotifOpen(false); setUserMenuOpen(false); }} className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors shrink-0">
+              <HelpCircle className="w-[17px] h-[17px] opacity-60" />
+            </button>
+            {helpOpen && (
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[180px] shadow-[var(--shadow-card)] p-1.5 animate-drop-in z-[400]">
+                {[
+                  { icon: HelpCircle, label: "Help", to: "/about" },
+                  { icon: Route, label: "Tour", action: () => {} },
+                  { icon: BookOpen, label: "Tutorials", to: "/blog" },
+                  { icon: MessageSquarePlus, label: "Feedback", action: () => {} },
+                ].map(item => (
+                  item.to ? (
+                    <Link key={item.label} to={item.to} onClick={() => setHelpOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] text-foreground hover:bg-foreground/[0.05] transition-colors no-underline">
+                      <item.icon className="w-4 h-4 opacity-40 shrink-0" />{item.label}
+                    </Link>
+                  ) : (
+                    <button key={item.label} onClick={() => { item.action?.(); setHelpOpen(false); }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] text-foreground hover:bg-foreground/[0.05] transition-colors w-full text-left">
+                      <item.icon className="w-4 h-4 opacity-40 shrink-0" />{item.label}
+                    </button>
+                  )
+                ))}
+              </div>
+            )}
+          </div>
         )}
 
         {isLoggedIn && (
