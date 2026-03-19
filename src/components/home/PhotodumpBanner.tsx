@@ -53,8 +53,18 @@ const PhotodumpBanner = () => {
                 <motion.div
                   key={i}
                   initial={{ opacity: 0, scale: 0.7 }}
-                  animate={isInView ? { opacity: 1, scale: 1, ...floatVariants(i).animate } : {}}
-                  transition={{ duration: 0.6, delay: 0.2 + i * 0.1 }}
+                  animate={isInView ? {
+                    opacity: 1,
+                    scale: 1,
+                    y: [0, -8, 0, 6, 0],
+                    rotate: [pos.rotate, pos.rotate + 2, pos.rotate, pos.rotate - 1.5, pos.rotate],
+                  } : undefined}
+                  transition={{
+                    opacity: { duration: 0.6, delay: 0.2 + i * 0.1 },
+                    scale: { duration: 0.6, delay: 0.2 + i * 0.1 },
+                    y: { duration: 5 + i * 0.8, repeat: Infinity, ease: "easeInOut", delay: 0.8 + i * 0.1 },
+                    rotate: { duration: 5 + i * 0.8, repeat: Infinity, ease: "easeInOut", delay: 0.8 + i * 0.1 },
+                  }
                   className="absolute rounded-xl overflow-hidden shadow-2xl border-2 border-primary-foreground/10 hover:scale-110 hover:z-10 transition-transform cursor-pointer"
                   style={{
                     top: pos.top,
