@@ -21,8 +21,8 @@ const featureCards = [
     link: "/create?type=video",
   },
   {
-    title: "SOUL CAST",
-    desc: "Build your perfect movie cast in Soul Cinema Studio",
+    title: "REAL CAST",
+    desc: "Build your perfect movie cast in Real Cinema Studio",
     poster: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=800&h=450&fit=crop&q=80",
     video: "https://videos.pexels.com/video-files/4763824/4763824-uhd_2560_1440_24fps.mp4",
     badge: null,
