@@ -8,7 +8,8 @@ import {
   RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
   Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2,
   Sun, Moon, Monitor, Languages, ChevronRight,
-  Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard
+  Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard,
+  CreditCard, Mail, UserPlus2, Zap, Power
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "./Logo";
@@ -447,11 +448,10 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
     { icon: Upload, label: "Upload Art", to: "/upload" },
   ];
   const infoLinks = [{ icon: FileText, label: "License Info", to: "/license" }];
-  const userMenuLinks = [
+  const userMenuLinks: { icon: typeof Settings; label: string; to: string; badge?: string }[] = [
     { icon: Settings, label: "Account", to: "/account" },
-    { icon: User, label: "Profile", to: `/creator/${userHandle}` },
-    { icon: Image, label: "Collections", to: "/collections" },
-    { icon: DollarSign, label: "Earnings", to: "/dashboard?section=earnings" },
+    { icon: CreditCard, label: "Subscription", to: "/account?tab=subscription", badge: "Pro" },
+    { icon: Mail, label: "Invites", to: "/account?tab=invites" },
   ];
   const userMenuSecondary: typeof userMenuLinks = [];
 
@@ -937,66 +937,107 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               <ChevronDown className={`w-3.5 h-3.5 text-muted transition-transform ${userMenuOpen ? "rotate-180" : ""}`} />
             </button>
             {userMenuOpen && (
-              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[232px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400] overflow-hidden">
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] animate-drop-in z-[400] overflow-hidden">
                 {menuPanel === "main" && (
-                  <>
-                    <div className="flex items-center gap-3 px-3.5 py-3 mb-1">
-                      <div className="w-10 h-10 rounded-full bg-accent/15 flex items-center justify-center text-[0.8rem] font-bold text-accent">{userInitials}</div>
+                  <div className="p-4">
+                    {/* User header */}
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-12 h-12 rounded-full bg-accent/15 flex items-center justify-center text-[0.9rem] font-bold text-accent relative">
+                        {userInitials}
+                        <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-amber-400 rounded-full flex items-center justify-center">
+                          <Award className="w-2.5 h-2.5 text-amber-900" />
+                        </span>
+                      </div>
                       <div>
-                        <div className="text-[0.88rem] font-semibold">{userDisplay}</div>
-                        <div className="text-[0.75rem] text-muted lowercase">@{userHandle}</div>
+                        <div className="text-[0.92rem] font-semibold capitalize">{userDisplay}</div>
+                        <div className="text-[0.78rem] text-muted">{userHandle}@gmail.com</div>
                       </div>
                     </div>
-                    <div className="h-px bg-foreground/[0.06] my-1" />
-                    {userMenuLinks.map(({ icon: Icon, label, to }) => (
-                      <Link key={label} to={to} onClick={() => { setUserMenuOpen(false); setMenuPanel("main"); }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] text-foreground hover:bg-foreground/[0.05] transition-colors no-underline">
-                        <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />{label}
+
+                    {/* Upgrade button */}
+                    <button onClick={() => { setUserMenuOpen(false); navigate("/account?tab=subscription"); }} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors mb-2">
+                      <Zap className="w-4 h-4" /> Upgrade
+                    </button>
+
+                    {/* Add Members */}
+                    <button onClick={() => { setUserMenuOpen(false); navigate("/account?tab=invites"); }} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                      <UserPlus className="w-4 h-4 opacity-50" /> Add Members
+                    </button>
+
+                    <div className="h-px bg-foreground/[0.06] my-3" />
+
+                    {/* Menu links */}
+                    {userMenuLinks.map(({ icon: Icon, label, to, badge }) => (
+                      <Link key={label} to={to} onClick={() => { setUserMenuOpen(false); setMenuPanel("main"); }} className="flex items-center gap-3 px-2 py-2.5 rounded-xl text-[0.88rem] text-foreground hover:bg-foreground/[0.05] transition-colors no-underline">
+                        <Icon className="w-[18px] h-[18px] opacity-40 shrink-0" />
+                        <span>{label}</span>
+                        {badge && <span className="ml-auto text-[0.75rem] text-muted">{badge}</span>}
                       </Link>
                     ))}
-                    {userMenuSecondary.length > 0 && <div className="h-px bg-foreground/[0.06] my-1" />}
-                    {userMenuSecondary.map(({ icon: Icon, label, to }) => (
-                      <Link key={label} to={to} onClick={() => { setUserMenuOpen(false); setMenuPanel("main"); }} className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] text-foreground hover:bg-foreground/[0.05] transition-colors no-underline">
-                        <Icon className="w-3.5 h-3.5 opacity-40 shrink-0" />{label}
-                      </Link>
-                    ))}
-                    <div className="h-px bg-foreground/[0.06] my-1" />
-                    {/* Language row */}
-                    <button onClick={() => setMenuPanel("language")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
-                      <Languages className="w-3.5 h-3.5 text-muted shrink-0" />
-                      <span className="text-[0.84rem]">Language</span>
-                      <span className="ml-auto flex items-center gap-1.5 text-[0.78rem] text-muted">
-                        {currentLang.flag} {currentLang.label}
-                        <ChevronRight className="w-3.5 h-3.5 opacity-40" />
-                      </span>
+
+                    <div className="h-px bg-foreground/[0.06] my-2" />
+
+                    {/* Language & Theme in a muted card */}
+                    <div className="bg-foreground/[0.03] rounded-xl p-1">
+                      {/* Language row */}
+                      <button onClick={() => setMenuPanel("language")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                        <Languages className="w-[18px] h-[18px] text-muted shrink-0" />
+                        <span className="text-[0.84rem]">Language:</span>
+                        <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
+                          {currentLang.label}
+                          <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+                        </span>
+                      </button>
+                      {/* Theme row */}
+                      <button onClick={() => setMenuPanel("theme")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                        <ThemeIcon className="w-[18px] h-[18px] text-muted shrink-0" />
+                        <span className="text-[0.84rem]">Theme:</span>
+                        <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
+                          {themeLabel}
+                          <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+                        </span>
+                      </button>
+
+                      {/* Join Affiliate */}
+                      <button onClick={() => { setUserMenuOpen(false); navigate("/affiliates"); }} className="flex items-center justify-center gap-2 w-full py-2 mt-1 rounded-lg border border-amber-400/40 text-amber-600 dark:text-amber-400 text-[0.82rem] font-medium hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors">
+                        Join Affiliate Program
+                      </button>
+                    </div>
+
+                    {/* Log Out */}
+                    <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 mt-3 rounded-lg bg-destructive text-destructive-foreground text-[0.84rem] font-semibold hover:bg-destructive/85 transition-colors">
+                      <Power className="w-4 h-4" /> Log Out
                     </button>
-                    {/* Theme row */}
-                    <button onClick={() => setMenuPanel("theme")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
-                      <ThemeIcon className="w-3.5 h-3.5 text-muted shrink-0" />
-                      <span className="text-[0.84rem]">Theme</span>
-                      <span className="ml-auto flex items-center gap-1.5 text-[0.78rem] text-muted">
-                        {themeLabel}
-                        <ChevronRight className="w-3.5 h-3.5 opacity-40" />
-                      </span>
-                    </button>
-                    <div className="h-px bg-foreground/[0.06] my-1" />
-                    <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent/85 transition-colors">
-                      <LogOut className="w-3.5 h-3.5" /> Log Out
-                    </button>
-                  </>
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between mt-3 pt-2 border-t border-foreground/[0.06]">
+                      <div className="flex items-center gap-1.5 text-[0.72rem] text-muted">
+                        <Link to="/terms" onClick={() => setUserMenuOpen(false)} className="hover:text-foreground transition-colors no-underline text-muted">Terms</Link>
+                        <span>|</span>
+                        <Link to="/privacy" onClick={() => setUserMenuOpen(false)} className="hover:text-foreground transition-colors no-underline text-muted">Privacy</Link>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted">
+                        <a href="https://discord.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors"><MessageCircle className="w-3.5 h-3.5" /></a>
+                        <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors"><X className="w-3.5 h-3.5" /></a>
+                        <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors"><Film className="w-3.5 h-3.5" /></a>
+                        <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors"><Camera className="w-3.5 h-3.5" /></a>
+                      </div>
+                    </div>
+                  </div>
                 )}
 
                 {menuPanel === "language" && (
-                  <>
-                    <div className="flex items-center gap-2 px-2 py-2.5">
+                  <div className="p-3">
+                    <div className="flex items-center gap-2 px-1 py-2">
                       <button onClick={() => { setMenuPanel("main"); setLangSearch(""); }} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
                         <ChevronRight className="w-4 h-4 rotate-180" />
                       </button>
                       <span className="text-[0.88rem] font-semibold">Language</span>
                     </div>
-                    <div className="px-2 pb-2">
+                    <div className="px-1 pb-2">
                       <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
                         <Search className="w-3.5 h-3.5 text-muted shrink-0" />
-                        <input autoFocus value={langSearch} onChange={e => setLangSearch(e.target.value)} placeholder="Search languages…" className="flex-1 bg-transparent border-none outline-none text-[0.84rem] font-body placeholder:text-muted" />
+                        <input autoFocus value={langSearch} onChange={e => setLangSearch(e.target.value)} placeholder="Search languages..." className="flex-1 bg-transparent border-none outline-none text-[0.84rem] font-body placeholder:text-muted" />
                         {langSearch && <button onClick={() => setLangSearch("")}><X className="w-3.5 h-3.5 text-muted" /></button>}
                       </div>
                     </div>
@@ -1012,12 +1053,12 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                         </button>
                       ))}
                     </div>
-                  </>
+                  </div>
                 )}
 
                 {menuPanel === "theme" && (
-                  <>
-                    <div className="flex items-center gap-2 px-2 py-2.5">
+                  <div className="p-3">
+                    <div className="flex items-center gap-2 px-1 py-2">
                       <button onClick={() => setMenuPanel("main")} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
                         <ChevronRight className="w-4 h-4 rotate-180" />
                       </button>
@@ -1025,22 +1066,19 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                     </div>
                     <div className="flex flex-col gap-1 px-1 pb-1">
                       {([
-                        { key: "light" as const, icon: Sun, label: "Light", desc: "Always use light mode" },
-                        { key: "dark" as const, icon: Moon, label: "Dark", desc: "Always use dark mode" },
-                        { key: "system" as const, icon: Monitor, label: "System", desc: "Follows your device setting" },
+                        { key: "light" as const, icon: Sun, label: "Light" },
+                        { key: "dark" as const, icon: Moon, label: "Dark" },
+                        { key: "system" as const, icon: Monitor, label: "Split" },
                       ]).map(opt => (
                         <button key={opt.key} onClick={() => setTheme(opt.key)}
-                          className={`flex items-center gap-3 px-3 py-3 rounded-xl w-full text-left transition-colors ${activeTheme === opt.key ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
+                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left transition-colors ${activeTheme === opt.key ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
                           <opt.icon className="w-4 h-4 text-muted shrink-0" />
-                          <div>
-                            <div className="text-[0.84rem] font-medium">{opt.label}</div>
-                            <div className="text-[0.72rem] text-muted">{opt.desc}</div>
-                          </div>
+                          <span className="text-[0.84rem]">{opt.label}</span>
                           {activeTheme === opt.key && <Check className="w-3.5 h-3.5 text-accent shrink-0 ml-auto" />}
                         </button>
                       ))}
                     </div>
-                  </>
+                  </div>
                 )}
               </div>
             )}
