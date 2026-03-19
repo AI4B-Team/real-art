@@ -4,7 +4,6 @@ import FeatureCarousel from "@/components/home/FeatureCarousel";
 import PhotodumpBanner from "@/components/home/PhotodumpBanner";
 import CreateGallery from "@/components/home/CreateGallery";
 import TopChoiceSection from "@/components/home/TopChoiceSection";
-import CTABanner from "@/components/home/CTABanner";
 
 const announcements = [
   "Video generation now live — animate any image in one click",
@@ -40,8 +39,6 @@ const Index = () => {
       {/* Photodump Banner */}
       <PhotodumpBanner />
 
-      {/* CTA Banner */}
-      <CTABanner />
 
       <div className="bg-foreground">
         <Footer />
