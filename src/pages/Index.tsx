@@ -15,17 +15,6 @@ const announcements = [
 const Index = () => {
   return (
     <PageShell>
-      {/* Announcement Ticker */}
-      <div className="bg-foreground overflow-hidden">
-        <div className="flex animate-ticker whitespace-nowrap py-2">
-          {[...announcements, ...announcements].map((a, i) => (
-            <span key={i} className="mx-8 text-[0.75rem] font-medium text-primary-foreground/60 shrink-0">
-              {a}
-              <span className="mx-8 text-primary-foreground/20">✦</span>
-            </span>
-          ))}
-        </div>
-      </div>
 
       {/* Feature Cards — videos autoplay */}
       <FeatureCarousel />
