@@ -40,7 +40,7 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="no-underline">
               <div className="font-display text-2xl font-black text-primary-foreground tracking-[0.06em] uppercase mb-3.5">
-                Real<span className="text-accent">.</span>Art
+                Real<span className="text-accent"> </span>Creator
               </div>
             </Link>
             <p className="text-[0.8rem] text-primary-foreground/30 leading-[1.7] max-w-[240px]">
@@ -59,7 +59,7 @@ const Footer = () => {
           ))}
         </div>
         <div className="border-t border-primary-foreground/[0.07] pt-5 flex justify-between items-center flex-wrap gap-4">
-          <div className="text-[0.75rem] text-primary-foreground/20">© 2026 REAL ART — Part of the REAL CREATOR ecosystem</div>
+          <div className="text-[0.75rem] text-primary-foreground/20">© 2026 REAL CREATOR</div>
           <div className="flex gap-5">
             {[
               { label: "Privacy", to: "/privacy" },
