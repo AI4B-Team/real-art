@@ -219,6 +219,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) { setUserMenuOpen(false); setMenuPanel("main"); setLangSearch(""); }
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
       if (helpRef.current && !helpRef.current.contains(e.target as Node)) setHelpOpen(false);
+      if (creditRef.current && !creditRef.current.contains(e.target as Node)) setCreditInfoOpen(false);
       if (searchSuggestRef.current && !searchSuggestRef.current.contains(e.target as Node)) setSearchSuggestOpen(false);
       
     };
