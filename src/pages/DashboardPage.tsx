@@ -1373,8 +1373,8 @@ const DashboardPage = () => {
         <>
           <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Dashboard</h1>
-              <p className="text-[0.82rem] text-muted mt-1">March 2026 · Last 30 Days</p>
+              <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">{activeWorkspaceName}</h1>
+              <p className="text-[0.82rem] text-muted mt-1">Dashboard · March 2026 · Last 30 Days</p>
             </div>
             <Link to="/upload" className="flex items-center gap-2 bg-foreground text-primary-foreground px-5 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors no-underline">
               Upload <Plus className="w-4 h-4" />
