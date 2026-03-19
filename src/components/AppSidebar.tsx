@@ -285,8 +285,8 @@ const AppSidebar = () => {
 
   return (
     <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-0 hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto transition-all duration-200 z-[70] ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
-      {/* Logo header */}
-      <div className={`flex items-center shrink-0 ${sidebarCollapsed ? "justify-center h-16" : "relative justify-center py-5"}`}>
+      {/* Logo header — logo overlaps the divider line at h-16 (64px) */}
+      <div className={`relative shrink-0 ${sidebarCollapsed ? "h-16 flex items-center justify-center" : "h-16"}`}>
         {sidebarCollapsed ? (
           <button
             onClick={() => setSidebarCollapsed(false)}
@@ -302,19 +302,23 @@ const AppSidebar = () => {
           </button>
         ) : (
           <>
-            <Logo to="/dashboard" className="w-[140px] p-[7px] !bg-accent" />
+            <div className="absolute inset-x-0 flex justify-center" style={{ top: '4px' }}>
+              <Logo to="/dashboard" className="w-[140px] p-[7px] !bg-accent relative z-10" />
+            </div>
             <button
               onClick={() => setSidebarCollapsed(true)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0"
+              className="absolute right-0 top-3 flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0 z-20"
               title="Collapse sidebar"
             >
               <PanelLeftClose className="w-4 h-4" />
             </button>
           </>
         )}
+        {/* Divider aligned with navbar bottom border */}
+        <div className="absolute bottom-0 left-1 right-1 h-px bg-foreground/[0.06]" />
       </div>
 
-      <div className="h-px bg-foreground/[0.06] mx-1 mb-4" />
+      <div className="mt-4" />
 
       <nav className="flex flex-col gap-1 flex-1">
         {navItems.map(item => {
