@@ -455,19 +455,65 @@ const AppSidebar = () => {
           if (item.id === "brand") {
             if (sidebarCollapsed) {
               return (
-                <button key={item.id} ref={brandBtnRef} onClick={() => {
-                    if (!brandDropdownOpen && brandBtnRef.current) {
-                      const rect = brandBtnRef.current.getBoundingClientRect();
-                      setBrandFlyoutPos({ top: rect.top, left: rect.right + 8 });
-                    }
-                    setBrandDropdownOpen(!brandDropdownOpen);
-                    setBrandAdding(false); setBrandEditing(null);
-                  }}
-                  className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors border border-accent text-accent hover:bg-accent/10"
-                  title={activeBrand?.name || "Brand"}
-                >
-                  <Palette className="w-4 h-4 shrink-0" />
-                </button>
+                <div key={item.id}>
+                  <button ref={brandBtnRef} onClick={() => {
+                      if (!brandDropdownOpen && brandBtnRef.current) {
+                        const rect = brandBtnRef.current.getBoundingClientRect();
+                        setBrandFlyoutPos({ top: rect.top, left: rect.right + 8 });
+                      }
+                      setBrandDropdownOpen(!brandDropdownOpen);
+                      setBrandAdding(false); setBrandEditing(null);
+                    }}
+                    className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors border border-accent text-accent hover:bg-accent/10"
+                    title={activeBrand?.name || "Brand"}
+                  >
+                    <Palette className="w-4 h-4 shrink-0" />
+                  </button>
+                  {brandDropdownOpen && createPortal(
+                    <div data-brand-flyout className="fixed bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]" style={{ top: brandFlyoutPos.top, left: brandFlyoutPos.left }}>
+                      <div className="px-3 pt-1 pb-2 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Brands</div>
+                      {brandData.brands.map(b => (
+                        <div key={b.id} className={`flex items-center justify-between px-3 py-2 rounded-[10px] text-[0.85rem] transition-colors group cursor-pointer ${b.id === brandData.activeId ? "bg-foreground/[0.06] text-foreground font-semibold" : "text-foreground hover:bg-background"}`}>
+                          {brandEditing === b.id ? (
+                            <form onSubmit={e => { e.preventDefault(); renameBrand(b.id); }} className="flex items-center gap-2 flex-1">
+                              <input autoFocus value={brandEditName} onChange={e => setBrandEditName(e.target.value)} onBlur={() => renameBrand(b.id)} className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2 py-1 text-[0.82rem] outline-none focus:border-accent" />
+                            </form>
+                          ) : (
+                            <>
+                              <button onClick={() => switchBrand(b.id)} className="flex items-center gap-2 flex-1 text-left">
+                                <Palette className="w-3.5 h-3.5 shrink-0 opacity-50" />
+                                <span className="truncate">{b.name}</span>
+                                {b.id === brandData.activeId && <Check className="w-3 h-3 text-accent shrink-0" />}
+                              </button>
+                              <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button onClick={e => { e.stopPropagation(); setBrandEditing(b.id); setBrandEditName(b.name); }} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-foreground/[0.08] transition-colors" title="Rename">
+                                  <Pencil className="w-3 h-3 text-muted" />
+                                </button>
+                                {brandData.brands.length > 1 && (
+                                  <button onClick={e => { e.stopPropagation(); deleteBrand(b.id); }} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-destructive/10 transition-colors" title="Delete">
+                                    <Trash2 className="w-3 h-3 text-destructive" />
+                                  </button>
+                                )}
+                              </div>
+                            </>
+                          )}
+                        </div>
+                      ))}
+                      <div className="h-px bg-foreground/[0.06] my-1.5" />
+                      {brandAdding ? (
+                        <form onSubmit={e => { e.preventDefault(); addBrand(); }} className="flex items-center gap-2 px-2">
+                          <input autoFocus value={brandNewName} onChange={e => setBrandNewName(e.target.value)} onBlur={() => { if (!brandNewName.trim()) setBrandAdding(false); }} placeholder="Brand name…" className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2.5 py-1.5 text-[0.82rem] outline-none focus:border-accent" />
+                          <button type="submit" disabled={!brandNewName.trim()} className="px-2.5 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-semibold disabled:opacity-40">Add</button>
+                        </form>
+                      ) : (
+                        <button onClick={() => setBrandAdding(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors w-full text-left">
+                          <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> New Brand
+                        </button>
+                      )}
+                    </div>,
+                    document.body
+                  )}
+                </div>
               );
             }
             return (
