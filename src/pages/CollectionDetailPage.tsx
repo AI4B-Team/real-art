@@ -170,6 +170,43 @@ const CollectionDetailPage = () => {
     setTimeout(() => { grantAccess(id!); setAccessGranted(true); }, 1500);
   };
 
+  const handleUploadImages = async (files: FileList | null) => {
+    if (!files || files.length === 0 || !id || !collection) return;
+    setUploading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({ title: "Please sign in", description: "You need to be logged in to upload images.", variant: "destructive" });
+        setUploading(false);
+        return;
+      }
+      const newImages: CollectionImage[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const ext = file.name.split(".").pop() || "jpg";
+        const path = `${user.id}/${id}/${crypto.randomUUID()}.${ext}`;
+        const { error: uploadErr } = await supabase.storage.from("collection-images").upload(path, file);
+        if (uploadErr) continue;
+        const { data: urlData } = supabase.storage.from("collection-images").getPublicUrl(path);
+        const { data: row } = await supabase.from("collection_images").insert({
+          collection_id: id,
+          user_id: user.id,
+          image_url: urlData.publicUrl,
+          title: file.name.replace(/\.[^.]+$/, ""),
+          sort_order: images.length + i,
+        }).select("id, image_url, title, sort_order").single();
+        if (row) newImages.push(row);
+      }
+      if (newImages.length > 0) {
+        setImages(prev => [...prev, ...newImages]);
+        toast({ title: "Uploaded!", description: `${newImages.length} image${newImages.length > 1 ? "s" : ""} added to the collection.` });
+      }
+    } catch {
+      toast({ title: "Upload failed", description: "Something went wrong. Please try again.", variant: "destructive" });
+    }
+    setUploading(false);
+  };
+
   if (loading) {
     return (
       <PageShell>
