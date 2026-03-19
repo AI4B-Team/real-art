@@ -5,7 +5,8 @@ import {
   LayoutDashboard, Image, FolderOpen,
   Users, Award, Eye, Bookmark, ChevronDown,
   Search, X, Star, Home, Compass, Plus, PanelLeftClose,
-  DollarSign, Megaphone, Zap, Clock, Upload, Sparkles, Check
+  DollarSign, Megaphone, Zap, Clock, Upload, Sparkles, Check,
+  Pencil, Trash2,
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
 
