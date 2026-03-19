@@ -402,7 +402,7 @@ const AppSidebar = () => {
           if (item.id === "brand") {
             if (sidebarCollapsed) {
               return (
-                <button key={item.id} onClick={() => navigate("/brand")}
+                <button key={item.id} onClick={() => setSidebarCollapsed(false)}
                   className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors border border-accent text-accent hover:bg-accent/10"
                   title={activeBrand?.name || "Brand"}
                 >
