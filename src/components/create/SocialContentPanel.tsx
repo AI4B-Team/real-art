@@ -235,14 +235,14 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
                 className="relative transition-all"
                 title={p.label}
               >
-                <div className={`w-14 h-14 rounded-lg flex items-center justify-center transition-all ${
-                  selected ? "ring-2 ring-accent scale-105" : "hover:scale-105"
+                <div className={`w-14 h-14 rounded-lg flex items-center justify-center transition-all bg-foreground/[0.06] ${
+                  selected ? "ring-2 ring-emerald-500 scale-105" : "hover:scale-105"
                 }`}
-                  style={{ backgroundColor: p.color + "15", color: p.color }}
+                  style={{ color: p.color }}
                 >
                   <PlatformIcon platformId={p.id} size={24} />
                   {selected && (
-                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded bg-accent flex items-center justify-center">
+                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center">
                       <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                   )}
