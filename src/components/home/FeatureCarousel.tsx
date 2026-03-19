@@ -104,30 +104,34 @@ const VideoCard = ({ card, index }: { card: typeof featureCards[0]; index: numbe
         className="group flex-shrink-0 w-full no-underline block"
       >
         <div className="relative rounded-2xl overflow-hidden mb-3 border border-primary-foreground/[0.06]">
-          {/* Poster image (fallback) */}
+          {/* Poster image */}
           <img
             src={card.poster}
             alt={card.title}
-            className={`w-full h-[240px] object-cover transition-opacity duration-500 ${videoReady ? "opacity-0" : "opacity-100"}`}
+            className={`w-full h-[240px] object-cover transition-opacity duration-500 ${card.video && videoReady ? "opacity-0" : "opacity-100"}`}
           />
-          {/* Video layer — always playing */}
-          <video
-            ref={videoRef}
-            src={card.video}
-            muted
-            loop
-            playsInline
-            preload="auto"
-            onCanPlay={() => setVideoReady(true)}
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
-          />
-          {/* Title overlay */}
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors duration-500" />
-            <h3 className="relative font-display text-[clamp(1.6rem,2.2vw,2.4rem)] font-black text-primary-foreground tracking-tight leading-[1.1] text-center uppercase drop-shadow-lg px-4">
-              {card.title}
-            </h3>
-          </div>
+          {/* Video layer — only if video exists */}
+          {card.video && (
+            <video
+              ref={videoRef}
+              src={card.video}
+              muted
+              loop
+              playsInline
+              preload="auto"
+              onCanPlay={() => setVideoReady(true)}
+              className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
+            />
+          )}
+          {/* Title overlay — hide if poster already has text (no video = static banner) */}
+          {card.video && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors duration-500" />
+              <h3 className="relative font-display text-[clamp(1.6rem,2.2vw,2.4rem)] font-black text-primary-foreground tracking-tight leading-[1.1] text-center uppercase drop-shadow-lg px-4">
+                {card.title}
+              </h3>
+            </div>
+          )}
           {card.badge && (
             <span className="absolute top-3 right-3 bg-accent text-primary-foreground text-[0.6rem] font-bold tracking-wider uppercase px-2.5 py-1 rounded-lg z-10">
               {card.badge}
