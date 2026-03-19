@@ -192,7 +192,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   };
 
   return (
-    <div className="rounded-xl border border-foreground/[0.08] bg-background mt-3 overflow-hidden w-full">
+    <div className="border-t border-foreground/[0.08] bg-background mt-3 overflow-hidden w-full">
       {/* Platform selection */}
       <div className="p-4 border-b border-foreground/[0.06]">
         <div className="flex items-center justify-between mb-3">
@@ -357,7 +357,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               return (
                 <div
                   key={i}
-                  className="min-h-[100px] border-r border-b border-foreground/[0.06] p-1.5"
+                  className="min-h-[120px] border-r border-b border-foreground/[0.06] p-1.5"
                 >
                   {day && (
                     <>
