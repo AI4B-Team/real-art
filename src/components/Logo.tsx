@@ -20,7 +20,7 @@ export const Logo = ({ to = "/", className = "" }: LogoProps) => {
   );
 
   return (
-    <Link to={to} className="no-underline block relative top-[10px] flex-shrink-0">
+    <Link to={to} className="no-underline block flex-shrink-0">
       {content}
     </Link>
   );
