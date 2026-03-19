@@ -200,21 +200,29 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           >
             Select All
           </button>
-          {PLATFORMS.map(p => (
-            <button
-              key={p.id}
-              onClick={() => togglePlatform(p.id)}
-              className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                selectedPlatforms.has(p.id)
-                  ? "ring-2 ring-offset-2 ring-accent scale-110"
-                  : "opacity-40 hover:opacity-80"
-              }`}
-              style={{ backgroundColor: p.color + "15", color: p.color }}
-              title={p.label}
-            >
-              <PlatformIcon platformId={p.id} size={18} />
-            </button>
-          ))}
+          {PLATFORMS.map(p => {
+            const selected = selectedPlatforms.has(p.id);
+            return (
+              <button
+                key={p.id}
+                onClick={() => togglePlatform(p.id)}
+                className={`relative w-11 h-11 rounded-lg flex items-center justify-center transition-all ${
+                  selected
+                    ? "ring-2 ring-accent bg-accent/10 scale-105"
+                    : "opacity-40 hover:opacity-80"
+                }`}
+                style={{ backgroundColor: selected ? p.color + "18" : p.color + "10", color: p.color }}
+                title={p.label}
+              >
+                <PlatformIcon platformId={p.id} size={18} />
+                {selected && (
+                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded bg-accent flex items-center justify-center">
+                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  </div>
+                )}
+              </button>
+            );
+          })}
         </div>
       </div>
 
