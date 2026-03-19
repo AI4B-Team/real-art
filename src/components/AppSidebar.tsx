@@ -36,6 +36,8 @@ const saveWorkspaces = (data: { workspaces: Workspace[]; activeId: string }) => 
   try { localStorage.setItem("ra_workspaces", JSON.stringify(data)); } catch {}
 };
 
+type Community = {
+  id: string;
   name: string;
   to: string;
   newPosts?: number;
