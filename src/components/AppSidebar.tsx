@@ -425,7 +425,7 @@ const AppSidebar = () => {
                     setBrandDropdownOpen(!brandDropdownOpen);
                     setBrandAdding(false); setBrandEditing(null);
                   }}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-full border border-accent text-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-accent/10"
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg border border-accent text-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-accent/10"
                 >
                   <span className="truncate flex-1">{activeBrand?.name || "Brand"}</span>
                   <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${brandDropdownOpen ? "rotate-180" : ""}`} />
