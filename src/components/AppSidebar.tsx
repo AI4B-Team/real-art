@@ -217,18 +217,22 @@ const AppSidebar = () => {
         if (flyout && flyout.contains(target)) return;
         setCommunitiesOpen(false);
       }
-      // Workspace flyout
       if (wsDropdownOpen) {
         const wsFlyout = document.querySelector('[data-ws-flyout]');
-        const wsBtn = wsBtnRef.current;
         if (wsFlyout && wsFlyout.contains(target)) return;
-        if (wsBtn && wsBtn.contains(target)) return;
+        if (wsBtnRef.current && wsBtnRef.current.contains(target)) return;
         setWsDropdownOpen(false);
+      }
+      if (brandDropdownOpen) {
+        const bFlyout = document.querySelector('[data-brand-flyout]');
+        if (bFlyout && bFlyout.contains(target)) return;
+        if (brandBtnRef.current && brandBtnRef.current.contains(target)) return;
+        setBrandDropdownOpen(false);
       }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
-  }, [wsDropdownOpen]);
+  }, [wsDropdownOpen, brandDropdownOpen]);
 
   const isDashboard = location.pathname === "/dashboard";
   const currentSection = isDashboard
