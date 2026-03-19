@@ -409,7 +409,14 @@ const AppSidebar = () => {
           if (item.id === "brand") {
             if (sidebarCollapsed) {
               return (
-                <button key={item.id} onClick={() => setSidebarCollapsed(false)}
+                <button key={item.id} ref={brandBtnRef} onClick={() => {
+                    if (!brandDropdownOpen && brandBtnRef.current) {
+                      const rect = brandBtnRef.current.getBoundingClientRect();
+                      setBrandFlyoutPos({ top: rect.top, left: rect.right + 8 });
+                    }
+                    setBrandDropdownOpen(!brandDropdownOpen);
+                    setBrandAdding(false); setBrandEditing(null);
+                  }}
                   className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors border border-accent text-accent hover:bg-accent/10"
                   title={activeBrand?.name || "Brand"}
                 >
