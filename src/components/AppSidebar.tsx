@@ -80,7 +80,55 @@ const AppSidebar = () => {
   const communityBtnRef = useRef<HTMLButtonElement>(null);
   const [flyoutPos, setFlyoutPos] = useState({ top: 0, left: 0 });
 
-  const [communities, setCommunities] = useState<Community[]>([
+  // Workspace state
+  const [wsData, setWsData] = useState(loadWorkspaces);
+  const [wsDropdownOpen, setWsDropdownOpen] = useState(false);
+  const [wsEditing, setWsEditing] = useState<string | null>(null);
+  const [wsEditName, setWsEditName] = useState("");
+  const [wsNewName, setWsNewName] = useState("");
+  const [wsAdding, setWsAdding] = useState(false);
+  const wsBtnRef = useRef<HTMLButtonElement>(null);
+  const [wsFlyoutPos, setWsFlyoutPos] = useState({ top: 0, left: 0 });
+
+  const activeWorkspace = wsData.workspaces.find(w => w.id === wsData.activeId) || wsData.workspaces[0];
+
+  const switchWorkspace = (id: string) => {
+    const updated = { ...wsData, activeId: id };
+    setWsData(updated);
+    saveWorkspaces(updated);
+    setWsDropdownOpen(false);
+    navigate("/dashboard");
+  };
+
+  const addWorkspace = () => {
+    if (!wsNewName.trim()) return;
+    const newWs: Workspace = { id: crypto.randomUUID(), name: wsNewName.trim() };
+    const updated = { workspaces: [...wsData.workspaces, newWs], activeId: newWs.id };
+    setWsData(updated);
+    saveWorkspaces(updated);
+    setWsNewName("");
+    setWsAdding(false);
+    setWsDropdownOpen(false);
+    navigate("/dashboard");
+  };
+
+  const renameWorkspace = (id: string) => {
+    if (!wsEditName.trim()) { setWsEditing(null); return; }
+    const updated = { ...wsData, workspaces: wsData.workspaces.map(w => w.id === id ? { ...w, name: wsEditName.trim() } : w) };
+    setWsData(updated);
+    saveWorkspaces(updated);
+    setWsEditing(null);
+  };
+
+  const deleteWorkspace = (id: string) => {
+    if (wsData.workspaces.length <= 1) return;
+    const remaining = wsData.workspaces.filter(w => w.id !== id);
+    const newActive = wsData.activeId === id ? remaining[0].id : wsData.activeId;
+    const updated = { workspaces: remaining, activeId: newActive };
+    setWsData(updated);
+    saveWorkspaces(updated);
+  };
+
     { id: "1", name: "Avatar Architects", to: "/communities/1", newPosts: 3, pinned: true },
     { id: "2", name: "PromptVault Pro", to: "/communities/2", newPosts: 0, pinned: true },
     { id: "3", name: "Abstract Minds", to: "/communities/3", newPosts: 1, pinned: false },
