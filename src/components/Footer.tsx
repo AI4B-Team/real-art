@@ -40,7 +40,7 @@ const Footer = () => {
           <div className="col-span-2 md:col-span-1">
             <Link to="/" className="no-underline">
               <div className="font-display text-2xl font-black text-primary-foreground tracking-[0.06em] uppercase mb-3.5">
-                Real<span className="text-accent">.</span>Art
+                Real<span className="text-accent"> </span>Creator
               </div>
             </Link>
             <p className="text-[0.8rem] text-primary-foreground/30 leading-[1.7] max-w-[240px]">
