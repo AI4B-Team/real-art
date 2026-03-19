@@ -154,6 +154,8 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   const notifRef = useRef<HTMLDivElement>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   const helpRef = useRef<HTMLDivElement>(null);
+  const [creditInfoOpen, setCreditInfoOpen] = useState(false);
+  const creditRef = useRef<HTMLDivElement>(null);
   const unreadNotifs = notifications.filter(n => !n.read);
 
   const markAllNotifRead = () => {
@@ -217,6 +219,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) { setUserMenuOpen(false); setMenuPanel("main"); setLangSearch(""); }
       if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
       if (helpRef.current && !helpRef.current.contains(e.target as Node)) setHelpOpen(false);
+      if (creditRef.current && !creditRef.current.contains(e.target as Node)) setCreditInfoOpen(false);
       if (searchSuggestRef.current && !searchSuggestRef.current.contains(e.target as Node)) setSearchSuggestOpen(false);
       
     };
@@ -851,27 +854,33 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       {/* Desktop Right Actions */}
       <div className="hidden md:flex items-center gap-1.5 shrink-0">
         {isLoggedIn && (
-          <div className="relative group">
+            <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold border border-foreground/[0.18] text-foreground hover:border-foreground/40 transition-colors no-underline">
+              <Upload className="w-3.5 h-3.5" /> Upload
+            </Link>
+        )}
+        {isLoggedIn && (
+          <div className="relative" ref={creditRef}>
             <div className="flex items-center bg-foreground/[0.06] rounded-full pl-3 pr-1 py-1 gap-2">
               <span className="text-green-500 text-[0.8rem]">◆</span>
               <span className="text-[0.82rem] font-semibold tabular-nums">273,245</span>
-              <button className="text-muted hover:text-foreground transition-colors" title="Credit info">
+              <button
+                onClick={(e) => { e.stopPropagation(); setCreditInfoOpen(!creditInfoOpen); }}
+                className="text-muted hover:text-foreground transition-colors"
+                title="Credit info"
+              >
                 <HelpCircle className="w-3.5 h-3.5" />
               </button>
               <Link to="/account?tab=subscription" onClick={() => {}} className="bg-accent text-primary-foreground text-[0.76rem] font-semibold px-3 py-1 rounded-full hover:bg-accent/85 transition-colors no-underline">
                 Upgrade
               </Link>
             </div>
-            <div className="absolute top-[calc(100%+8px)] right-0 bg-card border border-foreground/[0.07] rounded-xl shadow-[var(--shadow-card)] p-3 w-[260px] opacity-0 pointer-events-none group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-[400]">
-              <p className="text-[0.8rem] text-foreground leading-snug">Your monthly credits will be refilled when your subscription renews.</p>
-              <Link to="/account?tab=subscription" className="text-[0.78rem] text-accent hover:underline mt-1.5 inline-block no-underline">Read more</Link>
-            </div>
+            {creditInfoOpen && (
+              <div className="absolute top-[calc(100%+8px)] right-0 bg-card border border-foreground/[0.07] rounded-xl shadow-[var(--shadow-card)] p-3 w-[260px] z-[400] animate-drop-in">
+                <p className="text-[0.8rem] text-foreground leading-snug">Your monthly credits will be refilled when your subscription renews.</p>
+                <Link to="/account?tab=subscription" onClick={() => setCreditInfoOpen(false)} className="text-[0.78rem] text-accent hover:underline mt-1.5 inline-block no-underline">Read more</Link>
+              </div>
+            )}
           </div>
-        )}
-        {isLoggedIn && (
-            <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold border border-foreground/[0.18] text-foreground hover:border-foreground/40 transition-colors no-underline">
-              <Upload className="w-3.5 h-3.5" /> Upload
-            </Link>
         )}
 
         {isLoggedIn && (
