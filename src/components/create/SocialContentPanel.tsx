@@ -271,7 +271,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           ))}
         </div>
         <div className="flex items-center gap-2">
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-200 text-red-500 text-[0.78rem] font-medium hover:bg-red-50 transition-colors">
+          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-destructive/30 text-destructive text-[0.78rem] font-medium hover:bg-destructive/5 transition-colors">
             <Trash2 size={13} /> Delete All
           </button>
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] font-medium hover:bg-foreground/[0.04] transition-colors">
@@ -280,7 +280,25 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] font-medium hover:bg-foreground/[0.04] transition-colors">
             <Sparkles size={13} /> Best Time To Post
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-white text-[0.78rem] font-bold hover:bg-accent/85 transition-colors">
+          {/* Brand toggle */}
+          <button
+            onClick={() => {
+              if (!hasBrandProfile && !brandEnabled) {
+                setShowBrandPrompt(true);
+              } else {
+                setBrandEnabled(v => !v);
+              }
+            }}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-[0.78rem] font-medium transition-colors ${
+              brandEnabled ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground"
+            }`}
+          >
+            Brand
+            <div className={`w-8 h-[18px] rounded-full relative transition-colors ${brandEnabled ? "bg-accent" : "bg-foreground/20"}`}>
+              <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-all ${brandEnabled ? "left-[16px]" : "left-[2px]"}`} />
+            </div>
+          </button>
+          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-bold hover:bg-accent/85 transition-colors">
             <Plus size={13} /> New Post <ChevronDown size={11} />
           </button>
         </div>
