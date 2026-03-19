@@ -1,15 +1,72 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  Sparkles, Play, ChevronLeft, ChevronRight, ArrowRight,
-  ArrowUpRight, Image, Video, Music2, Zap, Wand2, Upload,
-  TrendingUp, Users, Star, Globe, RefreshCw,
+  Sparkles, ChevronLeft, ChevronRight, ArrowRight,
+  ArrowUpRight, Play,
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
 /* ─── Data ───────────────────────────────────────────────────── */
+
+const featureCards = [
+  {
+    title: "CINEMA STUDIO 2.5",
+    desc: "Director-level control over characters and locations with color grading built in",
+    image: "https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=600&h=340&fit=crop&q=80",
+    badge: null,
+    link: "/create?type=image",
+  },
+  {
+    title: "SOUL CINEMA IS HERE",
+    desc: "Create film-style images with cinematic lighting and color",
+    image: "https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=340&fit=crop&q=80",
+    badge: null,
+    link: "/create?type=video",
+  },
+  {
+    title: "SOUL CAST",
+    desc: "Build your perfect movie cast in Soul Cinema Studio",
+    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=600&h=340&fit=crop&q=80",
+    badge: null,
+    link: "/create?type=image",
+  },
+  {
+    title: "AI AUDIO STUDIO",
+    desc: "Voice cloning, multilingual synthesis, localization and more",
+    image: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=600&h=340&fit=crop&q=80",
+    badge: "New",
+    link: "/create?type=audio",
+  },
+  {
+    title: "STYLE TRANSFER",
+    desc: "Apply any artistic style to your photos with a single click",
+    image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=600&h=340&fit=crop&q=80",
+    badge: null,
+    link: "/create?type=image",
+  },
+];
+
+const photodumpImages = [
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=280&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=260&h=320&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=240&h=300&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=260&h=330&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=280&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=240&h=310&fit=crop&q=80",
+];
+
+const createGallery = [
+  { image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=400&fit=crop&q=80", label: "Abstract" },
+  { image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&h=400&fit=crop&q=80", label: "Portrait" },
+  { image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=400&fit=crop&q=80", label: "Fashion" },
+  { image: "https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=400&fit=crop&q=80", label: "Cyberpunk", isNew: true },
+  { image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=400&fit=crop&q=80", label: "Landscape" },
+  { image: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=300&h=400&fit=crop&q=80", label: "Gradient" },
+  { image: "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=300&h=400&fit=crop&q=80", label: "Neon" },
+  { image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=300&h=400&fit=crop&q=80", label: "Abstract Fire" },
+];
 
 const announcements = [
   "Video generation now live — animate any image in one click",
@@ -18,65 +75,16 @@ const announcements = [
   "April Challenge is live — $5,000 in creator prizes",
 ];
 
-const heroSlides = [
-  { tag: "Image Generation", title: "Soul Cinema",      sub: "Film-style images with cinematic lighting and color",    photo: "photo-1618005182384-a83a8bd57fbe" },
-  { tag: "Video Animation",  title: "Motion Control",   sub: "Precise character actions and expressions up to 30 seconds", photo: "photo-1557682250-33bd709cbe85" },
-  { tag: "AI Avatar",        title: "Digital Identity",  sub: "Build your AI persona across every style and medium",    photo: "photo-1579546929518-9e396f3cc809" },
-  { tag: "Abstract Art",     title: "Fluid Generation",  sub: "Push the boundaries of abstract AI creation",            photo: "photo-1541701494587-cb58502866ab" },
-  { tag: "Portrait Studio",  title: "Soul ID",           sub: "Ultra-realistic fashion visuals with any character",      photo: "photo-1604881991720-f91add269bed" },
-];
-
-const stats = [
-  { value: "2.4M+", label: "AI Creations" },
-  { value: "180K+", label: "Creators" },
-  { value: "14M+",  label: "Downloads" },
-  { value: "100%",  label: "Free to Start" },
-];
-
-const tools: { label: string; desc: string; icon: typeof Image; photo: string; link: string; gradient: string; badge?: string }[] = [
-  { label: "Generate Image", desc: "Text to stunning visuals",      icon: Image,  photo: "photo-1618005182384-a83a8bd57fbe", link: "/create?type=image", gradient: "from-violet-700 to-violet-950" },
-  { label: "Generate Video", desc: "Animate scenes and characters", icon: Video,  photo: "photo-1557682250-33bd709cbe85",    link: "/create?type=video", gradient: "from-blue-700 to-blue-950", badge: "New" },
-  { label: "Generate Audio", desc: "Soundscapes and music tracks",  icon: Music2, photo: "photo-1511379938547-c1f69419868d", link: "/create?type=audio", gradient: "from-emerald-700 to-emerald-950" },
-  { label: "Upscale 4×",     desc: "Enhance to ultra-HD resolution",icon: Zap,    photo: "photo-1604881991720-f91add269bed", link: "/create?type=image", gradient: "from-amber-700 to-amber-950" },
-  { label: "Edit with AI",   desc: "Modify using natural language", icon: Wand2,  photo: "photo-1541701494587-cb58502866ab", link: "/create?type=image", gradient: "from-rose-700 to-rose-950" },
-  { label: "Upload Art",     desc: "Publish your own creations",    icon: Upload, photo: "photo-1470071459604-3b5ec3a7fe05", link: "/upload",            gradient: "from-slate-700 to-slate-950" },
-];
-
-const trending = [
-  { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape",  creator: "aiverse",    views: "248K" },
-  { photo: "photo-1579546929518-9e396f3cc809", title: "Digital Avatar 01",  creator: "luminaai",   views: "134K" },
-  { photo: "photo-1557682250-33bd709cbe85",    title: "Neon Boulevard",     creator: "neopixel",   views: "98K" },
-  { photo: "photo-1541701494587-cb58502866ab", title: "Abstract Fire",      creator: "spectragen", views: "76K" },
-  { photo: "photo-1604881991720-f91add269bed", title: "Cyberpunk Portrait", creator: "voidart",    views: "189K" },
-  { photo: "photo-1470071459604-3b5ec3a7fe05", title: "Misty Highlands",   creator: "dreamforge", views: "61K" },
-];
-
-const creators = [
-  { name: "AI.Verse",   handle: "aiverse",    color: "#4361ee", init: "AV", images: 284, followers: "12.4K" },
-  { name: "NeoPixel",   handle: "neopixel",   color: "#c9184a", init: "NP", images: 196, followers: "9.8K" },
-  { name: "DreamForge", handle: "dreamforge", color: "#2a9d8f", init: "DF", images: 421, followers: "18.2K" },
-  { name: "LuminaAI",   handle: "luminaai",   color: "#e76f51", init: "LA", images: 142, followers: "7.1K" },
-];
-
-const img = (id: string) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=`;
-
 /* ─── Component ──────────────────────────────────────────────── */
 
 const Index = () => {
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [toolHover, setToolHover] = useState<number | null>(null);
-  const timerRef = useRef<ReturnType<typeof setInterval>>();
+  const carouselRef = useRef<HTMLDivElement>(null);
+  const galleryRef = useRef<HTMLDivElement>(null);
 
-  // Auto-advance hero
-  useEffect(() => {
-    timerRef.current = setInterval(() => setActiveSlide(p => (p + 1) % heroSlides.length), 5000);
-    return () => clearInterval(timerRef.current);
-  }, []);
-
-  const goSlide = (dir: number) => {
-    clearInterval(timerRef.current);
-    setActiveSlide(p => (p + dir + heroSlides.length) % heroSlides.length);
-    timerRef.current = setInterval(() => setActiveSlide(p => (p + 1) % heroSlides.length), 5000);
+  const scrollCarousel = (dir: number) => {
+    if (carouselRef.current) {
+      carouselRef.current.scrollBy({ left: dir * 400, behavior: "smooth" });
+    }
   };
 
   return (
@@ -93,281 +101,190 @@ const Index = () => {
         </div>
       </div>
 
-      {/* ─── 2. Hero Carousel ────────────────────────────────── */}
-      <section className="relative w-full h-[85vh] min-h-[560px] max-h-[900px] overflow-hidden">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeSlide}
-            initial={{ opacity: 0, scale: 1.08 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.96 }}
-            transition={{ duration: 0.7 }}
-            className="absolute inset-0"
+      {/* ─── 2. Feature Cards Carousel ───────────────────────── */}
+      <section className="bg-foreground pt-10 pb-14 px-6 md:px-16 relative">
+        <div className="max-w-[1440px] mx-auto relative">
+          {/* Scroll Arrows */}
+          <button
+            onClick={() => scrollCarousel(-1)}
+            className="absolute -left-2 top-[140px] z-20 w-10 h-10 rounded-lg bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/20 transition-colors border border-primary-foreground/10"
           >
-            <img
-              src={`${img(heroSlides[activeSlide].photo)}1920&q=80`}
-              alt={heroSlides[activeSlide].title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
-          </motion.div>
-        </AnimatePresence>
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <button
+            onClick={() => scrollCarousel(1)}
+            className="absolute -right-2 top-[140px] z-20 w-10 h-10 rounded-lg bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/20 transition-colors border border-primary-foreground/10"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
 
-        {/* Content */}
-        <div className="absolute inset-0 flex flex-col justify-end pb-20 px-6 md:px-16 z-10">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeSlide}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-            >
-              <span className="inline-block text-[0.7rem] font-semibold tracking-[0.15em] uppercase text-white/60 bg-white/10 backdrop-blur-sm px-3 py-1.5 rounded-lg border border-white/10 mb-4">
-                {heroSlides[activeSlide].tag}
-              </span>
-              <h1 className="font-display text-[clamp(2.8rem,6vw,5.5rem)] font-black text-white leading-[0.95] tracking-[-0.02em] mb-3">
-                {heroSlides[activeSlide].title}
-              </h1>
-              <p className="text-[1rem] text-white/60 font-light max-w-[480px] mb-8 leading-relaxed">
-                {heroSlides[activeSlide].sub}
-              </p>
-              <div className="flex items-center gap-3">
-                <Link to="/create" className="inline-flex items-center gap-2 bg-accent text-primary-foreground px-6 py-3 rounded-lg font-semibold text-[0.88rem] hover:bg-accent/85 transition-all no-underline">
-                  <Sparkles className="w-4 h-4" /> Start Creating
-                </Link>
-                <Link to="/explore" className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm text-white px-6 py-3 rounded-lg font-semibold text-[0.88rem] hover:bg-white/20 transition-all no-underline border border-white/15">
-                  <Play className="w-4 h-4" /> Explore Gallery
-                </Link>
-              </div>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Dots */}
-          <div className="flex items-center gap-2 mt-8">
-            {heroSlides.map((_, i) => (
-              <button
+          <div
+            ref={carouselRef}
+            className="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth pb-2"
+          >
+            {featureCards.map((card, i) => (
+              <Link
                 key={i}
-                onClick={() => { clearInterval(timerRef.current); setActiveSlide(i); timerRef.current = setInterval(() => setActiveSlide(p => (p + 1) % heroSlides.length), 5000); }}
-                className={`rounded-full transition-all duration-300 ${i === activeSlide ? "w-8 h-2 bg-white" : "w-2 h-2 bg-white/35 hover:bg-white/60"}`}
-              />
+                to={card.link}
+                className="group flex-shrink-0 w-[340px] no-underline"
+              >
+                <div className="relative rounded-2xl overflow-hidden mb-3">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-[220px] object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {/* Title overlay on image */}
+                  <div className="absolute inset-0 flex items-end p-5">
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                    <h3 className="relative font-display text-[1.4rem] font-black text-primary-foreground tracking-tight leading-tight uppercase">
+                      {card.title}
+                    </h3>
+                  </div>
+                  {card.badge && (
+                    <span className="absolute top-3 right-3 bg-accent text-primary-foreground text-[0.6rem] font-bold tracking-wider uppercase px-2.5 py-1 rounded-lg">
+                      {card.badge}
+                    </span>
+                  )}
+                </div>
+                <p className="text-[0.92rem] font-bold text-primary-foreground uppercase tracking-wide">{card.title}</p>
+                <p className="text-[0.78rem] text-primary-foreground/45 mt-1 leading-relaxed line-clamp-2">{card.desc}</p>
+              </Link>
             ))}
           </div>
         </div>
-
-        {/* Arrows */}
-        <div className="absolute right-6 md:right-16 bottom-20 flex items-center gap-2 z-10">
-          <button onClick={() => goSlide(-1)} className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors border border-white/20">
-            <ChevronLeft className="w-4 h-4" />
-          </button>
-          <button onClick={() => goSlide(1)} className="w-10 h-10 rounded-full bg-white/15 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors border border-white/20">
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Thumbnails */}
-        <div className="absolute right-6 md:right-16 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-10">
-          {heroSlides.map((s, i) => (
-            <button
-              key={i}
-              onClick={() => { clearInterval(timerRef.current); setActiveSlide(i); timerRef.current = setInterval(() => setActiveSlide(p => (p + 1) % heroSlides.length), 5000); }}
-              className={`w-14 h-14 rounded-xl overflow-hidden border-2 transition-all duration-300 ${i === activeSlide ? "border-white scale-110" : "border-white/25 opacity-50 hover:opacity-80"}`}
-            >
-              <img src={`${img(s.photo)}100&q=60`} alt="" className="w-full h-full object-cover" />
-            </button>
-          ))}
-        </div>
       </section>
 
-      {/* ─── 3. Stats Bar ────────────────────────────────────── */}
-      <section className="bg-foreground">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-0">
-          {stats.map(s => (
-            <div key={s.label} className="text-center py-8 border-r border-primary-foreground/[0.06] last:border-r-0">
-              <div className="font-display text-[clamp(1.6rem,3vw,2.4rem)] font-black text-primary-foreground">{s.value}</div>
-              <div className="text-[0.72rem] font-semibold tracking-[0.12em] uppercase text-primary-foreground/35 mt-1">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── 4. Tools Grid ───────────────────────────────────── */}
-      <section className="px-6 md:px-16 py-20 max-w-[1440px] mx-auto">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <span className="text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted/60">AI Tools</span>
-            <h2 className="font-display text-[clamp(2rem,4vw,3.2rem)] font-black text-foreground leading-[1] mt-2">
-              What will you<br />create today?
-            </h2>
-          </div>
-          <Link to="/create" className="hidden md:inline-flex items-center gap-1.5 text-[0.82rem] font-semibold text-foreground/60 hover:text-foreground transition-colors no-underline">
-            Explore all tools <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {tools.map((tool, i) => (
-            <Link
-              key={tool.label}
-              to={tool.link}
-              onMouseEnter={() => setToolHover(i)}
-              onMouseLeave={() => setToolHover(null)}
-              className="group relative rounded-2xl overflow-hidden no-underline cursor-pointer"
-              style={{ aspectRatio: "3/4" }}
-            >
-              <img
-                src={`${img(tool.photo)}500&q=75`}
-                alt={tool.label}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              />
-              <div className={`absolute inset-0 bg-gradient-to-t ${tool.gradient} opacity-70 group-hover:opacity-80 transition-opacity`} />
-              <div className="absolute inset-0 flex flex-col justify-end p-4 z-10">
-                <tool.icon className="w-5 h-5 text-white/80 mb-2" />
-                <h3 className="text-[0.92rem] font-bold text-white">{tool.label}</h3>
-                <p className="text-[0.72rem] text-white/55 mt-0.5 leading-snug">{tool.desc}</p>
-              </div>
-              {tool.badge && (
-                <span className="absolute top-3 right-3 bg-accent text-primary-foreground text-[0.62rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md z-10">
-                  {tool.badge}
-                </span>
-              )}
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── 5. Trending Grid ────────────────────────────────── */}
-      <section className="px-6 md:px-16 pb-20 max-w-[1440px] mx-auto">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <span className="text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted/60">Community</span>
-            <h2 className="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-black text-foreground leading-[1] mt-2">Trending Now</h2>
-          </div>
-          <Link to="/explore" className="inline-flex items-center gap-1.5 text-[0.82rem] font-semibold text-foreground/60 hover:text-foreground transition-colors no-underline">
-            View all <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          {trending.map((item, i) => (
-            <Link key={i} to={`/image/${item.creator}-${i}`} className="group relative rounded-2xl overflow-hidden no-underline" style={{ aspectRatio: "3/4" }}>
-              <img
-                src={`${img(item.photo)}500&q=75`}
-                alt={item.title}
-                className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 z-10">
-                <h3 className="text-[0.82rem] font-bold text-white truncate">{item.title}</h3>
-                <div className="flex items-center justify-between mt-1">
-                  <span className="text-[0.7rem] text-white/55">@{item.creator}</span>
-                  <span className="flex items-center gap-1 text-[0.65rem] text-white/45">
-                    <TrendingUp className="w-2.5 h-2.5" />{item.views}
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── 6. Feature Banner ───────────────────────────────── */}
-      <section className="px-6 md:px-16 pb-20 max-w-[1440px] mx-auto">
-        <div className="relative rounded-3xl overflow-hidden bg-foreground">
-          <div className="absolute inset-0 bg-gradient-to-br from-accent/20 via-transparent to-transparent" />
-          <div className="relative grid md:grid-cols-2 gap-8 p-10 md:p-16">
-            <div className="flex flex-col justify-center">
-              <span className="inline-flex items-center gap-1.5 text-[0.68rem] font-bold tracking-[0.15em] uppercase text-accent mb-4">
-                <Zap className="w-3 h-3" /> Featured
-              </span>
-              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-black text-primary-foreground leading-[1.05] mb-4">
-                Build Your<br />AI Identity
-              </h2>
-              <p className="text-[0.9rem] text-primary-foreground/45 leading-relaxed mb-8 max-w-[400px]">
-                Create a persistent AI character with Soul ID. One character, every style, infinite possibilities — and you earn from every download.
-              </p>
-              <div className="flex items-center gap-3">
-                <Link to="/create" className="inline-flex items-center gap-2 bg-accent text-primary-foreground px-6 py-3 rounded-lg font-semibold text-[0.88rem] hover:bg-accent/85 transition-all no-underline">
-                  <Sparkles className="w-4 h-4" /> Try it free
-                </Link>
-                <Link to="/explore" className="inline-flex items-center gap-2 text-primary-foreground/50 text-[0.88rem] font-semibold hover:text-primary-foreground transition-colors no-underline">
-                  See examples <ArrowRight className="w-4 h-4" />
-                </Link>
-              </div>
-            </div>
-            <div className="flex flex-col justify-center gap-5">
-              {[
-                { icon: RefreshCw, text: "Consistent identity across every style" },
-                { icon: Globe,     text: "Share publicly or keep collections private" },
-                { icon: Star,      text: "Earn from every download and save" },
-              ].map(f => (
-                <div key={f.text} className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-primary-foreground/[0.06] flex items-center justify-center shrink-0">
-                    <f.icon className="w-4 h-4 text-accent" />
+      {/* ─── 3. Photodump Banner ─────────────────────────────── */}
+      <section className="bg-foreground px-6 md:px-16 pb-14">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="relative rounded-3xl overflow-hidden bg-[hsl(0_0%_12%)] min-h-[380px]">
+            {/* Scattered photos */}
+            <div className="absolute inset-0 overflow-hidden">
+              {photodumpImages.map((src, i) => {
+                const positions = [
+                  { top: "8%", right: "5%", rotate: "-6deg", width: "160px" },
+                  { top: "15%", right: "22%", rotate: "4deg", width: "140px" },
+                  { top: "5%", right: "40%", rotate: "-3deg", width: "150px" },
+                  { bottom: "8%", right: "8%", rotate: "8deg", width: "145px" },
+                  { bottom: "5%", right: "28%", rotate: "-5deg", width: "135px" },
+                  { top: "30%", right: "50%", rotate: "3deg", width: "130px" },
+                ];
+                const pos = positions[i];
+                return (
+                  <div
+                    key={i}
+                    className="absolute rounded-xl overflow-hidden shadow-2xl border-2 border-primary-foreground/10"
+                    style={{
+                      ...pos,
+                      transform: `rotate(${pos.rotate})`,
+                      width: pos.width,
+                    }}
+                  >
+                    <img src={src} alt="" className="w-full h-auto object-cover" />
                   </div>
-                  <span className="text-[0.88rem] text-primary-foreground/60 font-medium">{f.text}</span>
-                </div>
-              ))}
+                );
+              })}
+            </div>
+
+            {/* Text content */}
+            <div className="relative z-10 p-10 md:p-14 max-w-[420px]">
+              <span className="inline-block bg-accent text-primary-foreground text-[0.65rem] font-bold tracking-[0.12em] uppercase px-3 py-1.5 rounded-lg mb-5">
+                Photodump
+              </span>
+              <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-black text-primary-foreground leading-[1.05] uppercase mb-3">
+                Different Scenes<br />Same Star
+              </h2>
+              <p className="text-[0.88rem] text-primary-foreground/45 leading-relaxed mb-6">
+                Build your character. One click does the rest
+              </p>
+              <Link
+                to="/create"
+                className="inline-flex items-center gap-2 bg-primary-foreground text-foreground px-5 py-2.5 rounded-lg font-semibold text-[0.85rem] hover:bg-primary-foreground/90 transition-all no-underline"
+              >
+                Try Photodump
+              </Link>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ─── 7. Creator Cards ────────────────────────────────── */}
-      <section className="px-6 md:px-16 pb-20 max-w-[1440px] mx-auto">
-        <div className="flex items-end justify-between mb-8">
-          <div>
-            <span className="text-[0.65rem] font-bold tracking-[0.2em] uppercase text-muted/60">People</span>
-            <h2 className="font-display text-[clamp(1.8rem,3.5vw,2.8rem)] font-black text-foreground leading-[1] mt-2">Top Creators</h2>
+      {/* ─── 4. "What Will You Create Today?" Gallery ────────── */}
+      <section className="bg-foreground px-6 md:px-16 pb-20">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="flex items-end gap-8 mb-8">
+            <div>
+              <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] font-black text-primary-foreground leading-[1.05] uppercase">
+                What Will You<br />
+                <span className="text-accent">Create Today?</span>
+              </h2>
+              <p className="text-[0.85rem] text-primary-foreground/40 mt-2 leading-relaxed">
+                Create authentic images and videos with natural texture and easy style
+              </p>
+            </div>
+            <Link to="/create" className="hidden md:inline-flex items-center gap-1.5 text-[0.82rem] font-semibold text-primary-foreground/50 hover:text-primary-foreground transition-colors no-underline whitespace-nowrap mb-1">
+              Explore all <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
           </div>
-          <Link to="/creators" className="inline-flex items-center gap-1.5 text-[0.82rem] font-semibold text-foreground/60 hover:text-foreground transition-colors no-underline">
-            See all <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {creators.map(cr => (
-            <Link key={cr.handle} to={`/creator/${cr.handle}`} className="group bg-card border border-foreground/[0.06] rounded-2xl p-5 text-center hover:border-foreground/[0.12] hover:shadow-lg transition-all no-underline">
-              <div
-                className="w-16 h-16 rounded-2xl mx-auto mb-3 flex items-center justify-center text-white font-bold text-lg"
-                style={{ backgroundColor: cr.color }}
+          <div
+            ref={galleryRef}
+            className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-2"
+          >
+            {createGallery.map((item, i) => (
+              <Link
+                key={i}
+                to="/create"
+                className="group flex-shrink-0 w-[200px] relative rounded-2xl overflow-hidden no-underline"
               >
-                {cr.init}
-              </div>
-              <h3 className="text-[0.92rem] font-bold text-foreground">{cr.name}</h3>
-              <p className="text-[0.75rem] text-muted mt-0.5">@{cr.handle}</p>
-              <div className="flex items-center justify-center gap-4 mt-3 text-[0.72rem] text-foreground/40">
-                <span>{cr.images} <span className="text-foreground/25">images</span></span>
-                <span className="flex items-center gap-1"><Users className="w-3 h-3" />{cr.followers}</span>
-              </div>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      {/* ─── 8. CTA Footer ───────────────────────────────────── */}
-      <section className="relative py-24 px-6 text-center overflow-hidden">
-        <div className="absolute inset-0 bg-[var(--gradient-cta-glow)]" />
-        <div className="relative z-10 max-w-[600px] mx-auto">
-          <h2 className="font-display text-[clamp(2.2rem,5vw,3.8rem)] font-black text-foreground leading-[1.05] mb-4">
-            Your creativity.<br />
-            <em className="italic font-normal text-accent">Amplified by AI.</em>
-          </h2>
-          <p className="text-[0.95rem] text-muted leading-relaxed mb-8">
-            Join 180,000+ creators generating images, videos, and music — completely free to start.
-          </p>
-          <div className="flex items-center justify-center gap-3">
-            <Link to="/signup" className="inline-flex items-center gap-2 bg-accent text-primary-foreground px-7 py-3.5 rounded-lg font-semibold text-[0.92rem] hover:bg-accent/85 transition-all no-underline">
-              <Sparkles className="w-4 h-4" /> Get Started Free
-            </Link>
-            <Link to="/explore" className="inline-flex items-center gap-2 text-foreground/50 text-[0.92rem] font-semibold hover:text-foreground transition-colors no-underline">
-              Browse Gallery <ArrowUpRight className="w-4 h-4" />
-            </Link>
+                <img
+                  src={item.image}
+                  alt={item.label}
+                  className="w-full h-[280px] object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                {item.isNew && (
+                  <span className="absolute top-2.5 left-2.5 bg-accent text-primary-foreground text-[0.55rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md">
+                    New
+                  </span>
+                )}
+                <div className="absolute bottom-3 left-3 right-3">
+                  <p className="text-[0.82rem] font-semibold text-primary-foreground">{item.label}</p>
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
 
-      <Footer />
+      {/* ─── 5. CTA Banner ───────────────────────────────────── */}
+      <section className="bg-foreground px-6 md:px-16 pb-20">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="relative rounded-3xl overflow-hidden bg-gradient-to-br from-accent/20 via-[hsl(0_0%_8%)] to-[hsl(0_0%_8%)] p-12 md:p-20 text-center">
+            <div className="relative z-10 max-w-[600px] mx-auto">
+              <h2 className="font-display text-[clamp(2rem,4.5vw,3.4rem)] font-black text-primary-foreground leading-[1.05] mb-4">
+                Your creativity.<br />
+                <em className="italic font-normal text-accent">Amplified by AI.</em>
+              </h2>
+              <p className="text-[0.92rem] text-primary-foreground/40 leading-relaxed mb-8">
+                Join 180,000+ creators generating images, videos, and music — completely free to start.
+              </p>
+              <div className="flex items-center justify-center gap-3 flex-wrap">
+                <Link to="/signup" className="inline-flex items-center gap-2 bg-accent text-primary-foreground px-7 py-3.5 rounded-lg font-semibold text-[0.92rem] hover:bg-accent/85 transition-all no-underline">
+                  <Sparkles className="w-4 h-4" /> Get Started Free
+                </Link>
+                <Link to="/explore" className="inline-flex items-center gap-2 text-primary-foreground/50 text-[0.92rem] font-semibold hover:text-primary-foreground transition-colors no-underline">
+                  Browse Gallery <ArrowUpRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="bg-foreground">
+        <Footer />
+      </div>
     </PageShell>
   );
 };
