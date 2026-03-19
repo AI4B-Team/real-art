@@ -323,7 +323,7 @@ const AppSidebar = () => {
             if (sidebarCollapsed) {
               return (
                 <button key={item.id} onClick={() => navigate("/dashboard")}
-                  className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors bg-accent text-accent-foreground"
+                  className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"
                   title={activeWorkspace?.name || "Workspace"}
                 >
                   <LayoutDashboard className="w-4 h-4 shrink-0" />
@@ -345,7 +345,7 @@ const AppSidebar = () => {
                     setWsDropdownOpen(!wsDropdownOpen);
                     setWsAdding(false); setWsEditing(null);
                   }}
-                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-accent text-accent-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-accent/90"
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-lg bg-foreground/[0.06] text-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-foreground/[0.1]"
                 >
                   <span className="truncate flex-1">{activeWorkspace?.name || "Workspace"}</span>
                   <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${wsDropdownOpen ? "rotate-180" : ""}`} />
