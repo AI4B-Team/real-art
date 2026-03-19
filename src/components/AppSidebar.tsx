@@ -292,7 +292,7 @@ const AppSidebar = () => {
             className="font-display text-xl font-black tracking-[0.06em] uppercase text-foreground hover:text-accent transition-colors cursor-pointer"
             title="Expand sidebar"
           >
-            R<span className="text-accent">.</span>
+            R<span className="text-accent">C</span>
           </button>
         ) : (
           <>
