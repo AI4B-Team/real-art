@@ -59,7 +59,7 @@ const Footer = () => {
           ))}
         </div>
         <div className="border-t border-primary-foreground/[0.07] pt-5 flex justify-between items-center flex-wrap gap-4">
-          <div className="text-[0.75rem] text-primary-foreground/20">© 2026 REAL ART — Part of the REAL CREATOR ecosystem</div>
+          <div className="text-[0.75rem] text-primary-foreground/20">© 2026 REAL CREATOR</div>
           <div className="flex gap-5">
             {[
               { label: "Privacy", to: "/privacy" },
