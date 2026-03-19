@@ -18,8 +18,24 @@ interface NavItem {
   href?: string;
 }
 
-type Community = {
+type Workspace = {
   id: string;
+  name: string;
+};
+
+const loadWorkspaces = (): { workspaces: Workspace[]; activeId: string } => {
+  try {
+    const stored = localStorage.getItem("ra_workspaces");
+    if (stored) return JSON.parse(stored);
+  } catch {}
+  const defaultWs = { id: "default", name: "My Workspace" };
+  return { workspaces: [defaultWs], activeId: "default" };
+};
+
+const saveWorkspaces = (data: { workspaces: Workspace[]; activeId: string }) => {
+  try { localStorage.setItem("ra_workspaces", JSON.stringify(data)); } catch {}
+};
+
   name: string;
   to: string;
   newPosts?: number;
