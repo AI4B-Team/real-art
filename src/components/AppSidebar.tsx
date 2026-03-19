@@ -279,6 +279,137 @@ const AppSidebar = () => {
             return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
           }
 
+          // Workspace item with dropdown
+          if (item.id === "workspace") {
+            const active = isActive(item);
+            if (sidebarCollapsed) {
+              return (
+                <button
+                  key={item.id}
+                  onClick={() => navigate("/dashboard")}
+                  className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  title={activeWorkspace?.name || "Workspace"}
+                >
+                  <item.icon className="w-4 h-4 shrink-0" />
+                </button>
+              );
+            }
+            return (
+              <div key={item.id} className="relative">
+                <div className="flex items-center gap-0.5">
+                  <button
+                    onClick={() => navigate("/dashboard")}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium flex-1 text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                  >
+                    <item.icon className="w-4 h-4 shrink-0" />
+                    <span className="truncate">{activeWorkspace?.name || "Workspace"}</span>
+                  </button>
+                  <button
+                    ref={wsBtnRef}
+                    onClick={() => {
+                      if (!wsDropdownOpen && wsBtnRef.current) {
+                        const rect = wsBtnRef.current.getBoundingClientRect();
+                        setWsFlyoutPos({ top: rect.top, left: rect.right + 8 });
+                      }
+                      setWsDropdownOpen(!wsDropdownOpen);
+                      setWsAdding(false);
+                      setWsEditing(null);
+                    }}
+                    className={`flex items-center justify-center w-7 h-7 rounded-lg transition-colors shrink-0 ${wsDropdownOpen ? "bg-foreground/[0.1] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.05]"}`}
+                  >
+                    <ChevronDown className={`w-3 h-3 transition-transform ${wsDropdownOpen ? "rotate-180" : ""}`} />
+                  </button>
+                </div>
+                {wsDropdownOpen && createPortal(
+                  <div
+                    data-ws-flyout
+                    className="fixed bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]"
+                    style={{ top: wsFlyoutPos.top, left: wsFlyoutPos.left }}
+                  >
+                    <div className="px-3 pt-1 pb-2 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Workspaces</div>
+                    {wsData.workspaces.map(ws => (
+                      <div
+                        key={ws.id}
+                        className={`flex items-center justify-between px-3 py-2 rounded-[10px] text-[0.85rem] transition-colors group cursor-pointer ${
+                          ws.id === wsData.activeId ? "bg-foreground/[0.06] text-foreground font-semibold" : "text-foreground hover:bg-background"
+                        }`}
+                      >
+                        {wsEditing === ws.id ? (
+                          <form
+                            onSubmit={e => { e.preventDefault(); renameWorkspace(ws.id); }}
+                            className="flex items-center gap-2 flex-1"
+                          >
+                            <input
+                              autoFocus
+                              value={wsEditName}
+                              onChange={e => setWsEditName(e.target.value)}
+                              onBlur={() => renameWorkspace(ws.id)}
+                              className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2 py-1 text-[0.82rem] outline-none focus:border-accent"
+                            />
+                          </form>
+                        ) : (
+                          <>
+                            <button
+                              onClick={() => switchWorkspace(ws.id)}
+                              className="flex items-center gap-2 flex-1 text-left"
+                            >
+                              <LayoutDashboard className="w-3.5 h-3.5 shrink-0 opacity-50" />
+                              <span className="truncate">{ws.name}</span>
+                              {ws.id === wsData.activeId && <Check className="w-3 h-3 text-accent shrink-0" />}
+                            </button>
+                            <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button
+                                onClick={e => { e.stopPropagation(); setWsEditing(ws.id); setWsEditName(ws.name); }}
+                                className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"
+                                title="Rename"
+                              >
+                                <Pencil className="w-3 h-3 text-muted" />
+                              </button>
+                              {wsData.workspaces.length > 1 && (
+                                <button
+                                  onClick={e => { e.stopPropagation(); deleteWorkspace(ws.id); }}
+                                  className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-red-50 transition-colors"
+                                  title="Delete"
+                                >
+                                  <Trash2 className="w-3 h-3 text-red-400" />
+                                </button>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                    <div className="h-px bg-foreground/[0.06] my-1.5" />
+                    {wsAdding ? (
+                      <form
+                        onSubmit={e => { e.preventDefault(); addWorkspace(); }}
+                        className="flex items-center gap-2 px-2"
+                      >
+                        <input
+                          autoFocus
+                          value={wsNewName}
+                          onChange={e => setWsNewName(e.target.value)}
+                          onBlur={() => { if (!wsNewName.trim()) setWsAdding(false); }}
+                          placeholder="Workspace name…"
+                          className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2.5 py-1.5 text-[0.82rem] outline-none focus:border-accent"
+                        />
+                        <button type="submit" disabled={!wsNewName.trim()} className="px-2.5 py-1.5 rounded-lg bg-accent text-white text-[0.78rem] font-semibold disabled:opacity-40">Add</button>
+                      </form>
+                    ) : (
+                      <button
+                        onClick={() => setWsAdding(true)}
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors w-full text-left"
+                      >
+                        <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> New Workspace
+                      </button>
+                    )}
+                  </div>,
+                  document.body
+                )}
+              </div>
+            );
+          }
+
           if (item.type === "communities-dropdown") {
             const active = isActive(item);
             if (sidebarCollapsed) {
