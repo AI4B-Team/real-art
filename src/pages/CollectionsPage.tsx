@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Search, Plus, TrendingUp, Users, Bookmark, X, Globe, Lock, Key, Check,
@@ -798,13 +798,16 @@ export default function CollectionsPage() {
       {activeTab !== "mine" && (
         <div className="border-b border-foreground/[0.06]">
           <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
-            {categories.map(cat => (
-              <button key={cat} onClick={() => setActiveCategory(cat)}
-                className={`border px-4 py-1.5 rounded-lg text-[0.79rem] font-medium whitespace-nowrap transition-all ${
-                  activeCategory === cat ? "bg-foreground text-primary-foreground border-foreground" : "bg-transparent border-foreground/[0.12] text-muted hover:text-foreground hover:border-foreground/30"
-                }`}>
-                {cat}
-              </button>
+            {categories.map((cat, i) => (
+              <React.Fragment key={cat}>
+                <button onClick={() => setActiveCategory(cat)}
+                  className={`border px-4 py-1.5 rounded-lg text-[0.79rem] font-medium whitespace-nowrap transition-all ${
+                    activeCategory === cat ? "bg-foreground text-primary-foreground border-foreground" : "bg-transparent border-foreground/[0.12] text-muted hover:text-foreground hover:border-foreground/30"
+                  }`}>
+                  {cat}
+                </button>
+                {i === 0 && <div className="w-px h-4 bg-foreground/[0.1] shrink-0" />}
+              </React.Fragment>
             ))}
           </div>
         </div>
