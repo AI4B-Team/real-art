@@ -9,7 +9,7 @@ import {
   Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2,
   Sun, Moon, Monitor, Languages, ChevronRight,
   Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard,
-  CreditCard, Mail, UserPlus2, Zap, Power
+  CreditCard, Mail, UserPlus2, Zap, Power, HelpCircle
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "./Logo";
@@ -851,6 +851,12 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
             <Link to="/upload" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold border border-foreground/[0.18] text-foreground hover:border-foreground/40 transition-colors no-underline">
               <Upload className="w-3.5 h-3.5" /> Upload
             </Link>
+        )}
+
+        {isLoggedIn && (
+          <Link to="/about" className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors shrink-0 no-underline">
+            <HelpCircle className="w-[17px] h-[17px] opacity-60" />
+          </Link>
         )}
 
         {isLoggedIn && (
