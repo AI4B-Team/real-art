@@ -13,7 +13,7 @@ const featureCards = [
     link: "/create?type=image",
   },
   {
-    title: "SOUL CINEMA IS HERE",
+    title: "REAL CINEMA IS HERE",
     desc: "Create film-style images with cinematic lighting and color",
     poster: "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=800&h=450&fit=crop&q=80",
     video: "https://videos.pexels.com/video-files/5752729/5752729-uhd_2560_1440_30fps.mp4",
