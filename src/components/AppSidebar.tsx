@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Logo from "./Logo";
 import {
   LayoutDashboard, Image, FolderOpen,
   Users, Award, Eye, Bookmark, ChevronDown,
@@ -289,16 +290,19 @@ const AppSidebar = () => {
         {sidebarCollapsed ? (
           <button
             onClick={() => setSidebarCollapsed(false)}
-            className="font-display text-xl font-black tracking-[0.06em] uppercase text-foreground hover:text-accent transition-colors cursor-pointer"
             title="Expand sidebar"
+            className="cursor-pointer"
           >
-            R<span className="text-accent">C</span>
+            <div className="bg-primary w-[36px] p-[3px]">
+              <div className="border-[1.5px] border-primary-foreground py-0.5 px-1 flex flex-col items-center">
+                <span className="font-body text-[0.85rem] font-black text-primary-foreground tracking-[0.05em] leading-none">R</span>
+                <span className="font-body text-[0.2rem] font-bold tracking-[0.2em] text-primary-foreground uppercase mt-[1px]">CRT</span>
+              </div>
+            </div>
           </button>
         ) : (
           <>
-            <Link to="/dashboard" className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
-              Real<span className="text-accent"> </span>Creator
-            </Link>
+            <Logo to="/dashboard" className="w-[100px] p-[5px]" />
             <button
               onClick={() => setSidebarCollapsed(true)}
               className="ml-auto flex items-center justify-center w-7 h-7 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors shrink-0"
