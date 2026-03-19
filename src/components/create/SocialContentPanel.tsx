@@ -357,7 +357,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               return (
                 <div
                   key={i}
-                  className="min-h-[100px] border-r border-b border-foreground/[0.06] p-1.5"
+                  className="min-h-[120px] border-r border-b border-foreground/[0.06] p-1.5"
                 >
                   {day && (
                     <>
