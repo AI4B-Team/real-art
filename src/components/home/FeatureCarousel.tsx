@@ -2,6 +2,7 @@ import { useRef, useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import contestBanner from "@/assets/contest-banner.jpg";
 
 const featureCards = [
   {
@@ -14,9 +15,9 @@ const featureCards = [
   },
   {
     title: "REAL CONTESTS",
-    desc: "Submit your AI-generated art and compete for $500,000 in prizes",
-    poster: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=800&h=450&fit=crop&q=80",
-    video: "https://videos.pexels.com/video-files/3129671/3129671-uhd_2560_1440_30fps.mp4",
+    desc: "Submit your AI-generated action video and compete for $50,000",
+    poster: contestBanner,
+    video: null as string | null,
     badge: null,
     link: "/challenges",
   },
