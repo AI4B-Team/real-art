@@ -216,24 +216,40 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               <button
                 key={p.id}
                 onClick={() => togglePlatform(p.id)}
-                className={`relative w-11 h-11 rounded-lg flex items-center justify-center transition-all ${
-                  selected
-                    ? "ring-2 ring-accent bg-accent/10 scale-105"
-                    : "opacity-40 hover:opacity-80"
-                }`}
-                style={{ backgroundColor: selected ? p.color + "18" : p.color + "10", color: p.color }}
+                className={`relative flex flex-col items-center gap-1 transition-all`}
                 title={p.label}
               >
-                <PlatformIcon platformId={p.id} size={18} />
-                {selected && (
-                  <div className="absolute -top-1 -right-1 w-4 h-4 rounded bg-accent flex items-center justify-center">
-                    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                  </div>
-                )}
+                <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all ${
+                  selected ? "ring-2 ring-accent scale-105" : "hover:scale-105"
+                }`}
+                  style={{ backgroundColor: p.color + "15", color: p.color }}
+                >
+                  <PlatformIcon platformId={p.id} size={18} />
+                  {selected && (
+                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded bg-accent flex items-center justify-center">
+                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    </div>
+                  )}
+                </div>
+                <span className={`text-[0.6rem] font-medium ${selected ? "text-foreground" : "text-muted"}`}>{p.label}</span>
               </button>
             );
           })}
         </div>
+        {/* Selection info + Brand toggle */}
+        <div className="flex items-center justify-center gap-4 mt-2">
+          <span className="text-[0.72rem] text-muted">
+            {selectedPlatforms.size} platform{selectedPlatforms.size !== 1 ? "s" : ""} selected
+            {selectedPlatforms.size > 0 && ` · ${selectedPlatforms.size * 7} posts will be generated`}
+          </span>
+        </div>
+        {showBrandPrompt && (
+          <div className="mt-3 mx-auto max-w-md bg-accent/[0.06] border border-accent/20 rounded-lg p-3 flex items-center gap-3">
+            <span className="text-[0.78rem] text-foreground flex-1">No brand profile found. Create one to enable brand voice in your content.</span>
+            <a href="/brand" className="px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.75rem] font-semibold no-underline whitespace-nowrap hover:bg-accent/90 transition-colors">Create Brand</a>
+            <button onClick={() => setShowBrandPrompt(false)} className="text-muted hover:text-foreground"><X size={14} /></button>
+          </div>
+        )}
       </div>
 
       {/* View tabs toolbar */}
