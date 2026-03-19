@@ -224,7 +224,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
                 : "border-foreground/[0.1] text-muted hover:text-foreground"
             }`}
           >
-            Select All
+            {selectedPlatforms.size === PLATFORMS.length ? "Deselect All" : "Select All"}
           </button>
           {PLATFORMS.map(p => {
             const selected = selectedPlatforms.has(p.id);
