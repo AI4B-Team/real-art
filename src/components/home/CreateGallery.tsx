@@ -1,17 +1,16 @@
 import { useRef } from "react";
 import { Link } from "react-router-dom";
 import { motion, useInView } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 
-const createGallery = [
-  { image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=300&h=400&fit=crop&q=80", label: "Abstract" },
-  { image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=300&h=400&fit=crop&q=80", label: "Portrait" },
-  { image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=300&h=400&fit=crop&q=80", label: "Fashion" },
-  { image: "https://images.unsplash.com/photo-1604881991720-f91add269bed?w=300&h=400&fit=crop&q=80", label: "Cyberpunk", isNew: true },
-  { image: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=300&h=400&fit=crop&q=80", label: "Landscape" },
-  { image: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=300&h=400&fit=crop&q=80", label: "Gradient" },
-  { image: "https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=300&h=400&fit=crop&q=80", label: "Neon" },
-  { image: "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=300&h=400&fit=crop&q=80", label: "Abstract Fire" },
+const tools = [
+  { image: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=400&h=500&fit=crop&q=80", label: "Create Image", link: "/create?type=image" },
+  { image: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=400&h=500&fit=crop&q=80", label: "Create Video", link: "/create?type=video" },
+  { image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&h=500&fit=crop&q=80", label: "Motion Control", link: "/create?type=video" },
+  { image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=500&fit=crop&q=80", label: "Soul 2.0", badge: "NEW", link: "/create" },
+  { image: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=500&fit=crop&q=80", label: "Soul ID", link: "/create" },
+  { image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=400&h=500&fit=crop&q=80", label: "Upscale", link: "/create" },
+  { image: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=400&h=500&fit=crop&q=80", label: "Edit Image", link: "/create?type=image" },
 ];
 
 const CreateGallery = () => {
@@ -19,59 +18,69 @@ const CreateGallery = () => {
   const isInView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="bg-foreground px-6 md:px-16 pb-20" ref={ref}>
-      <div className="max-w-[1440px] mx-auto">
+    <section className="bg-foreground px-6 md:px-10 pb-16" ref={ref}>
+      <div className="max-w-[1500px] mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="flex items-end gap-8 mb-8"
+          transition={{ duration: 0.5 }}
+          className="bg-primary-foreground/[0.04] border border-primary-foreground/[0.06] rounded-2xl p-6 md:p-8"
         >
-          <div>
-            <h2 className="font-display text-[clamp(1.8rem,4vw,2.8rem)] font-black text-primary-foreground leading-[1.05] uppercase">
-              What Will You<br />
-              <span className="text-accent">Create Today?</span>
-            </h2>
-            <p className="text-[0.85rem] text-primary-foreground/40 mt-2 leading-relaxed">
-              Create authentic images and videos with natural texture and easy style
-            </p>
-          </div>
-          <Link to="/create" className="hidden md:inline-flex items-center gap-1.5 text-[0.82rem] font-semibold text-primary-foreground/50 hover:text-primary-foreground transition-colors no-underline whitespace-nowrap mb-1">
-            Explore all <ArrowRight className="w-3.5 h-3.5" />
-          </Link>
-        </motion.div>
-
-        <div className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth pb-2">
-          {createGallery.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-              transition={{ duration: 0.5, delay: i * 0.07 }}
-              className="flex-shrink-0"
-            >
+          <div className="flex flex-col md:flex-row gap-6 md:gap-10">
+            {/* Left text block */}
+            <div className="flex-shrink-0 md:w-[220px] flex flex-col justify-center">
+              <h2 className="font-display text-[clamp(1.5rem,3vw,2rem)] font-black text-primary-foreground leading-[1.1] uppercase mb-2">
+                What Will You<br />
+                <span className="text-accent">Create Today?</span>
+              </h2>
+              <p className="text-[0.78rem] text-primary-foreground/40 leading-relaxed mb-5">
+                Create authentic images and videos with natural texture and easy style
+              </p>
               <Link
                 to="/create"
-                className="group w-[200px] relative rounded-2xl overflow-hidden no-underline block"
+                className="inline-flex items-center gap-2 bg-accent text-primary-foreground px-5 py-2.5 rounded-lg font-semibold text-[0.82rem] hover:bg-accent/85 transition-all no-underline w-fit"
               >
-                <img
-                  src={item.image}
-                  alt={item.label}
-                  className="w-full h-[280px] object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                {item.isNew && (
-                  <span className="absolute top-2.5 left-2.5 bg-accent text-primary-foreground text-[0.55rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md">
-                    New
-                  </span>
-                )}
-                <div className="absolute bottom-3 left-3 right-3">
-                  <p className="text-[0.82rem] font-semibold text-primary-foreground">{item.label}</p>
-                </div>
+                Explore all tools <Sparkles className="w-3.5 h-3.5" />
               </Link>
-            </motion.div>
-          ))}
-        </div>
+            </div>
+
+            {/* Tool cards scroll */}
+            <div className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth flex-1 pb-1">
+              {tools.map((tool, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                  animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
+                  transition={{ duration: 0.4, delay: i * 0.06 }}
+                  className="flex-shrink-0"
+                >
+                  <Link
+                    to={tool.link}
+                    className="group w-[160px] no-underline block"
+                  >
+                    <div className="relative rounded-xl overflow-hidden mb-2.5">
+                      <img
+                        src={tool.image}
+                        alt={tool.label}
+                        className="w-full h-[200px] object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                      {tool.badge && (
+                        <span className="absolute top-2 right-2 bg-accent text-primary-foreground text-[0.55rem] font-bold tracking-wider uppercase px-2 py-0.5 rounded-md">
+                          {tool.badge}
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-[0.78rem] font-semibold text-primary-foreground">{tool.label}</p>
+                      <ArrowRight className="w-3 h-3 text-primary-foreground/40 group-hover:translate-x-0.5 transition-transform" />
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

@@ -1,18 +1,10 @@
-import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { motion, useInView } from "framer-motion";
-import {
-  Sparkles, ChevronLeft, ChevronRight, ArrowRight,
-  ArrowUpRight, Play,
-} from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 import FeatureCarousel from "@/components/home/FeatureCarousel";
 import PhotodumpBanner from "@/components/home/PhotodumpBanner";
 import CreateGallery from "@/components/home/CreateGallery";
+import TopChoiceSection from "@/components/home/TopChoiceSection";
 import CTABanner from "@/components/home/CTABanner";
-
-/* ─── Data ───────────────────────────────────────────────────── */
 
 const announcements = [
   "Video generation now live — animate any image in one click",
@@ -21,12 +13,10 @@ const announcements = [
   "April Challenge is live — $5,000 in creator prizes",
 ];
 
-/* ─── Component ──────────────────────────────────────────────── */
-
 const Index = () => {
   return (
     <PageShell>
-      {/* ─── 1. Announcement Ticker ──────────────────────────── */}
+      {/* Announcement Ticker */}
       <div className="bg-foreground overflow-hidden">
         <div className="flex animate-ticker whitespace-nowrap py-2">
           {[...announcements, ...announcements].map((a, i) => (
@@ -38,16 +28,19 @@ const Index = () => {
         </div>
       </div>
 
-      {/* ─── 2. Feature Cards Carousel ───────────────────────── */}
+      {/* Feature Cards — videos autoplay */}
       <FeatureCarousel />
 
-      {/* ─── 3. Photodump Banner ─────────────────────────────── */}
-      <PhotodumpBanner />
-
-      {/* ─── 4. "What Will You Create Today?" Gallery ────────── */}
+      {/* What Will You Create Today? */}
       <CreateGallery />
 
-      {/* ─── 5. CTA Banner ───────────────────────────────────── */}
+      {/* Top Choice */}
+      <TopChoiceSection />
+
+      {/* Photodump Banner */}
+      <PhotodumpBanner />
+
+      {/* CTA Banner */}
       <CTABanner />
 
       <div className="bg-foreground">
