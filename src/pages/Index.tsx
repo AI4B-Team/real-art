@@ -39,8 +39,6 @@ const Index = () => {
       {/* Photodump Banner */}
       <PhotodumpBanner />
 
-      {/* CTA Banner */}
-      <CTABanner />
 
       <div className="bg-foreground">
         <Footer />
