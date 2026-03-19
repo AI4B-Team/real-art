@@ -129,6 +129,7 @@ const AppSidebar = () => {
     saveWorkspaces(updated);
   };
 
+  const [communities, setCommunities] = useState<Community[]>([
     { id: "1", name: "Avatar Architects", to: "/communities/1", newPosts: 3, pinned: true },
     { id: "2", name: "PromptVault Pro", to: "/communities/2", newPosts: 0, pinned: true },
     { id: "3", name: "Abstract Minds", to: "/communities/3", newPosts: 1, pinned: false },
