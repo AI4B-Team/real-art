@@ -75,12 +75,18 @@ const AccountPage = () => {
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { error } = await supabase.from("profiles").update({
-          display_name: displayName, username, bio, avatar_url: avatarUrl,
+          display_name: displayName, username, bio, avatar_url: avatarUrl, location,
         }).eq("user_id", user.id);
-        if (error) console.error("Profile save error:", error);
+        if (error) {
+          toast({ title: "Save failed", description: error.message, variant: "destructive" });
+          setSaving(false);
+          return;
+        }
       }
-    } catch (err) {
+      toast({ title: "Profile saved", description: "Your changes have been saved successfully." });
+    } catch (err: any) {
       console.error("Profile save error:", err);
+      toast({ title: "Save failed", description: err.message, variant: "destructive" });
     }
     setSaving(false);
     setSaved(true);
