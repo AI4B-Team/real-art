@@ -67,6 +67,18 @@ const RedditLogo = ({ size = 18 }: { size?: number }) => (
   </svg>
 );
 
+const BlogLogo = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 14H6c-.55 0-1-.45-1-1s.45-1 1-1h12c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H6c-.55 0-1-.45-1-1s.45-1 1-1h12c.55 0 1 .45 1 1s-.45 1-1 1zm0-4H6c-.55 0-1-.45-1-1s.45-1 1-1h12c.55 0 1 .45 1 1s-.45 1-1 1z"/>
+  </svg>
+);
+
+const GmailLogo = ({ size = 18 }: { size?: number }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
+    <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"/>
+  </svg>
+);
+
 const PLATFORM_LOGOS: Record<string, typeof FacebookLogo> = {
   facebook: FacebookLogo,
   instagram: InstagramLogo,
@@ -78,6 +90,8 @@ const PLATFORM_LOGOS: Record<string, typeof FacebookLogo> = {
   youtube: YouTubeLogo,
   pinterest: PinterestLogo,
   reddit: RedditLogo,
+  blog: BlogLogo,
+  gmail: GmailLogo,
 };
 
 /* ─── Platform config ────────────────────────── */
@@ -92,6 +106,8 @@ const PLATFORMS = [
   { id: "youtube",   label: "YouTube",   color: "#FF0000" },
   { id: "pinterest", label: "Pinterest", color: "#BD081C" },
   { id: "reddit",    label: "Reddit",    color: "#FF4500" },
+  { id: "blog",      label: "Blog",      color: "#333333" },
+  { id: "gmail",     label: "Gmail",     color: "#EA4335" },
 ];
 
 const DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
@@ -216,22 +232,21 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               <button
                 key={p.id}
                 onClick={() => togglePlatform(p.id)}
-                className={`relative flex flex-col items-center gap-1 transition-all`}
+                className="relative transition-all"
                 title={p.label}
               >
-                <div className={`w-11 h-11 rounded-lg flex items-center justify-center transition-all ${
+                <div className={`w-14 h-14 rounded-lg flex items-center justify-center transition-all ${
                   selected ? "ring-2 ring-accent scale-105" : "hover:scale-105"
                 }`}
                   style={{ backgroundColor: p.color + "15", color: p.color }}
                 >
-                  <PlatformIcon platformId={p.id} size={18} />
+                  <PlatformIcon platformId={p.id} size={24} />
                   {selected && (
-                    <div className="absolute -top-1 -right-1 w-4 h-4 rounded bg-accent flex items-center justify-center">
-                      <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                    <div className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded bg-accent flex items-center justify-center">
+                      <svg width="12" height="12" viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                     </div>
                   )}
                 </div>
-                <span className={`text-[0.6rem] font-medium ${selected ? "text-foreground" : "text-muted"}`}>{p.label}</span>
               </button>
             );
           })}
