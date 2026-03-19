@@ -731,16 +731,57 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </Popover>
                 )}
 
-                {/* Brand toggle — content */}
+                {/* Content/Social toolbar icons */}
                 {selectedType === "content" && (
-                  <div className="flex items-center gap-1.5 ml-1">
-                    <Eye size={13} className="text-muted" />
-                    <span className="text-[0.72rem] text-muted font-medium">Brand</span>
-                    <div
-                      onClick={() => setBrandToggle(v => !v)}
-                      className={`w-8 h-[18px] rounded-full transition-colors cursor-pointer relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}
-                    >
-                      <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
+                  <div className="flex items-center gap-0.5">
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                        <Target size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
+
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                        <MessageCircle size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
+
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                        <Languages size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                        <Calendar size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Frequency</TooltipContent></Tooltip>
+
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                        <Clock size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Time</TooltipContent></Tooltip>
+
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                        <PenTool size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
+
+                    <div className="flex items-center gap-1.5">
+                      <Eye size={13} className="text-muted" />
+                      <span className="text-[0.72rem] text-muted font-medium">Brand</span>
+                      <div
+                        onClick={() => setBrandToggle(v => !v)}
+                        className={`w-8 h-[18px] rounded-full transition-colors cursor-pointer relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}
+                      >
+                        <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
+                      </div>
                     </div>
                   </div>
                 )}
