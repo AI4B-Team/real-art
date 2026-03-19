@@ -738,7 +738,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
         </div>
       )}
       <Link to={isLoggedIn ? "/dashboard" : "/"} className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0 absolute left-1/2 -translate-x-1/2 md:hidden">
-        Real<span className="text-accent">.</span>Art
+        Real<span className="text-accent"> </span>Creator
       </Link>
 
 
