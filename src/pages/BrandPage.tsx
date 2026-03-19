@@ -1540,7 +1540,7 @@ export default function BrandPage() {
   const update = (u: Partial<BrandFormData>) => {
     setFormData(prev => {
       const next = { ...prev, ...u };
-      try { localStorage.setItem("ra_brand_wizard", JSON.stringify(next)); } catch {}
+      try { localStorage.setItem(storageKey, JSON.stringify(next)); } catch {}
       return next;
     });
   };
