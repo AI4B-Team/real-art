@@ -322,7 +322,14 @@ const AppSidebar = () => {
           if (item.id === "workspace") {
             if (sidebarCollapsed) {
               return (
-                <button key={item.id} onClick={() => setSidebarCollapsed(false)}
+                <button key={item.id} ref={wsBtnRef} onClick={() => {
+                    if (!wsDropdownOpen && wsBtnRef.current) {
+                      const rect = wsBtnRef.current.getBoundingClientRect();
+                      setWsFlyoutPos({ top: rect.top, left: rect.right + 8 });
+                    }
+                    setWsDropdownOpen(!wsDropdownOpen);
+                    setWsAdding(false); setWsEditing(null);
+                  }}
                   className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"
                   title={activeWorkspace?.name || "Workspace"}
                 >
