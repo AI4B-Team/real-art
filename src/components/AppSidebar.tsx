@@ -6,7 +6,7 @@ import {
   Users, Award, Eye, Bookmark, ChevronDown,
   Search, X, Star, Home, Compass, Plus, PanelLeftClose,
   DollarSign, Megaphone, Zap, Clock, Upload, Sparkles, Check,
-  Pencil, Trash2,
+  Pencil, Trash2, Palette,
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
 
@@ -18,22 +18,25 @@ interface NavItem {
   href?: string;
 }
 
-type Workspace = {
-  id: string;
-  name: string;
-};
+type Workspace = { id: string; name: string; };
+type Brand = { id: string; name: string; };
 
 const loadWorkspaces = (): { workspaces: Workspace[]; activeId: string } => {
-  try {
-    const stored = localStorage.getItem("ra_workspaces");
-    if (stored) return JSON.parse(stored);
-  } catch {}
-  const defaultWs = { id: "default", name: "My Workspace" };
-  return { workspaces: [defaultWs], activeId: "default" };
+  try { const s = localStorage.getItem("ra_workspaces"); if (s) return JSON.parse(s); } catch {}
+  const d = { id: "default", name: "My Workspace" };
+  return { workspaces: [d], activeId: "default" };
 };
-
 const saveWorkspaces = (data: { workspaces: Workspace[]; activeId: string }) => {
   try { localStorage.setItem("ra_workspaces", JSON.stringify(data)); } catch {}
+};
+
+const loadBrands = (): { brands: Brand[]; activeId: string } => {
+  try { const s = localStorage.getItem("ra_brands"); if (s) return JSON.parse(s); } catch {}
+  const d = { id: "default", name: "My Brand" };
+  return { brands: [d], activeId: "default" };
+};
+const saveBrands = (data: { brands: Brand[]; activeId: string }) => {
+  try { localStorage.setItem("ra_brands", JSON.stringify(data)); } catch {}
 };
 
 type Community = {
@@ -46,14 +49,13 @@ type Community = {
 
 const navItems: NavItem[] = [
   { id: "workspace", label: "Workspace", icon: LayoutDashboard, type: "route", href: "/dashboard" },
+  { id: "brand", label: "Brand", icon: Palette, type: "route", href: "/brand" },
   { id: "home", label: "Home", icon: Home, type: "route", href: "/home" },
   { id: "explore", label: "Explore", icon: Eye, type: "route", href: "/explore" },
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "collections-browse", label: "Collections", icon: FolderOpen, type: "route", href: "/collections" },
   { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
   { id: "challenges-browse", label: "Challenges", icon: Award, type: "route", href: "/challenges" },
-  { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
-  { id: "brand", label: "Brand", icon: Sparkles, type: "route", href: "/brand" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
   { id: "overview", label: "Insights", icon: Sparkles, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
@@ -91,44 +93,67 @@ const AppSidebar = () => {
   const [wsAdding, setWsAdding] = useState(false);
   const wsBtnRef = useRef<HTMLButtonElement>(null);
   const [wsFlyoutPos, setWsFlyoutPos] = useState({ top: 0, left: 0 });
-
   const activeWorkspace = wsData.workspaces.find(w => w.id === wsData.activeId) || wsData.workspaces[0];
+
+  // Brand state
+  const [brandData, setBrandData] = useState(loadBrands);
+  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
+  const [brandEditing, setBrandEditing] = useState<string | null>(null);
+  const [brandEditName, setBrandEditName] = useState("");
+  const [brandNewName, setBrandNewName] = useState("");
+  const [brandAdding, setBrandAdding] = useState(false);
+  const brandBtnRef = useRef<HTMLButtonElement>(null);
+  const [brandFlyoutPos, setBrandFlyoutPos] = useState({ top: 0, left: 0 });
+  const activeBrand = brandData.brands.find(b => b.id === brandData.activeId) || brandData.brands[0];
 
   const switchWorkspace = (id: string) => {
     const updated = { ...wsData, activeId: id };
-    setWsData(updated);
-    saveWorkspaces(updated);
-    setWsDropdownOpen(false);
-    navigate("/dashboard");
+    setWsData(updated); saveWorkspaces(updated);
+    setWsDropdownOpen(false); navigate("/dashboard");
   };
-
   const addWorkspace = () => {
     if (!wsNewName.trim()) return;
     const newWs: Workspace = { id: crypto.randomUUID(), name: wsNewName.trim() };
     const updated = { workspaces: [...wsData.workspaces, newWs], activeId: newWs.id };
-    setWsData(updated);
-    saveWorkspaces(updated);
-    setWsNewName("");
-    setWsAdding(false);
-    setWsDropdownOpen(false);
-    navigate("/dashboard");
+    setWsData(updated); saveWorkspaces(updated);
+    setWsNewName(""); setWsAdding(false); setWsDropdownOpen(false); navigate("/dashboard");
   };
-
   const renameWorkspace = (id: string) => {
     if (!wsEditName.trim()) { setWsEditing(null); return; }
     const updated = { ...wsData, workspaces: wsData.workspaces.map(w => w.id === id ? { ...w, name: wsEditName.trim() } : w) };
-    setWsData(updated);
-    saveWorkspaces(updated);
-    setWsEditing(null);
+    setWsData(updated); saveWorkspaces(updated); setWsEditing(null);
   };
-
   const deleteWorkspace = (id: string) => {
     if (wsData.workspaces.length <= 1) return;
     const remaining = wsData.workspaces.filter(w => w.id !== id);
     const newActive = wsData.activeId === id ? remaining[0].id : wsData.activeId;
     const updated = { workspaces: remaining, activeId: newActive };
-    setWsData(updated);
-    saveWorkspaces(updated);
+    setWsData(updated); saveWorkspaces(updated);
+  };
+
+  const switchBrand = (id: string) => {
+    const updated = { ...brandData, activeId: id };
+    setBrandData(updated); saveBrands(updated);
+    setBrandDropdownOpen(false); navigate("/brand");
+  };
+  const addBrand = () => {
+    if (!brandNewName.trim()) return;
+    const newB: Brand = { id: crypto.randomUUID(), name: brandNewName.trim() };
+    const updated = { brands: [...brandData.brands, newB], activeId: newB.id };
+    setBrandData(updated); saveBrands(updated);
+    setBrandNewName(""); setBrandAdding(false); setBrandDropdownOpen(false); navigate("/brand");
+  };
+  const renameBrand = (id: string) => {
+    if (!brandEditName.trim()) { setBrandEditing(null); return; }
+    const updated = { ...brandData, brands: brandData.brands.map(b => b.id === id ? { ...b, name: brandEditName.trim() } : b) };
+    setBrandData(updated); saveBrands(updated); setBrandEditing(null);
+  };
+  const deleteBrand = (id: string) => {
+    if (brandData.brands.length <= 1) return;
+    const remaining = brandData.brands.filter(b => b.id !== id);
+    const newActive = brandData.activeId === id ? remaining[0].id : brandData.activeId;
+    const updated = { brands: remaining, activeId: newActive };
+    setBrandData(updated); saveBrands(updated);
   };
 
   const [communities, setCommunities] = useState<Community[]>([
@@ -192,18 +217,22 @@ const AppSidebar = () => {
         if (flyout && flyout.contains(target)) return;
         setCommunitiesOpen(false);
       }
-      // Workspace flyout
       if (wsDropdownOpen) {
         const wsFlyout = document.querySelector('[data-ws-flyout]');
-        const wsBtn = wsBtnRef.current;
         if (wsFlyout && wsFlyout.contains(target)) return;
-        if (wsBtn && wsBtn.contains(target)) return;
+        if (wsBtnRef.current && wsBtnRef.current.contains(target)) return;
         setWsDropdownOpen(false);
+      }
+      if (brandDropdownOpen) {
+        const bFlyout = document.querySelector('[data-brand-flyout]');
+        if (bFlyout && bFlyout.contains(target)) return;
+        if (brandBtnRef.current && brandBtnRef.current.contains(target)) return;
+        setBrandDropdownOpen(false);
       }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
-  }, [wsDropdownOpen]);
+  }, [wsDropdownOpen, brandDropdownOpen]);
 
   const isDashboard = location.pathname === "/dashboard";
   const currentSection = isDashboard
@@ -289,99 +318,61 @@ const AppSidebar = () => {
             return <div key={item.id} className="h-px bg-foreground/[0.06] my-2 mx-3" />;
           }
 
-          // Workspace item with dropdown
+          // Workspace pill with dropdown
           if (item.id === "workspace") {
-            const active = isActive(item);
             if (sidebarCollapsed) {
               return (
-                <button
-                  key={item.id}
-                  onClick={() => navigate("/dashboard")}
-                  className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                <button key={item.id} onClick={() => navigate("/dashboard")}
+                  className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors bg-accent text-accent-foreground"
                   title={activeWorkspace?.name || "Workspace"}
                 >
-                  <item.icon className="w-4 h-4 shrink-0" />
+                  <LayoutDashboard className="w-4 h-4 shrink-0" />
                 </button>
               );
             }
             return (
-              <div key={item.id} className="relative">
-                <div className="flex items-center gap-0.5">
-                  <button
-                    onClick={() => navigate("/dashboard")}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium flex-1 text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
-                  >
-                    <item.icon className="w-4 h-4 shrink-0" />
-                    <span className="truncate">{activeWorkspace?.name || "Workspace"}</span>
-                  </button>
-                  <button
-                    ref={wsBtnRef}
-                    onClick={() => {
-                      if (!wsDropdownOpen && wsBtnRef.current) {
-                        const rect = wsBtnRef.current.getBoundingClientRect();
-                        setWsFlyoutPos({ top: rect.top, left: rect.right + 8 });
-                      }
-                      setWsDropdownOpen(!wsDropdownOpen);
-                      setWsAdding(false);
-                      setWsEditing(null);
-                    }}
-                    className={`flex items-center justify-center w-7 h-7 rounded-lg transition-colors shrink-0 ${wsDropdownOpen ? "bg-foreground/[0.1] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.05]"}`}
-                  >
-                    <ChevronDown className={`w-3 h-3 transition-transform ${wsDropdownOpen ? "rotate-180" : ""}`} />
-                  </button>
+              <div key={item.id} className="flex flex-col gap-1">
+                <div className="px-3 pt-1 pb-0.5 text-[0.6rem] font-bold tracking-[0.16em] uppercase text-muted flex items-center gap-1.5">
+                  <LayoutDashboard className="w-3 h-3" /> Workspace
                 </div>
+                <button
+                  ref={wsBtnRef}
+                  onClick={() => {
+                    if (!wsDropdownOpen && wsBtnRef.current) {
+                      const rect = wsBtnRef.current.getBoundingClientRect();
+                      setWsFlyoutPos({ top: rect.top, left: rect.right + 8 });
+                    }
+                    setWsDropdownOpen(!wsDropdownOpen);
+                    setWsAdding(false); setWsEditing(null);
+                  }}
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-accent text-accent-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-accent/90"
+                >
+                  <span className="truncate flex-1">{activeWorkspace?.name || "Workspace"}</span>
+                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${wsDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
                 {wsDropdownOpen && createPortal(
-                  <div
-                    data-ws-flyout
-                    className="fixed bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]"
-                    style={{ top: wsFlyoutPos.top, left: wsFlyoutPos.left }}
-                  >
+                  <div data-ws-flyout className="fixed bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]" style={{ top: wsFlyoutPos.top, left: wsFlyoutPos.left }}>
                     <div className="px-3 pt-1 pb-2 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Workspaces</div>
                     {wsData.workspaces.map(ws => (
-                      <div
-                        key={ws.id}
-                        className={`flex items-center justify-between px-3 py-2 rounded-[10px] text-[0.85rem] transition-colors group cursor-pointer ${
-                          ws.id === wsData.activeId ? "bg-foreground/[0.06] text-foreground font-semibold" : "text-foreground hover:bg-background"
-                        }`}
-                      >
+                      <div key={ws.id} className={`flex items-center justify-between px-3 py-2 rounded-[10px] text-[0.85rem] transition-colors group cursor-pointer ${ws.id === wsData.activeId ? "bg-foreground/[0.06] text-foreground font-semibold" : "text-foreground hover:bg-background"}`}>
                         {wsEditing === ws.id ? (
-                          <form
-                            onSubmit={e => { e.preventDefault(); renameWorkspace(ws.id); }}
-                            className="flex items-center gap-2 flex-1"
-                          >
-                            <input
-                              autoFocus
-                              value={wsEditName}
-                              onChange={e => setWsEditName(e.target.value)}
-                              onBlur={() => renameWorkspace(ws.id)}
-                              className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2 py-1 text-[0.82rem] outline-none focus:border-accent"
-                            />
+                          <form onSubmit={e => { e.preventDefault(); renameWorkspace(ws.id); }} className="flex items-center gap-2 flex-1">
+                            <input autoFocus value={wsEditName} onChange={e => setWsEditName(e.target.value)} onBlur={() => renameWorkspace(ws.id)} className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2 py-1 text-[0.82rem] outline-none focus:border-accent" />
                           </form>
                         ) : (
                           <>
-                            <button
-                              onClick={() => switchWorkspace(ws.id)}
-                              className="flex items-center gap-2 flex-1 text-left"
-                            >
+                            <button onClick={() => switchWorkspace(ws.id)} className="flex items-center gap-2 flex-1 text-left">
                               <LayoutDashboard className="w-3.5 h-3.5 shrink-0 opacity-50" />
                               <span className="truncate">{ws.name}</span>
                               {ws.id === wsData.activeId && <Check className="w-3 h-3 text-accent shrink-0" />}
                             </button>
                             <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                              <button
-                                onClick={e => { e.stopPropagation(); setWsEditing(ws.id); setWsEditName(ws.name); }}
-                                className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"
-                                title="Rename"
-                              >
+                              <button onClick={e => { e.stopPropagation(); setWsEditing(ws.id); setWsEditName(ws.name); }} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-foreground/[0.08] transition-colors" title="Rename">
                                 <Pencil className="w-3 h-3 text-muted" />
                               </button>
                               {wsData.workspaces.length > 1 && (
-                                <button
-                                  onClick={e => { e.stopPropagation(); deleteWorkspace(ws.id); }}
-                                  className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-red-50 transition-colors"
-                                  title="Delete"
-                                >
-                                  <Trash2 className="w-3 h-3 text-red-400" />
+                                <button onClick={e => { e.stopPropagation(); deleteWorkspace(ws.id); }} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-destructive/10 transition-colors" title="Delete">
+                                  <Trash2 className="w-3 h-3 text-destructive" />
                                 </button>
                               )}
                             </div>
@@ -391,26 +382,93 @@ const AppSidebar = () => {
                     ))}
                     <div className="h-px bg-foreground/[0.06] my-1.5" />
                     {wsAdding ? (
-                      <form
-                        onSubmit={e => { e.preventDefault(); addWorkspace(); }}
-                        className="flex items-center gap-2 px-2"
-                      >
-                        <input
-                          autoFocus
-                          value={wsNewName}
-                          onChange={e => setWsNewName(e.target.value)}
-                          onBlur={() => { if (!wsNewName.trim()) setWsAdding(false); }}
-                          placeholder="Workspace name…"
-                          className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2.5 py-1.5 text-[0.82rem] outline-none focus:border-accent"
-                        />
-                        <button type="submit" disabled={!wsNewName.trim()} className="px-2.5 py-1.5 rounded-lg bg-accent text-white text-[0.78rem] font-semibold disabled:opacity-40">Add</button>
+                      <form onSubmit={e => { e.preventDefault(); addWorkspace(); }} className="flex items-center gap-2 px-2">
+                        <input autoFocus value={wsNewName} onChange={e => setWsNewName(e.target.value)} onBlur={() => { if (!wsNewName.trim()) setWsAdding(false); }} placeholder="Workspace name…" className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2.5 py-1.5 text-[0.82rem] outline-none focus:border-accent" />
+                        <button type="submit" disabled={!wsNewName.trim()} className="px-2.5 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-semibold disabled:opacity-40">Add</button>
                       </form>
                     ) : (
-                      <button
-                        onClick={() => setWsAdding(true)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors w-full text-left"
-                      >
+                      <button onClick={() => setWsAdding(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors w-full text-left">
                         <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> New Workspace
+                      </button>
+                    )}
+                  </div>,
+                  document.body
+                )}
+              </div>
+            );
+          }
+
+          // Brand pill with dropdown
+          if (item.id === "brand") {
+            if (sidebarCollapsed) {
+              return (
+                <button key={item.id} onClick={() => navigate("/brand")}
+                  className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors border border-accent text-accent hover:bg-accent/10"
+                  title={activeBrand?.name || "Brand"}
+                >
+                  <Palette className="w-4 h-4 shrink-0" />
+                </button>
+              );
+            }
+            return (
+              <div key={item.id} className="flex flex-col gap-1 mb-1">
+                <div className="px-3 pt-1 pb-0.5 text-[0.6rem] font-bold tracking-[0.16em] uppercase text-muted flex items-center gap-1.5">
+                  <Palette className="w-3 h-3" /> Brand
+                </div>
+                <button
+                  ref={brandBtnRef}
+                  onClick={() => {
+                    if (!brandDropdownOpen && brandBtnRef.current) {
+                      const rect = brandBtnRef.current.getBoundingClientRect();
+                      setBrandFlyoutPos({ top: rect.top, left: rect.right + 8 });
+                    }
+                    setBrandDropdownOpen(!brandDropdownOpen);
+                    setBrandAdding(false); setBrandEditing(null);
+                  }}
+                  className="flex items-center gap-3 px-4 py-2.5 rounded-full border border-accent text-foreground text-[0.92rem] font-semibold w-full text-left transition-colors hover:bg-accent/10"
+                >
+                  <span className="truncate flex-1">{activeBrand?.name || "Brand"}</span>
+                  <ChevronDown className={`w-4 h-4 shrink-0 transition-transform ${brandDropdownOpen ? "rotate-180" : ""}`} />
+                </button>
+                {brandDropdownOpen && createPortal(
+                  <div data-brand-flyout className="fixed bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] p-2.5 animate-drop-in z-[400]" style={{ top: brandFlyoutPos.top, left: brandFlyoutPos.left }}>
+                    <div className="px-3 pt-1 pb-2 text-[0.65rem] font-semibold tracking-[0.14em] uppercase text-muted">Brands</div>
+                    {brandData.brands.map(b => (
+                      <div key={b.id} className={`flex items-center justify-between px-3 py-2 rounded-[10px] text-[0.85rem] transition-colors group cursor-pointer ${b.id === brandData.activeId ? "bg-foreground/[0.06] text-foreground font-semibold" : "text-foreground hover:bg-background"}`}>
+                        {brandEditing === b.id ? (
+                          <form onSubmit={e => { e.preventDefault(); renameBrand(b.id); }} className="flex items-center gap-2 flex-1">
+                            <input autoFocus value={brandEditName} onChange={e => setBrandEditName(e.target.value)} onBlur={() => renameBrand(b.id)} className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2 py-1 text-[0.82rem] outline-none focus:border-accent" />
+                          </form>
+                        ) : (
+                          <>
+                            <button onClick={() => switchBrand(b.id)} className="flex items-center gap-2 flex-1 text-left">
+                              <Palette className="w-3.5 h-3.5 shrink-0 opacity-50" />
+                              <span className="truncate">{b.name}</span>
+                              {b.id === brandData.activeId && <Check className="w-3 h-3 text-accent shrink-0" />}
+                            </button>
+                            <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                              <button onClick={e => { e.stopPropagation(); setBrandEditing(b.id); setBrandEditName(b.name); }} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-foreground/[0.08] transition-colors" title="Rename">
+                                <Pencil className="w-3 h-3 text-muted" />
+                              </button>
+                              {brandData.brands.length > 1 && (
+                                <button onClick={e => { e.stopPropagation(); deleteBrand(b.id); }} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-destructive/10 transition-colors" title="Delete">
+                                  <Trash2 className="w-3 h-3 text-destructive" />
+                                </button>
+                              )}
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    ))}
+                    <div className="h-px bg-foreground/[0.06] my-1.5" />
+                    {brandAdding ? (
+                      <form onSubmit={e => { e.preventDefault(); addBrand(); }} className="flex items-center gap-2 px-2">
+                        <input autoFocus value={brandNewName} onChange={e => setBrandNewName(e.target.value)} onBlur={() => { if (!brandNewName.trim()) setBrandAdding(false); }} placeholder="Brand name…" className="flex-1 bg-background border border-foreground/[0.1] rounded-lg px-2.5 py-1.5 text-[0.82rem] outline-none focus:border-accent" />
+                        <button type="submit" disabled={!brandNewName.trim()} className="px-2.5 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-semibold disabled:opacity-40">Add</button>
+                      </form>
+                    ) : (
+                      <button onClick={() => setBrandAdding(true)} className="flex items-center gap-3 px-3 py-2.5 rounded-[10px] text-[0.85rem] text-foreground hover:bg-background transition-colors w-full text-left">
+                        <Plus className="w-3.5 h-3.5 opacity-40 shrink-0" /> New Brand
                       </button>
                     )}
                   </div>,
