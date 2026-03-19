@@ -369,6 +369,15 @@ const CollectionDetailPage = () => {
           )}
 
           <div className="ml-auto flex items-center gap-3">
+            <input ref={uploadInputRef} type="file" accept="image/*" multiple className="hidden" onChange={e => { handleUploadImages(e.target.files); e.target.value = ""; }} />
+            <button
+              disabled={uploading}
+              onClick={() => uploadInputRef.current?.click()}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-medium hover:bg-accent transition-colors disabled:opacity-50"
+            >
+              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+              {uploading ? "Uploading…" : "Upload Images"}
+            </button>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
               <Heart className="w-4 h-4" /> Follow
             </button>
