@@ -13,7 +13,7 @@ import {
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush, Link2,
-  Eye,
+  Eye, Target, Languages, Repeat, PenTool,
 } from "lucide-react";
 import {
   Popover, PopoverContent, PopoverTrigger,
