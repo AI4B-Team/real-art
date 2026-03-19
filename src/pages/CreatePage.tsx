@@ -276,6 +276,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [selectedDuration, setSelectedDuration] = useState("10s");
   const [brandToggle, setBrandToggle] = useState(false);
+  const [contentGoal, setContentGoal] = useState("Engagement");
+  const [contentTone, setContentTone] = useState("Professional");
+  const [contentLanguage, setContentLanguage] = useState("English");
+  const [contentFrequency, setContentFrequency] = useState("Daily");
+  const [contentTime, setContentTime] = useState("9:00 AM");
+  const [contentStyle, setContentStyle] = useState("Informative");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
@@ -735,41 +741,95 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {selectedType === "content" && (
                   <div className="flex items-center gap-0.5">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
-                        <Target size={14} />
-                      </button>
-                    </TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
+                    {/* Goal */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Target size={14} />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Goal</p>
+                        {["Engagement", "Awareness", "Traffic", "Sales", "Education", "Community"].map(o => (
+                          <button key={o} onClick={() => setContentGoal(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentGoal === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
 
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
-                        <MessageCircle size={14} />
-                      </button>
-                    </TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
+                    {/* Tone */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <MessageCircle size={14} />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
+                        {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
+                          <button key={o} onClick={() => setContentTone(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
 
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
-                        <Languages size={14} />
-                      </button>
-                    </TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                    {/* Language */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Languages size={14} />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
+                        {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
+                          <button key={o} onClick={() => setContentLanguage(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
 
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
-                        <Calendar size={14} />
-                      </button>
-                    </TooltipTrigger><TooltipContent>Frequency</TooltipContent></Tooltip>
+                    {/* Frequency */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentFrequency !== "Daily" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Calendar size={14} />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Frequency</p>
+                        {["Daily", "Twice Daily", "3x/Week", "Weekly", "Bi-Weekly", "Monthly"].map(o => (
+                          <button key={o} onClick={() => setContentFrequency(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
 
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
-                        <Clock size={14} />
-                      </button>
-                    </TooltipTrigger><TooltipContent>Time</TooltipContent></Tooltip>
+                    {/* Time */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentTime !== "9:00 AM" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Clock size={14} />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Posting Time</p>
+                        {["6:00 AM", "9:00 AM", "12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"].map(o => (
+                          <button key={o} onClick={() => setContentTime(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTime === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
 
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" className="p-1.5 rounded-lg bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
-                        <PenTool size={14} />
-                      </button>
-                    </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                    {/* Style */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentStyle !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <PenTool size={14} />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Style</p>
+                        {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
+                          <button key={o} onClick={() => setContentStyle(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentStyle === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
 
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
 
