@@ -102,53 +102,53 @@ const Index = () => {
       </div>
 
       {/* ─── 2. Feature Cards Carousel ───────────────────────── */}
-      <section className="bg-foreground pt-10 pb-14 px-6 md:px-16 relative">
-        <div className="max-w-[1440px] mx-auto relative">
-          {/* Scroll Arrows */}
+      <section className="bg-foreground pt-8 pb-14 px-6 md:px-10 relative">
+        <div className="max-w-[1500px] mx-auto relative">
+          {/* Scroll Arrows - overlaid on content */}
           <button
             onClick={() => scrollCarousel(-1)}
-            className="absolute -left-2 top-[140px] z-20 w-10 h-10 rounded-lg bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/20 transition-colors border border-primary-foreground/10"
+            className="absolute left-4 top-[120px] z-20 w-9 h-9 rounded-full bg-primary-foreground/15 backdrop-blur-md flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 transition-colors border border-primary-foreground/10"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => scrollCarousel(1)}
-            className="absolute -right-2 top-[140px] z-20 w-10 h-10 rounded-lg bg-primary-foreground/10 backdrop-blur-sm flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/20 transition-colors border border-primary-foreground/10"
+            className="absolute right-4 top-[120px] z-20 w-9 h-9 rounded-full bg-primary-foreground/15 backdrop-blur-md flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 transition-colors border border-primary-foreground/10"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
 
           <div
             ref={carouselRef}
-            className="flex gap-5 overflow-x-auto no-scrollbar scroll-smooth pb-2"
+            className="flex gap-4 overflow-x-auto no-scrollbar scroll-smooth"
           >
             {featureCards.map((card, i) => (
               <Link
                 key={i}
                 to={card.link}
-                className="group flex-shrink-0 w-[340px] no-underline"
+                className="group flex-shrink-0 w-[calc(33.333%-11px)] min-w-[300px] no-underline"
               >
-                <div className="relative rounded-2xl overflow-hidden mb-3">
+                <div className="relative rounded-2xl overflow-hidden mb-3 border border-primary-foreground/[0.06]">
                   <img
                     src={card.image}
                     alt={card.title}
-                    className="w-full h-[220px] object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-[240px] object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  {/* Title overlay on image */}
-                  <div className="absolute inset-0 flex items-end p-5">
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    <h3 className="relative font-display text-[1.4rem] font-black text-primary-foreground tracking-tight leading-tight uppercase">
+                  {/* Big stylized title overlaid on image */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/20" />
+                    <h3 className="relative font-display text-[clamp(1.6rem,2.2vw,2.4rem)] font-black text-primary-foreground tracking-tight leading-[1.1] text-center uppercase drop-shadow-lg px-4">
                       {card.title}
                     </h3>
                   </div>
                   {card.badge && (
-                    <span className="absolute top-3 right-3 bg-accent text-primary-foreground text-[0.6rem] font-bold tracking-wider uppercase px-2.5 py-1 rounded-lg">
+                    <span className="absolute top-3 right-3 bg-accent text-primary-foreground text-[0.6rem] font-bold tracking-wider uppercase px-2.5 py-1 rounded-lg z-10">
                       {card.badge}
                     </span>
                   )}
                 </div>
-                <p className="text-[0.92rem] font-bold text-primary-foreground uppercase tracking-wide">{card.title}</p>
-                <p className="text-[0.78rem] text-primary-foreground/45 mt-1 leading-relaxed line-clamp-2">{card.desc}</p>
+                <p className="text-[0.82rem] font-bold text-primary-foreground uppercase tracking-wide">{card.title}</p>
+                <p className="text-[0.75rem] text-primary-foreground/40 mt-0.5 leading-relaxed line-clamp-2">{card.desc}</p>
               </Link>
             ))}
           </div>
