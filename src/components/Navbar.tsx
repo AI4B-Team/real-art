@@ -740,6 +740,11 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
         <Logo to={isLoggedIn ? "/dashboard" : "/"} />
       </div>
 
+        {isLoggedIn && (
+          <Link to="/about" className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors shrink-0">
+            <HelpCircle className="w-[17px] h-[17px] opacity-60" />
+          </Link>
+        )}
 
       {/* Mobile: 🔍 right */}
       <button onClick={() => setMobileSearchOpen(!mobileSearchOpen)} className="md:hidden w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
