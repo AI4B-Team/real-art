@@ -154,6 +154,8 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   const notifRef = useRef<HTMLDivElement>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   const helpRef = useRef<HTMLDivElement>(null);
+  const [creditInfoOpen, setCreditInfoOpen] = useState(false);
+  const creditRef = useRef<HTMLDivElement>(null);
   const unreadNotifs = notifications.filter(n => !n.read);
 
   const markAllNotifRead = () => {
