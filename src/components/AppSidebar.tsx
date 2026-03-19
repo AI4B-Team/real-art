@@ -323,7 +323,7 @@ const AppSidebar = () => {
             if (sidebarCollapsed) {
               return (
                 <button key={item.id} onClick={() => navigate("/dashboard")}
-                  className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors bg-accent text-accent-foreground"
+                  className="flex items-center justify-center py-2.5 rounded-xl w-full transition-colors bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"
                   title={activeWorkspace?.name || "Workspace"}
                 >
                   <LayoutDashboard className="w-4 h-4 shrink-0" />
