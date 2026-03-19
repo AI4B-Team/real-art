@@ -30,8 +30,7 @@ const CreateGallery = () => {
             {/* Left text block */}
             <div className="flex-shrink-0 md:w-[220px] flex flex-col justify-center">
               <h2 className="font-display text-[clamp(2rem,4vw,3rem)] font-black text-primary-foreground leading-[1.05] uppercase mb-2">
-                What Will You<br />
-                <span className="text-accent">Create<br />Today?</span>
+                What Will You <span className="text-accent">Create Today?</span>
               </h2>
               <p className="text-[0.78rem] text-primary-foreground/40 leading-relaxed mb-5">
                 Create authentic images and videos with natural texture and easy style
