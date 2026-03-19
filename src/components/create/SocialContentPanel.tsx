@@ -139,6 +139,16 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [showDrafts, setShowDrafts] = useState(true);
   const [posts] = useState(() => generateDummyPosts(currentMonth, currentYear));
   const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
+  const [showBrandPrompt, setShowBrandPrompt] = useState(false);
+
+  // Check if brand profile exists
+  const hasBrandProfile = (() => {
+    try {
+      const stored = localStorage.getItem("ra_brand_profile");
+      return stored ? JSON.parse(stored)?.completed === true : false;
+    } catch { return false; }
+  })();
+  const [brandEnabled, setBrandEnabled] = useState(hasBrandProfile);
 
   const togglePlatform = (id: string) => {
     setSelectedPlatforms(prev => {
