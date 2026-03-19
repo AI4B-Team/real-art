@@ -181,7 +181,7 @@ const AppSidebar = () => {
     };
   }, []);
 
-  // Close dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -190,10 +190,18 @@ const AppSidebar = () => {
         if (flyout && flyout.contains(target)) return;
         setCommunitiesOpen(false);
       }
+      // Workspace flyout
+      if (wsDropdownOpen) {
+        const wsFlyout = document.querySelector('[data-ws-flyout]');
+        const wsBtn = wsBtnRef.current;
+        if (wsFlyout && wsFlyout.contains(target)) return;
+        if (wsBtn && wsBtn.contains(target)) return;
+        setWsDropdownOpen(false);
+      }
     };
     document.addEventListener("click", handler);
     return () => document.removeEventListener("click", handler);
-  }, []);
+  }, [wsDropdownOpen]);
 
   const isDashboard = location.pathname === "/dashboard";
   const currentSection = isDashboard
