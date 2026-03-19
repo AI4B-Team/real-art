@@ -973,9 +973,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           )}
         </div>
 
-        {/* Social content panel — full width */}
+        {/* Social content panel — full width, break out of container */}
         {activePanel === "social" && showSocial && (
-          <div className="mt-3">
+          <div className="mt-3 -mx-5 md:-mx-10">
             <SocialContentPanel onClose={() => setActivePanel(null)} />
           </div>
         )}
