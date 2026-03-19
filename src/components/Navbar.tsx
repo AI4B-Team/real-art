@@ -733,7 +733,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       {!hideLogo && (
         <div className="hidden md:flex items-center gap-0 shrink-0">
           <Link to={isLoggedIn ? "/dashboard" : "/"} className="font-display text-xl font-black tracking-[0.06em] uppercase cursor-pointer no-underline shrink-0">
-            Real<span className="text-accent">.</span>Art
+            Real<span className="text-accent"> </span>Creator
           </Link>
         </div>
       )}
