@@ -977,32 +977,29 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
 
                     <div className="h-px bg-foreground/[0.06] my-2" />
 
-                    {/* Language & Theme in a muted card */}
-                    <div className="bg-foreground/[0.03] rounded-xl p-1">
-                      {/* Language row */}
-                      <button onClick={() => setMenuPanel("language")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
-                        <Languages className="w-[18px] h-[18px] text-muted shrink-0" />
-                        <span className="text-[0.84rem]">Language:</span>
-                        <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
-                          {currentLang.label}
-                          <ChevronRight className="w-3.5 h-3.5 opacity-40" />
-                        </span>
-                      </button>
-                      {/* Theme row */}
-                      <button onClick={() => setMenuPanel("theme")} className="flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
-                        <ThemeIcon className="w-[18px] h-[18px] text-muted shrink-0" />
-                        <span className="text-[0.84rem]">Theme:</span>
-                        <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
-                          {themeLabel}
-                          <ChevronRight className="w-3.5 h-3.5 opacity-40" />
-                        </span>
-                      </button>
+                    {/* Language row */}
+                    <button onClick={() => setMenuPanel("language")} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                      <Languages className="w-[18px] h-[18px] text-muted shrink-0" />
+                      <span className="text-[0.84rem]">Language:</span>
+                      <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
+                        {currentLang.label}
+                        <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+                      </span>
+                    </button>
+                    {/* Theme row */}
+                    <button onClick={() => setMenuPanel("theme")} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                      <ThemeIcon className="w-[18px] h-[18px] text-muted shrink-0" />
+                      <span className="text-[0.84rem]">Theme:</span>
+                      <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
+                        {themeLabel}
+                        <ChevronRight className="w-3.5 h-3.5 opacity-40" />
+                      </span>
+                    </button>
 
-                      {/* Join Affiliate */}
-                      <button onClick={() => { setUserMenuOpen(false); navigate("/affiliates"); }} className="flex items-center justify-center gap-2 w-full py-2 mt-1 rounded-lg border border-amber-400/40 text-amber-600 dark:text-amber-400 text-[0.82rem] font-medium hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors">
-                        Join Affiliate Program
-                      </button>
-                    </div>
+                    {/* Join Affiliate */}
+                    <button onClick={() => { setUserMenuOpen(false); navigate("/affiliates"); }} className="flex items-center justify-center gap-2 w-full py-2 mt-1 rounded-lg border border-amber-400/40 text-amber-600 dark:text-amber-400 text-[0.82rem] font-medium hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-colors">
+                      Join Affiliate Program
+                    </button>
 
                     {/* Log Out */}
                     <button onClick={handleLogout} className="flex items-center justify-center gap-2 w-full py-2.5 mt-3 rounded-lg bg-destructive text-destructive-foreground text-[0.84rem] font-semibold hover:bg-destructive/85 transition-colors">
