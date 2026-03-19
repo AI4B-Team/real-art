@@ -49,14 +49,13 @@ type Community = {
 
 const navItems: NavItem[] = [
   { id: "workspace", label: "Workspace", icon: LayoutDashboard, type: "route", href: "/dashboard" },
+  { id: "brand", label: "Brand", icon: Palette, type: "route", href: "/brand" },
   { id: "home", label: "Home", icon: Home, type: "route", href: "/home" },
   { id: "explore", label: "Explore", icon: Eye, type: "route", href: "/explore" },
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "collections-browse", label: "Collections", icon: FolderOpen, type: "route", href: "/collections" },
   { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
   { id: "challenges-browse", label: "Challenges", icon: Award, type: "route", href: "/challenges" },
-  { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
-  { id: "brand", label: "Brand", icon: Sparkles, type: "route", href: "/brand" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
   { id: "overview", label: "Insights", icon: Sparkles, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
