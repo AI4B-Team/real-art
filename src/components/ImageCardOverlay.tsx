@@ -147,7 +147,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
                 </button>
               </TooltipTrigger>
               <TooltipContent side="left" className="text-xs">
-                <p>{quickSaved ? "Saved!" : suggestedCol ? `Quick-save to "${suggestedCol.title}"` : "Save"}</p>
+                <p>{quickSaved ? "Saved!" : suggestedCol ? `Quick-Save To "${suggestedCol.title}"` : "Save"}</p>
               </TooltipContent>
             </Tooltip>
             <Tooltip>
