@@ -1,7 +1,7 @@
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Play } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const featureCards = [
   {
@@ -48,20 +48,17 @@ const featureCards = [
 
 const VideoCard = ({ card, index }: { card: typeof featureCards[0]; index: number }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
 
-  const handleMouseEnter = useCallback(() => {
-    setIsHovered(true);
-    videoRef.current?.play().catch(() => {});
-  }, []);
-
-  const handleMouseLeave = useCallback(() => {
-    setIsHovered(false);
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.currentTime = 0;
-    }
-  }, []);
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.playbackRate = 1.3;
+    const timer = setTimeout(() => {
+      video.play().catch(() => {});
+    }, index * 400);
+    return () => clearTimeout(timer);
+  }, [index]);
 
   return (
     <motion.div
@@ -72,39 +69,31 @@ const VideoCard = ({ card, index }: { card: typeof featureCards[0]; index: numbe
       <Link
         to={card.link}
         className="group flex-shrink-0 w-full no-underline block"
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
       >
         <div className="relative rounded-2xl overflow-hidden mb-3 border border-primary-foreground/[0.06]">
-          {/* Poster image */}
+          {/* Poster image (fallback) */}
           <img
             src={card.poster}
             alt={card.title}
-            className={`w-full h-[240px] object-cover transition-all duration-700 ${isHovered ? "opacity-0 scale-105" : "opacity-100 scale-100"}`}
+            className={`w-full h-[240px] object-cover transition-opacity duration-500 ${videoReady ? "opacity-0" : "opacity-100"}`}
           />
-          {/* Video layer */}
+          {/* Video layer — always playing */}
           <video
             ref={videoRef}
             src={card.video}
             muted
             loop
             playsInline
-            preload="none"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${isHovered ? "opacity-100" : "opacity-0"}`}
+            preload="auto"
+            onCanPlay={() => setVideoReady(true)}
+            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${videoReady ? "opacity-100" : "opacity-0"}`}
           />
           {/* Title overlay */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className={`absolute inset-0 transition-colors duration-500 ${isHovered ? "bg-black/10" : "bg-black/30"}`} />
+            <div className="absolute inset-0 bg-black/25 group-hover:bg-black/10 transition-colors duration-500" />
             <h3 className="relative font-display text-[clamp(1.6rem,2.2vw,2.4rem)] font-black text-primary-foreground tracking-tight leading-[1.1] text-center uppercase drop-shadow-lg px-4">
               {card.title}
             </h3>
-          </div>
-          {/* Play indicator on hover */}
-          <div className={`absolute bottom-3 left-3 flex items-center gap-1.5 transition-all duration-300 ${isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"}`}>
-            <div className="w-6 h-6 rounded-lg bg-primary-foreground/20 backdrop-blur-md flex items-center justify-center">
-              <Play className="w-3 h-3 text-primary-foreground fill-primary-foreground" />
-            </div>
-            <span className="text-[0.65rem] font-semibold text-primary-foreground/70 uppercase tracking-wider">Playing</span>
           </div>
           {card.badge && (
             <span className="absolute top-3 right-3 bg-accent text-primary-foreground text-[0.6rem] font-bold tracking-wider uppercase px-2.5 py-1 rounded-lg z-10">
@@ -133,13 +122,13 @@ const FeatureCarousel = () => {
       <div className="max-w-[1500px] mx-auto relative">
         <button
           onClick={() => scrollCarousel(-1)}
-          className="absolute left-4 top-[120px] z-20 w-9 h-9 rounded-full bg-primary-foreground/15 backdrop-blur-md flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 transition-colors border border-primary-foreground/10"
+          className="absolute left-4 top-[120px] z-20 w-9 h-9 rounded-lg bg-primary-foreground/15 backdrop-blur-md flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 transition-colors border border-primary-foreground/10"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
         <button
           onClick={() => scrollCarousel(1)}
-          className="absolute right-4 top-[120px] z-20 w-9 h-9 rounded-full bg-primary-foreground/15 backdrop-blur-md flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 transition-colors border border-primary-foreground/10"
+          className="absolute right-4 top-[120px] z-20 w-9 h-9 rounded-lg bg-primary-foreground/15 backdrop-blur-md flex items-center justify-center text-primary-foreground hover:bg-primary-foreground/30 transition-colors border border-primary-foreground/10"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
