@@ -67,6 +67,11 @@ const CollectionDetailPage = () => {
   const [activeFilter, setActiveFilter] = useState("Newest");
   const moreRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
+  const uploadInputRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  // Upload state
+  const [uploading, setUploading] = useState(false);
 
   // Access gate state
   const [accessTab, setAccessTab] = useState<"code" | "pay">("code");
