@@ -93,44 +93,67 @@ const AppSidebar = () => {
   const [wsAdding, setWsAdding] = useState(false);
   const wsBtnRef = useRef<HTMLButtonElement>(null);
   const [wsFlyoutPos, setWsFlyoutPos] = useState({ top: 0, left: 0 });
-
   const activeWorkspace = wsData.workspaces.find(w => w.id === wsData.activeId) || wsData.workspaces[0];
+
+  // Brand state
+  const [brandData, setBrandData] = useState(loadBrands);
+  const [brandDropdownOpen, setBrandDropdownOpen] = useState(false);
+  const [brandEditing, setBrandEditing] = useState<string | null>(null);
+  const [brandEditName, setBrandEditName] = useState("");
+  const [brandNewName, setBrandNewName] = useState("");
+  const [brandAdding, setBrandAdding] = useState(false);
+  const brandBtnRef = useRef<HTMLButtonElement>(null);
+  const [brandFlyoutPos, setBrandFlyoutPos] = useState({ top: 0, left: 0 });
+  const activeBrand = brandData.brands.find(b => b.id === brandData.activeId) || brandData.brands[0];
 
   const switchWorkspace = (id: string) => {
     const updated = { ...wsData, activeId: id };
-    setWsData(updated);
-    saveWorkspaces(updated);
-    setWsDropdownOpen(false);
-    navigate("/dashboard");
+    setWsData(updated); saveWorkspaces(updated);
+    setWsDropdownOpen(false); navigate("/dashboard");
   };
-
   const addWorkspace = () => {
     if (!wsNewName.trim()) return;
     const newWs: Workspace = { id: crypto.randomUUID(), name: wsNewName.trim() };
     const updated = { workspaces: [...wsData.workspaces, newWs], activeId: newWs.id };
-    setWsData(updated);
-    saveWorkspaces(updated);
-    setWsNewName("");
-    setWsAdding(false);
-    setWsDropdownOpen(false);
-    navigate("/dashboard");
+    setWsData(updated); saveWorkspaces(updated);
+    setWsNewName(""); setWsAdding(false); setWsDropdownOpen(false); navigate("/dashboard");
   };
-
   const renameWorkspace = (id: string) => {
     if (!wsEditName.trim()) { setWsEditing(null); return; }
     const updated = { ...wsData, workspaces: wsData.workspaces.map(w => w.id === id ? { ...w, name: wsEditName.trim() } : w) };
-    setWsData(updated);
-    saveWorkspaces(updated);
-    setWsEditing(null);
+    setWsData(updated); saveWorkspaces(updated); setWsEditing(null);
   };
-
   const deleteWorkspace = (id: string) => {
     if (wsData.workspaces.length <= 1) return;
     const remaining = wsData.workspaces.filter(w => w.id !== id);
     const newActive = wsData.activeId === id ? remaining[0].id : wsData.activeId;
     const updated = { workspaces: remaining, activeId: newActive };
-    setWsData(updated);
-    saveWorkspaces(updated);
+    setWsData(updated); saveWorkspaces(updated);
+  };
+
+  const switchBrand = (id: string) => {
+    const updated = { ...brandData, activeId: id };
+    setBrandData(updated); saveBrands(updated);
+    setBrandDropdownOpen(false); navigate("/brand");
+  };
+  const addBrand = () => {
+    if (!brandNewName.trim()) return;
+    const newB: Brand = { id: crypto.randomUUID(), name: brandNewName.trim() };
+    const updated = { brands: [...brandData.brands, newB], activeId: newB.id };
+    setBrandData(updated); saveBrands(updated);
+    setBrandNewName(""); setBrandAdding(false); setBrandDropdownOpen(false); navigate("/brand");
+  };
+  const renameBrand = (id: string) => {
+    if (!brandEditName.trim()) { setBrandEditing(null); return; }
+    const updated = { ...brandData, brands: brandData.brands.map(b => b.id === id ? { ...b, name: brandEditName.trim() } : b) };
+    setBrandData(updated); saveBrands(updated); setBrandEditing(null);
+  };
+  const deleteBrand = (id: string) => {
+    if (brandData.brands.length <= 1) return;
+    const remaining = brandData.brands.filter(b => b.id !== id);
+    const newActive = brandData.activeId === id ? remaining[0].id : brandData.activeId;
+    const updated = { brands: remaining, activeId: newActive };
+    setBrandData(updated); saveBrands(updated);
   };
 
   const [communities, setCommunities] = useState<Community[]>([
