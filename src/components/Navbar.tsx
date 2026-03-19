@@ -8,7 +8,8 @@ import {
   RefreshCw, Award, Eye, Check, ArrowRight, UserPlus,
   Clock, Flame, ArrowUpRight, Hash, Wand2, Film, Music2,
   Sun, Moon, Monitor, Languages, ChevronRight,
-  Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard
+  Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard,
+  CreditCard, Mail, UserPlus2, Zap, Power
 } from "lucide-react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "./Logo";
