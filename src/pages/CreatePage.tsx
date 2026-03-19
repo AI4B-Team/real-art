@@ -276,6 +276,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [selectedDuration, setSelectedDuration] = useState("10s");
   const [brandToggle, setBrandToggle] = useState(false);
+  const [contentGoal, setContentGoal] = useState("Engagement");
+  const [contentTone, setContentTone] = useState("Professional");
+  const [contentLanguage, setContentLanguage] = useState("English");
+  const [contentFrequency, setContentFrequency] = useState("Daily");
+  const [contentTime, setContentTime] = useState("9:00 AM");
+  const [contentStyle, setContentStyle] = useState("Informative");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
