@@ -854,6 +854,12 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
         )}
 
         {isLoggedIn && (
+          <Link to="/about" className="w-9 h-9 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors shrink-0 no-underline">
+            <HelpCircle className="w-[17px] h-[17px] opacity-60" />
+          </Link>
+        )}
+
+        {isLoggedIn && (
           <div className="relative" ref={notifRef}>
             <button onClick={() => { setNotifOpen(!notifOpen); setUserMenuOpen(false); }} className="relative w-9 h-9 rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors shrink-0">
               <Bell className="w-[17px] h-[17px] opacity-60" />
