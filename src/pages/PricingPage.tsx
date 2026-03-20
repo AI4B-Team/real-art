@@ -37,8 +37,8 @@ const PricingPage = () => {
     {
       name: "Creator",
       icon: Sparkles,
-      monthlyPrice: 29,
-      annualPrice: 23,
+      monthlyPrice: 47,
+      annualPrice: 38,
       description: "For serious creators who want full power",
       buttonText: "Start Free Trial",
       buttonVariant: "default" as const,
