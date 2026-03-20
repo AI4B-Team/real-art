@@ -422,7 +422,7 @@ const AccountPage = () => {
                       <Link to="/pricing">
                         <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Change Plan</button>
                       </Link>
-                      <button className="border border-foreground/[0.1] px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">Cancel</button>
+                      <button onClick={() => setShowCancelFlow(true)} className="border border-foreground/[0.1] px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">Cancel</button>
                     </div>
                   </div>
 
