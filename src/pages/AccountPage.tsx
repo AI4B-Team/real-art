@@ -3,7 +3,8 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import {
   User, Bell, Shield, Lock, DollarSign, Eye, EyeOff, Camera, Trash2, Check, MapPin, Image,
   Loader2, CreditCard, Zap, Clock, Mail, Smartphone, MessageSquare, Users, FileText, Globe,
-  Heart, Download, ArrowRight, ChevronRight, Info, Plus, X
+  Heart, Download, ArrowRight, ChevronRight, Info, Plus, X,
+  Settings, Share2, LayoutGrid, Bot, UserPlus, MailOpen, Plug, Grid3X3, Languages, Sun, Moon, ChevronDown
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -12,17 +13,24 @@ import { Switch } from "@/components/ui/switch";
 import { Progress } from "@/components/ui/progress";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import AdminTab from "@/components/account/AdminTab";
+import SecurityTab from "@/components/account/SecurityTab";
+import SocialTab from "@/components/account/SocialTab";
+import MembersTab from "@/components/account/MembersTab";
+import AgentTab from "@/components/account/AgentTab";
+import PlaceholderTab from "@/components/account/PlaceholderTab";
 
-type TabId = "profile" | "notifications" | "privacy" | "account" | "payouts" | "subscription";
+type TabId = "profile" | "admin" | "security" | "notifications" | "subscription" | "social" | "spaces" | "agent" | "members" | "invites" | "integrations" | "whitelabel" | "privacy" | "payouts";
 
 const AccountPage = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const tabParam = searchParams.get("tab");
+  const allTabIds: TabId[] = ["profile", "admin", "security", "notifications", "subscription", "social", "spaces", "agent", "members", "invites", "integrations", "whitelabel", "privacy", "payouts"];
   const [activeTab, setActiveTab] = useState<TabId>((tabParam as TabId) || "profile");
 
   useEffect(() => {
-    if (tabParam && ["profile", "notifications", "privacy", "account", "payouts", "subscription"].includes(tabParam)) {
+    if (tabParam && allTabIds.includes(tabParam as TabId)) {
       setActiveTab(tabParam as TabId);
     }
   }, [tabParam]);
@@ -42,12 +50,6 @@ const AccountPage = () => {
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [showCurrent, setShowCurrent] = useState(false);
-  const [showNew, setShowNew] = useState(false);
 
   // Enhanced notifications state
   const [notifSettings, setNotifSettings] = useState([
@@ -127,13 +129,6 @@ const AccountPage = () => {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleChangePassword = async () => {
-    if (newPassword !== confirmPassword || newPassword.length < 6) return;
-    await supabase.auth.updateUser({ password: newPassword });
-    setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
-    toast({ title: "Password updated", description: "Your password has been changed." });
-  };
-
   const handleAddEmail = () => {
     if (!newEmail.trim()) return;
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail)) {
@@ -149,13 +144,19 @@ const AccountPage = () => {
     toast({ title: "Email Added", description: "Additional recipient has been added." });
   };
 
-  const tabs: { id: TabId; label: string; icon: typeof User }[] = [
-    { id: "profile", label: "Profile", icon: User },
-    { id: "subscription", label: "Subscription", icon: CreditCard },
+  const tabs: { id: TabId; label: string; icon: typeof User; badge?: string }[] = [
+    { id: "profile", label: "Account", icon: Settings },
+    { id: "admin", label: "Admin", icon: Shield },
+    { id: "security", label: "Security", icon: Lock },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "privacy", label: "Privacy", icon: Shield },
-    { id: "account", label: "Security", icon: Lock },
-    { id: "payouts", label: "Payouts", icon: DollarSign },
+    { id: "subscription", label: "Subscription", icon: CreditCard, badge: "Free" },
+    { id: "social", label: "Social", icon: Share2 },
+    { id: "spaces", label: "Spaces", icon: LayoutGrid },
+    { id: "agent", label: "Agent", icon: Bot },
+    { id: "members", label: "Members", icon: Users },
+    { id: "invites", label: "Invites", icon: MailOpen },
+    { id: "integrations", label: "Integrations", icon: Plug },
+    { id: "whitelabel", label: "White Label", icon: Grid3X3 },
   ];
 
   const BIO_MAX = 200;
@@ -189,9 +190,13 @@ const AccountPage = () => {
                 <Link to="/pricing">
                   <button className="w-full bg-accent hover:bg-accent/90 text-white font-medium px-4 py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors">
                     <Zap className="w-4 h-4" />
-                    Upgrade Plan
+                    Upgrade
                   </button>
                 </Link>
+                <button onClick={() => handleTabChange("members")} className="w-full border border-foreground/[0.1] hover:bg-foreground/[0.03] font-medium px-4 py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors">
+                  <UserPlus className="w-4 h-4" />
+                  Add Members
+                </button>
               </div>
 
               {/* Navigation Menu */}
@@ -213,19 +218,41 @@ const AccountPage = () => {
                         <Icon className="w-5 h-5" />
                         <span className="text-sm font-medium">{t.label}</span>
                       </div>
-                      {t.id === "subscription" && (
+                      {t.badge && (
                         <span className="bg-foreground/[0.08] text-muted text-xs px-2 py-0.5 rounded-full">
-                          {planData.name}
+                          {t.badge}
                         </span>
                       )}
                     </button>
                   );
                 })}
               </nav>
+
+              {/* Footer: Language & Theme */}
+              <div className="border-t border-foreground/[0.06] pt-3 mt-2 space-y-2">
+                <div className="flex items-center justify-between px-3 py-2">
+                  <div className="flex items-center gap-2 text-sm text-muted">
+                    <Languages className="w-4 h-4" />
+                    <span>Language:</span>
+                  </div>
+                  <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
+                    English <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="flex items-center justify-between px-3 py-2">
+                  <div className="flex items-center gap-2 text-sm text-muted">
+                    <Sun className="w-4 h-4" />
+                    <span>Theme:</span>
+                  </div>
+                  <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
+                    Light <ChevronRight className="w-3.5 h-3.5" /> <ChevronDown className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* ─── Mobile Tabs (visible on smaller screens) ─── */}
+          {/* ─── Mobile Tabs ─── */}
           <div className="lg:hidden w-full">
             <div className="flex gap-2 mb-6 flex-wrap">
               {tabs.map(t => (
@@ -356,6 +383,12 @@ const AccountPage = () => {
               </div>
             )}
 
+            {/* ADMIN */}
+            {activeTab === "admin" && <AdminTab />}
+
+            {/* SECURITY */}
+            {activeTab === "security" && <SecurityTab />}
+
             {/* SUBSCRIPTION */}
             {activeTab === "subscription" && (
               <div className="space-y-6">
@@ -365,7 +398,6 @@ const AccountPage = () => {
 
                 <div className="border border-foreground/[0.08] rounded-xl p-5 space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {/* Current Plan Card */}
                     <div className="border-2 border-accent rounded-xl p-5 bg-accent/5 relative">
                       <span className="absolute top-3 right-3 bg-accent text-white text-xs font-medium px-2 py-1 rounded-full">Current</span>
                       <div className="flex items-center gap-2 text-sm text-muted mb-3">
@@ -387,7 +419,6 @@ const AccountPage = () => {
                       </div>
                     </div>
 
-                    {/* Usage Card */}
                     <div className="border border-foreground/[0.08] rounded-xl p-5">
                       <div className="flex items-center gap-2 text-sm text-muted mb-3">
                         <Image className="w-4 h-4" />
@@ -402,7 +433,6 @@ const AccountPage = () => {
                     </div>
                   </div>
 
-                  {/* Storage */}
                   <div className="border border-foreground/[0.08] rounded-xl p-5">
                     <div className="flex items-center justify-between mb-3">
                       <div>
@@ -422,7 +452,6 @@ const AccountPage = () => {
                   </div>
                 </div>
 
-                {/* Plan Comparison Teaser */}
                 <div className="border border-foreground/[0.08] rounded-xl p-6 text-center">
                   <h3 className="font-display text-base font-bold mb-2">Want more creative power?</h3>
                   <p className="text-sm text-muted mb-4 max-w-md mx-auto">
@@ -440,7 +469,6 @@ const AccountPage = () => {
             {/* NOTIFICATIONS */}
             {activeTab === "notifications" && (
               <div className="space-y-6">
-                {/* Header */}
                 <div className="border border-foreground/[0.08] rounded-xl overflow-hidden">
                   <div className="px-6 py-4 border-b border-foreground/[0.06] flex items-center justify-between">
                     <div>
@@ -559,7 +587,6 @@ const AccountPage = () => {
                         {setting.on && (
                           <div className="px-6 py-4 bg-foreground/[0.02] border-t border-foreground/[0.06]">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 ml-[52px]">
-                              {/* Frequency */}
                               <div>
                                 <div className="text-xs font-medium text-muted mb-3">Notification Frequency</div>
                                 <div className="flex gap-4">
@@ -575,7 +602,6 @@ const AccountPage = () => {
                                 </div>
                               </div>
 
-                              {/* Channels */}
                               <div>
                                 <div className="text-xs font-medium text-muted mb-3">Receive Via</div>
                                 <div className="flex gap-4">
@@ -612,18 +638,25 @@ const AccountPage = () => {
                   })}
                 </div>
 
-                {/* Info Footer */}
                 <div className="flex items-start gap-3 p-4 bg-blue-500/5 rounded-xl border border-blue-500/10">
                   <Info className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm text-blue-400">
                       Notification preferences are saved to your account and sync across all your devices.
-                      You can also manage notifications from the bell icon in the navigation bar.
                     </p>
                   </div>
                 </div>
               </div>
             )}
+
+            {/* SOCIAL */}
+            {activeTab === "social" && <SocialTab />}
+
+            {/* AGENT */}
+            {activeTab === "agent" && <AgentTab />}
+
+            {/* MEMBERS */}
+            {activeTab === "members" && <MembersTab />}
 
             {/* PRIVACY */}
             {activeTab === "privacy" && (
@@ -652,80 +685,29 @@ const AccountPage = () => {
               </div>
             )}
 
-            {/* ACCOUNT (Security) */}
-            {activeTab === "account" && (
-              <div className="space-y-6">
-                {/* Password Section */}
-                <div className="border border-foreground/[0.08] rounded-xl overflow-hidden">
-                  <div className="px-6 py-4 border-b border-foreground/[0.06]">
-                    <h3 className="text-base font-semibold">Password</h3>
-                  </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-medium mb-1.5">Current Password</label>
-                        <div className="relative">
-                          <input type={showCurrent ? "text" : "password"} value={currentPassword} onChange={e => setCurrentPassword(e.target.value)}
-                            placeholder="Enter Current Password"
-                            className="w-full bg-foreground/[0.03] border border-foreground/[0.1] rounded-lg px-4 py-2.5 text-sm pr-12 focus:outline-none focus:border-accent transition-colors" />
-                          <button onClick={() => setShowCurrent(!showCurrent)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors">
-                            {showCurrent ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                          </button>
-                        </div>
-                      </div>
-                      <div>
-                        <label className="block text-sm font-medium mb-1.5">New Password</label>
-                        <div className="relative">
-                          <input type={showNew ? "text" : "password"} value={newPassword} onChange={e => setNewPassword(e.target.value)}
-                            placeholder="Enter New Password"
-                            className="w-full bg-foreground/[0.03] border border-foreground/[0.1] rounded-lg px-4 py-2.5 text-sm pr-12 focus:outline-none focus:border-accent transition-colors" />
-                          <button onClick={() => setShowNew(!showNew)}
-                            className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground transition-colors">
-                            {showNew ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mt-6 flex justify-end">
-                      <button onClick={handleChangePassword}
-                        disabled={!newPassword || newPassword !== confirmPassword || newPassword.length < 6}
-                        className="bg-accent hover:bg-accent/90 text-white px-5 py-2.5 rounded-lg text-sm font-medium transition-colors disabled:opacity-50">
-                        Update Password
-                      </button>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Danger Zone */}
-                <div className="border border-red-500/20 rounded-xl overflow-hidden">
-                  <div className="px-6 py-4 border-b border-red-500/10">
-                    <h3 className="text-base font-semibold text-red-500">Danger Zone</h3>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-sm text-muted mb-4">Permanently delete your account and all associated data.</p>
-                    <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-red-500/30 text-red-500 text-sm font-medium hover:bg-red-500/[0.06] transition-colors">
-                      <Trash2 className="w-4 h-4" /> Delete Account
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
             {/* PAYOUTS */}
             {activeTab === "payouts" && (
-              <div className="space-y-6">
-                <div className="border border-foreground/[0.08] rounded-xl overflow-hidden">
-                  <div className="px-6 py-4 border-b border-foreground/[0.06]">
-                    <h2 className="text-base font-semibold">Payouts</h2>
-                  </div>
-                  <div className="p-6">
-                    <p className="text-sm text-muted max-w-md">
-                      Configure your payout method and view earnings history. This feature is coming soon.
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <PlaceholderTab title="Payouts" description="Configure your payout method and view earnings history." icon={DollarSign} />
+            )}
+
+            {/* SPACES */}
+            {activeTab === "spaces" && (
+              <PlaceholderTab title="Spaces" description="Manage your creative spaces and workspaces." icon={LayoutGrid} />
+            )}
+
+            {/* INVITES */}
+            {activeTab === "invites" && (
+              <PlaceholderTab title="Invites" description="Manage pending invitations sent to team members." icon={MailOpen} />
+            )}
+
+            {/* INTEGRATIONS */}
+            {activeTab === "integrations" && (
+              <PlaceholderTab title="Integrations" description="Connect third-party tools and services to your account." icon={Plug} />
+            )}
+
+            {/* WHITE LABEL */}
+            {activeTab === "whitelabel" && (
+              <PlaceholderTab title="White Label" description="Customize branding and appearance for your clients." icon={Grid3X3} />
             )}
           </div>
         </div>
