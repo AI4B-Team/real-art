@@ -1106,6 +1106,29 @@ export default function CreatePage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
   const [generated, setGenerated] = useState(false);
+  const [creations, setCreations] = useState<UserCreation[]>([]);
+  const [loadingCreations, setLoadingCreations] = useState(true);
+
+  // Fetch real user creations from DB
+  useEffect(() => {
+    let cancelled = false;
+    const fetchCreations = async () => {
+      setLoadingCreations(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setCreations([]); setLoadingCreations(false); return; }
+      const { data } = await supabase
+        .from("collection_images")
+        .select("id, image_url, title, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (!cancelled && data) {
+        setCreations(data.map(r => ({ ...r, type: "image" as MediaFilter, liked: false })));
+      }
+      if (!cancelled) setLoadingCreations(false);
+    };
+    fetchCreations();
+    return () => { cancelled = true; };
+  }, [generated]);
 
   // Advanced filter state
   const [filterLikes, setFilterLikes] = useState(false);
@@ -1126,8 +1149,8 @@ export default function CreatePage() {
   };
 
   const filteredCreations = mediaFilter === "all"
-    ? DUMMY_CREATIONS
-    : DUMMY_CREATIONS.filter(c => c.type === mediaFilter);
+    ? creations
+    : creations.filter(c => c.type === mediaFilter);
 
   return (
     <PageShell>
