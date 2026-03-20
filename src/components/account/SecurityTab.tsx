@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Eye, EyeOff, Trash2, Shield, ShieldCheck } from "lucide-react";
+import { Eye, EyeOff, Trash2, Shield, ShieldCheck, Users } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -122,5 +122,3 @@ export default function SecurityTab() {
     </div>
   );
 }
-
-import { Users } from "lucide-react";
