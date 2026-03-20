@@ -19,6 +19,7 @@ import SocialTab from "@/components/account/SocialTab";
 import MembersTab from "@/components/account/MembersTab";
 import AgentTab from "@/components/account/AgentTab";
 import PlaceholderTab from "@/components/account/PlaceholderTab";
+import CancellationFlow from "@/components/account/CancellationFlow";
 
 type TabId = "profile" | "admin" | "security" | "notifications" | "subscription" | "social" | "spaces" | "agent" | "members" | "invites" | "integrations" | "whitelabel" | "privacy" | "payouts";
 
