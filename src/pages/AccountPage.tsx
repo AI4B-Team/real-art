@@ -392,76 +392,177 @@ const AccountPage = () => {
             {/* SUBSCRIPTION */}
             {activeTab === "subscription" && (
               <div className="space-y-6">
+                {/* Header */}
+                <div>
+                  <h2 className="text-lg font-semibold">Subscription & Billing</h2>
+                  <p className="text-sm text-muted mt-1">Manage your subscription, team members, and billing history.</p>
+                </div>
+                <hr className="border-foreground/[0.06]" />
+
+                {/* Subscription + Manage Billing */}
                 <div className="flex items-center justify-between">
-                  <h2 className="text-lg font-semibold">Subscription</h2>
+                  <h3 className="text-base font-semibold">Subscription</h3>
+                  <button className="flex items-center gap-2 border border-foreground/[0.1] px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">
+                    <FileText className="w-4 h-4" /> Manage Billing
+                  </button>
                 </div>
 
-                <div className="border border-foreground/[0.08] rounded-xl p-5 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="border-2 border-accent rounded-xl p-5 bg-accent/5 relative">
-                      <span className="absolute top-3 right-3 bg-accent text-white text-xs font-medium px-2 py-1 rounded-full">Current</span>
-                      <div className="flex items-center gap-2 text-sm text-muted mb-3">
-                        <Zap className="w-4 h-4 text-accent" />
-                        Current Plan
-                      </div>
-                      <div className="mb-1">
-                        <span className="text-2xl font-bold">{planData.name}</span>
-                      </div>
-                      <p className="text-sm text-muted mb-4">
-                        {planData.price === 0 ? "Free forever" : `$${planData.price}/month`}
-                      </p>
-                      <div className="flex gap-2">
-                        <Link to="/pricing">
-                          <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                            Change Plan
-                          </button>
-                        </Link>
-                      </div>
+                {/* Current Plan + Add-On */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border-2 border-accent rounded-xl p-5 bg-accent/5 relative">
+                    <span className="absolute top-3 right-3 bg-accent text-white text-xs font-medium px-2.5 py-1 rounded-full">Current</span>
+                    <div className="flex items-center gap-2 text-sm text-muted mb-2">
+                      <Zap className="w-4 h-4 text-accent" /> Current Plan
                     </div>
+                    <div className="text-2xl font-bold mb-0.5">Pro</div>
+                    <p className="text-sm text-muted mb-4">$47/Month</p>
+                    <div className="flex gap-2">
+                      <Link to="/pricing">
+                        <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Change Plan</button>
+                      </Link>
+                      <button className="border border-foreground/[0.1] px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">Cancel</button>
+                    </div>
+                  </div>
 
-                    <div className="border border-foreground/[0.08] rounded-xl p-5">
-                      <div className="flex items-center gap-2 text-sm text-muted mb-3">
-                        <Image className="w-4 h-4" />
-                        AI Credits
-                      </div>
-                      <div className="mb-1">
-                        <span className="text-2xl font-bold">{credits.used}/{credits.total}</span>
-                      </div>
-                      <p className="text-sm text-muted mb-3">Images generated this month</p>
-                      <Progress value={creditPct} className="h-1.5 mb-1 [&>div]:bg-accent" />
-                      <p className="text-xs text-muted">Credits refill on {credits.refillDate}</p>
+                  <div className="border-2 border-yellow-400/60 rounded-xl p-5 bg-yellow-50/50">
+                    <div className="flex items-center gap-2 text-sm text-yellow-700 mb-2">
+                      <Gift className="w-4 h-4" /> Optional Add-On
+                    </div>
+                    <div className="text-2xl font-bold mb-0.5">2 Packs</div>
+                    <p className="text-sm text-muted mb-4">$15/Pack/Month</p>
+                    <button className="w-full bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Add Credits Pack</button>
+                  </div>
+                </div>
+
+                {/* Spaces + Seats */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="border border-foreground/[0.08] rounded-xl p-5">
+                    <div className="flex items-center gap-2 text-sm text-muted mb-2">
+                      <LayoutGrid className="w-4 h-4" /> Spaces
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger><Info className="w-3.5 h-3.5 text-muted" /></TooltipTrigger>
+                          <TooltipContent>Workspaces for organizing your projects</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                    </div>
+                    <div className="text-3xl font-bold mb-1">3</div>
+                    <Progress value={66} className="h-1.5 mb-2 [&>div]:bg-accent" />
+                    <p className="text-xs text-muted mb-4">2 of 3 Spaces In Use</p>
+                    <div className="flex gap-2">
+                      <button className="flex items-center gap-1.5 border border-foreground/[0.1] px-3 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">
+                        <Settings className="w-3.5 h-3.5" /> Manage Spaces
+                      </button>
+                      <button className="flex items-center gap-1.5 border border-foreground/[0.1] px-3 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">
+                        <Plus className="w-3.5 h-3.5" /> Add Space
+                      </button>
                     </div>
                   </div>
 
                   <div className="border border-foreground/[0.08] rounded-xl p-5">
-                    <div className="flex items-center justify-between mb-3">
-                      <div>
-                        <div className="flex items-center gap-2 text-sm text-muted mb-1">
-                          <FileText className="w-4 h-4" />
-                          Storage
-                        </div>
-                        <span className="text-lg font-bold">32 MB / 500 MB</span>
-                      </div>
-                      <Link to="/pricing">
-                        <button className="text-accent text-sm font-medium hover:underline">
-                          Get more storage →
-                        </button>
-                      </Link>
+                    <div className="flex items-center gap-2 text-sm text-muted mb-2">
+                      <Users className="w-4 h-4" /> Seats
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger><Info className="w-3.5 h-3.5 text-muted" /></TooltipTrigger>
+                          <TooltipContent>Team member seats on your plan</TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
-                    <Progress value={6.4} className="h-1.5 [&>div]:bg-accent" />
+                    <div className="text-3xl font-bold mb-1">3</div>
+                    <Progress value={66} className="h-1.5 mb-2 [&>div]:bg-accent" />
+                    <p className="text-xs text-muted mb-4">2 of 3 Seats Being Used</p>
+                    <div className="flex gap-2">
+                      <button className="flex items-center gap-1.5 border border-foreground/[0.1] px-3 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">
+                        <Settings className="w-3.5 h-3.5" /> Manage Seats
+                      </button>
+                      <button className="flex items-center gap-1.5 border border-foreground/[0.1] px-3 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">
+                        <UserPlus className="w-3.5 h-3.5" /> Invite Members
+                      </button>
+                    </div>
                   </div>
                 </div>
 
-                <div className="border border-foreground/[0.08] rounded-xl p-6 text-center">
-                  <h3 className="font-display text-base font-bold mb-2">Want more creative power?</h3>
-                  <p className="text-sm text-muted mb-4 max-w-md mx-auto">
-                    Upgrade to unlock unlimited AI generation, private collections, ad campaigns, and more.
-                  </p>
-                  <Link to="/pricing">
-                    <button className="bg-foreground text-primary-foreground px-6 py-2.5 rounded-lg text-sm font-semibold hover:bg-accent transition-colors inline-flex items-center gap-2">
-                      View All Plans <ArrowRight className="w-4 h-4" />
+                {/* Team Shared Credits */}
+                <div className="border border-foreground/[0.08] rounded-xl p-5">
+                  <h3 className="text-base font-semibold mb-1">Team Shared Credits</h3>
+                  <p className="text-sm text-muted mb-3">Credits Left</p>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <Zap className="w-4 h-4 text-accent" />
+                      <span className="text-lg font-bold text-accent">10,000/98,000</span>
+                    </div>
+                    <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Add Credits</button>
+                  </div>
+                  <p className="text-xs text-muted mb-2">Your monthly credits will be refilled on Jan 18. <button className="text-accent hover:underline">Read More</button></p>
+                  <Progress value={10} className="h-1.5 [&>div]:bg-accent" />
+                </div>
+
+                {/* Payment Method */}
+                <div className="border border-foreground/[0.08] rounded-xl p-5">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-base font-semibold">Payment Method</h3>
+                    <button className="text-sm font-medium text-muted hover:text-foreground transition-colors">Edit</button>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="bg-blue-600 text-white text-[10px] font-bold px-2 py-1 rounded">VISA</div>
+                    <div>
+                      <p className="text-sm font-medium">•••• •••• •••• 4242</p>
+                      <p className="text-xs text-muted">Expires 12/2025</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Recent Invoices */}
+                <div className="border border-foreground/[0.08] rounded-xl overflow-hidden">
+                  <div className="p-5 pb-0">
+                    <h3 className="text-base font-semibold mb-4">Recent Invoices</h3>
+                  </div>
+                  <div className="divide-y divide-foreground/[0.06]">
+                    {[
+                      { month: "December 2025", date: "Dec 1, 2025", amount: "$47.00" },
+                      { month: "November 2025", date: "Nov 1, 2025", amount: "$47.00" },
+                      { month: "October 2025", date: "Oct 1, 2025", amount: "$47.00" },
+                    ].map(inv => (
+                      <div key={inv.month} className="flex items-center justify-between px-5 py-3.5">
+                        <div>
+                          <p className="text-sm font-medium">{inv.month}</p>
+                          <p className="text-xs text-muted">Paid on {inv.date}</p>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <span className="text-sm font-medium">{inv.amount}</span>
+                          <button className="text-sm text-accent hover:underline">Download</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="p-3">
+                    <button className="w-full border border-foreground/[0.08] rounded-lg py-2.5 text-sm font-medium text-muted hover:text-foreground hover:bg-foreground/[0.03] transition-colors">
+                      View All Invoices
                     </button>
-                  </Link>
+                  </div>
+                </div>
+
+                {/* Cancel Subscription */}
+                <div className="border border-red-200 bg-red-50/50 rounded-xl p-5">
+                  <h3 className="text-base font-semibold mb-2">Cancel Subscription</h3>
+                  <p className="text-sm text-muted mb-4">
+                    If you cancel your subscription, you'll lose access to all premium features at the end of your current billing period. Your account will be downgraded to the free plan.
+                  </p>
+                  <div className="border border-red-200 bg-white rounded-lg p-4 mb-4">
+                    <p className="text-sm font-medium mb-2">What you'll lose:</p>
+                    <ul className="space-y-1.5">
+                      {["100,000 monthly credits (reduced to 10,000)", "Priority support", "Advanced analytics", "White-label options"].map(item => (
+                        <li key={item} className="flex items-center gap-2 text-sm text-muted">
+                          <X className="w-4 h-4 text-red-500 shrink-0" /> {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancel Subscription</button>
+                    <span className="text-xs text-muted">Access continues until Feb 1, 2026</span>
+                  </div>
                 </div>
               </div>
             )}
