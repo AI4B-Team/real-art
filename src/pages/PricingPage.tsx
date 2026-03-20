@@ -48,8 +48,8 @@ const PricingPage = () => {
     {
       name: "Pro",
       icon: Crown,
-      monthlyPrice: 79,
-      annualPrice: 63,
+      monthlyPrice: 97,
+      annualPrice: 78,
       description: "For professionals and teams",
       buttonText: "Start Free Trial",
       buttonVariant: "outline" as const,
