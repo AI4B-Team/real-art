@@ -109,6 +109,7 @@ const App = () => (
 
             {/* Round 4 — Company */}
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
             <Route path="/license" element={<LicensePage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
