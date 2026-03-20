@@ -52,6 +52,7 @@ const AccountPage = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showCancelFlow, setShowCancelFlow] = useState(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
   // Enhanced notifications state
   const [notifSettings, setNotifSettings] = useState([
@@ -175,82 +176,107 @@ const AccountPage = () => {
 
         <div className="flex gap-8 items-start">
           {/* ─── Left Sidebar ─── */}
-          <div className="hidden lg:block w-72 shrink-0">
-            <div className="border border-foreground/[0.08] rounded-xl p-4 flex flex-col gap-4 sticky top-24">
+          <div className="hidden lg:block shrink-0">
+            <div className={`border border-foreground/[0.08] rounded-xl p-4 flex flex-col gap-4 sticky top-24 transition-all duration-300 overflow-hidden ${sidebarExpanded ? "w-72" : "w-[68px]"}`}>
+              {/* Toggle */}
+              <button
+                onClick={() => setSidebarExpanded(!sidebarExpanded)}
+                className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.05] text-muted hover:text-foreground transition-colors self-end"
+                title={sidebarExpanded ? "Collapse" : "Expand"}
+              >
+                <ChevronRight className={`w-4 h-4 transition-transform duration-300 ${sidebarExpanded ? "rotate-180" : ""}`} />
+              </button>
+
               {/* User Card */}
-              <div className="flex flex-col items-center text-center pb-4">
-                <div className="w-16 h-16 rounded-full bg-accent/15 flex items-center justify-center text-accent text-xl font-bold overflow-hidden mb-3 border-2 border-accent">
+              <div className={`flex flex-col items-center text-center ${sidebarExpanded ? "pb-4" : "pb-2"}`}>
+                <div className={`rounded-full bg-accent/15 flex items-center justify-center text-accent font-bold overflow-hidden border-2 border-accent transition-all duration-300 ${sidebarExpanded ? "w-16 h-16 text-xl mb-3" : "w-10 h-10 text-sm mb-1"}`}>
                   {avatarUrl
                     ? <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
                     : (displayName || "U").charAt(0).toUpperCase()}
                 </div>
-                <h3 className="font-semibold text-lg">{displayName || "User"}</h3>
-                <p className="text-sm text-muted">{email || "No email"}</p>
+                {sidebarExpanded && (
+                  <>
+                    <h3 className="font-semibold text-lg">{displayName || "User"}</h3>
+                    <p className="text-sm text-muted">{email || "No email"}</p>
+                  </>
+                )}
               </div>
 
-              <div className="flex flex-col gap-2">
-                <Link to="/pricing">
-                  <button className="w-full bg-accent hover:bg-accent/90 text-white font-medium px-4 py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors">
-                    <Zap className="w-4 h-4" />
-                    Upgrade
+              {sidebarExpanded && (
+                <div className="flex flex-col gap-2">
+                  <Link to="/pricing">
+                    <button className="w-full bg-accent hover:bg-accent/90 text-white font-medium px-4 py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors">
+                      <Zap className="w-4 h-4" />
+                      Upgrade
+                    </button>
+                  </Link>
+                  <button onClick={() => handleTabChange("members")} className="w-full border border-foreground/[0.1] hover:bg-foreground/[0.03] font-medium px-4 py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors">
+                    <UserPlus className="w-4 h-4" />
+                    Add Members
                   </button>
-                </Link>
-                <button onClick={() => handleTabChange("members")} className="w-full border border-foreground/[0.1] hover:bg-foreground/[0.03] font-medium px-4 py-2.5 rounded-lg text-sm flex items-center justify-center gap-2 transition-colors">
-                  <UserPlus className="w-4 h-4" />
-                  Add Members
-                </button>
-              </div>
+                </div>
+              )}
 
               {/* Navigation Menu */}
               <nav className="flex flex-col gap-1 mt-2">
+                <TooltipProvider delayDuration={100}>
                 {tabs.map(t => {
                   const Icon = t.icon;
                   const isActive = activeTab === t.id;
                   return (
-                    <button
-                      key={t.id}
-                      onClick={() => handleTabChange(t.id)}
-                      className={`flex items-center justify-between w-full px-3 py-2.5 rounded-lg transition-colors ${
-                        isActive
-                          ? "bg-accent/10 text-accent"
-                          : "text-muted hover:bg-foreground/[0.05] hover:text-foreground"
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <Icon className="w-5 h-5" />
-                        <span className="text-sm font-medium">{t.label}</span>
-                      </div>
-                      {t.badge && (
-                        <span className="bg-foreground/[0.08] text-muted text-xs px-2 py-0.5 rounded-full">
-                          {t.badge}
-                        </span>
+                    <Tooltip key={t.id}>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => handleTabChange(t.id)}
+                          className={`flex items-center ${sidebarExpanded ? "justify-between" : "justify-center"} w-full px-3 py-2.5 rounded-lg transition-colors ${
+                            isActive
+                              ? "bg-accent/10 text-accent"
+                              : "text-muted hover:bg-foreground/[0.05] hover:text-foreground"
+                          }`}
+                        >
+                          <div className={`flex items-center ${sidebarExpanded ? "gap-3" : ""}`}>
+                            <Icon className="w-5 h-5 shrink-0" />
+                            {sidebarExpanded && <span className="text-sm font-medium whitespace-nowrap">{t.label}</span>}
+                          </div>
+                          {sidebarExpanded && t.badge && (
+                            <span className="bg-foreground/[0.08] text-muted text-xs px-2 py-0.5 rounded-full">
+                              {t.badge}
+                            </span>
+                          )}
+                        </button>
+                      </TooltipTrigger>
+                      {!sidebarExpanded && (
+                        <TooltipContent side="right">{t.label}</TooltipContent>
                       )}
-                    </button>
+                    </Tooltip>
                   );
                 })}
+                </TooltipProvider>
               </nav>
 
               {/* Footer: Language & Theme */}
-              <div className="border-t border-foreground/[0.06] pt-3 mt-2 space-y-2">
-                <div className="flex items-center justify-between px-3 py-2">
-                  <div className="flex items-center gap-2 text-sm text-muted">
-                    <Languages className="w-4 h-4" />
-                    <span>Language:</span>
+              {sidebarExpanded && (
+                <div className="border-t border-foreground/[0.06] pt-3 mt-2 space-y-2">
+                  <div className="flex items-center justify-between px-3 py-2">
+                    <div className="flex items-center gap-2 text-sm text-muted">
+                      <Languages className="w-4 h-4" />
+                      <span>Language:</span>
+                    </div>
+                    <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
+                      English <ChevronRight className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
-                    English <ChevronRight className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-                <div className="flex items-center justify-between px-3 py-2">
-                  <div className="flex items-center gap-2 text-sm text-muted">
-                    <Sun className="w-4 h-4" />
-                    <span>Theme:</span>
+                  <div className="flex items-center justify-between px-3 py-2">
+                    <div className="flex items-center gap-2 text-sm text-muted">
+                      <Sun className="w-4 h-4" />
+                      <span>Theme:</span>
+                    </div>
+                    <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
+                      Light <ChevronRight className="w-3.5 h-3.5" /> <ChevronDown className="w-3.5 h-3.5" />
+                    </button>
                   </div>
-                  <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
-                    Light <ChevronRight className="w-3.5 h-3.5" /> <ChevronDown className="w-3.5 h-3.5" />
-                  </button>
                 </div>
-              </div>
+              )}
             </div>
           </div>
 
