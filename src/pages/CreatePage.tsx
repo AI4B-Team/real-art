@@ -1037,7 +1037,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
 /* ─── Gallery card ───────────────────────────────────────────── */
 
-function CreationCard({ item }: { item: typeof DUMMY_CREATIONS[0] }) {
+function CreationCard({ item }: { item: UserCreation }) {
   const [liked, setLiked] = useState(item.liked);
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
@@ -1051,7 +1051,7 @@ function CreationCard({ item }: { item: typeof DUMMY_CREATIONS[0] }) {
 
   return (
     <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03]">
-      <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.title} className="w-full aspect-square object-cover" />
+      <img src={item.image_url} alt={item.title || "Creation"} className="w-full aspect-square object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       <div className={`absolute top-2 left-2 text-white text-[0.62rem] font-bold px-2 py-0.5 rounded-md ${typeColors[item.type] || "bg-black/50"} backdrop-blur-sm`}>{item.type.toUpperCase()}</div>
       <button onClick={() => setLiked(v => !v)} className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all ${liked ? "bg-accent text-white scale-110" : "bg-black/30 text-white opacity-0 group-hover:opacity-100"}`}>
@@ -1059,14 +1059,13 @@ function CreationCard({ item }: { item: typeof DUMMY_CREATIONS[0] }) {
       </button>
       <div className="absolute bottom-2 left-2 right-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <div className="flex-1 min-w-0">
-          <p className="text-[0.7rem] text-white font-medium truncate">{item.title}</p>
-          <p className="text-[0.62rem] text-white/60">{item.model}</p>
+          <p className="text-[0.7rem] text-white font-medium truncate">{item.title || "Untitled"}</p>
         </div>
         <button onClick={() => { setSaved(v => !v); toast({ title: saved ? "Removed from collection" : "Saved to collection!" }); }}
           className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
           <Bookmark size={11} className={saved ? "fill-current" : ""} />
         </button>
-        <a href={`https://images.unsplash.com/${item.photo}?w=2000&q=90`} download className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
+        <a href={item.image_url} download className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
           <Download size={11} />
         </a>
       </div>
