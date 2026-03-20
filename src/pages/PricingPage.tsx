@@ -17,33 +17,54 @@ const PricingPage = () => {
       icon: Zap,
       monthlyPrice: 0,
       annualPrice: 0,
-      description: "Explore and discover AI art for free",
+      description: "Perfect for trying out the platform",
       buttonText: "Get Started Free",
       buttonVariant: "outline" as const,
       popular: false,
       href: "/signup",
+      iconColor: "bg-blue-600",
+      highlights: [
+        "10 AI images/month",
+        "2 AI videos/month",
+        "Basic video editor",
+        "500 MB storage",
+      ],
     },
     {
       name: "Starter",
       icon: Star,
       monthlyPrice: 9,
       annualPrice: 7,
-      description: "For individuals starting their creative journey",
-      buttonText: "Start Free Trial",
+      description: "Great for individuals getting started",
+      buttonText: "Start Free",
       buttonVariant: "outline" as const,
       popular: false,
       href: "/signup?plan=starter",
+      iconColor: "bg-green-500",
+      highlights: [
+        "100 AI images/month",
+        "20 AI videos/month",
+        "Voice cloning (3 voices)",
+        "5 GB storage",
+      ],
     },
     {
       name: "Creator",
       icon: Sparkles,
       monthlyPrice: 47,
       annualPrice: 38,
-      description: "For serious creators who want full power",
-      buttonText: "Start Free Trial",
+      description: "For creators who want to grow faster",
+      buttonText: "Start Free",
       buttonVariant: "default" as const,
       popular: true,
       href: "/signup?plan=creator",
+      iconColor: "bg-accent",
+      highlights: [
+        "500 AI images/month",
+        "100 AI videos/month",
+        "AI Agents (3 automations)",
+        "50 GB storage",
+      ],
     },
     {
       name: "Pro",
@@ -51,10 +72,17 @@ const PricingPage = () => {
       monthlyPrice: 97,
       annualPrice: 78,
       description: "For professionals and teams",
-      buttonText: "Start Free Trial",
+      buttonText: "Start Free",
       buttonVariant: "outline" as const,
       popular: false,
       href: "/signup?plan=pro",
+      iconColor: "bg-amber-500",
+      highlights: [
+        "Unlimited AI generation",
+        "White label & API access",
+        "10 team members",
+        "500 GB storage",
+      ],
     },
   ];
 
@@ -186,7 +214,7 @@ const PricingPage = () => {
               Choose Your Plan
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Start for free. Upgrade when you need more power. Cancel anytime.
+              Start For Free. Upgrade When You Need More Power. Cancel Anytime.
             </p>
 
             {/* Billing Toggle */}
@@ -214,10 +242,11 @@ const PricingPage = () => {
         {/* Pricing Cards */}
         <section className="px-4 sm:px-6 lg:px-8 pb-16">
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {plans.map((plan) => {
                 const Icon = plan.icon;
                 const price = isAnnual ? plan.annualPrice : plan.monthlyPrice;
+                const annualTotal = plan.annualPrice * 12;
 
                 return (
                   <Card
@@ -231,12 +260,7 @@ const PricingPage = () => {
                     )}
 
                     <div className="flex items-center gap-3 mb-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
-                        plan.name === "Free" ? "bg-muted" :
-                        plan.name === "Starter" ? "bg-blue-500" :
-                        plan.name === "Creator" ? "bg-accent" :
-                        "bg-amber-500"
-                      }`}>
+                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${plan.iconColor}`}>
                         <Icon className="h-5 w-5 text-white" />
                       </div>
                       <h3 className="text-xl font-semibold">{plan.name}</h3>
@@ -250,7 +274,7 @@ const PricingPage = () => {
                       {isAnnual && plan.monthlyPrice > 0 && (
                         <p className="text-sm text-muted-foreground mt-1">
                           <span className="line-through text-muted-foreground/60">${plan.monthlyPrice}/mo</span>
-                          {" "}· Billed annually (${price * 12}/yr)
+                          {" "}· Billed annually (${annualTotal}/year)
                         </p>
                       )}
                       {!isAnnual && plan.monthlyPrice > 0 && (
@@ -275,38 +299,12 @@ const PricingPage = () => {
                     </Link>
 
                     <ul className="space-y-2 text-sm">
-                      {plan.name === "Free" && (
-                        <>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />5 AI images/month</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />3 public collections</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />Community access</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />500 MB storage</li>
-                        </>
-                      )}
-                      {plan.name === "Starter" && (
-                        <>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />100 AI images/month</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />20 collections</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />Custom characters (3)</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />5 GB storage</li>
-                        </>
-                      )}
-                      {plan.name === "Creator" && (
-                        <>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />500 AI images/month</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />Unlimited collections</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />Run ad campaigns</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />50 GB storage</li>
-                        </>
-                      )}
-                      {plan.name === "Pro" && (
-                        <>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />Unlimited AI generation</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />API access</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />0% transaction fee</li>
-                          <li className="flex items-center gap-2"><Check className="h-4 w-4 text-green-500" />500 GB storage</li>
-                        </>
-                      )}
+                      {plan.highlights.map((item, i) => (
+                        <li key={i} className="flex items-center gap-2">
+                          <Check className="h-4 w-4 text-green-500 shrink-0" />
+                          {item}
+                        </li>
+                      ))}
                     </ul>
                   </Card>
                 );
