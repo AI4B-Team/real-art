@@ -1,15 +1,31 @@
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { User, Bell, Shield, Lock, DollarSign, Eye, EyeOff, Camera, Trash2, Check, MapPin, Image, Loader2 } from "lucide-react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { User, Bell, Shield, Lock, DollarSign, Eye, EyeOff, Camera, Trash2, Check, MapPin, Image, Loader2, CreditCard, Zap, Clock, Mail, Smartphone, Video, MessageSquare, Users, FileText, Globe, Heart, Download, ArrowRight } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import { Switch } from "@/components/ui/switch";
+import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
 
-type TabId = "profile" | "notifications" | "privacy" | "account" | "payouts";
+type TabId = "profile" | "notifications" | "privacy" | "account" | "payouts" | "subscription";
 
 const AccountPage = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<TabId>("profile");
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get("tab");
+  const [activeTab, setActiveTab] = useState<TabId>((tabParam as TabId) || "profile");
+
+  useEffect(() => {
+    if (tabParam && ["profile", "notifications", "privacy", "account", "payouts", "subscription"].includes(tabParam)) {
+      setActiveTab(tabParam as TabId);
+    }
+  }, [tabParam]);
+
+  const handleTabChange = (tab: TabId) => {
+    setActiveTab(tab);
+    navigate(`/account?tab=${tab}`, { replace: true });
+  };
 
   const [displayName, setDisplayName] = useState("");
   const [username, setUsername] = useState("");
@@ -28,11 +44,22 @@ const AccountPage = () => {
   const [showCurrent, setShowCurrent] = useState(false);
   const [showNew, setShowNew] = useState(false);
 
-  const [notifLikes, setNotifLikes] = useState(true);
-  const [notifComments, setNotifComments] = useState(true);
-  const [notifFollows, setNotifFollows] = useState(true);
-  const [notifDownloads, setNotifDownloads] = useState(false);
-  const [notifNewsletter, setNotifNewsletter] = useState(true);
+  // Enhanced notifications state
+  const [notifSettings, setNotifSettings] = useState([
+    { id: "likes", title: "Likes", desc: "When someone likes your image", icon: Heart, on: true, frequency: "immediately" as const, channels: { email: true, push: true, inApp: true } },
+    { id: "comments", title: "Comments", desc: "When someone comments on your image", icon: MessageSquare, on: true, frequency: "immediately" as const, channels: { email: true, push: true, inApp: true } },
+    { id: "follows", title: "New Followers", desc: "When someone follows you", icon: Users, on: true, frequency: "immediately" as const, channels: { email: false, push: true, inApp: true } },
+    { id: "downloads", title: "Downloads", desc: "When your images are downloaded", icon: Download, on: false, frequency: "daily" as const, channels: { email: true, push: false, inApp: true } },
+    { id: "challenges", title: "Challenges", desc: "New challenges, deadlines, and results", icon: Zap, on: true, frequency: "immediately" as const, channels: { email: true, push: true, inApp: true } },
+    { id: "collections", title: "Collections", desc: "When your work is saved to collections", icon: Image, on: true, frequency: "daily" as const, channels: { email: true, push: false, inApp: true } },
+    { id: "community", title: "Community Updates", desc: "New posts and activity in your communities", icon: Globe, on: true, frequency: "daily" as const, channels: { email: true, push: false, inApp: true } },
+    { id: "billing", title: "Billing & Subscription", desc: "Payment confirmations and usage alerts", icon: FileText, on: true, frequency: "immediately" as const, channels: { email: true, push: false, inApp: true } },
+    { id: "newsletter", title: "Newsletter", desc: "Weekly digest and platform updates", icon: Mail, on: true, frequency: "daily" as const, channels: { email: true, push: false, inApp: false } },
+  ]);
+  const [doNotDisturb, setDoNotDisturb] = useState(false);
+  const [quietHoursEnabled, setQuietHoursEnabled] = useState(false);
+  const [quietHoursStart, setQuietHoursStart] = useState("22:00");
+  const [quietHoursEnd, setQuietHoursEnd] = useState("08:00");
 
   const [profilePublic, setProfilePublic] = useState(true);
   const [showActivity, setShowActivity] = useState(true);
@@ -68,7 +95,6 @@ const AccountPage = () => {
   const handleSaveProfile = async () => {
     setSaving(true);
     try {
-      // Always persist to localStorage so the rest of the app picks it up
       localStorage.setItem("ra_display", displayName);
       localStorage.setItem("ra_username", username);
       window.dispatchEvent(new Event("ra_auth_changed"));
@@ -98,10 +124,12 @@ const AccountPage = () => {
     if (newPassword !== confirmPassword || newPassword.length < 6) return;
     await supabase.auth.updateUser({ password: newPassword });
     setCurrentPassword(""); setNewPassword(""); setConfirmPassword("");
+    toast({ title: "Password updated", description: "Your password has been changed." });
   };
 
   const tabs: { id: TabId; label: string; icon: typeof User }[] = [
     { id: "profile", label: "Profile", icon: User },
+    { id: "subscription", label: "Subscription", icon: CreditCard },
     { id: "notifications", label: "Notifications", icon: Bell },
     { id: "privacy", label: "Privacy", icon: Shield },
     { id: "account", label: "Account", icon: Lock },
@@ -116,17 +144,21 @@ const AccountPage = () => {
 
   const BIO_MAX = 200;
 
+  // Subscription mock data
+  const planData = { name: "Free", price: 0 };
+  const credits = { used: 3, total: 5, refillDate: "Apr 1" };
+  const creditPct = (credits.used / credits.total) * 100;
+
   return (
     <PageShell>
       <div className="px-6 md:px-10 max-w-[1100px] mx-auto py-8">
-        {/* Header */}
         <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] leading-none mb-1">Settings</h1>
-        <p className="text-[0.85rem] text-muted mb-6">Manage your profile, privacy, notifications, and payouts</p>
+        <p className="text-[0.85rem] text-muted mb-6">Manage your profile, subscription, notifications, and more</p>
 
         {/* Horizontal Tabs */}
         <div className="flex gap-2 mb-8 flex-wrap">
           {tabs.map(t => (
-            <button key={t.id} onClick={() => setActiveTab(t.id)}
+            <button key={t.id} onClick={() => handleTabChange(t.id)}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[0.84rem] font-medium transition-colors border ${
                 activeTab === t.id
                   ? "bg-foreground text-primary-foreground border-foreground"
@@ -239,26 +271,220 @@ const AccountPage = () => {
             </div>
           )}
 
+          {/* SUBSCRIPTION */}
+          {activeTab === "subscription" && (
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-[1.2rem] font-bold">Subscription</h2>
+              </div>
+
+              {/* Current Plan + Credits */}
+              <div className="border border-foreground/[0.08] rounded-xl p-5 space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* Current Plan Card */}
+                  <div className="border-2 border-accent rounded-xl p-5 bg-accent/5 relative">
+                    <span className="absolute top-3 right-3 bg-accent text-white text-xs font-medium px-2 py-1 rounded-full">Current</span>
+                    <div className="flex items-center gap-2 text-sm text-muted mb-3">
+                      <Zap className="w-4 h-4 text-accent" />
+                      Current Plan
+                    </div>
+                    <div className="mb-1">
+                      <span className="text-2xl font-bold">{planData.name}</span>
+                    </div>
+                    <p className="text-sm text-muted mb-4">
+                      {planData.price === 0 ? "Free forever" : `$${planData.price}/month`}
+                    </p>
+                    <div className="flex gap-2">
+                      <Link to="/pricing">
+                        <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-[0.82rem] font-medium transition-colors">
+                          Upgrade Plan
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+
+                  {/* Usage Card */}
+                  <div className="border border-foreground/[0.08] rounded-xl p-5">
+                    <div className="flex items-center gap-2 text-sm text-muted mb-3">
+                      <Image className="w-4 h-4" />
+                      AI Credits
+                    </div>
+                    <div className="mb-1">
+                      <span className="text-2xl font-bold">{credits.used}/{credits.total}</span>
+                    </div>
+                    <p className="text-sm text-muted mb-3">Images generated this month</p>
+                    <Progress value={creditPct} className="h-1.5 mb-1 [&>div]:bg-accent" />
+                    <p className="text-xs text-muted">Credits refill on {credits.refillDate}</p>
+                  </div>
+                </div>
+
+                {/* Storage */}
+                <div className="border border-foreground/[0.08] rounded-xl p-5">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <div className="flex items-center gap-2 text-sm text-muted mb-1">
+                        <FileText className="w-4 h-4" />
+                        Storage
+                      </div>
+                      <span className="text-lg font-bold">32 MB / 500 MB</span>
+                    </div>
+                    <Link to="/pricing">
+                      <button className="text-accent text-[0.82rem] font-medium hover:underline">
+                        Get more storage →
+                      </button>
+                    </Link>
+                  </div>
+                  <Progress value={6.4} className="h-1.5 [&>div]:bg-accent" />
+                </div>
+              </div>
+
+              {/* Plan Comparison Teaser */}
+              <div className="border border-foreground/[0.08] rounded-xl p-6 text-center">
+                <h3 className="font-display text-[1rem] font-bold mb-2">Want more creative power?</h3>
+                <p className="text-sm text-muted mb-4 max-w-md mx-auto">
+                  Upgrade to unlock unlimited AI generation, private collections, ad campaigns, and more.
+                </p>
+                <Link to="/pricing">
+                  <button className="bg-foreground text-primary-foreground px-6 py-2.5 rounded-lg text-[0.84rem] font-semibold hover:bg-accent transition-colors inline-flex items-center gap-2">
+                    View All Plans <ArrowRight className="w-4 h-4" />
+                  </button>
+                </Link>
+              </div>
+            </div>
+          )}
+
           {/* NOTIFICATIONS */}
           {activeTab === "notifications" && (
             <div className="space-y-6">
-              <h2 className="font-display text-[1.2rem] font-bold">Notifications</h2>
-              <div className="space-y-1 max-w-[700px]">
-                {[
-                  { label: "Likes", desc: "When someone likes your image", on: notifLikes, set: setNotifLikes },
-                  { label: "Comments", desc: "When someone comments on your image", on: notifComments, set: setNotifComments },
-                  { label: "New Followers", desc: "When someone follows you", on: notifFollows, set: setNotifFollows },
-                  { label: "Downloads", desc: "When your images are downloaded", on: notifDownloads, set: setNotifDownloads },
-                  { label: "Newsletter", desc: "Weekly digest and platform updates", on: notifNewsletter, set: setNotifNewsletter },
-                ].map(item => (
-                  <div key={item.label} className="flex items-center justify-between py-3 border-b border-foreground/[0.06]">
-                    <div>
-                      <div className="text-[0.86rem] font-medium">{item.label}</div>
-                      <div className="text-[0.75rem] text-muted">{item.desc}</div>
+              <div className="flex items-center justify-between">
+                <h2 className="font-display text-[1.2rem] font-bold">Notifications</h2>
+                <button
+                  onClick={() => toast({ title: "Settings saved", description: "Your notification preferences have been updated." })}
+                  className="bg-foreground text-primary-foreground px-4 py-2 rounded-lg text-[0.82rem] font-medium hover:bg-accent transition-colors"
+                >
+                  Save Changes
+                </button>
+              </div>
+
+              {/* Do Not Disturb */}
+              <div className="border border-foreground/[0.08] rounded-xl p-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center">
+                      <Bell className="w-5 h-5 text-red-500" />
                     </div>
-                    <Toggle on={item.on} onChange={item.set} />
+                    <div>
+                      <div className="text-[0.86rem] font-medium">Do Not Disturb</div>
+                      <div className="text-[0.75rem] text-muted">Pause all notifications temporarily</div>
+                    </div>
                   </div>
-                ))}
+                  <Switch checked={doNotDisturb} onCheckedChange={setDoNotDisturb} className="data-[state=checked]:bg-red-500" />
+                </div>
+              </div>
+
+              {/* Quiet Hours */}
+              <div className="border border-foreground/[0.08] rounded-xl p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center">
+                      <Clock className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <div>
+                      <div className="text-[0.86rem] font-medium">Quiet Hours</div>
+                      <div className="text-[0.75rem] text-muted">Mute push notifications during specific hours</div>
+                    </div>
+                  </div>
+                  <Switch checked={quietHoursEnabled} onCheckedChange={setQuietHoursEnabled} className="data-[state=checked]:bg-accent" />
+                </div>
+                {quietHoursEnabled && (
+                  <div className="flex items-center gap-4 mt-3 ml-[52px]">
+                    <label className="text-[0.82rem] text-muted">From</label>
+                    <input type="time" value={quietHoursStart} onChange={e => setQuietHoursStart(e.target.value)}
+                      className="bg-background border border-foreground/[0.1] rounded-lg px-3 py-1.5 text-[0.82rem]" />
+                    <label className="text-[0.82rem] text-muted">To</label>
+                    <input type="time" value={quietHoursEnd} onChange={e => setQuietHoursEnd(e.target.value)}
+                      className="bg-background border border-foreground/[0.1] rounded-lg px-3 py-1.5 text-[0.82rem]" />
+                  </div>
+                )}
+              </div>
+
+              {/* Notification Categories */}
+              <div className="space-y-3">
+                {notifSettings.map((setting, idx) => {
+                  const Icon = setting.icon;
+                  return (
+                    <div key={setting.id} className="border border-foreground/[0.08] rounded-xl overflow-hidden">
+                      <div className="flex items-center justify-between px-4 py-3">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-lg bg-foreground/[0.05] flex items-center justify-center">
+                            <Icon className="w-4 h-4 text-muted" />
+                          </div>
+                          <div>
+                            <div className="text-[0.86rem] font-medium">{setting.title}</div>
+                            <div className="text-[0.75rem] text-muted">{setting.desc}</div>
+                          </div>
+                        </div>
+                        <Switch
+                          checked={setting.on}
+                          onCheckedChange={(checked) => {
+                            setNotifSettings(prev => prev.map((s, i) => i === idx ? { ...s, on: checked } : s));
+                          }}
+                          className="data-[state=checked]:bg-accent"
+                        />
+                      </div>
+
+                      {setting.on && (
+                        <div className="px-4 py-3 bg-foreground/[0.02] border-t border-foreground/[0.06]">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ml-12">
+                            {/* Frequency */}
+                            <div>
+                              <div className="text-[0.78rem] font-medium text-muted mb-2">Frequency</div>
+                              <div className="flex gap-3">
+                                {(["immediately", "daily"] as const).map(freq => (
+                                  <label key={freq} className="flex items-center gap-1.5 cursor-pointer">
+                                    <input
+                                      type="radio"
+                                      name={`freq-${setting.id}`}
+                                      checked={setting.frequency === freq}
+                                      onChange={() => setNotifSettings(prev => prev.map((s, i) => i === idx ? { ...s, frequency: freq } : s))}
+                                      className="accent-accent w-3.5 h-3.5"
+                                    />
+                                    <span className="text-[0.8rem]">{freq === "immediately" ? "Immediately" : "Daily Summary"}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Channels */}
+                            <div>
+                              <div className="text-[0.78rem] font-medium text-muted mb-2">Receive Via</div>
+                              <div className="flex gap-4">
+                                {([
+                                  { key: "email" as const, icon: Mail, label: "Email" },
+                                  { key: "push" as const, icon: Smartphone, label: "Push" },
+                                  { key: "inApp" as const, icon: Bell, label: "In-App" },
+                                ]).map(ch => (
+                                  <label key={ch.key} className="flex items-center gap-1.5 cursor-pointer">
+                                    <input
+                                      type="checkbox"
+                                      checked={setting.channels[ch.key]}
+                                      onChange={(e) => setNotifSettings(prev => prev.map((s, i) =>
+                                        i === idx ? { ...s, channels: { ...s.channels, [ch.key]: e.target.checked } } : s
+                                      ))}
+                                      className="accent-accent w-3.5 h-3.5 rounded"
+                                    />
+                                    <ch.icon className="w-3.5 h-3.5 text-muted" />
+                                    <span className="text-[0.8rem]">{ch.label}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
