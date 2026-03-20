@@ -146,16 +146,7 @@ const EXAMPLES: Record<ContentType, string[]> = {
 
 /* ─── Dummy gallery data ─────────────────────────────────────── */
 
-const DUMMY_CREATIONS = [
-  { id: "c1", photo: "photo-1618005182384-a83a8bd57fbe", type: "image" as MediaFilter, title: "Cosmic Dreamscape",        model: "Flux Pro",       liked: false },
-  { id: "c2", photo: "photo-1557682250-33bd709cbe85", type: "image" as MediaFilter, title: "Neon City Boulevard",       model: "DALL-E 3",       liked: true },
-  { id: "c3", photo: "photo-1604881991720-f91add269bed", type: "design" as MediaFilter, title: "Midnight Brand Identity",  model: "Seedream 4.0",   liked: false },
-  { id: "c4", photo: "photo-1579546929518-9e396f3cc809", type: "image" as MediaFilter, title: "Cyberpunk Portrait",        model: "Midjourney v6",  liked: true },
-  { id: "c5", photo: "photo-1541701494587-cb58502866ab", type: "design" as MediaFilter, title: "Dark Fantasy Ruins",        model: "Flux Max",       liked: false },
-  { id: "c6", photo: "photo-1470071459604-3b5ec3a7fe05", type: "image" as MediaFilter, title: "Mountain Storm Timelapse",  model: "Imagen 4 Ultra", liked: false },
-  { id: "c7", photo: "photo-1462275646964-a0e3386b89fa", type: "video" as MediaFilter, title: "Avatar Promo Video",        model: "Kling 2.6",      liked: true },
-  { id: "c8", photo: "photo-1501854140801-50d01698950b", type: "image" as MediaFilter, title: "Ethereal Forest",           model: "Flux Pro",       liked: false },
-];
+/* (dummy creations removed — real data fetched from DB) */
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
