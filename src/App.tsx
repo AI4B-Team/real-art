@@ -39,6 +39,7 @@ import LicensePage from "./pages/LicensePage";
 import PrivacyPage from "./pages/PrivacyPage";
 import TermsPage from "./pages/TermsPage";
 import BlogPage from "./pages/BlogPage";
+import PricingPage from "./pages/PricingPage";
 
 // Round 5 — Auth + Dashboard
 import SignUpPage from "./pages/SignUpPage";
@@ -108,6 +109,7 @@ const App = () => (
 
             {/* Round 4 — Company */}
             <Route path="/about" element={<AboutPage />} />
+            <Route path="/pricing" element={<PricingPage />} />
             <Route path="/license" element={<LicensePage />} />
             <Route path="/privacy" element={<PrivacyPage />} />
             <Route path="/terms" element={<TermsPage />} />
