@@ -144,18 +144,16 @@ const EXAMPLES: Record<ContentType, string[]> = {
   app:      ["Pomodoro timer app with analytics and Spotify integration", "AI recipe generator that learns your taste preferences", "SaaS dashboard for managing influencer marketing campaigns"],
 };
 
-/* ─── Dummy gallery data ─────────────────────────────────────── */
+/* ─── Types for user creations ───────────────────────────────── */
 
-const DUMMY_CREATIONS = [
-  { id: "c1", photo: "photo-1618005182384-a83a8bd57fbe", type: "image" as MediaFilter, title: "Cosmic Dreamscape",        model: "Flux Pro",       liked: false },
-  { id: "c2", photo: "photo-1557682250-33bd709cbe85", type: "image" as MediaFilter, title: "Neon City Boulevard",       model: "DALL-E 3",       liked: true },
-  { id: "c3", photo: "photo-1604881991720-f91add269bed", type: "design" as MediaFilter, title: "Midnight Brand Identity",  model: "Seedream 4.0",   liked: false },
-  { id: "c4", photo: "photo-1579546929518-9e396f3cc809", type: "image" as MediaFilter, title: "Cyberpunk Portrait",        model: "Midjourney v6",  liked: true },
-  { id: "c5", photo: "photo-1541701494587-cb58502866ab", type: "design" as MediaFilter, title: "Dark Fantasy Ruins",        model: "Flux Max",       liked: false },
-  { id: "c6", photo: "photo-1470071459604-3b5ec3a7fe05", type: "image" as MediaFilter, title: "Mountain Storm Timelapse",  model: "Imagen 4 Ultra", liked: false },
-  { id: "c7", photo: "photo-1462275646964-a0e3386b89fa", type: "video" as MediaFilter, title: "Avatar Promo Video",        model: "Kling 2.6",      liked: true },
-  { id: "c8", photo: "photo-1501854140801-50d01698950b", type: "image" as MediaFilter, title: "Ethereal Forest",           model: "Flux Pro",       liked: false },
-];
+type UserCreation = {
+  id: string;
+  image_url: string;
+  title: string | null;
+  type: MediaFilter;
+  created_at: string;
+  liked: boolean;
+};
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
@@ -1046,7 +1044,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
 /* ─── Gallery card ───────────────────────────────────────────── */
 
-function CreationCard({ item }: { item: typeof DUMMY_CREATIONS[0] }) {
+function CreationCard({ item }: { item: UserCreation }) {
   const [liked, setLiked] = useState(item.liked);
   const [saved, setSaved] = useState(false);
   const { toast } = useToast();
@@ -1060,7 +1058,7 @@ function CreationCard({ item }: { item: typeof DUMMY_CREATIONS[0] }) {
 
   return (
     <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03]">
-      <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.title} className="w-full aspect-square object-cover" />
+      <img src={item.image_url} alt={item.title || "Creation"} className="w-full aspect-square object-cover" />
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
       <div className={`absolute top-2 left-2 text-white text-[0.62rem] font-bold px-2 py-0.5 rounded-md ${typeColors[item.type] || "bg-black/50"} backdrop-blur-sm`}>{item.type.toUpperCase()}</div>
       <button onClick={() => setLiked(v => !v)} className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all ${liked ? "bg-accent text-white scale-110" : "bg-black/30 text-white opacity-0 group-hover:opacity-100"}`}>
@@ -1068,14 +1066,13 @@ function CreationCard({ item }: { item: typeof DUMMY_CREATIONS[0] }) {
       </button>
       <div className="absolute bottom-2 left-2 right-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <div className="flex-1 min-w-0">
-          <p className="text-[0.7rem] text-white font-medium truncate">{item.title}</p>
-          <p className="text-[0.62rem] text-white/60">{item.model}</p>
+          <p className="text-[0.7rem] text-white font-medium truncate">{item.title || "Untitled"}</p>
         </div>
         <button onClick={() => { setSaved(v => !v); toast({ title: saved ? "Removed from collection" : "Saved to collection!" }); }}
           className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
           <Bookmark size={11} className={saved ? "fill-current" : ""} />
         </button>
-        <a href={`https://images.unsplash.com/${item.photo}?w=2000&q=90`} download className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
+        <a href={item.image_url} download className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
           <Download size={11} />
         </a>
       </div>
@@ -1109,6 +1106,29 @@ export default function CreatePage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
   const [generated, setGenerated] = useState(false);
+  const [creations, setCreations] = useState<UserCreation[]>([]);
+  const [loadingCreations, setLoadingCreations] = useState(true);
+
+  // Fetch real user creations from DB
+  useEffect(() => {
+    let cancelled = false;
+    const fetchCreations = async () => {
+      setLoadingCreations(true);
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) { setCreations([]); setLoadingCreations(false); return; }
+      const { data } = await supabase
+        .from("collection_images")
+        .select("id, image_url, title, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false });
+      if (!cancelled && data) {
+        setCreations(data.map(r => ({ ...r, type: "image" as MediaFilter, liked: false })));
+      }
+      if (!cancelled) setLoadingCreations(false);
+    };
+    fetchCreations();
+    return () => { cancelled = true; };
+  }, [generated]);
 
   // Advanced filter state
   const [filterLikes, setFilterLikes] = useState(false);
@@ -1129,8 +1149,8 @@ export default function CreatePage() {
   };
 
   const filteredCreations = mediaFilter === "all"
-    ? DUMMY_CREATIONS
-    : DUMMY_CREATIONS.filter(c => c.type === mediaFilter);
+    ? creations
+    : creations.filter(c => c.type === mediaFilter);
 
   return (
     <PageShell>
@@ -1232,10 +1252,38 @@ export default function CreatePage() {
           )}
         </div>
 
-        {/* CREATIONS */}
         {activeTab === "creations" && (
           <div>
-            {filteredCreations.length === 0 ? (
+            {loadingCreations ? (
+              <div className="text-center py-20">
+                <Loader2 className="w-7 h-7 text-muted animate-spin mx-auto mb-3" />
+                <p className="text-[0.84rem] text-muted">Loading your creations…</p>
+              </div>
+            ) : filteredCreations.length === 0 && creations.length === 0 ? (
+              <div className="text-center py-24">
+                <div className="w-20 h-20 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
+                  <Sparkles className="w-10 h-10 text-accent" />
+                </div>
+                <h3 className="font-display font-black text-[1.6rem] tracking-[-0.02em] mb-3">Your canvas is empty</h3>
+                <p className="text-[0.92rem] text-muted max-w-md mx-auto mb-6 leading-relaxed">
+                  Use the prompt box above to generate your first image, video, or design — or explore community creations for inspiration.
+                </p>
+                <div className="flex items-center justify-center gap-3">
+                  <button
+                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-bold hover:bg-accent/85 transition-colors"
+                  >
+                    <Sparkles size={15} /> Start Creating
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("community")}
+                    className="flex items-center gap-2 px-6 py-3 rounded-lg border border-foreground/[0.12] text-foreground text-[0.84rem] font-semibold hover:border-foreground/30 transition-colors"
+                  >
+                    <Users size={15} /> Explore Community
+                  </button>
+                </div>
+              </div>
+            ) : filteredCreations.length === 0 ? (
               <div className="text-center py-20">
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4"><Sparkles className="w-7 h-7 text-accent" /></div>
                 <h3 className="font-display font-black text-[1.1rem] mb-2">No {mediaFilter} creations yet</h3>
