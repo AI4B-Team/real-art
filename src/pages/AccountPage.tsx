@@ -19,6 +19,7 @@ import SocialTab from "@/components/account/SocialTab";
 import MembersTab from "@/components/account/MembersTab";
 import AgentTab from "@/components/account/AgentTab";
 import PlaceholderTab from "@/components/account/PlaceholderTab";
+import CancellationFlow from "@/components/account/CancellationFlow";
 
 type TabId = "profile" | "admin" | "security" | "notifications" | "subscription" | "social" | "spaces" | "agent" | "members" | "invites" | "integrations" | "whitelabel" | "privacy" | "payouts";
 
@@ -50,6 +51,7 @@ const AccountPage = () => {
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showCancelFlow, setShowCancelFlow] = useState(false);
 
   // Enhanced notifications state
   const [notifSettings, setNotifSettings] = useState([
@@ -420,7 +422,7 @@ const AccountPage = () => {
                       <Link to="/pricing">
                         <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Change Plan</button>
                       </Link>
-                      <button className="border border-foreground/[0.1] px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">Cancel</button>
+                      <button onClick={() => setShowCancelFlow(true)} className="border border-foreground/[0.1] px-4 py-2 rounded-lg text-sm font-medium hover:bg-foreground/[0.03] transition-colors">Cancel</button>
                     </div>
                   </div>
 
@@ -560,10 +562,18 @@ const AccountPage = () => {
                     </ul>
                   </div>
                   <div className="flex items-center gap-3">
-                    <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancel Subscription</button>
+                    <button onClick={() => setShowCancelFlow(true)} className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Cancel Subscription</button>
                     <span className="text-xs text-muted">Access continues until Feb 1, 2026</span>
                   </div>
                 </div>
+
+                <CancellationFlow
+                  isOpen={showCancelFlow}
+                  onClose={() => setShowCancelFlow(false)}
+                  subscriptionEndDate="Feb 1, 2026"
+                  planName="Pro"
+                  planPrice="$47/month"
+                />
               </div>
             )}
 
