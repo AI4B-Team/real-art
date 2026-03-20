@@ -149,7 +149,7 @@ const AccountPage = () => {
     { id: "admin", label: "Admin", icon: Shield },
     { id: "security", label: "Security", icon: Lock },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "subscription", label: "Subscription", icon: CreditCard, badge: "Free" },
+    { id: "subscription", label: "Subscription", icon: CreditCard, badge: "Pro" },
     { id: "social", label: "Social", icon: Share2 },
     { id: "spaces", label: "Spaces", icon: LayoutGrid },
     { id: "agent", label: "Agent", icon: Bot },
