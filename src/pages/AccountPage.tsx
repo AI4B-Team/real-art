@@ -51,6 +51,7 @@ const AccountPage = () => {
   const [saved, setSaved] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showCancelFlow, setShowCancelFlow] = useState(false);
 
   // Enhanced notifications state
   const [notifSettings, setNotifSettings] = useState([
