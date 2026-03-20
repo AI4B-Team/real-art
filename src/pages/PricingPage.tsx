@@ -214,7 +214,7 @@ const PricingPage = () => {
               Choose Your Plan
             </h1>
             <p className="text-lg text-muted-foreground mb-8">
-              Start for free. Upgrade when you need more power. Cancel anytime.
+              Start For Free. Upgrade When You Need More Power. Cancel Anytime.
             </p>
 
             {/* Billing Toggle */}
