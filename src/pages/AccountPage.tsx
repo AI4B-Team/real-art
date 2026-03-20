@@ -566,6 +566,15 @@ const AccountPage = () => {
                     <span className="text-xs text-muted">Access continues until Feb 1, 2026</span>
                   </div>
                 </div>
+                </div>
+
+                <CancellationFlow
+                  isOpen={showCancelFlow}
+                  onClose={() => setShowCancelFlow(false)}
+                  subscriptionEndDate="Feb 1, 2026"
+                  planName="Pro"
+                  planPrice="$47/month"
+                />
               </div>
             )}
 
