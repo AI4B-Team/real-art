@@ -52,6 +52,7 @@ const AccountPage = () => {
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showCancelFlow, setShowCancelFlow] = useState(false);
+  const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
   // Enhanced notifications state
   const [notifSettings, setNotifSettings] = useState([
