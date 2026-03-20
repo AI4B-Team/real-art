@@ -144,9 +144,16 @@ const EXAMPLES: Record<ContentType, string[]> = {
   app:      ["Pomodoro timer app with analytics and Spotify integration", "AI recipe generator that learns your taste preferences", "SaaS dashboard for managing influencer marketing campaigns"],
 };
 
-/* ─── Dummy gallery data ─────────────────────────────────────── */
+/* ─── Types for user creations ───────────────────────────────── */
 
-/* (dummy creations removed — real data fetched from DB) */
+type UserCreation = {
+  id: string;
+  image_url: string;
+  title: string | null;
+  type: MediaFilter;
+  created_at: string;
+  liked: boolean;
+};
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
