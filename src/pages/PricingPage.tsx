@@ -33,8 +33,8 @@ const PricingPage = () => {
     {
       name: "Starter",
       icon: Star,
-      monthlyPrice: 9,
-      annualPrice: 7,
+      monthlyPrice: 7,
+      annualPrice: 6,
       description: "Great for individuals getting started",
       buttonText: "Start Free",
       buttonVariant: "outline" as const,
