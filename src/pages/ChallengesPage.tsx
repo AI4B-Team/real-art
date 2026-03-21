@@ -54,17 +54,15 @@ const ChallengesPage = () => {
   return (
     <PageShell>
         {/* Header */}
-        <div className="px-6 md:px-12 py-10 max-w-[1440px] mx-auto">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-3">
+        <div className="max-w-[1440px] mx-auto">
+          <div className="flex items-center justify-between mb-6">
             <div>
-              <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Challenges</h1>
-              <p className="text-[0.88rem] text-muted">Compete, create, and win. Open to all skill levels.</p>
+              <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Challenges</h1>
+              <p className="text-[0.82rem] text-muted mt-1">Compete, create, and win. Open to all skill levels.</p>
             </div>
-            <div className="flex items-center gap-3 text-[0.82rem]">
-              <div className="flex items-center gap-1.5 text-muted">
-                <Trophy className="w-4 h-4 text-accent" />
-                <span><strong className="text-foreground">$47,500</strong> awarded to date</span>
-              </div>
+            <div className="flex items-center gap-1.5 text-[0.82rem] text-muted">
+              <Trophy className="w-4 h-4 text-accent" />
+              <span><strong className="text-foreground">$47,500</strong> awarded to date</span>
             </div>
           </div>
         </div>
