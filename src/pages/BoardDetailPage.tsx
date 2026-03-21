@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { getBoards, updateBoard, removeFromBoard, addToBoard, deleteBoard, type Board } from "@/lib/boardStore";
 
 /* ── Hardcoded public boards (for /boards/1, /boards/2 etc) ── */
