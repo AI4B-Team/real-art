@@ -194,8 +194,27 @@ const CollectionFormModal = ({ initial, onClose, onSave }: {
   const [code, setCode] = useState(initial?.accessCode || "");
   const [price, setPrice] = useState(initial?.price ? (initial.price / 100).toFixed(2) : "");
   const [communityId, setCommunityId] = useState(initial?.communityId || "");
+  const [aiWriting, setAiWriting] = useState(false);
+  const { toast } = useToast();
 
-  const handleSave = () => {
+  const generateDescription = async () => {
+    if (!title.trim()) {
+      toast({ title: "Name required", description: "Enter a name first so AI can write a description.", variant: "destructive" });
+      return;
+    }
+    setAiWriting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { collectionName: title.trim() },
+      });
+      if (error) throw error;
+      if (data?.description) setDesc(data.description);
+    } catch (err: any) {
+      toast({ title: "AI error", description: err.message || "Could not generate description.", variant: "destructive" });
+    } finally {
+      setAiWriting(false);
+    }
+  };
     if (!title.trim()) return;
     const community = communities.find(c => c.id === communityId);
     const priceCents = price ? Math.round(parseFloat(price) * 100) : undefined;
