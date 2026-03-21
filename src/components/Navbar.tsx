@@ -993,7 +993,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-[0.7rem] font-bold text-accent">{userInitials}</div>
             </button>
             {userMenuOpen && (
-              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] animate-drop-in z-[400] overflow-hidden">
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] animate-drop-in z-[400] overflow-hidden max-h-[80vh] overflow-y-auto">
                 {menuPanel === "main" && (
                   <div className="p-4">
                     {/* User header */}
