@@ -1,7 +1,6 @@
 import { X } from "lucide-react";
 import type { ReferencePanelProps } from "./reference/types";
 import BrowsePanel from "./reference/BrowsePanel";
-import ActionPanel from "./reference/ActionPanel";
 
 export type { ReferenceImage } from "./reference/types";
 
@@ -35,13 +34,7 @@ export default function ReferencePanel({ onClose, references, onAdd, onRemove }:
         </div>
       )}
 
-      {/* Action panel on top (full width) */}
-      <ActionPanel onAdd={onAdd} />
-
-      {/* Divider */}
-      <div className="h-px bg-foreground/[0.06] my-4" />
-
-      {/* Browse panel below */}
+      {/* Browse panel */}
       <BrowsePanel references={references} onAdd={onAdd} />
 
       <p className="text-[0.68rem] text-muted/50 mt-4">Add up to 6 reference images to guide the AI generation style.</p>
