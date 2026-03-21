@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X, MoreHorizontal, Merge, Archive, LayoutGrid, List, SlidersHorizontal, Image, Video, Music, FileText, Globe, ChevronDown, Upload, Plus } from "lucide-react";
+import CollectionUploadModal from "@/components/CollectionUploadModal";
 import { useToast } from "@/hooks/use-toast";
 import { getCollections, grantAccess, type UnifiedCollection } from "@/lib/collectionStore";
 import PageShell from "@/components/PageShell";
@@ -65,9 +66,9 @@ const CollectionDetailPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Newest");
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
-  const uploadInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // Upload state
@@ -369,14 +370,12 @@ const CollectionDetailPage = () => {
           )}
 
           <div className="ml-auto flex items-center gap-3">
-            <input ref={uploadInputRef} type="file" accept="image/*" multiple className="hidden" onChange={e => { handleUploadImages(e.target.files); e.target.value = ""; }} />
             <button
-              disabled={uploading}
-              onClick={() => uploadInputRef.current?.click()}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-medium hover:bg-accent transition-colors disabled:opacity-50"
+              onClick={() => setUploadModalOpen(true)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-medium hover:bg-accent transition-colors"
             >
-              {uploading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-              {uploading ? "Uploading…" : "Upload Images"}
+              <Upload className="w-4 h-4" />
+              Upload Images
             </button>
             <button className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
               <Heart className="w-4 h-4" /> Follow
@@ -494,6 +493,16 @@ const CollectionDetailPage = () => {
           </div>
         )}
       </div>
+
+      {/* Upload Modal */}
+      {uploadModalOpen && collection && (
+        <CollectionUploadModal
+          collectionId={id!}
+          onClose={() => setUploadModalOpen(false)}
+          onUploaded={(newImages) => setImages(prev => [...prev, ...newImages])}
+          existingCount={images.length}
+        />
+      )}
 
       <Footer />
     </PageShell>
