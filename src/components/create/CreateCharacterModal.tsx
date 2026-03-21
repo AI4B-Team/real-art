@@ -1,4 +1,5 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { X, Upload, Camera, Clock, Pencil, ChevronLeft, ChevronRight, Loader2, Check, ImageIcon, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -22,18 +23,40 @@ interface CreateCharacterModalProps {
 
 export default function CreateCharacterModal({ onClose, onCreated }: CreateCharacterModalProps) {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [step, setStep] = useState<Step>("name");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [images, setImages] = useState<{ id: string; src: string; file?: File }[]>([]);
   const [selectedHistory, setSelectedHistory] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
   const [historySearch, setHistorySearch] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (isMounted) setIsAuthenticated(!!user);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session?.user);
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+      cameraStream?.getTracks().forEach(track => track.stop());
+    };
+  }, [cameraStream]);
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
@@ -81,11 +104,11 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
     stopCamera();
   };
 
-  const stopCamera = () => {
+  const stopCamera = useCallback(() => {
     cameraStream?.getTracks().forEach(t => t.stop());
     setCameraStream(null);
     setCameraActive(false);
-  };
+  }, [cameraStream]);
 
   const toggleHistory = (id: string) => {
     setSelectedHistory(prev => prev.includes(id) ? prev.filter(h => h !== id) : [...prev, id]);
@@ -100,13 +123,29 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
     setStep("review");
   };
 
+  const handleAuthRedirect = () => {
+    stopCamera();
+    onClose();
+    navigate("/login");
+  };
+
   const handleSave = async () => {
     setIsSaving(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error("Please sign in to create characters");
 
-      // Upload images to storage
+      if (!user) {
+        setIsAuthenticated(false);
+        toast({
+          title: "Sign in required",
+          description: "Please sign in before creating a character.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      setIsAuthenticated(true);
+
       const uploadedUrls: string[] = [];
       for (const img of images) {
         if (img.file) {
@@ -158,7 +197,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
         className="bg-background rounded-2xl border border-foreground/[0.1] shadow-2xl w-full max-w-lg mx-4 overflow-hidden"
         onClick={e => e.stopPropagation()}
       >
-        {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-foreground/[0.06]">
           <div className="flex items-center gap-2">
             {step !== "name" && (
@@ -180,7 +218,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
           </button>
         </div>
 
-        {/* Steps indicator */}
         <div className="flex items-center gap-1.5 px-5 pt-3">
           {(["name", "source", "review"] as const).map((s, i) => (
             <div key={s} className={`h-1 flex-1 rounded-full transition-colors ${
@@ -194,7 +231,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
         </div>
 
         <div className="px-5 py-5 min-h-[320px]">
-          {/* Step: Name */}
           {step === "name" && (
             <div className="space-y-4">
               <div>
@@ -212,7 +248,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
             </div>
           )}
 
-          {/* Step: Source selection */}
           {step === "source" && (
             <div className="space-y-3">
               <p className="text-[0.82rem] text-foreground/70 mb-2">How do you want to define <span className="font-semibold text-foreground">{name}</span>?</p>
@@ -244,10 +279,8 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
             </div>
           )}
 
-          {/* Step: Images (upload, camera, or history) */}
           {step === "images" && (
             <div className="space-y-4">
-              {/* Camera view */}
               {cameraActive && (
                 <div className="space-y-3">
                   <video ref={videoRef} autoPlay playsInline muted className="w-full aspect-[4/3] rounded-xl bg-black object-cover" />
@@ -259,7 +292,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
                 </div>
               )}
 
-              {/* History picker */}
               {!cameraActive && images.length === 0 && (
                 <div>
                   <p className="text-[0.78rem] font-semibold text-foreground/70 mb-3">Select From Creations</p>
@@ -314,7 +346,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
                 </div>
               )}
 
-              {/* Uploaded images grid */}
               {!cameraActive && images.length > 0 && (
                 <div>
                   <p className="text-[0.78rem] font-semibold text-foreground/70 mb-2">Training Images ({images.length}/6)</p>
@@ -354,7 +385,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
             </div>
           )}
 
-          {/* Step: Describe */}
           {step === "describe" && (
             <div className="space-y-4">
               <div>
@@ -372,7 +402,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
             </div>
           )}
 
-          {/* Step: Review */}
           {step === "review" && (
             <div className="space-y-4">
               <div className="flex items-center gap-4">
@@ -407,7 +436,6 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
                 </div>
               )}
 
-              {/* Optional description on review */}
               {!description && (
                 <div>
                   <label className="text-[0.72rem] font-semibold text-muted mb-1.5 block">Add Description (Optional)</label>
@@ -420,11 +448,17 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
                   />
                 </div>
               )}
+
+              {isAuthenticated === false && (
+                <div className="rounded-xl border border-accent/20 bg-accent/5 px-4 py-3">
+                  <p className="text-[0.78rem] font-semibold text-foreground">Sign in required</p>
+                  <p className="text-[0.75rem] text-muted mt-1">You need to sign in before this character can be saved to your account.</p>
+                </div>
+              )}
             </div>
           )}
         </div>
 
-        {/* Footer */}
         <div className="flex items-center justify-between px-5 py-4 border-t border-foreground/[0.06]">
           <button onClick={() => { stopCamera(); onClose(); }} className="px-4 py-2 rounded-lg text-[0.82rem] font-medium text-muted hover:text-foreground transition-colors">
             Cancel
@@ -448,13 +482,22 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
             </button>
           )}
           {step === "review" && (
-            <button
-              onClick={handleSave}
-              disabled={isSaving}
-              className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              {isSaving ? <><Loader2 size={14} className="animate-spin" /> Saving...</> : <>Create Character</>}
-            </button>
+            isAuthenticated === false ? (
+              <button
+                onClick={handleAuthRedirect}
+                className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-all"
+              >
+                Sign In to Create
+              </button>
+            ) : (
+              <button
+                onClick={handleSave}
+                disabled={isSaving}
+                className="flex items-center gap-1.5 px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {isSaving ? <><Loader2 size={14} className="animate-spin" /> Saving...</> : <>Create Character</>}
+              </button>
+            )
           )}
         </div>
       </div>
