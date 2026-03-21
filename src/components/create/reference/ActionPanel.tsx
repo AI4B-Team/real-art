@@ -144,12 +144,6 @@ export default function ActionPanel({ onAdd }: ActionPanelProps) {
           />
         </div>
 
-        {/* Webcam Capture */}
-        <button className="flex flex-col items-center justify-center gap-1.5 px-5 rounded-xl border-2 border-dashed border-foreground/[0.10] hover:border-accent/30 hover:bg-accent/5 transition-all min-w-[140px]">
-          <Camera size={20} className="text-accent" />
-          <span className="text-[0.8rem] font-bold text-foreground">Webcam Capture</span>
-          <span className="text-[0.65rem] text-muted/60">Snap a reference photo</span>
-        </button>
       </div>
     </div>
   );
