@@ -302,52 +302,68 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [endFrame, setEndFrame] = useState<string | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
-  const [selectedCharacter, setSelectedCharacter] = useState<string | null>(null);
-  const [characterInfo, setCharacterInfo] = useState<{ name: string; avatar: string | null } | null>(null);
+  const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
+  const [characterInfoMap, setCharacterInfoMap] = useState<Record<string, { name: string; avatar: string | null }>>({});
 
-  // Fetch character info when selected
+  const FEATURED_CHARS_LOOKUP = [
+    { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
+    { id: "f2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
+    { id: "f3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7" },
+    { id: "f4", name: "Suki", avatar: "photo-1438761681033-6461ffad8d80" },
+    { id: "f5", name: "Marcus", avatar: "photo-1506794778202-cad84cf45f1d" },
+    { id: "f6", name: "Leila", avatar: "photo-1487412720507-e7ab37603c6f" },
+    { id: "f7", name: "Kai", avatar: "photo-1492562080023-ab3db95bfbce" },
+    { id: "f8", name: "Nadia", avatar: "photo-1494790108377-be9c29b29330" },
+    { id: "f9", name: "Ravi", avatar: "photo-1500648767791-00dcc994a43e" },
+    { id: "f10", name: "Zara", avatar: "photo-1531746020798-e6953c6e8e04" },
+    { id: "f11", name: "Ethan", avatar: "photo-1472099645785-5658abf4ff4e" },
+    { id: "f12", name: "Luna", avatar: "photo-1529626455594-4ff0802cfb7e" },
+    { id: "f13", name: "Derek", avatar: "photo-1504257432389-52343af06ae3" },
+    { id: "f14", name: "Aria", avatar: "photo-1544005313-94ddf0286df2" },
+    { id: "f15", name: "Theo", avatar: "photo-1506277886164-e25aa3f4ef7f" },
+    { id: "f16", name: "Ivy", avatar: "photo-1524504388940-b1c1722653e1" },
+    { id: "f17", name: "Omar", avatar: "photo-1522075469751-3a6694fb2f61" },
+    { id: "f18", name: "Cleo", avatar: "photo-1517841905240-472988babdf9" },
+    { id: "f19", name: "Felix", avatar: "photo-1521119989659-a83eee488004" },
+    { id: "f20", name: "Sage", avatar: "photo-1488426862026-3ee34a7d66df" },
+    { id: "f21", name: "Dante", avatar: "photo-1539571696357-5a69c17a67c6" },
+    { id: "f22", name: "Yuki", avatar: "photo-1502823403499-6ccfcf4fb453" },
+    { id: "f23", name: "Blake", avatar: "photo-1507591064344-4c6ce005b128" },
+    { id: "f24", name: "Rosa", avatar: "photo-1524638431109-93d95c968f03" },
+  ];
+
+  // Fetch character info for all selected characters
   useEffect(() => {
-    if (!selectedCharacter) { setCharacterInfo(null); return; }
-    // Check if it's a featured character (id starts with "f")
-    if (selectedCharacter.startsWith("f")) {
-      const FEATURED_CHARACTERS = [
-        { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
-        { id: "f2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
-        { id: "f3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7" },
-        { id: "f4", name: "Suki", avatar: "photo-1438761681033-6461ffad8d80" },
-        { id: "f5", name: "Marcus", avatar: "photo-1506794778202-cad84cf45f1d" },
-        { id: "f6", name: "Leila", avatar: "photo-1487412720507-e7ab37603c6f" },
-        { id: "f7", name: "Kai", avatar: "photo-1492562080023-ab3db95bfbce" },
-        { id: "f8", name: "Nadia", avatar: "photo-1494790108377-be9c29b29330" },
-        { id: "f9", name: "Ravi", avatar: "photo-1500648767791-00dcc994a43e" },
-        { id: "f10", name: "Zara", avatar: "photo-1531746020798-e6953c6e8e04" },
-        { id: "f11", name: "Ethan", avatar: "photo-1472099645785-5658abf4ff4e" },
-        { id: "f12", name: "Luna", avatar: "photo-1529626455594-4ff0802cfb7e" },
-        { id: "f13", name: "Derek", avatar: "photo-1504257432389-52343af06ae3" },
-        { id: "f14", name: "Aria", avatar: "photo-1544005313-94ddf0286df2" },
-        { id: "f15", name: "Theo", avatar: "photo-1506277886164-e25aa3f4ef7f" },
-        { id: "f16", name: "Ivy", avatar: "photo-1524504388940-b1c1722653e1" },
-        { id: "f17", name: "Omar", avatar: "photo-1522075469751-3a6694fb2f61" },
-        { id: "f18", name: "Cleo", avatar: "photo-1517841905240-472988babdf9" },
-        { id: "f19", name: "Felix", avatar: "photo-1521119989659-a83eee488004" },
-        { id: "f20", name: "Sage", avatar: "photo-1488426862026-3ee34a7d66df" },
-        { id: "f21", name: "Dante", avatar: "photo-1539571696357-5a69c17a67c6" },
-        { id: "f22", name: "Yuki", avatar: "photo-1502823403499-6ccfcf4fb453" },
-        { id: "f23", name: "Blake", avatar: "photo-1507591064344-4c6ce005b128" },
-        { id: "f24", name: "Rosa", avatar: "photo-1524638431109-93d95c968f03" },
-      ];
-      const found = FEATURED_CHARACTERS.find(c => c.id === selectedCharacter);
-      if (found) {
-        setCharacterInfo({ name: found.name, avatar: `https://images.unsplash.com/${found.avatar}?w=120&h=120&fit=crop&q=80` });
+    if (selectedCharacters.length === 0) { setCharacterInfoMap({}); return; }
+
+    const newMap: Record<string, { name: string; avatar: string | null }> = {};
+    const dbIds: string[] = [];
+
+    for (const id of selectedCharacters) {
+      if (id.startsWith("f")) {
+        const found = FEATURED_CHARS_LOOKUP.find(c => c.id === id);
+        if (found) newMap[id] = { name: found.name, avatar: `https://images.unsplash.com/${found.avatar}?w=120&h=120&fit=crop&q=80` };
+      } else {
+        dbIds.push(id);
       }
+    }
+
+    if (dbIds.length === 0) {
+      setCharacterInfoMap(newMap);
       return;
     }
-    const fetchChar = async () => {
-      const { data } = await supabase.from("characters").select("name, avatar_url").eq("id", selectedCharacter).single();
-      if (data) setCharacterInfo({ name: data.name, avatar: data.avatar_url });
+
+    const fetchDbChars = async () => {
+      const { data } = await supabase.from("characters").select("id, name, avatar_url").in("id", dbIds);
+      if (data) data.forEach(d => { newMap[d.id] = { name: d.name, avatar: d.avatar_url }; });
+      setCharacterInfoMap(newMap);
     };
-    fetchChar();
-  }, [selectedCharacter]);
+    fetchDbChars();
+  }, [selectedCharacters]);
+
+  const toggleCharacter = (id: string) => {
+    setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+  };
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
