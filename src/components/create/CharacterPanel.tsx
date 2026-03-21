@@ -53,23 +53,23 @@ function CharacterCard({
   return (
     <button
       onClick={onClick}
-      className={`relative flex flex-col items-center gap-1.5 p-2.5 rounded-xl border transition-all ${
+      className={`relative flex flex-col items-center gap-1.5 rounded-xl overflow-hidden transition-all ${
         isSelected
-          ? "border-accent bg-accent/5"
-          : "border-foreground/[0.06] hover:border-foreground/20 bg-foreground/[0.02]"
+          ? "ring-2 ring-accent ring-offset-2 ring-offset-background"
+          : "hover:opacity-90"
       }`}
     >
       {avatar ? (
-        <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover" />
+        <img src={avatar} alt={name} className="w-full aspect-square rounded-xl object-cover" />
       ) : (
-        <div className="w-12 h-12 rounded-full bg-foreground/[0.08] flex items-center justify-center text-muted">
-          <User size={18} />
+        <div className="w-full aspect-square rounded-xl bg-foreground/[0.08] flex items-center justify-center text-muted">
+          <User size={24} />
         </div>
       )}
-      <span className="text-[0.72rem] font-semibold text-center leading-tight">{name}</span>
+      <span className="text-[0.72rem] font-semibold text-center leading-tight pb-1">{name}</span>
       {isSelected && (
-        <div className="absolute top-1 right-1 w-4 h-4 rounded-full bg-accent flex items-center justify-center">
-          <Check size={10} className="text-white" />
+        <div className="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-accent flex items-center justify-center shadow-sm">
+          <Check size={11} className="text-white" />
         </div>
       )}
     </button>
