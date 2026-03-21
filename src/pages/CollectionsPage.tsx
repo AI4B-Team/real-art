@@ -246,7 +246,7 @@ const CollectionFormModal = ({ initial, onClose, onSave }: {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
       <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[480px] shadow-2xl animate-drop-in max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between px-6 py-5 border-b border-foreground/[0.06]">
           <h3 className="font-display text-[1.2rem] font-bold">{isEdit ? "Edit Collection" : "New Collection"}</h3>
