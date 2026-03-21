@@ -39,8 +39,9 @@ interface DbCharacter {
 
 interface CharacterPanelProps {
   onClose: () => void;
-  selectedCharacter: string | null;
-  onSelect: (characterId: string | null) => void;
+  selectedCharacters: string[];
+  onToggle: (characterId: string) => void;
+  onClear: () => void;
 }
 
 type Section = "featured" | "mine";
