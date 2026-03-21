@@ -33,7 +33,7 @@ import CharacterPanel from "@/components/create/CharacterPanel";
 /* ─── Types ─────────────────────────────────────────────────── */
 
 type ContentType = "image" | "video" | "audio" | "design" | "content" | "document" | "app";
-type GalleryTab = "creations" | "apps" | "templates" | "community";
+type GalleryTab = "creations" | "collections" | "apps" | "templates" | "community";
 type MediaFilter = "all" | "image" | "video" | "audio" | "design";
 type PanelType = "reference" | "character" | "frames" | "music" | "photoshoot" | "social" | null;
 
