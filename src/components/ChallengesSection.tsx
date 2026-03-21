@@ -63,7 +63,7 @@ const ChallengesSection = () => {
           <Link to="/challenges" className="text-[0.8rem] font-semibold text-foreground border-b-[1.5px] border-foreground pb-px whitespace-nowrap no-underline hover:text-accent hover:border-accent transition-colors">All Challenges →</Link>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          {winners.map((w) => (
+          {winners.map((w, i) => (
             <Link key={w.name} to={`/image/${i}`} className="rounded-xl overflow-hidden relative aspect-[3/4] cursor-pointer group block no-underline">
               <img src={`https://images.unsplash.com/${w.photo}?w=300&h=400&fit=crop&q=78`} alt={w.name} loading="lazy" className="w-full h-full object-cover block group-hover:scale-[1.04] transition-transform duration-[350ms]" />
               {w.rankClass && (
