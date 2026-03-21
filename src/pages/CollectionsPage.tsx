@@ -780,11 +780,11 @@ export default function CollectionsPage() {
       {/* Breadcrumb */}
 
       {/* Header */}
-      <div className="px-6 md:px-12 pb-5 max-w-[1440px] mx-auto">
-        <div className="flex items-start md:items-center justify-between gap-4 flex-wrap">
+      <div className="max-w-[1440px] mx-auto">
+        <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Collections</h1>
-            <p className="text-[0.88rem] text-muted">Public galleries, private vaults, and personal boards</p>
+            <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Collections</h1>
+            <p className="text-[0.82rem] text-muted mt-1">Public galleries, private vaults, and personal boards</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
