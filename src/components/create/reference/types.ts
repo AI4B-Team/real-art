@@ -11,7 +11,7 @@ export interface ReferencePanelProps {
   onRemove: (id: string) => void;
 }
 
-export type SourceTab = "creations" | "stock" | "community";
+export type SourceTab = "upload" | "creations" | "collections" | "stock" | "community" | "trending";
 export type MediaFilter = "all" | "image" | "video";
 
 export interface BrowseItem {
