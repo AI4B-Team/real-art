@@ -13,7 +13,7 @@ import {
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush, Link2,
-  Eye, Target, Languages, Repeat, PenTool,
+  Eye, Target, Languages, Repeat, PenTool, FolderOpen,
 } from "lucide-react";
 import {
   Popover, PopoverContent, PopoverTrigger,
@@ -33,7 +33,7 @@ import CharacterPanel from "@/components/create/CharacterPanel";
 /* ─── Types ─────────────────────────────────────────────────── */
 
 type ContentType = "image" | "video" | "audio" | "design" | "content" | "document" | "app";
-type GalleryTab = "creations" | "apps" | "templates" | "community";
+type GalleryTab = "creations" | "collections" | "apps" | "templates" | "community";
 type MediaFilter = "all" | "image" | "video" | "audio" | "design";
 type PanelType = "reference" | "character" | "frames" | "music" | "photoshoot" | "social" | null;
 
@@ -1083,10 +1083,11 @@ function CreationCard({ item }: { item: UserCreation }) {
 /* ─── Tabs ───────────────────────────────────────────────────── */
 
 const TABS: { id: GalleryTab; label: string; icon: typeof LayoutGrid }[] = [
-  { id: "creations",  label: "Creations",  icon: Sparkles },
-  { id: "community",  label: "Community",  icon: Users },
-  { id: "templates",  label: "Templates",  icon: LayoutGrid },
-  { id: "apps",       label: "Apps",       icon: Package },
+  { id: "creations",   label: "Creations",   icon: Sparkles },
+  { id: "collections", label: "Collections", icon: FolderOpen },
+  { id: "community",   label: "Community",   icon: Users },
+  { id: "templates",   label: "Templates",   icon: LayoutGrid },
+  { id: "apps",        label: "Apps",        icon: Package },
 ];
 
 const MEDIA_FILTERS: { id: MediaFilter; label: string }[] = [
