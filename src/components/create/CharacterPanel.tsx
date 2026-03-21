@@ -83,6 +83,7 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
   const [userCharacters, setUserCharacters] = useState<DbCharacter[]>([]);
   const [loading, setLoading] = useState(true);
   const [section, setSection] = useState<Section>("featured");
+  const [previewChar, setPreviewChar] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
     const fetchCharacters = async () => {
