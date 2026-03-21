@@ -29,6 +29,7 @@ import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
 import SocialContentPanel from "@/components/create/SocialContentPanel";
 import CharacterPanel from "@/components/create/CharacterPanel";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
