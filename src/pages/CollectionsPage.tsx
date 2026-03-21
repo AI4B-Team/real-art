@@ -215,6 +215,8 @@ const CollectionFormModal = ({ initial, onClose, onSave }: {
       setAiWriting(false);
     }
   };
+
+  const handleSave = () => {
     if (!title.trim()) return;
     const community = communities.find(c => c.id === communityId);
     const priceCents = price ? Math.round(parseFloat(price) * 100) : undefined;
