@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 /* ── Topic data (would come from API in production) ── */
 const topicData: Record<string, {
