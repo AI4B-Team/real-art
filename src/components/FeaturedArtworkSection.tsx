@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Star, ArrowRight, Download, RefreshCw, Heart } from "lucide-react";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 const featured = [
   { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", creator: { id: "1", name: "AI.Verse", init: "AV", color: "#4361ee" }, downloads: "3.4K", remixes: "247" },
