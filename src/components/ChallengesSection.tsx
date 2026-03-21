@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 const winners = [
   { photo: "photo-1618005182384-a83a8bd57fbe", name: "Cosmic Dreams", creator: "@AI.Verse", rank: "1st", rankClass: "bg-[#FFD700] text-[#5a3c00]" },
