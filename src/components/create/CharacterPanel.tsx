@@ -83,6 +83,7 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
   const [userCharacters, setUserCharacters] = useState<DbCharacter[]>([]);
   const [loading, setLoading] = useState(true);
   const [section, setSection] = useState<Section>("featured");
+  const [previewChar, setPreviewChar] = useState<{ name: string; avatar: string } | null>(null);
 
   useEffect(() => {
     const fetchCharacters = async () => {
@@ -142,7 +143,12 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
             {selectedChars.map(char => (
               <div key={char.id} className="relative group shrink-0">
                 {char.avatar ? (
-                  <img src={char.avatar} alt={char.name} className="w-10 h-10 rounded-lg object-cover border border-foreground/[0.08]" />
+                  <img
+                    src={char.avatar}
+                    alt={char.name}
+                    className="w-10 h-10 rounded-lg object-cover border border-foreground/[0.08] cursor-pointer hover:ring-2 hover:ring-accent/40 transition-all"
+                    onClick={() => setPreviewChar({ name: char.name, avatar: char.avatar! })}
+                  />
                 ) : (
                   <div className="w-10 h-10 rounded-lg bg-foreground/[0.08] flex items-center justify-center border border-foreground/[0.08]">
                     <User size={16} className="text-muted" />
@@ -268,6 +274,25 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
           onClose={() => setShowCreate(false)}
           onCreated={handleCreated}
         />
+      )}
+
+      {/* Lightbox modal */}
+      {previewChar && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          onClick={() => setPreviewChar(null)}
+        >
+          <div className="relative max-w-[90vw] max-h-[85vh] flex flex-col items-center gap-3" onClick={e => e.stopPropagation()}>
+            <img src={previewChar.avatar} alt={previewChar.name} className="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl" />
+            <span className="text-white text-sm font-semibold">{previewChar.name}</span>
+            <button
+              onClick={() => setPreviewChar(null)}
+              className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center shadow-lg hover:bg-accent/85 transition-colors"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
       )}
     </>
   );
