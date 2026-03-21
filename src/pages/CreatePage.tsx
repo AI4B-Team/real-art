@@ -606,21 +606,33 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           )}
 
           {/* Attachment pills row */}
-          {!isListening && (selectedCharacter || references.length > 0) && (
+          {!isListening && (selectedCharacters.length > 0 || references.length > 0) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
-              {selectedCharacter && characterInfo && (
+              {selectedCharacters.length > 0 && (
                 <button type="button" onClick={() => togglePanel("character")}
                   className={`group flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all ${activePanel === "character" ? "border-accent bg-accent/10" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-accent/30"}`}>
-                  {characterInfo.avatar ? (
-                    <img src={characterInfo.avatar} alt={characterInfo.name} className="w-7 h-7 rounded-lg object-cover" />
-                  ) : (
-                    <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center"><User size={14} className="text-accent" /></div>
-                  )}
-                  <div className="text-left">
-                    <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Character</span>
-                    <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{characterInfo.name}</span>
+                  <div className="flex items-center -space-x-1.5">
+                    {selectedCharacters.slice(0, 3).map((id, i) => {
+                      const info = characterInfoMap[id];
+                      return info?.avatar ? (
+                        <img key={id} src={info.avatar} alt={info.name} className="w-7 h-7 rounded-lg object-cover border-2 border-background" style={{ zIndex: selectedCharacters.length - i }} />
+                      ) : (
+                        <div key={id} className="w-7 h-7 rounded-lg bg-accent/10 border-2 border-background flex items-center justify-center" style={{ zIndex: selectedCharacters.length - i }}><User size={12} className="text-accent" /></div>
+                      );
+                    })}
+                    {selectedCharacters.length > 3 && (
+                      <div className="w-7 h-7 rounded-lg bg-foreground/[0.08] border-2 border-background flex items-center justify-center text-[0.6rem] font-bold text-muted" style={{ zIndex: 0 }}>+{selectedCharacters.length - 3}</div>
+                    )}
                   </div>
-                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedCharacter(null); }} />
+                  <div className="text-left">
+                    <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">{selectedCharacters.length === 1 ? "Character" : "Characters"}</span>
+                    <span className="text-[0.78rem] font-semibold text-foreground leading-tight">
+                      {selectedCharacters.length === 1 && characterInfoMap[selectedCharacters[0]]
+                        ? characterInfoMap[selectedCharacters[0]].name
+                        : `${selectedCharacters.length} selected`}
+                    </span>
+                  </div>
+                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedCharacters([]); }} />
                 </button>
               )}
               {references.length > 0 && (
