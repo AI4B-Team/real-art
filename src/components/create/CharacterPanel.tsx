@@ -177,8 +177,8 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
                 id={char.id}
                 name={char.name}
                 avatar={`https://images.unsplash.com/${char.avatar}?w=120&h=120&fit=crop&q=80`}
-                isSelected={selectedCharacter === char.id}
-                onClick={() => onSelect(char.id)}
+                isSelected={selectedCharacters.includes(char.id)}
+                onClick={() => onToggle(char.id)}
               />
             ))}
           </div>
