@@ -260,7 +260,7 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
               )}
 
               {/* History picker */}
-              {!cameraActive && selectedHistory.length === 0 && images.length === 0 && (
+              {!cameraActive && images.length === 0 && (
                 <div>
                   <p className="text-[0.78rem] font-semibold text-foreground/70 mb-3">Select From Creations</p>
                   <div className="relative mb-3">
