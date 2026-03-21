@@ -1083,10 +1083,11 @@ function CreationCard({ item }: { item: UserCreation }) {
 /* ─── Tabs ───────────────────────────────────────────────────── */
 
 const TABS: { id: GalleryTab; label: string; icon: typeof LayoutGrid }[] = [
-  { id: "creations",  label: "Creations",  icon: Sparkles },
-  { id: "community",  label: "Community",  icon: Users },
-  { id: "templates",  label: "Templates",  icon: LayoutGrid },
-  { id: "apps",       label: "Apps",       icon: Package },
+  { id: "creations",   label: "Creations",   icon: Sparkles },
+  { id: "collections", label: "Collections", icon: FolderOpen },
+  { id: "community",   label: "Community",   icon: Users },
+  { id: "templates",   label: "Templates",   icon: LayoutGrid },
+  { id: "apps",        label: "Apps",        icon: Package },
 ];
 
 const MEDIA_FILTERS: { id: MediaFilter; label: string }[] = [
