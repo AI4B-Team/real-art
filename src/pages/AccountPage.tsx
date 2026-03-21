@@ -341,14 +341,49 @@ const AccountPage = () => {
                       </div>
                     )}
                   </div>
-                  <div className="flex items-center justify-between px-3 py-2">
-                    <div className="flex items-center gap-2 text-sm text-muted">
-                      <Sun className="w-4 h-4" />
-                      <span>Theme:</span>
+                  <div className="relative">
+                    <div className="flex items-center justify-between px-3 py-2">
+                      <div className="flex items-center gap-2 text-sm text-muted">
+                        <Sun className="w-4 h-4" />
+                        <span>Theme:</span>
+                      </div>
+                      <button
+                        onClick={() => setThemeOpen(!themeOpen)}
+                        className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors"
+                      >
+                        {themeLabel} <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
-                    <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
-                      Light <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    {themeOpen && (
+                      <div className="absolute bottom-full left-0 mb-2 bg-card border border-foreground/[0.07] rounded-xl shadow-[var(--shadow-card)] p-2 z-50 animate-drop-in min-w-[160px]">
+                        {[
+                          { id: "light" as const, label: "Light", icon: Sun },
+                          { id: "dark" as const, label: "Dark", icon: Moon },
+                          { id: "split" as const, label: "Split", icon: Moon },
+                        ].map(opt => (
+                          <button
+                            key={opt.id}
+                            onClick={() => {
+                              setActiveTheme(opt.id);
+                              try { localStorage.setItem("ra_theme", opt.id); } catch {}
+                              setThemeOpen(false);
+                              if (opt.id === "dark") {
+                                document.documentElement.classList.add("dark");
+                              } else {
+                                document.documentElement.classList.remove("dark");
+                              }
+                            }}
+                            className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left text-[0.88rem] transition-colors ${
+                              opt.id === activeTheme ? "font-semibold text-foreground" : "text-foreground hover:bg-foreground/[0.04]"
+                            }`}
+                          >
+                            <opt.icon className={`w-4 h-4 ${opt.id === "split" ? "fill-foreground/50" : ""}`} />
+                            <span>{opt.label}</span>
+                            {opt.id === activeTheme && <Check className="w-4 h-4 text-accent ml-auto" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
