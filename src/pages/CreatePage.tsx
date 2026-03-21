@@ -903,7 +903,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         </div>
 
         {/* ── Active selections summary ── */}
-        {(selectedCharacter || references.length > 0 || startFrame || endFrame || selectedGenre || selectedTheme) && (
+        {(startFrame || endFrame || selectedGenre || selectedTheme) && (
           <div className="max-w-[820px] mx-auto mt-2 px-1">
             <div className="flex items-center gap-2 flex-wrap">
               {/* Character selection */}
