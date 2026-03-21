@@ -39,9 +39,8 @@ interface DbCharacter {
 
 interface CharacterPanelProps {
   onClose: () => void;
-  selectedCharacters: string[];
-  onToggle: (characterId: string) => void;
-  onClear: () => void;
+  selectedCharacter: string | null;
+  onSelect: (characterId: string | null) => void;
 }
 
 type Section = "featured" | "mine";
@@ -77,7 +76,7 @@ function CharacterCard({
   );
 }
 
-export default function CharacterPanel({ onClose, selectedCharacters, onToggle, onClear }: CharacterPanelProps) {
+export default function CharacterPanel({ onClose, selectedCharacter, onSelect }: CharacterPanelProps) {
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [userCharacters, setUserCharacters] = useState<DbCharacter[]>([]);
@@ -112,7 +111,7 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
 
   const handleCreated = (char: { id: string; name: string; avatar_url: string | null }) => {
     setUserCharacters(prev => [{ ...char, description: null }, ...prev]);
-    onToggle(char.id);
+    onSelect(char.id);
     setSection("mine");
   };
 
@@ -148,12 +147,12 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
             </button>
           ))}
           {/* No character option */}
-          {selectedCharacters.length > 0 && (
+          {selectedCharacter && (
             <button
-              onClick={onClear}
+              onClick={() => onSelect(null)}
               className="ml-auto px-3 py-1.5 rounded-lg text-[0.78rem] font-medium text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors"
             >
-              Clear ({selectedCharacters.length})
+              Clear
             </button>
           )}
         </div>
@@ -177,8 +176,8 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
                 id={char.id}
                 name={char.name}
                 avatar={`https://images.unsplash.com/${char.avatar}?w=120&h=120&fit=crop&q=80`}
-                isSelected={selectedCharacters.includes(char.id)}
-                onClick={() => onToggle(char.id)}
+                isSelected={selectedCharacter === char.id}
+                onClick={() => onSelect(char.id)}
               />
             ))}
           </div>
@@ -212,8 +211,8 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
                   id={char.id}
                   name={char.name}
                   avatar={char.avatar_url}
-                  isSelected={selectedCharacters.includes(char.id)}
-                  onClick={() => onToggle(char.id)}
+                  isSelected={selectedCharacter === char.id}
+                  onClick={() => onSelect(char.id)}
                 />
               ))}
               <button

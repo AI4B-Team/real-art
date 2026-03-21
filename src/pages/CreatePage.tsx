@@ -501,48 +501,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger>
                   <TooltipContent side="right">Inspire Me</TooltipContent>
                 </Tooltip>
-
-                {/* Type & Sub-mode pills */}
-                <div className="relative" ref={typeRef}>
-                  <button type="button" onClick={() => setTypeDropdownOpen(v => !v)}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[0.7rem] font-semibold border transition-all ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
-                    <typeCfg.icon size={11} />{typeCfg.label}<X size={9} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
-                  </button>
-                  {typeDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-                      {CONTENT_TYPES.map(t => (
-                        <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
-                          <t.icon size={16} className={t.color} />{t.label}
-                          {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
-                  <PopoverTrigger asChild>
-                    <button type="button" className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[0.7rem] font-semibold border transition-all ${
-                      selectedSubObj ? `${typeCfg!.bg} ${typeCfg!.border} ${typeCfg!.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
-                    }`}>
-                      {selectedSubObj ? (
-                        <><selectedSubObj.icon size={11} />{selectedSubObj.label}<X size={9} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedSubMode(null); setSubModeOpen(false); setActivePanel(null); }} /></>
-                      ) : (
-                        <><SlidersHorizontal size={11} />Type<ChevronDown size={9} className="text-muted" /></>
-                      )}
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
-                    {subModes.map(m => (
-                      <button key={m.id} type="button" onClick={() => handleSubModeSelect(m.id)}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedSubMode === m.id ? `${typeCfg!.bg} ${typeCfg!.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                        <m.icon size={14} />{m.label}{selectedSubMode === m.id && <Check size={12} className="ml-auto" />}
-                      </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-
                 <input
                   ref={promptFileRef}
                   type="file"
@@ -687,6 +645,53 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {hasType && (
             <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center justify-between gap-2 flex-wrap">
               <div className="flex items-center gap-1.5 flex-wrap">
+                {/* Type chip */}
+                {typeCfg && (
+                  <div className="relative" ref={typeRef}>
+                    <button type="button" onClick={() => setTypeDropdownOpen(v => !v)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
+                      <typeCfg.icon size={13} />{typeCfg.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
+                    </button>
+                    {typeDropdownOpen && (
+                      <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+                        {CONTENT_TYPES.map(t => (
+                          <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
+                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
+                            <t.icon size={16} className={t.color} />{t.label}
+                            {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+
+                {/* Sub-mode selector */}
+                <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
+                  <PopoverTrigger asChild>
+                    <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${
+                      selectedSubObj ? `${typeCfg!.bg} ${typeCfg!.border} ${typeCfg!.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
+                    }`}>
+                      {selectedSubObj ? (
+                        <><selectedSubObj.icon size={13} />{selectedSubObj.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedSubMode(null); setSubModeOpen(false); setActivePanel(null); }} /></>
+                      ) : (
+                        <><SlidersHorizontal size={13} />Type<ChevronDown size={11} className="text-muted" /></>
+                      )}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                    {subModes.map(m => (
+                      <button key={m.id} type="button" onClick={() => handleSubModeSelect(m.id)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedSubMode === m.id ? `${typeCfg!.bg} ${typeCfg!.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        <m.icon size={14} />{m.label}{selectedSubMode === m.id && <Check size={12} className="ml-auto" />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
 
                 {/* Model */}
                 <Popover open={modelOpen} onOpenChange={setModelOpen}>
