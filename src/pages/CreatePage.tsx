@@ -765,11 +765,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Character */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("character")}
-                    className={`relative p-1.5 rounded-lg transition-colors ${activePanel === "character" || selectedCharacter ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`relative p-1.5 rounded-lg transition-colors ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <User size={14} />
-                    {selectedCharacter && <span className="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-accent" />}
+                    {selectedCharacters.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{selectedCharacters.length}</span>}
                   </button>
-                </TooltipTrigger><TooltipContent>Character{selectedCharacter && characterInfo ? `: ${characterInfo.name}` : ""}</TooltipContent></Tooltip>
+                </TooltipTrigger><TooltipContent>Character{selectedCharacters.length > 0 ? ` (${selectedCharacters.length})` : ""}</TooltipContent></Tooltip>
 
                 {/* Reference */}
                 <Tooltip><TooltipTrigger asChild>
