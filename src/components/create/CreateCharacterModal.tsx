@@ -31,6 +31,7 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
   const [selectedHistory, setSelectedHistory] = useState<string[]>([]);
   const [isSaving, setIsSaving] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
