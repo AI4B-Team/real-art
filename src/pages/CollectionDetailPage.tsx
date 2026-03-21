@@ -1,6 +1,7 @@
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import { ArrowLeft, ChevronRight, Loader2, Heart, Share2, Lock, Key, Check, CreditCard, X, MoreHorizontal, Merge, Archive, LayoutGrid, List, SlidersHorizontal, Image, Video, Music, FileText, Globe, ChevronDown, Upload, Plus } from "lucide-react";
+import CollectionUploadModal from "@/components/CollectionUploadModal";
 import { useToast } from "@/hooks/use-toast";
 import { getCollections, grantAccess, type UnifiedCollection } from "@/lib/collectionStore";
 import PageShell from "@/components/PageShell";
