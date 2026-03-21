@@ -1016,7 +1016,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                     </button>
 
                     {/* Add Members */}
-                    <button onClick={() => { setUserMenuOpen(false); navigate("/account?tab=invites"); }} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                    <button onClick={() => { setUserMenuOpen(false); navigate("/account?tab=members"); }} className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
                       <UserPlus className="w-4 h-4 opacity-50" /> Add Members
                     </button>
 
