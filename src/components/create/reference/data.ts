@@ -50,8 +50,6 @@ export const FILE_TYPE_BADGES = [
   { label: "PNG", color: "hsl(160, 70%, 45%)" },
   { label: "GIF", color: "hsl(30, 90%, 55%)" },
   { label: "BMP", color: "hsl(280, 60%, 55%)" },
-  { label: "MP4", color: "hsl(140, 70%, 45%)" },
-  { label: "MOV", color: "hsl(350, 75%, 55%)" },
 ];
 
 export const SOCIAL_ICONS = [
