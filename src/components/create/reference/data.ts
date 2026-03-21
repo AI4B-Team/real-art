@@ -27,6 +27,24 @@ export const DUMMY_COMMUNITY: BrowseItem[] = [
   { id: "cm6", src: "https://images.unsplash.com/photo-1604881991720-f91add269bed?w=200&h=200&fit=crop", title: "Dark Fantasy", type: "image", creator: "arcanist" },
 ];
 
+export const DUMMY_COLLECTIONS: BrowseItem[] = [
+  { id: "col1", src: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&h=200&fit=crop", title: "CEO / Boss Babe", type: "image" },
+  { id: "col2", src: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?w=200&h=200&fit=crop", title: "Luxury Lifestyle", type: "image" },
+  { id: "col3", src: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=200&h=200&fit=crop", title: "Street Fashion", type: "image" },
+  { id: "col4", src: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=200&h=200&fit=crop", title: "Runway Inspired", type: "image" },
+  { id: "col5", src: "https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=200&h=200&fit=crop", title: "Celestial Dance", type: "image" },
+  { id: "col6", src: "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=200&h=200&fit=crop", title: "Retro Glow", type: "image" },
+];
+
+export const DUMMY_TRENDING: BrowseItem[] = [
+  { id: "tr1", src: "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=200&h=200&fit=crop", title: "Gradient Wave", type: "image", creator: "chromalab" },
+  { id: "tr2", src: "https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?w=200&h=200&fit=crop", title: "Golden Light", type: "image", creator: "luminaai" },
+  { id: "tr3", src: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=200&h=200&fit=crop", title: "Crystal Bloom", type: "image", creator: "spectra" },
+  { id: "tr4", src: "https://images.unsplash.com/photo-1485470733090-0aae1788d668?w=200&h=200&fit=crop", title: "Motion Blur", type: "video", creator: "voidart" },
+  { id: "tr5", src: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop", title: "Studio Light", type: "image", creator: "neopixel" },
+  { id: "tr6", src: "https://images.unsplash.com/photo-1520483691742-e1c3d7dfe758?w=200&h=200&fit=crop", title: "Storm Chase", type: "image", creator: "dreamforge" },
+];
+
 export const FILE_TYPE_BADGES = [
   { label: "JPG", color: "hsl(200, 80%, 55%)" },
   { label: "PNG", color: "hsl(160, 70%, 45%)" },
