@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import {
-  Search, LayoutGrid, Image as ImageIcon, Video as VideoIcon, Check,
+  Search, LayoutGrid, Image as ImageIcon, Check,
   Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles
 } from "lucide-react";
 import type { BrowseItem, MediaFilter, ReferenceImage, SourceTab } from "./types";
@@ -23,7 +23,6 @@ const SOURCE_TABS: { id: SourceTab; label: string; icon: typeof LayoutGrid }[] =
 const MEDIA_FILTERS: { id: MediaFilter; label: string; icon: typeof LayoutGrid }[] = [
   { id: "all", label: "All", icon: LayoutGrid },
   { id: "image", label: "Images", icon: ImageIcon },
-  { id: "video", label: "Videos", icon: VideoIcon },
 ];
 
 const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
@@ -140,7 +139,7 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
         >
           <Upload size={28} className="text-accent mb-3" />
           <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
-          <p className="text-[0.75rem] text-muted/60 mb-4">Images, Videos — up to 50MB each</p>
+          <p className="text-[0.75rem] text-muted/60 mb-4">Images — up to 50MB each</p>
           <button
             onClick={() => fileRef.current?.click()}
             className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors"
@@ -161,7 +160,7 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
           <input
             ref={fileRef}
             type="file"
-            accept="image/*,video/*"
+            accept="image/*"
             multiple
             className="hidden"
             onChange={e => { handleFiles(e.target.files); if (e.target) e.target.value = ""; }}

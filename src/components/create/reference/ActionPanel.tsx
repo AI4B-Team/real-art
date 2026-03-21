@@ -121,7 +121,7 @@ export default function ActionPanel({ onAdd }: ActionPanelProps) {
           >
             <Upload size={20} className="text-accent" />
             <span className="text-[0.8rem] font-bold text-foreground">Click To Upload</span>
-            <span className="text-[0.68rem] text-muted/60">or, drag and drop a file here</span>
+            <span className="text-[0.68rem] text-muted/60">or, drag and drop an image here</span>
           </button>
           <div className="flex items-center gap-1.5 mt-2.5">
             {FILE_TYPE_BADGES.map(b => (
@@ -137,7 +137,7 @@ export default function ActionPanel({ onAdd }: ActionPanelProps) {
           <input
             ref={fileRef}
             type="file"
-            accept="image/*,video/*"
+            accept="image/*"
             multiple
             className="hidden"
             onChange={e => { handleFiles(e.target.files); if (e.target) e.target.value = ""; }}
