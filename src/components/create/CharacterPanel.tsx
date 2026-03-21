@@ -211,8 +211,8 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
                   id={char.id}
                   name={char.name}
                   avatar={char.avatar_url}
-                  isSelected={selectedCharacter === char.id}
-                  onClick={() => onSelect(char.id)}
+                  isSelected={selectedCharacters.includes(char.id)}
+                  onClick={() => onToggle(char.id)}
                 />
               ))}
               <button
