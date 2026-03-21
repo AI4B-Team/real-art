@@ -337,35 +337,19 @@ const CollectionDetailPage = () => {
         <span className="text-foreground">{collection.name}</span>
       </div>
 
-      {/* Header */}
-      <div className="px-6 md:px-12 pb-5 max-w-[1440px] mx-auto">
-        <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none mb-2">{collection.name}</h1>
-        {collection.description && (
-          <p className="text-[0.88rem] text-muted max-w-[520px]">{collection.description}</p>
-        )}
-      </div>
-
-      {/* Stats & Controls */}
+      {/* Header: Title + Private label + action buttons */}
       <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
-        <div className="flex items-center gap-6 py-5 border-b border-foreground/[0.06] text-[0.82rem] text-muted flex-wrap">
-          <span>Curated By: <strong className="text-foreground">{curatorName.toLowerCase()}</strong></span>
-          <span><strong className="text-foreground">{isStatic ? staticCollections[id!]?.count.toLocaleString() : images.length}</strong> Media Files</span>
-
-          {/* Media type breakdown */}
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1"><Image className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.7) : Math.floor(images.length * 0.7)}</strong> Photos</span>
-            <span className="flex items-center gap-1"><Video className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.2) : Math.floor(images.length * 0.2)}</strong> Videos</span>
-            <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.1) : Math.ceil(images.length * 0.1)}</strong> Other</span>
-          </div>
+        <div className="flex items-center gap-4 mb-2 flex-wrap">
+          <h1 className="font-display text-[2.8rem] font-black tracking-[-0.03em] leading-none">{collection.name}</h1>
 
           {/* Public / Private label */}
           {collection.is_public ? (
-            <span className="px-2.5 py-1 rounded-md bg-card border border-foreground/[0.1] text-[0.75rem] font-medium flex items-center gap-1">
-              <Globe className="w-3 h-3" /> Public
+            <span className="px-3 py-1.5 rounded-lg bg-card border border-foreground/[0.1] text-[0.78rem] font-medium flex items-center gap-1.5 text-muted">
+              <Globe className="w-3.5 h-3.5" /> Public
             </span>
           ) : (
-            <span className="px-2.5 py-1 rounded-md bg-card border border-foreground/[0.1] text-[0.75rem] font-medium flex items-center gap-1">
-              <Lock className="w-3 h-3" /> Private
+            <span className="px-3 py-1.5 rounded-lg bg-card border border-foreground/[0.1] text-[0.78rem] font-medium flex items-center gap-1.5 text-muted">
+              <Lock className="w-3.5 h-3.5" /> Private
             </span>
           )}
 
@@ -404,29 +388,43 @@ const CollectionDetailPage = () => {
             </div>
           </div>
         </div>
+        {collection.description && (
+          <p className="text-[0.88rem] text-muted max-w-[520px] mb-4">{collection.description}</p>
+        )}
       </div>
 
-      {/* Toolbar: View toggle + Filter */}
+      {/* Stats + View toggles + Filter — single row */}
       <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
-        <div className="flex items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            {/* View toggles */}
-            <button onClick={() => setViewMode("grid")}
-              className={`flex items-center justify-center w-9 h-9 rounded-lg border transition-colors ${viewMode === "grid" ? "bg-foreground text-background border-foreground" : "border-foreground/[0.12] hover:border-foreground/30 text-muted"}`}>
-              <LayoutGrid className="w-4 h-4" />
-            </button>
-            <button onClick={() => setViewMode("list")}
-              className={`flex items-center justify-center w-9 h-9 rounded-lg border transition-colors ${viewMode === "list" ? "bg-foreground text-background border-foreground" : "border-foreground/[0.12] hover:border-foreground/30 text-muted"}`}>
-              <List className="w-4 h-4" />
-            </button>
+        <div className="flex items-center gap-6 py-4 border-b border-foreground/[0.06] text-[0.82rem] text-muted flex-wrap">
+          <span>Curated By: <strong className="text-foreground">{curatorName.toLowerCase()}</strong></span>
+          <span><strong className="text-foreground">{isStatic ? staticCollections[id!]?.count.toLocaleString() : images.length}</strong> Media Files</span>
+
+          {/* Media type breakdown */}
+          <div className="flex items-center gap-3">
+            <span className="flex items-center gap-1"><Image className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.7) : Math.floor(images.length * 0.7)}</strong> Photos</span>
+            <span className="flex items-center gap-1"><Video className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.2) : Math.floor(images.length * 0.2)}</strong> Videos</span>
+            <span className="flex items-center gap-1"><FileText className="w-3.5 h-3.5" /> <strong className="text-foreground">{isStatic ? Math.floor((staticCollections[id!]?.count || 0) * 0.1) : Math.ceil(images.length * 0.1)}</strong> Other</span>
           </div>
 
-          {/* Filter */}
-          <div className="relative" ref={filterRef}>
-            <button onClick={() => setFilterOpen(o => !o)}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
-              <SlidersHorizontal className="w-4 h-4" /> Filter <ChevronDown className="w-3.5 h-3.5 opacity-50" />
-            </button>
+          <div className="ml-auto flex items-center gap-3">
+            {/* View toggles */}
+            <div className="flex items-center gap-1">
+              <button onClick={() => setViewMode("grid")}
+                className={`flex items-center justify-center w-9 h-9 rounded-lg border transition-colors ${viewMode === "grid" ? "bg-foreground text-background border-foreground" : "border-foreground/[0.12] hover:border-foreground/30 text-muted"}`}>
+                <LayoutGrid className="w-4 h-4" />
+              </button>
+              <button onClick={() => setViewMode("list")}
+                className={`flex items-center justify-center w-9 h-9 rounded-lg border transition-colors ${viewMode === "list" ? "bg-foreground text-background border-foreground" : "border-foreground/[0.12] hover:border-foreground/30 text-muted"}`}>
+                <List className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Filter */}
+            <div className="relative" ref={filterRef}>
+              <button onClick={() => setFilterOpen(o => !o)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.84rem] font-medium hover:border-foreground/30 transition-colors">
+                <SlidersHorizontal className="w-4 h-4" /> Filter <ChevronDown className="w-3.5 h-3.5 opacity-50" />
+              </button>
             {filterOpen && (
               <div className="absolute right-0 top-full mt-1.5 w-[200px] bg-card border border-foreground/[0.1] rounded-xl shadow-lg py-1.5 z-50">
                 <div className="px-3 py-1.5 text-[0.72rem] font-semibold text-muted uppercase tracking-wider">Sort By</div>
