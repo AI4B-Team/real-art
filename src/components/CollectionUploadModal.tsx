@@ -43,6 +43,7 @@ const STOCK_IMAGES = Array.from({ length: 12 }, (_, i) => ({
 
 const CollectionUploadModal = ({ collectionId, onClose, onUploaded, existingCount }: Props) => {
   const { toast } = useToast();
+  const { sidebarCollapsed } = useContext(LayoutContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<SourceTab>("upload");
   const [files, setFiles] = useState<UploadFile[]>([]);
