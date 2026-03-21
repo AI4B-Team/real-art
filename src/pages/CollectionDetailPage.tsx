@@ -494,6 +494,16 @@ const CollectionDetailPage = () => {
         )}
       </div>
 
+      {/* Upload Modal */}
+      {uploadModalOpen && collection && (
+        <CollectionUploadModal
+          collectionId={id!}
+          onClose={() => setUploadModalOpen(false)}
+          onUploaded={(newImages) => setImages(prev => [...prev, ...newImages])}
+          existingCount={images.length}
+        />
+      )}
+
       <Footer />
     </PageShell>
   );
