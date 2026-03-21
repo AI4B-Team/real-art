@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Upload, Link2, Monitor, Camera } from "lucide-react";
+import { Upload, Link2, Camera } from "lucide-react";
 import type { ReferenceImage } from "./types";
 import { FILE_TYPE_BADGES } from "./data";
 
@@ -144,17 +144,12 @@ export default function ActionPanel({ onAdd }: ActionPanelProps) {
           />
         </div>
 
-        {/* Import + Record */}
-        <div className="flex flex-col gap-2 shrink-0">
-          <button className="flex items-center gap-2 px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-accent/30 hover:bg-accent/5 transition-all flex-1">
-            <Monitor size={16} className="text-blue-600 shrink-0" />
-            <span className="text-[0.72rem] font-semibold text-foreground whitespace-nowrap">Import From Zoom</span>
-          </button>
-          <button className="flex items-center gap-2 px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-accent/30 hover:bg-accent/5 transition-all flex-1">
-            <Camera size={16} className="text-accent shrink-0" />
-            <span className="text-[0.72rem] font-semibold text-foreground">Record</span>
-          </button>
-        </div>
+        {/* Webcam Capture */}
+        <button className="flex flex-col items-center justify-center gap-1.5 px-5 rounded-xl border-2 border-dashed border-foreground/[0.10] hover:border-accent/30 hover:bg-accent/5 transition-all min-w-[140px]">
+          <Camera size={20} className="text-accent" />
+          <span className="text-[0.8rem] font-bold text-foreground">Webcam Capture</span>
+          <span className="text-[0.65rem] text-muted/60">Snap a reference photo</span>
+        </button>
       </div>
     </div>
   );
