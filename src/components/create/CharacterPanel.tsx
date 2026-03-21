@@ -275,6 +275,25 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
           onCreated={handleCreated}
         />
       )}
+
+      {/* Lightbox modal */}
+      {previewChar && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+          onClick={() => setPreviewChar(null)}
+        >
+          <div className="relative max-w-[90vw] max-h-[85vh] flex flex-col items-center gap-3" onClick={e => e.stopPropagation()}>
+            <img src={previewChar.avatar} alt={previewChar.name} className="max-w-full max-h-[80vh] rounded-xl object-contain shadow-2xl" />
+            <span className="text-white text-sm font-semibold">{previewChar.name}</span>
+            <button
+              onClick={() => setPreviewChar(null)}
+              className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center shadow-lg hover:bg-accent/85 transition-colors"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
