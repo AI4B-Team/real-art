@@ -349,7 +349,7 @@ const CollectionDetailPage = () => {
       <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
         <div className="flex items-center gap-6 py-5 border-b border-foreground/[0.06] text-[0.82rem] text-muted flex-wrap">
           <span>Curated By: <strong className="text-foreground">{curatorName.toLowerCase()}</strong></span>
-          <span><strong className="text-foreground">{isStatic ? staticCollections[id!]?.count.toLocaleString() : images.length}</strong> media files</span>
+          <span><strong className="text-foreground">{isStatic ? staticCollections[id!]?.count.toLocaleString() : images.length}</strong> Media Files</span>
 
           {/* Media type breakdown */}
           <div className="flex items-center gap-3">
