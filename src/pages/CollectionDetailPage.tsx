@@ -444,6 +444,7 @@ const CollectionDetailPage = () => {
                 ))}
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>
