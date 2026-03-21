@@ -28,7 +28,7 @@ interface Props {
 
 const SOURCE_TABS: { id: SourceTab; label: string; icon: typeof Upload }[] = [
   { id: "upload", label: "Upload", icon: Upload },
-  { id: "creations", label: "My Creations", icon: Palette },
+  { id: "creations", label: "Creations", icon: Palette },
   { id: "stock", label: "Stock", icon: Globe },
   { id: "community", label: "Community", icon: Users },
 ];
