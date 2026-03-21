@@ -1034,7 +1034,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                     <div className="h-px bg-foreground/[0.06] my-2" />
 
                     {/* Language row */}
-                    <button onClick={() => setMenuPanel("language")} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                    <button onClick={(e) => { e.stopPropagation(); setMenuPanel("language"); }} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
                       <Languages className="w-[18px] h-[18px] text-muted shrink-0" />
                       <span className="text-[0.84rem]">Language:</span>
                       <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
