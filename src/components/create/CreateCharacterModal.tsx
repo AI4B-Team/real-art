@@ -42,14 +42,21 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
   useEffect(() => {
     let isMounted = true;
 
+    // Check localStorage auth first (app-level auth)
+    const localAuth = localStorage.getItem("ra_auth") === "1";
+    if (localAuth) {
+      setIsAuthenticated(true);
+    }
+
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (isMounted) setIsAuthenticated(!!user);
+      if (isMounted) setIsAuthenticated(!!user || localAuth);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsAuthenticated(!!session?.user);
+      const localAuthNow = localStorage.getItem("ra_auth") === "1";
+      setIsAuthenticated(!!session?.user || localAuthNow);
     });
 
     return () => {
