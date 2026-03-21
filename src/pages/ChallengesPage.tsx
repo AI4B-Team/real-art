@@ -55,13 +55,6 @@ const ChallengesPage = () => {
     <PageShell>
         {/* Header */}
         <div className="px-6 md:px-12 py-10 max-w-[1440px] mx-auto">
-          <div className="flex items-center gap-2 text-[0.8rem] text-muted mb-6">
-            <Link to="/" className="hover:text-foreground transition-colors flex items-center gap-1">
-              <ArrowLeft className="w-3.5 h-3.5" /> Home
-            </Link>
-            <ChevronRight className="w-3 h-3 opacity-30" />
-            <span className="text-foreground">Challenges</span>
-          </div>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-5 mb-3">
             <div>
               <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Challenges</h1>
