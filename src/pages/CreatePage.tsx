@@ -1061,6 +1061,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               </div>
             </div>
           )}
+          {activePanel === "reference" && (
             <ReferencePanel
               onClose={() => setActivePanel(null)}
               references={references}
