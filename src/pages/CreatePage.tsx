@@ -45,7 +45,7 @@ import ImageCardOverlay from "@/components/ImageCardOverlay";
 type ContentType = "image" | "video" | "audio" | "design" | "content" | "document" | "app";
 type GalleryTab = "creations" | "collections" | "apps" | "templates" | "community";
 type MediaFilter = "all" | "image" | "video" | "audio" | "design";
-type PanelType = "reference" | "character" | "frames" | "music" | "photoshoot" | "social" | null;
+type PanelType = "reference" | "character" | "style" | "frames" | "music" | "photoshoot" | "social" | null;
 
 /* ─── Content type config ────────────────────────────────────── */
 
