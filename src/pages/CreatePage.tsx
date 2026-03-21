@@ -15,6 +15,15 @@ import {
   Film, Package, BarChart2, ShoppingBag, Brush, Link2,
   Eye, Target, Languages, Repeat, PenTool, FolderOpen,
 } from "lucide-react";
+import stylePhotorealistic from "@/assets/styles/photorealistic.jpg";
+import styleAnime from "@/assets/styles/anime.jpg";
+import styleDigitalArt from "@/assets/styles/digital-art.jpg";
+import styleOilPainting from "@/assets/styles/oil-painting.jpg";
+import styleWatercolor from "@/assets/styles/watercolor.jpg";
+import style3dRender from "@/assets/styles/3d-render.jpg";
+import stylePixelArt from "@/assets/styles/pixel-art.jpg";
+import styleComicBook from "@/assets/styles/comic-book.jpg";
+import styleCinematic from "@/assets/styles/cinematic.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
