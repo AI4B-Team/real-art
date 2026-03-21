@@ -641,7 +641,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <Popover open={modelOpen} onOpenChange={setModelOpen}>
                   <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                     <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedModel !== "Auto" ? "bg-purple-50 text-purple-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                      <Zap size={12} />{selectedModel}
+                      <Cpu size={12} />{selectedModel}
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
                   <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
