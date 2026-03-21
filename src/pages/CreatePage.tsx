@@ -726,10 +726,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Count</TooltipContent></Tooltip>
                     <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                      {[1,2,3,4].map(n => (
+                      {[1,2,3,4,5,6].map(n => (
                         <button key={n} type="button" onClick={() => { setSelectedNumber(n); setNumberOpen(false); }}
                           className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedNumber === n ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                          {n} {n === 1 ? "output" : "outputs"}{selectedNumber === n && <Check size={12} />}
+                          {n} {n === 1 ? "image" : "images"}{selectedNumber === n && <Check size={12} />}
                         </button>
                       ))}
                     </PopoverContent>
