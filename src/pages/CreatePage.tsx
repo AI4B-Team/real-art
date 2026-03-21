@@ -674,12 +674,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
           {/* ── Bottom toolbar ── */}
           {hasType && (
-            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-1.5 flex-wrap">
+            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-nowrap">
+              {/* Child 1 — Scrollable pills */}
+              <div className="relative flex-1 min-w-0 overflow-hidden">
+                {/* Left fade overlay */}
+                <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent z-10 opacity-0 transition-opacity" id="toolbar-fade" />
+                <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
                 {/* Type chip */}
                 {typeCfg && (
-                  <div className="relative" ref={typeRef}>
+                  <div className="relative shrink-0" ref={typeRef}>
                     <button type="button" onClick={() => setTypeDropdownOpen(v => !v)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all whitespace-nowrap ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
                       <typeCfg.icon size={13} />{typeCfg.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
                     </button>
                     {typeDropdownOpen && (
@@ -696,12 +701,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </div>
                 )}
 
-                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
                 {/* Sub-mode selector */}
                 <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
                   <PopoverTrigger asChild>
-                    <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all ${
+                    <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all whitespace-nowrap shrink-0 ${
                       selectedSubObj ? `${typeCfg!.bg} ${typeCfg!.border} ${typeCfg!.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
                     }`}>
                       {selectedSubObj ? (
@@ -721,12 +726,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </PopoverContent>
                 </Popover>
 
-                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
                 {/* Model */}
                 <Popover open={modelOpen} onOpenChange={setModelOpen}>
                   <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                    <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedModel !== "Auto" ? "bg-purple-50 text-purple-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedModel !== "Auto" ? "bg-purple-50 text-purple-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                       <Cpu size={12} />{selectedModel}
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
@@ -743,14 +748,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <Brush size={12} />{selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+
                 {/* Character */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("character")}
-                    className={`relative p-1.5 rounded-lg transition-colors ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`relative p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <User size={14} />
                     {selectedCharacters.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{selectedCharacters.length}</span>}
                   </button>
@@ -759,7 +765,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Reference */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("reference")}
-                    className={`relative p-1.5 rounded-lg transition-colors ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`relative p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <Layers size={14} />
                     {references.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{references.length}</span>}
                   </button>
@@ -769,7 +775,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {(selectedType === "image" || selectedType === "design") && (
                   <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedRatio !== "1:1" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedRatio !== "1:1" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                         <Copy size={12} />{selectedRatio}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Ratio</TooltipContent></Tooltip>
@@ -800,7 +806,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {selectedType === "video" && (
                   <Popover open={durationOpen} onOpenChange={setDurationOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors whitespace-nowrap shrink-0">
                         <Clock size={12} />{selectedDuration}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Duration</TooltipContent></Tooltip>
@@ -818,7 +824,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Resolution — video */}
                 {selectedType === "video" && (
                   <Tooltip><TooltipTrigger asChild>
-                    <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                    <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors whitespace-nowrap shrink-0">
                       <SlidersHorizontal size={12} />1080p
                     </button>
                   </TooltipTrigger><TooltipContent>Resolution</TooltipContent></Tooltip>
@@ -828,7 +834,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {(selectedType === "image" || selectedType === "design") && (
                   <Popover open={numberOpen} onOpenChange={setNumberOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors ${selectedNumber > 1 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedNumber > 1 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                         <Hash size={12} />{selectedNumber > 1 ? selectedNumber : ""}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Count</TooltipContent></Tooltip>
@@ -845,12 +851,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
                 {/* Content/Social toolbar icons */}
                 {selectedType === "content" && (
-                  <div className="flex items-center gap-0.5">
-                    <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
-                    {/* Goal */}
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Target size={14} />
                         </button>
                       </PopoverTrigger>
@@ -861,11 +866,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-
-                    {/* Tone */}
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
                         </button>
                       </PopoverTrigger>
@@ -876,11 +879,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-
-                    {/* Language */}
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
                         </button>
                       </PopoverTrigger>
@@ -891,11 +892,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-
-                    {/* Frequency */}
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentFrequency !== "Daily" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentFrequency !== "Daily" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Calendar size={14} />
                         </button>
                       </PopoverTrigger>
@@ -906,11 +905,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-
-                    {/* Time */}
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentTime !== "9:00 AM" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentTime !== "9:00 AM" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Clock size={14} />
                         </button>
                       </PopoverTrigger>
@@ -921,11 +918,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-
-                    {/* Style */}
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors ${contentStyle !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentStyle !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <PenTool size={14} />
                         </button>
                       </PopoverTrigger>
@@ -936,12 +931,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-
-                    <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
-
-                    <div className="flex items-center gap-1.5">
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
+                    <div className="flex items-center gap-1.5 shrink-0">
                       <Eye size={13} className="text-muted" />
-                      <span className="text-[0.72rem] text-muted font-medium">Brand</span>
+                      <span className="text-[0.72rem] text-muted font-medium whitespace-nowrap">Brand</span>
                       <div
                         onClick={() => setBrandToggle(v => !v)}
                         className={`w-8 h-[18px] rounded-full transition-colors cursor-pointer relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}
@@ -951,13 +944,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </div>
                   </div>
                 )}
+                </div>
+              </div>
 
-              {/* Right: enhance + mic + generate */}
-              <div className="flex items-center gap-2 ml-auto shrink-0">
+              {/* Child 2 — Pinned action group */}
+              <div className="flex items-center gap-2 shrink-0 pl-3">
                 {prompt.trim() && (
                   <Tooltip><TooltipTrigger asChild>
                     <button type="button" onClick={handleEnhance} disabled={isEnhancing}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] hover:bg-foreground/[0.08] text-muted-foreground rounded-lg text-[0.78rem] font-medium transition-colors disabled:opacity-50">
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] hover:bg-foreground/[0.08] text-muted-foreground rounded-lg text-[0.78rem] font-medium transition-colors disabled:opacity-50 whitespace-nowrap">
                       {isEnhancing ? <Loader2 size={14} className="animate-spin text-purple-500" /> : <Sparkles size={14} className="text-purple-500" />}
                       <span>AI</span><ChevronDown size={12} className="text-muted" />
                     </button>
