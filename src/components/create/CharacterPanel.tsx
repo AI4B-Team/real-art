@@ -147,12 +147,12 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
             </button>
           ))}
           {/* No character option */}
-          {selectedCharacter && (
+          {selectedCharacters.length > 0 && (
             <button
-              onClick={() => onSelect(null)}
+              onClick={onClear}
               className="ml-auto px-3 py-1.5 rounded-lg text-[0.78rem] font-medium text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors"
             >
-              Clear
+              Clear ({selectedCharacters.length})
             </button>
           )}
         </div>
