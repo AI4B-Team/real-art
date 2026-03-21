@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Upload, Link2, Camera } from "lucide-react";
+import { Upload, Link2 } from "lucide-react";
 import type { ReferenceImage } from "./types";
 import { FILE_TYPE_BADGES } from "./data";
 
