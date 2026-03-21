@@ -1074,7 +1074,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   { id: "Stained Glass", label: "Glass", img: styleStainedGlass },
                   { id: "Pointillism", label: "Pointillism", img: stylePointillism },
                 ].map(s => (
-                  <button key={s.id} type="button" onClick={() => { setSelectedStyle(s.id); setActivePanel(null); }}
+                  <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
                     className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
                     {s.img ? (
                       <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" />
