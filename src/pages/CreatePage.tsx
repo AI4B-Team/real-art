@@ -981,7 +981,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         )}
 
         {/* ── Panels below prompt box ── */}
-        <div className="max-w-[820px] mx-auto">
+        <div className="max-w-[1100px] mx-auto">
           {activePanel === "reference" && (
             <ReferencePanel
               onClose={() => setActivePanel(null)}
