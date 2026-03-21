@@ -77,7 +77,7 @@ function CharacterCard({
   );
 }
 
-export default function CharacterPanel({ onClose, selectedCharacter, onSelect }: CharacterPanelProps) {
+export default function CharacterPanel({ onClose, selectedCharacters, onToggle, onClear }: CharacterPanelProps) {
   const [search, setSearch] = useState("");
   const [showCreate, setShowCreate] = useState(false);
   const [userCharacters, setUserCharacters] = useState<DbCharacter[]>([]);
