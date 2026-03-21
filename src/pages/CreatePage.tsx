@@ -474,7 +474,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <SlidersHorizontal size={17} className="text-foreground" />
                     </button>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">Select what to create</TooltipContent>
+                  <TooltipContent side="bottom">Create</TooltipContent>
                 </Tooltip>
                 {typeDropdownOpen && (
                   <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
