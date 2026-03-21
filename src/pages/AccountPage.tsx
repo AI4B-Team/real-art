@@ -4,7 +4,7 @@ import {
   User, Bell, Shield, Lock, DollarSign, Eye, EyeOff, Camera, Trash2, Check, MapPin, Image,
   Loader2, CreditCard, Zap, Clock, Mail, Smartphone, MessageSquare, Users, FileText, Globe,
   Heart, Download, ArrowRight, ChevronRight, Info, Plus, X, Gift,
-  Settings, Share2, LayoutGrid, Bot, UserPlus, MailOpen, Plug, Grid3X3, Languages, Sun, Moon, ChevronDown
+  Settings, Share2, LayoutGrid, Bot, UserPlus, MailOpen, Plug, Grid3X3, Languages, Sun, Moon, ChevronDown, Search
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import { supabase } from "@/integrations/supabase/client";
