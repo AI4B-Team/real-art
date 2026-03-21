@@ -1024,7 +1024,43 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
         {/* ── Panels below prompt box ── */}
         <div className="max-w-[1100px] mx-auto">
-          {activePanel === "reference" && (
+          {activePanel === "style" && (
+            <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
+              <div className="flex items-center justify-between mb-3">
+                <span className="text-[0.8rem] font-semibold text-foreground">Art Style</span>
+                <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="grid grid-cols-5 sm:grid-cols-5 gap-2">
+                {[
+                  { id: "None", label: "None", img: null },
+                  { id: "Photorealistic", label: "Photo", img: stylePhotorealistic },
+                  { id: "Anime", label: "Anime", img: styleAnime },
+                  { id: "Digital Art", label: "Digital", img: styleDigitalArt },
+                  { id: "Oil Painting", label: "Oil", img: styleOilPainting },
+                  { id: "Watercolor", label: "Watercolor", img: styleWatercolor },
+                  { id: "3D Render", label: "3D", img: style3dRender },
+                  { id: "Pixel Art", label: "Pixel", img: stylePixelArt },
+                  { id: "Comic Book", label: "Comic", img: styleComicBook },
+                  { id: "Cinematic", label: "Cinematic", img: styleCinematic },
+                ].map(s => (
+                  <button key={s.id} type="button" onClick={() => { setSelectedStyle(s.id); setActivePanel(null); }}
+                    className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                    {s.img ? (
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" />
+                    ) : (
+                      <div className="w-full aspect-square rounded-lg bg-foreground/[0.06] flex items-center justify-center text-muted">
+                        <X size={16} />
+                      </div>
+                    )}
+                    <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                    {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
             <ReferencePanel
               onClose={() => setActivePanel(null)}
               references={references}
