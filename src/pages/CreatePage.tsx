@@ -24,6 +24,22 @@ import style3dRender from "@/assets/styles/3d-render.jpg";
 import stylePixelArt from "@/assets/styles/pixel-art.jpg";
 import styleComicBook from "@/assets/styles/comic-book.jpg";
 import styleCinematic from "@/assets/styles/cinematic.jpg";
+import styleFlatIllustration from "@/assets/styles/flat-illustration.jpg";
+import styleArtNouveau from "@/assets/styles/art-nouveau.jpg";
+import styleCyberpunk from "@/assets/styles/cyberpunk.jpg";
+import stylePopArt from "@/assets/styles/pop-art.jpg";
+import styleImpressionist from "@/assets/styles/impressionist.jpg";
+import styleUkiyoE from "@/assets/styles/ukiyo-e.jpg";
+import styleSteampunk from "@/assets/styles/steampunk.jpg";
+import styleVaporwave from "@/assets/styles/vaporwave.jpg";
+import styleSketch from "@/assets/styles/sketch.jpg";
+import styleSurreal from "@/assets/styles/surreal.jpg";
+import styleIsometric from "@/assets/styles/isometric.jpg";
+import styleGothic from "@/assets/styles/gothic.jpg";
+import stylePastel from "@/assets/styles/pastel.jpg";
+import styleStainedGlass from "@/assets/styles/stained-glass.jpg";
+import stylePointillism from "@/assets/styles/pointillism.jpg";
+import styleRetro from "@/assets/styles/retro.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
