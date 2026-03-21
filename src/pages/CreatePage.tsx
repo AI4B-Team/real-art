@@ -1065,8 +1065,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {activePanel === "character" && (
             <CharacterPanel
               onClose={() => setActivePanel(null)}
-              selectedCharacter={selectedCharacter}
-              onSelect={(id) => { setSelectedCharacter(id); if (id) setActivePanel(null); }}
+              selectedCharacters={selectedCharacters}
+              onToggle={toggleCharacter}
+              onClear={() => setSelectedCharacters([])}
             />
           )}
           {activePanel === "frames" && showFrames && (
