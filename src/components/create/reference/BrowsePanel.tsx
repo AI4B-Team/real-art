@@ -1,6 +1,6 @@
 import { useState, useRef } from "react";
 import {
-  Search, LayoutGrid, Image as ImageIcon, Video as VideoIcon, Check,
+  Search, LayoutGrid, Image as ImageIcon, Check,
   Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles
 } from "lucide-react";
 import type { BrowseItem, MediaFilter, ReferenceImage, SourceTab } from "./types";
