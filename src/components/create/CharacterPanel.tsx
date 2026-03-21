@@ -143,7 +143,12 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
             {selectedChars.map(char => (
               <div key={char.id} className="relative group shrink-0">
                 {char.avatar ? (
-                  <img src={char.avatar} alt={char.name} className="w-10 h-10 rounded-lg object-cover border border-foreground/[0.08]" />
+                  <img
+                    src={char.avatar}
+                    alt={char.name}
+                    className="w-10 h-10 rounded-lg object-cover border border-foreground/[0.08] cursor-pointer hover:ring-2 hover:ring-accent/40 transition-all"
+                    onClick={() => setPreviewChar({ name: char.name, avatar: char.avatar! })}
+                  />
                 ) : (
                   <div className="w-10 h-10 rounded-lg bg-foreground/[0.08] flex items-center justify-center border border-foreground/[0.08]">
                     <User size={16} className="text-muted" />
