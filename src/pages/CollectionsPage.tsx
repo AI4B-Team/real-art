@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Search, Plus, TrendingUp, Users, Bookmark, X, Globe, Lock, Key, Check,
   Compass, Star, Edit3, Trash2, Image, Video, Music, CreditCard, MoreHorizontal, Share2, Merge,
-  Archive, ArchiveRestore, FolderOpen, DollarSign, Link2, Copy, UserPlus, ShieldCheck, Loader2
+  Archive, ArchiveRestore, FolderOpen, DollarSign, Link2, Copy, UserPlus, ShieldCheck, Loader2, Sparkles
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
