@@ -12,6 +12,8 @@ import {
   archiveCollection, unarchiveCollection, mergeCollections, grantAccess,
   type Collection, type UnifiedCollection
 } from "@/lib/collectionStore";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const categories = [
   "All", "People & Portraits", "Fashion & Style", "Nature & Earth",
