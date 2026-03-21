@@ -53,6 +53,29 @@ const AccountPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showCancelFlow, setShowCancelFlow] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
+  const [langOpen, setLangOpen] = useState(false);
+  const [langSearch, setLangSearch] = useState("");
+  const [activeLang, setActiveLang] = useState(() => {
+    try { return localStorage.getItem("ra_lang") || "en"; } catch { return "en"; }
+  });
+  const langBtnRef = useRef<HTMLButtonElement>(null);
+
+  const languages = [
+    { code: "en", label: "English", flag: "🇺🇸" },
+    { code: "es", label: "Spanish", flag: "🇪🇸" },
+    { code: "fr", label: "French", flag: "🇫🇷" },
+    { code: "de", label: "German", flag: "🇩🇪" },
+    { code: "pt", label: "Portuguese", flag: "🇧🇷" },
+    { code: "it", label: "Italian", flag: "🇮🇹" },
+    { code: "zh", label: "Chinese", flag: "🇨🇳" },
+    { code: "ja", label: "Japanese", flag: "🇯🇵" },
+    { code: "ko", label: "Korean", flag: "🇰🇷" },
+    { code: "ar", label: "Arabic", flag: "🇸🇦" },
+    { code: "hi", label: "Hindi", flag: "🇮🇳" },
+    { code: "ru", label: "Russian", flag: "🇷🇺" },
+  ];
+  const filteredLangs = langSearch ? languages.filter(l => l.label.toLowerCase().includes(langSearch.toLowerCase())) : languages;
+  const currentLang = languages.find(l => l.code === activeLang) || languages[0];
 
   // Enhanced notifications state
   const [notifSettings, setNotifSettings] = useState([
