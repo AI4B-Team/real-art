@@ -56,7 +56,7 @@ const navItems: NavItem[] = [
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "collections-browse", label: "Collections", icon: FolderOpen, type: "route", href: "/collections" },
   { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
-  { id: "challenges-browse", label: "Challenges", icon: Award, type: "route", href: "/challenges" },
+  { id: "challenges-browse", label: "Challenges", icon: Trophy, type: "route", href: "/challenges" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
   { id: "overview", label: "Insights", icon: Sparkles, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
