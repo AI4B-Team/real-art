@@ -223,8 +223,8 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
       if (searchSuggestRef.current && !searchSuggestRef.current.contains(e.target as Node)) setSearchSuggestOpen(false);
       
     };
-    document.addEventListener("click", handler);
-    return () => document.removeEventListener("click", handler);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   /* ── Cmd+K / slash global shortcut ── */
@@ -993,7 +993,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-[0.7rem] font-bold text-accent">{userInitials}</div>
             </button>
             {userMenuOpen && (
-              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] animate-drop-in z-[400] overflow-hidden">
+              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] animate-drop-in z-[400] overflow-hidden max-h-[80vh] overflow-y-auto">
                 {menuPanel === "main" && (
                   <div className="p-4">
                     {/* User header */}
@@ -1034,7 +1034,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                     <div className="h-px bg-foreground/[0.06] my-2" />
 
                     {/* Language row */}
-                    <button onClick={() => setMenuPanel("language")} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                    <button onClick={(e) => { e.stopPropagation(); setMenuPanel("language"); }} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
                       <Languages className="w-[18px] h-[18px] text-muted shrink-0" />
                       <span className="text-[0.84rem]">Language:</span>
                       <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
@@ -1043,7 +1043,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                       </span>
                     </button>
                     {/* Theme row */}
-                    <button onClick={() => setMenuPanel("theme")} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
+                    <button onClick={(e) => { e.stopPropagation(); setMenuPanel("theme"); }} className="flex items-center gap-3 px-2 py-2.5 rounded-xl w-full text-left hover:bg-foreground/[0.05] transition-colors">
                       <ThemeIcon className="w-[18px] h-[18px] text-muted shrink-0" />
                       <span className="text-[0.84rem]">Theme:</span>
                       <span className="ml-auto flex items-center gap-1.5 text-[0.82rem] text-muted">
