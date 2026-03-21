@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useContext } from "react";
 import {
   X, Upload, Search, Loader2, Sparkles, Check, Image, Video, Music, FileText,
   ChevronDown, Trash2, Tag, Type, Globe, Users, Palette, GripVertical, AlertCircle
