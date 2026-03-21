@@ -33,6 +33,7 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [historySearch, setHistorySearch] = useState("");
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
