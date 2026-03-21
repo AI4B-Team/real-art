@@ -1048,7 +1048,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               </div>
               <div className="grid grid-cols-5 sm:grid-cols-5 gap-2">
                 {[
-                  { id: "None", label: "None", img: null },
                   { id: "Photorealistic", label: "Photo", img: stylePhotorealistic },
                   { id: "Anime", label: "Anime", img: styleAnime },
                   { id: "Digital Art", label: "Digital", img: styleDigitalArt },
