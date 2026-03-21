@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { ArrowLeft, ChevronRight, Clock, Users, Trophy, Heart, Upload, Shield, Check, ThumbsUp } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 const challengeData = {
   id: "1", title: "Cyberpunk City", status: "live", daysLeft: 7, hours: 14, minutes: 32,
