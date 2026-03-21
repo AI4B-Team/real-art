@@ -877,7 +877,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
             {creditInfoOpen && (
               <div className="absolute top-[calc(100%+8px)] right-0 bg-card border border-foreground/[0.07] rounded-xl shadow-[var(--shadow-card)] p-3 w-[260px] z-[400] animate-drop-in">
                 <p className="text-[0.8rem] text-foreground leading-snug">Your monthly credits will be refilled when your subscription renews.</p>
-                <Link to="/account?tab=subscription" onClick={() => setCreditInfoOpen(false)} className="text-[0.78rem] text-accent hover:underline mt-1.5 inline-block no-underline">Read more</Link>
+                <Link to="/account?tab=subscription" onClick={() => setCreditInfoOpen(false)} className="text-[0.78rem] text-accent hover:underline mt-1.5 inline-block no-underline">Read More</Link>
               </div>
             )}
           </div>
