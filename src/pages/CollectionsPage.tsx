@@ -281,7 +281,18 @@ const CollectionFormModal = ({ initial, onClose, onSave }: {
               placeholder="Give your collection a name…" />
           </div>
           <div>
-            <label className="block text-[0.78rem] font-semibold mb-1.5">Description <span className="font-normal text-muted">(optional)</span></label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[0.78rem] font-semibold">Description <span className="font-normal text-muted">(optional)</span></label>
+              <button
+                type="button"
+                onClick={generateDescription}
+                disabled={aiWriting || !title.trim()}
+                className="flex items-center gap-1.5 text-[0.75rem] font-medium text-accent hover:text-accent/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {aiWriting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {aiWriting ? "Writing…" : "AI Write"}
+              </button>
+            </div>
             <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={2}
               className="w-full bg-card border border-foreground/[0.1] rounded-xl px-4 py-2.5 text-[0.85rem] focus:outline-none focus:border-accent transition-colors resize-none" />
           </div>
