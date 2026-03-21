@@ -498,25 +498,38 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               <div className="flex-1 flex flex-col gap-1.5 pt-[2px]">
                 <div className="flex items-center gap-1.5 flex-wrap">
                   {selectedCharacter && characterInfo && (
-                    <div className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-lg bg-accent/10 border border-accent/20 text-[0.75rem] font-semibold text-accent">
-                      {characterInfo.avatar && (
-                        <img
-                          src={characterInfo.avatar}
-                          alt={characterInfo.name}
-                          className="w-5 h-5 rounded-full object-cover"
-                        />
+                    <button type="button" onClick={() => togglePanel("character")}
+                      className={`group flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all ${activePanel === "character" ? "border-accent bg-accent/10" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-accent/30"}`}>
+                      {characterInfo.avatar ? (
+                        <img src={characterInfo.avatar} alt={characterInfo.name} className="w-7 h-7 rounded-lg object-cover" />
+                      ) : (
+                        <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center"><User size={14} className="text-accent" /></div>
                       )}
-                      {characterInfo.name}
-                      <button onClick={() => setSelectedCharacter(null)} className="ml-0.5 hover:text-accent/70"><X size={11} /></button>
-                    </div>
+                      <div className="text-left">
+                        <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Character</span>
+                        <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{characterInfo.name}</span>
+                      </div>
+                      <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedCharacter(null); }} />
+                    </button>
                   )}
-                  {references.map(ref => (
-                    <div key={ref.id} className="flex items-center gap-1.5 pl-1 pr-2 py-0.5 rounded-lg bg-foreground/[0.06] border border-foreground/[0.08] text-[0.75rem] font-medium text-foreground/70">
-                      <img src={ref.src} alt={ref.name} className="w-5 h-5 rounded object-cover" />
-                      <span className="max-w-[80px] truncate">{ref.name}</span>
-                      <button onClick={() => setReferences(prev => prev.filter(r => r.id !== ref.id))} className="ml-0.5 hover:text-foreground"><X size={11} /></button>
-                    </div>
-                  ))}
+                  {references.length > 0 && (
+                    <button type="button" onClick={() => togglePanel("reference")}
+                      className={`group flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all ${activePanel === "reference" ? "border-accent bg-accent/10" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-accent/30"}`}>
+                      <div className="flex items-center -space-x-1.5">
+                        {references.slice(0, 4).map((ref, i) => (
+                          <img key={ref.id} src={ref.src} alt={ref.name} className="w-7 h-7 rounded-lg object-cover border-2 border-background" style={{ zIndex: references.length - i }} />
+                        ))}
+                        {references.length > 4 && (
+                          <div className="w-7 h-7 rounded-lg bg-foreground/[0.08] border-2 border-background flex items-center justify-center text-[0.6rem] font-bold text-muted" style={{ zIndex: 0 }}>+{references.length - 4}</div>
+                        )}
+                      </div>
+                      <div className="text-left">
+                        <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">References</span>
+                        <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{references.length} image{references.length !== 1 ? "s" : ""}</span>
+                      </div>
+                      <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setReferences([]); }} />
+                    </button>
+                  )}
                 </div>
                 <textarea
                   ref={textareaRef}
@@ -890,59 +903,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         </div>
 
         {/* ── Active selections summary ── */}
-        {(selectedCharacter || references.length > 0 || startFrame || endFrame || selectedGenre || selectedTheme) && (
+        {(startFrame || endFrame || selectedGenre || selectedTheme) && (
           <div className="max-w-[820px] mx-auto mt-2 px-1">
             <div className="flex items-center gap-2 flex-wrap">
-              {/* Character selection */}
-              {selectedCharacter && characterInfo && (
-                <button
-                  type="button"
-                  onClick={() => togglePanel("character")}
-                  className={`group flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all ${activePanel === "character" ? "border-accent bg-accent/10" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-accent/30"}`}
-                >
-                  {characterInfo.avatar ? (
-                    <img src={characterInfo.avatar} alt={characterInfo.name} className="w-7 h-7 rounded-lg object-cover" />
-                  ) : (
-                    <div className="w-7 h-7 rounded-lg bg-accent/10 flex items-center justify-center"><User size={14} className="text-accent" /></div>
-                  )}
-                  <div className="text-left">
-                    <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Character</span>
-                    <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{characterInfo.name}</span>
-                  </div>
-                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedCharacter(null); }} />
-                </button>
-              )}
-
-              {/* Reference images as thumbnails */}
-              {references.length > 0 && (
-                <button
-                  type="button"
-                  onClick={() => togglePanel("reference")}
-                  className={`group flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all ${activePanel === "reference" ? "border-accent bg-accent/10" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-accent/30"}`}
-                >
-                  <div className="flex items-center -space-x-1.5">
-                    {references.slice(0, 4).map((ref, i) => (
-                      <img
-                        key={ref.id}
-                        src={ref.src}
-                        alt={ref.name}
-                        className="w-7 h-7 rounded-lg object-cover border-2 border-background"
-                        style={{ zIndex: references.length - i }}
-                      />
-                    ))}
-                    {references.length > 4 && (
-                      <div className="w-7 h-7 rounded-lg bg-foreground/[0.08] border-2 border-background flex items-center justify-center text-[0.6rem] font-bold text-muted" style={{ zIndex: 0 }}>
-                        +{references.length - 4}
-                      </div>
-                    )}
-                  </div>
-                  <div className="text-left">
-                    <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">References</span>
-                    <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{references.length} image{references.length !== 1 ? "s" : ""}</span>
-                  </div>
-                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setReferences([]); }} />
-                </button>
-              )}
 
               {/* Frames selection */}
               {(startFrame || endFrame) && (
