@@ -56,14 +56,11 @@ const FeaturedArtworkSection = () => (
               className="w-full h-[180px] object-cover group-hover:scale-[1.03] transition-transform duration-300"
             />
             {i === 0 && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.55rem] font-bold tracking-[0.08em] uppercase px-2 py-0.5 rounded-lg">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.55rem] font-bold tracking-[0.08em] uppercase px-2 py-0.5 rounded-lg z-10">
                 <Star className="w-3 h-3" /> Featured
               </div>
             )}
-            <div className="absolute inset-x-0 bottom-0 p-3" style={{ background: "linear-gradient(transparent, hsl(0 0% 0% / 0.65))" }}>
-              <p className="font-semibold text-[0.78rem] text-primary-foreground leading-tight">{item.title}</p>
-              <span className="text-[0.68rem] text-primary-foreground/60">{item.creator.name}</span>
-            </div>
+            <ImageCardOverlay index={i + 3} photo={item.photo} title={item.title} />
           </Link>
         ))}
       </div>

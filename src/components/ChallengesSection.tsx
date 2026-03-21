@@ -64,16 +64,13 @@ const ChallengesSection = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {winners.map((w) => (
-            <div key={w.name} className="rounded-xl overflow-hidden relative aspect-[3/4] cursor-pointer group">
+            <Link key={w.name} to={`/image/${i}`} className="rounded-xl overflow-hidden relative aspect-[3/4] cursor-pointer group block no-underline">
               <img src={`https://images.unsplash.com/${w.photo}?w=300&h=400&fit=crop&q=78`} alt={w.name} loading="lazy" className="w-full h-full object-cover block group-hover:scale-[1.04] transition-transform duration-[350ms]" />
               {w.rankClass && (
-                <div className={`absolute top-2.5 left-2.5 text-[0.68rem] font-bold px-2.5 py-1 rounded-full ${w.rankClass}`}>{w.rank}</div>
+                <div className={`absolute top-2.5 left-2.5 text-[0.68rem] font-bold px-2.5 py-1 rounded-full z-10 ${w.rankClass}`}>{w.rank}</div>
               )}
-              <div className="absolute bottom-0 left-0 right-0 p-3.5" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.82), transparent)" }}>
-                <div className="text-[0.78rem] text-primary-foreground font-semibold">{w.name}</div>
-                <div className="text-[0.7rem] text-primary-foreground/55">{w.creator.toLowerCase()}</div>
-              </div>
-            </div>
+              <ImageCardOverlay index={i} photo={w.photo} title={w.name} />
+            </Link>
           ))}
         </div>
       </div>

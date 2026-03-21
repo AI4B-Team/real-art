@@ -46,12 +46,10 @@ const RecreationsSection = () => {
                 alt={`Recreation by ${r.creator}`}
                 className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-[350ms]"
               />
-              <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-full">
+              <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-full z-10">
                 {r.style}
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-2.5" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
-                <div className="text-[0.72rem] text-primary-foreground/80">{r.creator.toLowerCase()}</div>
-              </div>
+              <ImageCardOverlay index={recreations.indexOf(r) + 10} photo={r.photo} />
             </div>
           ))}
         </div>
