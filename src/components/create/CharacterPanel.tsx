@@ -116,6 +116,13 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
     setSection("mine");
   };
 
+  // Resolve selected characters to display data
+  const allCharacters = [
+    ...FEATURED_CHARACTERS.map(c => ({ id: c.id, name: c.name, avatar: `https://images.unsplash.com/${c.avatar}?w=120&h=120&fit=crop&q=80` })),
+    ...userCharacters.map(c => ({ id: c.id, name: c.name, avatar: c.avatar_url })),
+  ];
+  const selectedChars = selectedCharacters.map(id => allCharacters.find(c => c.id === id)).filter(Boolean) as { id: string; name: string; avatar: string | null }[];
+
   return (
     <>
       <div className="rounded-xl border border-foreground/[0.08] bg-background p-4 mt-3">
@@ -128,6 +135,29 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
             <button onClick={onClose} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
           </div>
         </div>
+
+        {/* Selected characters strip */}
+        {selectedChars.length > 0 && (
+          <div className="flex items-center gap-2 mb-4 overflow-x-auto overflow-y-visible pb-1 pt-2 pr-2">
+            {selectedChars.map(char => (
+              <div key={char.id} className="relative group shrink-0">
+                {char.avatar ? (
+                  <img src={char.avatar} alt={char.name} className="w-10 h-10 rounded-lg object-cover border border-foreground/[0.08]" />
+                ) : (
+                  <div className="w-10 h-10 rounded-lg bg-foreground/[0.08] flex items-center justify-center border border-foreground/[0.08]">
+                    <User size={16} className="text-muted" />
+                  </div>
+                )}
+                <button
+                  onClick={() => onToggle(char.id)}
+                  className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                >
+                  <X size={8} />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
 
         {/* Section tabs */}
         <div className="flex items-center gap-1 mb-3">
