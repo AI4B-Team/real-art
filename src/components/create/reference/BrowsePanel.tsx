@@ -139,7 +139,7 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
         >
           <Upload size={28} className="text-accent mb-3" />
           <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
-          <p className="text-[0.75rem] text-muted/60 mb-4">Images, Videos — up to 50MB each</p>
+          <p className="text-[0.75rem] text-muted/60 mb-4">Images — up to 50MB each</p>
           <button
             onClick={() => fileRef.current?.click()}
             className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors"
