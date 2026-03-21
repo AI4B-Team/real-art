@@ -146,17 +146,6 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
           >
             Browse Files
           </button>
-          <div className="flex items-center gap-1.5 mt-4">
-            {FILE_TYPE_BADGES.map(b => (
-              <span
-                key={b.label}
-                className="px-2 py-0.5 rounded text-[0.6rem] font-bold text-white"
-                style={{ backgroundColor: b.color }}
-              >
-                {b.label}
-              </span>
-            ))}
-          </div>
           <input
             ref={fileRef}
             type="file"
