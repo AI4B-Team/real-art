@@ -23,7 +23,6 @@ const SOURCE_TABS: { id: SourceTab; label: string; icon: typeof LayoutGrid }[] =
 const MEDIA_FILTERS: { id: MediaFilter; label: string; icon: typeof LayoutGrid }[] = [
   { id: "all", label: "All", icon: LayoutGrid },
   { id: "image", label: "Images", icon: ImageIcon },
-  { id: "video", label: "Videos", icon: VideoIcon },
 ];
 
 const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
