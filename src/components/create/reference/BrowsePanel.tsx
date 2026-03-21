@@ -29,7 +29,6 @@ const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
   creations: DUMMY_CREATIONS,
   stock: DUMMY_STOCK,
   community: DUMMY_COMMUNITY,
-  collections: DUMMY_COLLECTIONS,
   trending: DUMMY_TRENDING,
 };
 
