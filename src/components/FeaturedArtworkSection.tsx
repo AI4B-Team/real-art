@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Star, ArrowRight, Download, RefreshCw, Heart } from "lucide-react";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 const featured = [
   { photo: "photo-1618005182384-a83a8bd57fbe", title: "Cosmic Dreamscape", creator: { id: "1", name: "AI.Verse", init: "AV", color: "#4361ee" }, downloads: "3.4K", remixes: "247" },
@@ -39,25 +40,10 @@ const FeaturedArtworkSection = () => (
               className="w-full h-[260px] md:h-[320px] object-cover group-hover:scale-[1.03] transition-transform duration-300"
             />
             {/* Editor's Pick badge */}
-            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-accent text-primary-foreground text-[0.6rem] font-bold tracking-[0.1em] uppercase px-2.5 py-1 rounded-lg shadow-md">
+            <div className="absolute top-3 left-3 flex items-center gap-1.5 bg-accent text-primary-foreground text-[0.6rem] font-bold tracking-[0.1em] uppercase px-2.5 py-1 rounded-lg shadow-md z-10">
               <Star className="w-3 h-3 fill-primary-foreground" /> Editor's Pick
             </div>
-            {/* Bottom overlay */}
-            <div className="absolute inset-x-0 bottom-0 p-4" style={{ background: "linear-gradient(transparent, hsl(0 0% 0% / 0.7))" }}>
-              <h3 className="font-display text-[1.1rem] font-black text-primary-foreground mb-1">{item.title}</h3>
-              <div className="flex items-center gap-2">
-                <div className="w-5 h-5 rounded-full flex items-center justify-center text-[0.5rem] font-bold text-primary-foreground" style={{ background: item.creator.color }}>
-                  {item.creator.init}
-                </div>
-                <span className="text-[0.75rem] text-primary-foreground/80">{item.creator.name}</span>
-                <span className="ml-auto flex items-center gap-1 text-[0.68rem] text-primary-foreground/60">
-                  <Download className="w-3 h-3" /> {item.downloads}
-                </span>
-                <span className="flex items-center gap-1 text-[0.68rem] text-primary-foreground/60">
-                  <RefreshCw className="w-3 h-3" /> {item.remixes}
-                </span>
-              </div>
-            </div>
+            <ImageCardOverlay index={i} photo={item.photo} title={item.title} />
           </Link>
         ))}
       </div>
@@ -70,14 +56,11 @@ const FeaturedArtworkSection = () => (
               className="w-full h-[180px] object-cover group-hover:scale-[1.03] transition-transform duration-300"
             />
             {i === 0 && (
-              <div className="absolute top-2 left-2 flex items-center gap-1 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.55rem] font-bold tracking-[0.08em] uppercase px-2 py-0.5 rounded-lg">
+              <div className="absolute top-2 left-2 flex items-center gap-1 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.55rem] font-bold tracking-[0.08em] uppercase px-2 py-0.5 rounded-lg z-10">
                 <Star className="w-3 h-3" /> Featured
               </div>
             )}
-            <div className="absolute inset-x-0 bottom-0 p-3" style={{ background: "linear-gradient(transparent, hsl(0 0% 0% / 0.65))" }}>
-              <p className="font-semibold text-[0.78rem] text-primary-foreground leading-tight">{item.title}</p>
-              <span className="text-[0.68rem] text-primary-foreground/60">{item.creator.name}</span>
-            </div>
+            <ImageCardOverlay index={i + 3} photo={item.photo} title={item.title} />
           </Link>
         ))}
       </div>

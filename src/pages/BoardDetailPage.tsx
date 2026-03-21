@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { getBoards, updateBoard, removeFromBoard, addToBoard, deleteBoard, type Board } from "@/lib/boardStore";
 
 /* ── Hardcoded public boards (for /boards/1, /boards/2 etc) ── */
@@ -418,17 +419,7 @@ const BoardDetailPage = () => {
                       className="w-full block rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
                       style={{ height: heights[i % heights.length], objectFit: "cover" }}
                     />
-                    <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end justify-between p-3" style={{ background: "var(--gradient-overlay)" }}>
-                      <span className="flex items-center gap-1 text-[0.7rem] text-white/70"><Eye className="w-3 h-3" /> View</span>
-                      {isOwner && (
-                        <button
-                          onClick={e => { e.preventDefault(); e.stopPropagation(); handleRemoveItem(item.imageId); }}
-                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[0.68rem] font-semibold bg-red-500/20 backdrop-blur-sm text-white hover:bg-red-500/40 transition-colors"
-                        >
-                          <Trash2 className="w-3 h-3" /> Remove
-                        </button>
-                      )}
-                    </div>
+                    <ImageCardOverlay index={parseInt(item.imageId) || i} photo={item.photo} title={item.title} />
                   </Link>
                 ))}
               </div>
@@ -452,15 +443,7 @@ const BoardDetailPage = () => {
                     className="w-full block rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
                     style={{ height: heights[(i + 3) % heights.length], objectFit: "cover" }}
                   />
-                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end justify-between p-3" style={{ background: "var(--gradient-overlay)" }}>
-                    <span className="text-[0.7rem] text-white/70 flex items-center gap-1"><Eye className="w-3 h-3" /> View</span>
-                    <button
-                      onClick={e => e.preventDefault()}
-                      className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[0.68rem] font-semibold bg-white/20 backdrop-blur-sm text-white hover:bg-white/40 transition-colors"
-                    >
-                      <Bookmark className="w-3 h-3" /> Save
-                    </button>
-                  </div>
+                  <ImageCardOverlay index={i + 10} photo={photo} />
                 </Link>
               ))}
             </div>

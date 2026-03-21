@@ -666,12 +666,10 @@ const ImagePage = () => {
                         loading="lazy"
                         className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-300"
                       />
-                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-lg">
+                      <div className="absolute top-2 left-2 bg-foreground/60 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-semibold px-2 py-0.5 rounded-lg z-10">
                         {r.style}
                       </div>
-                      <div className="absolute bottom-0 left-0 right-0 p-2.5 opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75), transparent)" }}>
-                        <div className="text-[0.72rem] text-primary-foreground/80">{r.creator.toLowerCase()}</div>
-                      </div>
+                      <ImageCardOverlay index={i + 20} photo={r.photo} />
                     </Link>
                   ))}
                 </div>

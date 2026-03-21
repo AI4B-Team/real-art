@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 /* ── Topic data (would come from API in production) ── */
 const topicData: Record<string, {
@@ -203,17 +204,7 @@ const TopicPage = () => {
                     className="w-full block rounded-xl transition-transform duration-300 group-hover:scale-[1.03]"
                     style={{ height: heights[i % heights.length], objectFit: "cover" }}
                   />
-                  <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-end justify-between p-3" style={{ background: "var(--gradient-overlay)" }}>
-                    <span className="text-[0.72rem] text-primary-foreground/80 flex items-center gap-1"><Eye className="w-3 h-3" /> View</span>
-                    <div className="flex gap-1.5">
-                      <button onClick={e => e.preventDefault()} className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[0.68rem] font-semibold bg-primary-foreground/20 backdrop-blur-sm text-primary-foreground hover:bg-primary-foreground/40 transition-colors">
-                        <Download className="w-3 h-3" />
-                      </button>
-                      <button onClick={e => e.preventDefault()} className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-[0.68rem] font-semibold bg-primary-foreground/20 backdrop-blur-sm text-primary-foreground hover:bg-primary-foreground/40 transition-colors">
-                        <Bookmark className="w-3 h-3" />
-                      </button>
-                    </div>
-                  </div>
+                  <ImageCardOverlay index={i} photo={photo} />
                 </Link>
               ))}
             </div>
