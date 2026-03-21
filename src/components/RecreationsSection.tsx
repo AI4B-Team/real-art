@@ -1,4 +1,5 @@
 import { RefreshCw } from "lucide-react";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 const originalPhoto = "photo-1618005182384-a83a8bd57fbe";
 const recreations = [
