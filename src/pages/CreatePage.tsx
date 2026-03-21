@@ -1030,7 +1030,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             <ReferencePanel
               onClose={() => setActivePanel(null)}
               references={references}
-              onAdd={ref => setReferences(prev => [...prev, ref])}
+              onAdd={ref => { setReferences(prev => [...prev, ref]); setActivePanel(null); }}
               onRemove={id => setReferences(prev => prev.filter(r => r.id !== id))}
             />
           )}
@@ -1038,7 +1038,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             <CharacterPanel
               onClose={() => setActivePanel(null)}
               selectedCharacter={selectedCharacter}
-              onSelect={setSelectedCharacter}
+              onSelect={(id) => { setSelectedCharacter(id); if (id) setActivePanel(null); }}
             />
           )}
           {activePanel === "frames" && showFrames && (
