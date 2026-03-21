@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { X, Upload, Camera, Clock, Pencil, ChevronLeft, ChevronRight, Loader2, Check, ImageIcon } from "lucide-react";
+import { X, Upload, Camera, Clock, Pencil, ChevronLeft, ChevronRight, Loader2, Check, ImageIcon, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
