@@ -389,17 +389,64 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
           {step === "describe" && (
             <div className="space-y-4">
               <div>
-                <label className="text-[0.78rem] font-semibold text-foreground/70 mb-1.5 block">Describe {name}</label>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[0.78rem] font-semibold text-foreground/70">Describe {name}</label>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setIsGeneratingDesc(true);
+                      try {
+                        const { data, error } = await supabase.functions.invoke("generate-character-description", {
+                          body: { characterName: name, keywords: description.trim() || null },
+                        });
+                        if (error) throw error;
+                        if (data?.description) setDescription(data.description);
+                      } catch (e: any) {
+                        toast({ title: "AI generation failed", description: e.message, variant: "destructive" });
+                      } finally {
+                        setIsGeneratingDesc(false);
+                      }
+                    }}
+                    disabled={isGeneratingDesc}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-accent/10 text-accent text-[0.72rem] font-semibold hover:bg-accent/20 transition-colors disabled:opacity-50"
+                  >
+                    {isGeneratingDesc ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                    {isGeneratingDesc ? "Writing..." : "AI Write"}
+                  </button>
+                </div>
                 <textarea
                   autoFocus
                   value={description}
                   onChange={e => setDescription(e.target.value)}
-                  placeholder="Describe the character's appearance, style, mood, and any distinguishing features..."
+                  placeholder="e.g. Young woman in her mid-20s with warm brown skin, curly dark hair past her shoulders, soft almond-shaped brown eyes. Wears oversized vintage blazers and gold hoop earrings. Confident, relaxed expression with a slight smile. Warm golden-hour lighting."
                   rows={5}
                   className="w-full px-4 py-3 rounded-xl bg-foreground/[0.04] border border-foreground/[0.1] text-[0.88rem] outline-none focus:border-accent transition-colors resize-none leading-relaxed"
                 />
               </div>
-              <p className="text-[0.72rem] text-muted/60">Be as detailed as possible — include physical features, clothing style, mood, lighting preferences, etc.</p>
+
+              {/* Guidance tags */}
+              <div>
+                <p className="text-[0.72rem] font-semibold text-foreground/50 mb-2">Include details like:</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    "Face shape & skin tone",
+                    "Hair color & style",
+                    "Eye color & shape",
+                    "Age range",
+                    "Body type",
+                    "Clothing style",
+                    "Accessories",
+                    "Expression & mood",
+                    "Lighting preference",
+                  ].map(tag => (
+                    <span key={tag} className="px-2.5 py-1 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] text-[0.68rem] font-medium text-muted/70">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <p className="text-[0.68rem] text-muted/40">Tip: Type a few keywords then hit <strong className="text-muted/60">AI Write</strong> to auto-generate a full description.</p>
             </div>
           )}
 
