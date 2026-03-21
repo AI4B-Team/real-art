@@ -19,13 +19,13 @@ export default function ReferencePanel({ onClose, references, onAdd, onRemove }:
 
       {/* Current references strip */}
       {references.length > 0 && (
-        <div className="flex items-center gap-2 mb-4 overflow-x-auto pb-1">
+        <div className="flex items-center gap-2 mb-4 overflow-x-auto overflow-y-visible pb-1 pt-2 pr-2">
           {references.map(ref => (
             <div key={ref.id} className="relative group shrink-0">
               <img src={ref.src} alt={ref.name} className="w-10 h-10 rounded-lg object-cover border border-foreground/[0.08]" />
               <button
                 onClick={() => onRemove(ref.id)}
-                className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-black/60 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <X size={8} />
               </button>
