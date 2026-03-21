@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import {
   LayoutDashboard, Image, FolderOpen,
-  Users, Award, Eye, Bookmark, ChevronDown,
+  Users, Trophy, Eye, Bookmark, ChevronDown,
   Search, X, Star, Home, Compass, Plus, PanelLeftClose,
   DollarSign, Megaphone, Zap, Clock, Upload, Sparkles, Check,
   Pencil, Trash2, Palette,
@@ -56,7 +56,7 @@ const navItems: NavItem[] = [
   { id: "media", label: "Media", icon: Image, type: "dashboard-section" },
   { id: "collections-browse", label: "Collections", icon: FolderOpen, type: "route", href: "/collections" },
   { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
-  { id: "challenges-browse", label: "Challenges", icon: Award, type: "route", href: "/challenges" },
+  { id: "challenges-browse", label: "Challenges", icon: Trophy, type: "route", href: "/challenges" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
   { id: "overview", label: "Insights", icon: Sparkles, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
