@@ -77,6 +77,12 @@ const AccountPage = () => {
   const filteredLangs = langSearch ? languages.filter(l => l.label.toLowerCase().includes(langSearch.toLowerCase())) : languages;
   const currentLang = languages.find(l => l.code === activeLang) || languages[0];
 
+  const [themeOpen, setThemeOpen] = useState(false);
+  const [activeTheme, setActiveTheme] = useState<"light" | "dark" | "split">(() => {
+    try { return (localStorage.getItem("ra_theme") as "light" | "dark" | "split") ?? "light"; } catch { return "light"; }
+  });
+  const themeLabel = activeTheme === "light" ? "Light" : activeTheme === "dark" ? "Dark" : "Split";
+
   // Enhanced notifications state
   const [notifSettings, setNotifSettings] = useState([
     { id: "likes", title: "Likes", desc: "When someone likes your image", icon: Heart, on: true, frequency: "immediately" as const, channels: { email: true, push: true, inApp: true } },
