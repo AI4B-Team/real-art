@@ -213,6 +213,8 @@ const AppSidebar = () => {
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
+      // If the target was removed from the DOM (e.g. replaced by a form), skip
+      if (!target.isConnected) return;
       if (communitiesRef.current && !communitiesRef.current.contains(target)) {
         const flyout = document.querySelector('[data-community-flyout]');
         if (flyout && flyout.contains(target)) return;
