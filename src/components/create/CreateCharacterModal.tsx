@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback } from "react";
-import { X, Upload, Camera, Clock, Pencil, ChevronLeft, ChevronRight, Loader2, Check, ImageIcon } from "lucide-react";
+import { X, Upload, Camera, Clock, Pencil, ChevronLeft, ChevronRight, Loader2, Check, ImageIcon, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -33,6 +33,7 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [cameraActive, setCameraActive] = useState(false);
   const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [historySearch, setHistorySearch] = useState("");
 
   const handleFiles = (files: FileList | null) => {
     if (!files) return;
@@ -262,8 +263,17 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
               {!cameraActive && selectedHistory.length === 0 && images.length === 0 && (
                 <div>
                   <p className="text-[0.78rem] font-semibold text-foreground/70 mb-3">Select From Creations</p>
+                  <div className="relative mb-3">
+                    <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                    <input
+                      value={historySearch}
+                      onChange={e => setHistorySearch(e.target.value)}
+                      placeholder="Search creations..."
+                      className="w-full pl-9 pr-3 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] text-[0.82rem] outline-none focus:border-accent transition-colors"
+                    />
+                  </div>
                   <div className="grid grid-cols-3 gap-2">
-                    {DUMMY_HISTORY.map(item => (
+                    {DUMMY_HISTORY.filter(i => !historySearch || i.title.toLowerCase().includes(historySearch.toLowerCase())).map(item => (
                       <button
                         key={item.id}
                         onClick={() => toggleHistory(item.id)}
