@@ -29,6 +29,7 @@ import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
 import SocialContentPanel from "@/components/create/SocialContentPanel";
 import CharacterPanel from "@/components/create/CharacterPanel";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
@@ -1306,28 +1307,11 @@ export default function CreatePage() {
               <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">Explore All <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {DUMMY_COMMUNITY.map(item => (
-                <div key={item.id} className="group relative rounded-2xl overflow-hidden">
+              {DUMMY_COMMUNITY.map((item, i) => (
+                <Link key={item.id} to={`/image/${i}`} className="group relative rounded-2xl overflow-hidden block no-underline">
                   <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.prompt} className="w-full aspect-square object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute top-2 left-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-6 h-6 rounded-full bg-accent flex items-center justify-center text-white text-[0.6rem] font-black">{item.creator[0].toUpperCase()}</div>
-                    <span className="text-[0.65rem] text-white font-semibold drop-shadow">@{item.creator}</span>
-                  </div>
-                  <button onClick={() => setLikedCommunity(prev => { const n = new Set(prev); n.has(item.id) ? n.delete(item.id) : n.add(item.id); return n; })}
-                    className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all opacity-0 group-hover:opacity-100 ${likedCommunity.has(item.id) ? "bg-accent text-white" : "bg-black/30 text-white"}`}>
-                    <Heart size={11} className={likedCommunity.has(item.id) ? "fill-current" : ""} />
-                  </button>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <p className="text-[0.7rem] text-white/85 truncate mb-0.5">{item.prompt}</p>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[0.62rem] text-white/50">{item.model}</span>
-                      <span className="flex items-center gap-1 text-[0.62rem] text-white/70"><Heart size={9} className="fill-current text-red-400" /> {item.likes.toLocaleString()}</span>
-                    </div>
-                  </div>
-                  <button onClick={() => toast({ title: "Prompt loaded!", description: item.prompt.slice(0, 60) + "…" })}
-                    className="absolute bottom-2 right-2 w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors opacity-0 group-hover:opacity-100"><Zap size={11} /></button>
-                </div>
+                  <ImageCardOverlay index={i} photo={item.photo} title={item.prompt.slice(0, 30)} />
+                </Link>
               ))}
             </div>
           </div>
