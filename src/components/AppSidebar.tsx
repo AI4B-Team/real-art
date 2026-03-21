@@ -286,7 +286,7 @@ const AppSidebar = () => {
   };
 
   return (
-    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-0 hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto transition-all duration-200 z-[70] ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
+    <aside className={`bg-card border-r border-foreground/[0.06] px-4 py-0 hidden lg:flex flex-col shrink-0 h-screen sticky top-0 overflow-y-auto transition-all duration-200 z-[400] ${sidebarCollapsed ? "w-[68px]" : "w-[260px]"}`}>
       {/* Logo header — logo overlaps the divider line at h-16 (64px) */}
       <div className={`relative shrink-0 ${sidebarCollapsed ? "h-16 flex items-center justify-center" : "h-16"}`}>
         {sidebarCollapsed ? (
