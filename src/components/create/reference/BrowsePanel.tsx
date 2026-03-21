@@ -14,7 +14,7 @@ interface BrowsePanelProps {
 const SOURCE_TABS: { id: SourceTab; label: string; icon: typeof LayoutGrid }[] = [
   { id: "upload", label: "Upload", icon: Upload },
   { id: "creations", label: "Creations", icon: Sparkles },
-  { id: "collections", label: "Collections", icon: FolderOpen },
+  
   { id: "stock", label: "Stock", icon: Globe },
   { id: "community", label: "Community", icon: Users },
   { id: "trending", label: "Trending", icon: TrendingUp },
@@ -29,7 +29,6 @@ const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
   creations: DUMMY_CREATIONS,
   stock: DUMMY_STOCK,
   community: DUMMY_COMMUNITY,
-  collections: DUMMY_COLLECTIONS,
   trending: DUMMY_TRENDING,
 };
 
