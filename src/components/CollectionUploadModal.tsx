@@ -1,10 +1,11 @@
-import { useState, useCallback, useRef } from "react";
+import { useState, useCallback, useRef, useContext } from "react";
 import {
   X, Upload, Search, Loader2, Sparkles, Check, Image, Video, Music, FileText,
   ChevronDown, Trash2, Tag, Type, Globe, Users, Palette, GripVertical, AlertCircle
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { LayoutContext } from "@/components/LayoutContext";
 
 type SourceTab = "upload" | "creations" | "stock" | "community";
 
@@ -42,6 +43,7 @@ const STOCK_IMAGES = Array.from({ length: 12 }, (_, i) => ({
 
 const CollectionUploadModal = ({ collectionId, onClose, onUploaded, existingCount }: Props) => {
   const { toast } = useToast();
+  const { sidebarCollapsed } = useContext(LayoutContext);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [activeTab, setActiveTab] = useState<SourceTab>("upload");
   const [files, setFiles] = useState<UploadFile[]>([]);
@@ -201,7 +203,7 @@ const CollectionUploadModal = ({ collectionId, onClose, onUploaded, existingCoun
   const analyzingCount = files.filter(f => f.status === "analyzing").length;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 backdrop-blur-sm px-4" style={{ left: window.innerWidth >= 1024 ? (sidebarCollapsed ? 68 : 260) : 0 }} onClick={onClose}>
       <div className="bg-background border border-foreground/[0.08] rounded-2xl w-full max-w-[820px] shadow-2xl animate-drop-in max-h-[88vh] flex flex-col" onClick={e => e.stopPropagation()}>
 
         {/* Header */}
