@@ -66,9 +66,9 @@ const CollectionDetailPage = () => {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState("Newest");
+  const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
   const filterRef = useRef<HTMLDivElement>(null);
-  const uploadInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
   // Upload state
