@@ -280,14 +280,60 @@ const AccountPage = () => {
               {/* Footer: Language & Theme */}
               {sidebarExpanded && (
                 <div className="border-t border-foreground/[0.06] pt-3 mt-2 space-y-2">
-                  <div className="flex items-center justify-between px-3 py-2">
-                    <div className="flex items-center gap-2 text-sm text-muted">
-                      <Languages className="w-4 h-4" />
-                      <span>Language:</span>
+                  <div className="relative">
+                    <div className="flex items-center justify-between px-3 py-2">
+                      <div className="flex items-center gap-2 text-sm text-muted">
+                        <Languages className="w-4 h-4" />
+                        <span>Language:</span>
+                      </div>
+                      <button
+                        ref={langBtnRef}
+                        onClick={() => { setLangOpen(!langOpen); setLangSearch(""); }}
+                        className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors"
+                      >
+                        {currentLang.label} <ChevronRight className="w-3.5 h-3.5" />
+                      </button>
                     </div>
-                    <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
-                      English <ChevronRight className="w-3.5 h-3.5" />
-                    </button>
+                    {langOpen && (
+                      <div className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-foreground/[0.07] rounded-xl shadow-[var(--shadow-card)] p-2 z-50 animate-drop-in">
+                        <div className="px-2 pb-2">
+                          <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
+                            <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                            <input
+                              autoFocus
+                              value={langSearch}
+                              onChange={e => setLangSearch(e.target.value)}
+                              placeholder="Search languages..."
+                              className="flex-1 bg-transparent border-none outline-none text-[0.84rem] font-body placeholder:text-muted"
+                            />
+                            {langSearch && <button onClick={() => setLangSearch("")}><X className="w-3.5 h-3.5 text-muted" /></button>}
+                          </div>
+                        </div>
+                        <div className="max-h-[260px] overflow-y-auto">
+                          {filteredLangs.length === 0 ? (
+                            <div className="px-3 py-4 text-[0.82rem] text-muted text-center">No languages found</div>
+                          ) : filteredLangs.map(lang => (
+                            <button
+                              key={lang.code}
+                              onClick={() => {
+                                setActiveLang(lang.code);
+                                try { localStorage.setItem("ra_lang", lang.code); } catch {}
+                                setLangOpen(false);
+                                setLangSearch("");
+                                document.documentElement.lang = lang.code;
+                              }}
+                              className={`flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left text-[0.88rem] transition-colors ${
+                                lang.code === activeLang ? "font-semibold text-foreground" : "text-foreground hover:bg-foreground/[0.04]"
+                              }`}
+                            >
+                              <span className="text-lg">{lang.flag}</span>
+                              <span>{lang.label}</span>
+                              {lang.code === activeLang && <Check className="w-4 h-4 text-accent ml-auto" />}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <div className="flex items-center justify-between px-3 py-2">
                     <div className="flex items-center gap-2 text-sm text-muted">
@@ -295,7 +341,7 @@ const AccountPage = () => {
                       <span>Theme:</span>
                     </div>
                     <button className="flex items-center gap-1 text-sm font-medium hover:text-accent transition-colors">
-                      Light <ChevronRight className="w-3.5 h-3.5" /> <ChevronDown className="w-3.5 h-3.5" />
+                      Light <ChevronRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 </div>
