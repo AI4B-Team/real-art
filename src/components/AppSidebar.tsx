@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import Logo from "./Logo";
 import {
   LayoutDashboard, Image, FolderOpen,
-  Users, Award, Eye, Bookmark, ChevronDown,
+  Users, Trophy, Eye, Bookmark, ChevronDown,
   Search, X, Star, Home, Compass, Plus, PanelLeftClose,
   DollarSign, Megaphone, Zap, Clock, Upload, Sparkles, Check,
   Pencil, Trash2, Palette,
