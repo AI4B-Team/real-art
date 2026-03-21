@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowLeft, ChevronRight, Search, Plus, TrendingUp, Users, Bookmark, X, Globe, Lock, Key, Check,
   Compass, Star, Edit3, Trash2, Image, Video, Music, CreditCard, MoreHorizontal, Share2, Merge,
-  Archive, ArchiveRestore, FolderOpen, DollarSign, Link2, Copy, UserPlus, ShieldCheck, Loader2
+  Archive, ArchiveRestore, FolderOpen, DollarSign, Link2, Copy, UserPlus, ShieldCheck, Loader2, Sparkles
 } from "lucide-react";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
@@ -12,6 +12,8 @@ import {
   archiveCollection, unarchiveCollection, mergeCollections, grantAccess,
   type Collection, type UnifiedCollection
 } from "@/lib/collectionStore";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const categories = [
   "All", "People & Portraits", "Fashion & Style", "Nature & Earth",
@@ -192,6 +194,27 @@ const CollectionFormModal = ({ initial, onClose, onSave }: {
   const [code, setCode] = useState(initial?.accessCode || "");
   const [price, setPrice] = useState(initial?.price ? (initial.price / 100).toFixed(2) : "");
   const [communityId, setCommunityId] = useState(initial?.communityId || "");
+  const [aiWriting, setAiWriting] = useState(false);
+  const { toast } = useToast();
+
+  const generateDescription = async () => {
+    if (!title.trim()) {
+      toast({ title: "Name required", description: "Enter a name first so AI can write a description.", variant: "destructive" });
+      return;
+    }
+    setAiWriting(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("generate-description", {
+        body: { collectionName: title.trim() },
+      });
+      if (error) throw error;
+      if (data?.description) setDesc(data.description);
+    } catch (err: any) {
+      toast({ title: "AI error", description: err.message || "Could not generate description.", variant: "destructive" });
+    } finally {
+      setAiWriting(false);
+    }
+  };
 
   const handleSave = () => {
     if (!title.trim()) return;
@@ -258,7 +281,18 @@ const CollectionFormModal = ({ initial, onClose, onSave }: {
               placeholder="Give your collection a name…" />
           </div>
           <div>
-            <label className="block text-[0.78rem] font-semibold mb-1.5">Description <span className="font-normal text-muted">(optional)</span></label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[0.78rem] font-semibold">Description <span className="font-normal text-muted">(optional)</span></label>
+              <button
+                type="button"
+                onClick={generateDescription}
+                disabled={aiWriting || !title.trim()}
+                className="flex items-center gap-1.5 text-[0.75rem] font-medium text-accent hover:text-accent/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+              >
+                {aiWriting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {aiWriting ? "Writing…" : "AI Write"}
+              </button>
+            </div>
             <textarea value={desc} onChange={e => setDesc(e.target.value)} rows={2}
               className="w-full bg-card border border-foreground/[0.1] rounded-xl px-4 py-2.5 text-[0.85rem] focus:outline-none focus:border-accent transition-colors resize-none" />
           </div>
