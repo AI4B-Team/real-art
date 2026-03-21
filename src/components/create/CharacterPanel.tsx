@@ -111,7 +111,7 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
 
   const handleCreated = (char: { id: string; name: string; avatar_url: string | null }) => {
     setUserCharacters(prev => [{ ...char, description: null }, ...prev]);
-    onSelect(char.id);
+    onToggle(char.id);
     setSection("mine");
   };
 
