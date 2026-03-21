@@ -1060,6 +1060,22 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   { id: "Pixel Art", label: "Pixel", img: stylePixelArt },
                   { id: "Comic Book", label: "Comic", img: styleComicBook },
                   { id: "Cinematic", label: "Cinematic", img: styleCinematic },
+                  { id: "Flat Illustration", label: "Flat", img: styleFlatIllustration },
+                  { id: "Impressionist", label: "Impressionist", img: styleImpressionist },
+                  { id: "Sketch", label: "Sketch", img: styleSketch },
+                  { id: "Pop Art", label: "Pop Art", img: stylePopArt },
+                  { id: "Cyberpunk", label: "Cyberpunk", img: styleCyberpunk },
+                  { id: "Vaporwave", label: "Vaporwave", img: styleVaporwave },
+                  { id: "Ukiyo-e", label: "Ukiyo-e", img: styleUkiyoE },
+                  { id: "Surreal", label: "Surreal", img: styleSurreal },
+                  { id: "Art Nouveau", label: "Art Nouveau", img: styleArtNouveau },
+                  { id: "Steampunk", label: "Steampunk", img: styleSteampunk },
+                  { id: "Gothic", label: "Gothic", img: styleGothic },
+                  { id: "Isometric", label: "Isometric", img: styleIsometric },
+                  { id: "Pastel", label: "Pastel", img: stylePastel },
+                  { id: "Retro", label: "Retro", img: styleRetro },
+                  { id: "Stained Glass", label: "Glass", img: styleStainedGlass },
+                  { id: "Pointillism", label: "Pointillism", img: stylePointillism },
                 ].map(s => (
                   <button key={s.id} type="button" onClick={() => { setSelectedStyle(s.id); setActivePanel(null); }}
                     className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
