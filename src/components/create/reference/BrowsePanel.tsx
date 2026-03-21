@@ -4,7 +4,7 @@ import {
   Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles
 } from "lucide-react";
 import type { BrowseItem, MediaFilter, ReferenceImage, SourceTab } from "./types";
-import { DUMMY_CREATIONS, DUMMY_STOCK, DUMMY_COMMUNITY, DUMMY_COLLECTIONS, DUMMY_TRENDING, FILE_TYPE_BADGES } from "./data";
+import { DUMMY_CREATIONS, DUMMY_STOCK, DUMMY_COMMUNITY, DUMMY_COLLECTIONS, DUMMY_TRENDING } from "./data";
 
 interface BrowsePanelProps {
   references: ReferenceImage[];
