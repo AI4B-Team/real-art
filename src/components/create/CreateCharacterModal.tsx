@@ -491,18 +491,48 @@ export default function CreateCharacterModal({ onClose, onCreated }: CreateChara
                 </div>
               )}
 
-              {!description && (
-                <div>
-                  <label className="text-[0.72rem] font-semibold text-muted mb-1.5 block">Add Description (Optional)</label>
-                  <textarea
-                    value={description}
-                    onChange={e => setDescription(e.target.value)}
-                    placeholder="Optionally describe the character..."
-                    rows={3}
-                    className="w-full px-3 py-2.5 rounded-xl bg-foreground/[0.04] border border-foreground/[0.1] text-[0.85rem] outline-none focus:border-accent transition-colors resize-none"
-                  />
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="text-[0.72rem] font-semibold text-muted block">Add Description (Optional)</label>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      setIsGeneratingDesc(true);
+                      try {
+                        const { data, error } = await supabase.functions.invoke("generate-character-description", {
+                          body: { characterName: name, keywords: description.trim() || null },
+                        });
+                        if (error) throw error;
+                        if (data?.description) setDescription(data.description);
+                      } catch (e: any) {
+                        toast({ title: "AI generation failed", description: e.message, variant: "destructive" });
+                      } finally {
+                        setIsGeneratingDesc(false);
+                      }
+                    }}
+                    disabled={isGeneratingDesc}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-accent/10 text-accent text-[0.72rem] font-semibold hover:bg-accent/20 transition-colors disabled:opacity-50"
+                  >
+                    {isGeneratingDesc ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                    {isGeneratingDesc ? "Writing..." : "AI Write"}
+                  </button>
                 </div>
-              )}
+                <textarea
+                  value={description}
+                  onChange={e => setDescription(e.target.value)}
+                  placeholder="e.g. Young woman in her mid-20s with warm brown skin, curly dark hair past her shoulders, soft almond-shaped brown eyes. Wears oversized vintage blazers and gold hoop earrings."
+                  rows={3}
+                  className="w-full px-3 py-2.5 rounded-xl bg-foreground/[0.04] border border-foreground/[0.1] text-[0.85rem] outline-none focus:border-accent transition-colors resize-none"
+                />
+                <div className="flex flex-wrap gap-1 mt-2">
+                  {["Face & skin", "Hair", "Eyes", "Age", "Clothing", "Accessories", "Expression", "Lighting"].map(tag => (
+                    <span key={tag} className="px-2 py-0.5 rounded-md bg-foreground/[0.04] border border-foreground/[0.06] text-[0.62rem] font-medium text-muted/60">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <p className="text-[0.62rem] text-muted/40 mt-1.5">Tip: Type a few keywords then hit <strong className="text-muted/60">AI Write</strong> to auto-generate.</p>
+              </div>
 
               {isAuthenticated === false && (
                 <div className="rounded-xl border border-accent/20 bg-accent/5 px-4 py-3">
