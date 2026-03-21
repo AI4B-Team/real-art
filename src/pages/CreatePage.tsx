@@ -951,10 +951,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </div>
                   </div>
                 )}
-              </div>
 
               {/* Right: enhance + mic + generate */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 ml-auto shrink-0">
                 {prompt.trim() && (
                   <Tooltip><TooltipTrigger asChild>
                     <button type="button" onClick={handleEnhance} disabled={isEnhancing}
