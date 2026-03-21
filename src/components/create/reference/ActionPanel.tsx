@@ -137,7 +137,7 @@ export default function ActionPanel({ onAdd }: ActionPanelProps) {
           <input
             ref={fileRef}
             type="file"
-            accept="image/*,video/*"
+            accept="image/*"
             multiple
             className="hidden"
             onChange={e => { handleFiles(e.target.files); if (e.target) e.target.value = ""; }}
