@@ -879,8 +879,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       setStartFrameMeta(endFrameMeta);
                       setEndFrame(tmp);
                       setEndFrameMeta(tmpMeta);
-                      setStartFrameLocked(false);
-                      setEndFrameLocked(false);
+                      setStartFrameLocked(true);
+                      setEndFrameLocked(true);
                     }}
                     disabled={!startFrame && !endFrame}
                     className="p-2.5 rounded-xl hover:bg-foreground/[0.06] transition-colors disabled:opacity-20 disabled:cursor-not-allowed shrink-0"
