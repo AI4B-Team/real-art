@@ -474,7 +474,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-[0.82rem] font-bold">Labels</h4>
-                <button className="text-[0.72rem] font-semibold text-blue-500 hover:text-blue-600 transition-colors">Manage</button>
+                <button onClick={() => setShowManageLabels(true)} className="text-[0.72rem] font-semibold text-blue-500 hover:text-blue-600 transition-colors">Manage</button>
               </div>
               <div className="space-y-2">
                 {[
