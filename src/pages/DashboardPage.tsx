@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
