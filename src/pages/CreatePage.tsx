@@ -430,12 +430,27 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  // Clean URL params after pre-filling from recreate link
+  // Sync URL params into state (handles recreate navigations while already on /create)
   useEffect(() => {
-    if (searchParams.has("prompt") || searchParams.has("type")) {
+    const urlPrompt = searchParams.get("prompt");
+    const urlType = searchParams.get("type");
+    if (urlPrompt) {
+      setPrompt(urlPrompt);
+      // Auto-resize textarea after setting prompt
+      setTimeout(() => {
+        if (textareaRef.current) {
+          textareaRef.current.style.height = "36px";
+          textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 140) + "px";
+        }
+      }, 0);
+    }
+    if (urlType && ["image","video","audio","design","content","document","app"].includes(urlType)) {
+      setSelectedType(urlType as ContentType);
+    }
+    if (urlPrompt || urlType) {
       setSearchParams({}, { replace: true });
     }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
   const typeCfg = selectedType ? CONTENT_TYPES.find(t => t.id === selectedType)! : null;
