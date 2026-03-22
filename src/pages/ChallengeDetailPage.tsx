@@ -159,7 +159,7 @@ const ChallengeDetailPage = () => {
                   ))}
                 </div>
               </div>
-              <div className="masonry-grid">
+              <div className="masonry-grid" style={{ columns: 4 }}>
                 {entryPhotos.map((photo, i) => {
                   const cr = creators[i % creators.length];
                   return (
