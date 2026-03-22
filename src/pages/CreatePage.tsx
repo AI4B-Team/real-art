@@ -364,11 +364,30 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
   const [startFrame, setStartFrame] = useState<string | null>(null);
   const [endFrame, setEndFrame] = useState<string | null>(null);
+  // Track what source each frame came from for cleanup
+  const [startFrameMeta, setStartFrameMeta] = useState<{ sourceType: string; characterId?: string; refId?: string } | null>(null);
+  const [endFrameMeta, setEndFrameMeta] = useState<{ sourceType: string; characterId?: string; refId?: string } | null>(null);
   const [framePickerTarget, setFramePickerTarget] = useState<"start" | "end" | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
   const [characterInfoMap, setCharacterInfoMap] = useState<Record<string, { name: string; avatar: string | null }>>({});
+
+  // Helper to clear a frame and remove associated character/reference
+  const clearFrame = (which: "start" | "end") => {
+    const meta = which === "start" ? startFrameMeta : endFrameMeta;
+    if (meta) {
+      if (meta.sourceType === "character" && meta.characterId) {
+        setSelectedCharacters(prev => prev.filter(c => c !== meta.characterId));
+      }
+      if (meta.refId) {
+        setReferences(prev => prev.filter(r => r.id !== meta.refId));
+      }
+    }
+    if (which === "start") { setStartFrame(null); setStartFrameMeta(null); }
+    else { setEndFrame(null); setEndFrameMeta(null); }
+  };
+
 
   const FEATURED_CHARS_LOOKUP = [
     { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
@@ -433,8 +452,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
       if (selectedType === "video") {
         const info = characterInfoMap[id];
         if (info?.avatar) {
-          if (startFrame === info.avatar) setStartFrame(null);
-          if (endFrame === info.avatar) setEndFrame(null);
+          if (startFrame === info.avatar) { setStartFrame(null); setStartFrameMeta(null); }
+          if (endFrame === info.avatar) { setEndFrame(null); setEndFrameMeta(null); }
         }
       }
     } else {
@@ -508,6 +527,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setReferences([]);
     setStartFrame(null);
     setEndFrame(null);
+    setStartFrameMeta(null);
+    setEndFrameMeta(null);
     setStoryScenes([makeScene()]);
     setStoryMode("auto");
     setTypeDropdownOpen(false);
@@ -791,7 +812,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
                       <img src={startFrame} alt="Start Frame" className="w-full h-full object-cover" />
                       <button
-                        onClick={(e) => { e.stopPropagation(); if (selectedType === "video") { if (selectedCharacters.length > 0) setSelectedCharacters([]); else setReferences([]); } setStartFrame(null); }}
+                        onClick={(e) => { e.stopPropagation(); clearFrame("start"); }}
                         className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
@@ -838,7 +859,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
                       <img src={endFrame} alt="End Frame" className="w-full h-full object-cover" />
                       <button
-                        onClick={(e) => { e.stopPropagation(); setEndFrame(null); }}
+                        onClick={(e) => { e.stopPropagation(); clearFrame("end"); }}
                         className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
@@ -869,19 +890,25 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <FramePickerModal
                   label={framePickerTarget === "start" ? "Start" : "End"}
                   onSelect={(src, meta) => {
-                    if (framePickerTarget === "start") setStartFrame(src);
-                    else setEndFrame(src);
+                    const frameMeta: { sourceType: string; characterId?: string; refId?: string } = {
+                      sourceType: meta?.sourceType || "upload",
+                      characterId: meta?.characterId,
+                    };
+                    if (framePickerTarget === "start") { setStartFrame(src); setStartFrameMeta(frameMeta); }
+                    else { setEndFrame(src); setEndFrameMeta(frameMeta); }
                     // Update character/reference state based on source type
                     if (selectedType === "video" && meta) {
                       if (meta.sourceType === "character" && meta.characterId) {
-                        // Add character if not already selected
                         setSelectedCharacters(prev => {
                           if (prev.includes(meta.characterId!)) return prev;
                           return [...prev, meta.characterId!];
                         });
                       } else if (meta.sourceType !== "upload") {
-                        // Non-character, non-upload = reference image
                         const refId = `frame-ref-${Date.now()}`;
+                        frameMeta.refId = refId;
+                        // Update meta with refId
+                        if (framePickerTarget === "start") setStartFrameMeta({ ...frameMeta });
+                        else setEndFrameMeta({ ...frameMeta });
                         setReferences(prev => [...prev, { id: refId, src, name: meta.sourceType }]);
                       }
                     }
@@ -1497,7 +1524,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Frames</span>
                     <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{startFrame && endFrame ? "Start + End" : startFrame ? "Start" : "End"}</span>
                   </div>
-                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setStartFrame(null); setEndFrame(null); }} />
+                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); clearFrame("start"); clearFrame("end"); }} />
                 </button>
               )}
 
