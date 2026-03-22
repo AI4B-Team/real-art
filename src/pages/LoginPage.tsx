@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import PageShell from "@/components/PageShell";
+import LanguageSelector from "@/components/LanguageSelector";
 
 const recentImages = [
   "photo-1618005182384-a83a8bd57fbe",
@@ -68,7 +69,10 @@ const LoginPage = () => {
         </div>
 
         {/* Right — Form */}
-        <div className="flex items-center justify-center px-6 py-16">
+        <div className="relative flex items-center justify-center px-6 py-16">
+          <div className="absolute top-6 right-6">
+            <LanguageSelector />
+          </div>
           <div className="w-full max-w-[420px]">
             {!showForgot ? (
               <>
