@@ -826,7 +826,7 @@ const EarningsSection = () => {
           <div className="text-[0.75rem] text-muted mb-1">Pending This Cycle</div>
           <div className="flex items-center gap-4 text-[0.75rem] text-muted mt-3">
             <span>48 Active Links</span>
-            <span>312 clicks this month</span>
+            <span>312 Clicks This Month</span>
           </div>
         </div>
         <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
