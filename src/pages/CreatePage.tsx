@@ -830,18 +830,30 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {/* Story Scenes button inside prompt box */}
           {selectedType === "video" && selectedSubMode === "story" && (
             <div className="flex justify-center pb-2">
-              <button
-                type="button"
-                onClick={() => setStoryMode(storyMode === "manual" ? "auto" : "manual")}
-                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg border text-[0.78rem] font-medium transition-all ${
-                  storyMode === "manual"
-                    ? "border-accent bg-accent/10 text-accent"
-                    : "border-foreground/[0.1] bg-foreground/[0.03] text-muted hover:text-foreground hover:border-foreground/20"
-                }`}
-              >
-                <Clapperboard size={13} />
-                Scenes
-              </button>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg border text-[0.78rem] font-medium transition-all ${
+                      storyMode === "manual"
+                        ? "border-accent bg-accent/10 text-accent"
+                        : "border-foreground/[0.1] bg-foreground/[0.03] text-muted hover:text-foreground hover:border-foreground/20"
+                    }`}
+                  >
+                    <Clapperboard size={13} />
+                    Scenes · {storyMode === "auto" ? "Auto" : "Manual"}
+                    <ChevronDown size={11} className="opacity-60" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-40 p-1.5" align="center" sideOffset={6}>
+                  {(["auto", "manual"] as const).map(m => (
+                    <button key={m} type="button" onClick={() => setStoryMode(m)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors capitalize ${storyMode === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                      {m}{storyMode === m && <Check size={12} />}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
             </div>
           )}
           {/* Inline frame uploads for video animate mode */}
