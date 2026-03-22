@@ -1429,7 +1429,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             <div className="flex items-center gap-2 flex-wrap">
 
               {/* Frames selection */}
-              {(startFrame || endFrame) && (
+              {(startFrame || endFrame) && selectedType !== "video" && (
                 <button
                   type="button"
                   onClick={() => togglePanel("frames")}
