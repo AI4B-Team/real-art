@@ -741,12 +741,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
           {/* ── Bottom toolbar ── */}
           {hasType && (
-            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-nowrap">
-              {/* Child 1 — Scrollable pills */}
-              <div className="relative flex-1 min-w-0 overflow-hidden">
-                {/* Left fade overlay */}
-                <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-background to-transparent z-10 opacity-0 transition-opacity" id="toolbar-fade" />
-                <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
+            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-start gap-0 flex-wrap">
+              {/* Child 1 — Wrapping pills */}
+              <div className="relative flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
                 {/* Type chip */}
                 {typeCfg && (
                   <div className="relative shrink-0" ref={typeRef}>
