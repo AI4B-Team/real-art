@@ -800,7 +800,7 @@ export default function CollectionsPage() {
 
       {/* Tabs */}
       <div className="border-b border-foreground/[0.06]">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex items-center gap-0">
+        <div className="px-6 md:px-10 flex items-center gap-0">
           {TABS.map(t => {
             const Icon = t.icon;
             const count = t.id === "mine" ? activeCollections.length : communityCollections.length + curatedCollections.length;
