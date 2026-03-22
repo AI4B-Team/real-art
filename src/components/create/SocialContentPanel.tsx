@@ -367,6 +367,31 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           >
             <Sparkles size={13} /> Best Time To Post
           </button>
+          {/* Style popover */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg border text-[0.78rem] font-medium transition-colors ${contentStyle === "stock" ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground"}`}>
+                <PenLine size={13} /> Style
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-1.5" align="end" side="top" sideOffset={6}>
+              <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Content Style</p>
+              {[
+                { id: "ai" as const, label: "AI Generated", icon: Sparkles, color: "text-purple-500" },
+                { id: "stock" as const, label: "Stock", icon: Image, color: "text-blue-500" },
+              ].map(opt => (
+                <button
+                  key={opt.id}
+                  onClick={() => setContentStyle(opt.id)}
+                  className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${contentStyle === opt.id ? "bg-foreground/[0.04]" : "hover:bg-foreground/[0.04]"}`}
+                >
+                  <opt.icon size={16} className={opt.color} />
+                  <span className="flex-1 text-left">{opt.label}</span>
+                  {contentStyle === opt.id && <Check size={14} className="text-emerald-500" />}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
           {/* Brand toggle */}
           <button
             onClick={() => {
