@@ -1126,7 +1126,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
                     <Tooltip><TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5 shrink-0 cursor-pointer" onClick={() => {
-                        const hasBrand = !!localStorage.getItem("brand_profile");
+                        const hasBrand = !!localStorage.getItem("ra_brand_complete");
                         if (!hasBrand && !brandToggle) {
                           toast({ title: "No Brand Profile", description: "Set up your brand profile first to use this feature.", action: <a href="/brand" className="text-accent font-semibold text-[0.78rem] whitespace-nowrap hover:underline">Set Up Brand →</a> });
                         } else {
