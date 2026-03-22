@@ -931,7 +931,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                     </div>
                     {unreadNotifs.length > 0 && (
                       <button onClick={markAllNotifRead} className="flex items-center gap-1 text-[0.72rem] font-medium text-muted hover:text-foreground transition-colors">
-                        <Check className="w-3 h-3" /> Mark all read
+                        <Check className="w-3 h-3" /> Mark All Read
                       </button>
                     )}
                   </div>
