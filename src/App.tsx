@@ -55,6 +55,7 @@ import CreatorsPage from "./pages/CreatorsPage";
 import BoardsPage from "./pages/BoardsPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
 import TopicPage from "./pages/TopicPage";
+import AppsMarketplacePage from "./pages/AppsMarketplacePage";
 
 const queryClient = new QueryClient();
 
