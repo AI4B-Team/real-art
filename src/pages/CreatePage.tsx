@@ -354,6 +354,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [appGithubTab, setAppGithubTab] = useState<"private" | "public">("private");
   const [appBuildMode, setAppBuildMode] = useState<string | null>(null);
   const [appBuildOpen, setAppBuildOpen] = useState(false);
+  const [storyScenes, setStoryScenes] = useState<StoryScene[]>([makeScene()]);
+  const [storyMode, setStoryMode] = useState<"auto" | "manual">("auto");
+  const [storyModeOpen, setStoryModeOpen] = useState(false);
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
