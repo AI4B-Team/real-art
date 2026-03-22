@@ -771,8 +771,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               </div>
             )}
 
-            {/* Textarea OR Recording UI */}
-            {isListening ? (
+            {/* Textarea + optional Recording overlay */}
+            {isListening && (
               <div className="flex-1 flex flex-col gap-1 py-[6px] mt-[2px] min-h-[36px]">
                 {currentTranscript && <p className="text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
                 <div className="flex items-center gap-1.5 shrink-0 self-end">
@@ -785,7 +785,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <button type="button" onClick={handleAcceptSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
                 </div>
               </div>
-            ) : (
+            )}
+            {!isListening && (
               <>
                 <textarea
                   ref={textareaRef}
@@ -1576,10 +1577,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </button>
                   </TooltipTrigger><TooltipContent>Enhance Prompt</TooltipContent></Tooltip>
                 )}
-                {isSupported && !isListening && (
+                {isSupported && (
                   <Tooltip><TooltipTrigger asChild>
-                    <button type="button" onClick={startListening} className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground mr-2"><Mic size={15} /></button>
-                  </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
+                    <button type="button" onClick={isListening ? cancelSpeech : startListening} className={`p-1.5 rounded-lg transition-colors mr-2 ${isListening ? "bg-accent/10 text-accent animate-pulse" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}><Mic size={15} /></button>
+                  </TooltipTrigger><TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
                   className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white hover:bg-accent/85 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] active:scale-95">
