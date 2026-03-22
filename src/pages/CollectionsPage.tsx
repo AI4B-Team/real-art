@@ -777,33 +777,31 @@ export default function CollectionsPage() {
 
   return (
     <PageShell>
-      {/* Breadcrumb */}
-
+      <div className="px-6 md:px-10 pt-8">
       {/* Header */}
-      <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Collections</h1>
-            <p className="text-[0.82rem] text-muted mt-1">Public galleries, private vaults, and personal boards</p>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
-              <Search className="w-4 h-4 text-muted shrink-0" />
-              <input className="flex-1 border-none outline-none font-body text-[0.88rem] bg-transparent" placeholder="Search collections…"
-                value={query} onChange={e => setQuery(e.target.value)} />
-              {query && <button onClick={() => setQuery("")} className="text-muted hover:text-foreground"><X className="w-3.5 h-3.5" /></button>}
-            </div>
-            <button onClick={() => setCreateOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors shrink-0">
-              <Plus className="w-4 h-4" /> New Collection
-            </button>
-          </div>
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Collections</h1>
+          <p className="text-[0.82rem] text-muted mt-1">Public galleries, private vaults, and personal boards</p>
         </div>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 bg-card border border-foreground/[0.12] rounded-xl px-4 h-11 w-full md:w-72 focus-within:border-foreground transition-colors">
+            <Search className="w-4 h-4 text-muted shrink-0" />
+            <input className="flex-1 border-none outline-none font-body text-[0.88rem] bg-transparent" placeholder="Search collections…"
+              value={query} onChange={e => setQuery(e.target.value)} />
+            {query && <button onClick={() => setQuery("")} className="text-muted hover:text-foreground"><X className="w-3.5 h-3.5" /></button>}
+          </div>
+          <button onClick={() => setCreateOpen(true)}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.84rem] font-semibold hover:bg-accent transition-colors shrink-0">
+            <Plus className="w-4 h-4" /> New Collection
+          </button>
+        </div>
+      </div>
       </div>
 
       {/* Tabs */}
       <div className="border-b border-foreground/[0.06]">
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12 flex items-center gap-0">
+        <div className="px-6 md:px-10 flex items-center gap-0">
           {TABS.map(t => {
             const Icon = t.icon;
             const count = t.id === "mine" ? activeCollections.length : communityCollections.length + curatedCollections.length;
@@ -824,7 +822,7 @@ export default function CollectionsPage() {
       {/* Category filter */}
       {activeTab !== "mine" && (
         <div className="border-b border-foreground/[0.06]">
-          <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div className="px-6 md:px-10 py-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
             {categories.map((cat, i) => (
               <React.Fragment key={cat}>
                 <button onClick={() => setActiveCategory(cat)}
@@ -840,7 +838,7 @@ export default function CollectionsPage() {
         </div>
       )}
 
-      <div className="px-6 md:px-12 py-8 max-w-[1440px] mx-auto">
+      <div className="px-6 md:px-10 py-8">
         {/* ALL COLLECTIONS TAB */}
         {activeTab === "discover" && (
           <>
