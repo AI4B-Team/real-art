@@ -331,6 +331,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [contentFrequency, setContentFrequency] = useState("Daily");
   const [contentTime, setContentTime] = useState("9:00 AM");
   const [contentStyle, setContentStyle] = useState("Informative");
+
+  // Document-specific states
+  const [docLanguage, setDocLanguage] = useState("English");
+  const [docTone, setDocTone] = useState("Professional");
+  const [docChapters, setDocChapters] = useState("Auto");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
@@ -1129,6 +1134,82 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
                       </div>
                     </div>
+                  </div>
+                )}
+
+                {/* Document-specific toolbar */}
+                {selectedType === "document" && (
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
+
+                    {/* Link */}
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg transition-colors shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
+                        <Link2 size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Add Link / Source</TooltipContent></Tooltip>
+
+                    {/* Language */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <span className="text-[0.85rem]">{({English:"🇺🇸",Spanish:"🇪🇸",French:"🇫🇷",German:"🇩🇪",Italian:"🇮🇹",Portuguese:"🇵🇹",Dutch:"🇳🇱",Russian:"🇷🇺",Chinese:"🇨🇳",Japanese:"🇯🇵",Korean:"🇰🇷",Arabic:"🇸🇦",Hindi:"🇮🇳"} as Record<string,string>)[docLanguage] || "🌐"}</span>
+                          {docLanguage}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-48 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
+                        {[
+                          { lang: "English", flag: "🇺🇸" },
+                          { lang: "Spanish", flag: "🇪🇸" },
+                          { lang: "French", flag: "🇫🇷" },
+                          { lang: "German", flag: "🇩🇪" },
+                          { lang: "Italian", flag: "🇮🇹" },
+                          { lang: "Portuguese", flag: "🇵🇹" },
+                          { lang: "Dutch", flag: "🇳🇱" },
+                          { lang: "Russian", flag: "🇷🇺" },
+                          { lang: "Chinese", flag: "🇨🇳" },
+                          { lang: "Japanese", flag: "🇯🇵" },
+                          { lang: "Korean", flag: "🇰🇷" },
+                          { lang: "Arabic", flag: "🇸🇦" },
+                          { lang: "Hindi", flag: "🇮🇳" },
+                        ].map(o => (
+                          <button key={o.lang} onClick={() => setDocLanguage(o.lang)} className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docLanguage === o.lang ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>
+                            <span className="text-[0.9rem]">{o.flag}</span>{o.lang}{docLanguage === o.lang && <Check size={12} className="ml-auto" />}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Tone */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <MessageCircle size={12} />{docTone}
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
+                        {["Professional", "Academic", "Casual", "Technical", "Persuasive", "Creative"].map(o => (
+                          <button key={o} onClick={() => setDocTone(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Chapters */}
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docChapters !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <BookOpen size={12} />Chapters
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Chapters</p>
+                        {["Auto", "3 Chapters", "5 Chapters", "7 Chapters", "10 Chapters", "15 Chapters", "Custom"].map(o => (
+                          <button key={o} onClick={() => setDocChapters(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docChapters === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
                   </div>
                 )}
 
