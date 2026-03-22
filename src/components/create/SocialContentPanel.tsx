@@ -474,7 +474,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
       {showFilters && (
         <div className="border-b border-foreground/[0.06] bg-foreground/[0.015] px-5 py-5">
           <h3 className="text-[0.95rem] font-bold mb-4">Filters</h3>
-          <div className="grid grid-cols-4 gap-6">
+          <div className="flex divide-x divide-foreground/[0.08]">
             {/* Status */}
             <div>
               <h4 className="text-[0.82rem] font-bold mb-3">Status</h4>
