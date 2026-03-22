@@ -56,6 +56,7 @@ import { useToast } from "@/hooks/use-toast";
 import PageShell from "@/components/PageShell";
 import ReferencePanel from "@/components/create/ReferencePanel";
 import FramePanel from "@/components/create/FramePanel";
+import FrameSourcePicker from "@/components/create/FrameSourcePicker";
 import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
 import SocialContentPanel from "@/components/create/SocialContentPanel";
