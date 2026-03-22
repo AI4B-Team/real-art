@@ -424,11 +424,51 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const toggleCharacter = (id: string) => {
     if (selectedType === "video") {
       // Video mode: only one character at a time (toggle on/off)
-      setSelectedCharacters(prev => prev.includes(id) ? [] : [id]);
+      // When selecting, auto-populate start frame with character avatar
+      if (selectedCharacters.includes(id)) {
+        setSelectedCharacters([]);
+        setStartFrame(null);
+      } else {
+        setSelectedCharacters([id]);
+        // Avatar will be set via useEffect below
+      }
     } else {
       setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
     }
   };
+
+  // Auto-populate video frames from character/reference selections
+  useEffect(() => {
+    if (selectedType !== "video") return;
+    
+    // Build list of all selected images
+    const allImages: { src: string; name: string }[] = [];
+    
+    // Add character image
+    if (selectedCharacters.length > 0) {
+      const id = selectedCharacters[0];
+      const info = characterInfoMap[id];
+      if (info?.avatar) {
+        allImages.push({ src: info.avatar, name: info.name });
+      }
+    }
+    
+    // Add reference image
+    if (references.length > 0) {
+      allImages.push({ src: references[0].src, name: references[0].name });
+    }
+    
+    if (allImages.length === 0) {
+      setStartFrame(null);
+      setEndFrame(null);
+    } else if (allImages.length === 1) {
+      setStartFrame(allImages[0].src);
+      setEndFrame(null);
+    } else {
+      setStartFrame(allImages[0].src);
+      setEndFrame(allImages[1].src);
+    }
+  }, [selectedType, selectedCharacters, characterInfoMap, references]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -481,8 +521,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setSelectedSubMode(modeId);
     setSubModeOpen(false);
     // Auto-show relevant panel
-    if (selectedType === "video") setActivePanel(null);
-    else if (selectedType === "audio" && modeId === "music") setActivePanel("music");
+    if (selectedType === "audio" && modeId === "music") setActivePanel("music");
     else if (selectedType === "image" && modeId === "photoshoot") setActivePanel("photoshoot");
     else if (selectedType === "content" && modeId === "social") setActivePanel("social");
     else setActivePanel(null);
@@ -572,7 +611,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   // Determine which extra toolbar icons to show based on content type
-  const showFrames = selectedType === "video" && !!selectedSubMode && (selectedCharacters.length > 0 || references.length > 0);
+  const showFrames = selectedType === "video" && (selectedCharacters.length > 0 || references.length > 0);
   const showMusic = selectedType === "audio" && selectedSubMode === "music";
   const showPhotoshoot = selectedType === "image" && selectedSubMode === "photoshoot";
   const showSocial = selectedType === "content" && selectedSubMode === "social";
@@ -734,7 +773,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
                       <img src={startFrame} alt="Start Frame" className="w-full h-full object-cover" />
                       <button
-                        onClick={(e) => { e.stopPropagation(); setStartFrame(null); }}
+                        onClick={(e) => { e.stopPropagation(); if (selectedType === "video") { setSelectedCharacters([]); } setStartFrame(null); }}
                         className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
@@ -781,7 +820,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
                       <img src={endFrame} alt="End Frame" className="w-full h-full object-cover" />
                       <button
-                        onClick={(e) => { e.stopPropagation(); setEndFrame(null); }}
+                        onClick={(e) => { e.stopPropagation(); if (selectedType === "video") { setReferences([]); } setEndFrame(null); }}
                         className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
@@ -822,7 +861,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
-          {!isListening && (selectedCharacters.length > 0 || references.length > 0) && (
+          {!isListening && selectedType !== "video" && (selectedCharacters.length > 0 || references.length > 0) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
               {selectedCharacters.length > 0 && (
                 <button type="button" onClick={() => togglePanel("character")}
