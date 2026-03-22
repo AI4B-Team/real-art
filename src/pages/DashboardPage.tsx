@@ -798,10 +798,10 @@ const EarningsSection = () => {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { icon: DollarSign, label: "Total Earned", value: `$${totalEarned.toLocaleString()}.00`, sub: "All time" },
-          { icon: Wallet, label: "Pending", value: "$213.40", sub: "Awaiting payout" },
-          { icon: Link2, label: "Stream 1 Links", value: "48", sub: "Active affiliate links" },
-          { icon: Users, label: "Referrals", value: "127", sub: "This month" },
+          { icon: DollarSign, label: "Total Earned", value: `$${totalEarned.toLocaleString()}.00`, sub: "All Time" },
+          { icon: Wallet, label: "Pending", value: "$213.40", sub: "Awaiting Payout" },
+          { icon: Link2, label: "Stream 1 Links", value: "48", sub: "Active Affiliate Links" },
+          { icon: Users, label: "Referrals", value: "127", sub: "This Month" },
         ].map(s => (
           <div key={s.label} className="bg-card border border-foreground/[0.08] rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
