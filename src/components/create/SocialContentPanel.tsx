@@ -405,7 +405,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               brandEnabled ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground"
             }`}
           >
-            Brand
+            <Palette size={13} /> Brand
             <div className={`w-8 h-[18px] rounded-full relative transition-colors ${brandEnabled ? "bg-accent" : "bg-foreground/20"}`}>
               <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-all ${brandEnabled ? "left-[16px]" : "left-[2px]"}`} />
             </div>
