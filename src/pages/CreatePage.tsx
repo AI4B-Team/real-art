@@ -361,6 +361,18 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [storyMode, setStoryMode] = useState<"auto" | "manual">("auto");
   const [storyModeOpen, setStoryModeOpen] = useState(false);
 
+  // Voiceover-specific states
+  const [voiceoverVoice, setVoiceoverVoice] = useState("Auto");
+  const [voiceoverVoiceOpen, setVoiceoverVoiceOpen] = useState(false);
+  const [voiceoverLanguage, setVoiceoverLanguage] = useState("English");
+  const [voiceoverLanguageOpen, setVoiceoverLanguageOpen] = useState(false);
+  const [voiceoverAccent, setVoiceoverAccent] = useState("Neutral");
+  const [voiceoverAccentOpen, setVoiceoverAccentOpen] = useState(false);
+  const [voiceoverSpeed, setVoiceoverSpeed] = useState("Normal");
+  const [voiceoverSpeedOpen, setVoiceoverSpeedOpen] = useState(false);
+  const [voiceoverTone, setVoiceoverTone] = useState("Auto");
+  const [voiceoverToneOpen, setVoiceoverToneOpen] = useState(false);
+
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
