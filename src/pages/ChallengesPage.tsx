@@ -68,8 +68,8 @@ const ChallengesPage = () => {
 
         {/* Live challenges hero */}
         {live.length > 0 && (
-          <div className="px-6 md:px-12 mb-10">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[1440px] mx-auto">
+          <div className="mb-10">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               {live.map(c => (
                 <Link key={c.id} to={`/challenges/${c.id}`} className="block no-underline group">
                   <div className="bg-foreground rounded-2xl overflow-hidden relative cursor-pointer hover:shadow-[0_24px_64px_rgba(0,0,0,0.25)] transition-shadow h-full min-h-[380px] flex flex-col">
