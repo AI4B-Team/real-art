@@ -389,11 +389,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     if (which === "start") {
       setStartFrame(null);
       setStartFrameMeta(null);
-      setStartFrameLocked(true);
+      setStartFrameLocked(false);
     } else {
       setEndFrame(null);
       setEndFrameMeta(null);
-      setEndFrameLocked(true);
+      setEndFrameLocked(false);
     }
   };
 
