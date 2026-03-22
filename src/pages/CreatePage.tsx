@@ -1237,11 +1237,18 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 </button>
               </div>
               {selectedType === "video" ? (
-                <div className="flex flex-wrap gap-2">
-                  {["Cinematic", "Documentary", "Animation", "Realistic"].map(s => (
-                    <button key={s} type="button" onClick={() => { setSelectedStyle(prev => prev === s ? "None" : s); setActivePanel(null); }}
-                      className={`px-5 py-2.5 rounded-lg text-[0.85rem] font-medium border transition-all ${selectedStyle === s ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-foreground/25 text-foreground"}`}>
-                      {s}
+                <div className="grid grid-cols-4 gap-2">
+                  {[
+                    { id: "Cinematic", label: "Cinematic", img: styleVideoCinematic },
+                    { id: "Documentary", label: "Documentary", img: styleVideoDocumentary },
+                    { id: "Animation", label: "Animation", img: styleVideoAnimation },
+                    { id: "Realistic", label: "Realistic", img: styleVideoRealistic },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
                     </button>
                   ))}
                 </div>
