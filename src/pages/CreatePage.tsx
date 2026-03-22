@@ -1100,7 +1100,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <Popover open={appThemeOpen} onOpenChange={setAppThemeOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${appTheme !== "Default" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Smile size={14} />
+                          <Palette size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Theme</TooltipContent></Tooltip>
                       <PopoverContent className="w-60 p-0" align="end" sideOffset={6}>
