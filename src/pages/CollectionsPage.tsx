@@ -837,7 +837,7 @@ export default function CollectionsPage() {
         </div>
       )}
 
-      <div className="px-6 md:px-12 py-8 max-w-[1440px] mx-auto">
+      <div className="px-6 md:px-10 py-8">
         {/* ALL COLLECTIONS TAB */}
         {activeTab === "discover" && (
           <>
