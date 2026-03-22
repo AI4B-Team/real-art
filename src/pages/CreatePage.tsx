@@ -478,8 +478,24 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     }
     
     // Only auto-set frames from characters — don't overwrite manually-set frames
-    if (charImages.length >= 1) setStartFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[0]);
-    if (charImages.length >= 2) setEndFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[1]);
+    if (charImages.length >= 1) {
+      setStartFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[0]);
+      setStartFrameMeta(prev => {
+        // Only update meta if we're actually changing the frame to a character image
+        const currentStart = charImages[0];
+        const charId = selectedCharacters[0];
+        if (prev?.sourceType === "character" && prev?.characterId === charId) return prev;
+        return { sourceType: "character", characterId: charId };
+      });
+    }
+    if (charImages.length >= 2) {
+      setEndFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[1]);
+      setEndFrameMeta(prev => {
+        const charId = selectedCharacters[1];
+        if (prev?.sourceType === "character" && prev?.characterId === charId) return prev;
+        return { sourceType: "character", characterId: charId };
+      });
+    }
   }, [selectedType, selectedCharacters, characterInfoMap]);
 
   useEffect(() => {
