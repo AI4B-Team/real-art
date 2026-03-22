@@ -777,7 +777,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <img src={endFrame} alt="End Frame" className="w-full h-full object-cover" />
                       <button
                         onClick={() => setEndFrame(null)}
-                        className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                        className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
                       </button>
