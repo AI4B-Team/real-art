@@ -427,18 +427,24 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   }, [selectedCharacters]);
 
   const toggleCharacter = (id: string) => {
-    if (selectedType === "video") {
-      // Video mode: only one character at a time (toggle on/off)
-      // When selecting, auto-populate start frame with character avatar
-      if (selectedCharacters.includes(id)) {
-        setSelectedCharacters([]);
-        setStartFrame(null);
-      } else {
-        setSelectedCharacters([id]);
-        // Avatar will be set via useEffect below
+    if (selectedCharacters.includes(id)) {
+      setSelectedCharacters(prev => prev.filter(c => c !== id));
+      // If removing a character in video mode, clear its frame
+      if (selectedType === "video") {
+        const info = characterInfoMap[id];
+        if (info?.avatar) {
+          if (startFrame === info.avatar) setStartFrame(null);
+          if (endFrame === info.avatar) setEndFrame(null);
+        }
       }
     } else {
-      setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+      if (selectedType === "video") {
+        // In video mode, max 2 characters (start + end frame)
+        setSelectedCharacters(prev => prev.length >= 2 ? prev : [...prev, id]);
+      } else {
+        setSelectedCharacters(prev => [...prev, id]);
+      }
+    }
     }
   };
 
