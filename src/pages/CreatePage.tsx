@@ -6,7 +6,7 @@ import {
   ChevronDown, ChevronUp, Send, Mic, MicOff, Sparkles, Shuffle,
   X, Check, Loader2, Zap, ImageIcon,
   Layers, Pencil, RefreshCw, Camera,
-  Play, MessageCircle, Move, User, BookOpen, Presentation,
+  Play, MessageCircle, Move, User, BookOpen, Presentation, Clapperboard,
   Headphones, AudioLines, Captions,
   Copy, Hash, Clock, SlidersHorizontal,
   LayoutGrid, Filter, Star, Download, Bookmark, Plus,
@@ -839,7 +839,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     : "border-foreground/[0.1] bg-foreground/[0.03] text-muted hover:text-foreground hover:border-foreground/20"
                 }`}
               >
-                <Layers size={13} />
+                <Clapperboard size={13} />
                 Scenes
               </button>
             </div>
@@ -1246,9 +1246,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <Popover open={storyModeOpen} onOpenChange={setStoryModeOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${storyMode === "manual" ? "bg-yellow-50 text-yellow-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <Calendar size={12} />{storyMode === "auto" ? "Auto" : "Manual"}
+                        <Clapperboard size={12} />{storyMode === "auto" ? "Auto" : "Manual"}
                       </button>
-                    </PopoverTrigger></TooltipTrigger><TooltipContent>Scene Mode</TooltipContent></Tooltip>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
                     <PopoverContent className="w-36 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                       {(["auto", "manual"] as const).map(m => (
                         <button key={m} type="button" onClick={() => { setStoryMode(m); setStoryModeOpen(false); }}
