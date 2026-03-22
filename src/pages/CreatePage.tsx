@@ -300,6 +300,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
   const promptFileRef = useRef<HTMLInputElement>(null);
+  const [promptFocused, setPromptFocused] = useState(false);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [subModeOpen, setSubModeOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
