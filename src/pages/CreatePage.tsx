@@ -1694,14 +1694,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 setReferences(prev => [...prev, ref]);
                 // In video mode, auto-fill empty frame slots with the new reference
                 if (selectedType === "video") {
+                  // Fill whichever frame slot is empty (start first, then end)
                   if (!startFrame) {
                     setStartFrame(ref.src);
                     setStartFrameMeta({ sourceType: "reference", refId: ref.id });
-                    setStartFrameLocked(false);
+                    setStartFrameLocked(true);
                   } else if (!endFrame) {
                     setEndFrame(ref.src);
                     setEndFrameMeta({ sourceType: "reference", refId: ref.id });
-                    setEndFrameLocked(false);
+                    setEndFrameLocked(true);
                   }
                 }
               }}
