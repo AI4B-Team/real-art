@@ -667,14 +667,19 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
                             <button
                               key={pi}
                               onClick={() => setSelectedPost(post)}
-                              className="w-full text-left p-1.5 rounded-lg bg-foreground/[0.03] hover:bg-foreground/[0.06] transition-colors"
+                              className="w-full text-left p-1.5 rounded-lg bg-emerald-50 border border-emerald-200/60 hover:bg-emerald-100/70 transition-colors"
                             >
                               <div className="flex items-center gap-1">
-                                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: platform?.color }} />
-                                <span className="text-[0.62rem] font-medium" style={{ color: platform?.color }}>{post.time}</span>
+                                <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: platform?.color }} />
+                                <span className="text-[0.65rem] font-bold" style={{ color: platform?.color }}>{post.time}</span>
                               </div>
-                              <p className="text-[0.65rem] text-foreground truncate leading-tight mt-0.5">{post.title}</p>
-                              <span className="text-[0.6rem] font-bold" style={{ color: post.score >= 80 ? "#22c55e" : post.score >= 60 ? "#f59e0b" : "#ef4444" }}>
+                              <div className="flex items-start gap-1 mt-0.5">
+                                <span style={{ color: platform?.color }} className="shrink-0 mt-0.5"><PlatformIcon platformId={post.platform} size={12} /></span>
+                                <p className="text-[0.65rem] text-foreground truncate leading-tight">{post.title}</p>
+                              </div>
+                              <span className={`inline-flex items-center justify-center mt-1 text-[0.58rem] font-bold px-1.5 py-0.5 rounded-full text-white ${
+                                post.score >= 80 ? "bg-emerald-500" : post.score >= 60 ? "bg-amber-500" : "bg-red-500"
+                              }`}>
                                 {post.score}
                               </span>
                             </button>
