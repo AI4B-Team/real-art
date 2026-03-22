@@ -14,6 +14,8 @@ import {
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush, Link2,
   Eye, Target, Languages, Repeat, PenTool, FolderOpen,
+  Github, Smile, Rss, LinkIcon, ShoppingCart,
+  Minus, Settings,
 } from "lucide-react";
 import stylePhotorealistic from "@/assets/styles/photorealistic.jpg";
 import styleAnime from "@/assets/styles/anime.jpg";
