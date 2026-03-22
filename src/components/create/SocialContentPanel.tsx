@@ -203,6 +203,8 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [showManageLabels, setShowManageLabels] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportSelected, setExportSelected] = useState<Set<number>>(new Set());
   const [showPostingSchedule, setShowPostingSchedule] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
   const [scheduleView, setScheduleView] = useState<"day"|"week">("day");
