@@ -13,7 +13,7 @@ import {
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush, Link2,
-  Eye, Target, Languages, Repeat, PenTool, FolderOpen,
+  Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
   Github, Smile, Rss, LinkIcon, ShoppingCart,
   Minus, Settings, Upload, ArrowLeftRight,
 } from "lucide-react";
@@ -1422,7 +1422,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Target size={14} />
+                          <Flag size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
