@@ -4,8 +4,11 @@ import {
   Search, Star, ChevronRight, LayoutGrid, List, Flame, Sparkles,
   Video, Image, Mic, Palette, FileText, Wrench, Eye, FolderOpen,
   Target, Camera, User, PenTool, Edit3, Bot, Layers, ArrowLeft,
-  Download, Play, Filter,
+  Download, Play, Filter, Check, ChevronDown,
 } from "lucide-react";
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from "@/components/ui/popover";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
 
