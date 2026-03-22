@@ -1348,7 +1348,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
         {/* ── Active selections summary ── */}
         {(startFrame || endFrame || selectedGenre || selectedTheme) && (
-          <div className="max-w-[820px] mx-auto mt-2 px-1">
+          <div className="max-w-[960px] mx-auto mt-2 px-1">
             <div className="flex items-center gap-2 flex-wrap">
 
               {/* Frames selection */}
