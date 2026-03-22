@@ -38,7 +38,7 @@ interface FrameSourcePickerProps {
 }
 
 const sources = [
-  { id: "computer" as Source, label: "Computer", icon: Upload, desc: "Upload from your device" },
+  { id: "computer" as Source, label: "Upload", icon: Upload, desc: "Upload from your device" },
   { id: "history" as Source, label: "Creations", icon: History, desc: "Pick from your past creations" },
   { id: "community" as Source, label: "Community", icon: Users, desc: "Browse community images" },
   { id: "stock" as Source, label: "Stock", icon: Image, desc: "Search free stock photos" },
