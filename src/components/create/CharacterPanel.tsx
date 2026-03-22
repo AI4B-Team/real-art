@@ -232,7 +232,7 @@ export default function CharacterPanel({ onClose, selectedCharacters, onToggle, 
                 <User size={24} className="text-muted" />
               </div>
               <p className="text-[0.85rem] font-semibold text-foreground/70">No Characters Yet</p>
-              <p className="text-[0.75rem] text-muted/60 text-center max-w-[260px]">Create your first character by uploading images, using your camera, or describing them.</p>
+              <p className="text-[0.75rem] text-muted/60 text-center max-w-[260px] line-clamp-2">Create your first character by uploading images, using your camera, or describing them.</p>
               <button
                 onClick={() => setShowCreate(true)}
                 className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-accent text-white text-[0.8rem] font-bold hover:bg-accent/85 transition-colors"
