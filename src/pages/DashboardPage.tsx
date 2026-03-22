@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { Link, useLocation } from "react-router-dom";
 import {
   LayoutDashboard, Image, FolderOpen, DollarSign, Bell, Settings,
@@ -252,7 +253,7 @@ const MediaSection = () => {
                 onClick={() => toggleSelect(item.id)}
                 className={`bg-card border rounded-xl overflow-hidden group cursor-pointer transition-colors ${isSelected ? "border-accent ring-1 ring-accent/30" : "border-foreground/[0.08]"}`}
               >
-                <div className="aspect-[4/3] overflow-hidden relative">
+                <div className="aspect-[4/3] overflow-hidden relative group/img">
                   {item.type === "music" ? (
                     <div className="w-full h-full bg-foreground/[0.06] flex items-center justify-center">
                       <div className="flex items-end gap-[3px] h-12">
@@ -262,42 +263,42 @@ const MediaSection = () => {
                       </div>
                     </div>
                   ) : (
-                    <img
-                      src={`https://images.unsplash.com/${item.photo}?w=400&h=300&fit=crop&q=78`}
-                      alt={item.title}
-                      className="w-full h-full object-cover group-hover:scale-[1.03] transition-transform duration-300"
-                    />
+                    <>
+                      <img
+                        src={`https://images.unsplash.com/${item.photo}?w=400&h=300&fit=crop&q=78`}
+                        alt={item.title}
+                        className="w-full h-full object-cover group-hover/img:scale-[1.03] transition-transform duration-300"
+                      />
+                      <ImageCardOverlay index={parseInt(item.id.replace(/\D/g, "")) || 0} photo={item.photo} title={item.title} />
+                    </>
                   )}
                   {item.type !== "image" && (
-                    <div className="absolute top-2 left-2 bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 uppercase">
+                    <div className="absolute top-2 left-2 bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 uppercase z-10">
                       {item.type === "video" && <Play className="w-3 h-3" />}
                       {item.type === "music" && <Music className="w-3 h-3" />}
                       {item.type}
                     </div>
                   )}
                   {item.pinned && (
-                    <div className="absolute top-2 right-2 bg-accent text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1">
+                    <div className="absolute top-2 right-2 bg-accent text-primary-foreground text-[0.6rem] font-bold px-2 py-0.5 rounded-lg flex items-center gap-1 z-10">
                       <Star className="w-2 h-2" /> Featured
                     </div>
                   )}
-                  <div className="absolute bottom-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
-                    <Link to="/upload" className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg no-underline hover:bg-accent transition-colors">Edit</Link>
-                    <Link to={`/image/${item.id}`} className="bg-foreground/70 backdrop-blur-sm text-primary-foreground text-[0.65rem] font-semibold px-2 py-1 rounded-lg no-underline hover:bg-accent transition-colors">View</Link>
-                  </div>
                   {isSelected && (
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-md bg-accent flex items-center justify-center">
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-md bg-accent flex items-center justify-center z-10">
                       <Check className="w-2.5 h-2.5 text-primary-foreground" />
                     </div>
                   )}
                 </div>
                 <div className="p-3">
-                  <div className="text-[0.82rem] font-semibold mb-0.5">{item.title}</div>
-                  <div className="text-[0.68rem] text-muted mb-1.5 capitalize">{item.type} · {item.size}</div>
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="text-[0.68rem] text-muted capitalize">{item.type} · {item.size}</div>
+                    <span className="text-[0.78rem] text-accent font-semibold">{item.earnings}</span>
+                  </div>
                   <div className="flex items-center gap-3 text-[0.72rem] text-muted">
                     <span className="flex items-center gap-1"><Download className="w-2.5 h-2.5" />{item.downloads}</span>
                     {item.type !== "music" && <span className="flex items-center gap-1"><RefreshCw className="w-2.5 h-2.5" />{item.remixes}</span>}
                     <span className="flex items-center gap-1"><Heart className="w-2.5 h-2.5" />{item.likes}</span>
-                    <span className="ml-auto text-accent font-semibold">{item.earnings}</span>
                   </div>
                 </div>
               </div>
