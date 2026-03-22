@@ -233,6 +233,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
     } catch { return false; }
   })();
   const [brandEnabled, setBrandEnabled] = useState(hasBrandProfile);
+  const [contentStyle, setContentStyle] = useState<"ai"|"stock">("ai");
 
   const togglePlatform = (id: string) => {
     setSelectedPlatforms(prev => {
