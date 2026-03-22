@@ -1,0 +1,1 @@
+Always use the `Languages` icon from lucide-react (the 文A translation icon) for all language-related buttons and selectors. Never use `Globe` for language.
