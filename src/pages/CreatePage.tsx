@@ -141,8 +141,10 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
     { id: "ebook",         label: "Ebook",        icon: BookOpen },
     { id: "whitepaper",    label: "Whitepaper",   icon: FileText },
     { id: "report",        label: "Report",       icon: BarChart2 },
-    { id: "proposal",      label: "Proposal",     icon: FileText },
     { id: "business-plan", label: "Business Plan",icon: Package },
+    { id: "handbook",      label: "Handbook",     icon: BookOpen },
+    { id: "proposal",      label: "Proposal",     icon: FileText },
+    { id: "case-study",    label: "Case Study",   icon: BarChart2 },
     { id: "cover-letter",  label: "Cover Letter", icon: FileText },
   ],
   app: [
