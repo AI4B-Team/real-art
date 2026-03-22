@@ -322,6 +322,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
+  // App-specific states
+  const [appModel, setAppModel] = useState("Auto");
+  const [appModelOpen, setAppModelOpen] = useState(false);
+  const [appTheme, setAppTheme] = useState("Default");
+  const [appThemeOpen, setAppThemeOpen] = useState(false);
+  const [appThemeSearch, setAppThemeSearch] = useState("");
+  const [appBudget, setAppBudget] = useState(25);
+  const [appTemplate, setAppTemplate] = useState("");
+  const [appGithubUrl, setAppGithubUrl] = useState("");
+  const [appGithubTab, setAppGithubTab] = useState<"private" | "public">("private");
+
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
