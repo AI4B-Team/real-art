@@ -797,6 +797,7 @@ export default function CollectionsPage() {
           </button>
         </div>
       </div>
+      </div>
 
       {/* Tabs */}
       <div className="border-b border-foreground/[0.06]">
