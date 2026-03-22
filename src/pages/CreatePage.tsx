@@ -890,19 +890,25 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <FramePickerModal
                   label={framePickerTarget === "start" ? "Start" : "End"}
                   onSelect={(src, meta) => {
-                    if (framePickerTarget === "start") setStartFrame(src);
-                    else setEndFrame(src);
+                    const frameMeta: { sourceType: string; characterId?: string; refId?: string } = {
+                      sourceType: meta?.sourceType || "upload",
+                      characterId: meta?.characterId,
+                    };
+                    if (framePickerTarget === "start") { setStartFrame(src); setStartFrameMeta(frameMeta); }
+                    else { setEndFrame(src); setEndFrameMeta(frameMeta); }
                     // Update character/reference state based on source type
                     if (selectedType === "video" && meta) {
                       if (meta.sourceType === "character" && meta.characterId) {
-                        // Add character if not already selected
                         setSelectedCharacters(prev => {
                           if (prev.includes(meta.characterId!)) return prev;
                           return [...prev, meta.characterId!];
                         });
                       } else if (meta.sourceType !== "upload") {
-                        // Non-character, non-upload = reference image
                         const refId = `frame-ref-${Date.now()}`;
+                        frameMeta.refId = refId;
+                        // Update meta with refId
+                        if (framePickerTarget === "start") setStartFrameMeta({ ...frameMeta });
+                        else setEndFrameMeta({ ...frameMeta });
                         setReferences(prev => [...prev, { id: refId, src, name: meta.sourceType }]);
                       }
                     }
