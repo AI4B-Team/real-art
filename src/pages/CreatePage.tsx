@@ -1158,7 +1158,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}{voiceoverVoice !== "Auto" && <ChevronDown size={10} />}
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
-                  <PopoverContent className="w-64 p-0" align="start" sideOffset={6}>
+                  <PopoverContent className="w-64 p-0" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     <p className="text-[0.78rem] text-muted px-4 pt-3 pb-2">Select a voice for your voiceover</p>
                     <div className="max-h-[280px] overflow-y-auto px-2 pb-2">
                       {[
@@ -1192,7 +1192,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Globe size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-44 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["English", "Spanish", "French", "German", "Italian", "Portuguese", "Japanese", "Korean", "Chinese", "Arabic", "Hindi", "Dutch"].map(l => (
                       <button key={l} type="button" onClick={() => { setVoiceoverLanguage(l); setVoiceoverLanguageOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverLanguage === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
@@ -1209,7 +1209,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <AudioLines size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Accent</TooltipContent></Tooltip>
-                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-44 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["American", "British", "Australian", "Irish", "Scottish", "Indian", "South African", "Neutral"].map(a => (
                       <button key={a} type="button" onClick={() => { setVoiceoverAccent(a); setVoiceoverAccentOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverAccent === a ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
@@ -1226,7 +1226,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Clock size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Speed</TooltipContent></Tooltip>
-                  <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-40 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["Very Slow", "Slow", "Normal", "Fast", "Very Fast"].map(s => (
                       <button key={s} type="button" onClick={() => { setVoiceoverSpeed(s); setVoiceoverSpeedOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverSpeed === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
@@ -1243,7 +1243,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <SlidersHorizontal size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
-                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-44 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["Auto", "Professional", "Casual", "Energetic", "Calm", "Dramatic", "Warm", "Authoritative"].map(t => (
                       <button key={t} type="button" onClick={() => { setVoiceoverTone(t); setVoiceoverToneOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverTone === t ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
