@@ -563,7 +563,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       : "bg-background border-foreground/15 hover:border-foreground/30 text-foreground"
                   }`}
                 >
-                  <t.icon size={16} className={isActive ? t.color : "text-gray-400"} />
+                  <t.icon size={16} className={t.color} />
                   {t.label}
                 </button>
               );
