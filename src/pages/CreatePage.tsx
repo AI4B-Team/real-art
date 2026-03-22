@@ -482,7 +482,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   const hasType = !!selectedType;
-  const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "What would you like to create?";
+  const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "Create anything...";
   const borderCls = typeCfg ? typeCfg.promptBorder : "border-foreground/[0.12]";
 
   const topLeftLabel = (type: ContentType): string => {
