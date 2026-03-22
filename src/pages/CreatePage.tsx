@@ -951,6 +951,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </PopoverContent>
                 </Popover>
 
+                {/* Style, Character, Reference — hidden for ebook mode */}
+                {!(selectedType === "document" && selectedSubMode === "ebook") && (
+                  <>
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
@@ -976,6 +979,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {references.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{references.length}</span>}
                   </button>
                 </TooltipTrigger><TooltipContent>Reference{references.length > 0 ? ` (${references.length})` : ""}</TooltipContent></Tooltip>
+                  </>
+                )}
                   </>
                 )}
 
