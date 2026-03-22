@@ -104,7 +104,7 @@ const toolsApps: AppItem[] = [
   { name: "Lead Generation", category: "Sales Tools", description: "Generate quality leads automatically", thumbnail: "photo-1460925895917-afdab827c52f", badge: "NEW", rating: 4.6 },
 ];
 
-const categories = ["All", "Image", "Video", "Audio", "Design", "Content", "Tools"];
+const categories = ["Select All", "Image", "Video", "Audio", "Design", "Content", "Tools"];
 
 /* ─── Helpers ─── */
 const imgUrl = (id: string) => `https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
@@ -210,11 +210,11 @@ const AppsMarketplacePage = () => {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<"marketplace" | "my-apps">("marketplace");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [selectedCat, setSelectedCat] = useState("All");
+  const [selectedCat, setSelectedCat] = useState("Select All");
 
   const filterApps = (apps: AppItem[]) => {
     let result = apps;
-    if (selectedCat !== "All") result = result.filter(a => a.category.toLowerCase().includes(selectedCat.toLowerCase()));
+    if (selectedCat !== "Select All") result = result.filter(a => a.category.toLowerCase().includes(selectedCat.toLowerCase()));
     if (search) result = result.filter(a => a.name.toLowerCase().includes(search.toLowerCase()) || a.description.toLowerCase().includes(search.toLowerCase()));
     return result;
   };
