@@ -1119,8 +1119,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Cpu size={12} />{selectedModel}
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
-                  <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
-                    {["Auto", "Sora Storyboard"].map(m => (
+                  <PopoverContent className="w-56 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                    {(selectedType === "audio" && selectedSubMode === "voiceover"
+                      ? ["Auto", "Eleven Turbo v2.5", "Eleven Multilingual v2"]
+                      : ["Auto", "Sora Storyboard"]
+                    ).map(m => (
                       <button key={m} type="button" onClick={() => { setSelectedModel(m); setModelOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedModel === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                         {m}{selectedModel === m && <Check size={12} />}
