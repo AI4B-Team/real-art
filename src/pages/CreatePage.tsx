@@ -42,6 +42,10 @@ import stylePastel from "@/assets/styles/pastel.jpg";
 import styleStainedGlass from "@/assets/styles/stained-glass.jpg";
 import stylePointillism from "@/assets/styles/pointillism.jpg";
 import styleRetro from "@/assets/styles/retro.jpg";
+import styleVideoCinematic from "@/assets/styles/video-cinematic.jpg";
+import styleVideoDocumentary from "@/assets/styles/video-documentary.jpg";
+import styleVideoAnimation from "@/assets/styles/video-animation.jpg";
+import styleVideoRealistic from "@/assets/styles/video-realistic.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
