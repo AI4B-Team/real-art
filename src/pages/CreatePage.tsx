@@ -57,6 +57,7 @@ import PageShell from "@/components/PageShell";
 import ReferencePanel from "@/components/create/ReferencePanel";
 import FramePanel from "@/components/create/FramePanel";
 import FrameSourcePicker from "@/components/create/FrameSourcePicker";
+import FramePickerModal from "@/components/create/FramePickerModal";
 import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
 import SocialContentPanel from "@/components/create/SocialContentPanel";
@@ -803,22 +804,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
               {/* Frame Source Picker Modal */}
               {framePickerTarget && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setFramePickerTarget(null)}>
-                  <div className="bg-background border border-foreground/[0.1] rounded-2xl p-5 w-[520px] max-w-[92vw] shadow-2xl" onClick={e => e.stopPropagation()}>
-                    <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-[0.92rem] font-bold">Choose {framePickerTarget === "start" ? "Start" : "End"} Frame</h3>
-                      <button onClick={() => setFramePickerTarget(null)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
-                    </div>
-                    <FrameSourcePicker
-                      onSelect={(src) => {
-                        if (framePickerTarget === "start") setStartFrame(src);
-                        else setEndFrame(src);
-                        setFramePickerTarget(null);
-                      }}
-                      onClose={() => setFramePickerTarget(null)}
-                    />
-                  </div>
-                </div>
+                <FramePickerModal
+                  label={framePickerTarget === "start" ? "Start" : "End"}
+                  onSelect={(src) => {
+                    if (framePickerTarget === "start") setStartFrame(src);
+                    else setEndFrame(src);
+                    setFramePickerTarget(null);
+                  }}
+                  onClose={() => setFramePickerTarget(null)}
+                />
               )}
             </div>
           )}

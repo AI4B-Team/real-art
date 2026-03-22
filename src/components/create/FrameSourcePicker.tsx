@@ -10,6 +10,10 @@ const STOCK_IMAGES = [
   "photo-1540959733332-eab4deabeeaf", "photo-1504198453319-5ce911bafcde", "photo-1470252649378-9c29740c9fa8",
   "photo-1493246507139-91e8fad9978e", "photo-1502082553048-f009c37129b9", "photo-1498050108023-c5249f4df085",
   "photo-1536440136628-849c177e76a1", "photo-1485846234645-a62644f84728",
+  "photo-1490730141103-6cac27aaab94", "photo-1433086966358-54859d0ed716", "photo-1475924156734-496f6cac6ec1",
+  "photo-1505144808419-1957a94ca61e", "photo-1470813740244-df37b8c1edcb", "photo-1446776811953-b23d57bd21aa",
+  "photo-1503803548695-c2a7b4a5b875", "photo-1494500764479-0c8f2919a3d8", "photo-1482192505345-5655af888cc4",
+  "photo-1464822759023-fed622ff2c3b", "photo-1507400492013-162706c8c05e", "photo-1470770903676-69b98201ea1c",
 ];
 
 /* ── Community mock images ── */
@@ -20,6 +24,10 @@ const COMMUNITY_IMAGES = [
   "photo-1697577418970-95d99b5a55cf", "photo-1684779847639-fbcc5a57dfe9",
   "photo-1694891793604-9bb78dbcc637", "photo-1696446701796-da61225697cc",
   "photo-1682687221038-404670f09ef1", "photo-1682695796954-bad0d0f59ff1",
+  "photo-1682685797886-79020e330c92", "photo-1699116548070-b8499ae91f04",
+  "photo-1682686581580-d99b0230064e", "photo-1695653422543-7da6d6744364",
+  "photo-1682686580036-b5e25932ce9a", "photo-1682695797221-8164ff1fafc9",
+  "photo-1682687220742-aba13b6e50ba", "photo-1682687220063-4742bd7fd538",
 ];
 
 /* ── History mock images ── */
@@ -28,6 +36,10 @@ const HISTORY_IMAGES = [
   "photo-1614850523459-c2f4c699c52e", "photo-1614854262340-ab1ca7d079c7",
   "photo-1617791160505-6f00504e3519", "photo-1618172193622-ae2d025f4032",
   "photo-1614849963640-9cc74b2a826f", "photo-1618005198919-d3d4b5a92ead",
+  "photo-1614851099511-773084f6911d", "photo-1618556450994-a163d8d1e1b5",
+  "photo-1614728263509-65e5e2a44e18", "photo-1617396900799-f4ec2b43c7ae",
+  "photo-1614680376573-df3480f0c6ff", "photo-1617791160536-598cf32026fb",
+  "photo-1618172193763-c511deb635ca", "photo-1614854262318-831574f15bcd",
 ];
 
 type Source = "menu" | "computer" | "history" | "community" | "stock";
@@ -35,6 +47,7 @@ type Source = "menu" | "computer" | "history" | "community" | "stock";
 interface FrameSourcePickerProps {
   onSelect: (src: string) => void;
   onClose: () => void;
+  onBrowseModeChange?: (browsing: boolean) => void;
 }
 
 const sources = [
@@ -44,7 +57,7 @@ const sources = [
   { id: "stock" as Source, label: "Stock", icon: Image, desc: "Search free stock photos" },
 ];
 
-export default function FrameSourcePicker({ onSelect, onClose }: FrameSourcePickerProps) {
+export default function FrameSourcePicker({ onSelect, onClose, onBrowseModeChange }: FrameSourcePickerProps) {
   const [activeSource, setActiveSource] = useState<Source>("menu");
   const [search, setSearch] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
@@ -61,12 +74,18 @@ export default function FrameSourcePicker({ onSelect, onClose }: FrameSourcePick
     }
     setActiveSource(id);
     setSearch("");
+    onBrowseModeChange?.(true);
+  };
+
+  const handleBack = () => {
+    setActiveSource("menu");
+    onBrowseModeChange?.(false);
   };
 
   const getImages = () => {
     const list = activeSource === "stock" ? STOCK_IMAGES : activeSource === "community" ? COMMUNITY_IMAGES : HISTORY_IMAGES;
     if (!search.trim()) return list;
-    return list; // In a real app, this would filter by search
+    return list;
   };
 
   const handleImageSelect = (id: string) => {
@@ -105,30 +124,30 @@ export default function FrameSourcePicker({ onSelect, onClose }: FrameSourcePick
 
   return (
     <div className="w-full">
-      <div className="flex items-center gap-2 mb-3">
-        <button onClick={() => setActiveSource("menu")} className="p-1.5 rounded-lg hover:bg-foreground/[0.06] transition-colors">
+      <div className="flex items-center gap-2 mb-4">
+        <button onClick={handleBack} className="p-1.5 rounded-lg hover:bg-foreground/[0.06] transition-colors">
           <ChevronLeft size={16} className="text-muted" />
         </button>
-        <span className="text-[0.82rem] font-bold flex-1">{sourceLabel}</span>
-        <div className="relative flex-1 max-w-[220px]">
+        <span className="text-[0.88rem] font-bold flex-1">{sourceLabel}</span>
+        <div className="relative flex-1 max-w-[280px]">
           <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
           <input
             value={search}
             onChange={e => setSearch(e.target.value)}
             placeholder={`Search ${sourceLabel.toLowerCase()}…`}
-            className="w-full h-8 pl-8 pr-3 rounded-lg border border-foreground/[0.1] bg-background text-[0.78rem] outline-none focus:border-foreground/30 transition-colors"
+            className="w-full h-9 pl-8 pr-3 rounded-lg border border-foreground/[0.1] bg-background text-[0.8rem] outline-none focus:border-foreground/30 transition-colors"
           />
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-2 max-h-[280px] overflow-y-auto pr-1">
+      <div className="grid grid-cols-5 gap-2.5 max-h-[520px] overflow-y-auto pr-1">
         {images.map((id, i) => (
           <button
             key={i}
             onClick={() => handleImageSelect(id)}
-            className="aspect-square rounded-xl overflow-hidden border border-transparent hover:border-accent transition-all hover:shadow-md group"
+            className="aspect-square rounded-xl overflow-hidden border-2 border-transparent hover:border-accent transition-all hover:shadow-md group"
           >
             <img
-              src={`https://images.unsplash.com/${id}?w=200&h=200&fit=crop&q=60`}
+              src={`https://images.unsplash.com/${id}?w=240&h=240&fit=crop&q=60`}
               alt=""
               className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               loading="lazy"
