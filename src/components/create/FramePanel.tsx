@@ -1,5 +1,6 @@
-import { useState, useRef } from "react";
-import { Upload, ArrowLeftRight, X } from "lucide-react";
+import { useState } from "react";
+import { ArrowLeftRight, X, Upload } from "lucide-react";
+import FrameSourcePicker from "./FrameSourcePicker";
 
 interface FramePanelProps {
   onClose: () => void;
@@ -20,11 +21,7 @@ function FrameSlot({
   onChange: (src: string) => void;
   onClear: () => void;
 }) {
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const handleFile = (file: File) => {
-    onChange(URL.createObjectURL(file));
-  };
+  const [showPicker, setShowPicker] = useState(false);
 
   return (
     <div className="flex flex-col items-center gap-2">
@@ -37,27 +34,41 @@ function FrameSlot({
           >
             <X size={12} />
           </button>
+          <button
+            onClick={() => setShowPicker(true)}
+            className="absolute inset-0 bg-black/0 hover:bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all"
+          >
+            <span className="text-white text-[0.75rem] font-semibold">Replace</span>
+          </button>
         </div>
       ) : (
         <button
-          onClick={() => fileRef.current?.click()}
+          onClick={() => setShowPicker(true)}
           className="w-[160px] h-[160px] rounded-xl border-2 border-dashed border-foreground/[0.12] flex flex-col items-center justify-center gap-2 hover:border-foreground/30 transition-colors cursor-pointer bg-foreground/[0.02]"
         >
           <Upload size={22} className="text-muted" />
-          <span className="text-[0.78rem] text-muted">Upload</span>
+          <span className="text-[0.78rem] text-muted">Choose image</span>
         </button>
       )}
       <span className="text-[0.78rem] font-medium text-muted">{label}</span>
-      <input
-        ref={fileRef}
-        type="file"
-        accept="image/*,video/*"
-        className="hidden"
-        onChange={e => {
-          const file = e.target.files?.[0];
-          if (file) handleFile(file);
-        }}
-      />
+
+      {showPicker && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowPicker(false)}>
+          <div
+            className="bg-background border border-foreground/[0.1] rounded-2xl p-5 w-[520px] max-w-[92vw] shadow-2xl"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-[0.92rem] font-bold">Choose {label}</h3>
+              <button onClick={() => setShowPicker(false)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
+            </div>
+            <FrameSourcePicker
+              onSelect={(imgSrc) => { onChange(imgSrc); setShowPicker(false); }}
+              onClose={() => setShowPicker(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -99,7 +110,7 @@ export default function FramePanel({ onClose, startFrame, endFrame, onStartFrame
         />
       </div>
 
-      <p className="text-[0.7rem] text-muted/60 mt-3 text-center">Upload a start frame to animate from. Optionally add an end frame for interpolation.</p>
+      <p className="text-[0.7rem] text-muted/60 mt-3 text-center">Choose a start frame from your computer, past creations, community, or stock photos.</p>
     </div>
   );
 }
