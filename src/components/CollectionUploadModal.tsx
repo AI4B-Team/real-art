@@ -246,7 +246,7 @@ const CollectionUploadModal = ({ collectionId, onClose, onUploaded, existingCoun
                 className={`border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all ${dragActive ? "border-accent bg-accent/5" : "border-foreground/[0.12] hover:border-foreground/25 hover:bg-foreground/[0.02]"}`}
               >
                 <Upload className="w-8 h-8 text-muted mx-auto mb-3" />
-                <p className="text-[0.88rem] font-medium mb-1">Drag & drop files here</p>
+                <p className="text-[0.88rem] font-medium mb-1">Drag & Drop Files Here</p>
                 <p className="text-[0.75rem] text-muted mb-3">Images, Videos, Audio — up to 50MB each</p>
                 <button className="px-5 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-medium hover:bg-accent transition-colors">
                   Browse Files
