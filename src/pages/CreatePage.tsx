@@ -1243,7 +1243,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <SlidersHorizontal size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
-                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-44 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["Auto", "Professional", "Casual", "Energetic", "Calm", "Dramatic", "Warm", "Authoritative"].map(t => (
                       <button key={t} type="button" onClick={() => { setVoiceoverTone(t); setVoiceoverToneOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverTone === t ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
