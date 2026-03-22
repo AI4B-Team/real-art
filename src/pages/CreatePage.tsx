@@ -773,9 +773,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
             {/* Textarea + optional Recording overlay */}
             {isListening && (
-              <div className="flex-1 flex flex-col gap-1 py-[6px] mt-[2px] min-h-[36px]">
-                {currentTranscript && <p className="text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
-                <div className="flex items-center gap-1.5 shrink-0 self-end">
+              <div className="flex items-center gap-1.5 py-[6px] mt-[2px] min-h-[36px]">
+                {currentTranscript && <p className="flex-1 text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
+                {!currentTranscript && <div className="flex-1" />}
+                <div className="flex items-center gap-1.5 shrink-0">
                   <button type="button" onClick={cancelSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors" title="Cancel"><X size={14} /></button>
                   <div className="flex items-center gap-1.5 px-1">
                     <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
@@ -970,7 +971,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
-          {!isListening && (selectedCharacters.length > 0 || references.length > 0) && (
+          {(selectedCharacters.length > 0 || references.length > 0) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
               {selectedCharacters.length > 0 && (
                 <button type="button" onClick={() => togglePanel("character")}
