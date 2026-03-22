@@ -373,7 +373,22 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
   const [characterInfoMap, setCharacterInfoMap] = useState<Record<string, { name: string; avatar: string | null }>>({});
 
-  const FEATURED_CHARS_LOOKUP = [
+  // Helper to clear a frame and remove associated character/reference
+  const clearFrame = (which: "start" | "end") => {
+    const meta = which === "start" ? startFrameMeta : endFrameMeta;
+    if (meta) {
+      if (meta.sourceType === "character" && meta.characterId) {
+        setSelectedCharacters(prev => prev.filter(c => c !== meta.characterId));
+      }
+      if (meta.refId) {
+        setReferences(prev => prev.filter(r => r.id !== meta.refId));
+      }
+    }
+    if (which === "start") { setStartFrame(null); setStartFrameMeta(null); }
+    else { setEndFrame(null); setEndFrameMeta(null); }
+  };
+
+
     { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
     { id: "f2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
     { id: "f3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7" },
