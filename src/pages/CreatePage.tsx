@@ -1693,8 +1693,33 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             <ReferencePanel
               onClose={() => setActivePanel(null)}
               references={references}
-              onAdd={ref => { setReferences(prev => [...prev, ref]); }}
-              onRemove={id => setReferences(prev => prev.filter(r => r.id !== id))}
+              onAdd={ref => {
+                setReferences(prev => [...prev, ref]);
+                // In video mode, auto-fill empty frame slots with the new reference
+                if (selectedType === "video") {
+                  if (!startFrame) {
+                    setStartFrame(ref.src);
+                    setStartFrameMeta({ sourceType: "reference", refId: ref.id });
+                    setStartFrameLocked(false);
+                  } else if (!endFrame) {
+                    setEndFrame(ref.src);
+                    setEndFrameMeta({ sourceType: "reference", refId: ref.id });
+                    setEndFrameLocked(false);
+                  }
+                }
+              }}
+              onRemove={id => {
+                setReferences(prev => prev.filter(r => r.id !== id));
+                // Also clear any frame that was linked to this reference
+                if (startFrameMeta?.refId === id) {
+                  setStartFrame(null);
+                  setStartFrameMeta(null);
+                }
+                if (endFrameMeta?.refId === id) {
+                  setEndFrame(null);
+                  setEndFrameMeta(null);
+                }
+              }}
             />
           )}
           {activePanel === "character" && (
