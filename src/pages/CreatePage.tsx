@@ -149,6 +149,15 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
   ],
 };
 
+const APP_BUILD_MODES: { id: string; label: string; icon: typeof Image }[] = [
+  { id: "landing",     label: "Landing Page",    icon: FileText },
+  { id: "multi-page",  label: "Multi-Page Site", icon: LayoutGrid },
+  { id: "link-in-bio", label: "Link In Bio",     icon: LinkIcon },
+  { id: "blog",        label: "Blog",            icon: Rss },
+  { id: "membership",  label: "Membership",      icon: Lock },
+  { id: "ecommerce",   label: "Ecommerce",       icon: ShoppingCart },
+];
+
 /* ─── Placeholders ───────────────────────────────────────────── */
 
 const PLACEHOLDERS: Record<ContentType, string> = {
@@ -327,6 +336,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [appTemplate, setAppTemplate] = useState("");
   const [appGithubUrl, setAppGithubUrl] = useState("");
   const [appGithubTab, setAppGithubTab] = useState<"private" | "public">("private");
+  const [appBuildMode, setAppBuildMode] = useState<string | null>(null);
+  const [appBuildOpen, setAppBuildOpen] = useState(false);
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
@@ -779,6 +790,34 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     ))}
                   </PopoverContent>
                 </Popover>
+
+                {/* Build dropdown — only when App > Website */}
+                {selectedType === "app" && selectedSubMode === "website" && (
+                  <>
+                  <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
+                  <Popover open={appBuildOpen} onOpenChange={setAppBuildOpen}>
+                    <PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all whitespace-nowrap shrink-0 ${
+                        appBuildMode ? `${typeCfg!.bg} ${typeCfg!.border} ${typeCfg!.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
+                      }`}>
+                        {appBuildMode ? (
+                          <>{(() => { const found = APP_BUILD_MODES.find(b => b.id === appBuildMode); return found ? <><found.icon size={13} />{found.label}</> : "Build"; })()}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setAppBuildMode(null); setAppBuildOpen(false); }} /></>
+                        ) : (
+                          <><Layers size={13} />Build<ChevronDown size={11} className="text-muted" /></>
+                        )}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                      {APP_BUILD_MODES.map(b => (
+                        <button key={b.id} type="button" onClick={() => { setAppBuildMode(b.id); setAppBuildOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[0.82rem] font-medium transition-colors ${appBuildMode === b.id ? `${typeCfg!.bg} ${typeCfg!.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          <b.icon size={15} className={appBuildMode === b.id ? typeCfg!.color : "text-muted"} />{b.label}{appBuildMode === b.id && <Check size={12} className="ml-auto" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                  </>
+                )}
 
                 {/* Non-app generic controls */}
                 {selectedType !== "app" && (
