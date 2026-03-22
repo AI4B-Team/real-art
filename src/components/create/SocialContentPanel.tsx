@@ -660,7 +660,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
                 { label: "ENGAGEMENT", bg: "bg-pink-500", dot: "bg-pink-500" },
                 { label: "BEHIND THE SCENES", bg: "bg-amber-500", dot: "bg-amber-500" },
               ].map(l => (
-                <div key={l.label} className="flex items-center gap-3">
+                <div key={l.label} className="group flex items-center gap-3 rounded-xl px-2 py-1.5 hover:bg-foreground/[0.04] transition-colors">
                   <div className="text-muted/30 cursor-grab">
                     <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="3" r="1.5"/><circle cx="11" cy="3" r="1.5"/><circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/><circle cx="5" cy="13" r="1.5"/><circle cx="11" cy="13" r="1.5"/></svg>
                   </div>
@@ -668,12 +668,35 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
                   <div className={`flex-1 ${l.bg} text-white text-[0.78rem] font-bold tracking-[0.04em] px-4 py-2.5 rounded-lg`}>
                     {l.label}
                   </div>
+                  <div className="flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
+                    </button>
+                    <button className="w-8 h-8 rounded-lg flex items-center justify-center text-red-400 hover:text-red-500 hover:bg-red-50 transition-colors">
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
-            <button className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-foreground/[0.12] text-muted text-[0.88rem] font-medium hover:border-foreground/25 hover:text-foreground transition-colors mb-6">
-              <Plus size={16} /> Add New Label
-            </button>
+            {/* Add new label input */}
+            <div className="border-2 border-dashed border-foreground/[0.12] rounded-xl p-4 mb-6">
+              <input
+                type="text"
+                placeholder="LABEL NAME"
+                className="w-full border-2 border-foreground/[0.15] rounded-lg px-4 py-3 text-[0.88rem] font-bold tracking-[0.04em] bg-transparent outline-none focus:border-foreground transition-colors mb-3 placeholder:text-muted/40"
+              />
+              <div className="flex items-center gap-2 flex-wrap">
+                {[
+                  "bg-foreground/10", "bg-pink-200", "bg-red-300", "bg-rose-300",
+                  "bg-orange-300", "bg-amber-300", "bg-yellow-200", "bg-lime-200",
+                  "bg-green-300", "bg-emerald-300", "bg-teal-300", "bg-cyan-300",
+                  "bg-sky-300", "bg-blue-300", "bg-indigo-200", "bg-violet-200",
+                ].map((c, i) => (
+                  <button key={i} className={`w-7 h-7 rounded-full ${c} border-2 border-transparent hover:border-foreground/30 hover:scale-110 transition-all`} />
+                ))}
+              </div>
+            </div>
             <div className="border-t border-foreground/[0.06] pt-4 flex justify-end">
               <button onClick={() => setShowManageLabels(false)} className="px-8 py-2.5 rounded-lg bg-emerald-500 text-white text-[0.88rem] font-bold hover:bg-emerald-600 transition-colors">
                 Done
