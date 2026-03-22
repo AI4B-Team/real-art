@@ -173,14 +173,6 @@ const AppCard = ({ app, view }: { app: AppItem; view: "grid" | "list" }) => {
         </div>
         <p className="text-[0.75rem] text-muted-foreground mb-2 line-clamp-2 flex-grow">{app.description}</p>
         <RatingStars rating={app.rating} />
-        <div className="flex gap-2 mt-3">
-          <button className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-emerald-500 text-white text-[0.78rem] font-bold hover:bg-emerald-600 transition-colors">
-            <Download size={12} /> Install
-          </button>
-          <button className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border border-foreground/[0.1] text-[0.78rem] font-semibold hover:bg-foreground/[0.03] transition-colors">
-            <Play size={12} /> Open
-          </button>
-        </div>
       </div>
     </div>
   );
