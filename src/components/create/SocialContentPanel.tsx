@@ -3,6 +3,7 @@ import {
   X, ChevronLeft, ChevronRight, Calendar as CalendarIcon,
   List, LayoutGrid, Columns, Grid3X3, Rss,
   Trash2, Settings, Sparkles, Plus, ChevronDown, Search, Filter as FilterIcon, Download, MoreHorizontal,
+  Image, Play, LayoutList, CircleDot, Check,
 } from "lucide-react";
 
 /* ─── SVG Logo components ────────────────────── */
@@ -153,6 +154,11 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [showDrafts, setShowDrafts] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<Set<string>>(new Set(["all"]));
+  const [filterContentType, setFilterContentType] = useState<Set<string>>(new Set());
+  const [filterPlatforms, setFilterPlatforms] = useState<Set<string>>(new Set());
+  const [filterLabels, setFilterLabels] = useState<Set<string>>(new Set());
   const [posts] = useState(() => generateDummyPosts(currentMonth, currentYear));
   const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
@@ -349,9 +355,152 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             </label>
             <span className="text-[0.72rem] text-muted">{new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Search size={12} /></button>
-            <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><FilterIcon size={12} /></button>
+            <button onClick={() => setShowFilters(v => !v)} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showFilters ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><FilterIcon size={12} /></button>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Download size={12} /></button>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><MoreHorizontal size={12} /></button>
+          </div>
+        </div>
+      )}
+
+      {/* Filters panel */}
+      {showFilters && (
+        <div className="border-b border-foreground/[0.06] bg-foreground/[0.015] px-5 py-5">
+          <h3 className="text-[0.95rem] font-bold mb-4">Filters</h3>
+          <div className="grid grid-cols-4 gap-6">
+            {/* Status */}
+            <div>
+              <h4 className="text-[0.82rem] font-bold mb-3">Status</h4>
+              <div className="space-y-2">
+                {[
+                  { id: "all", label: "Select All", dot: null, icon: true },
+                  { id: "scheduled", label: "Scheduled", dot: "bg-emerald-500" },
+                  { id: "draft", label: "Draft", dot: "bg-foreground/30" },
+                  { id: "published", label: "Published", dot: "bg-emerald-500" },
+                  { id: "awaiting", label: "Awaiting Approval", dot: null },
+                  { id: "failed", label: "Failed", dot: "bg-red-500" },
+                ].map(s => {
+                  const checked = s.id === "all" ? filterStatus.has("all") : filterStatus.has(s.id);
+                  return (
+                    <button key={s.id} onClick={() => {
+                      if (s.id === "all") {
+                        setFilterStatus(prev => prev.has("all") ? new Set() : new Set(["all"]));
+                      } else {
+                        setFilterStatus(prev => {
+                          const next = new Set(prev);
+                          next.delete("all");
+                          next.has(s.id) ? next.delete(s.id) : next.add(s.id);
+                          return next;
+                        });
+                      }
+                    }} className="flex items-center gap-2.5 w-full text-left group">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${checked ? "border-foreground bg-foreground" : "border-foreground/20 group-hover:border-foreground/40"}`}>
+                        {checked && <Check size={11} className="text-primary-foreground" />}
+                      </div>
+                      {s.dot && <div className={`w-2 h-2 rounded-full ${s.dot}`} />}
+                      <span className="text-[0.82rem] font-medium">{s.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Content Type */}
+            <div>
+              <h4 className="text-[0.82rem] font-bold mb-3">Content Type</h4>
+              <div className="space-y-2">
+                {[
+                  { id: "post", label: "Post", icon: Image },
+                  { id: "carousel", label: "Carousel", icon: LayoutGrid },
+                  { id: "reel", label: "Reel", icon: Grid3X3 },
+                  { id: "story", label: "Story", icon: Play },
+                ].map(ct => {
+                  const checked = filterContentType.has(ct.id);
+                  return (
+                    <button key={ct.id} onClick={() => {
+                      setFilterContentType(prev => {
+                        const next = new Set(prev);
+                        next.has(ct.id) ? next.delete(ct.id) : next.add(ct.id);
+                        return next;
+                      });
+                    }} className="flex items-center gap-2.5 w-full text-left group">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${checked ? "border-foreground bg-foreground" : "border-foreground/20 group-hover:border-foreground/40"}`}>
+                        {checked && <Check size={11} className="text-primary-foreground" />}
+                      </div>
+                      <ct.icon size={14} className="text-muted" />
+                      <span className="text-[0.82rem] font-medium">{ct.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Platforms */}
+            <div>
+              <h4 className="text-[0.82rem] font-bold mb-3">Platforms</h4>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                {[
+                  { id: "instagram", label: "Instagram" },
+                  { id: "facebook", label: "Facebook" },
+                  { id: "x", label: "Twitter/X" },
+                  { id: "linkedin", label: "LinkedIn" },
+                  { id: "tiktok", label: "TikTok" },
+                  { id: "threads", label: "Threads" },
+                  { id: "youtube", label: "YouTube" },
+                  { id: "pinterest", label: "Pinterest" },
+                ].map(p => {
+                  const checked = filterPlatforms.has(p.id);
+                  const platform = PLATFORMS.find(pl => pl.id === p.id);
+                  return (
+                    <button key={p.id} onClick={() => {
+                      setFilterPlatforms(prev => {
+                        const next = new Set(prev);
+                        next.has(p.id) ? next.delete(p.id) : next.add(p.id);
+                        return next;
+                      });
+                    }} className="flex items-center gap-2 w-full text-left group">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${checked ? "border-foreground bg-foreground" : "border-foreground/20 group-hover:border-foreground/40"}`}>
+                        {checked && <Check size={11} className="text-primary-foreground" />}
+                      </div>
+                      <span style={{ color: platform?.color }}><PlatformIcon platformId={p.id} size={14} /></span>
+                      <span className="text-[0.82rem] font-medium">{p.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Labels */}
+            <div>
+              <div className="flex items-center justify-between mb-3">
+                <h4 className="text-[0.82rem] font-bold">Labels</h4>
+                <button className="text-[0.72rem] font-semibold text-blue-500 hover:text-blue-600 transition-colors">Manage</button>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { id: "influencer", label: "INFLUENCER", color: "border-foreground/20 text-foreground bg-foreground/[0.04]" },
+                  { id: "educational", label: "EDUCATIONAL", color: "border-blue-200 text-blue-600 bg-blue-50" },
+                  { id: "promotional", label: "PROMOTIONAL", color: "border-purple-200 text-purple-600 bg-purple-50" },
+                  { id: "engagement", label: "ENGAGEMENT", color: "border-pink-200 text-pink-600 bg-pink-50" },
+                  { id: "bts", label: "BEHIND THE SCENES", color: "border-amber-200 text-amber-600 bg-amber-50" },
+                ].map(l => {
+                  const checked = filterLabels.has(l.id);
+                  return (
+                    <button key={l.id} onClick={() => {
+                      setFilterLabels(prev => {
+                        const next = new Set(prev);
+                        next.has(l.id) ? next.delete(l.id) : next.add(l.id);
+                        return next;
+                      });
+                    }} className="flex items-center gap-2.5 w-full text-left group">
+                      <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${checked ? "border-foreground bg-foreground" : "border-foreground/20 group-hover:border-foreground/40"}`}>
+                        {checked && <Check size={11} className="text-primary-foreground" />}
+                      </div>
+                      <span className={`px-2.5 py-1 rounded-full text-[0.68rem] font-bold tracking-[0.04em] border ${l.color}`}>{l.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       )}
