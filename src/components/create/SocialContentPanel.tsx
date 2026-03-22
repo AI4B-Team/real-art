@@ -154,6 +154,11 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [showDrafts, setShowDrafts] = useState(true);
+  const [showFilters, setShowFilters] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<Set<string>>(new Set(["all"]));
+  const [filterContentType, setFilterContentType] = useState<Set<string>>(new Set());
+  const [filterPlatforms, setFilterPlatforms] = useState<Set<string>>(new Set());
+  const [filterLabels, setFilterLabels] = useState<Set<string>>(new Set());
   const [posts] = useState(() => generateDummyPosts(currentMonth, currentYear));
   const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
