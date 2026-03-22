@@ -825,7 +825,7 @@ const EarningsSection = () => {
           <div className="font-display text-[2rem] font-black text-accent leading-none mb-2">$213.40</div>
           <div className="text-[0.75rem] text-muted mb-1">Pending This Cycle</div>
           <div className="flex items-center gap-4 text-[0.75rem] text-muted mt-3">
-            <span>48 active links</span>
+            <span>48 Active Links</span>
             <span>312 clicks this month</span>
           </div>
         </div>
