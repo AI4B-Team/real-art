@@ -241,9 +241,9 @@ const AppsMarketplacePage = () => {
                 className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-card border border-foreground/[0.08] text-[0.88rem] font-body outline-none focus:border-accent/40 transition-colors"
               />
             </div>
-            <div className="flex items-center bg-foreground/[0.04] rounded-lg p-0.5 shrink-0">
-              <button onClick={() => setViewMode("grid")} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === "grid" ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}><LayoutGrid size={14} /></button>
-              <button onClick={() => setViewMode("list")} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${viewMode === "list" ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}><List size={14} /></button>
+            <div className="flex items-center gap-2 shrink-0">
+              <button onClick={() => setViewMode("grid")} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${viewMode === "grid" ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}><LayoutGrid size={15} /></button>
+              <button onClick={() => setViewMode("list")} className={`w-9 h-9 rounded-lg flex items-center justify-center transition-colors ${viewMode === "list" ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}><List size={15} /></button>
             </div>
           </div>
         </div>
