@@ -393,6 +393,14 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  // Clean URL params after pre-filling from recreate link
+  useEffect(() => {
+    if (searchParams.has("prompt") || searchParams.has("type")) {
+      setSearchParams({}, { replace: true });
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+
   const typeCfg = selectedType ? CONTENT_TYPES.find(t => t.id === selectedType)! : null;
   const subModes = selectedType ? SUB_MODES[selectedType] : [];
   const selectedSubObj = subModes.find(s => s.id === selectedSubMode);
