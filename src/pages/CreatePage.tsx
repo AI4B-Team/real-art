@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import {
   Image, Video, Music, Palette, Calendar, FileText, Code,
   ChevronDown, ChevronUp, Send, Mic, MicOff, Sparkles, Shuffle,

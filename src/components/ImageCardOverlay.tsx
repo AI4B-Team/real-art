@@ -200,7 +200,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
             <div className="flex gap-1.5 shrink-0">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={e => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}?recreate=1`); }} className={iconBtn}>
+                  <button onClick={e => { e.stopPropagation(); e.preventDefault(); navigate(`/create?prompt=${encodeURIComponent(prompt)}&type=image`); }} className={iconBtn}>
                     <RefreshCw className="w-3.5 h-3.5" />
                   </button>
                 </TooltipTrigger>
