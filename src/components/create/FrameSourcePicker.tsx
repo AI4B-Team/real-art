@@ -16,7 +16,6 @@ const STOCK_IMAGES = [
   "photo-1464822759023-fed622ff2c3b", "photo-1507400492013-162706c8c05e", "photo-1470770903676-69b98201ea1c",
 ];
 
-/* ── Community mock images ── */
 const COMMUNITY_IMAGES = [
   "photo-1633356122544-f134324a6cee", "photo-1677442136019-21780ecad995",
   "photo-1620712943543-bcc4688e7485", "photo-1655720828018-edd71de36645",
@@ -30,7 +29,6 @@ const COMMUNITY_IMAGES = [
   "photo-1682687220742-aba13b6e50ba", "photo-1682687220063-4742bd7fd538",
 ];
 
-/* ── History mock images ── */
 const HISTORY_IMAGES = [
   "photo-1611532736597-de2d4265fba3", "photo-1618005182384-a83a8bd57fbe",
   "photo-1614850523459-c2f4c699c52e", "photo-1614854262340-ab1ca7d079c7",
@@ -42,7 +40,6 @@ const HISTORY_IMAGES = [
   "photo-1618172193763-c511deb635ca", "photo-1614854262318-831574f15bcd",
 ];
 
-/* ── Featured characters (same as CreatePage) ── */
 const FEATURED_CHARACTERS = [
   { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
   { id: "f2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
@@ -70,10 +67,17 @@ const FEATURED_CHARACTERS = [
   { id: "f24", name: "Rosa", avatar: "photo-1524638431109-93d95c968f03" },
 ];
 
+export type FrameSelectionMeta = {
+  src: string;
+  sourceType: "upload" | "character" | "history" | "community" | "stock";
+  characterId?: string;
+  characterName?: string;
+};
+
 type Source = "menu" | "computer" | "history" | "community" | "stock" | "character";
 
 interface FrameSourcePickerProps {
-  onSelect: (src: string) => void;
+  onSelect: (src: string, meta?: FrameSelectionMeta) => void;
   onClose: () => void;
   onBrowseModeChange?: (browsing: boolean) => void;
 }
@@ -93,7 +97,10 @@ export default function FrameSourcePicker({ onSelect, onClose, onBrowseModeChang
 
   const handleFileUpload = (files: FileList | null) => {
     const file = files?.[0];
-    if (file) onSelect(URL.createObjectURL(file));
+    if (file) {
+      const src = URL.createObjectURL(file);
+      onSelect(src, { src, sourceType: "upload" });
+    }
   };
 
   const handleSourceClick = (id: Source) => {
@@ -118,7 +125,14 @@ export default function FrameSourcePicker({ onSelect, onClose, onBrowseModeChang
   };
 
   const handleImageSelect = (id: string) => {
-    onSelect(`https://images.unsplash.com/${id}?w=800&h=800&fit=crop&q=80`);
+    const src = `https://images.unsplash.com/${id}?w=800&h=800&fit=crop&q=80`;
+    const sourceType = activeSource === "stock" ? "stock" as const : activeSource === "community" ? "community" as const : "history" as const;
+    onSelect(src, { src, sourceType });
+  };
+
+  const handleCharacterSelect = (char: typeof FEATURED_CHARACTERS[0]) => {
+    const src = `https://images.unsplash.com/${char.avatar}?w=800&h=800&fit=crop&q=80`;
+    onSelect(src, { src, sourceType: "character", characterId: char.id, characterName: char.name });
   };
 
   // Main menu
@@ -174,7 +188,7 @@ export default function FrameSourcePicker({ onSelect, onClose, onBrowseModeChang
           {filteredChars.map(c => (
             <button
               key={c.id}
-              onClick={() => handleImageSelect(c.avatar)}
+              onClick={() => handleCharacterSelect(c)}
               className="flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 border-transparent hover:border-accent transition-all hover:shadow-md group"
             >
               <img

@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { X } from "lucide-react";
 import FrameSourcePicker from "./FrameSourcePicker";
+import type { FrameSelectionMeta } from "./FrameSourcePicker";
 
 interface FramePickerModalProps {
   label: string;
-  onSelect: (src: string) => void;
+  onSelect: (src: string, meta?: FrameSelectionMeta) => void;
   onClose: () => void;
 }
 

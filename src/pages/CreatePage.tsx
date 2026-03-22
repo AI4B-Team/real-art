@@ -57,6 +57,7 @@ import PageShell from "@/components/PageShell";
 import ReferencePanel from "@/components/create/ReferencePanel";
 import FramePanel from "@/components/create/FramePanel";
 import FrameSourcePicker from "@/components/create/FrameSourcePicker";
+import type { FrameSelectionMeta } from "@/components/create/FrameSourcePicker";
 import FramePickerModal from "@/components/create/FramePickerModal";
 import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
@@ -426,38 +427,44 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   }, [selectedCharacters]);
 
   const toggleCharacter = (id: string) => {
-    if (selectedType === "video") {
-      // Video mode: only one character at a time (toggle on/off)
-      // When selecting, auto-populate start frame with character avatar
-      if (selectedCharacters.includes(id)) {
-        setSelectedCharacters([]);
-        setStartFrame(null);
-      } else {
-        setSelectedCharacters([id]);
-        // Avatar will be set via useEffect below
+    if (selectedCharacters.includes(id)) {
+      setSelectedCharacters(prev => prev.filter(c => c !== id));
+      // If removing a character in video mode, clear its frame
+      if (selectedType === "video") {
+        const info = characterInfoMap[id];
+        if (info?.avatar) {
+          if (startFrame === info.avatar) setStartFrame(null);
+          if (endFrame === info.avatar) setEndFrame(null);
+        }
       }
     } else {
-      setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+      if (selectedType === "video") {
+        // In video mode, max 2 characters (start + end frame)
+        setSelectedCharacters(prev => prev.length >= 2 ? prev : [...prev, id]);
+      } else {
+        setSelectedCharacters(prev => [...prev, id]);
+      }
     }
   };
 
-  // Auto-populate video start frame from character/reference selections
+  // Auto-populate video frames from character/reference selections
   useEffect(() => {
     if (selectedType !== "video") return;
     
-    // Determine the primary selected image (character takes priority)
-    let primarySrc: string | null = null;
-    
-    if (selectedCharacters.length > 0) {
-      const id = selectedCharacters[0];
+    // Build ordered list of all character avatars
+    const charImages: string[] = [];
+    for (const id of selectedCharacters) {
       const info = characterInfoMap[id];
-      if (info?.avatar) primarySrc = info.avatar;
-    } else if (references.length > 0) {
-      primarySrc = references[0].src;
+      if (info?.avatar) charImages.push(info.avatar);
     }
     
-    setStartFrame(primarySrc);
-    // Don't touch endFrame — let user set it manually via the frame picker
+    // First character → start frame, second character → end frame
+    if (charImages.length >= 1) setStartFrame(charImages[0]);
+    else if (references.length > 0) setStartFrame(references[0].src);
+    else setStartFrame(null);
+    
+    if (charImages.length >= 2) setEndFrame(charImages[1]);
+    // Don't clear endFrame if it was set manually via frame picker
   }, [selectedType, selectedCharacters, characterInfoMap, references]);
 
   useEffect(() => {
@@ -859,9 +866,23 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {framePickerTarget && (
                 <FramePickerModal
                   label={framePickerTarget === "start" ? "Start" : "End"}
-                  onSelect={(src) => {
+                  onSelect={(src, meta) => {
                     if (framePickerTarget === "start") setStartFrame(src);
                     else setEndFrame(src);
+                    // Update character/reference state based on source type
+                    if (selectedType === "video" && meta) {
+                      if (meta.sourceType === "character" && meta.characterId) {
+                        // Add character if not already selected
+                        setSelectedCharacters(prev => {
+                          if (prev.includes(meta.characterId!)) return prev;
+                          return [...prev, meta.characterId!];
+                        });
+                      } else if (meta.sourceType !== "upload") {
+                        // Non-character, non-upload = reference image
+                        const refId = `frame-ref-${Date.now()}`;
+                        setReferences(prev => [...prev, { id: refId, src, name: meta.sourceType }]);
+                      }
+                    }
                     setFramePickerTarget(null);
                   }}
                   onClose={() => setFramePickerTarget(null)}
@@ -1589,7 +1610,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             <ReferencePanel
               onClose={() => setActivePanel(null)}
               references={references}
-              onAdd={ref => { setReferences(prev => selectedType === "video" ? [ref] : [...prev, ref]); }}
+              onAdd={ref => { setReferences(prev => [...prev, ref]); }}
               onRemove={id => setReferences(prev => prev.filter(r => r.id !== id))}
             />
           )}
