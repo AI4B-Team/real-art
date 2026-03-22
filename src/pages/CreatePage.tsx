@@ -741,32 +741,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
           {/* ── Bottom toolbar ── */}
           {hasType && (
-            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-start gap-0 flex-wrap">
-              {/* Child 1 — Wrapping pills */}
-              <div className="relative flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                {/* Type chip */}
-                {typeCfg && (
-                  <div className="relative shrink-0" ref={typeRef}>
-                    <button type="button" onClick={() => setTypeDropdownOpen(v => !v)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all whitespace-nowrap ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
-                      <typeCfg.icon size={13} />{typeCfg.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
-                    </button>
-                    {typeDropdownOpen && (
-                      <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-                        {CONTENT_TYPES.map(t => (
-                          <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
-                            className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
-                            <t.icon size={16} className={t.color} />{t.label}
-                            {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
+            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-nowrap">
+              {/* Child 1 — Scrollable pills (never wraps) */}
+              <div className="relative flex-1 min-w-0 overflow-hidden">
+                <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
 
                 {/* Sub-mode selector */}
                 <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
@@ -1151,12 +1129,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 </div>
               </div>
 
-              {/* Child 2 — Pinned action group */}
-              <div className="flex items-center gap-2 shrink-0 pl-3">
+              {/* Child 2 — Pinned action group: AI enhancer | divider | mic | send */}
+              <div className="flex items-center shrink-0 ml-auto pl-4 border-l border-foreground/[0.1]">
                 {prompt.trim() && (
                   <Tooltip><TooltipTrigger asChild>
                     <button type="button" onClick={handleEnhance} disabled={isEnhancing}
-                      className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] hover:bg-foreground/[0.08] text-muted-foreground rounded-lg text-[0.78rem] font-medium transition-colors disabled:opacity-50 whitespace-nowrap">
+                      className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] hover:bg-foreground/[0.08] text-muted-foreground rounded-lg text-[0.78rem] font-medium transition-colors disabled:opacity-50 whitespace-nowrap mr-2">
                       {isEnhancing ? <Loader2 size={14} className="animate-spin text-purple-500" /> : <Sparkles size={14} className="text-purple-500" />}
                       <span>AI</span><ChevronDown size={12} className="text-muted" />
                     </button>
@@ -1164,7 +1142,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
                 {isSupported && !isListening && (
                   <Tooltip><TooltipTrigger asChild>
-                    <button type="button" onClick={startListening} className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground"><Mic size={15} /></button>
+                    <button type="button" onClick={startListening} className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground mr-2"><Mic size={15} /></button>
                   </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
