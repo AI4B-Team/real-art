@@ -1297,6 +1297,115 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               }}
             />
           )}
+
+          {/* GitHub panel */}
+          {activePanel === "github" && selectedType === "app" && (
+            <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Github size={18} className="text-foreground" />
+                  <span className="text-[0.9rem] font-semibold text-foreground">Add from GitHub</span>
+                </div>
+                <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
+              </div>
+              <div className="flex rounded-lg border border-foreground/[0.1] overflow-hidden mb-4">
+                <button onClick={() => setAppGithubTab("private")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[0.82rem] font-semibold transition-colors ${appGithubTab === "private" ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.03] text-foreground hover:bg-foreground/[0.06]"}`}>
+                  <Lock size={14} />Private Repository
+                </button>
+                <button onClick={() => setAppGithubTab("public")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[0.82rem] font-semibold transition-colors ${appGithubTab === "public" ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.03] text-foreground hover:bg-foreground/[0.06]"}`}>
+                  <Globe size={14} />Public Repository
+                </button>
+              </div>
+              {appGithubTab === "private" ? (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[0.85rem] font-semibold text-foreground">GitHub Authentication Required</p>
+                    <p className="text-[0.78rem] text-muted">Connect your GitHub account to access all your private and public repositories.</p>
+                  </div>
+                  <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.82rem] font-semibold hover:bg-accent/90 transition-colors shrink-0">
+                    <Github size={15} />Connect to GitHub
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.1]">
+                    <Link2 size={14} className="text-muted shrink-0" />
+                    <input value={appGithubUrl} onChange={e => setAppGithubUrl(e.target.value)} placeholder="Paste public GitHub repository URL..." className="bg-transparent border-none outline-none text-[0.82rem] text-foreground placeholder:text-muted/50 w-full" />
+                  </div>
+                  {appGithubUrl.trim() && (
+                    <button className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-primary-foreground text-[0.82rem] font-semibold hover:bg-accent/90 transition-colors">
+                      <Download size={14} />Import Repository
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Advanced Controls panel */}
+          {activePanel === "advanced" && selectedType === "app" && (
+            <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal size={18} className="text-accent" />
+                  <span className="text-[0.9rem] font-semibold text-accent">Advanced Controls</span>
+                </div>
+                <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
+              </div>
+              <div className="space-y-4">
+                {/* MCP Tools */}
+                <div>
+                  <p className="text-[0.78rem] font-semibold text-foreground mb-1.5 flex items-center gap-1.5">Select MCPs to use <span className="text-[0.6rem] bg-accent/15 text-accent px-1.5 py-0.5 rounded-full font-bold">New</span></p>
+                  <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1] text-[0.82rem] text-muted hover:border-foreground/20 transition-colors">
+                    <div className="flex items-center gap-2"><Settings size={14} />Select MCP Tools</div>
+                    <ChevronDown size={14} />
+                  </button>
+                </div>
+
+                {/* Template + Budget */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[0.78rem] font-semibold text-foreground mb-1.5">Select Template</p>
+                    <input value={appTemplate} onChange={e => setAppTemplate(e.target.value)} placeholder="Template URL or name..." className="w-full px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1] text-[0.82rem] text-foreground placeholder:text-muted/50 outline-none focus:border-accent/40 transition-colors" />
+                  </div>
+                  <div>
+                    <p className="text-[0.78rem] font-semibold text-foreground mb-1.5">Budget (Credits)</p>
+                    <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1]">
+                      <button onClick={() => setAppBudget(v => Math.max(1, v - 5))} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] text-foreground transition-colors"><Minus size={14} /></button>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-yellow-500">●</span>
+                        <span className="text-[0.9rem] font-bold text-foreground">{appBudget}</span>
+                      </div>
+                      <button onClick={() => setAppBudget(v => v + 5)} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] text-foreground transition-colors"><Plus size={14} /></button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Model */}
+                <div>
+                  <p className="text-[0.78rem] font-semibold text-foreground mb-1.5">Model</p>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1] text-[0.82rem] text-foreground hover:border-foreground/20 transition-colors">
+                        <div className="flex items-center gap-2"><Layers size={14} className="text-muted" />{appModel}</div>
+                        <ChevronDown size={14} className="text-muted" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 p-1.5" align="start">
+                      {["Auto", "Claude 4.5 Sonnet", "Claude 4.5 Opus", "GPT-5.2 (Beta)", "Gemini 3 Pro", "GPT-5.1"].map(m => (
+                        <button key={m} type="button" onClick={() => setAppModel(m)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${appModel === m ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {m}{appModel === m && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Social content panel — stretch to parent edges */}
