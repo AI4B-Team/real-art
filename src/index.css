@@ -168,3 +168,46 @@
 .animate-ticker {
   animation: ticker 40s linear infinite;
 }
+
+/* ── Create page micro-interactions ── */
+@keyframes prompt-glow {
+  0% { box-shadow: 0 0 0 0 hsl(var(--accent) / 0); }
+  50% { box-shadow: 0 0 20px 2px hsl(var(--accent) / 0.08); }
+  100% { box-shadow: 0 0 0 0 hsl(var(--accent) / 0); }
+}
+
+@keyframes cursor-blink-fade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.prompt-box-focus {
+  box-shadow: 0 0 0 3px hsl(var(--accent) / 0.08), 0 4px 24px -4px hsl(var(--accent) / 0.1);
+}
+
+.create-pill {
+  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.18s ease,
+              border-color 0.18s ease,
+              background-color 0.18s ease;
+}
+.create-pill:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px -2px hsl(var(--foreground) / 0.08);
+}
+.create-pill:active {
+  transform: translateY(0px) scale(0.98);
+  box-shadow: none;
+}
+
+.toolbar-btn {
+  transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background-color 0.15s ease,
+              color 0.15s ease;
+}
+.toolbar-btn:hover {
+  transform: translateY(-1px);
+}
+.toolbar-btn:active {
+  transform: scale(0.95);
+}
