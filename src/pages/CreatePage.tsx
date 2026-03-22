@@ -648,7 +648,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
   const handleAcceptSpeech = () => {
     const result = acceptSpeech();
-    if (result) setPrompt(prev => prev ? prev + " " + result : result);
+    if (result) setPrompt(prev => prev ? prev + "\n\n" + result : result);
   };
 
   const togglePanel = (panel: PanelType) => {
@@ -772,11 +772,22 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             )}
 
             {/* Textarea + optional Recording overlay */}
-            {isListening && (
-              <div className="flex items-center gap-1.5 py-[6px] mt-[2px] min-h-[36px]">
-                {currentTranscript && <p className="flex-1 text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
-                {!currentTranscript && <div className="flex-1" />}
-                <div className="flex items-center gap-1.5 shrink-0">
+            <div className="relative flex-1 min-h-[36px]">
+              <textarea
+                ref={textareaRef}
+                value={prompt}
+                onChange={e => setPrompt(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                onFocus={() => setPromptFocused(true)}
+                onBlur={() => setPromptFocused(false)}
+                placeholder={placeholder}
+                rows={1}
+                className="w-full bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px]"
+                style={{ height: "36px" }}
+                onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
+              />
+              {isListening && (
+                <div className="absolute top-1 right-1 flex items-center gap-1.5">
                   <button type="button" onClick={cancelSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors" title="Cancel"><X size={14} /></button>
                   <div className="flex items-center gap-1.5 px-1">
                     <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
@@ -785,40 +796,23 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </div>
                   <button type="button" onClick={handleAcceptSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
                 </div>
-              </div>
-            )}
-            {!isListening && (
-              <>
-                <textarea
-                  ref={textareaRef}
-                  value={prompt}
-                  onChange={e => setPrompt(e.target.value)}
-                  onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
-                  onFocus={() => setPromptFocused(true)}
-                  onBlur={() => setPromptFocused(false)}
-                  placeholder={placeholder}
-                  rows={1}
-                  className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent"
-                  style={{ height: "36px" }}
-                  onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
-                />
-                {!hasType && (
-                  <div className="flex items-center gap-0 shrink-0 pt-[2px]">
-                    {isSupported && (
-                      <Tooltip><TooltipTrigger asChild>
-                        <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"><Mic size={17} /></button>
-                      </TooltipTrigger><TooltipContent side="bottom">Voice input</TooltipContent></Tooltip>
-                    )}
+              )}
+              {!hasType && !isListening && (
+                <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
+                  {isSupported && (
                     <Tooltip><TooltipTrigger asChild>
-                      <button type="button" onClick={handleGenerate} disabled={!prompt.trim() || isEnhancing}
-                        className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}>
-                        {isEnhancing ? <Loader2 size={17} className="animate-spin text-purple-500" /> : <Send size={17} />}
-                      </button>
-                    </TooltipTrigger><TooltipContent side="bottom">Generate</TooltipContent></Tooltip>
-                  </div>
-                )}
-              </>
-            )}
+                      <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"><Mic size={17} /></button>
+                    </TooltipTrigger><TooltipContent side="bottom">Voice input</TooltipContent></Tooltip>
+                  )}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={handleGenerate} disabled={!prompt.trim() || isEnhancing}
+                      className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}>
+                      {isEnhancing ? <Loader2 size={17} className="animate-spin text-purple-500" /> : <Send size={17} />}
+                    </button>
+                  </TooltipTrigger><TooltipContent side="bottom">Generate</TooltipContent></Tooltip>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Char count */}
