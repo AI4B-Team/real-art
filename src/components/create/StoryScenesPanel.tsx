@@ -171,7 +171,7 @@ export default function StoryScenesPanel({ scenes, onScenesChange }: StoryScenes
                 {scenes.length > 1 && (
                   <button
                     onClick={() => removeScene(scene.id)}
-                    className="ml-auto p-1.5 rounded-lg text-muted/40 hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-all"
+                    className="ml-auto p-1.5 rounded-lg text-muted/40 hover:text-destructive hover:bg-destructive/10 transition-all"
                     title="Remove scene"
                   >
                     <Trash2 size={13} />
