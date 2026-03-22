@@ -729,7 +729,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
                       <img src={startFrame} alt="Start Frame" className="w-full h-full object-cover" />
                       <button
-                        onClick={() => setStartFrame(null)}
+                        onClick={(e) => { e.stopPropagation(); setStartFrame(null); }}
                         className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
