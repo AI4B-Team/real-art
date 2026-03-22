@@ -1516,7 +1516,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Frames</span>
                     <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{startFrame && endFrame ? "Start + End" : startFrame ? "Start" : "End"}</span>
                   </div>
-                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setStartFrame(null); setEndFrame(null); }} />
+                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); clearFrame("start"); clearFrame("end"); }} />
                 </button>
               )}
 
