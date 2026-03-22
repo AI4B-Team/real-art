@@ -643,6 +643,45 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           </div>
         </div>
       )}
+
+      {/* Manage Labels modal */}
+      {showManageLabels && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowManageLabels(false)}>
+          <div className="bg-background rounded-2xl shadow-2xl w-[90vw] max-w-[520px] p-6" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="text-[1.1rem] font-bold">Manage Labels</h3>
+              <button onClick={() => setShowManageLabels(false)} className="text-muted hover:text-foreground"><X size={18} /></button>
+            </div>
+            <div className="space-y-3 mb-6">
+              {[
+                { label: "INFLUENCER", bg: "bg-foreground", dot: "bg-foreground" },
+                { label: "EDUCATIONAL", bg: "bg-blue-500", dot: "bg-blue-500" },
+                { label: "PROMOTIONAL", bg: "bg-purple-500", dot: "bg-purple-500" },
+                { label: "ENGAGEMENT", bg: "bg-pink-500", dot: "bg-pink-500" },
+                { label: "BEHIND THE SCENES", bg: "bg-amber-500", dot: "bg-amber-500" },
+              ].map(l => (
+                <div key={l.label} className="flex items-center gap-3">
+                  <div className="text-muted/30 cursor-grab">
+                    <svg width="14" height="14" viewBox="0 0 16 16" fill="currentColor"><circle cx="5" cy="3" r="1.5"/><circle cx="11" cy="3" r="1.5"/><circle cx="5" cy="8" r="1.5"/><circle cx="11" cy="8" r="1.5"/><circle cx="5" cy="13" r="1.5"/><circle cx="11" cy="13" r="1.5"/></svg>
+                  </div>
+                  <div className={`w-7 h-7 rounded-full ${l.dot}`} />
+                  <div className={`flex-1 ${l.bg} text-white text-[0.78rem] font-bold tracking-[0.04em] px-4 py-2.5 rounded-lg`}>
+                    {l.label}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button className="w-full flex items-center justify-center gap-2 py-3 rounded-xl border-2 border-dashed border-foreground/[0.12] text-muted text-[0.88rem] font-medium hover:border-foreground/25 hover:text-foreground transition-colors mb-6">
+              <Plus size={16} /> Add New Label
+            </button>
+            <div className="border-t border-foreground/[0.06] pt-4 flex justify-end">
+              <button onClick={() => setShowManageLabels(false)} className="px-8 py-2.5 rounded-lg bg-emerald-500 text-white text-[0.88rem] font-bold hover:bg-emerald-600 transition-colors">
+                Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
