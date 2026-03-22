@@ -195,6 +195,11 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [selectedPost, setSelectedPost] = useState<DummyPost | null>(null);
   const [postDetailTab, setPostDetailTab] = useState<"details"|"predictions">("details");
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
+  const [showNewPostMenu, setShowNewPostMenu] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [feedDevice, setFeedDevice] = useState<"mobile"|"desktop">("mobile");
+  const [feedPlatform, setFeedPlatform] = useState("instagram");
   const [showManageLabels, setShowManageLabels] = useState(false);
   const [showPostingSchedule, setShowPostingSchedule] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
