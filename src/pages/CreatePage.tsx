@@ -445,7 +445,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         setSelectedCharacters(prev => [...prev, id]);
       }
     }
-    }
   };
 
   // Auto-populate video start frame from character/reference selections
