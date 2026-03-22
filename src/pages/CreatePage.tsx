@@ -521,7 +521,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setSelectedSubMode(modeId);
     setSubModeOpen(false);
     // Auto-show relevant panel
-    if (selectedType === "video") setActivePanel(null);
+    if (selectedType === "audio" && modeId === "music") setActivePanel("music");
     else if (selectedType === "audio" && modeId === "music") setActivePanel("music");
     else if (selectedType === "image" && modeId === "photoshoot") setActivePanel("photoshoot");
     else if (selectedType === "content" && modeId === "social") setActivePanel("social");
