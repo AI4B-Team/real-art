@@ -839,7 +839,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     : "border-foreground/[0.1] bg-foreground/[0.03] text-muted hover:text-foreground hover:border-foreground/20"
                 }`}
               >
-                <Layers size={13} />
+                <Clapperboard size={13} />
                 Scenes
               </button>
             </div>
