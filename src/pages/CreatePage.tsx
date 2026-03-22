@@ -1183,15 +1183,22 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Ratio</TooltipContent></Tooltip>
                     <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                      {[
-                        { r: "1:1", w: 14, h: 14 },
-                        { r: "16:9", w: 16, h: 9 },
-                        { r: "9:16", w: 9, h: 16 },
-                        { r: "4:3", w: 14, h: 10.5 },
-                        { r: "3:4", w: 10.5, h: 14 },
-                        { r: "3:2", w: 15, h: 10 },
-                        { r: "2:3", w: 10, h: 15 },
-                      ].map(({ r, w, h }) => (
+                      {(selectedType === "video"
+                        ? [
+                            { r: "9:16", w: 9, h: 16 },
+                            { r: "1:1", w: 14, h: 14 },
+                            { r: "16:9", w: 16, h: 9 },
+                          ]
+                        : [
+                            { r: "1:1", w: 14, h: 14 },
+                            { r: "16:9", w: 16, h: 9 },
+                            { r: "9:16", w: 9, h: 16 },
+                            { r: "4:3", w: 14, h: 10.5 },
+                            { r: "3:4", w: 10.5, h: 14 },
+                            { r: "3:2", w: 15, h: 10 },
+                            { r: "2:3", w: 10, h: 15 },
+                          ]
+                      ).map(({ r, w, h }) => (
                         <button key={r} type="button" onClick={() => { setSelectedRatio(r); setRatioOpen(false); }}
                           className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedRatio === r ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                           <span className="flex items-center justify-center w-5 h-5 shrink-0">
