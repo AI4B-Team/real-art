@@ -1124,16 +1124,22 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </PopoverContent>
                     </Popover>
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <Eye size={13} className="text-muted" />
-                      <span className="text-[0.72rem] text-muted font-medium whitespace-nowrap">Brand</span>
-                      <div
-                        onClick={() => setBrandToggle(v => !v)}
-                        className={`w-8 h-[18px] rounded-full transition-colors cursor-pointer relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}
-                      >
-                        <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
+                    <Tooltip><TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 shrink-0 cursor-pointer" onClick={() => {
+                        const hasBrand = !!localStorage.getItem("brand_profile");
+                        if (!hasBrand && !brandToggle) {
+                          toast({ title: "No Brand Profile", description: "Set up your brand profile first to use this feature.", action: <a href="/brand" className="text-accent font-semibold text-[0.78rem] whitespace-nowrap hover:underline">Set Up Brand →</a> });
+                        } else {
+                          setBrandToggle(v => !v);
+                        }
+                      }}>
+                        <Eye size={13} className="text-muted" />
+                        <span className="text-[0.72rem] text-muted font-medium whitespace-nowrap">Brand</span>
+                        <div className={`w-8 h-[18px] rounded-full transition-colors relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}>
+                          <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
+                        </div>
                       </div>
-                    </div>
+                    </TooltipTrigger><TooltipContent>Apply brand voice & style</TooltipContent></Tooltip>
                   </div>
                 )}
 
