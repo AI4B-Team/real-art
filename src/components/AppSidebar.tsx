@@ -7,7 +7,7 @@ import {
   Users, Trophy, Eye, Bookmark, ChevronDown,
   Search, X, Star, Home, Compass, Plus, PanelLeftClose,
   DollarSign, Megaphone, Zap, Clock, Upload, Sparkles, Check,
-  Pencil, Trash2, Palette,
+  Pencil, Trash2, Palette, LayoutGrid,
 } from "lucide-react";
 import { useLayoutContext } from "@/components/LayoutContext";
 
