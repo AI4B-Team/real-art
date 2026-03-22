@@ -527,6 +527,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setReferences([]);
     setStartFrame(null);
     setEndFrame(null);
+    setStartFrameMeta(null);
+    setEndFrameMeta(null);
     setStoryScenes([makeScene()]);
     setStoryMode("auto");
     setTypeDropdownOpen(false);
