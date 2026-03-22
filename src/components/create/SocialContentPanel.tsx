@@ -163,6 +163,22 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
   const [showManageLabels, setShowManageLabels] = useState(false);
+  const [showPostingSchedule, setShowPostingSchedule] = useState(false);
+  const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
+  const [scheduleView, setScheduleView] = useState<"day"|"week">("day");
+  const [selectedDay, setSelectedDay] = useState("Monday");
+  const [scheduleAccount, setScheduleAccount] = useState("All Accounts");
+
+  // Posting schedule data
+  const scheduleData: Record<string, { peak: number; total: number; slots: { time: string; type: "peak"|"good"|"low"; desc: string; reach: string }[] }> = {
+    Monday:    { peak: 2, total: 3, slots: [{ time: "9:00 AM", type: "peak", desc: "Highest Audience Activity Expected", reach: "~2.4K reach" }, { time: "12:30 PM", type: "good", desc: "Good Engagement Potential", reach: "~1.5K reach" }, { time: "5:00 PM", type: "peak", desc: "Highest Audience Activity Expected", reach: "~2.4K reach" }] },
+    Tuesday:   { peak: 2, total: 3, slots: [{ time: "8:30 AM", type: "peak", desc: "Morning Peak Activity", reach: "~2.1K reach" }, { time: "1:00 PM", type: "good", desc: "Lunch Break Engagement", reach: "~1.8K reach" }, { time: "6:00 PM", type: "peak", desc: "Evening Rush Hour", reach: "~2.3K reach" }] },
+    Wednesday: { peak: 2, total: 4, slots: [{ time: "7:00 AM", type: "good", desc: "Early Bird Window", reach: "~1.2K reach" }, { time: "10:00 AM", type: "peak", desc: "Mid-Morning Surge", reach: "~2.6K reach" }, { time: "2:00 PM", type: "good", desc: "Afternoon Engagement", reach: "~1.4K reach" }, { time: "7:30 PM", type: "peak", desc: "Prime Evening Slot", reach: "~2.5K reach" }] },
+    Thursday:  { peak: 2, total: 3, slots: [{ time: "9:00 AM", type: "peak", desc: "Highest Audience Activity Expected", reach: "~2.2K reach" }, { time: "12:00 PM", type: "good", desc: "Midday Engagement Window", reach: "~1.6K reach" }, { time: "5:30 PM", type: "peak", desc: "After-Work Peak", reach: "~2.3K reach" }] },
+    Friday:    { peak: 1, total: 3, slots: [{ time: "10:00 AM", type: "peak", desc: "Friday Morning Surge", reach: "~2.0K reach" }, { time: "1:00 PM", type: "good", desc: "Pre-Weekend Browse", reach: "~1.3K reach" }, { time: "4:00 PM", type: "low", desc: "Lower Weekend Transition", reach: "~0.9K reach" }] },
+    Saturday:  { peak: 2, total: 3, slots: [{ time: "10:00 AM", type: "peak", desc: "Weekend Morning Activity", reach: "~2.1K reach" }, { time: "2:00 PM", type: "good", desc: "Afternoon Leisure Time", reach: "~1.7K reach" }, { time: "8:00 PM", type: "peak", desc: "Saturday Night Peak", reach: "~2.4K reach" }] },
+    Sunday:    { peak: 2, total: 3, slots: [{ time: "11:00 AM", type: "peak", desc: "Late Morning Window", reach: "~2.0K reach" }, { time: "3:00 PM", type: "good", desc: "Afternoon Engagement", reach: "~1.5K reach" }, { time: "7:00 PM", type: "peak", desc: "Sunday Evening Peak", reach: "~2.3K reach" }] },
+  };
 
   // Check if brand profile exists
   const hasBrandProfile = (() => {
@@ -299,7 +315,10 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-600 text-[0.78rem] font-medium hover:bg-blue-100 transition-colors">
             <Settings size={13} /> Connect Accounts
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-green-200 bg-green-50 text-green-600 text-[0.78rem] font-medium hover:bg-green-100 transition-colors">
+          <button
+            onClick={() => setShowPostingSchedule(true)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-green-200 bg-green-50 text-green-600 text-[0.78rem] font-medium hover:bg-green-100 transition-colors"
+          >
             <Sparkles size={13} /> Best Time To Post
           </button>
           {/* Brand toggle */}
@@ -701,6 +720,210 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               <button onClick={() => setShowManageLabels(false)} className="px-8 py-2.5 rounded-lg bg-emerald-500 text-white text-[0.88rem] font-bold hover:bg-emerald-600 transition-colors">
                 Done
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Posting Schedule Modal ─── */}
+      {showPostingSchedule && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowPostingSchedule(false)}>
+          <div className="bg-background rounded-2xl shadow-2xl w-[90vw] max-w-[780px] overflow-hidden" onClick={e => e.stopPropagation()}>
+            {/* Header */}
+            <div className="flex items-start justify-between p-6 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center text-white">
+                  <CalendarIcon size={18} />
+                </div>
+                <div>
+                  <h2 className="text-lg font-bold">Posting Schedule</h2>
+                  <p className="text-[0.82rem] text-muted-foreground">Optimize When You Post For Maximum Reach</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <select
+                  value={scheduleAccount}
+                  onChange={e => setScheduleAccount(e.target.value)}
+                  className="border border-foreground/[0.12] rounded-lg px-3 py-2 text-[0.82rem] bg-background outline-none"
+                >
+                  <option>All Accounts</option>
+                  <option>Instagram</option>
+                  <option>Facebook</option>
+                  <option>X / Twitter</option>
+                  <option>TikTok</option>
+                  <option>LinkedIn</option>
+                </select>
+                <button onClick={() => setShowPostingSchedule(false)} className="text-muted hover:text-foreground transition-colors"><X size={18} /></button>
+              </div>
+            </div>
+
+            {/* Tabs */}
+            <div className="flex items-center gap-6 px-6 border-b border-foreground/[0.06]">
+              {([
+                { id: "schedule" as const, label: "Schedule", icon: CalendarIcon },
+                { id: "analytics" as const, label: "Analytics", icon: LayoutGrid },
+                { id: "general" as const, label: "General", icon: Settings },
+              ]).map(t => (
+                <button
+                  key={t.id}
+                  onClick={() => setScheduleTab(t.id)}
+                  className={`flex items-center gap-1.5 pb-3 border-b-2 text-[0.85rem] font-medium transition-colors ${
+                    scheduleTab === t.id ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"
+                  }`}
+                >
+                  <t.icon size={14} />
+                  {t.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Schedule Tab Content */}
+            {scheduleTab === "schedule" && (
+              <div className="p-6">
+                {/* Day / Week toggle */}
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="text-[0.82rem] text-muted-foreground font-medium">View:</span>
+                  <div className="flex rounded-lg overflow-hidden border border-foreground/[0.1]">
+                    <button
+                      onClick={() => setScheduleView("day")}
+                      className={`flex items-center gap-1.5 px-4 py-2 text-[0.82rem] font-semibold transition-colors ${
+                        scheduleView === "day" ? "bg-emerald-500 text-white" : "bg-background text-muted hover:bg-foreground/[0.04]"
+                      }`}
+                    >
+                      <List size={13} /> Day
+                    </button>
+                    <button
+                      onClick={() => setScheduleView("week")}
+                      className={`flex items-center gap-1.5 px-4 py-2 text-[0.82rem] font-semibold transition-colors ${
+                        scheduleView === "week" ? "bg-emerald-500 text-white" : "bg-background text-muted hover:bg-foreground/[0.04]"
+                      }`}
+                    >
+                      <LayoutGrid size={13} /> Week
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-6">
+                  {/* Days sidebar */}
+                  <div className="w-[200px] shrink-0">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-[0.75rem] font-bold text-muted-foreground tracking-wider">DAYS</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-emerald-500"><Sparkles size={14} /></span>
+                        <span className="text-[0.72rem] font-semibold text-muted-foreground">AI</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-4 mb-2 px-3">
+                      <span className="text-[0.7rem] text-muted-foreground font-medium ml-auto w-10 text-center">Peak</span>
+                      <span className="text-[0.7rem] text-muted-foreground font-medium w-10 text-center">Total</span>
+                    </div>
+                    <div className="space-y-1">
+                      {DAYS.map(day => {
+                        const data = scheduleData[day];
+                        return (
+                          <button
+                            key={day}
+                            onClick={() => setSelectedDay(day)}
+                            className={`w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[0.82rem] font-medium transition-all ${
+                              selectedDay === day
+                                ? "bg-emerald-500 text-white"
+                                : "text-foreground hover:bg-foreground/[0.04]"
+                            }`}
+                          >
+                            <span className="flex-1 text-left">{day}</span>
+                            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-[0.72rem] font-bold ${
+                              selectedDay === day ? "bg-white/20 text-white" : "bg-emerald-100 text-emerald-700"
+                            }`}>{data.peak}</span>
+                            <span className={`w-6 text-center text-[0.78rem] ${selectedDay === day ? "text-white/80" : "text-muted-foreground"}`}>{data.total}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {/* Legend */}
+                    <div className="flex items-center gap-4 mt-4 px-1">
+                      <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-emerald-500" /><span className="text-[0.72rem] text-muted-foreground">Peak</span></div>
+                      <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-blue-500" /><span className="text-[0.72rem] text-muted-foreground">Good</span></div>
+                      <div className="flex items-center gap-1.5"><div className="w-2.5 h-2.5 rounded-full bg-foreground/30" /><span className="text-[0.72rem] text-muted-foreground">Low</span></div>
+                    </div>
+                  </div>
+
+                  {/* Time slots */}
+                  <div className="flex-1 border-l border-foreground/[0.06] pl-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div>
+                        <h3 className="text-lg font-bold">{selectedDay}</h3>
+                        <p className="text-[0.8rem] text-muted-foreground">{scheduleData[selectedDay].total} Posting Times Scheduled</p>
+                      </div>
+                      <button className="flex items-center gap-1.5 text-[0.8rem] text-muted-foreground hover:text-foreground transition-colors">
+                        <Trash2 size={14} /> Clear Day
+                      </button>
+                    </div>
+                    <div className="space-y-3">
+                      {scheduleData[selectedDay].slots.map((slot, i) => (
+                        <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
+                            slot.type === "peak" ? "bg-emerald-500" : slot.type === "good" ? "bg-blue-500" : "bg-foreground/20"
+                          } text-white`}>
+                            <CalendarIcon size={16} />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-[0.92rem] font-bold">{slot.time}</span>
+                              <span className={`px-2 py-0.5 rounded text-[0.68rem] font-bold uppercase tracking-wider ${
+                                slot.type === "peak" ? "bg-emerald-100 text-emerald-700" :
+                                slot.type === "good" ? "bg-blue-100 text-blue-700" :
+                                "bg-foreground/[0.08] text-muted-foreground"
+                              }`}>{slot.type}</span>
+                            </div>
+                            <p className="text-[0.78rem] text-muted-foreground mt-0.5">{slot.desc}</p>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-[0.78rem] text-muted-foreground">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/></svg>
+                            {slot.reach}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Analytics Tab */}
+            {scheduleTab === "analytics" && (
+              <div className="p-6">
+                <div className="text-center py-12">
+                  <LayoutGrid size={32} className="mx-auto text-muted mb-3" />
+                  <h3 className="font-bold mb-1">Engagement Analytics</h3>
+                  <p className="text-[0.82rem] text-muted-foreground">Connect your accounts to see engagement data and optimize posting times with AI-powered insights.</p>
+                </div>
+              </div>
+            )}
+
+            {/* General Tab */}
+            {scheduleTab === "general" && (
+              <div className="p-6">
+                <div className="text-center py-12">
+                  <Settings size={32} className="mx-auto text-muted mb-3" />
+                  <h3 className="font-bold mb-1">Schedule Settings</h3>
+                  <p className="text-[0.82rem] text-muted-foreground">Configure timezone, auto-scheduling preferences, and default posting windows.</p>
+                </div>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="flex items-center justify-between px-6 py-4 border-t border-foreground/[0.06]">
+              <button className="px-4 py-2 rounded-lg border border-foreground/[0.12] text-[0.82rem] text-muted-foreground hover:text-foreground hover:border-foreground/20 transition-colors">
+                Clear All
+              </button>
+              <div className="flex items-center gap-3">
+                <button onClick={() => setShowPostingSchedule(false)} className="px-5 py-2.5 rounded-lg text-[0.85rem] font-medium text-muted-foreground hover:text-foreground transition-colors">
+                  Cancel
+                </button>
+                <button onClick={() => setShowPostingSchedule(false)} className="px-6 py-2.5 rounded-lg bg-emerald-500 text-white text-[0.85rem] font-bold hover:bg-emerald-600 transition-colors">
+                  Save Schedule
+                </button>
+              </div>
             </div>
           </div>
         </div>
