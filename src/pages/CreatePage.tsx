@@ -786,6 +786,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </PopoverContent>
                 </Popover>
 
+                {/* Non-app generic controls */}
+                {selectedType !== "app" && (
+                  <>
                 <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
                 {/* Model */}
