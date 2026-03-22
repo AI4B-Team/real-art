@@ -952,7 +952,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 </Popover>
 
                 {/* Style, Character, Reference — hidden for ebook mode */}
-                {!(selectedType === "document" && selectedSubMode === "ebook") && (
+                {selectedType !== "document" && (
                   <>
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
