@@ -324,7 +324,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedRatio, setSelectedRatio] = useState("1:1");
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [selectedDuration, setSelectedDuration] = useState("10s");
-  const [brandToggle, setBrandToggle] = useState(false);
+  const [brandToggle, setBrandToggle] = useState(() => !!localStorage.getItem("ra_brand_complete"));
   const [contentGoal, setContentGoal] = useState("Engagement");
   const [contentTone, setContentTone] = useState("Professional");
   const [contentLanguage, setContentLanguage] = useState("English");
