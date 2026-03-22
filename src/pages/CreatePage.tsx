@@ -584,7 +584,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           </div>
         </div>
 
-        <div className={`w-full max-w-[820px] mx-auto rounded-2xl border-[1.5px] bg-background overflow-visible transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-lg" : "shadow-md"}`}>
+        <div className={`w-full max-w-[960px] mx-auto rounded-2xl border-[1.5px] bg-background overflow-visible transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-lg" : "shadow-md"}`}>
 
           {/* Textarea row */}
           <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
@@ -1348,7 +1348,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
         {/* ── Active selections summary ── */}
         {(startFrame || endFrame || selectedGenre || selectedTheme) && (
-          <div className="max-w-[820px] mx-auto mt-2 px-1">
+          <div className="max-w-[960px] mx-auto mt-2 px-1">
             <div className="flex items-center gap-2 flex-wrap">
 
               {/* Frames selection */}
