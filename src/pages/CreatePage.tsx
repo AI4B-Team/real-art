@@ -841,13 +841,31 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </PopoverContent>
                 </Popover>
 
-                {/* Style */}
-                <Tooltip><TooltipTrigger asChild>
-                  <button type="button" onClick={() => togglePanel("style")}
-                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    <Brush size={12} />{selectedStyle !== "None" ? selectedStyle : "Style"}
-                  </button>
-                </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                {/* Style — video uses simple popover, others use panel */}
+                {selectedType === "video" ? (
+                  <Popover open={styleOpen} onOpenChange={setStyleOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Brush size={12} />{selectedStyle !== "None" ? selectedStyle : "Style"}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                    <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
+                      {["Cinematic", "Documentary", "Animation", "Realistic"].map(s => (
+                        <button key={s} type="button" onClick={() => { setSelectedStyle(prev => prev === s ? "None" : s); setStyleOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[0.85rem] font-medium transition-colors ${selectedStyle === s ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {s}{selectedStyle === s && <Check size={12} className="text-accent" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("style")}
+                      className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Brush size={12} />{selectedStyle !== "None" ? selectedStyle : "Style"}
+                    </button>
+                  </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                )}
 
                 {/* Character */}
                 <Tooltip><TooltipTrigger asChild>

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Upload, ArrowLeftRight, X, Play } from "lucide-react";
+import { Upload, ArrowLeftRight, X } from "lucide-react";
 
 interface FramePanelProps {
   onClose: () => void;
@@ -77,7 +77,20 @@ export default function FramePanel({ onClose, startFrame, endFrame, onStartFrame
           onChange={onStartFrameChange}
           onClear={() => onStartFrameChange(null)}
         />
-        <ArrowLeftRight size={20} className="text-muted shrink-0" />
+        <button
+          type="button"
+          onClick={() => {
+            if (startFrame || endFrame) {
+              onStartFrameChange(endFrame);
+              onEndFrameChange(startFrame);
+            }
+          }}
+          disabled={!startFrame && !endFrame}
+          className="p-2 rounded-lg hover:bg-foreground/[0.06] transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+          title="Swap frames"
+        >
+          <ArrowLeftRight size={20} className="text-muted" />
+        </button>
         <FrameSlot
           label="End Frame (Optional)"
           src={endFrame}
