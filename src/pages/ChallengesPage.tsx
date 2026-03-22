@@ -180,7 +180,8 @@ const ChallengesPage = () => {
             </div>
           </div>
         </div>
-        <Footer />
+      </div>
+      <Footer />
     </PageShell>
   );
 };
