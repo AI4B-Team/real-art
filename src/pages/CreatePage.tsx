@@ -476,7 +476,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setSelectedSubMode(modeId);
     setSubModeOpen(false);
     // Auto-show relevant panel
-    if (selectedType === "video" && modeId === "animate") setActivePanel("frames");
+    if (selectedType === "video") setActivePanel("frames");
     else if (selectedType === "audio" && modeId === "music") setActivePanel("music");
     else if (selectedType === "image" && modeId === "photoshoot") setActivePanel("photoshoot");
     else if (selectedType === "content" && modeId === "social") setActivePanel("social");
@@ -567,7 +567,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   // Determine which extra toolbar icons to show based on content type
-  const showFrames = selectedType === "video" && selectedSubMode === "animate";
+  const showFrames = selectedType === "video" && !!selectedSubMode;
   const showMusic = selectedType === "audio" && selectedSubMode === "music";
   const showPhotoshoot = selectedType === "image" && selectedSubMode === "photoshoot";
   const showSocial = selectedType === "content" && selectedSubMode === "social";
