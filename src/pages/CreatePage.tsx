@@ -468,7 +468,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     } else {
       if (selectedType === "video") {
         // In video mode, max 2 characters (start + end frame)
-        setSelectedCharacters(prev => prev.length >= 2 ? prev : [...prev, id]);
+        setSelectedCharacters(prev => {
+          if (prev.length >= 2) return prev;
+          // Reset frame locks so auto-fill can populate the slot
+          if (prev.length === 0) setStartFrameLocked(false);
+          if (prev.length <= 1) setEndFrameLocked(false);
+          return [...prev, id];
+        });
       } else {
         setSelectedCharacters(prev => [...prev, id]);
       }
