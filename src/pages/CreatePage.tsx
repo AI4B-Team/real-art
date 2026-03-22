@@ -328,6 +328,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedRatio, setSelectedRatio] = useState("1:1");
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [selectedDuration, setSelectedDuration] = useState("10s");
+  const [selectedResolution, setSelectedResolution] = useState("1080p");
+  const [resolutionOpen, setResolutionOpen] = useState(false);
   const [brandToggle, setBrandToggle] = useState(() => !!localStorage.getItem("ra_brand_complete"));
   const [contentGoal, setContentGoal] = useState("Engagement");
   const [contentTone, setContentTone] = useState("Professional");
@@ -1190,14 +1192,14 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {selectedSubMode && selectedType === "video" && (
                   <Popover open={durationOpen} onOpenChange={setDurationOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors whitespace-nowrap shrink-0">
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-accent/10 text-accent hover:bg-accent/15 transition-colors whitespace-nowrap shrink-0">
                         <Clock size={12} />{selectedDuration}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Duration</TooltipContent></Tooltip>
                     <PopoverContent className="w-32 p-1.5" align="start" sideOffset={6}>
                       {["5s","10s","15s","25s"].map(d => (
                         <button key={d} type="button" onClick={() => { setSelectedDuration(d); setDurationOpen(false); }}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedDuration === d ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedDuration === d ? "bg-accent text-white" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                           {d}{selectedDuration === d && <Check size={12} />}
                         </button>
                       ))}
@@ -1207,11 +1209,21 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
                 {/* Resolution — video */}
                 {selectedSubMode && selectedType === "video" && (
-                  <Tooltip><TooltipTrigger asChild>
-                    <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors whitespace-nowrap shrink-0">
-                      <SlidersHorizontal size={12} />1080p
-                    </button>
-                  </TooltipTrigger><TooltipContent>Resolution</TooltipContent></Tooltip>
+                  <Popover open={resolutionOpen} onOpenChange={setResolutionOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-accent/10 text-accent hover:bg-accent/15 transition-colors whitespace-nowrap shrink-0">
+                        <SlidersHorizontal size={12} />{selectedResolution}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Resolution</TooltipContent></Tooltip>
+                    <PopoverContent className="w-32 p-1.5" align="start" sideOffset={6}>
+                      {["720p","1080p","4K"].map(r => (
+                        <button key={r} type="button" onClick={() => { setSelectedResolution(r); setResolutionOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedResolution === r ? "bg-accent text-white" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {r}{selectedResolution === r && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
                 )}
 
                 {/* Story mode — Auto/Manual toggle + Scenes button */}
