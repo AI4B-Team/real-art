@@ -692,7 +692,101 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
-          {/* Attachment pills row */}
+          {/* Inline frame uploads for video animate mode */}
+          {showFrames && (
+            <div className="px-6 py-4">
+              <div className="flex items-center justify-center gap-3">
+                {/* Start Frame */}
+                <div className="flex flex-col items-center gap-2">
+                  {startFrame ? (
+                    <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
+                      <img src={startFrame} alt="Start Frame" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => setStartFrame(null)}
+                        className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                      >
+                        <X size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => startFrameRef.current?.click()}
+                      className="w-[140px] h-[140px] rounded-2xl border-2 border-dashed border-foreground/[0.12] flex flex-col items-center justify-center gap-2 hover:border-foreground/30 hover:bg-foreground/[0.02] transition-colors cursor-pointer"
+                    >
+                      <Upload size={20} className="text-muted" />
+                      <span className="text-[0.75rem] text-muted font-medium">Upload</span>
+                    </button>
+                  )}
+                  <span className="text-[0.78rem] font-medium text-muted">Start Frame</span>
+                  <input
+                    ref={startFrameRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) setStartFrame(URL.createObjectURL(file));
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+
+                {/* Swap button */}
+                <Tooltip><TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const tmp = startFrame;
+                      setStartFrame(endFrame);
+                      setEndFrame(tmp);
+                    }}
+                    disabled={!startFrame && !endFrame}
+                    className="p-2.5 rounded-xl hover:bg-foreground/[0.06] transition-colors disabled:opacity-20 disabled:cursor-not-allowed shrink-0"
+                  >
+                    <ArrowLeftRight size={18} className="text-muted" />
+                  </button>
+                </TooltipTrigger><TooltipContent>Swap</TooltipContent></Tooltip>
+
+                {/* End Frame */}
+                <div className="flex flex-col items-center gap-2">
+                  {endFrame ? (
+                    <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
+                      <img src={endFrame} alt="End Frame" className="w-full h-full object-cover" />
+                      <button
+                        onClick={() => setEndFrame(null)}
+                        className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md"
+                      >
+                        <X size={11} />
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => endFrameRef.current?.click()}
+                      className="w-[140px] h-[140px] rounded-2xl border-2 border-dashed border-foreground/[0.12] flex flex-col items-center justify-center gap-2 hover:border-foreground/30 hover:bg-foreground/[0.02] transition-colors cursor-pointer"
+                    >
+                      <Upload size={20} className="text-muted" />
+                      <span className="text-[0.75rem] text-muted font-medium">Upload</span>
+                    </button>
+                  )}
+                  <span className="text-[0.78rem] font-medium text-muted">End Frame (Optional)</span>
+                  <input
+                    ref={endFrameRef}
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={e => {
+                      const file = e.target.files?.[0];
+                      if (file) setEndFrame(URL.createObjectURL(file));
+                      e.target.value = "";
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
           {!isListening && (selectedCharacters.length > 0 || references.length > 0) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
               {selectedCharacters.length > 0 && (
