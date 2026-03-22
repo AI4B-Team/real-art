@@ -192,7 +192,8 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [filterPlatforms, setFilterPlatforms] = useState<Set<string>>(new Set());
   const [filterLabels, setFilterLabels] = useState<Set<string>>(new Set());
   const [posts] = useState(() => generateDummyPosts(currentMonth, currentYear));
-  const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
+  const [selectedPost, setSelectedPost] = useState<DummyPost | null>(null);
+  const [postDetailTab, setPostDetailTab] = useState<"details"|"predictions">("details");
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
   const [showManageLabels, setShowManageLabels] = useState(false);
   const [showPostingSchedule, setShowPostingSchedule] = useState(false);
