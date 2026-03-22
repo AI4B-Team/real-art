@@ -282,9 +282,13 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
 
 function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const { toast } = useToast();
-  const [selectedType, setSelectedType] = useState<ContentType | null>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedType, setSelectedType] = useState<ContentType | null>(() => {
+    const t = searchParams.get("type");
+    return t && ["image","video","audio","design","content","document","app"].includes(t) ? t as ContentType : null;
+  });
   const [selectedSubMode, setSelectedSubMode] = useState<string | null>(null);
-  const [prompt, setPrompt] = useState("");
+  const [prompt, setPrompt] = useState(() => searchParams.get("prompt") || "");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
