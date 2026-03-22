@@ -1226,7 +1226,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Clock size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Speed</TooltipContent></Tooltip>
-                  <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-40 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["Very Slow", "Slow", "Normal", "Fast", "Very Fast"].map(s => (
                       <button key={s} type="button" onClick={() => { setVoiceoverSpeed(s); setVoiceoverSpeedOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverSpeed === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
