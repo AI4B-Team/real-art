@@ -836,10 +836,10 @@ const EarningsSection = () => {
           <h3 className="font-display text-[1.1rem] font-bold mb-1">Platform referrals</h3>
           <p className="text-[0.78rem] text-muted mb-4">REAL ART signups through your art — up to 40%</p>
           <div className="font-display text-[2rem] font-black text-accent leading-none mb-2">$412.00</div>
-          <div className="text-[0.75rem] text-muted mb-1">paid last cycle</div>
+          <div className="text-[0.75rem] text-muted mb-1">Paid Last Cycle</div>
           <div className="flex items-center gap-4 text-[0.75rem] text-muted mt-3">
             <span>Creator Tier · 30%</span>
-            <span>127 referrals this month</span>
+            <span>127 Referrals This Month</span>
           </div>
         </div>
       </div>
