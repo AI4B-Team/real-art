@@ -289,7 +289,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-destructive/30 text-destructive text-[0.78rem] font-medium hover:bg-destructive/5 transition-colors">
             <Trash2 size={13} /> Delete All
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] font-medium hover:bg-foreground/[0.04] transition-colors">
+          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 text-blue-600 text-[0.78rem] font-medium hover:bg-blue-100 transition-colors">
             <Settings size={13} /> Connect Accounts
           </button>
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-foreground/[0.1] text-[0.78rem] font-medium hover:bg-foreground/[0.04] transition-colors">
