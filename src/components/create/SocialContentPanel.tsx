@@ -163,6 +163,22 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
   const [showManageLabels, setShowManageLabels] = useState(false);
+  const [showPostingSchedule, setShowPostingSchedule] = useState(false);
+  const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
+  const [scheduleView, setScheduleView] = useState<"day"|"week">("day");
+  const [selectedDay, setSelectedDay] = useState("Monday");
+  const [scheduleAccount, setScheduleAccount] = useState("All Accounts");
+
+  // Posting schedule data
+  const scheduleData: Record<string, { peak: number; total: number; slots: { time: string; type: "peak"|"good"|"low"; desc: string; reach: string }[] }> = {
+    Monday:    { peak: 2, total: 3, slots: [{ time: "9:00 AM", type: "peak", desc: "Highest Audience Activity Expected", reach: "~2.4K reach" }, { time: "12:30 PM", type: "good", desc: "Good Engagement Potential", reach: "~1.5K reach" }, { time: "5:00 PM", type: "peak", desc: "Highest Audience Activity Expected", reach: "~2.4K reach" }] },
+    Tuesday:   { peak: 2, total: 3, slots: [{ time: "8:30 AM", type: "peak", desc: "Morning Peak Activity", reach: "~2.1K reach" }, { time: "1:00 PM", type: "good", desc: "Lunch Break Engagement", reach: "~1.8K reach" }, { time: "6:00 PM", type: "peak", desc: "Evening Rush Hour", reach: "~2.3K reach" }] },
+    Wednesday: { peak: 2, total: 4, slots: [{ time: "7:00 AM", type: "good", desc: "Early Bird Window", reach: "~1.2K reach" }, { time: "10:00 AM", type: "peak", desc: "Mid-Morning Surge", reach: "~2.6K reach" }, { time: "2:00 PM", type: "good", desc: "Afternoon Engagement", reach: "~1.4K reach" }, { time: "7:30 PM", type: "peak", desc: "Prime Evening Slot", reach: "~2.5K reach" }] },
+    Thursday:  { peak: 2, total: 3, slots: [{ time: "9:00 AM", type: "peak", desc: "Highest Audience Activity Expected", reach: "~2.2K reach" }, { time: "12:00 PM", type: "good", desc: "Midday Engagement Window", reach: "~1.6K reach" }, { time: "5:30 PM", type: "peak", desc: "After-Work Peak", reach: "~2.3K reach" }] },
+    Friday:    { peak: 1, total: 3, slots: [{ time: "10:00 AM", type: "peak", desc: "Friday Morning Surge", reach: "~2.0K reach" }, { time: "1:00 PM", type: "good", desc: "Pre-Weekend Browse", reach: "~1.3K reach" }, { time: "4:00 PM", type: "low", desc: "Lower Weekend Transition", reach: "~0.9K reach" }] },
+    Saturday:  { peak: 2, total: 3, slots: [{ time: "10:00 AM", type: "peak", desc: "Weekend Morning Activity", reach: "~2.1K reach" }, { time: "2:00 PM", type: "good", desc: "Afternoon Leisure Time", reach: "~1.7K reach" }, { time: "8:00 PM", type: "peak", desc: "Saturday Night Peak", reach: "~2.4K reach" }] },
+    Sunday:    { peak: 2, total: 3, slots: [{ time: "11:00 AM", type: "peak", desc: "Late Morning Window", reach: "~2.0K reach" }, { time: "3:00 PM", type: "good", desc: "Afternoon Engagement", reach: "~1.5K reach" }, { time: "7:00 PM", type: "peak", desc: "Sunday Evening Peak", reach: "~2.3K reach" }] },
+  };
 
   // Check if brand profile exists
   const hasBrandProfile = (() => {
