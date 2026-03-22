@@ -3,7 +3,8 @@ import {
   X, ChevronLeft, ChevronRight, Calendar as CalendarIcon,
   List, LayoutGrid, Columns, Grid3X3, Rss,
   Trash2, Settings, Sparkles, Plus, ChevronDown, Search, Filter as FilterIcon, Download, MoreHorizontal,
-  Image, Play, LayoutList, CircleDot, Check,
+  Image, Play, LayoutList, CircleDot, Check, Heart, MessageCircle, Send, Bookmark, Eye, Users, Share2, Clock,
+  TrendingUp, Hash, Pencil,
 } from "lucide-react";
 
 /* ─── SVG Logo components ────────────────────── */
