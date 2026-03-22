@@ -201,6 +201,8 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [feedDevice, setFeedDevice] = useState<"mobile"|"desktop">("mobile");
   const [feedPlatform, setFeedPlatform] = useState("instagram");
   const [showManageLabels, setShowManageLabels] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [showPostingSchedule, setShowPostingSchedule] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
   const [scheduleView, setScheduleView] = useState<"day"|"week">("day");
