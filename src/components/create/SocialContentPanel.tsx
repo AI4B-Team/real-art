@@ -612,8 +612,105 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
         </div>
       )}
 
-      {/* Non-calendar views placeholder */}
-      {activeView !== "calendar" && (
+      {/* ─── Kanban View ─── */}
+      {activeView === "kanban" && (
+        <div className="p-4">
+          <div className="grid grid-cols-4 gap-4">
+            {(["draft", "awaiting", "scheduled", "published"] as PostStatus[]).map(status => {
+              const statusLabels: Record<PostStatus, string> = { draft: "Drafts", awaiting: "Awaiting Approval", scheduled: "Scheduled", published: "Published" };
+              const statusPosts = posts.filter(p => p.status === status);
+              return (
+                <div key={status} className="bg-foreground/[0.02] rounded-xl border border-foreground/[0.06] p-3 min-h-[400px]">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-[0.88rem] font-bold">{statusLabels[status]}</h3>
+                      <span className="text-[0.78rem] text-muted-foreground font-medium">{statusPosts.length}</span>
+                    </div>
+                    <button className="text-muted hover:text-foreground"><Plus size={16} /></button>
+                  </div>
+                  {statusPosts.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center py-12 text-muted-foreground">
+                      <p className="text-[0.85rem] font-medium">No Content</p>
+                      <p className="text-[0.75rem]">Drag Posts Here Or Click + To Add</p>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      {statusPosts.map((post, i) => {
+                        const platform = PLATFORMS.find(p => p.id === post.platform);
+                        return (
+                          <button key={i} onClick={() => { setSelectedPost(post); setPostDetailTab("details"); }}
+                            className="w-full text-left bg-background rounded-xl border border-foreground/[0.06] p-3 hover:border-foreground/[0.15] transition-colors"
+                          >
+                            <div className="flex items-center gap-2 mb-2">
+                              <div className="w-4 h-4 rounded-full border border-foreground/[0.15]" />
+                              <div className="w-6 h-6 rounded-full bg-amber-400 flex items-center justify-center text-white text-[0.6rem] font-bold">Y</div>
+                              <span className="text-[0.78rem] font-semibold">@yourbrand</span>
+                              <span style={{ color: platform?.color }} className="ml-auto"><PlatformIcon platformId={post.platform} size={14} /></span>
+                              <span className={`text-[0.65rem] font-bold px-1.5 py-0.5 rounded-full ${
+                                post.score >= 80 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                              }`}>{post.score}</span>
+                            </div>
+                            <div className="flex items-center gap-1 text-[0.7rem] text-muted-foreground mb-1.5">
+                              <Pencil size={10} />
+                              <span>{post.time}</span>
+                              <span className="ml-1">{post.dateLabel.toUpperCase()}</span>
+                            </div>
+                            <p className="text-[0.78rem] text-foreground line-clamp-2 leading-snug">{post.caption.slice(0, 80)}...</p>
+                            <div className="mt-2 w-full h-24 rounded-lg bg-emerald-50 flex items-center justify-center">
+                              <div style={{ color: platform?.color }}><PlatformIcon platformId={post.platform} size={28} /></div>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ─── Grid View ─── */}
+      {activeView === "grid" && (
+        <div className="p-4">
+          <div className="grid grid-cols-5 gap-4">
+            {posts.map((post, i) => {
+              const platform = PLATFORMS.find(p => p.id === post.platform);
+              return (
+                <button key={i} onClick={() => { setSelectedPost(post); setPostDetailTab("details"); }}
+                  className="text-left bg-background rounded-xl border border-foreground/[0.06] overflow-hidden hover:border-foreground/[0.15] transition-colors group"
+                >
+                  <div className="h-40 bg-emerald-50 flex items-center justify-center relative">
+                    <div style={{ color: platform?.color }} className="opacity-60 group-hover:opacity-80 transition-opacity">
+                      <PlatformIcon platformId={post.platform} size={36} />
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <div className="flex items-center justify-between mb-1">
+                      <p className="text-[0.78rem] font-semibold truncate flex-1 mr-2">{post.title}</p>
+                      <span className={`text-[0.65rem] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
+                        post.score >= 80 ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"
+                      }`}>{post.score}</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[0.72rem] text-muted-foreground">{post.dateLabel}</span>
+                      <span className={`text-[0.65rem] font-semibold px-2 py-0.5 rounded ${
+                        post.status === "published" ? "bg-emerald-100 text-emerald-700" :
+                        post.status === "scheduled" ? "bg-blue-100 text-blue-700" :
+                        "bg-foreground/[0.06] text-muted-foreground"
+                      }`}>{post.status === "published" ? "Published" : post.status === "scheduled" ? "Scheduled" : "Draft"}</span>
+                    </div>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Plan/Feed placeholder */}
+      {(activeView === "plan" || activeView === "feed") && (
         <div className="flex items-center justify-center py-16 text-muted">
           <div className="text-center">
             <Grid3X3 size={32} className="mx-auto mb-2 opacity-40" />
@@ -623,78 +720,287 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
         </div>
       )}
 
-      {/* Post detail modal */}
-      {selectedPost && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setSelectedPost(null)}>
-          <div className="bg-background rounded-2xl shadow-2xl w-[90vw] max-w-[700px] max-h-[80vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between p-4 border-b border-foreground/[0.06]">
-              <div className="flex items-center gap-2">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-white"
-                  style={{ backgroundColor: PLATFORMS.find(p => p.id === selectedPost.platform)?.color }}
-                >
-                  <PlatformIcon platformId={selectedPost.platform} size={16} />
-                </div>
-                <div>
-                  <h3 className="text-[0.88rem] font-bold">{PLATFORMS.find(p => p.id === selectedPost.platform)?.label}</h3>
-                  <p className="text-[0.7rem] text-muted">carousel</p>
-                </div>
-              </div>
-              <button onClick={() => setSelectedPost(null)} className="text-muted hover:text-foreground"><X size={18} /></button>
-            </div>
-
-            <div className="p-5">
-              {/* Content Score */}
-              <h4 className="text-[0.82rem] font-semibold text-muted mb-2">Content Score</h4>
-              <div className="flex items-center gap-3 mb-4">
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center text-[1.1rem] font-black text-white ${
-                  selectedPost.score >= 80 ? "bg-green-500" : selectedPost.score >= 60 ? "bg-amber-500" : "bg-red-500"
-                }`}>
-                  {selectedPost.score}
-                </div>
-                <span className={`text-[0.88rem] font-bold ${
-                  selectedPost.score >= 80 ? "text-green-500" : selectedPost.score >= 60 ? "text-amber-500" : "text-red-500"
-                }`}>
-                  {selectedPost.score >= 80 ? "Great" : selectedPost.score >= 60 ? "Good" : "Needs Work"}
-                </span>
-              </div>
-
-              {/* Scores breakdown */}
-              <div className="space-y-3 mb-4">
-                {[
-                  { label: "Caption Quality", score: Math.min(100, selectedPost.score - 10), status: "Fixable" },
-                  { label: "Hashtags", score: 100, status: "Good" },
-                  { label: "Content Type", score: 100, status: "Good" },
-                ].map(item => (
-                  <div key={item.label} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[0.82rem] font-medium">{item.label}</span>
-                      <span className={`text-[0.65rem] font-bold px-1.5 py-0.5 rounded ${
-                        item.status === "Good" ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
-                      }`}>{item.status}</span>
+      {/* ─── Post Detail Modal (two-panel) ─── */}
+      {selectedPost && (() => {
+        const platform = PLATFORMS.find(p => p.id === selectedPost.platform);
+        const captionScore = Math.min(100, selectedPost.score - 10);
+        const hashtagScore = 100;
+        const contentTypeScore = 100;
+        const mediaScore = 90;
+        return (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setSelectedPost(null)}>
+            <div className="bg-background rounded-2xl shadow-2xl w-[90vw] max-w-[1100px] max-h-[85vh] flex overflow-hidden" onClick={e => e.stopPropagation()}>
+              {/* Left panel — Details / Predictions */}
+              <div className="w-[480px] border-r border-foreground/[0.06] flex flex-col overflow-y-auto">
+                {/* Header */}
+                <div className="flex items-center justify-between p-4 border-b border-foreground/[0.06]">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center text-white" style={{ backgroundColor: platform?.color }}>
+                      <PlatformIcon platformId={selectedPost.platform} size={18} />
                     </div>
-                    <span className="text-[0.82rem] font-bold">{item.score}/100</span>
+                    <div>
+                      <h3 className="text-[0.92rem] font-bold">{platform?.label}</h3>
+                      <p className="text-[0.72rem] text-muted-foreground">{selectedPost.contentType}</p>
+                    </div>
                   </div>
-                ))}
+                  <div className="flex items-center gap-2">
+                    <button className="text-muted hover:text-foreground"><MoreHorizontal size={18} /></button>
+                    <button onClick={() => setSelectedPost(null)} className="text-muted hover:text-foreground"><X size={18} /></button>
+                  </div>
+                </div>
+
+                {/* Tabs */}
+                <div className="flex items-center gap-6 px-5 border-b border-foreground/[0.06]">
+                  <button onClick={() => setPostDetailTab("details")} className={`flex items-center gap-1.5 pb-3 pt-3 border-b-2 text-[0.82rem] font-medium transition-colors ${postDetailTab === "details" ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"}`}>
+                    <CalendarIcon size={13} /> Details
+                  </button>
+                  <button onClick={() => setPostDetailTab("predictions")} className={`flex items-center gap-1.5 pb-3 pt-3 border-b-2 text-[0.82rem] font-medium transition-colors ${postDetailTab === "predictions" ? "border-foreground text-foreground" : "border-transparent text-muted hover:text-foreground"}`}>
+                    <TrendingUp size={13} /> Predictions
+                  </button>
+                </div>
+
+                {/* Tab content */}
+                <div className="flex-1 overflow-y-auto p-5">
+                  {postDetailTab === "details" && (
+                    <div className="space-y-5">
+                      {/* Draft toggle */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2.5 py-1 rounded-lg bg-foreground/[0.06] text-[0.78rem] font-semibold flex items-center gap-1.5">
+                            <Pencil size={12} /> Draft
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[0.78rem] text-muted-foreground">Draft</span>
+                          <div className="w-10 h-5 rounded-full bg-emerald-500 relative cursor-pointer">
+                            <div className="absolute top-[2.5px] right-[2.5px] w-[15px] h-[15px] rounded-full bg-white shadow-sm" />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Content Score */}
+                      <div>
+                        <p className="text-[0.82rem] font-semibold text-muted-foreground mb-2">Content Score</p>
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className={`w-14 h-14 rounded-full flex items-center justify-center text-[1.2rem] font-black text-white ${
+                            selectedPost.score >= 80 ? "bg-emerald-500" : selectedPost.score >= 60 ? "bg-amber-500" : "bg-red-500"
+                          }`}>{selectedPost.score}</div>
+                          <span className={`text-[0.92rem] font-bold ${
+                            selectedPost.score >= 80 ? "text-emerald-500" : selectedPost.score >= 60 ? "text-amber-500" : "text-red-500"
+                          }`}>{selectedPost.score >= 80 ? "Excellent" : selectedPost.score >= 60 ? "Good" : "Needs Work"}</span>
+                        </div>
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 flex items-center gap-2 text-[0.78rem] text-amber-700 mb-2">
+                          <span>💡</span> <span>🔥 This post is optimized for maximum reach!</span>
+                        </div>
+                        <div className="bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 flex items-center gap-2 text-[0.78rem] mb-4">
+                          <span>💡</span>
+                          <span>Your biggest opportunity: <span className="text-emerald-600 font-semibold cursor-pointer">Upgrade your caption</span></span>
+                        </div>
+                      </div>
+
+                      {/* Score breakdowns */}
+                      {[
+                        { label: "Caption Quality", icon: MessageCircle, score: captionScore, color: "bg-emerald-500" },
+                        { label: "Hashtags", icon: Hash, score: hashtagScore, color: "bg-emerald-500" },
+                        { label: "Content Type", icon: LayoutGrid, score: contentTypeScore, color: "bg-emerald-500" },
+                        { label: "Media", icon: Image, score: mediaScore, color: "bg-emerald-500" },
+                      ].map((item, idx) => (
+                        <div key={item.label} className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-xl p-4 mb-3">
+                          <div className="flex items-center justify-between mb-2">
+                            <div className="flex items-center gap-2">
+                              <item.icon size={16} className="text-muted-foreground" />
+                              <span className="text-[0.85rem] font-semibold">{item.label}</span>
+                              <span className="text-[0.68rem] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700">Good</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="text-[0.85rem] font-bold">{item.score}<span className="text-muted-foreground font-normal">/100</span></span>
+                              {idx === 0 && <button className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.04] text-[0.72rem] font-semibold hover:bg-foreground/[0.08] transition-colors"><Sparkles size={11} /> Improve</button>}
+                            </div>
+                          </div>
+                          <div className="w-full h-2 rounded-full bg-foreground/[0.06] overflow-hidden">
+                            <div className={`h-full rounded-full ${item.color}`} style={{ width: `${item.score}%` }} />
+                          </div>
+                          {idx === 3 && <p className="text-[0.75rem] text-muted-foreground mt-2 flex items-center gap-1">💡 Short videos get 48% more views</p>}
+                        </div>
+                      ))}
+
+                      {/* Date/time */}
+                      <div className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-xl p-4 flex items-center justify-center gap-6">
+                        <div className="flex items-center gap-2 text-[0.82rem]"><CalendarIcon size={14} className="text-muted-foreground" /> Sun, Jan {selectedPost.day}, 2026</div>
+                        <div className="flex items-center gap-2 text-[0.82rem]"><Clock size={14} className="text-muted-foreground" /> {selectedPost.time}</div>
+                      </div>
+
+                      {/* Image placeholder */}
+                      <div>
+                        <p className="text-[0.82rem] font-semibold mb-2">Image</p>
+                        <div className="w-full h-32 rounded-xl bg-emerald-50 flex items-center justify-center" style={{ color: platform?.color }}>
+                          <PlatformIcon platformId={selectedPost.platform} size={40} />
+                        </div>
+                      </div>
+
+                      {/* Caption */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <p className="text-[0.82rem] font-semibold">Caption</p>
+                          <button className="flex items-center gap-1 text-[0.75rem] font-semibold text-emerald-600 hover:text-emerald-700"><Sparkles size={12} /> AI Writer</button>
+                        </div>
+                        <p className="text-[0.82rem] text-foreground leading-relaxed">{selectedPost.caption}</p>
+                      </div>
+
+                      {/* Hashtags */}
+                      <div>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <p className="text-[0.82rem] font-semibold">Hashtags</p>
+                            <span className="text-[0.68rem] font-bold px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-700 flex items-center gap-1"><Check size={10} /> Optimized</span>
+                          </div>
+                          <button className="flex items-center gap-1 text-[0.75rem] font-semibold text-emerald-600 hover:text-emerald-700"><Hash size={12} /> Suggestions</button>
+                        </div>
+                        <div className="flex flex-wrap gap-2 mb-1.5">
+                          {selectedPost.hashtags.map(h => (
+                            <span key={h} className="px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 text-[0.78rem] font-medium border border-emerald-200">#{h.replace(/#/g, '')}</span>
+                          ))}
+                        </div>
+                        <p className="text-[0.72rem] text-muted-foreground">{selectedPost.hashtags.length} hashtags · Optimal range (5-15)</p>
+                      </div>
+                    </div>
+                  )}
+
+                  {postDetailTab === "predictions" && (
+                    <div className="space-y-5">
+                      {/* Main prediction */}
+                      <div className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-xl p-6 text-center">
+                        <p className="text-[0.82rem] text-muted-foreground mb-1">Predicted Engagement Rate</p>
+                        <p className="text-3xl font-black">2.0%</p>
+                        <p className="text-[0.78rem] text-muted-foreground mt-1">Based on AI analysis</p>
+                      </div>
+
+                      {/* Stats grid */}
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-xl p-4 text-center">
+                          <Eye size={18} className="mx-auto text-muted-foreground mb-1" />
+                          <p className="text-xl font-black">5,234</p>
+                          <p className="text-[0.75rem] text-muted-foreground">Est. Reach</p>
+                        </div>
+                        <div className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-xl p-4 text-center">
+                          <Users size={18} className="mx-auto text-muted-foreground mb-1" />
+                          <p className="text-xl font-black">87%</p>
+                          <p className="text-[0.75rem] text-muted-foreground">Audience Match</p>
+                        </div>
+                        <div className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-xl p-4 text-center">
+                          <Heart size={18} className="mx-auto text-red-400 mb-1" />
+                          <p className="text-xl font-black">453</p>
+                          <p className="text-[0.75rem] text-muted-foreground">Est. Likes</p>
+                        </div>
+                        <div className="bg-foreground/[0.02] border border-foreground/[0.06] rounded-xl p-4 text-center">
+                          <MessageCircle size={18} className="mx-auto text-emerald-500 mb-1" />
+                          <p className="text-xl font-black">34</p>
+                          <p className="text-[0.75rem] text-muted-foreground">Est. Comments</p>
+                        </div>
+                      </div>
+
+                      {/* Performance Insights */}
+                      <div>
+                        <h4 className="text-[0.88rem] font-bold mb-3">Performance Insights</h4>
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between py-2">
+                            <div className="flex items-center gap-2 text-[0.82rem]"><Clock size={14} className="text-amber-500" /> Best Time to Post</div>
+                            <span className="text-[0.82rem] font-semibold">9:00 AM - 11:00 AM</span>
+                          </div>
+                          <div className="flex items-center justify-between py-2">
+                            <div className="flex items-center gap-2 text-[0.82rem]"><TrendingUp size={14} className="text-emerald-500" /> Content Quality</div>
+                            <span className="text-[0.82rem] font-semibold text-emerald-600">Good</span>
+                          </div>
+                          <div className="flex items-center justify-between py-2">
+                            <div className="flex items-center gap-2 text-[0.82rem]"><Share2 size={14} className="text-blue-500" /> Est. Shares</div>
+                            <span className="text-[0.82rem] font-semibold">2</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Tip */}
+                      <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-3">
+                        <p className="text-[0.82rem] text-amber-800">💡 <strong>Tip:</strong> Posts with 5-15 hashtags typically see 20% higher engagement on instagram.</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Bottom bar */}
+                <div className="border-t border-foreground/[0.06] p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Clock size={16} className="text-muted-foreground" />
+                      <div>
+                        <p className="text-[0.82rem] font-semibold">Auto Publish</p>
+                        <p className="text-[0.72rem] text-muted-foreground">Post will be published automatically on schedule</p>
+                      </div>
+                    </div>
+                    <div className="w-10 h-5 rounded-full bg-emerald-500 relative cursor-pointer">
+                      <div className="absolute top-[2.5px] right-[2.5px] w-[15px] h-[15px] rounded-full bg-white shadow-sm" />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-[0.82rem] font-semibold hover:bg-foreground/[0.04] transition-colors">
+                      <Pencil size={14} /> Edit
+                    </button>
+                    <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-500 text-white text-[0.82rem] font-bold hover:bg-emerald-600 transition-colors">
+                      <CalendarIcon size={14} /> Reschedule
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              <p className="text-[0.82rem] font-semibold mb-2">{selectedPost.title}</p>
-              <p className="text-[0.78rem] text-muted/70 leading-relaxed">
-                Hey creatives! 🚀 We're diving into what makes you uniquely YOU. What's one 'superpower' or unique skill you bring to your personal brand?
-              </p>
-
-              <div className="flex items-center gap-2 mt-5">
-                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-[0.82rem] font-semibold hover:bg-foreground/[0.04] transition-colors">
-                  ✏️ Edit
-                </button>
-                <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/85 transition-colors">
-                  🔄 Reschedule
-                </button>
+              {/* Right panel — Platform Preview */}
+              <div className="flex-1 bg-foreground/[0.02] flex flex-col overflow-y-auto">
+                <div className="p-5 pb-0">
+                  <h3 className="text-[0.92rem] font-bold mb-4">{platform?.label} Preview</h3>
+                </div>
+                <div className="flex-1 flex items-start justify-center p-5">
+                  <div className="w-full max-w-[340px] bg-background rounded-xl border border-foreground/[0.06] overflow-hidden shadow-sm">
+                    {/* Profile header */}
+                    <div className="flex items-center justify-between px-3 py-2.5">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-amber-400 flex items-center justify-center text-white text-[0.7rem] font-bold">Y</div>
+                        <span className="text-[0.82rem] font-semibold">@yourbrand</span>
+                      </div>
+                      <MoreHorizontal size={16} className="text-muted-foreground" />
+                    </div>
+                    {/* Image */}
+                    <div className="w-full aspect-square bg-foreground/[0.04] flex items-center justify-center" style={{ color: platform?.color }}>
+                      <PlatformIcon platformId={selectedPost.platform} size={64} />
+                    </div>
+                    {/* Carousel dots */}
+                    {selectedPost.contentType === "carousel" && (
+                      <div className="flex items-center justify-center gap-1 py-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-foreground" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-foreground/20" />
+                        <div className="w-1.5 h-1.5 rounded-full bg-foreground/20" />
+                      </div>
+                    )}
+                    {/* Actions */}
+                    <div className="flex items-center justify-between px-3 py-2">
+                      <div className="flex items-center gap-4">
+                        <Heart size={20} className="text-foreground" />
+                        <MessageCircle size={20} className="text-foreground" />
+                        <Send size={20} className="text-foreground" />
+                      </div>
+                      <Bookmark size={20} className="text-foreground" />
+                    </div>
+                    {/* Caption preview */}
+                    <div className="px-3 pb-3">
+                      <p className="text-[0.78rem] leading-relaxed">
+                        <span className="font-bold">@yourbrand</span>{" "}
+                        {selectedPost.caption.slice(0, 200)}...
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Manage Labels modal */}
       {showManageLabels && (
