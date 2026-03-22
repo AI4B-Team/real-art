@@ -519,10 +519,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   key={t.id}
                   type="button"
                   onClick={() => handleTypeSelect(t.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-semibold border transition-all text-foreground bg-background ${
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-semibold border transition-all ${
                     isActive
-                      ? `border-foreground/30 shadow-sm`
-                      : "border-foreground/15 hover:border-foreground/30"
+                      ? `${t.bg} ${t.border} shadow-sm text-foreground`
+                      : "bg-background border-foreground/15 hover:border-foreground/30 text-foreground"
                   }`}
                 >
                   <t.icon size={16} className={t.color} />
