@@ -4,7 +4,7 @@ import {
   List, LayoutGrid, Columns, Grid3X3, Rss,
   Trash2, Settings, Sparkles, Plus, ChevronDown, Search, Filter as FilterIcon, Download, MoreHorizontal,
   Image, Play, LayoutList, CircleDot, Check, Heart, MessageCircle, Send, Bookmark, Eye, Users, Share2, Clock,
-  TrendingUp, Hash, Pencil,
+  TrendingUp, Hash, Pencil, FileText,
 } from "lucide-react";
 
 /* ─── SVG Logo components ────────────────────── */
@@ -203,6 +203,8 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [showManageLabels, setShowManageLabels] = useState(false);
   const [showSearchBar, setShowSearchBar] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [showExportModal, setShowExportModal] = useState(false);
+  const [exportSelected, setExportSelected] = useState<Set<number>>(new Set());
   const [showPostingSchedule, setShowPostingSchedule] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
   const [scheduleView, setScheduleView] = useState<"day"|"week">("day");
@@ -446,7 +448,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             <span className="text-[0.72rem] text-muted">{new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
             <button onClick={() => { setShowSearchBar(v => !v); if (showSearchBar) setSearchQuery(""); }} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showSearchBar ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><Search size={12} /></button>
             <button onClick={() => setShowFilters(v => !v)} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showFilters ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><FilterIcon size={12} /></button>
-            <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Download size={12} /></button>
+            <button onClick={() => { setShowExportModal(true); setExportSelected(new Set(posts.map((_, i) => i))); }} className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"><Download size={12} /></button>
             <div className="relative">
               <button onClick={() => setShowMoreMenu(v => !v)} className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"><MoreHorizontal size={12} /></button>
               {showMoreMenu && (
@@ -1198,6 +1200,75 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
           </div>
         );
       })()}
+
+      {/* Export Posts modal */}
+      {showExportModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowExportModal(false)}>
+          <div className="bg-background rounded-2xl shadow-2xl w-[90vw] max-w-[640px] max-h-[90vh] flex flex-col m-4" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-6 pb-4">
+              <h3 className="text-[1.1rem] font-bold">Export Posts</h3>
+              <button onClick={() => setShowExportModal(false)} className="text-muted hover:text-foreground"><X size={18} /></button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 space-y-3">
+              {posts.map((post, i) => {
+                const selected = exportSelected.has(i);
+                const platform = PLATFORMS.find(p => p.id === post.platform);
+                return (
+                  <div
+                    key={i}
+                    onClick={() => setExportSelected(prev => {
+                      const next = new Set(prev);
+                      next.has(i) ? next.delete(i) : next.add(i);
+                      return next;
+                    })}
+                    className={`flex items-start gap-3 p-3 rounded-xl border-2 cursor-pointer transition-all ${
+                      selected ? "border-emerald-400 bg-emerald-50/50" : "border-foreground/[0.06] hover:border-foreground/[0.12]"
+                    }`}
+                  >
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                      selected ? "bg-emerald-500 text-white" : "border-2 border-foreground/[0.15]"
+                    }`}>
+                      {selected && <Check size={13} />}
+                    </div>
+                    <div className="w-14 h-14 rounded-lg bg-foreground/[0.06] shrink-0 relative overflow-hidden flex items-center justify-center">
+                      <div style={{ color: platform?.color }} className="opacity-50">
+                        <PlatformIcon platformId={post.platform} size={20} />
+                      </div>
+                      <div className="absolute bottom-0.5 right-0.5 w-5 h-5 rounded-full flex items-center justify-center bg-background shadow-sm" style={{ color: platform?.color }}>
+                        <PlatformIcon platformId={post.platform} size={11} />
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[0.82rem] font-bold">{post.time}</span>
+                        <span className="text-[0.78rem] text-muted-foreground">{post.dateLabel}</span>
+                        <span className="inline-flex items-center gap-1 text-[0.68rem] font-semibold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
+                          📫 {post.score > 70 ? post.score : 5}
+                        </span>
+                      </div>
+                      <p className="text-[0.8rem] text-muted-foreground leading-snug line-clamp-2">{post.caption}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="border-t border-foreground/[0.06] p-6 pt-4 flex items-center justify-between">
+              <span className="text-[0.88rem] font-semibold text-emerald-600">{exportSelected.size} Posts selected</span>
+              <div className="flex items-center gap-3">
+                <button className="flex items-center gap-2 px-5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.84rem] font-semibold hover:bg-foreground/[0.03] transition-colors">
+                  <FileText size={15} /> PDF
+                </button>
+                <button onClick={() => setShowExportModal(false)} className="px-5 py-2.5 rounded-lg border border-foreground/[0.1] text-[0.84rem] font-semibold hover:bg-foreground/[0.03] transition-colors">
+                  Cancel
+                </button>
+                <button className="flex items-center gap-2 px-6 py-2.5 rounded-lg bg-emerald-500 text-white text-[0.84rem] font-bold hover:bg-emerald-600 transition-colors">
+                  <Download size={15} /> Download file
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Manage Labels modal */}
       {showManageLabels && (
