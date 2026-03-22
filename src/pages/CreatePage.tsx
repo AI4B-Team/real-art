@@ -1476,9 +1476,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentTime !== "9:00 AM" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Clock size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Posting Time</TooltipContent></Tooltip>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Time</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Posting Time</p>
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Time</p>
                         {["6:00 AM", "9:00 AM", "12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"].map(o => (
                           <button key={o} onClick={() => setContentTime(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTime === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
