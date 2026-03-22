@@ -1687,20 +1687,6 @@ export default function CreatePage() {
                 <p className="text-[0.92rem] text-muted max-w-md mx-auto mb-6 leading-relaxed">
                   Use the prompt box above to generate your first image, video, or design — or explore community creations for inspiration.
                 </p>
-                <div className="flex items-center justify-center gap-3">
-                  <button
-                    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg bg-accent text-primary-foreground text-[0.84rem] font-bold hover:bg-accent/85 transition-colors"
-                  >
-                    <Sparkles size={15} /> Start Creating
-                  </button>
-                  <button
-                    onClick={() => setActiveTab("community")}
-                    className="flex items-center gap-2 px-6 py-3 rounded-lg border border-foreground/[0.12] text-foreground text-[0.84rem] font-semibold hover:border-foreground/30 transition-colors"
-                  >
-                    <Users size={15} /> Explore Community
-                  </button>
-                </div>
               </div>
             ) : filteredCreations.length === 0 ? (
               <div className="text-center py-20">
