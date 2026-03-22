@@ -360,6 +360,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [storyScenes, setStoryScenes] = useState<StoryScene[]>([makeScene()]);
   const [storyMode, setStoryMode] = useState<"auto" | "manual">("auto");
   const [storyModeOpen, setStoryModeOpen] = useState(false);
+  const [storyEngine, setStoryEngine] = useState("Sora Storyboard");
+  const [storyEngineOpen, setStoryEngineOpen] = useState(false);
+  const [storyOrientation, setStoryOrientation] = useState("Landscape");
+  const [storyOrientationOpen, setStoryOrientationOpen] = useState(false);
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
@@ -1116,7 +1120,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Non-app generic controls */}
-                {selectedType !== "app" && selectedSubMode && (
+                {selectedType !== "app" && selectedSubMode && !(selectedType === "video" && selectedSubMode === "story") && (
                   <>
                 <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
@@ -1170,6 +1174,89 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </>
                 )}
 
+                {/* Story-specific toolbar */}
+                {selectedType === "video" && selectedSubMode === "story" && (
+                  <>
+                  <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
+
+                  {/* Storyboard Engine */}
+                  <Popover open={storyEngineOpen} onOpenChange={setStoryEngineOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground`}>
+                        <Settings size={12} />{storyEngine}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Storyboard Engine</TooltipContent></Tooltip>
+                    <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                      {["Sora Storyboard", "Kling Storyboard", "Runway Storyboard"].map(e => (
+                        <button key={e} type="button" onClick={() => { setStoryEngine(e); setStoryEngineOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${storyEngine === e ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {e}{storyEngine === e && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+
+                  {/* Character */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("character")}
+                      className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <User size={14} />
+                      {selectedCharacters.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{selectedCharacters.length}</span>}
+                    </button>
+                  </TooltipTrigger><TooltipContent>Character{selectedCharacters.length > 0 ? ` (${selectedCharacters.length})` : ""}</TooltipContent></Tooltip>
+
+                  {/* Reference */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("reference")}
+                      className={`toolbar-btn flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Link2 size={12} />Reference{references.length > 0 ? ` (${references.length})` : ""}
+                    </button>
+                  </TooltipTrigger><TooltipContent>Reference images</TooltipContent></Tooltip>
+
+                  {/* Frames */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("frames")}
+                      className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "frames" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Film size={14} />
+                    </button>
+                  </TooltipTrigger><TooltipContent>Frames</TooltipContent></Tooltip>
+
+                  {/* Duration */}
+                  <Popover open={durationOpen} onOpenChange={setDurationOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-accent/10 text-accent hover:bg-accent/15 transition-colors whitespace-nowrap shrink-0">
+                        <Clock size={12} />{selectedDuration}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Duration</TooltipContent></Tooltip>
+                    <PopoverContent className="w-32 p-1.5" align="start" sideOffset={6}>
+                      {["5s","10s","15s","25s"].map(d => (
+                        <button key={d} type="button" onClick={() => { setSelectedDuration(d); setDurationOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedDuration === d ? "bg-accent text-white" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {d}{selectedDuration === d && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+
+                  {/* Orientation */}
+                  <Popover open={storyOrientationOpen} onOpenChange={setStoryOrientationOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-yellow-50 text-yellow-700 hover:bg-yellow-100 transition-colors whitespace-nowrap shrink-0">
+                        <Presentation size={12} />{storyOrientation}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
+                    <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                      {["Landscape", "Portrait", "Square"].map(o => (
+                        <button key={o} type="button" onClick={() => { setStoryOrientation(o); setStoryOrientationOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${storyOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {o}{storyOrientation === o && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                  </>
+                )}
+
                 {/* Ratio — image & design */}
                 {selectedSubMode && (selectedType === "image" || selectedType === "design") && (
                   <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
@@ -1202,7 +1289,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Duration — video */}
-                {selectedSubMode && selectedType === "video" && (
+                {selectedSubMode && selectedType === "video" && selectedSubMode !== "story" && (
                   <Popover open={durationOpen} onOpenChange={setDurationOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-accent/10 text-accent hover:bg-accent/15 transition-colors whitespace-nowrap shrink-0">
@@ -1221,7 +1308,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Resolution — video */}
-                {selectedSubMode && selectedType === "video" && (
+                {selectedSubMode && selectedType === "video" && selectedSubMode !== "story" && (
                   <Popover open={resolutionOpen} onOpenChange={setResolutionOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-accent/10 text-accent hover:bg-accent/15 transition-colors whitespace-nowrap shrink-0">
@@ -1240,26 +1327,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Story mode — Auto/Manual toggle + Scenes button */}
-                {selectedType === "video" && selectedSubMode === "story" && (
-                  <>
-                  <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
-                  <Popover open={storyModeOpen} onOpenChange={setStoryModeOpen}>
-                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${storyMode === "manual" ? "bg-yellow-50 text-yellow-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <Calendar size={12} />{storyMode === "auto" ? "Auto" : "Manual"}
-                      </button>
-                    </PopoverTrigger></TooltipTrigger><TooltipContent>Scene Mode</TooltipContent></Tooltip>
-                    <PopoverContent className="w-36 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
-                      {(["auto", "manual"] as const).map(m => (
-                        <button key={m} type="button" onClick={() => { setStoryMode(m); setStoryModeOpen(false); }}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors capitalize ${storyMode === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                          {m}{storyMode === m && <Check size={12} />}
-                        </button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                  </>
-                )}
+                {/* Story Auto/Manual toggle removed from toolbar — controlled via Scenes button above */}
 
                 {/* Count — image, design */}
                 {selectedSubMode && (selectedType === "image" || selectedType === "design") && (
