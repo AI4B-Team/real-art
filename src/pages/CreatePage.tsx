@@ -980,7 +980,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Ratio — image & design */}
-                {(selectedType === "image" || selectedType === "design") && (
+                {selectedSubMode && (selectedType === "image" || selectedType === "design") && (
                   <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedRatio !== "1:1" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
