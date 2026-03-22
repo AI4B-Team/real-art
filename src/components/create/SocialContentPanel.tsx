@@ -4,7 +4,7 @@ import {
   List, LayoutGrid, Columns, Grid3X3, Rss,
   Trash2, Settings, Sparkles, Plus, ChevronDown, Search, Filter as FilterIcon, Download, MoreHorizontal,
   Image, Play, LayoutList, CircleDot, Check, Heart, MessageCircle, Send, Bookmark, Eye, Users, Share2, Clock,
-  TrendingUp, Hash, Pencil, FileText, PenLine,
+  TrendingUp, Hash, Pencil, FileText, PenLine, Palette,
 } from "lucide-react";
 import {
   Popover, PopoverContent, PopoverTrigger,
