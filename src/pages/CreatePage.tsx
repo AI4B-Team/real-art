@@ -360,6 +360,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [storyScenes, setStoryScenes] = useState<StoryScene[]>([makeScene()]);
   const [storyMode, setStoryMode] = useState<"auto" | "manual">("auto");
   const [storyModeOpen, setStoryModeOpen] = useState(false);
+  const [storyEngine, setStoryEngine] = useState("Sora Storyboard");
+  const [storyEngineOpen, setStoryEngineOpen] = useState(false);
+  const [storyOrientation, setStoryOrientation] = useState("Landscape");
+  const [storyOrientationOpen, setStoryOrientationOpen] = useState(false);
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
