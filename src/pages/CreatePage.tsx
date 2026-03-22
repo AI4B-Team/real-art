@@ -890,6 +890,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <FramePickerModal
                   label={framePickerTarget === "start" ? "Start" : "End"}
                   onSelect={(src, meta) => {
+                    // Clean up old frame's character/reference before replacing
+                    const oldMeta = framePickerTarget === "start" ? startFrameMeta : endFrameMeta;
+                    if (oldMeta) {
+                      if (oldMeta.sourceType === "character" && oldMeta.characterId) {
+                        setSelectedCharacters(prev => prev.filter(c => c !== oldMeta.characterId));
+                      }
+                      if (oldMeta.refId) {
+                        setReferences(prev => prev.filter(r => r.id !== oldMeta.refId));
+                      }
+                    }
+
                     const frameMeta: { sourceType: string; characterId?: string; refId?: string } = {
                       sourceType: meta?.sourceType || "upload",
                       characterId: meta?.characterId,
