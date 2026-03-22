@@ -331,6 +331,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [contentFrequency, setContentFrequency] = useState("Daily");
   const [contentTime, setContentTime] = useState("9:00 AM");
   const [contentStyle, setContentStyle] = useState("Informative");
+
+  // Document-specific states
+  const [docLanguage, setDocLanguage] = useState("English");
+  const [docTone, setDocTone] = useState("Professional");
+  const [docChapters, setDocChapters] = useState("Auto");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
