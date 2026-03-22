@@ -57,6 +57,7 @@ import PageShell from "@/components/PageShell";
 import ReferencePanel from "@/components/create/ReferencePanel";
 import FramePanel from "@/components/create/FramePanel";
 import FrameSourcePicker from "@/components/create/FrameSourcePicker";
+import type { FrameSelectionMeta } from "@/components/create/FrameSourcePicker";
 import FramePickerModal from "@/components/create/FramePickerModal";
 import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
