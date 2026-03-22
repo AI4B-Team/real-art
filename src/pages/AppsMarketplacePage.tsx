@@ -210,7 +210,7 @@ const AppsMarketplacePage = () => {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<"marketplace" | "my-apps">("marketplace");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [selectedCat, setSelectedCat] = useState("All");
+  const [selectedCat, setSelectedCat] = useState("Select All");
 
   const filterApps = (apps: AppItem[]) => {
     let result = apps;
