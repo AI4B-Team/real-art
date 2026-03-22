@@ -201,6 +201,8 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [feedDevice, setFeedDevice] = useState<"mobile"|"desktop">("mobile");
   const [feedPlatform, setFeedPlatform] = useState("instagram");
   const [showManageLabels, setShowManageLabels] = useState(false);
+  const [showSearchBar, setShowSearchBar] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [showPostingSchedule, setShowPostingSchedule] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
   const [scheduleView, setScheduleView] = useState<"day"|"week">("day");
@@ -442,7 +444,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               Drafts
             </label>
             <span className="text-[0.72rem] text-muted">{new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
-            <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Search size={12} /></button>
+            <button onClick={() => { setShowSearchBar(v => !v); if (showSearchBar) setSearchQuery(""); }} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showSearchBar ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><Search size={12} /></button>
             <button onClick={() => setShowFilters(v => !v)} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showFilters ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><FilterIcon size={12} /></button>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Download size={12} /></button>
             <div className="relative">
@@ -466,6 +468,28 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
                 </>
               )}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Search bar */}
+      {showSearchBar && (
+        <div className="border-b border-foreground/[0.06] px-5 py-3">
+          <div className="relative max-w-md">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search posts..."
+              autoFocus
+              className="w-full pl-9 pr-8 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] text-[0.84rem] font-body outline-none focus:border-accent/40 transition-colors"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
+                <X size={13} />
+              </button>
+            )}
           </div>
         </div>
       )}
