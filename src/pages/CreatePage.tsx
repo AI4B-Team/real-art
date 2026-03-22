@@ -564,7 +564,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           </div>
         </div>
 
-        <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background shadow-sm overflow-visible transition-all duration-200 ${borderCls}`}>
+        <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background overflow-visible transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-md" : "shadow-sm"}`}>
 
           {/* Textarea row */}
           <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
