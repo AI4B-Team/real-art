@@ -437,37 +437,23 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     }
   };
 
-  // Auto-populate video frames from character/reference selections
+  // Auto-populate video start frame from character/reference selections
   useEffect(() => {
     if (selectedType !== "video") return;
     
-    // Build list of all selected images
-    const allImages: { src: string; name: string }[] = [];
+    // Determine the primary selected image (character takes priority)
+    let primarySrc: string | null = null;
     
-    // Add character image
     if (selectedCharacters.length > 0) {
       const id = selectedCharacters[0];
       const info = characterInfoMap[id];
-      if (info?.avatar) {
-        allImages.push({ src: info.avatar, name: info.name });
-      }
+      if (info?.avatar) primarySrc = info.avatar;
+    } else if (references.length > 0) {
+      primarySrc = references[0].src;
     }
     
-    // Add reference image
-    if (references.length > 0) {
-      allImages.push({ src: references[0].src, name: references[0].name });
-    }
-    
-    if (allImages.length === 0) {
-      setStartFrame(null);
-      setEndFrame(null);
-    } else if (allImages.length === 1) {
-      setStartFrame(allImages[0].src);
-      setEndFrame(null);
-    } else {
-      setStartFrame(allImages[0].src);
-      setEndFrame(allImages[1].src);
-    }
+    setStartFrame(primarySrc);
+    // Don't touch endFrame — let user set it manually via the frame picker
   }, [selectedType, selectedCharacters, characterInfoMap, references]);
 
   useEffect(() => {
@@ -820,7 +806,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
                       <img src={endFrame} alt="End Frame" className="w-full h-full object-cover" />
                       <button
-                        onClick={(e) => { e.stopPropagation(); if (selectedType === "video") { setReferences([]); } setEndFrame(null); }}
+                        onClick={(e) => { e.stopPropagation(); setEndFrame(null); }}
                         className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
