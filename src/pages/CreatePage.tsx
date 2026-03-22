@@ -142,11 +142,16 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
     { id: "cover-letter",  label: "Cover Letter", icon: FileText },
   ],
   app: [
-    { id: "web-app",   label: "Web App",   icon: Globe },
-    { id: "ai-agent",  label: "AI Agent",  icon: Bot },
-    { id: "saas",      label: "SaaS",      icon: Package },
-    { id: "website",   label: "Website",   icon: LayoutGrid },
-    { id: "extension", label: "Extension", icon: Code },
+    { id: "website",     label: "Website",         icon: LayoutGrid },
+    { id: "landing",     label: "Landing Page",    icon: FileText },
+    { id: "multi-page",  label: "Multi-Page Site", icon: LayoutGrid },
+    { id: "link-in-bio", label: "Link In Bio",     icon: LinkIcon },
+    { id: "blog",        label: "Blog",            icon: Rss },
+    { id: "membership",  label: "Membership",      icon: Lock },
+    { id: "ecommerce",   label: "Ecommerce",       icon: ShoppingCart },
+    { id: "web-app",     label: "Web App",         icon: Globe },
+    { id: "ai-agent",    label: "AI Agent",        icon: Bot },
+    { id: "saas",        label: "SaaS",            icon: Package },
   ],
 };
 
