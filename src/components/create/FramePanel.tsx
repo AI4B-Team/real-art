@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Upload, ArrowLeftRight, X, Play } from "lucide-react";
+import { Upload, ArrowLeftRight, X } from "lucide-react";
 
 interface FramePanelProps {
   onClose: () => void;
