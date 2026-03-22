@@ -1227,7 +1227,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[0.8rem] font-semibold text-foreground">{selectedType === "video" ? "Video Style" : "Art Style"}</span>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
