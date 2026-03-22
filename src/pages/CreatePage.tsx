@@ -1130,7 +1130,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
-                  className={`flex items-center justify-center gap-2 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                  className={`flex items-center justify-center gap-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] active:scale-95 ${
                     selectedType === "app"
                       ? "px-4 py-2 bg-accent/15 text-accent hover:bg-accent/25 text-[0.82rem] font-semibold"
                       : "w-9 h-9 bg-accent text-white hover:bg-accent/85"
