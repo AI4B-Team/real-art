@@ -1126,7 +1126,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {selectedType === "video" && selectedSubMode === "story" && (
                   <Popover>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${storyMode === "manual" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
                         <Clapperboard size={12} />Scenes
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
