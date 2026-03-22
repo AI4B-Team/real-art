@@ -543,7 +543,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             </div>
 
             {/* Platforms */}
-            <div>
+            <div className="flex-1 px-5">
               <h4 className="text-[0.82rem] font-bold mb-3">Platforms</h4>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                 {[
