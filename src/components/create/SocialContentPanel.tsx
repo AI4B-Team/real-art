@@ -354,7 +354,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 whitespace-nowrap">
           <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-destructive/30 text-destructive text-[0.78rem] font-medium hover:bg-destructive/5 transition-colors">
             <Trash2 size={13} /> Delete All
           </button>
