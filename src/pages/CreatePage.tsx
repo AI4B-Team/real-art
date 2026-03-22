@@ -870,7 +870,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
-          {!isListening && selectedType !== "video" && (selectedCharacters.length > 0 || references.length > 0) && (
+          {!isListening && (selectedCharacters.length > 0 || references.length > 0) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
               {selectedCharacters.length > 0 && (
                 <button type="button" onClick={() => togglePanel("character")}
