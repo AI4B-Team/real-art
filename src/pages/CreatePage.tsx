@@ -367,6 +367,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   // Track what source each frame came from for cleanup
   const [startFrameMeta, setStartFrameMeta] = useState<{ sourceType: string; characterId?: string; refId?: string } | null>(null);
   const [endFrameMeta, setEndFrameMeta] = useState<{ sourceType: string; characterId?: string; refId?: string } | null>(null);
+  const [startFrameLocked, setStartFrameLocked] = useState(false);
+  const [endFrameLocked, setEndFrameLocked] = useState(false);
   const [framePickerTarget, setFramePickerTarget] = useState<"start" | "end" | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
@@ -384,8 +386,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         setReferences(prev => prev.filter(r => r.id !== meta.refId));
       }
     }
-    if (which === "start") { setStartFrame(null); setStartFrameMeta(null); }
-    else { setEndFrame(null); setEndFrameMeta(null); }
+    if (which === "start") {
+      setStartFrame(null);
+      setStartFrameMeta(null);
+      setStartFrameLocked(true);
+    } else {
+      setEndFrame(null);
+      setEndFrameMeta(null);
+      setEndFrameLocked(true);
+    }
   };
 
 
@@ -477,18 +486,16 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
       if (info?.avatar) charImages.push(info.avatar);
     }
     
-    // Only auto-set frames from characters — don't overwrite manually-set frames
-    if (charImages.length >= 1) {
+    // Only auto-set frames from characters when the slot hasn't been explicitly cleared
+    if (charImages.length >= 1 && !startFrameLocked) {
       setStartFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[0]);
       setStartFrameMeta(prev => {
-        // Only update meta if we're actually changing the frame to a character image
-        const currentStart = charImages[0];
         const charId = selectedCharacters[0];
         if (prev?.sourceType === "character" && prev?.characterId === charId) return prev;
         return { sourceType: "character", characterId: charId };
       });
     }
-    if (charImages.length >= 2) {
+    if (charImages.length >= 2 && !endFrameLocked) {
       setEndFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[1]);
       setEndFrameMeta(prev => {
         const charId = selectedCharacters[1];
@@ -496,7 +503,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         return { sourceType: "character", characterId: charId };
       });
     }
-  }, [selectedType, selectedCharacters, characterInfoMap]);
+  }, [selectedType, selectedCharacters, characterInfoMap, startFrameLocked, endFrameLocked]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -545,6 +552,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setEndFrame(null);
     setStartFrameMeta(null);
     setEndFrameMeta(null);
+    setStartFrameLocked(false);
+    setEndFrameLocked(false);
     setStoryScenes([makeScene()]);
     setStoryMode("auto");
     setTypeDropdownOpen(false);
@@ -859,8 +868,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     type="button"
                     onClick={() => {
                       const tmp = startFrame;
+                      const tmpMeta = startFrameMeta;
                       setStartFrame(endFrame);
+                      setStartFrameMeta(endFrameMeta);
                       setEndFrame(tmp);
+                      setEndFrameMeta(tmpMeta);
+                      setStartFrameLocked(false);
+                      setEndFrameLocked(false);
                     }}
                     disabled={!startFrame && !endFrame}
                     className="p-2.5 rounded-xl hover:bg-foreground/[0.06] transition-colors disabled:opacity-20 disabled:cursor-not-allowed shrink-0"
@@ -921,8 +935,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       sourceType: meta?.sourceType || "upload",
                       characterId: meta?.characterId,
                     };
-                    if (framePickerTarget === "start") { setStartFrame(src); setStartFrameMeta(frameMeta); }
-                    else { setEndFrame(src); setEndFrameMeta(frameMeta); }
+                    if (framePickerTarget === "start") {
+                      setStartFrame(src);
+                      setStartFrameMeta(frameMeta);
+                      setStartFrameLocked(false);
+                    } else {
+                      setEndFrame(src);
+                      setEndFrameMeta(frameMeta);
+                      setEndFrameLocked(false);
+                    }
                     // Update character/reference state based on source type
                     if (selectedType === "video" && meta) {
                       if (meta.sourceType === "character" && meta.characterId) {
