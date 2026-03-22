@@ -1799,7 +1799,7 @@ export default function CreatePage() {
               </button>
             ))}
           </div>
-          {activeTab === "creations" && (
+          {(activeTab === "creations" || activeTab === "community" || activeTab === "collections" || activeTab === "templates" || activeTab === "apps") && (
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
               <PopoverTrigger asChild>
                 <button type="button" className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[0.82rem] font-medium transition-colors ${hasActiveFilters ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
