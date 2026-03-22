@@ -422,7 +422,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   }, [selectedCharacters]);
 
   const toggleCharacter = (id: string) => {
-    setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+    if (selectedType === "video") {
+      // Video mode: only one character at a time (toggle on/off)
+      setSelectedCharacters(prev => prev.includes(id) ? [] : [id]);
+    } else {
+      setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+    }
   };
 
   useEffect(() => {
