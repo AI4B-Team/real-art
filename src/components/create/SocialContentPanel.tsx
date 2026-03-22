@@ -162,6 +162,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [posts] = useState(() => generateDummyPosts(currentMonth, currentYear));
   const [selectedPost, setSelectedPost] = useState<typeof posts[0] | null>(null);
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
+  const [showManageLabels, setShowManageLabels] = useState(false);
 
   // Check if brand profile exists
   const hasBrandProfile = (() => {
