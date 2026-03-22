@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
 import PageShell from "@/components/PageShell";
+import LanguageSelector from "@/components/LanguageSelector";
 
 const recentImages = [
   "photo-1618005182384-a83a8bd57fbe",
