@@ -378,6 +378,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
     const meta = which === "start" ? startFrameMeta : endFrameMeta;
+    const isClearingLastFrame =
+      (which === "start" && !endFrame) ||
+      (which === "end" && !startFrame);
+
     if (meta) {
       if (meta.sourceType === "character" && meta.characterId) {
         setSelectedCharacters(prev => prev.filter(c => c !== meta.characterId));
@@ -386,6 +390,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         setReferences(prev => prev.filter(r => r.id !== meta.refId));
       }
     }
+
     if (which === "start") {
       setStartFrame(null);
       setStartFrameMeta(null);
@@ -394,6 +399,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
       setEndFrame(null);
       setEndFrameMeta(null);
       setEndFrameLocked(false);
+    }
+
+    if (isClearingLastFrame) {
+      setSelectedCharacters([]);
+      setReferences([]);
+      setCharacterInfoMap({});
     }
   };
 
