@@ -1193,7 +1193,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <Popover open={voiceoverLanguageOpen} onOpenChange={(o) => { setVoiceoverLanguageOpen(o); if (!o) setVoiceoverLangSearch(""); }}>
                   <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                     <button type="button" className={`toolbar-btn p-1.5 rounded-lg shrink-0 ${voiceoverLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                      <Globe size={14} />
+                      <Languages size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
                   <PopoverContent className="w-56 p-2" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
