@@ -585,7 +585,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   const hasType = !!selectedType;
-  const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "Create anything...";
+  const placeholder = selectedType === "video" && selectedSubMode === "story"
+    ? "Upload References. Describe your vision. We'll create the scenes (e.g., Product reveal with smooth motion, premium feel, confident tone)"
+    : selectedType ? PLACEHOLDERS[selectedType] : "Create anything...";
   const borderCls = typeCfg ? typeCfg.promptBorder : "border-foreground/20";
 
   const topLeftLabel = (type: ContentType): string => {
