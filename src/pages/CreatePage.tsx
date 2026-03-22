@@ -782,6 +782,34 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </PopoverContent>
                 </Popover>
 
+                {/* Build dropdown — only when App > Website */}
+                {selectedType === "app" && selectedSubMode === "website" && (
+                  <>
+                  <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
+                  <Popover open={appBuildOpen} onOpenChange={setAppBuildOpen}>
+                    <PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all whitespace-nowrap shrink-0 ${
+                        appBuildMode ? `${typeCfg!.bg} ${typeCfg!.border} ${typeCfg!.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
+                      }`}>
+                        {appBuildMode ? (
+                          <>{(() => { const found = APP_BUILD_MODES.find(b => b.id === appBuildMode); return found ? <><found.icon size={13} />{found.label}</> : "Build"; })()}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setAppBuildMode(null); setAppBuildOpen(false); }} /></>
+                        ) : (
+                          <><Layers size={13} />Build<ChevronDown size={11} className="text-muted" /></>
+                        )}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                      {APP_BUILD_MODES.map(b => (
+                        <button key={b.id} type="button" onClick={() => { setAppBuildMode(b.id); setAppBuildOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[0.82rem] font-medium transition-colors ${appBuildMode === b.id ? `${typeCfg!.bg} ${typeCfg!.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          <b.icon size={15} className={appBuildMode === b.id ? typeCfg!.color : "text-muted"} />{b.label}{appBuildMode === b.id && <Check size={12} className="ml-auto" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                  </>
+                )}
+
                 {/* Non-app generic controls */}
                 {selectedType !== "app" && (
                   <>
