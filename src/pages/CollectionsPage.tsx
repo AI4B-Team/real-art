@@ -777,7 +777,7 @@ export default function CollectionsPage() {
 
   return (
     <PageShell>
-      <div className="px-6 md:px-10 py-8">
+      <div className="px-6 md:px-10 pt-8">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
