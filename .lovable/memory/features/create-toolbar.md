@@ -1,0 +1,1 @@
+Type badge pill must always be the first item in the prompt box toolbar across ALL creation modes. Never remove it.
