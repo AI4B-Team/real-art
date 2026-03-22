@@ -1806,7 +1806,7 @@ export default function CreatePage() {
                   <Filter size={14} />Filter{hasActiveFilters && <span className="w-1.5 h-1.5 rounded-full bg-accent" />}
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-[280px] p-0" align="end" sideOffset={6}>
+              <PopoverContent className="w-[280px] p-0" align="end" side="bottom" sideOffset={10} avoidCollisions={false}>
                 <div className="p-4">
                   <h3 className="text-[0.92rem] font-bold mb-4">Filter By</h3>
 
