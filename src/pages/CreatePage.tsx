@@ -422,7 +422,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   }, [selectedCharacters]);
 
   const toggleCharacter = (id: string) => {
-    setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+    if (selectedType === "video") {
+      // Video mode: only one character at a time (toggle on/off)
+      setSelectedCharacters(prev => prev.includes(id) ? [] : [id]);
+    } else {
+      setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
+    }
   };
 
   useEffect(() => {
@@ -476,7 +481,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setSelectedSubMode(modeId);
     setSubModeOpen(false);
     // Auto-show relevant panel
-    if (selectedType === "video") setActivePanel("frames");
+    if (selectedType === "video") setActivePanel(null);
     else if (selectedType === "audio" && modeId === "music") setActivePanel("music");
     else if (selectedType === "image" && modeId === "photoshoot") setActivePanel("photoshoot");
     else if (selectedType === "content" && modeId === "social") setActivePanel("social");
@@ -567,7 +572,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   // Determine which extra toolbar icons to show based on content type
-  const showFrames = selectedType === "video" && !!selectedSubMode;
+  const showFrames = selectedType === "video" && !!selectedSubMode && (selectedCharacters.length > 0 || references.length > 0);
   const showMusic = selectedType === "audio" && selectedSubMode === "music";
   const showPhotoshoot = selectedType === "image" && selectedSubMode === "photoshoot";
   const showSocial = selectedType === "content" && selectedSubMode === "social";
@@ -1514,7 +1519,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             <ReferencePanel
               onClose={() => setActivePanel(null)}
               references={references}
-              onAdd={ref => { setReferences(prev => [...prev, ref]); }}
+              onAdd={ref => { setReferences(prev => selectedType === "video" ? [ref] : [...prev, ref]); }}
               onRemove={id => setReferences(prev => prev.filter(r => r.id !== id))}
             />
           )}
