@@ -358,6 +358,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
   const [startFrame, setStartFrame] = useState<string | null>(null);
   const [endFrame, setEndFrame] = useState<string | null>(null);
+  const [framePickerTarget, setFramePickerTarget] = useState<"start" | "end" | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
