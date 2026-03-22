@@ -1178,7 +1178,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
       {/* Manage Labels modal */}
       {showManageLabels && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowManageLabels(false)}>
-          <div className="bg-background rounded-2xl shadow-2xl w-[90vw] max-w-[520px] p-6" onClick={e => e.stopPropagation()}>
+          <div className="bg-background rounded-2xl shadow-2xl w-[90vw] max-w-[520px] max-h-[90vh] overflow-y-auto p-6 m-4" onClick={e => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-[1.1rem] font-bold">Manage Labels</h3>
               <button onClick={() => setShowManageLabels(false)} className="text-muted hover:text-foreground"><X size={18} /></button>
