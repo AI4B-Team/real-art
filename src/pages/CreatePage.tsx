@@ -367,6 +367,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   // Track what source each frame came from for cleanup
   const [startFrameMeta, setStartFrameMeta] = useState<{ sourceType: string; characterId?: string; refId?: string } | null>(null);
   const [endFrameMeta, setEndFrameMeta] = useState<{ sourceType: string; characterId?: string; refId?: string } | null>(null);
+  const [startFrameLocked, setStartFrameLocked] = useState(false);
+  const [endFrameLocked, setEndFrameLocked] = useState(false);
   const [framePickerTarget, setFramePickerTarget] = useState<"start" | "end" | null>(null);
   const [selectedGenre, setSelectedGenre] = useState<string | null>(null);
   const [selectedTheme, setSelectedTheme] = useState<string | null>(null);
@@ -384,8 +386,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         setReferences(prev => prev.filter(r => r.id !== meta.refId));
       }
     }
-    if (which === "start") { setStartFrame(null); setStartFrameMeta(null); }
-    else { setEndFrame(null); setEndFrameMeta(null); }
+    if (which === "start") {
+      setStartFrame(null);
+      setStartFrameMeta(null);
+      setStartFrameLocked(true);
+    } else {
+      setEndFrame(null);
+      setEndFrameMeta(null);
+      setEndFrameLocked(true);
+    }
   };
 
 
