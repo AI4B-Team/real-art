@@ -424,11 +424,51 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const toggleCharacter = (id: string) => {
     if (selectedType === "video") {
       // Video mode: only one character at a time (toggle on/off)
-      setSelectedCharacters(prev => prev.includes(id) ? [] : [id]);
+      // When selecting, auto-populate start frame with character avatar
+      if (selectedCharacters.includes(id)) {
+        setSelectedCharacters([]);
+        setStartFrame(null);
+      } else {
+        setSelectedCharacters([id]);
+        // Avatar will be set via useEffect below
+      }
     } else {
       setSelectedCharacters(prev => prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]);
     }
   };
+
+  // Auto-populate video frames from character/reference selections
+  useEffect(() => {
+    if (selectedType !== "video") return;
+    
+    // Build list of all selected images
+    const allImages: { src: string; name: string }[] = [];
+    
+    // Add character image
+    if (selectedCharacters.length > 0) {
+      const id = selectedCharacters[0];
+      const info = characterInfoMap[id];
+      if (info?.avatar) {
+        allImages.push({ src: info.avatar, name: info.name });
+      }
+    }
+    
+    // Add reference image
+    if (references.length > 0) {
+      allImages.push({ src: references[0].src, name: references[0].name });
+    }
+    
+    if (allImages.length === 0) {
+      setStartFrame(null);
+      setEndFrame(null);
+    } else if (allImages.length === 1) {
+      setStartFrame(allImages[0].src);
+      setEndFrame(null);
+    } else {
+      setStartFrame(allImages[0].src);
+      setEndFrame(allImages[1].src);
+    }
+  }, [selectedType, selectedCharacters, characterInfoMap, references]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
