@@ -1726,6 +1726,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           )}
         </div>
 
+        {/* Story scenes panel */}
+        {selectedType === "video" && selectedSubMode === "story" && storyMode === "manual" && (
+          <div className="max-w-[960px] mx-auto">
+            <StoryScenesPanel scenes={storyScenes} onScenesChange={setStoryScenes} />
+          </div>
+        )}
+
         {/* Social content panel — stretch to parent edges */}
         {activePanel === "social" && showSocial && (
           <div className="mt-3 -mx-5 md:-mx-10">
