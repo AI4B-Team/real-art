@@ -503,7 +503,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
         return { sourceType: "character", characterId: charId };
       });
     }
-  }, [selectedType, selectedCharacters, characterInfoMap]);
+  }, [selectedType, selectedCharacters, characterInfoMap, startFrameLocked, endFrameLocked]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
