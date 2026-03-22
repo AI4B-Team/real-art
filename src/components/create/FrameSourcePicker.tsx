@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { Upload, History, Users, Image, X, Search, ChevronLeft } from "lucide-react";
+import { Upload, History, Users, Image, User, Search, ChevronLeft } from "lucide-react";
 
 /* ── Stock images (Unsplash) ── */
 const STOCK_IMAGES = [
@@ -42,7 +42,35 @@ const HISTORY_IMAGES = [
   "photo-1618172193763-c511deb635ca", "photo-1614854262318-831574f15bcd",
 ];
 
-type Source = "menu" | "computer" | "history" | "community" | "stock";
+/* ── Featured characters (same as CreatePage) ── */
+const FEATURED_CHARACTERS = [
+  { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
+  { id: "f2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
+  { id: "f3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7" },
+  { id: "f4", name: "Suki", avatar: "photo-1438761681033-6461ffad8d80" },
+  { id: "f5", name: "Marcus", avatar: "photo-1506794778202-cad84cf45f1d" },
+  { id: "f6", name: "Leila", avatar: "photo-1487412720507-e7ab37603c6f" },
+  { id: "f7", name: "Kai", avatar: "photo-1492562080023-ab3db95bfbce" },
+  { id: "f8", name: "Nadia", avatar: "photo-1494790108377-be9c29b29330" },
+  { id: "f9", name: "Ravi", avatar: "photo-1500648767791-00dcc994a43e" },
+  { id: "f10", name: "Zara", avatar: "photo-1531746020798-e6953c6e8e04" },
+  { id: "f11", name: "Ethan", avatar: "photo-1472099645785-5658abf4ff4e" },
+  { id: "f12", name: "Luna", avatar: "photo-1529626455594-4ff0802cfb7e" },
+  { id: "f13", name: "Derek", avatar: "photo-1504257432389-52343af06ae3" },
+  { id: "f14", name: "Aria", avatar: "photo-1544005313-94ddf0286df2" },
+  { id: "f15", name: "Theo", avatar: "photo-1506277886164-e25aa3f4ef7f" },
+  { id: "f16", name: "Ivy", avatar: "photo-1524504388940-b1c1722653e1" },
+  { id: "f17", name: "Omar", avatar: "photo-1522075469751-3a6694fb2f61" },
+  { id: "f18", name: "Cleo", avatar: "photo-1517841905240-472988babdf9" },
+  { id: "f19", name: "Felix", avatar: "photo-1521119989659-a83eee488004" },
+  { id: "f20", name: "Sage", avatar: "photo-1488426862026-3ee34a7d66df" },
+  { id: "f21", name: "Dante", avatar: "photo-1539571696357-5a69c17a67c6" },
+  { id: "f22", name: "Yuki", avatar: "photo-1502823403499-6ccfcf4fb453" },
+  { id: "f23", name: "Blake", avatar: "photo-1507591064344-4c6ce005b128" },
+  { id: "f24", name: "Rosa", avatar: "photo-1524638431109-93d95c968f03" },
+];
+
+type Source = "menu" | "computer" | "history" | "community" | "stock" | "character";
 
 interface FrameSourcePickerProps {
   onSelect: (src: string) => void;
@@ -52,6 +80,7 @@ interface FrameSourcePickerProps {
 
 const sources = [
   { id: "computer" as Source, label: "Upload", icon: Upload, desc: "Upload from your device" },
+  { id: "character" as Source, label: "Characters", icon: User, desc: "Pick a character" },
   { id: "history" as Source, label: "Creations", icon: History, desc: "Pick from your past creations" },
   { id: "community" as Source, label: "Community", icon: Users, desc: "Browse community images" },
   { id: "stock" as Source, label: "Stock", icon: Image, desc: "Search free stock photos" },
@@ -114,6 +143,53 @@ export default function FrameSourcePicker({ onSelect, onClose, onBrowseModeChang
             </button>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  // Character browse view
+  if (activeSource === "character") {
+    const filteredChars = search.trim()
+      ? FEATURED_CHARACTERS.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+      : FEATURED_CHARACTERS;
+
+    return (
+      <div className="w-full">
+        <div className="flex items-center gap-2 mb-4">
+          <button onClick={handleBack} className="p-1.5 rounded-lg hover:bg-foreground/[0.06] transition-colors">
+            <ChevronLeft size={16} className="text-muted" />
+          </button>
+          <span className="text-[0.88rem] font-bold flex-1">Characters</span>
+          <div className="relative flex-1 max-w-[280px]">
+            <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              placeholder="Search characters…"
+              className="w-full h-9 pl-8 pr-3 rounded-lg border border-foreground/[0.1] bg-background text-[0.8rem] outline-none focus:border-foreground/30 transition-colors"
+            />
+          </div>
+        </div>
+        <div className="grid grid-cols-5 gap-3 max-h-[520px] overflow-y-auto pr-1">
+          {filteredChars.map(c => (
+            <button
+              key={c.id}
+              onClick={() => handleImageSelect(c.avatar)}
+              className="flex flex-col items-center gap-1.5 p-2 rounded-xl border-2 border-transparent hover:border-accent transition-all hover:shadow-md group"
+            >
+              <img
+                src={`https://images.unsplash.com/${c.avatar}?w=240&h=240&fit=crop&q=60`}
+                alt={c.name}
+                className="w-full aspect-square rounded-xl object-cover group-hover:scale-105 transition-transform"
+                loading="lazy"
+              />
+              <span className="text-[0.72rem] font-medium text-foreground truncate w-full text-center">{c.name}</span>
+            </button>
+          ))}
+        </div>
+        {filteredChars.length === 0 && (
+          <div className="text-center py-8 text-muted text-[0.82rem]">No characters found</div>
+        )}
       </div>
     );
   }
