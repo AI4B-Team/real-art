@@ -772,32 +772,16 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             )}
 
             {/* Textarea + optional Recording overlay */}
-            {isListening && (
-              <div className="flex items-center gap-1.5 py-[6px] mt-[2px] min-h-[36px]">
-                {currentTranscript && <p className="flex-1 text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
-                {!currentTranscript && <div className="flex-1" />}
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button type="button" onClick={cancelSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors" title="Cancel"><X size={14} /></button>
-                  <div className="flex items-center gap-1.5 px-1">
-                    <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
-                    <AudioWaveAnimation small />
-                    <span className="text-[0.7rem] text-muted font-medium whitespace-nowrap">Listening…</span>
-                  </div>
-                  <button type="button" onClick={handleAcceptSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
-                </div>
-              </div>
-            )}
-            {!isListening && (
-              <>
-                <textarea
-                  ref={textareaRef}
-                  value={prompt}
-                  onChange={e => setPrompt(e.target.value)}
-                  onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
-                  onFocus={() => setPromptFocused(true)}
-                  onBlur={() => setPromptFocused(false)}
-                  placeholder={placeholder}
-                  rows={1}
+            <div className="relative flex-1 min-h-[36px]">
+              <textarea
+                ref={textareaRef}
+                value={prompt}
+                onChange={e => setPrompt(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                onFocus={() => setPromptFocused(true)}
+                onBlur={() => setPromptFocused(false)}
+                placeholder={placeholder}
+                rows={1}
                   className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent"
                   style={{ height: "36px" }}
                   onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
