@@ -372,6 +372,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [voiceoverSpeedOpen, setVoiceoverSpeedOpen] = useState(false);
   const [voiceoverTone, setVoiceoverTone] = useState("Auto");
   const [voiceoverToneOpen, setVoiceoverToneOpen] = useState(false);
+  const [voiceoverLangSearch, setVoiceoverLangSearch] = useState("");
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
@@ -1119,8 +1120,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Cpu size={12} />{selectedModel}
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
-                  <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
-                    {["Auto", "Sora Storyboard"].map(m => (
+                  <PopoverContent className="w-56 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                    {(selectedType === "audio" && selectedSubMode === "voiceover"
+                      ? ["Auto", "Eleven Turbo v2.5", "Eleven Multilingual v2"]
+                      : ["Auto", "Sora Storyboard"]
+                    ).map(m => (
                       <button key={m} type="button" onClick={() => { setSelectedModel(m); setModelOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedModel === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                         {m}{selectedModel === m && <Check size={12} />}
@@ -1155,7 +1159,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <Popover open={voiceoverVoiceOpen} onOpenChange={setVoiceoverVoiceOpen}>
                   <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                     <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${voiceoverVoice !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                      <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}{voiceoverVoice !== "Auto" && <ChevronDown size={10} />}
+                      <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}<ChevronDown size={10} className="opacity-60" />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
                   <PopoverContent className="w-64 p-0" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
@@ -1186,19 +1190,46 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 </Popover>
 
                 {/* Language */}
-                <Popover open={voiceoverLanguageOpen} onOpenChange={setVoiceoverLanguageOpen}>
+                <Popover open={voiceoverLanguageOpen} onOpenChange={(o) => { setVoiceoverLanguageOpen(o); if (!o) setVoiceoverLangSearch(""); }}>
                   <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                     <button type="button" className={`toolbar-btn p-1.5 rounded-lg shrink-0 ${voiceoverLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                       <Globe size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                  <PopoverContent className="w-44 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
-                    {["English", "Spanish", "French", "German", "Italian", "Portuguese", "Japanese", "Korean", "Chinese", "Arabic", "Hindi", "Dutch"].map(l => (
-                      <button key={l} type="button" onClick={() => { setVoiceoverLanguage(l); setVoiceoverLanguageOpen(false); }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverLanguage === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                        {l}{voiceoverLanguage === l && <Check size={12} />}
-                      </button>
-                    ))}
+                  <PopoverContent className="w-56 p-2" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                    <div className="relative mb-2">
+                      <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
+                      <input
+                        type="text"
+                        value={voiceoverLangSearch}
+                        onChange={e => setVoiceoverLangSearch(e.target.value)}
+                        placeholder="Search Languages..."
+                        className="w-full pl-8 pr-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] focus:outline-none focus:border-accent transition-colors"
+                      />
+                    </div>
+                    <div className="max-h-52 overflow-y-auto">
+                      {[
+                        { label: "English", flag: "🇺🇸" },
+                        { label: "Spanish", flag: "🇪🇸" },
+                        { label: "French", flag: "🇫🇷" },
+                        { label: "German", flag: "🇩🇪" },
+                        { label: "Portuguese", flag: "🇵🇹" },
+                        { label: "Italian", flag: "🇮🇹" },
+                        { label: "Dutch", flag: "🇳🇱" },
+                        { label: "Japanese", flag: "🇯🇵" },
+                        { label: "Korean", flag: "🇰🇷" },
+                        { label: "Chinese", flag: "🇨🇳" },
+                        { label: "Arabic", flag: "🇸🇦" },
+                        { label: "Hindi", flag: "🇮🇳" },
+                      ].filter(l => l.label.toLowerCase().includes(voiceoverLangSearch.toLowerCase())).map(l => (
+                        <button key={l.label} type="button" onClick={() => { setVoiceoverLanguage(l.label); setVoiceoverLanguageOpen(false); setVoiceoverLangSearch(""); }}
+                          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.84rem] transition-colors ${voiceoverLanguage === l.label ? "bg-accent/8 text-foreground" : "hover:bg-foreground/[0.04] text-foreground/80"}`}>
+                          <span className="text-base">{l.flag}</span>
+                          <span className="flex-1 text-left">{l.label}</span>
+                          {voiceoverLanguage === l.label && <Check size={14} className="text-accent" />}
+                        </button>
+                      ))}
+                    </div>
                   </PopoverContent>
                 </Popover>
 
