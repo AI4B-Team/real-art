@@ -248,22 +248,34 @@ const AppsMarketplacePage = () => {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="flex items-center gap-1 bg-foreground/[0.03] rounded-xl p-1">
-            {(["marketplace", "my-apps"] as const).map(tab => (
-              <button key={tab} onClick={() => setActiveTab(tab)} className={`px-5 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}>
-                {tab === "marketplace" ? "Marketplace" : "My Apps"}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1 bg-foreground/[0.03] rounded-xl p-1">
+              {(["marketplace", "my-apps"] as const).map(tab => (
+                <button key={tab} onClick={() => setActiveTab(tab)} className={`px-5 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}>
+                  {tab === "marketplace" ? "Marketplace" : "My Apps"}
+                </button>
+              ))}
+            </div>
+          </div>
+          {/* Filter dropdown — far right */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-[0.82rem] font-medium border transition-all ${selectedCat !== "Select All" ? "bg-accent/10 text-accent border-accent/20" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
+                <Filter size={14} />
+                {selectedCat !== "Select All" ? selectedCat : "Filter"}
+                <ChevronDown size={12} className="opacity-60" />
               </button>
-            ))}
-          </div>
-          <div className="h-5 w-px bg-foreground/[0.08]" />
-          {/* Category filters */}
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            {categories.map(cat => (
-              <button key={cat} onClick={() => setSelectedCat(cat)} className={`px-3.5 py-1.5 rounded-lg text-[0.78rem] font-medium whitespace-nowrap transition-all border ${selectedCat === cat ? "bg-foreground text-primary-foreground border-foreground" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>{cat}</button>
-            ))}
-          </div>
+            </PopoverTrigger>
+            <PopoverContent className="w-44 p-1.5" align="end" side="bottom" avoidCollisions={false} sideOffset={6}>
+              {categories.map(cat => (
+                <button key={cat} type="button" onClick={() => setSelectedCat(cat)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedCat === cat ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                  {cat}{selectedCat === cat && <Check size={12} />}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
         </div>
 
         {activeTab === "marketplace" ? (
