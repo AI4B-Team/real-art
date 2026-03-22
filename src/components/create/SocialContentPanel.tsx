@@ -764,14 +764,132 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
         </div>
       )}
 
-      {/* Plan/Feed placeholder */}
-      {(activeView === "plan" || activeView === "feed") && (
-        <div className="flex items-center justify-center py-16 text-muted">
-          <div className="text-center">
-            <Grid3X3 size={32} className="mx-auto mb-2 opacity-40" />
-            <p className="text-[0.85rem] font-medium">{VIEW_TABS.find(t => t.id === activeView)?.label} View</p>
-            <p className="text-[0.75rem] text-muted/60">Coming soon</p>
+      {/* ─── Plan View (Table) ─── */}
+      {activeView === "plan" && (
+        <div className="p-4">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-foreground/[0.06]">
+                {["PLATFORM", "CONTENT", "SCORE", "DATE", "TIME", "STATUS", ""].map(h => (
+                  <th key={h} className="text-left text-[0.72rem] font-bold text-muted-foreground tracking-wider py-3 px-3">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {posts.map((post, i) => {
+                const platform = PLATFORMS.find(p => p.id === post.platform);
+                return (
+                  <tr key={i} onClick={() => { setSelectedPost(post); setPostDetailTab("details"); }}
+                    className="border-b border-foreground/[0.04] hover:bg-foreground/[0.02] cursor-pointer transition-colors"
+                  >
+                    <td className="py-3 px-3">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color: platform?.color, backgroundColor: `${platform?.color}15` }}>
+                        <PlatformIcon platformId={post.platform} size={14} />
+                      </div>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className="text-[0.82rem] font-medium">{post.title}</span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-[0.72rem] font-bold text-white ${
+                        post.score >= 80 ? "bg-emerald-500" : post.score >= 60 ? "bg-amber-500" : "bg-red-500"
+                      }`}>{post.score}</span>
+                    </td>
+                    <td className="py-3 px-3 text-[0.82rem] text-muted-foreground">{post.dateLabel}</td>
+                    <td className="py-3 px-3 text-[0.82rem] text-muted-foreground">{post.time}</td>
+                    <td className="py-3 px-3">
+                      <span className={`inline-flex items-center gap-1 text-[0.72rem] font-semibold px-2.5 py-1 rounded-full ${
+                        post.status === "published" ? "bg-emerald-100 text-emerald-700" :
+                        post.status === "scheduled" ? "bg-blue-100 text-blue-700" :
+                        post.status === "awaiting" ? "bg-amber-100 text-amber-700" :
+                        "bg-foreground/[0.06] text-muted-foreground"
+                      }`}>
+                        {post.status === "published" && <Check size={10} />}
+                        {post.status === "draft" && <Pencil size={10} />}
+                        {post.status === "published" ? "Published" : post.status === "scheduled" ? "Scheduled" : post.status === "awaiting" ? "Awaiting" : "Draft"}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3"><MoreHorizontal size={14} className="text-muted-foreground" /></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* ─── Feed View ─── */}
+      {activeView === "feed" && (
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[0.88rem] font-bold flex items-center gap-2"><Grid3X3 size={14} /> Feed Preview</h3>
+            <div className="flex items-center bg-foreground/[0.04] rounded-lg p-0.5">
+              <button onClick={() => setFeedDevice("mobile")} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${feedDevice === "mobile" ? "bg-accent text-white" : "text-muted hover:text-foreground"}`}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+              </button>
+              <button onClick={() => setFeedDevice("desktop")} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${feedDevice === "desktop" ? "bg-accent text-white" : "text-muted hover:text-foreground"}`}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              </button>
+            </div>
           </div>
+          <div className="flex gap-6">
+            {/* Platform sidebar */}
+            <div className="flex flex-col gap-2 pt-2">
+              {["instagram", "tiktok", "linkedin", "x", "facebook"].map(pid => {
+                const p = PLATFORMS.find(pl => pl.id === pid);
+                return (
+                  <button key={pid} onClick={() => setFeedPlatform(pid)}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                      feedPlatform === pid ? "ring-2 ring-offset-2 ring-accent" : "hover:bg-foreground/[0.04]"
+                    }`}
+                    style={{ color: p?.color }}
+                  >
+                    <PlatformIcon platformId={pid} size={20} />
+                  </button>
+                );
+              })}
+            </div>
+            {/* Phone / Desktop mockup */}
+            <div className="flex-1 flex justify-center">
+              <div className={`bg-foreground/[0.03] border border-foreground/[0.08] overflow-hidden ${
+                feedDevice === "mobile" ? "rounded-[2rem] w-[280px]" : "rounded-xl w-full max-w-[700px]"
+              }`}>
+                {/* Top bar */}
+                <div className={`flex items-center justify-center gap-4 py-3 border-b border-foreground/[0.06] ${feedDevice === "mobile" ? "pt-6" : ""}`}>
+                  <button className="text-muted-foreground"><Grid3X3 size={16} /></button>
+                  <button className="text-muted-foreground"><LayoutGrid size={16} /></button>
+                </div>
+                {/* Grid of posts */}
+                <div className={`grid gap-0.5 ${feedDevice === "mobile" ? "grid-cols-3" : "grid-cols-3"}`}>
+                  {posts.slice(0, feedDevice === "mobile" ? 9 : 9).map((post, i) => {
+                    const p = PLATFORMS.find(pl => pl.id === post.platform);
+                    return (
+                      <div key={i} onClick={() => { setSelectedPost(post); setPostDetailTab("details"); }}
+                        className="aspect-square bg-emerald-50 flex items-center justify-center relative group cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        <div style={{ color: p?.color }} className="opacity-40">
+                          <PlatformIcon platformId={post.platform} size={feedDevice === "mobile" ? 24 : 36} />
+                        </div>
+                        {post.contentType === "carousel" && (
+                          <div className="absolute top-1.5 right-1.5"><LayoutGrid size={10} className="text-foreground/50" /></div>
+                        )}
+                        {post.contentType === "reel" && (
+                          <div className="absolute top-1.5 right-1.5"><Play size={10} className="text-foreground/50" /></div>
+                        )}
+                        {/* Hover overlay with stats */}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 text-white">
+                          <span className="flex items-center gap-1 text-[0.72rem] font-bold"><Heart size={12} /> {Math.floor(Math.random() * 2000 + 200).toLocaleString()}</span>
+                          <span className="flex items-center gap-1 text-[0.72rem] font-bold"><MessageCircle size={12} /> {Math.floor(Math.random() * 100 + 10)}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className={`py-4 ${feedDevice === "mobile" ? "pb-8" : ""}`} />
+              </div>
+            </div>
+          </div>
+          <p className="text-[0.75rem] text-muted-foreground mt-3">{posts.length} posts scheduled for {feedPlatform}</p>
         </div>
       )}
 
