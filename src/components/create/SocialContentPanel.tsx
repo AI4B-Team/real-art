@@ -513,7 +513,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             </div>
 
             {/* Content Type */}
-            <div>
+            <div className="flex-1 px-5">
               <h4 className="text-[0.82rem] font-bold mb-3">Content Type</h4>
               <div className="space-y-2">
                 {[
