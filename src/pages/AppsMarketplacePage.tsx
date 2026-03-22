@@ -228,7 +228,7 @@ const AppsMarketplacePage = () => {
         <div className="flex items-start md:items-center justify-between gap-4 flex-wrap mb-8">
           <div>
             <h1 className="font-display text-[clamp(2.2rem,5vw,3.4rem)] font-black tracking-[-0.03em] leading-none mb-2">Apps</h1>
-            <p className="text-[0.92rem] text-muted max-w-[520px]">Discover, install, and manage powerful AI-powered tools for your creative workflow.</p>
+            <p className="text-[0.92rem] text-muted max-w-none whitespace-nowrap">Discover, install, and manage powerful AI-powered tools for your creative workflow.</p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
             <div className="relative w-full md:w-72">
