@@ -1240,11 +1240,21 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <span className="text-[0.8rem] font-semibold text-foreground">Art Style</span>
+                <span className="text-[0.8rem] font-semibold text-foreground">{selectedType === "video" ? "Video Style" : "Art Style"}</span>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
               </div>
+              {selectedType === "video" ? (
+                <div className="flex flex-wrap gap-2">
+                  {["Cinematic", "Documentary", "Animation", "Realistic"].map(s => (
+                    <button key={s} type="button" onClick={() => { setSelectedStyle(prev => prev === s ? "None" : s); setActivePanel(null); }}
+                      className={`px-5 py-2.5 rounded-lg text-[0.85rem] font-medium border transition-all ${selectedStyle === s ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-foreground/25 text-foreground"}`}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              ) : (
               <div className="grid grid-cols-5 sm:grid-cols-5 gap-2">
                 {[
                   { id: "Photorealistic", label: "Photo", img: stylePhotorealistic },
@@ -1287,6 +1297,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </button>
                 ))}
               </div>
+              )}
             </div>
           )}
           {activePanel === "reference" && (
