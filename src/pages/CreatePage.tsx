@@ -452,8 +452,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
       if (selectedType === "video") {
         const info = characterInfoMap[id];
         if (info?.avatar) {
-          if (startFrame === info.avatar) setStartFrame(null);
-          if (endFrame === info.avatar) setEndFrame(null);
+          if (startFrame === info.avatar) { setStartFrame(null); setStartFrameMeta(null); }
+          if (endFrame === info.avatar) { setEndFrame(null); setEndFrameMeta(null); }
         }
       }
     } else {
