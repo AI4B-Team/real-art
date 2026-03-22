@@ -1353,7 +1353,7 @@ const DashboardPage = () => {
       <div className="flex items-center gap-2 mb-6 lg:hidden overflow-x-auto pb-2 no-scrollbar">
         {[
           { id: "overview", label: "Overview" },
-          { id: "media", label: "Media" },
+          { id: "media", label: "Assets" },
           { id: "earnings", label: "Earnings" },
           { id: "ads", label: "Ads" },
           { id: "notifications", label: "Notifications" },
