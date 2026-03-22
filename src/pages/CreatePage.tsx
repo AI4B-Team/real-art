@@ -1192,7 +1192,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Globe size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-44 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["English", "Spanish", "French", "German", "Italian", "Portuguese", "Japanese", "Korean", "Chinese", "Arabic", "Hindi", "Dutch"].map(l => (
                       <button key={l} type="button" onClick={() => { setVoiceoverLanguage(l); setVoiceoverLanguageOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverLanguage === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
