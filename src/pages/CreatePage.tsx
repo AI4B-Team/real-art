@@ -1158,7 +1158,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}{voiceoverVoice !== "Auto" && <ChevronDown size={10} />}
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
-                  <PopoverContent className="w-64 p-0" align="start" sideOffset={6}>
+                  <PopoverContent className="w-64 p-0" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     <p className="text-[0.78rem] text-muted px-4 pt-3 pb-2">Select a voice for your voiceover</p>
                     <div className="max-h-[280px] overflow-y-auto px-2 pb-2">
                       {[
