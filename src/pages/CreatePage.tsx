@@ -1128,7 +1128,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
                   <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
-                    {["Auto", "Flux Pro", "GPT-4o Image", "Imagen 4 Ultra", "Seedream 4.0"].map(m => (
+                    {["Auto", "Sora Storyboard"].map(m => (
                       <button key={m} type="button" onClick={() => { setSelectedModel(m); setModelOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedModel === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                         {m}{selectedModel === m && <Check size={12} />}
