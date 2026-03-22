@@ -448,7 +448,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             <span className="text-[0.72rem] text-muted">{new Date().toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })}</span>
             <button onClick={() => { setShowSearchBar(v => !v); if (showSearchBar) setSearchQuery(""); }} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showSearchBar ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><Search size={12} /></button>
             <button onClick={() => setShowFilters(v => !v)} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showFilters ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><FilterIcon size={12} /></button>
-            <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Download size={12} /></button>
+            <button onClick={() => { setShowExportModal(true); setExportSelected(new Set(posts.map((_, i) => i))); }} className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"><Download size={12} /></button>
             <div className="relative">
               <button onClick={() => setShowMoreMenu(v => !v)} className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"><MoreHorizontal size={12} /></button>
               {showMoreMenu && (
