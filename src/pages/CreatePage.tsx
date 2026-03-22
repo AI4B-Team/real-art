@@ -766,7 +766,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {/* Inline frame uploads for video animate mode */}
           {showFrames && (
             <div className="px-6 py-4">
-              <div className="flex items-center justify-center gap-3">
+              <div className="flex items-center justify-start gap-3">
                 {/* Start Frame */}
                 <div className="flex flex-col items-center gap-2">
                   {startFrame ? (
