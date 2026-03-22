@@ -891,22 +891,85 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
 
             {/* Analytics Tab */}
             {scheduleTab === "analytics" && (
-              <div className="p-6">
-                <div className="text-center py-12">
-                  <LayoutGrid size={32} className="mx-auto text-muted mb-3" />
-                  <h3 className="font-bold mb-1">Engagement Analytics</h3>
-                  <p className="text-[0.82rem] text-muted-foreground">Connect your accounts to see engagement data and optimize posting times with AI-powered insights.</p>
+              <div className="p-6 space-y-5">
+                {/* Engagement Trends */}
+                <div className="border border-foreground/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                    <h3 className="font-bold">Engagement Trends</h3>
+                  </div>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="border border-foreground/[0.06] rounded-xl p-4 text-center">
+                      <p className="text-2xl font-bold text-emerald-500">2.4K</p>
+                      <p className="text-[0.78rem] text-muted-foreground mt-1">Avg. Peak Reach</p>
+                    </div>
+                    <div className="border border-foreground/[0.06] rounded-xl p-4 text-center">
+                      <p className="text-2xl font-bold text-blue-500">1.5K</p>
+                      <p className="text-[0.78rem] text-muted-foreground mt-1">Avg. Good Reach</p>
+                    </div>
+                    <div className="border border-foreground/[0.06] rounded-xl p-4 text-center">
+                      <p className="text-2xl font-bold text-foreground">18%</p>
+                      <p className="text-[0.78rem] text-muted-foreground mt-1">Engagement Rate</p>
+                    </div>
+                  </div>
+                </div>
+                {/* Audience Activity */}
+                <div className="border border-foreground/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <h3 className="font-bold">Audience Activity</h3>
+                  </div>
+                  <p className="text-[0.85rem] text-muted-foreground">Your audience is most active on <span className="font-bold text-foreground">Wednesdays</span> and <span className="font-bold text-foreground">Sundays</span> between 6-8 PM.</p>
                 </div>
               </div>
             )}
 
             {/* General Tab */}
             {scheduleTab === "general" && (
-              <div className="p-6">
-                <div className="text-center py-12">
-                  <Settings size={32} className="mx-auto text-muted mb-3" />
-                  <h3 className="font-bold mb-1">Schedule Settings</h3>
-                  <p className="text-[0.82rem] text-muted-foreground">Configure timezone, auto-scheduling preferences, and default posting windows.</p>
+              <div className="p-6 space-y-5">
+                {/* Timezone */}
+                <div className="border border-foreground/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                    <h3 className="font-bold">Timezone Settings</h3>
+                  </div>
+                  <select className="w-full border border-foreground/[0.12] rounded-lg px-4 py-3 text-[0.85rem] bg-background outline-none">
+                    <option>Pacific Time (UTC-8)</option>
+                    <option>Mountain Time (UTC-7)</option>
+                    <option>Central Time (UTC-6)</option>
+                    <option>Eastern Time (UTC-5)</option>
+                    <option>GMT (UTC+0)</option>
+                    <option>Central European (UTC+1)</option>
+                    <option>India Standard (UTC+5:30)</option>
+                    <option>Japan Standard (UTC+9)</option>
+                  </select>
+                </div>
+                {/* Posting Preferences */}
+                <div className="border border-foreground/[0.06] rounded-xl p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <Settings size={18} />
+                    <h3 className="font-bold">Posting Preferences</h3>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-[0.85rem] font-medium">Auto-Schedule Posts</p>
+                        <p className="text-[0.78rem] text-muted-foreground">Automatically schedule based on optimal times</p>
+                      </div>
+                      <div className="w-11 h-6 rounded-full bg-foreground/20 relative cursor-pointer">
+                        <div className="absolute top-[3px] left-[3px] w-[18px] h-[18px] rounded-full bg-white shadow-sm" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-[0.85rem] font-medium">Smart Suggestions</p>
+                        <p className="text-[0.78rem] text-muted-foreground">Get AI recommendations for posting times</p>
+                      </div>
+                      <div className="w-11 h-6 rounded-full bg-emerald-500 relative cursor-pointer">
+                        <div className="absolute top-[3px] right-[3px] w-[18px] h-[18px] rounded-full bg-white shadow-sm" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             )}
