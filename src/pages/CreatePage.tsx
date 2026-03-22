@@ -810,7 +810,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="relative w-[140px] h-[140px] rounded-2xl overflow-hidden group border border-foreground/[0.08] shadow-sm">
                       <img src={startFrame} alt="Start Frame" className="w-full h-full object-cover" />
                       <button
-                        onClick={(e) => { e.stopPropagation(); if (selectedType === "video") { if (selectedCharacters.length > 0) setSelectedCharacters([]); else setReferences([]); } setStartFrame(null); }}
+                        onClick={(e) => { e.stopPropagation(); clearFrame("start"); }}
                         className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-md z-10"
                       >
                         <X size={11} />
