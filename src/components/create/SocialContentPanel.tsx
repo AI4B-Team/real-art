@@ -4,8 +4,11 @@ import {
   List, LayoutGrid, Columns, Grid3X3, Rss,
   Trash2, Settings, Sparkles, Plus, ChevronDown, Search, Filter as FilterIcon, Download, MoreHorizontal,
   Image, Play, LayoutList, CircleDot, Check, Heart, MessageCircle, Send, Bookmark, Eye, Users, Share2, Clock,
-  TrendingUp, Hash, Pencil, FileText,
+  TrendingUp, Hash, Pencil, FileText, PenLine,
 } from "lucide-react";
+import {
+  Popover, PopoverContent, PopoverTrigger,
+} from "@/components/ui/popover";
 
 /* ─── SVG Logo components ────────────────────── */
 
