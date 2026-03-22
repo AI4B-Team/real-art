@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ArrowLeftRight, X, Upload } from "lucide-react";
-import FrameSourcePicker from "./FrameSourcePicker";
+import FramePickerModal from "./FramePickerModal";
 
 interface FramePanelProps {
   onClose: () => void;
@@ -53,21 +53,11 @@ function FrameSlot({
       <span className="text-[0.78rem] font-medium text-muted">{label}</span>
 
       {showPicker && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setShowPicker(false)}>
-          <div
-            className="bg-background border border-foreground/[0.1] rounded-2xl p-5 w-[520px] max-w-[92vw] shadow-2xl"
-            onClick={e => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-[0.92rem] font-bold">Choose {label}</h3>
-              <button onClick={() => setShowPicker(false)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
-            </div>
-            <FrameSourcePicker
-              onSelect={(imgSrc) => { onChange(imgSrc); setShowPicker(false); }}
-              onClose={() => setShowPicker(false)}
-            />
-          </div>
-        </div>
+        <FramePickerModal
+          label={label}
+          onSelect={(imgSrc) => { onChange(imgSrc); setShowPicker(false); }}
+          onClose={() => setShowPicker(false)}
+        />
       )}
     </div>
   );
