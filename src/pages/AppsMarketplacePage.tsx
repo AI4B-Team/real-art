@@ -227,7 +227,7 @@ const AppsMarketplacePage = () => {
         {/* Header */}
         <div className="flex items-start md:items-center justify-between gap-4 flex-wrap mb-8">
           <div>
-            <h1 className="font-display text-[clamp(2.2rem,5vw,3.4rem)] font-black tracking-[-0.03em] leading-none mb-2">App Marketplace</h1>
+            <h1 className="font-display text-[clamp(2.2rem,5vw,3.4rem)] font-black tracking-[-0.03em] leading-none mb-2">Apps</h1>
             <p className="text-[0.92rem] text-muted max-w-[520px]">Discover, install, and manage powerful AI-powered tools for your creative workflow.</p>
           </div>
           <div className="flex items-center gap-3 shrink-0">
@@ -249,14 +249,13 @@ const AppsMarketplacePage = () => {
         </div>
 
         <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1 bg-foreground/[0.03] rounded-xl p-1">
-              {(["marketplace", "my-apps"] as const).map(tab => (
-                <button key={tab} onClick={() => setActiveTab(tab)} className={`px-5 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground"}`}>
-                  {tab === "marketplace" ? "Marketplace" : "My Apps"}
-                </button>
-              ))}
-            </div>
+          <div className="flex items-center gap-2">
+              <button onClick={() => setActiveTab("marketplace")} className={`px-5 py-2 rounded-lg text-[0.82rem] font-semibold border transition-all ${activeTab === "marketplace" ? "bg-foreground text-primary-foreground border-foreground" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
+                Marketplace
+              </button>
+              <button onClick={() => setActiveTab("my-apps")} className={`px-5 py-2 rounded-lg text-[0.82rem] font-semibold border transition-all ${activeTab === "my-apps" ? "bg-foreground text-primary-foreground border-foreground" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
+                My Apps
+              </button>
           </div>
           {/* Filter dropdown — far right */}
           <Popover>
