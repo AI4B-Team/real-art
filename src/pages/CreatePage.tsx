@@ -825,7 +825,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Reference */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("reference")}
-                    className={`relative p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <Layers size={14} />
                     {references.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{references.length}</span>}
                   </button>
