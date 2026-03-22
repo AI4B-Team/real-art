@@ -1289,7 +1289,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Duration — video */}
-                {selectedSubMode && selectedType === "video" && (
+                {selectedSubMode && selectedType === "video" && selectedSubMode !== "story" && (
                   <Popover open={durationOpen} onOpenChange={setDurationOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-accent/10 text-accent hover:bg-accent/15 transition-colors whitespace-nowrap shrink-0">
