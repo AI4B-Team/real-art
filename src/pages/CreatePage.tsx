@@ -906,6 +906,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger><TooltipContent>Resolution</TooltipContent></Tooltip>
                 )}
 
+                {/* Frames — video */}
+                {selectedType === "video" && (
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("frames")}
+                      className={`toolbar-btn relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "frames" || startFrame || endFrame ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Film size={12} />Frames
+                      {(startFrame || endFrame) && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{(startFrame ? 1 : 0) + (endFrame ? 1 : 0)}</span>}
+                    </button>
+                  </TooltipTrigger><TooltipContent>Start & End Frames</TooltipContent></Tooltip>
+                )}
+
                 {/* Count — image, design */}
                 {(selectedType === "image" || selectedType === "design") && (
                   <Popover open={numberOpen} onOpenChange={setNumberOpen}>
