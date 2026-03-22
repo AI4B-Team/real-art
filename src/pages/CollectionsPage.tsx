@@ -821,7 +821,7 @@ export default function CollectionsPage() {
       {/* Category filter */}
       {activeTab !== "mine" && (
         <div className="border-b border-foreground/[0.06]">
-          <div className="max-w-[1440px] mx-auto px-6 md:px-12 py-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div className="px-6 md:px-10 py-4 flex items-center gap-2 overflow-x-auto no-scrollbar">
             {categories.map((cat, i) => (
               <React.Fragment key={cat}>
                 <button onClick={() => setActiveCategory(cat)}
