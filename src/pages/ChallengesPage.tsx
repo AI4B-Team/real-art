@@ -108,7 +108,7 @@ const ChallengesPage = () => {
         )}
 
         {/* Tabs */}
-        <div className="px-6 md:px-12 max-w-[1440px] mx-auto">
+        <div>
           <div className="flex items-center gap-1 border-b border-foreground/[0.06] mb-7">
             {tabsList.map(tab => (
               <button
