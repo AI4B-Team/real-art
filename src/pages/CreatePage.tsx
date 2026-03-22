@@ -1158,7 +1158,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <Popover open={voiceoverVoiceOpen} onOpenChange={setVoiceoverVoiceOpen}>
                   <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                     <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${voiceoverVoice !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                      <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}{voiceoverVoice !== "Auto" && <ChevronDown size={10} />}
+                      <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}<ChevronDown size={10} className="opacity-60" />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
                   <PopoverContent className="w-64 p-0" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
