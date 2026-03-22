@@ -536,7 +536,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   // Determine which extra toolbar icons to show based on content type
-  const showFrames = selectedType === "video";
+  const showFrames = selectedType === "video" && selectedSubMode === "animate";
   const showMusic = selectedType === "audio" && selectedSubMode === "music";
   const showPhotoshoot = selectedType === "image" && selectedSubMode === "photoshoot";
   const showSocial = selectedType === "content" && selectedSubMode === "social";
@@ -906,17 +906,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger><TooltipContent>Resolution</TooltipContent></Tooltip>
                 )}
 
-                {/* Frames — video */}
-                {selectedType === "video" && (
-                  <Tooltip><TooltipTrigger asChild>
-                    <button type="button" onClick={() => togglePanel("frames")}
-                      className={`toolbar-btn relative flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "frames" || startFrame || endFrame ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                      <Film size={12} />Frames
-                      {(startFrame || endFrame) && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{(startFrame ? 1 : 0) + (endFrame ? 1 : 0)}</span>}
-                    </button>
-                  </TooltipTrigger><TooltipContent>Start & End Frames</TooltipContent></Tooltip>
-                )}
-
                 {/* Count — image, design */}
                 {(selectedType === "image" || selectedType === "design") && (
                   <Popover open={numberOpen} onOpenChange={setNumberOpen}>
@@ -941,11 +930,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <div className="flex items-center gap-0.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
                     <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Target size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
+                      </PopoverTrigger>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Goal</p>
                         {["Engagement", "Awareness", "Traffic", "Sales", "Education", "Community"].map(o => (
@@ -954,11 +943,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </PopoverContent>
                     </Popover>
                     <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
+                      </PopoverTrigger>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
@@ -967,11 +956,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </PopoverContent>
                     </Popover>
                     <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                      </PopoverTrigger>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
                         {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
@@ -980,11 +969,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </PopoverContent>
                     </Popover>
                     <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentFrequency !== "Daily" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Calendar size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Frequency</TooltipContent></Tooltip>
+                      </PopoverTrigger>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Frequency</p>
                         {["Daily", "Twice Daily", "3x/Week", "Weekly", "Bi-Weekly", "Monthly"].map(o => (
@@ -993,11 +982,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </PopoverContent>
                     </Popover>
                     <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentTime !== "9:00 AM" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Clock size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Posting Time</TooltipContent></Tooltip>
+                      </PopoverTrigger>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Posting Time</p>
                         {["6:00 AM", "9:00 AM", "12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"].map(o => (
@@ -1006,11 +995,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       </PopoverContent>
                     </Popover>
                     <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentStyle !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <PenTool size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                      </PopoverTrigger>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Style</p>
                         {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
