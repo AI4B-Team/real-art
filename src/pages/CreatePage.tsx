@@ -612,7 +612,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   // Determine which extra toolbar icons to show based on content type
-  const showFrames = selectedType === "video" && !!selectedSubMode && (selectedCharacters.length > 0 || references.length > 0);
+  const showFrames = selectedType === "video" && (selectedCharacters.length > 0 || references.length > 0);
   const showMusic = selectedType === "audio" && selectedSubMode === "music";
   const showPhotoshoot = selectedType === "image" && selectedSubMode === "photoshoot";
   const showSocial = selectedType === "content" && selectedSubMode === "social";
