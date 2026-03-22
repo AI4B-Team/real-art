@@ -481,35 +481,32 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     }
   };
 
-  // Auto-populate video frames from character selections only
+  // Auto-populate video frames from character selections — fill whichever slot is empty
   useEffect(() => {
     if (selectedType !== "video") return;
     
-    // Build ordered list of all character avatars
-    const charImages: string[] = [];
+    // Build ordered list of new character avatars that aren't already placed
+    const newChars: { id: string; avatar: string }[] = [];
     for (const id of selectedCharacters) {
       const info = characterInfoMap[id];
-      if (info?.avatar) charImages.push(info.avatar);
+      if (!info?.avatar) continue;
+      const alreadyPlaced =
+        (startFrameMeta?.sourceType === "character" && startFrameMeta?.characterId === id) ||
+        (endFrameMeta?.sourceType === "character" && endFrameMeta?.characterId === id);
+      if (!alreadyPlaced) newChars.push({ id, avatar: info.avatar });
     }
     
-    // Only auto-set frames from characters when the slot hasn't been explicitly cleared
-    if (charImages.length >= 1 && !startFrameLocked) {
-      setStartFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[0]);
-      setStartFrameMeta(prev => {
-        const charId = selectedCharacters[0];
-        if (prev?.sourceType === "character" && prev?.characterId === charId) return prev;
-        return { sourceType: "character", characterId: charId };
-      });
+    for (const char of newChars) {
+      // Fill whichever frame is empty (start first, then end)
+      if (!startFrame && !startFrameLocked) {
+        setStartFrame(char.avatar);
+        setStartFrameMeta({ sourceType: "character", characterId: char.id });
+      } else if (!endFrame && !endFrameLocked) {
+        setEndFrame(char.avatar);
+        setEndFrameMeta({ sourceType: "character", characterId: char.id });
+      }
     }
-    if (charImages.length >= 2 && !endFrameLocked) {
-      setEndFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[1]);
-      setEndFrameMeta(prev => {
-        const charId = selectedCharacters[1];
-        if (prev?.sourceType === "character" && prev?.characterId === charId) return prev;
-        return { sourceType: "character", characterId: charId };
-      });
-    }
-  }, [selectedType, selectedCharacters, characterInfoMap, startFrameLocked, endFrameLocked]);
+  }, [selectedType, selectedCharacters, characterInfoMap, startFrameLocked, endFrameLocked, startFrame, endFrame, startFrameMeta, endFrameMeta]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -1697,14 +1694,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 setReferences(prev => [...prev, ref]);
                 // In video mode, auto-fill empty frame slots with the new reference
                 if (selectedType === "video") {
+                  // Fill whichever frame slot is empty (start first, then end)
                   if (!startFrame) {
                     setStartFrame(ref.src);
                     setStartFrameMeta({ sourceType: "reference", refId: ref.id });
-                    setStartFrameLocked(false);
+                    setStartFrameLocked(true);
                   } else if (!endFrame) {
                     setEndFrame(ref.src);
                     setEndFrameMeta({ sourceType: "reference", refId: ref.id });
-                    setEndFrameLocked(false);
+                    setEndFrameLocked(true);
                   }
                 }
               }}
