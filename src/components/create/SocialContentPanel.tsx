@@ -181,7 +181,7 @@ interface SocialContentPanelProps {
 }
 
 export default function SocialContentPanel({ onClose }: SocialContentPanelProps) {
-  const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(new Set(["facebook", "instagram"]));
+  const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(new Set());
   const [activeView, setActiveView] = useState("calendar");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
