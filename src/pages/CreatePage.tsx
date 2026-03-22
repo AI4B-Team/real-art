@@ -941,7 +941,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       )}
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-52 p-1.5 max-h-[60vh] overflow-y-auto" align="start" sideOffset={6}>
                     {subModes.map(m => (
                       <button key={m.id} type="button" onClick={() => handleSubModeSelect(m.id)}
                         className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedSubMode === m.id ? `${typeCfg!.bg} ${typeCfg!.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
