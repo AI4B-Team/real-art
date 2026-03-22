@@ -1209,7 +1209,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <AudioLines size={14} />
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Accent</TooltipContent></Tooltip>
-                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                  <PopoverContent className="w-44 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                     {["American", "British", "Australian", "Irish", "Scottish", "Indian", "South African", "Neutral"].map(a => (
                       <button key={a} type="button" onClick={() => { setVoiceoverAccent(a); setVoiceoverAccentOpen(false); }}
                         className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverAccent === a ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
