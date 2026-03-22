@@ -104,7 +104,7 @@ const toolsApps: AppItem[] = [
   { name: "Lead Generation", category: "Sales Tools", description: "Generate quality leads automatically", thumbnail: "photo-1460925895917-afdab827c52f", badge: "NEW", rating: 4.6 },
 ];
 
-const categories = ["All", "Image", "Video", "Audio", "Design", "Content", "Tools"];
+const categories = ["Select All", "Image", "Video", "Audio", "Design", "Content", "Tools"];
 
 /* ─── Helpers ─── */
 const imgUrl = (id: string) => `https://images.unsplash.com/${id}?w=600&h=400&fit=crop&q=80`;
