@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 
 const navItems: { id: string; label: string; icon: typeof LayoutDashboard; internal: boolean; href?: string }[] = [
   { id: "overview", label: "Overview", icon: LayoutDashboard, internal: true },
-  { id: "media", label: "Media", icon: Image, internal: true },
+  { id: "media", label: "Assets", icon: Image, internal: true },
   { id: "earnings", label: "Earnings", icon: DollarSign, internal: true },
   { id: "ads", label: "Ads", icon: Megaphone, internal: true },
   { id: "notifications", label: "Notifications", icon: Bell, internal: true },
