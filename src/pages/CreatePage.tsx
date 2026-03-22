@@ -750,15 +750,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               <div className="relative flex-1 min-w-0 overflow-hidden">
                 <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
 
-                {/* Type badge */}
-                {typeCfg && (
-                  <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
-                    <typeCfg.icon size={13} />{typeCfg.label}
-                  </span>
-                )}
-
-                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
-
                 {/* Sub-mode selector */}
                 <Popover open={subModeOpen} onOpenChange={setSubModeOpen}>
                   <PopoverTrigger asChild>
