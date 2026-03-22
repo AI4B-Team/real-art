@@ -4,7 +4,7 @@ import {
   List, LayoutGrid, Columns, Grid3X3, Rss,
   Trash2, Settings, Sparkles, Plus, ChevronDown, Search, Filter as FilterIcon, Download, MoreHorizontal,
   Image, Play, LayoutList, CircleDot, Check, Heart, MessageCircle, Send, Bookmark, Eye, Users, Share2, Clock,
-  TrendingUp, Hash, Pencil, FileText, PenLine,
+  TrendingUp, Hash, Pencil, FileText, PenLine, Palette,
 } from "lucide-react";
 import {
   Popover, PopoverContent, PopoverTrigger,
@@ -405,7 +405,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               brandEnabled ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground"
             }`}
           >
-            Brand
+            <Palette size={13} /> Brand
             <div className={`w-8 h-[18px] rounded-full relative transition-colors ${brandEnabled ? "bg-accent" : "bg-foreground/20"}`}>
               <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-all ${brandEnabled ? "left-[16px]" : "left-[2px]"}`} />
             </div>
