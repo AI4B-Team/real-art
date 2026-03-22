@@ -62,6 +62,7 @@ import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
 import SocialContentPanel from "@/components/create/SocialContentPanel";
 import CharacterPanel from "@/components/create/CharacterPanel";
+import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 /* ─── Types ─────────────────────────────────────────────────── */
@@ -353,6 +354,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [appGithubTab, setAppGithubTab] = useState<"private" | "public">("private");
   const [appBuildMode, setAppBuildMode] = useState<string | null>(null);
   const [appBuildOpen, setAppBuildOpen] = useState(false);
+  const [storyScenes, setStoryScenes] = useState<StoryScene[]>([makeScene()]);
+  const [storyMode, setStoryMode] = useState<"auto" | "manual">("auto");
+  const [storyModeOpen, setStoryModeOpen] = useState(false);
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
@@ -581,7 +585,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
   const hasType = !!selectedType;
-  const placeholder = selectedType ? PLACEHOLDERS[selectedType] : "Create anything...";
+  const placeholder = selectedType === "video" && selectedSubMode === "story"
+    ? "Upload References. Describe your vision. We'll create the scenes (e.g., Product reveal with smooth motion, premium feel, confident tone)"
+    : selectedType ? PLACEHOLDERS[selectedType] : "Create anything...";
   const borderCls = typeCfg ? typeCfg.promptBorder : "border-foreground/20";
 
   const topLeftLabel = (type: ContentType): string => {
@@ -749,6 +755,23 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
+          {/* Story Scenes button inside prompt box */}
+          {selectedType === "video" && selectedSubMode === "story" && (
+            <div className="flex justify-center pb-2">
+              <button
+                type="button"
+                onClick={() => setStoryMode(storyMode === "manual" ? "auto" : "manual")}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg border text-[0.78rem] font-medium transition-all ${
+                  storyMode === "manual"
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-foreground/[0.1] bg-foreground/[0.03] text-muted hover:text-foreground hover:border-foreground/20"
+                }`}
+              >
+                <Layers size={13} />
+                Scenes
+              </button>
+            </div>
+          )}
           {/* Inline frame uploads for video animate mode */}
           {showFrames && (
             <div className="px-6 py-4">
@@ -1077,6 +1100,28 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       <SlidersHorizontal size={12} />1080p
                     </button>
                   </TooltipTrigger><TooltipContent>Resolution</TooltipContent></Tooltip>
+                )}
+
+                {/* Story mode — Auto/Manual toggle + Scenes button */}
+                {selectedType === "video" && selectedSubMode === "story" && (
+                  <>
+                  <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
+                  <Popover open={storyModeOpen} onOpenChange={setStoryModeOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${storyMode === "manual" ? "bg-yellow-50 text-yellow-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Calendar size={12} />{storyMode === "auto" ? "Auto" : "Manual"}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Scene Mode</TooltipContent></Tooltip>
+                    <PopoverContent className="w-36 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                      {(["auto", "manual"] as const).map(m => (
+                        <button key={m} type="button" onClick={() => { setStoryMode(m); setStoryModeOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors capitalize ${storyMode === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {m}{storyMode === m && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                  </>
                 )}
 
                 {/* Count — image, design */}
@@ -1699,6 +1744,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
         </div>
+
+        {/* Story scenes panel */}
+        {selectedType === "video" && selectedSubMode === "story" && storyMode === "manual" && (
+          <div className="max-w-[960px] mx-auto">
+            <StoryScenesPanel scenes={storyScenes} onScenesChange={setStoryScenes} />
+          </div>
+        )}
 
         {/* Social content panel — stretch to parent edges */}
         {activePanel === "social" && showSocial && (
