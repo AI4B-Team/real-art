@@ -1610,7 +1610,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             <ReferencePanel
               onClose={() => setActivePanel(null)}
               references={references}
-              onAdd={ref => { setReferences(prev => selectedType === "video" ? [ref] : [...prev, ref]); }}
+              onAdd={ref => { setReferences(prev => [...prev, ref]); }}
               onRemove={id => setReferences(prev => prev.filter(r => r.id !== id))}
             />
           )}
