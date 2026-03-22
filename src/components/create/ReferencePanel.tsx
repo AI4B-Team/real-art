@@ -10,11 +10,13 @@ export default function ReferencePanel({ onClose, references, onAdd, onRemove }:
 
   return (
     <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
-      {/* Close + reference count */}
-      <div className="flex items-center justify-end gap-2 mb-1">
-        {references.length > 0 && (
-          <span className="text-[0.7rem] text-muted font-medium">{references.length}/6 added</span>
-        )}
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <h3 className="text-[0.85rem] font-bold">References</h3>
+          {references.length > 0 && (
+            <span className="text-[0.7rem] text-muted font-medium">{references.length}/6 added</span>
+          )}
+        </div>
         <button onClick={onClose} className="text-muted hover:text-foreground transition-colors">
           <X size={16} />
         </button>
