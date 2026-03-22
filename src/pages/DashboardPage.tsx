@@ -798,10 +798,10 @@ const EarningsSection = () => {
       {/* Summary cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
         {[
-          { icon: DollarSign, label: "Total Earned", value: `$${totalEarned.toLocaleString()}.00`, sub: "All time" },
-          { icon: Wallet, label: "Pending", value: "$213.40", sub: "Awaiting payout" },
-          { icon: Link2, label: "Stream 1 Links", value: "48", sub: "Active affiliate links" },
-          { icon: Users, label: "Referrals", value: "127", sub: "This month" },
+          { icon: DollarSign, label: "Total Earned", value: `$${totalEarned.toLocaleString()}.00`, sub: "All Time" },
+          { icon: Wallet, label: "Pending", value: "$213.40", sub: "Awaiting Payout" },
+          { icon: Link2, label: "Stream 1 Links", value: "48", sub: "Active Affiliate Links" },
+          { icon: Users, label: "Referrals", value: "127", sub: "This Month" },
         ].map(s => (
           <div key={s.label} className="bg-card border border-foreground/[0.08] rounded-xl p-5">
             <div className="flex items-center gap-2 mb-3">
@@ -823,10 +823,10 @@ const EarningsSection = () => {
           <h3 className="font-display text-[1.1rem] font-bold mb-1">Your shop & affiliate links</h3>
           <p className="text-[0.78rem] text-muted mb-4">Etsy, Gumroad, Amazon clicks — you keep 100%</p>
           <div className="font-display text-[2rem] font-black text-accent leading-none mb-2">$213.40</div>
-          <div className="text-[0.75rem] text-muted mb-1">pending this cycle</div>
+          <div className="text-[0.75rem] text-muted mb-1">Pending This Cycle</div>
           <div className="flex items-center gap-4 text-[0.75rem] text-muted mt-3">
-            <span>48 active links</span>
-            <span>312 clicks this month</span>
+            <span>48 Active Links</span>
+            <span>312 Clicks This Month</span>
           </div>
         </div>
         <div className="bg-card border border-foreground/[0.08] rounded-xl p-5">
@@ -836,10 +836,10 @@ const EarningsSection = () => {
           <h3 className="font-display text-[1.1rem] font-bold mb-1">Platform referrals</h3>
           <p className="text-[0.78rem] text-muted mb-4">REAL ART signups through your art — up to 40%</p>
           <div className="font-display text-[2rem] font-black text-accent leading-none mb-2">$412.00</div>
-          <div className="text-[0.75rem] text-muted mb-1">paid last cycle</div>
+          <div className="text-[0.75rem] text-muted mb-1">Paid Last Cycle</div>
           <div className="flex items-center gap-4 text-[0.75rem] text-muted mt-3">
             <span>Creator Tier · 30%</span>
-            <span>127 referrals this month</span>
+            <span>127 Referrals This Month</span>
           </div>
         </div>
       </div>
