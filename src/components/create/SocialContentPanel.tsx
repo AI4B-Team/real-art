@@ -377,14 +377,32 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-all ${brandEnabled ? "left-[16px]" : "left-[2px]"}`} />
             </div>
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-bold hover:bg-accent/85 transition-colors">
-            <Plus size={13} /> New Post <ChevronDown size={11} />
-          </button>
+          <div className="relative">
+            <button onClick={() => setShowNewPostMenu(v => !v)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-bold hover:bg-accent/85 transition-colors">
+              <Plus size={13} /> New Post <ChevronDown size={11} />
+            </button>
+            {showNewPostMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowNewPostMenu(false)} />
+                <div className="absolute right-0 top-full mt-1 z-50 bg-background border border-foreground/[0.08] rounded-xl shadow-lg py-1.5 w-48">
+                  {[
+                    { icon: Pencil, label: "Create Post" },
+                    { icon: LayoutGrid, label: "Use Template" },
+                    { icon: Rss, label: "Recycle Content" },
+                  ].map(item => (
+                    <button key={item.label} onClick={() => setShowNewPostMenu(false)} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.82rem] font-medium hover:bg-foreground/[0.04] transition-colors">
+                      <item.icon size={15} className="text-muted-foreground" /> {item.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Calendar sub-header */}
-      {activeView === "calendar" && (
+      {/* Calendar sub-header — shown for calendar, plan, grid, kanban, feed */}
+      {(activeView === "calendar" || activeView === "plan" || activeView === "grid" || activeView === "kanban" || activeView === "feed") && (
         <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06]">
           <div className="flex items-center gap-2">
             <button className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.04] text-[0.75rem] font-medium">
