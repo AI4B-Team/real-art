@@ -1041,12 +1041,24 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               <div className="relative flex-1 min-w-0 overflow-hidden">
                 <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
 
-                {/* Type badge — always visible */}
+                {/* Type badge — always visible, clickable to switch type */}
                 {typeCfg && (
-                  <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
-                    <typeCfg.icon size={13} />{typeCfg.label}
-                    <X size={11} className="opacity-60 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => { setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
-                  </span>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 cursor-pointer ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
+                        <typeCfg.icon size={13} />{typeCfg.label}
+                        <ChevronDown size={11} className="opacity-60" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                      {CONTENT_TYPES.map(t => (
+                        <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedType === t.id ? `${t.bg} ${t.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          <t.icon size={14} className={t.color} />{t.label}{selectedType === t.id && <Check size={12} className="ml-auto" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
                 )}
 
                 <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
