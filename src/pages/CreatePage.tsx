@@ -1327,26 +1327,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Story mode — Auto/Manual toggle + Scenes button */}
-                {selectedType === "video" && selectedSubMode === "story" && (
-                  <>
-                  <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
-                  <Popover open={storyModeOpen} onOpenChange={setStoryModeOpen}>
-                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${storyMode === "manual" ? "bg-yellow-50 text-yellow-700" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <Calendar size={12} />{storyMode === "auto" ? "Auto" : "Manual"}
-                      </button>
-                    </PopoverTrigger></TooltipTrigger><TooltipContent>Scene Mode</TooltipContent></Tooltip>
-                    <PopoverContent className="w-36 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
-                      {(["auto", "manual"] as const).map(m => (
-                        <button key={m} type="button" onClick={() => { setStoryMode(m); setStoryModeOpen(false); }}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors capitalize ${storyMode === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                          {m}{storyMode === m && <Check size={12} />}
-                        </button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                  </>
-                )}
+                {/* Story Auto/Manual toggle removed from toolbar — controlled via Scenes button above */}
 
                 {/* Count — image, design */}
                 {selectedSubMode && (selectedType === "image" || selectedType === "design") && (
