@@ -447,7 +447,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     }
   };
 
-  // Auto-populate video frames from character/reference selections
+  // Auto-populate video frames from character selections only
   useEffect(() => {
     if (selectedType !== "video") return;
     
@@ -458,14 +458,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
       if (info?.avatar) charImages.push(info.avatar);
     }
     
-    // First character → start frame, second character → end frame
-    if (charImages.length >= 1) setStartFrame(charImages[0]);
-    else if (references.length > 0) setStartFrame(references[0].src);
-    else setStartFrame(null);
-    
-    if (charImages.length >= 2) setEndFrame(charImages[1]);
-    // Don't clear endFrame if it was set manually via frame picker
-  }, [selectedType, selectedCharacters, characterInfoMap, references]);
+    // Only auto-set frames from characters — don't overwrite manually-set frames
+    if (charImages.length >= 1) setStartFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[0]);
+    if (charImages.length >= 2) setEndFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[1]);
+  }, [selectedType, selectedCharacters, characterInfoMap]);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
