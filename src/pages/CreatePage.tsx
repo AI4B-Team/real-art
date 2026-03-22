@@ -486,18 +486,16 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
       if (info?.avatar) charImages.push(info.avatar);
     }
     
-    // Only auto-set frames from characters — don't overwrite manually-set frames
-    if (charImages.length >= 1) {
+    // Only auto-set frames from characters when the slot hasn't been explicitly cleared
+    if (charImages.length >= 1 && !startFrameLocked) {
       setStartFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[0]);
       setStartFrameMeta(prev => {
-        // Only update meta if we're actually changing the frame to a character image
-        const currentStart = charImages[0];
         const charId = selectedCharacters[0];
         if (prev?.sourceType === "character" && prev?.characterId === charId) return prev;
         return { sourceType: "character", characterId: charId };
       });
     }
-    if (charImages.length >= 2) {
+    if (charImages.length >= 2 && !endFrameLocked) {
       setEndFrame(prev => prev && !charImages.includes(prev) ? prev : charImages[1]);
       setEndFrameMeta(prev => {
         const charId = selectedCharacters[1];
