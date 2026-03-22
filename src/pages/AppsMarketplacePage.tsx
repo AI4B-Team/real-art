@@ -214,7 +214,7 @@ const AppsMarketplacePage = () => {
 
   const filterApps = (apps: AppItem[]) => {
     let result = apps;
-    if (selectedCat !== "All") result = result.filter(a => a.category.toLowerCase().includes(selectedCat.toLowerCase()));
+    if (selectedCat !== "Select All") result = result.filter(a => a.category.toLowerCase().includes(selectedCat.toLowerCase()));
     if (search) result = result.filter(a => a.name.toLowerCase().includes(search.toLowerCase()) || a.description.toLowerCase().includes(search.toLowerCase()));
     return result;
   };
