@@ -14,6 +14,8 @@ import {
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush, Link2,
   Eye, Target, Languages, Repeat, PenTool, FolderOpen,
+  Github, Smile, Rss, LinkIcon, ShoppingCart,
+  Minus, Settings,
 } from "lucide-react";
 import stylePhotorealistic from "@/assets/styles/photorealistic.jpg";
 import styleAnime from "@/assets/styles/anime.jpg";
@@ -61,7 +63,7 @@ import ImageCardOverlay from "@/components/ImageCardOverlay";
 type ContentType = "image" | "video" | "audio" | "design" | "content" | "document" | "app";
 type GalleryTab = "creations" | "collections" | "apps" | "templates" | "community";
 type MediaFilter = "all" | "image" | "video" | "audio" | "design";
-type PanelType = "reference" | "character" | "style" | "frames" | "music" | "photoshoot" | "social" | null;
+type PanelType = "reference" | "character" | "style" | "frames" | "music" | "photoshoot" | "social" | "github" | "advanced" | null;
 
 /* ─── Content type config ────────────────────────────────────── */
 
@@ -140,11 +142,16 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
     { id: "cover-letter",  label: "Cover Letter", icon: FileText },
   ],
   app: [
-    { id: "web-app",   label: "Web App",   icon: Globe },
-    { id: "ai-agent",  label: "AI Agent",  icon: Bot },
-    { id: "saas",      label: "SaaS",      icon: Package },
-    { id: "website",   label: "Website",   icon: LayoutGrid },
-    { id: "extension", label: "Extension", icon: Code },
+    { id: "website",     label: "Website",         icon: LayoutGrid },
+    { id: "landing",     label: "Landing Page",    icon: FileText },
+    { id: "multi-page",  label: "Multi-Page Site", icon: LayoutGrid },
+    { id: "link-in-bio", label: "Link In Bio",     icon: LinkIcon },
+    { id: "blog",        label: "Blog",            icon: Rss },
+    { id: "membership",  label: "Membership",      icon: Lock },
+    { id: "ecommerce",   label: "Ecommerce",       icon: ShoppingCart },
+    { id: "web-app",     label: "Web App",         icon: Globe },
+    { id: "ai-agent",    label: "AI Agent",        icon: Bot },
+    { id: "saas",        label: "SaaS",            icon: Package },
   ],
 };
 
@@ -314,6 +321,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [contentStyle, setContentStyle] = useState("Informative");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
+
+  // App-specific states
+  const [appModel, setAppModel] = useState("Auto");
+  const [appModelOpen, setAppModelOpen] = useState(false);
+  const [appTheme, setAppTheme] = useState("Default");
+  const [appThemeOpen, setAppThemeOpen] = useState(false);
+  const [appThemeSearch, setAppThemeSearch] = useState("");
+  const [appBudget, setAppBudget] = useState(25);
+  const [appTemplate, setAppTemplate] = useState("");
+  const [appGithubUrl, setAppGithubUrl] = useState("");
+  const [appGithubTab, setAppGithubTab] = useState<"private" | "public">("private");
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
@@ -983,6 +1001,112 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </div>
                   </div>
                 )}
+
+                {/* App-specific toolbar icons */}
+                {selectedType === "app" && (
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
+
+                    {/* App Model selector */}
+                    <Popover open={appModelOpen} onOpenChange={setAppModelOpen}>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${appModel !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Cpu size={12} />{appModel}
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
+                      <PopoverContent className="w-64 p-1.5" align="start" sideOffset={6}>
+                        {[
+                          { id: "Auto", desc: "AI picks what's best", badge: "SUGGESTED" },
+                          { id: "Claude 4.5 Sonnet", desc: "200k Context", badge: null },
+                          { id: "Claude 4.5 Opus", desc: "Anthropic's Most Advanced Model", badge: null },
+                          { id: "Claude 4.5 Sonnet - 1M", desc: "1 Million Context", badge: "PRO" },
+                          { id: "GPT-5.2 (Beta)", desc: "OpenAI's Latest Model", badge: null },
+                          { id: "Gemini 3 Pro", desc: "Google's Latest Model", badge: null },
+                          { id: "GPT-5.1", desc: "OpenAI's Older Model", badge: null },
+                        ].map(m => (
+                          <button key={m.id} type="button" onClick={() => { setAppModel(m.id); setAppModelOpen(false); }}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-left transition-colors ${appModel === m.id ? "bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                            <Cpu size={14} className={`shrink-0 ${appModel === m.id ? "text-accent" : "text-muted"}`} />
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-1.5">
+                                <span className={`text-[0.82rem] font-medium ${appModel === m.id ? "text-accent" : "text-foreground"}`}>{m.id}</span>
+                                {m.badge && <span className={`text-[0.55rem] font-bold px-1.5 py-0.5 rounded-full ${m.badge === "SUGGESTED" ? "bg-accent/15 text-accent" : "bg-foreground/10 text-foreground/60"}`}>{m.badge}</span>}
+                                {appModel === m.id && <Check size={12} className="text-accent ml-auto shrink-0" />}
+                              </div>
+                              <span className="text-[0.7rem] text-muted">{m.desc}</span>
+                            </div>
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Link */}
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" className="p-1.5 rounded-lg transition-colors shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
+                        <Link2 size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
+
+                    {/* GitHub */}
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" onClick={() => togglePanel("github")}
+                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "github" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Github size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Add from GitHub</TooltipContent></Tooltip>
+
+                    {/* Theme */}
+                    <Popover open={appThemeOpen} onOpenChange={setAppThemeOpen}>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${appTheme !== "Default" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Smile size={14} />
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Theme</TooltipContent></Tooltip>
+                      <PopoverContent className="w-60 p-0" align="end" sideOffset={6}>
+                        <div className="p-2 border-b border-foreground/[0.06]">
+                          <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
+                            <Search size={13} className="text-muted shrink-0" />
+                            <input value={appThemeSearch} onChange={e => setAppThemeSearch(e.target.value)} placeholder="Search themes..." className="bg-transparent border-none outline-none text-[0.8rem] text-foreground placeholder:text-muted/50 w-full" />
+                          </div>
+                        </div>
+                        <div className="p-1.5 max-h-[280px] overflow-y-auto">
+                          <p className="text-[0.68rem] font-semibold text-muted px-2.5 py-1.5">Default themes</p>
+                          {[
+                            { id: "Default",   colors: ["#1a1a1a","#333","#666","#ccc"] },
+                            { id: "Glacier",   colors: ["#1e3a5f","#2563eb","#3b82f6","#93c5fd"] },
+                            { id: "Harvest",   colors: ["#7c2d12","#c2410c","#ea580c","#fdba74"] },
+                            { id: "Lavender",  colors: ["#4c1d95","#6d28d9","#8b5cf6","#c4b5fd"] },
+                            { id: "Brutalist", colors: ["#1a1a1a","#333","#555","#f472b6"] },
+                            { id: "Obsidian",  colors: ["#1a2e1a","#2d4a2d","#4ade80","#86efac"] },
+                            { id: "Orchid",    colors: ["#831843","#be185d","#ec4899","#f9a8d4"] },
+                          ].filter(t => t.id.toLowerCase().includes(appThemeSearch.toLowerCase())).map(t => (
+                            <button key={t.id} type="button" onClick={() => { setAppTheme(t.id); setAppThemeOpen(false); setAppThemeSearch(""); }}
+                              className={`w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[0.82rem] transition-colors ${appTheme === t.id ? "text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                              <span>{t.id}</span>
+                              <div className="flex items-center gap-0.5">
+                                {t.colors.map((c, i) => (
+                                  <div key={i} className="w-4 h-4 rounded-full border border-foreground/10" style={{ backgroundColor: c }} />
+                                ))}
+                              </div>
+                            </button>
+                          ))}
+                          <button type="button" className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-[0.82rem] hover:bg-foreground/[0.04] text-muted transition-colors mt-1">
+                            <Plus size={13} /><span>Create new</span>
+                            <SlidersHorizontal size={12} className="ml-auto" />
+                          </button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Advanced Controls */}
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" onClick={() => togglePanel("advanced")}
+                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "advanced" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <SlidersHorizontal size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Advanced Controls</TooltipContent></Tooltip>
+                  </div>
+                )}
                 </div>
               </div>
 
@@ -1003,8 +1127,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
-                  className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white hover:bg-accent/85 transition-all disabled:opacity-40 disabled:cursor-not-allowed">
+                  className={`flex items-center justify-center gap-2 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                    selectedType === "app"
+                      ? "px-4 py-2 bg-accent/15 text-accent hover:bg-accent/25 text-[0.82rem] font-semibold"
+                      : "w-9 h-9 bg-accent text-white hover:bg-accent/85"
+                  }`}>
                   {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
+                  {selectedType === "app" && <span>Generate For Free!</span>}
                 </button>
               </div>
             </div>
@@ -1172,6 +1301,115 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 }
               }}
             />
+          )}
+
+          {/* GitHub panel */}
+          {activePanel === "github" && selectedType === "app" && (
+            <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <Github size={18} className="text-foreground" />
+                  <span className="text-[0.9rem] font-semibold text-foreground">Add from GitHub</span>
+                </div>
+                <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
+              </div>
+              <div className="flex rounded-lg border border-foreground/[0.1] overflow-hidden mb-4">
+                <button onClick={() => setAppGithubTab("private")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[0.82rem] font-semibold transition-colors ${appGithubTab === "private" ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.03] text-foreground hover:bg-foreground/[0.06]"}`}>
+                  <Lock size={14} />Private Repository
+                </button>
+                <button onClick={() => setAppGithubTab("public")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 text-[0.82rem] font-semibold transition-colors ${appGithubTab === "public" ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.03] text-foreground hover:bg-foreground/[0.06]"}`}>
+                  <Globe size={14} />Public Repository
+                </button>
+              </div>
+              {appGithubTab === "private" ? (
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-[0.85rem] font-semibold text-foreground">GitHub Authentication Required</p>
+                    <p className="text-[0.78rem] text-muted">Connect your GitHub account to access all your private and public repositories.</p>
+                  </div>
+                  <button className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-accent text-primary-foreground text-[0.82rem] font-semibold hover:bg-accent/90 transition-colors shrink-0">
+                    <Github size={15} />Connect to GitHub
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.1]">
+                    <Link2 size={14} className="text-muted shrink-0" />
+                    <input value={appGithubUrl} onChange={e => setAppGithubUrl(e.target.value)} placeholder="Paste public GitHub repository URL..." className="bg-transparent border-none outline-none text-[0.82rem] text-foreground placeholder:text-muted/50 w-full" />
+                  </div>
+                  {appGithubUrl.trim() && (
+                    <button className="mt-3 flex items-center gap-2 px-4 py-2 rounded-lg bg-accent text-primary-foreground text-[0.82rem] font-semibold hover:bg-accent/90 transition-colors">
+                      <Download size={14} />Import Repository
+                    </button>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Advanced Controls panel */}
+          {activePanel === "advanced" && selectedType === "app" && (
+            <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal size={18} className="text-accent" />
+                  <span className="text-[0.9rem] font-semibold text-accent">Advanced Controls</span>
+                </div>
+                <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
+              </div>
+              <div className="space-y-4">
+                {/* MCP Tools */}
+                <div>
+                  <p className="text-[0.78rem] font-semibold text-foreground mb-1.5 flex items-center gap-1.5">Select MCPs to use <span className="text-[0.6rem] bg-accent/15 text-accent px-1.5 py-0.5 rounded-full font-bold">New</span></p>
+                  <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1] text-[0.82rem] text-muted hover:border-foreground/20 transition-colors">
+                    <div className="flex items-center gap-2"><Settings size={14} />Select MCP Tools</div>
+                    <ChevronDown size={14} />
+                  </button>
+                </div>
+
+                {/* Template + Budget */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-[0.78rem] font-semibold text-foreground mb-1.5">Select Template</p>
+                    <input value={appTemplate} onChange={e => setAppTemplate(e.target.value)} placeholder="Template URL or name..." className="w-full px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1] text-[0.82rem] text-foreground placeholder:text-muted/50 outline-none focus:border-accent/40 transition-colors" />
+                  </div>
+                  <div>
+                    <p className="text-[0.78rem] font-semibold text-foreground mb-1.5">Budget (Credits)</p>
+                    <div className="flex items-center justify-between px-3 py-2 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1]">
+                      <button onClick={() => setAppBudget(v => Math.max(1, v - 5))} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] text-foreground transition-colors"><Minus size={14} /></button>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-yellow-500">●</span>
+                        <span className="text-[0.9rem] font-bold text-foreground">{appBudget}</span>
+                      </div>
+                      <button onClick={() => setAppBudget(v => v + 5)} className="w-7 h-7 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] text-foreground transition-colors"><Plus size={14} /></button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Model */}
+                <div>
+                  <p className="text-[0.78rem] font-semibold text-foreground mb-1.5">Model</p>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.1] text-[0.82rem] text-foreground hover:border-foreground/20 transition-colors">
+                        <div className="flex items-center gap-2"><Layers size={14} className="text-muted" />{appModel}</div>
+                        <ChevronDown size={14} className="text-muted" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-64 p-1.5" align="start">
+                      {["Auto", "Claude 4.5 Sonnet", "Claude 4.5 Opus", "GPT-5.2 (Beta)", "Gemini 3 Pro", "GPT-5.1"].map(m => (
+                        <button key={m} type="button" onClick={() => setAppModel(m)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${appModel === m ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {m}{appModel === m && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+            </div>
           )}
         </div>
 
