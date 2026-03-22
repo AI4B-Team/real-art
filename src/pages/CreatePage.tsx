@@ -771,8 +771,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               </div>
             )}
 
-            {/* Textarea OR Recording UI */}
-            {isListening ? (
+            {/* Textarea + optional Recording overlay */}
+            {isListening && (
               <div className="flex-1 flex flex-col gap-1 py-[6px] mt-[2px] min-h-[36px]">
                 {currentTranscript && <p className="text-[0.85rem] text-foreground/70 italic leading-snug">{currentTranscript}</p>}
                 <div className="flex items-center gap-1.5 shrink-0 self-end">
@@ -785,7 +785,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <button type="button" onClick={handleAcceptSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
                 </div>
               </div>
-            ) : (
+            )}
+            {!isListening && (
               <>
                 <textarea
                   ref={textareaRef}
