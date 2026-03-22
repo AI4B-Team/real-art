@@ -1138,7 +1138,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Document-specific toolbar */}
-                {selectedType === "document" && (
+                {selectedType === "document" && selectedSubMode && (
                   <div className="flex items-center gap-1.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
