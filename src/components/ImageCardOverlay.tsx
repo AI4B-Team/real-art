@@ -52,9 +52,17 @@ const imageTags: string[][] = [
 
 const prompts = [
   "A cosmic dreamscape with swirling nebula clouds, cinematic lighting, 8k ultra-detailed",
-  "Neon-drenched cyberpunk street scene with holographic billboards, rain-soaked pavement",
-  "Abstract liquid metal flowing through crystalline structures, iridescent reflections",
-  "Misty mountain landscape at golden hour, ethereal fog, photorealistic render",
+  "Neon-drenched cyberpunk gradient with electric pink and deep blue tones, abstract art",
+  "Abstract liquid metal flowing through crystalline structures, iridescent reflections, warm tones",
+  "Misty mountain landscape at golden hour, ethereal fog rolling through valleys, photorealistic",
+  "Neon boulevard at midnight, rain-soaked streets reflecting holographic billboards, cyberpunk aesthetic",
+  "Dramatic sunset over snow-capped peaks, golden light breaking through clouds, epic landscape",
+  "Futuristic digital avatar portrait with holographic skin, glowing eyes, sci-fi character design",
+  "Celestial dance of auroras and stars over a frozen lake, cosmic atmosphere, dreamy",
+  "Cyberpunk cityscape with neon lights and flying cars, dystopian future, cinematic composition",
+  "Holographic portrait with prismatic light refractions, iridescent colors, futuristic studio photography",
+  "Deep ocean bioluminescent scene with glowing jellyfish, underwater dreamscape, ethereal blue tones",
+  "Abstract fluid art with swirling metallic liquid, vibrant colors blending organically, macro photography",
 ];
 
 const iconBtn = "flex items-center justify-center w-8 h-8 rounded-full bg-black/30 backdrop-blur-md cursor-pointer text-primary-foreground hover:bg-black/50 transition-all duration-150 shrink-0 border border-primary-foreground/10";
