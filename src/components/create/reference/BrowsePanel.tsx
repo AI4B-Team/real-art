@@ -81,11 +81,8 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
 
   return (
     <div className="flex-1 min-w-0 flex flex-col">
-      {/* Header */}
-      <div className="mb-4">
-        <h3 className="text-[1rem] font-bold text-foreground">References</h3>
-        <p className="text-[0.75rem] text-muted mt-0.5">Upload or select files to guide AI generation</p>
-      </div>
+      {/* Subtitle */}
+      <p className="text-[0.75rem] text-muted mb-4">Upload or select files to guide AI generation</p>
 
       {/* Source tabs row */}
       <div className="flex items-center justify-between gap-3 mb-3">
