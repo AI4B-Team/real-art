@@ -755,6 +755,23 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
+          {/* Story Scenes button inside prompt box */}
+          {selectedType === "video" && selectedSubMode === "story" && (
+            <div className="flex justify-center pb-2">
+              <button
+                type="button"
+                onClick={() => setStoryMode(storyMode === "manual" ? "auto" : "manual")}
+                className={`flex items-center gap-1.5 px-4 py-1.5 rounded-lg border text-[0.78rem] font-medium transition-all ${
+                  storyMode === "manual"
+                    ? "border-accent bg-accent/10 text-accent"
+                    : "border-foreground/[0.1] bg-foreground/[0.03] text-muted hover:text-foreground hover:border-foreground/20"
+                }`}
+              >
+                <Layers size={13} />
+                Scenes
+              </button>
+            </div>
+          )}
           {/* Inline frame uploads for video animate mode */}
           {showFrames && (
             <div className="px-6 py-4">
