@@ -1030,7 +1030,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Resolution — video */}
-                {selectedType === "video" && (
+                {selectedSubMode && selectedType === "video" && (
                   <Tooltip><TooltipTrigger asChild>
                     <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors whitespace-nowrap shrink-0">
                       <SlidersHorizontal size={12} />1080p
