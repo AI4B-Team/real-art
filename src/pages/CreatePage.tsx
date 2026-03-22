@@ -325,7 +325,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [styleOpen, setStyleOpen] = useState(false);
   const [selectedModel, setSelectedModel] = useState("Auto");
   const [selectedStyle, setSelectedStyle] = useState("None");
-  const [selectedRatio, setSelectedRatio] = useState("1:1");
+  const [selectedRatio, setSelectedRatio] = useState("9:16");
   const [selectedNumber, setSelectedNumber] = useState(1);
   const [selectedDuration, setSelectedDuration] = useState("10s");
   const [selectedResolution, setSelectedResolution] = useState("1080p");
@@ -1178,7 +1178,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {selectedSubMode && (selectedType === "image" || selectedType === "design" || selectedType === "video") && (
                   <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedRatio !== "1:1" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
                         <Copy size={12} />{selectedRatio}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Ratio</TooltipContent></Tooltip>
