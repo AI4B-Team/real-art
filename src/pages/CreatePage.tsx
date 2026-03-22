@@ -1570,7 +1570,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               onClear={() => setSelectedCharacters([])}
             />
           )}
-          {activePanel === "frames" && showFrames && (
+          {activePanel === "frames" && showFrames && selectedType !== "video" && (
             <FramePanel
               onClose={() => setActivePanel(null)}
               startFrame={startFrame}
