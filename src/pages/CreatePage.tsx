@@ -13,7 +13,7 @@ import {
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush, Link2,
-  Eye, Target, Languages, Repeat, PenTool, FolderOpen,
+  Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
   Github, Smile, Rss, LinkIcon, ShoppingCart,
   Minus, Settings, Upload, ArrowLeftRight,
 } from "lucide-react";
