@@ -786,32 +786,32 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 style={{ height: "36px" }}
                 onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
               />
-              {isListening && (
-                <div className="absolute top-1 right-1 flex items-center gap-1.5">
-                  <button type="button" onClick={cancelSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors" title="Cancel"><X size={14} /></button>
-                  <div className="flex items-center gap-1.5 px-1">
-                    <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
-                    <AudioWaveAnimation small />
-                    <span className="text-[0.7rem] text-muted font-medium whitespace-nowrap">Listening…</span>
-                  </div>
-                  <button type="button" onClick={handleAcceptSpeech} className="w-7 h-7 rounded-lg flex items-center justify-center bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
-                </div>
-              )}
-              {!hasType && !isListening && (
-                <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
-                  {isSupported && (
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"><Mic size={17} /></button>
-                    </TooltipTrigger><TooltipContent side="bottom">Voice input</TooltipContent></Tooltip>
-                  )}
+              <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
+                {isListening && (
+                  <>
+                    <button type="button" onClick={cancelSpeech} className="shrink-0 flex items-center justify-center w-8 h-9 rounded-xl bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors" title="Cancel"><X size={14} /></button>
+                    <div className="flex items-center gap-1.5 px-1.5">
+                      <div className="w-2 h-2 rounded-full bg-accent animate-pulse shrink-0" />
+                      <AudioWaveAnimation small />
+                      <span className="text-[0.7rem] text-muted font-medium whitespace-nowrap">Listening…</span>
+                    </div>
+                    <button type="button" onClick={handleAcceptSpeech} className="shrink-0 flex items-center justify-center w-8 h-9 rounded-xl bg-accent/10 text-accent hover:bg-accent/20 transition-colors" title="Accept"><Check size={14} /></button>
+                  </>
+                )}
+                {!isListening && !hasType && isSupported && (
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"><Mic size={17} /></button>
+                  </TooltipTrigger><TooltipContent side="bottom">Voice input</TooltipContent></Tooltip>
+                )}
+                {!hasType && (
                   <Tooltip><TooltipTrigger asChild>
                     <button type="button" onClick={handleGenerate} disabled={!prompt.trim() || isEnhancing}
                       className={`shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors ${prompt.trim() ? "text-foreground hover:bg-foreground/[0.06]" : "text-muted/30"}`}>
                       {isEnhancing ? <Loader2 size={17} className="animate-spin text-purple-500" /> : <Send size={17} />}
                     </button>
                   </TooltipTrigger><TooltipContent side="bottom">Generate</TooltipContent></Tooltip>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
 
