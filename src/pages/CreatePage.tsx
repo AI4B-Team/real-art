@@ -6,7 +6,7 @@ import {
   ChevronDown, ChevronUp, Send, Mic, MicOff, Sparkles, Shuffle,
   X, Check, Loader2, Zap, ImageIcon,
   Layers, Pencil, RefreshCw, Camera,
-  Play, MessageCircle, Move, User, BookOpen, Presentation,
+  Play, MessageCircle, Move, User, BookOpen, Presentation, Clapperboard,
   Headphones, AudioLines, Captions,
   Copy, Hash, Clock, SlidersHorizontal,
   LayoutGrid, Filter, Star, Download, Bookmark, Plus,
