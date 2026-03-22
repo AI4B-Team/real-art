@@ -474,9 +474,9 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
       {showFilters && (
         <div className="border-b border-foreground/[0.06] bg-foreground/[0.015] px-5 py-5">
           <h3 className="text-[0.95rem] font-bold mb-4">Filters</h3>
-          <div className="grid grid-cols-4 gap-6">
+          <div className="flex divide-x divide-foreground/[0.08]">
             {/* Status */}
-            <div>
+            <div className="flex-1 px-5">
               <h4 className="text-[0.82rem] font-bold mb-3">Status</h4>
               <div className="space-y-2">
                 {[
@@ -513,7 +513,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             </div>
 
             {/* Content Type */}
-            <div>
+            <div className="flex-1 px-5">
               <h4 className="text-[0.82rem] font-bold mb-3">Content Type</h4>
               <div className="space-y-2">
                 {[
@@ -543,7 +543,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             </div>
 
             {/* Platforms */}
-            <div>
+            <div className="flex-1 px-5">
               <h4 className="text-[0.82rem] font-bold mb-3">Platforms</h4>
               <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                 {[
@@ -578,7 +578,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             </div>
 
             {/* Labels */}
-            <div>
+            <div className="flex-1 px-5">
               <div className="flex items-center justify-between mb-3">
                 <h4 className="text-[0.82rem] font-bold">Labels</h4>
                 <button onClick={() => setShowManageLabels(true)} className="text-[0.72rem] font-semibold text-blue-500 hover:text-blue-600 transition-colors">Manage</button>
