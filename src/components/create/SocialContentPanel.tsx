@@ -195,6 +195,11 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   const [selectedPost, setSelectedPost] = useState<DummyPost | null>(null);
   const [postDetailTab, setPostDetailTab] = useState<"details"|"predictions">("details");
   const [showBrandPrompt, setShowBrandPrompt] = useState(false);
+  const [showNewPostMenu, setShowNewPostMenu] = useState(false);
+  const [showMoreMenu, setShowMoreMenu] = useState(false);
+  const [showMonthPicker, setShowMonthPicker] = useState(false);
+  const [feedDevice, setFeedDevice] = useState<"mobile"|"desktop">("mobile");
+  const [feedPlatform, setFeedPlatform] = useState("instagram");
   const [showManageLabels, setShowManageLabels] = useState(false);
   const [showPostingSchedule, setShowPostingSchedule] = useState(false);
   const [scheduleTab, setScheduleTab] = useState<"schedule"|"analytics"|"general">("schedule");
@@ -372,19 +377,49 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
               <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white shadow-sm transition-all ${brandEnabled ? "left-[16px]" : "left-[2px]"}`} />
             </div>
           </button>
-          <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-bold hover:bg-accent/85 transition-colors">
-            <Plus size={13} /> New Post <ChevronDown size={11} />
-          </button>
+          <div className="relative">
+            <button onClick={() => setShowNewPostMenu(v => !v)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-accent text-accent-foreground text-[0.78rem] font-bold hover:bg-accent/85 transition-colors">
+              <Plus size={13} /> New Post <ChevronDown size={11} />
+            </button>
+            {showNewPostMenu && (
+              <>
+                <div className="fixed inset-0 z-40" onClick={() => setShowNewPostMenu(false)} />
+                <div className="absolute right-0 top-full mt-1 z-50 bg-background border border-foreground/[0.08] rounded-xl shadow-lg py-1.5 w-48">
+                  {[
+                    { icon: Pencil, label: "Create Post" },
+                    { icon: LayoutGrid, label: "Use Template" },
+                    { icon: Rss, label: "Recycle Content" },
+                  ].map(item => (
+                    <button key={item.label} onClick={() => setShowNewPostMenu(false)} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.82rem] font-medium hover:bg-foreground/[0.04] transition-colors">
+                      <item.icon size={15} className="text-muted-foreground" /> {item.label}
+                    </button>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Calendar sub-header */}
-      {activeView === "calendar" && (
+      {/* Calendar sub-header — shown for calendar, plan, grid, kanban, feed */}
+      {(activeView === "calendar" || activeView === "plan" || activeView === "grid" || activeView === "kanban" || activeView === "feed") && (
         <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06]">
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.04] text-[0.75rem] font-medium">
-              <Grid3X3 size={12} /> Month <ChevronDown size={10} />
-            </button>
+            <div className="relative">
+              <button onClick={() => setShowMonthPicker(v => !v)} className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.04] text-[0.75rem] font-medium hover:bg-foreground/[0.08] transition-colors">
+                <Grid3X3 size={12} /> Month <ChevronDown size={10} />
+              </button>
+              {showMonthPicker && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMonthPicker(false)} />
+                  <div className="absolute left-0 top-full mt-1 z-50 bg-background border border-foreground/[0.08] rounded-xl shadow-lg py-1 w-28">
+                    {["Day", "Week", "Month"].map(v => (
+                      <button key={v} onClick={() => setShowMonthPicker(false)} className={`w-full text-left px-3 py-2 text-[0.82rem] hover:bg-foreground/[0.04] transition-colors ${v === "Month" ? "font-semibold bg-foreground/[0.03]" : ""}`}>{v}</button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center" title="Today">
               <CalendarIcon size={12} />
             </button>
@@ -410,7 +445,27 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Search size={12} /></button>
             <button onClick={() => setShowFilters(v => !v)} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showFilters ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><FilterIcon size={12} /></button>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Download size={12} /></button>
-            <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><MoreHorizontal size={12} /></button>
+            <div className="relative">
+              <button onClick={() => setShowMoreMenu(v => !v)} className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"><MoreHorizontal size={12} /></button>
+              {showMoreMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
+                  <div className="absolute right-0 top-full mt-1 z-50 bg-background border border-foreground/[0.08] rounded-xl shadow-lg py-1.5 w-48">
+                    {[
+                      { icon: Users, label: "Add Account" },
+                      { icon: CalendarIcon, label: "Calendar Events" },
+                      { icon: CircleDot, label: "Manage Labels" },
+                      { icon: LayoutGrid, label: "Templates" },
+                      { icon: Rss, label: "Content Recycling" },
+                    ].map(item => (
+                      <button key={item.label} onClick={() => { setShowMoreMenu(false); if (item.label === "Manage Labels") setShowManageLabels(true); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.82rem] font-medium hover:bg-foreground/[0.04] transition-colors">
+                        <item.icon size={15} className="text-muted-foreground" /> {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -709,14 +764,132 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
         </div>
       )}
 
-      {/* Plan/Feed placeholder */}
-      {(activeView === "plan" || activeView === "feed") && (
-        <div className="flex items-center justify-center py-16 text-muted">
-          <div className="text-center">
-            <Grid3X3 size={32} className="mx-auto mb-2 opacity-40" />
-            <p className="text-[0.85rem] font-medium">{VIEW_TABS.find(t => t.id === activeView)?.label} View</p>
-            <p className="text-[0.75rem] text-muted/60">Coming soon</p>
+      {/* ─── Plan View (Table) ─── */}
+      {activeView === "plan" && (
+        <div className="p-4">
+          <table className="w-full">
+            <thead>
+              <tr className="border-b border-foreground/[0.06]">
+                {["PLATFORM", "CONTENT", "SCORE", "DATE", "TIME", "STATUS", ""].map(h => (
+                  <th key={h} className="text-left text-[0.72rem] font-bold text-muted-foreground tracking-wider py-3 px-3">{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {posts.map((post, i) => {
+                const platform = PLATFORMS.find(p => p.id === post.platform);
+                return (
+                  <tr key={i} onClick={() => { setSelectedPost(post); setPostDetailTab("details"); }}
+                    className="border-b border-foreground/[0.04] hover:bg-foreground/[0.02] cursor-pointer transition-colors"
+                  >
+                    <td className="py-3 px-3">
+                      <div className="w-7 h-7 rounded-full flex items-center justify-center" style={{ color: platform?.color, backgroundColor: `${platform?.color}15` }}>
+                        <PlatformIcon platformId={post.platform} size={14} />
+                      </div>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className="text-[0.82rem] font-medium">{post.title}</span>
+                    </td>
+                    <td className="py-3 px-3">
+                      <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-[0.72rem] font-bold text-white ${
+                        post.score >= 80 ? "bg-emerald-500" : post.score >= 60 ? "bg-amber-500" : "bg-red-500"
+                      }`}>{post.score}</span>
+                    </td>
+                    <td className="py-3 px-3 text-[0.82rem] text-muted-foreground">{post.dateLabel}</td>
+                    <td className="py-3 px-3 text-[0.82rem] text-muted-foreground">{post.time}</td>
+                    <td className="py-3 px-3">
+                      <span className={`inline-flex items-center gap-1 text-[0.72rem] font-semibold px-2.5 py-1 rounded-full ${
+                        post.status === "published" ? "bg-emerald-100 text-emerald-700" :
+                        post.status === "scheduled" ? "bg-blue-100 text-blue-700" :
+                        post.status === "awaiting" ? "bg-amber-100 text-amber-700" :
+                        "bg-foreground/[0.06] text-muted-foreground"
+                      }`}>
+                        {post.status === "published" && <Check size={10} />}
+                        {post.status === "draft" && <Pencil size={10} />}
+                        {post.status === "published" ? "Published" : post.status === "scheduled" ? "Scheduled" : post.status === "awaiting" ? "Awaiting" : "Draft"}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3"><MoreHorizontal size={14} className="text-muted-foreground" /></td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
+      {/* ─── Feed View ─── */}
+      {activeView === "feed" && (
+        <div className="p-4">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-[0.88rem] font-bold flex items-center gap-2"><Grid3X3 size={14} /> Feed Preview</h3>
+            <div className="flex items-center bg-foreground/[0.04] rounded-lg p-0.5">
+              <button onClick={() => setFeedDevice("mobile")} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${feedDevice === "mobile" ? "bg-accent text-white" : "text-muted hover:text-foreground"}`}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+              </button>
+              <button onClick={() => setFeedDevice("desktop")} className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${feedDevice === "desktop" ? "bg-accent text-white" : "text-muted hover:text-foreground"}`}>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              </button>
+            </div>
           </div>
+          <div className="flex gap-6">
+            {/* Platform sidebar */}
+            <div className="flex flex-col gap-2 pt-2">
+              {["instagram", "tiktok", "linkedin", "x", "facebook"].map(pid => {
+                const p = PLATFORMS.find(pl => pl.id === pid);
+                return (
+                  <button key={pid} onClick={() => setFeedPlatform(pid)}
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${
+                      feedPlatform === pid ? "ring-2 ring-offset-2 ring-accent" : "hover:bg-foreground/[0.04]"
+                    }`}
+                    style={{ color: p?.color }}
+                  >
+                    <PlatformIcon platformId={pid} size={20} />
+                  </button>
+                );
+              })}
+            </div>
+            {/* Phone / Desktop mockup */}
+            <div className="flex-1 flex justify-center">
+              <div className={`bg-foreground/[0.03] border border-foreground/[0.08] overflow-hidden ${
+                feedDevice === "mobile" ? "rounded-[2rem] w-[280px]" : "rounded-xl w-full max-w-[700px]"
+              }`}>
+                {/* Top bar */}
+                <div className={`flex items-center justify-center gap-4 py-3 border-b border-foreground/[0.06] ${feedDevice === "mobile" ? "pt-6" : ""}`}>
+                  <button className="text-muted-foreground"><Grid3X3 size={16} /></button>
+                  <button className="text-muted-foreground"><LayoutGrid size={16} /></button>
+                </div>
+                {/* Grid of posts */}
+                <div className={`grid gap-0.5 ${feedDevice === "mobile" ? "grid-cols-3" : "grid-cols-3"}`}>
+                  {posts.slice(0, feedDevice === "mobile" ? 9 : 9).map((post, i) => {
+                    const p = PLATFORMS.find(pl => pl.id === post.platform);
+                    return (
+                      <div key={i} onClick={() => { setSelectedPost(post); setPostDetailTab("details"); }}
+                        className="aspect-square bg-emerald-50 flex items-center justify-center relative group cursor-pointer hover:opacity-80 transition-opacity"
+                      >
+                        <div style={{ color: p?.color }} className="opacity-40">
+                          <PlatformIcon platformId={post.platform} size={feedDevice === "mobile" ? 24 : 36} />
+                        </div>
+                        {post.contentType === "carousel" && (
+                          <div className="absolute top-1.5 right-1.5"><LayoutGrid size={10} className="text-foreground/50" /></div>
+                        )}
+                        {post.contentType === "reel" && (
+                          <div className="absolute top-1.5 right-1.5"><Play size={10} className="text-foreground/50" /></div>
+                        )}
+                        {/* Hover overlay with stats */}
+                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3 text-white">
+                          <span className="flex items-center gap-1 text-[0.72rem] font-bold"><Heart size={12} /> {Math.floor(Math.random() * 2000 + 200).toLocaleString()}</span>
+                          <span className="flex items-center gap-1 text-[0.72rem] font-bold"><MessageCircle size={12} /> {Math.floor(Math.random() * 100 + 10)}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className={`py-4 ${feedDevice === "mobile" ? "pb-8" : ""}`} />
+              </div>
+            </div>
+          </div>
+          <p className="text-[0.75rem] text-muted-foreground mt-3">{posts.length} posts scheduled for {feedPlatform}</p>
         </div>
       )}
 
