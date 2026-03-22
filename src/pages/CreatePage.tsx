@@ -782,7 +782,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 onBlur={() => setPromptFocused(false)}
                 placeholder={placeholder}
                 rows={1}
-                className="w-full bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px]"
+                className="w-full bg-transparent border-none outline-none resize-y text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px]"
                 style={{ height: "36px" }}
                 onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
               />
