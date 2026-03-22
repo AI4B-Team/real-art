@@ -472,6 +472,28 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
         </div>
       )}
 
+      {/* Search bar */}
+      {showSearchBar && (
+        <div className="border-b border-foreground/[0.06] px-5 py-3">
+          <div className="relative max-w-md">
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search posts..."
+              autoFocus
+              className="w-full pl-9 pr-8 py-2 rounded-lg bg-foreground/[0.04] border border-foreground/[0.08] text-[0.84rem] font-body outline-none focus:border-accent/40 transition-colors"
+            />
+            {searchQuery && (
+              <button onClick={() => setSearchQuery("")} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-foreground">
+                <X size={13} />
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Filters panel */}
       {showFilters && (
         <div className="border-b border-foreground/[0.06] bg-foreground/[0.015] px-5 py-5">
