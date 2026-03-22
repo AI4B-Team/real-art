@@ -389,6 +389,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   };
 
 
+  const FEATURED_CHARS_LOOKUP = [
     { id: "f1", name: "Alex", avatar: "photo-1507003211169-0a1dd7228f2d" },
     { id: "f2", name: "Mia", avatar: "photo-1534528741775-53994a69daeb" },
     { id: "f3", name: "Jordan", avatar: "photo-1519085360753-af0119f7cbe7" },
