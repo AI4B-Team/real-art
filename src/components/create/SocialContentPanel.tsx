@@ -122,21 +122,52 @@ const VIEW_TABS = [
 ];
 
 /* ─── Dummy posts ────────────────────────────── */
-function generateDummyPosts(month: number, year: number) {
+type PostStatus = "draft" | "awaiting" | "scheduled" | "published";
+type ContentType = "post" | "carousel" | "reel" | "story";
+
+interface DummyPost {
+  day: number; time: string; title: string; platform: string; score: number;
+  status: PostStatus; contentType: ContentType; caption: string; hashtags: string[];
+  dateLabel: string;
+}
+
+const CAPTIONS = [
+  "Ever feel like you're shouting into the void? 🗣️ Finding your niche is KEY to connecting with your ideal audience! If you're a creative, what's a struggle you've faced trying to define your unique space? Share your thoughts! Let's brainstorm! ✨ #NicheDiscovery #CreativeBranding #InstagramForCreatives #PersonalBrandTips #FindYourVoice",
+  "Creative minds, listen up! 🚀 What's ONE burning question you have about building your personal brand online? Drop it below! 👇",
+  "Feeling overwhelmed by content creation? You're not alone! 😤 What kind of content do YOU find most engaging?",
+  "Your visual identity says everything before you say a word. How intentional are you about yours? 🎨",
+  "Content strategy isn't just about posting — it's about connecting. What's your biggest challenge? 💡",
+];
+
+const HASHTAG_SETS = [
+  ["#NicheDiscovery", "#CreativeBranding", "#InstagramForCreatives", "#PersonalBrandTips", "#FindYourVoice"],
+  ["#ContentCreation", "#PersonalBrand", "#CreativeEntrepreneur", "#DigitalMarketing", "#SocialMediaTips"],
+  ["#VisualIdentity", "#BrandDesign", "#CreativeStrategy", "#AestheticGoals", "#BrandVoice"],
+];
+
+function generateDummyPosts(month: number, year: number): DummyPost[] {
   const titles = [
     "Content Strategy Secrets!", "Visual Identity Vibe Check!", "Your Creative Superpower?",
     "Nail Your Niche! 🤩", "Unleash Your Creative Brand!", "Engagement Tactics REEL!",
     "What's Your Superpower Story?", "Brainstorming Blitz!", "Content Strategy Poll! 📊",
   ];
-  const posts: { day: number; time: string; title: string; platform: string; score: number }[] = [];
+  const statuses: PostStatus[] = ["draft", "draft", "published", "draft", "published", "scheduled", "awaiting", "draft", "published"];
+  const contentTypes: ContentType[] = ["post", "carousel", "reel", "story", "carousel", "post"];
+  const posts: DummyPost[] = [];
   for (let d = 4; d <= 28; d += 1) {
     if (Math.random() > 0.45) {
+      const idx = posts.length;
       posts.push({
         day: d,
         time: `${Math.floor(Math.random() * 12 + 1)}:${Math.random() > 0.5 ? "30" : "00"} ${Math.random() > 0.5 ? "AM" : "PM"}`,
         title: titles[Math.floor(Math.random() * titles.length)],
         platform: PLATFORMS[Math.floor(Math.random() * 4)].id,
         score: Math.floor(Math.random() * 30 + 65),
+        status: statuses[idx % statuses.length],
+        contentType: contentTypes[idx % contentTypes.length],
+        caption: CAPTIONS[idx % CAPTIONS.length],
+        hashtags: HASHTAG_SETS[idx % HASHTAG_SETS.length],
+        dateLabel: `Jan ${d}`,
       });
     }
   }
