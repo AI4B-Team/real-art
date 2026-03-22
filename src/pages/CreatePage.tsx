@@ -872,6 +872,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {typeCfg && (
                   <span className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
                     <typeCfg.icon size={13} />{typeCfg.label}
+                    <X size={11} className="opacity-60 cursor-pointer hover:opacity-100 transition-opacity" onClick={() => { setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
                   </span>
                 )}
 
