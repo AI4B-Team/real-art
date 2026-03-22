@@ -1422,7 +1422,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Target size={14} />
+                          <Flag size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
