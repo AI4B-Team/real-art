@@ -405,9 +405,21 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
       {(activeView === "calendar" || activeView === "plan" || activeView === "grid" || activeView === "kanban" || activeView === "feed") && (
         <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06]">
           <div className="flex items-center gap-2">
-            <button className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.04] text-[0.75rem] font-medium">
-              <Grid3X3 size={12} /> Month <ChevronDown size={10} />
-            </button>
+            <div className="relative">
+              <button onClick={() => setShowMonthPicker(v => !v)} className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-foreground/[0.04] text-[0.75rem] font-medium hover:bg-foreground/[0.08] transition-colors">
+                <Grid3X3 size={12} /> Month <ChevronDown size={10} />
+              </button>
+              {showMonthPicker && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMonthPicker(false)} />
+                  <div className="absolute left-0 top-full mt-1 z-50 bg-background border border-foreground/[0.08] rounded-xl shadow-lg py-1 w-28">
+                    {["Day", "Week", "Month"].map(v => (
+                      <button key={v} onClick={() => setShowMonthPicker(false)} className={`w-full text-left px-3 py-2 text-[0.82rem] hover:bg-foreground/[0.04] transition-colors ${v === "Month" ? "font-semibold bg-foreground/[0.03]" : ""}`}>{v}</button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center" title="Today">
               <CalendarIcon size={12} />
             </button>
@@ -433,7 +445,27 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Search size={12} /></button>
             <button onClick={() => setShowFilters(v => !v)} className={`w-6 h-6 rounded-lg flex items-center justify-center transition-colors ${showFilters ? "bg-accent text-white" : "bg-foreground/[0.04]"}`}><FilterIcon size={12} /></button>
             <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><Download size={12} /></button>
-            <button className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center"><MoreHorizontal size={12} /></button>
+            <div className="relative">
+              <button onClick={() => setShowMoreMenu(v => !v)} className="w-6 h-6 rounded-lg bg-foreground/[0.04] flex items-center justify-center hover:bg-foreground/[0.08] transition-colors"><MoreHorizontal size={12} /></button>
+              {showMoreMenu && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowMoreMenu(false)} />
+                  <div className="absolute right-0 top-full mt-1 z-50 bg-background border border-foreground/[0.08] rounded-xl shadow-lg py-1.5 w-48">
+                    {[
+                      { icon: Users, label: "Add Account" },
+                      { icon: CalendarIcon, label: "Calendar Events" },
+                      { icon: CircleDot, label: "Manage Labels" },
+                      { icon: LayoutGrid, label: "Templates" },
+                      { icon: Rss, label: "Content Recycling" },
+                    ].map(item => (
+                      <button key={item.label} onClick={() => { setShowMoreMenu(false); if (item.label === "Manage Labels") setShowManageLabels(true); }} className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[0.82rem] font-medium hover:bg-foreground/[0.04] transition-colors">
+                        <item.icon size={15} className="text-muted-foreground" /> {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}
