@@ -300,6 +300,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
   const promptFileRef = useRef<HTMLInputElement>(null);
+  const [promptFocused, setPromptFocused] = useState(false);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [subModeOpen, setSubModeOpen] = useState(false);
   const [modelOpen, setModelOpen] = useState(false);
@@ -549,7 +550,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   key={t.id}
                   type="button"
                   onClick={() => handleTypeSelect(t.id)}
-                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-semibold border transition-all ${
+                  className={`create-pill flex items-center gap-2 px-4 py-2.5 rounded-lg text-[0.84rem] font-semibold border ${
                     isActive
                       ? `${t.bg} ${t.border} shadow-sm text-foreground`
                       : "bg-background border-foreground/15 hover:border-foreground/30 text-foreground"
@@ -563,7 +564,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           </div>
         </div>
 
-        <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background shadow-sm overflow-visible transition-all duration-200 ${borderCls}`}>
+        <div className={`w-full max-w-[820px] mx-auto rounded-2xl border bg-background overflow-visible transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-md" : "shadow-sm"}`}>
 
           {/* Textarea row */}
           <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
@@ -646,9 +647,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   value={prompt}
                   onChange={e => setPrompt(e.target.value)}
                   onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                  onFocus={() => setPromptFocused(true)}
+                  onBlur={() => setPromptFocused(false)}
                   placeholder={placeholder}
                   rows={1}
-                  className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px]"
+                  className="flex-1 bg-transparent border-none outline-none resize-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent"
                   style={{ height: "36px" }}
                   onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
                 />
@@ -805,7 +808,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
-                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <Brush size={12} />{selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
@@ -813,7 +816,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Character */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("character")}
-                    className={`relative p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <User size={14} />
                     {selectedCharacters.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{selectedCharacters.length}</span>}
                   </button>
@@ -822,7 +825,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {/* Reference */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("reference")}
-                    className={`relative p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     <Layers size={14} />
                     {references.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{references.length}</span>}
                   </button>
@@ -1127,7 +1130,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
-                  className={`flex items-center justify-center gap-2 rounded-lg transition-all disabled:opacity-40 disabled:cursor-not-allowed ${
+                  className={`flex items-center justify-center gap-2 rounded-lg transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] active:scale-95 ${
                     selectedType === "app"
                       ? "px-4 py-2 bg-accent/15 text-accent hover:bg-accent/25 text-[0.82rem] font-semibold"
                       : "w-9 h-9 bg-accent text-white hover:bg-accent/85"
