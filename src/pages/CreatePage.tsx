@@ -361,6 +361,18 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [storyMode, setStoryMode] = useState<"auto" | "manual">("auto");
   const [storyModeOpen, setStoryModeOpen] = useState(false);
 
+  // Voiceover-specific states
+  const [voiceoverVoice, setVoiceoverVoice] = useState("Auto");
+  const [voiceoverVoiceOpen, setVoiceoverVoiceOpen] = useState(false);
+  const [voiceoverLanguage, setVoiceoverLanguage] = useState("English");
+  const [voiceoverLanguageOpen, setVoiceoverLanguageOpen] = useState(false);
+  const [voiceoverAccent, setVoiceoverAccent] = useState("Neutral");
+  const [voiceoverAccentOpen, setVoiceoverAccentOpen] = useState(false);
+  const [voiceoverSpeed, setVoiceoverSpeed] = useState("Normal");
+  const [voiceoverSpeedOpen, setVoiceoverSpeedOpen] = useState(false);
+  const [voiceoverTone, setVoiceoverTone] = useState("Auto");
+  const [voiceoverToneOpen, setVoiceoverToneOpen] = useState(false);
+
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
@@ -1136,8 +1148,115 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </Popover>
                 )}
 
-                {/* Style, Character, Reference — hidden for ebook mode */}
-                {selectedType !== "document" && (
+                {/* Voiceover-specific controls */}
+                {selectedType === "audio" && selectedSubMode === "voiceover" && (
+                  <>
+                {/* Voice */}
+                <Popover open={voiceoverVoiceOpen} onOpenChange={setVoiceoverVoiceOpen}>
+                  <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                    <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${voiceoverVoice !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}{voiceoverVoice !== "Auto" && <ChevronDown size={10} />}
+                    </button>
+                  </PopoverTrigger></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
+                  <PopoverContent className="w-64 p-0" align="start" sideOffset={6}>
+                    <p className="text-[0.78rem] text-muted px-4 pt-3 pb-2">Select a voice for your voiceover</p>
+                    <div className="max-h-[280px] overflow-y-auto px-2 pb-2">
+                      {[
+                        { name: "Rachel", gender: "Female" },
+                        { name: "Aria", gender: "Female" },
+                        { name: "Roger", gender: "Male" },
+                        { name: "Sarah", gender: "Female" },
+                        { name: "Laura", gender: "Female" },
+                        { name: "Charlie", gender: "Male" },
+                        { name: "George", gender: "Male" },
+                        { name: "Liam", gender: "Male" },
+                      ].map(v => (
+                        <button key={v.name} type="button" onClick={() => { setVoiceoverVoice(v.name); setVoiceoverVoiceOpen(false); }}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[0.84rem] transition-colors ${voiceoverVoice === v.name ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          <div className="w-8 h-8 rounded-full bg-foreground/[0.06] flex items-center justify-center shrink-0"><User size={14} className="text-muted" /></div>
+                          <div className="flex-1 text-left">
+                            <p className="font-medium text-[0.84rem]">{v.name}</p>
+                            <p className="text-[0.72rem] text-muted">{v.gender}</p>
+                          </div>
+                          <Play size={14} className="text-green-500 opacity-60 hover:opacity-100" />
+                        </button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                {/* Language */}
+                <Popover open={voiceoverLanguageOpen} onOpenChange={setVoiceoverLanguageOpen}>
+                  <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                    <button type="button" className={`toolbar-btn p-1.5 rounded-lg shrink-0 ${voiceoverLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Globe size={14} />
+                    </button>
+                  </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                    {["English", "Spanish", "French", "German", "Italian", "Portuguese", "Japanese", "Korean", "Chinese", "Arabic", "Hindi", "Dutch"].map(l => (
+                      <button key={l} type="button" onClick={() => { setVoiceoverLanguage(l); setVoiceoverLanguageOpen(false); }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverLanguage === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {l}{voiceoverLanguage === l && <Check size={12} />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                {/* Accent */}
+                <Popover open={voiceoverAccentOpen} onOpenChange={setVoiceoverAccentOpen}>
+                  <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                    <button type="button" className={`toolbar-btn p-1.5 rounded-lg shrink-0 ${voiceoverAccent !== "Neutral" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <AudioLines size={14} />
+                    </button>
+                  </PopoverTrigger></TooltipTrigger><TooltipContent>Accent</TooltipContent></Tooltip>
+                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                    {["American", "British", "Australian", "Irish", "Scottish", "Indian", "South African", "Neutral"].map(a => (
+                      <button key={a} type="button" onClick={() => { setVoiceoverAccent(a); setVoiceoverAccentOpen(false); }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverAccent === a ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {a}{voiceoverAccent === a && <Check size={12} />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                {/* Speed */}
+                <Popover open={voiceoverSpeedOpen} onOpenChange={setVoiceoverSpeedOpen}>
+                  <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                    <button type="button" className={`toolbar-btn p-1.5 rounded-lg shrink-0 ${voiceoverSpeed !== "Normal" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Clock size={14} />
+                    </button>
+                  </PopoverTrigger></TooltipTrigger><TooltipContent>Speed</TooltipContent></Tooltip>
+                  <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                    {["Very Slow", "Slow", "Normal", "Fast", "Very Fast"].map(s => (
+                      <button key={s} type="button" onClick={() => { setVoiceoverSpeed(s); setVoiceoverSpeedOpen(false); }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverSpeed === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {s}{voiceoverSpeed === s && <Check size={12} />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                {/* Tone */}
+                <Popover open={voiceoverToneOpen} onOpenChange={setVoiceoverToneOpen}>
+                  <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                    <button type="button" className={`toolbar-btn p-1.5 rounded-lg shrink-0 ${voiceoverTone !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <SlidersHorizontal size={14} />
+                    </button>
+                  </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
+                  <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                    {["Auto", "Professional", "Casual", "Energetic", "Calm", "Dramatic", "Warm", "Authoritative"].map(t => (
+                      <button key={t} type="button" onClick={() => { setVoiceoverTone(t); setVoiceoverToneOpen(false); }}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${voiceoverTone === t ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {t}{voiceoverTone === t && <Check size={12} />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+                  </>
+                )}
+
+                {/* Style, Character, Reference — hidden for ebook & voiceover mode */}
+                {selectedType !== "document" && !(selectedType === "audio" && selectedSubMode === "voiceover") && (
                   <>
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
