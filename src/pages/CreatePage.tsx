@@ -648,7 +648,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
   const handleAcceptSpeech = () => {
     const result = acceptSpeech();
-    if (result) setPrompt(prev => prev ? prev + " " + result : result);
+    if (result) setPrompt(prev => prev ? prev + "\n\n" + result : result);
   };
 
   const togglePanel = (panel: PanelType) => {
