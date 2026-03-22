@@ -277,7 +277,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
   };
 
   return (
-    <div className="border-t border-foreground/[0.08] bg-background mt-3 overflow-hidden w-full">
+    <div className="border-t border-foreground/[0.08] bg-background mt-3 w-full">
       {/* Platform selection */}
       <div className="p-4 border-b border-foreground/[0.06]">
         <div className="flex items-center justify-between mb-3">
@@ -337,7 +337,7 @@ export default function SocialContentPanel({ onClose }: SocialContentPanelProps)
       </div>
 
       {/* View tabs toolbar */}
-      <div className="flex items-center justify-between px-4 py-2.5 border-b border-foreground/[0.06]">
+      <div className="flex items-center justify-between px-4 py-2.5 border-b border-foreground/[0.06] overflow-x-auto">
         <div className="flex items-center gap-1">
           {VIEW_TABS.map(tab => (
             <button
