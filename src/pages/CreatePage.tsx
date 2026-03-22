@@ -447,23 +447,24 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     }
   };
 
-  // Auto-populate video start frame from character/reference selections
+  // Auto-populate video frames from character/reference selections
   useEffect(() => {
     if (selectedType !== "video") return;
     
-    // Determine the primary selected image (character takes priority)
-    let primarySrc: string | null = null;
-    
-    if (selectedCharacters.length > 0) {
-      const id = selectedCharacters[0];
+    // Build ordered list of all character avatars
+    const charImages: string[] = [];
+    for (const id of selectedCharacters) {
       const info = characterInfoMap[id];
-      if (info?.avatar) primarySrc = info.avatar;
-    } else if (references.length > 0) {
-      primarySrc = references[0].src;
+      if (info?.avatar) charImages.push(info.avatar);
     }
     
-    setStartFrame(primarySrc);
-    // Don't touch endFrame — let user set it manually via the frame picker
+    // First character → start frame, second character → end frame
+    if (charImages.length >= 1) setStartFrame(charImages[0]);
+    else if (references.length > 0) setStartFrame(references[0].src);
+    else setStartFrame(null);
+    
+    if (charImages.length >= 2) setEndFrame(charImages[1]);
+    // Don't clear endFrame if it was set manually via frame picker
   }, [selectedType, selectedCharacters, characterInfoMap, references]);
 
   useEffect(() => {
