@@ -372,6 +372,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [voiceoverSpeedOpen, setVoiceoverSpeedOpen] = useState(false);
   const [voiceoverTone, setVoiceoverTone] = useState("Auto");
   const [voiceoverToneOpen, setVoiceoverToneOpen] = useState(false);
+  const [voiceoverLangSearch, setVoiceoverLangSearch] = useState("");
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
