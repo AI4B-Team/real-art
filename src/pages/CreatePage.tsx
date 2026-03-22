@@ -62,6 +62,7 @@ import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
 import SocialContentPanel from "@/components/create/SocialContentPanel";
 import CharacterPanel from "@/components/create/CharacterPanel";
+import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 
 /* ─── Types ─────────────────────────────────────────────────── */
