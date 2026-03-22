@@ -935,8 +935,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       sourceType: meta?.sourceType || "upload",
                       characterId: meta?.characterId,
                     };
-                    if (framePickerTarget === "start") { setStartFrame(src); setStartFrameMeta(frameMeta); }
-                    else { setEndFrame(src); setEndFrameMeta(frameMeta); }
+                    if (framePickerTarget === "start") {
+                      setStartFrame(src);
+                      setStartFrameMeta(frameMeta);
+                      setStartFrameLocked(false);
+                    } else {
+                      setEndFrame(src);
+                      setEndFrameMeta(frameMeta);
+                      setEndFrameLocked(false);
+                    }
                     // Update character/reference state based on source type
                     if (selectedType === "video" && meta) {
                       if (meta.sourceType === "character" && meta.characterId) {
