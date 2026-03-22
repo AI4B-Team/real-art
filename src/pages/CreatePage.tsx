@@ -733,29 +733,24 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       >
                         <X size={11} />
                       </button>
+                      <button
+                        onClick={() => setFramePickerTarget("start")}
+                        className="absolute inset-0 bg-black/0 hover:bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all"
+                      >
+                        <span className="text-white text-[0.75rem] font-semibold">Replace</span>
+                      </button>
                     </div>
                   ) : (
                     <button
                       type="button"
-                      onClick={() => startFrameRef.current?.click()}
+                      onClick={() => setFramePickerTarget("start")}
                       className="w-[140px] h-[140px] rounded-2xl border-2 border-dashed border-foreground/[0.12] flex flex-col items-center justify-center gap-2 hover:border-foreground/30 hover:bg-foreground/[0.02] transition-colors cursor-pointer"
                     >
                       <Upload size={20} className="text-muted" />
-                      <span className="text-[0.75rem] text-muted font-medium">Upload</span>
+                      <span className="text-[0.75rem] text-muted font-medium">Choose image</span>
                     </button>
                   )}
                   <span className="text-[0.78rem] font-medium text-muted">Start Frame</span>
-                  <input
-                    ref={startFrameRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={e => {
-                      const file = e.target.files?.[0];
-                      if (file) setStartFrame(URL.createObjectURL(file));
-                      e.target.value = "";
-                    }}
-                  />
                 </div>
 
                 {/* Swap button */}
@@ -785,31 +780,46 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       >
                         <X size={11} />
                       </button>
+                      <button
+                        onClick={() => setFramePickerTarget("end")}
+                        className="absolute inset-0 bg-black/0 hover:bg-black/30 flex items-center justify-center opacity-0 hover:opacity-100 transition-all"
+                      >
+                        <span className="text-white text-[0.75rem] font-semibold">Replace</span>
+                      </button>
                     </div>
                   ) : (
                     <button
                       type="button"
-                      onClick={() => endFrameRef.current?.click()}
+                      onClick={() => setFramePickerTarget("end")}
                       className="w-[140px] h-[140px] rounded-2xl border-2 border-dashed border-foreground/[0.12] flex flex-col items-center justify-center gap-2 hover:border-foreground/30 hover:bg-foreground/[0.02] transition-colors cursor-pointer"
                     >
                       <Upload size={20} className="text-muted" />
-                      <span className="text-[0.75rem] text-muted font-medium">Upload</span>
+                      <span className="text-[0.75rem] text-muted font-medium">Choose image</span>
                     </button>
                   )}
                   <span className="text-[0.78rem] font-medium text-muted">End Frame (Optional)</span>
-                  <input
-                    ref={endFrameRef}
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={e => {
-                      const file = e.target.files?.[0];
-                      if (file) setEndFrame(URL.createObjectURL(file));
-                      e.target.value = "";
-                    }}
-                  />
                 </div>
               </div>
+
+              {/* Frame Source Picker Modal */}
+              {framePickerTarget && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setFramePickerTarget(null)}>
+                  <div className="bg-background border border-foreground/[0.1] rounded-2xl p-5 w-[520px] max-w-[92vw] shadow-2xl" onClick={e => e.stopPropagation()}>
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-[0.92rem] font-bold">Choose {framePickerTarget === "start" ? "Start" : "End"} Frame</h3>
+                      <button onClick={() => setFramePickerTarget(null)} className="text-muted hover:text-foreground transition-colors"><X size={16} /></button>
+                    </div>
+                    <FrameSourcePicker
+                      onSelect={(src) => {
+                        if (framePickerTarget === "start") setStartFrame(src);
+                        else setEndFrame(src);
+                        setFramePickerTarget(null);
+                      }}
+                      onClose={() => setFramePickerTarget(null)}
+                    />
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
