@@ -1507,7 +1507,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           setBrandToggle(v => !v);
                         }
                       }}>
-                        <Eye size={13} className="text-muted" />
+                        <Palette size={13} className="text-muted" />
                         <span className="text-[0.72rem] text-muted font-medium whitespace-nowrap">Brand</span>
                         <div className={`w-8 h-[18px] rounded-full transition-colors relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}>
                           <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
