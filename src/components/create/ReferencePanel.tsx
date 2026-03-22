@@ -24,7 +24,7 @@ export default function ReferencePanel({ onClose, references, onAdd, onRemove }:
 
       {/* Current references strip */}
       {references.length > 0 && (
-        <div className="flex items-center gap-2 mb-4 overflow-x-auto overflow-y-visible pb-1 pt-2 pr-2">
+        <div className="flex items-center gap-3 mb-4 overflow-x-auto overflow-y-visible p-3">
           {references.map(ref => (
             <div key={ref.id} className="relative group shrink-0">
               <img
