@@ -508,6 +508,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setSelectedModel("Auto");
     setSelectedStyle("None");
     setPrompt("");
+    setSelectedCharacters([]);
+    setReferences([]);
+    setStartFrame(null);
+    setEndFrame(null);
+    setStoryScenes([makeScene()]);
+    setStoryMode("auto");
     setTypeDropdownOpen(false);
     setActivePanel(null);
     textareaRef.current?.focus();
