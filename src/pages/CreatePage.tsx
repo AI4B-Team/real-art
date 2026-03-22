@@ -1048,7 +1048,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <PopoverTrigger asChild>
                       <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 cursor-pointer ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
                         <typeCfg.icon size={13} />{typeCfg.label}
-                        <ChevronDown size={11} className="opacity-60" />
+                        <X size={11} className="opacity-60 hover:opacity-100 transition-opacity" onClick={e => { e.stopPropagation(); setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
                       </button>
                     </PopoverTrigger>
                     <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
