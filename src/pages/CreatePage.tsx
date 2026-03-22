@@ -1577,10 +1577,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </button>
                   </TooltipTrigger><TooltipContent>Enhance Prompt</TooltipContent></Tooltip>
                 )}
-                {isSupported && !isListening && (
+                {isSupported && (
                   <Tooltip><TooltipTrigger asChild>
-                    <button type="button" onClick={startListening} className="p-1.5 rounded-lg transition-colors bg-foreground/[0.04] text-muted hover:text-foreground mr-2"><Mic size={15} /></button>
-                  </TooltipTrigger><TooltipContent>Speak</TooltipContent></Tooltip>
+                    <button type="button" onClick={isListening ? cancelSpeech : startListening} className={`p-1.5 rounded-lg transition-colors mr-2 ${isListening ? "bg-accent/10 text-accent animate-pulse" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}><Mic size={15} /></button>
+                  </TooltipTrigger><TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
                   className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white hover:bg-accent/85 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] active:scale-95">
