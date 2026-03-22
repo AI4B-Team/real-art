@@ -55,6 +55,7 @@ import CreatorsPage from "./pages/CreatorsPage";
 import BoardsPage from "./pages/BoardsPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
 import TopicPage from "./pages/TopicPage";
+import AppsMarketplacePage from "./pages/AppsMarketplacePage";
 
 const queryClient = new QueryClient();
 
@@ -124,6 +125,7 @@ const App = () => (
             <Route path="/ads" element={<AdsPage />} />
             <Route path="/account" element={<AccountPage />} />
             <Route path="/brand" element={<BrandPage />} />
+            <Route path="/apps" element={<AppsMarketplacePage />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
