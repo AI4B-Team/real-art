@@ -1567,31 +1567,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </Popover>
 
                     {/* Source */}
-                    <Popover open={docSourceOpen} onOpenChange={setDocSourceOpen}>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className="p-1.5 rounded-lg transition-colors shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
-                          <LinkChain size={14} />
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Source</TooltipContent></Tooltip>
-                      <PopoverContent className="w-72 p-1.5" side="bottom" align="start" sideOffset={6}>
-                        <p className="text-[0.72rem] text-muted px-3 pt-2 pb-1.5 font-medium uppercase tracking-wide">Add Source</p>
-                        {[
-                          { icon: Upload, label: "Upload File", desc: "PDF, DOCX, TXT, MD", color: "text-amber-500" },
-                          { icon: LinkIcon, label: "Paste URL", desc: "Web page, article, or blog", color: "text-blue-500" },
-                          { icon: FileText, label: "Paste Text", desc: "Copy & paste raw content", color: "text-emerald-500" },
-                          { icon: Mic, label: "Record Audio", desc: "Transcribe voice to text", color: "text-accent" },
-                          { icon: FolderOpen, label: "My Collections", desc: "Import from saved collections", color: "text-purple-500" },
-                        ].map(s => (
-                          <button key={s.label} type="button" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[0.84rem] transition-colors hover:bg-foreground/[0.04] text-foreground">
-                            <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><s.icon size={16} className={s.color} /></div>
-                            <div className="flex-1 text-left">
-                              <p className="font-medium text-[0.82rem] leading-tight">{s.label}</p>
-                              <p className="text-[0.7rem] text-muted leading-tight">{s.desc}</p>
-                            </div>
-                          </button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" onClick={() => togglePanel("source")}
+                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <LinkChain size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Source</TooltipContent></Tooltip>
 
                     {/* Language (icon only) */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
