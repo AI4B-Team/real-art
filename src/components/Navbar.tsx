@@ -868,7 +868,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
         )}
         {isLoggedIn && (
           <div className="relative" ref={creditRef}>
-            <div className="flex items-center bg-foreground/[0.06] rounded-full pl-3 pr-1 py-1 gap-2">
+            <div className="flex items-center bg-foreground/[0.06] rounded-lg pl-3 pr-1 py-1 gap-2">
               <span className="text-green-500 text-[0.8rem]">◆</span>
               <span className="text-[0.82rem] font-semibold tabular-nums">273,245</span>
               <button
@@ -878,7 +878,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               >
                 <HelpCircle className="w-3.5 h-3.5" />
               </button>
-              <Link to="/account?tab=subscription" onClick={() => {}} className="bg-accent text-primary-foreground text-[0.76rem] font-semibold px-3 py-1 rounded-full hover:bg-accent/85 transition-colors no-underline">
+              <Link to="/account?tab=subscription" onClick={() => {}} className="bg-accent text-primary-foreground text-[0.76rem] font-semibold px-3 py-1 rounded-lg hover:bg-accent/85 transition-colors no-underline">
                 Upgrade
               </Link>
             </div>
