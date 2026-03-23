@@ -1751,7 +1751,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Link */}
                     <Tooltip><TooltipTrigger asChild>
                       <button type="button" className="p-1.5 rounded-lg transition-colors shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
-                        <Link2 size={14} />
+                        <ChainLinkIcon size={14} />
                       </button>
                     </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
 
