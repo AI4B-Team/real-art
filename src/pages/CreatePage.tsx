@@ -2165,7 +2165,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="mt-3 flex flex-col gap-1.5">
                       {addedLinks.map((link, i) => (
                         <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
-                          <LinkIcon size={12} className="text-muted shrink-0" />
+                          <ChainLinkIcon size={12} className="text-muted shrink-0" />
                           <span className="text-[0.75rem] text-foreground truncate flex-1">{link}</span>
                           <button type="button" onClick={() => setAddedLinks(prev => prev.filter((_, idx) => idx !== i))} className="text-muted hover:text-foreground transition-colors shrink-0">
                             <X size={12} />
