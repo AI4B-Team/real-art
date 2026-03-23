@@ -61,6 +61,7 @@ import NewEbookPage from "./pages/NewEbookPage";
 import { EbookProvider } from "./contexts/EbookContext";
 import TranscribePage from "./pages/TranscribePage";
 import TranscriptDetailPage from "./pages/TranscriptDetailPage";
+import EditorPage from "./pages/EditorPage";
 
 const queryClient = new QueryClient();
 
