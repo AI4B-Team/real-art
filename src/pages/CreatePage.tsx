@@ -333,8 +333,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [resolutionOpen, setResolutionOpen] = useState(false);
   const [brandToggle, setBrandToggle] = useState(() => !!localStorage.getItem("ra_brand_complete"));
   const [contentGoal, setContentGoal] = useState("Engagement");
-  const [contentTone, setContentTone] = useState("Professional");
-  const [contentLanguage, setContentLanguage] = useState("English");
+  const [contentTone, setContentTone] = useState<string | null>(null);
+  const [contentLanguage, setContentLanguage] = useState<string | null>(null);
   const [contentToneOpen, setContentToneOpen] = useState(false);
   const [contentLangOpen, setContentLangOpen] = useState(false);
   const [contentFrequency, setContentFrequency] = useState("Daily");
@@ -1497,9 +1497,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </Popover>
                     <Popover open={contentToneOpen} onOpenChange={setContentToneOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentTone ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
-                          {contentTone !== "Professional" && <span className="text-[0.75rem] font-medium pr-0.5">{contentTone}</span>}
+                          {contentTone && <span className="text-[0.75rem] font-medium pr-0.5">{contentTone}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
@@ -1511,9 +1511,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </Popover>
                     <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
-                          {contentLanguage !== "English" && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
+                          {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
