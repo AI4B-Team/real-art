@@ -1493,29 +1493,31 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-                    <Popover>
+                    <Popover open={contentToneOpen} onOpenChange={setContentToneOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
+                          {contentTone !== "Professional" && <span className="text-[0.75rem] font-medium pr-0.5">{contentTone}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
-                          <button key={o} onClick={() => setContentTone(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          <button key={o} onClick={() => { setContentTone(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
-                    <Popover>
+                    <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
+                          {contentLanguage !== "English" && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
                         {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                          <button key={o} onClick={() => setContentLanguage(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          <button key={o} onClick={() => { setContentLanguage(o); setContentLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
