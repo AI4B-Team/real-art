@@ -2020,7 +2020,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               <div className="flex items-center gap-1 mb-4 overflow-x-auto">
                 {[
                   { id: "upload", label: "Upload File", icon: Upload },
-                  { id: "url", label: "Insert Link", icon: LinkIcon },
+                  { id: "url", label: "Insert Link", icon: ChainLinkIcon as any },
                   { id: "text", label: "Paste Text", icon: FileText },
                   { id: "audio", label: "Record Audio", icon: Mic },
                   { id: "collections", label: "Collections", icon: FolderOpen },
