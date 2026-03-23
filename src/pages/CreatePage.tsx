@@ -12,9 +12,9 @@ import {
   LayoutGrid, Filter, Star, Download, Bookmark, Plus,
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
-  Film, Package, BarChart2, ShoppingBag, Brush, Link2,
+  Film, Package, BarChart2, ShoppingBag, Brush,
   Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
-  Github, Smile, Rss, LinkIcon, ShoppingCart,
+  Github, Smile, Rss, ShoppingCart,
   Minus, Settings, Upload, ArrowLeftRight,
   Link as LinkChain,
 } from "lucide-react";
