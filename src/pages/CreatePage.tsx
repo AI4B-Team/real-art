@@ -2126,8 +2126,9 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string }[] = [
 
 /* ─── Main Page ──────────────────────────────────────────────── */
 
-export default function CreatePage() {
+function CreatePageInner() {
   const { toast } = useToast();
+  const { studioActive, setStudioActive, updateSettings } = useEbook();
   const [activeTab, setActiveTab] = useState<GalleryTab>("creations");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -2135,6 +2136,15 @@ export default function CreatePage() {
   const [generated, setGenerated] = useState(false);
   const [creations, setCreations] = useState<UserCreation[]>([]);
   const [loadingCreations, setLoadingCreations] = useState(true);
+
+  const handleEbookGenerate = (prompt: string) => {
+    updateSettings({ prompt });
+    setStudioActive(true);
+  };
+
+  if (studioActive) {
+    return <EbookStudio />;
+  }
 
   // Fetch real user creations from DB
   useEffect(() => {
