@@ -2439,7 +2439,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               ) : (
                 <div>
                   <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.1]">
-                    <Link2 size={14} className="text-muted shrink-0" />
+                    <ChainLinkIcon size={14} className="text-muted shrink-0" />
                     <input value={appGithubUrl} onChange={e => setAppGithubUrl(e.target.value)} placeholder="Paste public GitHub repository URL..." className="bg-transparent border-none outline-none text-[0.82rem] text-foreground placeholder:text-muted/50 w-full" />
                   </div>
                   {appGithubUrl.trim() && (
