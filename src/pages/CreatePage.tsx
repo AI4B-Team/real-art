@@ -1983,6 +1983,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
               <p className="text-[0.72rem] text-muted/50 mt-3">Add up to 10 source files to guide the AI generation.</p>
             </div>
+          )}
           {activePanel === "character" && (
             <CharacterPanel
               onClose={() => setActivePanel(null)}
