@@ -878,7 +878,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               >
                 <HelpCircle className="w-3.5 h-3.5" />
               </button>
-              <Link to="/account?tab=subscription" onClick={() => {}} className="bg-accent text-primary-foreground text-[0.76rem] font-semibold px-3 py-1 rounded-full hover:bg-accent/85 transition-colors no-underline">
+              <Link to="/account?tab=subscription" onClick={() => {}} className="bg-accent text-primary-foreground text-[0.76rem] font-semibold px-3 py-1 rounded-lg hover:bg-accent/85 transition-colors no-underline">
                 Upgrade
               </Link>
             </div>
