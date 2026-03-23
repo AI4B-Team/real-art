@@ -335,6 +335,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [contentGoal, setContentGoal] = useState("Engagement");
   const [contentTone, setContentTone] = useState("Professional");
   const [contentLanguage, setContentLanguage] = useState("English");
+  const [contentToneOpen, setContentToneOpen] = useState(false);
+  const [contentLangOpen, setContentLangOpen] = useState(false);
   const [contentFrequency, setContentFrequency] = useState("Daily");
   const [contentTime, setContentTime] = useState("9:00 AM");
   const [contentStyle, setContentStyle] = useState("Informative");
@@ -1493,29 +1495,31 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         ))}
                       </PopoverContent>
                     </Popover>
-                    <Popover>
+                    <Popover open={contentToneOpen} onOpenChange={setContentToneOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
+                          {contentTone !== "Professional" && <span className="text-[0.75rem] font-medium pr-0.5">{contentTone}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
-                          <button key={o} onClick={() => setContentTone(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          <button key={o} onClick={() => { setContentTone(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
-                    <Popover>
+                    <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
+                          {contentLanguage !== "English" && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
                         {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                          <button key={o} onClick={() => setContentLanguage(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          <button key={o} onClick={() => { setContentLanguage(o); setContentLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
@@ -1686,12 +1690,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           { label: "Creative", icon: Brush },
                         ].map(o => {
                           const isSelected = docTone === o.label;
-                          const isDefault = o.label === "Professional" && docTone === "Professional";
                           return (
-                            <button key={o.label} onClick={() => setDocTone(o.label)} className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.82rem] transition-colors ${isSelected && !isDefault ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                              <o.icon size={14} className={isSelected && !isDefault ? "text-accent" : "text-muted"} />
+                            <button key={o.label} onClick={() => setDocTone(o.label)} className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.82rem] transition-colors ${isSelected ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                              <o.icon size={14} className={isSelected ? "text-accent" : "text-muted"} />
                               {o.label}
-                              {isSelected && !isDefault && <Check size={12} className="ml-auto text-accent" />}
+                              {isSelected && <Check size={12} className="ml-auto text-accent" />}
                             </button>
                           );
                         })}
