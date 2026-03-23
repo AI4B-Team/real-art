@@ -2142,10 +2142,6 @@ function CreatePageInner() {
     setStudioActive(true);
   };
 
-  if (studioActive) {
-    return <EbookStudio />;
-  }
-
   // Fetch real user creations from DB
   useEffect(() => {
     let cancelled = false;
@@ -2188,6 +2184,10 @@ function CreatePageInner() {
   const filteredCreations = mediaFilter === "all"
     ? creations
     : creations.filter(c => c.type === mediaFilter);
+
+  if (studioActive) {
+    return <EbookStudio />;
+  }
 
   return (
     <PageShell>
