@@ -2189,19 +2189,20 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
               {/* Record Audio tab */}
               {activeSourceTab === "audio" && (
-                <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
+                <div className="rounded-xl border border-foreground/[0.08] bg-accent/[0.03] p-6 flex flex-col items-center justify-center min-h-[220px]">
                   {!isRecordingAudio && !audioTranscript && (
                     <>
-                      <Mic size={28} className="text-accent mb-3" />
-                      <p className="text-[0.92rem] font-bold text-foreground mb-1">Record Audio</p>
-                      <p className="text-[0.75rem] text-muted/60 mb-4">Dictate your ideas and we'll transcribe them</p>
+                      <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
+                        <Mic size={28} className="text-accent" />
+                      </div>
+                      <p className="text-[0.95rem] font-bold text-foreground mb-1">Record & Transcribe</p>
+                      <p className="text-[0.78rem] text-muted/60 mb-5">Speak your ideas — live transcription appears as you talk</p>
                       <button type="button" onClick={() => {
                         const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
                         if (!SR) { toast({ title: "Not Supported", description: "Speech recognition is not supported in this browser." }); return; }
                         const r = new SR();
                         r.continuous = true;
                         r.interimResults = true;
-                        let transcript = "";
                         r.onresult = (e: any) => {
                           let t = "";
                           for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
@@ -2212,31 +2213,77 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         audioRecogRef.current = r;
                         r.start();
                         setIsRecordingAudio(true);
-                      }} className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
-                        Start Recording
+                      }} className="px-8 py-3 rounded-lg bg-accent text-white text-[0.85rem] font-bold hover:bg-accent/90 transition-colors shadow-md shadow-accent/20">
+                        <span className="flex items-center gap-2"><Mic size={16} /> Start Recording</span>
                       </button>
                     </>
                   )}
                   {isRecordingAudio && (
-                    <>
-                      <div className="flex items-center gap-2 mb-3">
-                        <div className="w-3 h-3 rounded-full bg-accent animate-pulse" />
-                        <span className="text-[0.85rem] font-semibold text-accent">Recording...</span>
+                    <div className="w-full flex flex-col items-center">
+                      {/* LIVE badge */}
+                      <div className="flex items-center gap-2.5 mb-5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
+                        <span className="px-2.5 py-1 rounded-md bg-accent text-white text-[0.7rem] font-black tracking-wider uppercase">Live</span>
+                        <span className="text-[0.85rem] font-semibold text-foreground">Real-Time Transcription</span>
                       </div>
-                      <AudioWaveAnimation />
-                      {audioTranscript && <p className="text-[0.82rem] text-foreground mt-4 text-center max-w-md">{audioTranscript}</p>}
-                      <button type="button" onClick={() => { audioRecogRef.current?.stop(); setIsRecordingAudio(false); }} className="mt-4 px-6 py-2.5 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/90 transition-colors">
-                        Stop Recording
-                      </button>
-                    </>
+
+                      {/* Animated audio waveform */}
+                      <div className="flex items-center justify-center gap-[2px] h-10 mb-5">
+                        {Array.from({ length: 40 }).map((_, i) => (
+                          <div
+                            key={i}
+                            className="w-[3px] rounded-full bg-accent"
+                            style={{
+                              animation: `audioBar 0.8s ease-in-out ${i * 0.04}s infinite alternate`,
+                              height: `${6 + Math.sin(i * 0.5) * 14 + Math.random() * 8}px`,
+                            }}
+                          />
+                        ))}
+                      </div>
+
+                      {/* Live transcript */}
+                      <div className="w-full max-w-lg min-h-[60px] px-4 py-3 rounded-xl bg-background border border-foreground/[0.08] mb-5">
+                        {audioTranscript ? (
+                          <p className="text-[0.85rem] text-foreground leading-relaxed">{audioTranscript}<span className="inline-block w-[2px] h-4 bg-accent ml-0.5 animate-pulse align-middle" /></p>
+                        ) : (
+                          <p className="text-[0.82rem] text-muted/40 italic">Listening... start speaking</p>
+                        )}
+                      </div>
+
+                      {/* Controls */}
+                      <div className="flex items-center gap-3">
+                        <button type="button" onClick={() => {
+                          audioRecogRef.current?.stop();
+                          setIsRecordingAudio(false);
+                          setAudioTranscript("");
+                        }} className="px-5 py-2.5 rounded-lg bg-foreground/[0.06] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.1] transition-colors">
+                          Cancel
+                        </button>
+                        <button type="button" onClick={() => {
+                          audioRecogRef.current?.stop();
+                          setIsRecordingAudio(false);
+                          if (audioTranscript.trim()) {
+                            setPrompt(prev => prev ? prev + " " + audioTranscript.trim() : audioTranscript.trim());
+                            setAudioTranscript("");
+                            toast({ title: "Transcription added", description: "Your speech has been added to the prompt." });
+                          }
+                        }} className="px-5 py-2.5 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/90 transition-colors shadow-sm">
+                          <span className="flex items-center gap-1.5"><Check size={14} /> Done</span>
+                        </button>
+                      </div>
+                    </div>
                   )}
                   {!isRecordingAudio && audioTranscript && (
-                    <>
-                      <Check size={28} className="text-accent mb-3" />
-                      <p className="text-[0.92rem] font-bold text-foreground mb-2">Transcription Ready</p>
-                      <p className="text-[0.82rem] text-foreground text-center max-w-md mb-4">{audioTranscript}</p>
+                    <div className="w-full flex flex-col items-center">
+                      <div className="w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center mb-3">
+                        <Check size={22} className="text-accent" />
+                      </div>
+                      <p className="text-[0.92rem] font-bold text-foreground mb-2">Transcription Complete</p>
+                      <div className="w-full max-w-lg px-4 py-3 rounded-xl bg-background border border-foreground/[0.08] mb-4">
+                        <p className="text-[0.85rem] text-foreground leading-relaxed">{audioTranscript}</p>
+                      </div>
                       <div className="flex items-center gap-2">
-                        <button type="button" onClick={() => setAudioTranscript("")} className="px-4 py-2 rounded-lg bg-foreground/[0.06] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.1] transition-colors">Clear</button>
+                        <button type="button" onClick={() => setAudioTranscript("")} className="px-4 py-2 rounded-lg bg-foreground/[0.06] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.1] transition-colors">Discard</button>
                         <button type="button" onClick={() => {
                           const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
                           if (!SR) return;
@@ -2253,9 +2300,16 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           audioRecogRef.current = r;
                           r.start();
                           setIsRecordingAudio(true);
-                        }} className="px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-medium hover:bg-accent transition-colors">Re-record</button>
+                        }} className="px-4 py-2 rounded-lg bg-foreground/[0.06] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.1] transition-colors">Re-record</button>
+                        <button type="button" onClick={() => {
+                          setPrompt(prev => prev ? prev + " " + audioTranscript.trim() : audioTranscript.trim());
+                          setAudioTranscript("");
+                          toast({ title: "Added to prompt", description: "Transcription has been added to the prompt box." });
+                        }} className="px-4 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/90 transition-colors">
+                          <span className="flex items-center gap-1.5"><ArrowUp size={13} /> Add to Prompt</span>
+                        </button>
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
               )}
