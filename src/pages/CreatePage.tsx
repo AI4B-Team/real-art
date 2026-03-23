@@ -341,7 +341,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   // Document-specific states
   const [docLanguage, setDocLanguage] = useState("English");
   const [docTone, setDocTone] = useState("Professional");
-  const [docChapters, setDocChapters] = useState("Auto");
+  const [docModel, setDocModel] = useState("Auto");
+  const [docModelOpen, setDocModelOpen] = useState(false);
+  const [docSourceOpen, setDocSourceOpen] = useState(false);
+  const [docLangOpen, setDocLangOpen] = useState(false);
+  const [docLangSearch, setDocLangSearch] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
