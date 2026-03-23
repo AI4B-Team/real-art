@@ -652,6 +652,11 @@ function PromptBox({ onGenerate, onEbookGenerate }: { onGenerate: () => void; on
 
   const handleGenerate = async () => {
     if (!prompt.trim()) { textareaRef.current?.focus(); return; }
+    // If in document/ebook mode, transition to eBook Studio
+    if (selectedType === "document" && selectedSubMode === "ebook" && onEbookGenerate) {
+      onEbookGenerate(prompt);
+      return;
+    }
     setIsGenerating(true);
     await new Promise(r => setTimeout(r, 2000));
     setIsGenerating(false);
