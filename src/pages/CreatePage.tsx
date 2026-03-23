@@ -1511,9 +1511,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </Popover>
                     <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
-                          {contentLanguage !== "English" && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
+                          {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
