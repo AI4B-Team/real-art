@@ -2404,3 +2404,11 @@ function CreatePageInner() {
     </PageShell>
   );
 }
+
+export default function CreatePage() {
+  return (
+    <EbookProvider>
+      <CreatePageInner />
+    </EbookProvider>
+  );
+}
