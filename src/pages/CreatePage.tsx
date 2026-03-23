@@ -1948,7 +1948,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             />
           )}
           {activePanel === "source" && (
-            <div className="border border-foreground/[0.08] rounded-2xl p-5 mb-4">
+            <div className="border border-foreground/[0.08] rounded-2xl p-5 mb-4 mt-4">
               <div className="flex items-center justify-between mb-1">
                 <h3 className="text-[0.95rem] font-bold text-foreground">Sources</h3>
                 <button type="button" onClick={() => setActivePanel(null)} className="p-1 rounded-lg hover:bg-foreground/[0.06] text-muted hover:text-foreground transition-colors"><X size={16} /></button>
