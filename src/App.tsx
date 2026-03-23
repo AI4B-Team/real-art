@@ -138,6 +138,7 @@ const App = () => (
             <Route path="/ghost-ink" element={<EbookCreatorPage />} />
             <Route path="/transcribe" element={<TranscribePage />} />
             <Route path="/transcribe/:id" element={<TranscriptDetailPage />} />
+            <Route path="/editor" element={<EditorPage />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
