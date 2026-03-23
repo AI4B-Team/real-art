@@ -2337,7 +2337,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     ))}
                   </div>
                   <Link to="/collections" className="inline-flex items-center gap-1.5 text-[0.75rem] text-accent font-medium hover:underline mt-1">
-                    View all collections <ArrowRight size={12} />
+                    View All Collections <ArrowRight size={12} />
                   </Link>
                 </div>
               )}
