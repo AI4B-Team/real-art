@@ -1106,24 +1106,32 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
 
                 {/* Type badge — always visible, clickable to switch type */}
-                {typeCfg && (
-                  <Popover>
-                    <PopoverTrigger asChild>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    {typeCfg ? (
                       <button type="button" className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 cursor-pointer ${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}`}>
                         <typeCfg.icon size={13} />{typeCfg.label}
                         <X size={11} className="opacity-60 hover:opacity-100 transition-opacity" onClick={e => { e.stopPropagation(); setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }} />
                       </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
-                      {CONTENT_TYPES.map(t => (
-                        <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedType === t.id ? `${t.bg} ${t.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                          <t.icon size={14} className={t.color} />{t.label}{selectedType === t.id && <Check size={12} className="ml-auto" />}
-                        </button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                )}
+                    ) : (
+                      <button type="button" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 cursor-pointer bg-accent/10 border-accent/30 text-accent">
+                        <Sparkles size={13} />Auto
+                      </button>
+                    )}
+                  </PopoverTrigger>
+                  <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                    <button type="button" onClick={() => { setSelectedType(null); setSelectedSubMode(null); setActivePanel(null); }}
+                      className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${!selectedType ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                      <Sparkles size={14} className="text-accent" />Auto{!selectedType && <Check size={12} className="ml-auto" />}
+                    </button>
+                    {CONTENT_TYPES.map(t => (
+                      <button key={t.id} type="button" onClick={() => handleTypeSelect(t.id)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedType === t.id ? `${t.bg} ${t.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        <t.icon size={14} className={t.color} />{t.label}{selectedType === t.id && <Check size={12} className="ml-auto" />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
 
                 <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
