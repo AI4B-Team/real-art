@@ -1637,8 +1637,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Tone */}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${docTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
+                          {docTone !== "Professional" && <span className="text-[0.75rem] font-medium pr-0.5">{docTone}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                       <PopoverContent className="w-48 p-1.5" side="bottom" align="start" sideOffset={6}>
@@ -1653,13 +1654,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           { label: "Technical", icon: Code },
                           { label: "Persuasive", icon: Zap },
                           { label: "Creative", icon: Brush },
-                        ].map(o => (
-                          <button key={o.label} onClick={() => setDocTone(o.label)} className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.82rem] transition-colors ${docTone === o.label ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                            <o.icon size={14} className={docTone === o.label ? "text-accent" : "text-muted"} />
-                            {o.label}
-                            {docTone === o.label && <Check size={12} className="ml-auto text-accent" />}
-                          </button>
-                        ))}
+                        ].map(o => {
+                          const isSelected = docTone === o.label;
+                          const isDefault = o.label === "Professional" && docTone === "Professional";
+                          return (
+                            <button key={o.label} onClick={() => setDocTone(o.label)} className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.82rem] transition-colors ${isSelected && !isDefault ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                              <o.icon size={14} className={isSelected && !isDefault ? "text-accent" : "text-muted"} />
+                              {o.label}
+                              {isSelected && !isDefault && <Check size={12} className="ml-auto text-accent" />}
+                            </button>
+                          );
+                        })}
                       </PopoverContent>
                     </Popover>
                   </div>
