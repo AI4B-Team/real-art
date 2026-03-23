@@ -395,6 +395,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
   const [characterInfoMap, setCharacterInfoMap] = useState<Record<string, { name: string; avatar: string | null }>>({});
 
+  // Source panel tab & link state
+  const [activeSourceTab, setActiveSourceTab] = useState("upload");
+  const [sourceUrl, setSourceUrl] = useState("");
+  const [addedLinks, setAddedLinks] = useState<string[]>([]);
+
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
     const meta = which === "start" ? startFrameMeta : endFrameMeta;
@@ -1964,24 +1969,128 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   { id: "audio", label: "Record Audio", icon: Mic },
                   { id: "collections", label: "Collections", icon: FolderOpen },
                 ].map(t => (
-                  <button key={t.id} type="button"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.75rem] font-semibold whitespace-nowrap transition-colors bg-foreground/[0.04] text-muted hover:text-foreground hover:bg-foreground/[0.08]">
+                  <button key={t.id} type="button" onClick={() => setActiveSourceTab(t.id)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.75rem] font-semibold whitespace-nowrap transition-colors ${activeSourceTab === t.id ? "bg-foreground text-primary-foreground" : "bg-foreground/[0.04] text-muted hover:text-foreground hover:bg-foreground/[0.08]"}`}>
                     <t.icon size={13} />{t.label}
                   </button>
                 ))}
               </div>
 
-              {/* Default upload area */}
-              <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
-                <Upload size={28} className="text-accent mb-3" />
-                <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
-                <p className="text-[0.75rem] text-muted/60 mb-4">PDF, DOCX, TXT, MD — up to 50MB each</p>
-                <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
-                  Browse Files
-                </button>
-              </div>
+              {/* Upload tab */}
+              {activeSourceTab === "upload" && (
+                <>
+                  <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
+                    <Upload size={28} className="text-accent mb-3" />
+                    <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
+                    <p className="text-[0.75rem] text-muted/60 mb-4">PDF, DOCX, TXT, MD — up to 50MB each</p>
+                    <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                      Browse Files
+                    </button>
+                  </div>
+                  <p className="text-[0.72rem] text-muted/50 mt-3">Add up to 10 source files to guide the AI generation.</p>
+                </>
+              )}
 
-              <p className="text-[0.72rem] text-muted/50 mt-3">Add up to 10 source files to guide the AI generation.</p>
+              {/* Insert Link tab */}
+              {activeSourceTab === "url" && (
+                <>
+                  <p className="text-[0.78rem] text-muted mb-3">Quick import from a platform</p>
+                  <div className="flex items-center gap-2 flex-wrap mb-4">
+                    {[
+                      { name: "RSS Feed", icon: Rss, color: "text-orange-500", placeholder: "https://example.com/feed.xml" },
+                      { name: "YouTube", icon: Play, color: "text-red-500", placeholder: "https://youtube.com/watch?v=..." },
+                      { name: "TikTok", icon: Music, color: "text-foreground", placeholder: "https://tiktok.com/@user/video/..." },
+                      { name: "Instagram", icon: Camera, color: "text-pink-500", placeholder: "https://instagram.com/p/..." },
+                      { name: "Facebook", icon: Users, color: "text-blue-600", placeholder: "https://facebook.com/..." },
+                    ].map(platform => (
+                      <Tooltip key={platform.name}>
+                        <TooltipTrigger asChild>
+                          <button
+                            type="button"
+                            onClick={() => setSourceUrl(platform.placeholder)}
+                            className="p-2.5 rounded-xl bg-foreground/[0.03] hover:bg-foreground/[0.07] border border-foreground/[0.06] transition-colors"
+                          >
+                            <platform.icon size={20} className={platform.color} />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>{platform.name}</TooltipContent>
+                      </Tooltip>
+                    ))}
+                    {addedLinks.length > 0 && (
+                      <span className="text-[0.72rem] text-muted font-medium ml-1">+{addedLinks.length}</span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="url"
+                      value={sourceUrl}
+                      onChange={e => setSourceUrl(e.target.value)}
+                      placeholder="Paste any URL..."
+                      className="flex-1 px-3 py-2.5 rounded-lg border border-foreground/[0.10] bg-foreground/[0.02] text-[0.82rem] text-foreground placeholder:text-muted/50 focus:outline-none focus:ring-1 focus:ring-accent/40"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (sourceUrl.trim()) {
+                          setAddedLinks(prev => [...prev, sourceUrl.trim()]);
+                          setSourceUrl("");
+                        }
+                      }}
+                      className="px-4 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors shrink-0"
+                    >
+                      Add
+                    </button>
+                  </div>
+                  {addedLinks.length > 0 && (
+                    <div className="mt-3 flex flex-col gap-1.5">
+                      {addedLinks.map((link, i) => (
+                        <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
+                          <LinkIcon size={12} className="text-muted shrink-0" />
+                          <span className="text-[0.75rem] text-foreground truncate flex-1">{link}</span>
+                          <button type="button" onClick={() => setAddedLinks(prev => prev.filter((_, idx) => idx !== i))} className="text-muted hover:text-foreground transition-colors shrink-0">
+                            <X size={12} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Paste Text tab */}
+              {activeSourceTab === "text" && (
+                <>
+                  <textarea
+                    placeholder="Paste your source text here..."
+                    className="w-full min-h-[180px] px-4 py-3 rounded-xl border border-foreground/[0.10] bg-foreground/[0.02] text-[0.85rem] text-foreground placeholder:text-muted/50 focus:outline-none focus:ring-1 focus:ring-accent/40 resize-y"
+                  />
+                  <p className="text-[0.72rem] text-muted/50 mt-2">Paste articles, notes, or any text to use as source material.</p>
+                </>
+              )}
+
+              {/* Record Audio tab */}
+              {activeSourceTab === "audio" && (
+                <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
+                  <Mic size={28} className="text-accent mb-3" />
+                  <p className="text-[0.92rem] font-bold text-foreground mb-1">Record Audio</p>
+                  <p className="text-[0.75rem] text-muted/60 mb-4">Dictate your ideas and we'll transcribe them</p>
+                  <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                    Start Recording
+                  </button>
+                </div>
+              )}
+
+              {/* Collections tab */}
+              {activeSourceTab === "collections" && (
+                <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
+                  <FolderOpen size={28} className="text-accent mb-3" />
+                  <p className="text-[0.92rem] font-bold text-foreground mb-1">Browse Collections</p>
+                  <p className="text-[0.75rem] text-muted/60 mb-4">Select from your saved collections</p>
+                  <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                    Browse
+                  </button>
+                </div>
+              )}
             </div>
           )}
           {activePanel === "character" && (
