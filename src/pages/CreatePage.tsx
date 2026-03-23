@@ -1570,7 +1570,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <Popover open={docSourceOpen} onOpenChange={setDocSourceOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className="p-1.5 rounded-lg transition-colors shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
-                          <Link2 size={14} />
+                          <LinkChain size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Source</TooltipContent></Tooltip>
                       <PopoverContent className="w-[420px] p-4" side="bottom" align="start" sideOffset={6}>
