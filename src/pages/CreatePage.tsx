@@ -399,6 +399,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [activeSourceTab, setActiveSourceTab] = useState("upload");
   const [sourceUrl, setSourceUrl] = useState("");
   const [addedLinks, setAddedLinks] = useState<string[]>([]);
+  const [sourceFiles, setSourceFiles] = useState<{ name: string; size: string; type: string }[]>([]);
+  const [pastedText, setPastedText] = useState("");
+  const [isRecordingAudio, setIsRecordingAudio] = useState(false);
+  const [audioTranscript, setAudioTranscript] = useState("");
+  const sourceFileRef = useRef<HTMLInputElement>(null);
+  const audioRecogRef = useRef<any>(null);
 
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
