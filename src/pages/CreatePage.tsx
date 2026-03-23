@@ -2180,9 +2180,20 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <p className="text-[0.72rem] text-muted/50">
                       {pastedText.length > 0 ? `${pastedText.length.toLocaleString()} characters · ${pastedText.trim().split(/\s+/).filter(Boolean).length.toLocaleString()} words` : "Paste articles, notes, or any text to use as source material."}
                     </p>
-                    {pastedText.length > 0 && (
-                      <button type="button" onClick={() => setPastedText("")} className="text-[0.72rem] text-muted hover:text-foreground transition-colors">Clear</button>
-                    )}
+                    <div className="flex items-center gap-2">
+                      {pastedText.length > 0 && (
+                        <button type="button" onClick={() => setPastedText("")} className="text-[0.72rem] text-muted hover:text-foreground transition-colors">Clear</button>
+                      )}
+                      {pastedText.trim().length > 0 && (
+                        <button type="button" onClick={() => {
+                          setPrompt(prev => prev ? prev + " " + pastedText.trim() : pastedText.trim());
+                          setPastedText("");
+                          toast({ title: "Added to prompt", description: "Your text has been added to the prompt box." });
+                        }} className="px-4 py-1.5 rounded-lg bg-accent text-white text-[0.75rem] font-bold hover:bg-accent/90 transition-colors">
+                          Add to Prompt
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </>
               )}
