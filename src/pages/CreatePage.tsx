@@ -730,7 +730,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
           {/* Textarea row */}
           <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
-            {hasType && typeCfg ? (
+            {hasType && typeCfg && selectedType !== "document" ? (
               <div className="flex flex-col gap-1 shrink-0 pt-[2px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -763,6 +763,17 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     if (file) handleExtractPrompt(file);
                   }}
                 />
+              </div>
+            ) : hasType && typeCfg && selectedType === "document" ? (
+              <div className="shrink-0 pt-[6px]">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button type="button" onClick={handleShuffle} className="p-1.5 rounded-lg bg-foreground/[0.06] text-emerald-500 hover:bg-emerald-50 transition-colors">
+                      <Shuffle size={17} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Inspire Me</TooltipContent>
+                </Tooltip>
               </div>
             ) : (
               <div className="relative shrink-0 pt-[2px]" ref={typeRef}>
