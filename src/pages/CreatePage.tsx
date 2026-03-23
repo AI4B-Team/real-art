@@ -399,6 +399,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [activeSourceTab, setActiveSourceTab] = useState("upload");
   const [sourceUrl, setSourceUrl] = useState("");
   const [addedLinks, setAddedLinks] = useState<string[]>([]);
+  const [sourceFiles, setSourceFiles] = useState<{ name: string; size: string; type: string }[]>([]);
+  const [pastedText, setPastedText] = useState("");
+  const [isRecordingAudio, setIsRecordingAudio] = useState(false);
+  const [audioTranscript, setAudioTranscript] = useState("");
+  const sourceFileRef = useRef<HTMLInputElement>(null);
+  const audioRecogRef = useRef<any>(null);
 
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
@@ -857,13 +863,36 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           )}
 
           {/* Document source pills */}
-          {selectedType === "document" && selectedSubMode && addedLinks.length > 0 && (
+          {selectedType === "document" && selectedSubMode && (addedLinks.length > 0 || sourceFiles.length > 0 || pastedText.length > 0 || audioTranscript.length > 0) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
-              <button type="button" onClick={() => togglePanel("source")} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
-                <LinkChain size={12} />
-                {addedLinks.length} source{addedLinks.length !== 1 ? "s" : ""}
-                <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAddedLinks([]); }} />
-              </button>
+              {sourceFiles.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("upload"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <Upload size={12} />
+                  {sourceFiles.length} file{sourceFiles.length !== 1 ? "s" : ""}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setSourceFiles([]); }} />
+                </button>
+              )}
+              {addedLinks.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("url"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <LinkChain size={12} />
+                  {addedLinks.length} link{addedLinks.length !== 1 ? "s" : ""}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAddedLinks([]); }} />
+                </button>
+              )}
+              {pastedText.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("text"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <FileText size={12} />
+                  Pasted text
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setPastedText(""); }} />
+                </button>
+              )}
+              {audioTranscript.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("audio"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <Mic size={12} />
+                  Audio transcript
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAudioTranscript(""); }} />
+                </button>
+              )}
             </div>
           )}
 
@@ -1584,10 +1613,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Source */}
                     <Tooltip><TooltipTrigger asChild>
                       <button type="button" onClick={() => togglePanel("source")}
-                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" || addedLinks.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" || addedLinks.length > 0 || sourceFiles.length > 0 || pastedText.length > 0 || audioTranscript.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                         <LinkChain size={14} />
                       </button>
-                    </TooltipTrigger><TooltipContent>Source{addedLinks.length > 0 ? ` (${addedLinks.length})` : ""}</TooltipContent></Tooltip>
+                    </TooltipTrigger><TooltipContent>Source{(addedLinks.length + sourceFiles.length) > 0 ? ` (${addedLinks.length + sourceFiles.length})` : ""}</TooltipContent></Tooltip>
 
                     {/* Language (icon only) */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
@@ -1995,14 +2024,63 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {/* Upload tab */}
               {activeSourceTab === "upload" && (
                 <>
-                  <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
+                  <input
+                    ref={sourceFileRef}
+                    type="file"
+                    multiple
+                    accept=".pdf,.docx,.doc,.txt,.md,.csv,.json"
+                    className="hidden"
+                    onChange={e => {
+                      const files = e.target.files;
+                      if (!files) return;
+                      const newFiles = Array.from(files).map(f => ({
+                        name: f.name,
+                        size: f.size < 1024 * 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+                        type: f.name.split(".").pop()?.toUpperCase() || "FILE",
+                      }));
+                      setSourceFiles(prev => [...prev, ...newFiles].slice(0, 10));
+                      e.target.value = "";
+                    }}
+                  />
+                  <div
+                    className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px] cursor-pointer hover:border-accent/40 hover:bg-accent/[0.02] transition-colors"
+                    onClick={() => sourceFileRef.current?.click()}
+                    onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add("border-accent/40", "bg-accent/[0.04]"); }}
+                    onDragLeave={e => { e.currentTarget.classList.remove("border-accent/40", "bg-accent/[0.04]"); }}
+                    onDrop={e => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove("border-accent/40", "bg-accent/[0.04]");
+                      const files = e.dataTransfer.files;
+                      if (!files) return;
+                      const newFiles = Array.from(files).map(f => ({
+                        name: f.name,
+                        size: f.size < 1024 * 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+                        type: f.name.split(".").pop()?.toUpperCase() || "FILE",
+                      }));
+                      setSourceFiles(prev => [...prev, ...newFiles].slice(0, 10));
+                    }}
+                  >
                     <Upload size={28} className="text-accent mb-3" />
                     <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
                     <p className="text-[0.75rem] text-muted/60 mb-4">PDF, DOCX, TXT, MD — up to 50MB each</p>
-                    <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                    <button type="button" onClick={e => { e.stopPropagation(); sourceFileRef.current?.click(); }} className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
                       Browse Files
                     </button>
                   </div>
+                  {sourceFiles.length > 0 && (
+                    <div className="mt-3 flex flex-col gap-1.5">
+                      {sourceFiles.map((f, i) => (
+                        <div key={i} className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
+                          <FileText size={14} className="text-accent shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[0.78rem] font-medium text-foreground truncate">{f.name}</p>
+                            <p className="text-[0.65rem] text-muted">{f.type} · {f.size}</p>
+                          </div>
+                          <button type="button" onClick={() => setSourceFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-muted hover:text-foreground transition-colors shrink-0"><X size={13} /></button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <p className="text-[0.72rem] text-muted/50 mt-3">Add up to 10 source files to guide the AI generation.</p>
                 </>
               )}
@@ -2077,34 +2155,120 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {activeSourceTab === "text" && (
                 <>
                   <textarea
+                    value={pastedText}
+                    onChange={e => setPastedText(e.target.value)}
                     placeholder="Paste your source text here..."
                     className="w-full min-h-[180px] px-4 py-3 rounded-xl border border-foreground/[0.10] bg-foreground/[0.02] text-[0.85rem] text-foreground placeholder:text-muted/50 focus:outline-none focus:ring-1 focus:ring-accent/40 resize-y"
                   />
-                  <p className="text-[0.72rem] text-muted/50 mt-2">Paste articles, notes, or any text to use as source material.</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-[0.72rem] text-muted/50">
+                      {pastedText.length > 0 ? `${pastedText.length.toLocaleString()} characters · ${pastedText.trim().split(/\s+/).filter(Boolean).length.toLocaleString()} words` : "Paste articles, notes, or any text to use as source material."}
+                    </p>
+                    {pastedText.length > 0 && (
+                      <button type="button" onClick={() => setPastedText("")} className="text-[0.72rem] text-muted hover:text-foreground transition-colors">Clear</button>
+                    )}
+                  </div>
                 </>
               )}
 
               {/* Record Audio tab */}
               {activeSourceTab === "audio" && (
                 <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
-                  <Mic size={28} className="text-accent mb-3" />
-                  <p className="text-[0.92rem] font-bold text-foreground mb-1">Record Audio</p>
-                  <p className="text-[0.75rem] text-muted/60 mb-4">Dictate your ideas and we'll transcribe them</p>
-                  <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
-                    Start Recording
-                  </button>
+                  {!isRecordingAudio && !audioTranscript && (
+                    <>
+                      <Mic size={28} className="text-accent mb-3" />
+                      <p className="text-[0.92rem] font-bold text-foreground mb-1">Record Audio</p>
+                      <p className="text-[0.75rem] text-muted/60 mb-4">Dictate your ideas and we'll transcribe them</p>
+                      <button type="button" onClick={() => {
+                        const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                        if (!SR) { toast({ title: "Not Supported", description: "Speech recognition is not supported in this browser." }); return; }
+                        const r = new SR();
+                        r.continuous = true;
+                        r.interimResults = true;
+                        let transcript = "";
+                        r.onresult = (e: any) => {
+                          let t = "";
+                          for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+                          setAudioTranscript(t);
+                        };
+                        r.onerror = () => setIsRecordingAudio(false);
+                        r.onend = () => setIsRecordingAudio(false);
+                        audioRecogRef.current = r;
+                        r.start();
+                        setIsRecordingAudio(true);
+                      }} className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                        Start Recording
+                      </button>
+                    </>
+                  )}
+                  {isRecordingAudio && (
+                    <>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-3 h-3 rounded-full bg-accent animate-pulse" />
+                        <span className="text-[0.85rem] font-semibold text-accent">Recording...</span>
+                      </div>
+                      <AudioWaveAnimation />
+                      {audioTranscript && <p className="text-[0.82rem] text-foreground mt-4 text-center max-w-md">{audioTranscript}</p>}
+                      <button type="button" onClick={() => { audioRecogRef.current?.stop(); setIsRecordingAudio(false); }} className="mt-4 px-6 py-2.5 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/90 transition-colors">
+                        Stop Recording
+                      </button>
+                    </>
+                  )}
+                  {!isRecordingAudio && audioTranscript && (
+                    <>
+                      <Check size={28} className="text-accent mb-3" />
+                      <p className="text-[0.92rem] font-bold text-foreground mb-2">Transcription Ready</p>
+                      <p className="text-[0.82rem] text-foreground text-center max-w-md mb-4">{audioTranscript}</p>
+                      <div className="flex items-center gap-2">
+                        <button type="button" onClick={() => setAudioTranscript("")} className="px-4 py-2 rounded-lg bg-foreground/[0.06] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.1] transition-colors">Clear</button>
+                        <button type="button" onClick={() => {
+                          const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                          if (!SR) return;
+                          const r = new SR();
+                          r.continuous = true;
+                          r.interimResults = true;
+                          r.onresult = (e: any) => {
+                            let t = "";
+                            for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+                            setAudioTranscript(t);
+                          };
+                          r.onerror = () => setIsRecordingAudio(false);
+                          r.onend = () => setIsRecordingAudio(false);
+                          audioRecogRef.current = r;
+                          r.start();
+                          setIsRecordingAudio(true);
+                        }} className="px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-medium hover:bg-accent transition-colors">Re-record</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
               {/* Collections tab */}
               {activeSourceTab === "collections" && (
-                <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
-                  <FolderOpen size={28} className="text-accent mb-3" />
-                  <p className="text-[0.92rem] font-bold text-foreground mb-1">Browse Collections</p>
-                  <p className="text-[0.75rem] text-muted/60 mb-4">Select from your saved collections</p>
-                  <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
-                    Browse
-                  </button>
+                <div className="space-y-3">
+                  <p className="text-[0.78rem] text-muted">Select from your saved collections to use as source material.</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {[
+                      { id: "c1", name: "Brand Assets", count: 12, icon: Palette },
+                      { id: "c2", name: "Research Notes", count: 8, icon: BookOpen },
+                      { id: "c3", name: "Product Photos", count: 24, icon: Camera },
+                      { id: "c4", name: "Templates", count: 6, icon: Layers },
+                    ].map(col => (
+                      <button key={col.id} type="button" className="flex items-center gap-2.5 p-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] hover:border-accent/30 hover:bg-accent/[0.03] transition-colors text-left">
+                        <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                          <col.icon size={16} className="text-accent" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[0.78rem] font-semibold text-foreground truncate">{col.name}</p>
+                          <p className="text-[0.65rem] text-muted">{col.count} items</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <Link to="/collections" className="inline-flex items-center gap-1.5 text-[0.75rem] text-accent font-medium hover:underline mt-1">
+                    View all collections <ArrowRight size={12} />
+                  </Link>
                 </div>
               )}
             </div>
