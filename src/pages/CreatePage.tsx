@@ -333,8 +333,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [resolutionOpen, setResolutionOpen] = useState(false);
   const [brandToggle, setBrandToggle] = useState(() => !!localStorage.getItem("ra_brand_complete"));
   const [contentGoal, setContentGoal] = useState("Engagement");
-  const [contentTone, setContentTone] = useState("Professional");
-  const [contentLanguage, setContentLanguage] = useState("English");
+  const [contentTone, setContentTone] = useState<string | null>(null);
+  const [contentLanguage, setContentLanguage] = useState<string | null>(null);
   const [contentToneOpen, setContentToneOpen] = useState(false);
   const [contentLangOpen, setContentLangOpen] = useState(false);
   const [contentFrequency, setContentFrequency] = useState("Daily");
