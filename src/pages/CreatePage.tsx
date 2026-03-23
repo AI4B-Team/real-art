@@ -856,37 +856,14 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
-          {/* Document selection pills */}
-          {selectedType === "document" && selectedSubMode && (docModel !== "Auto" || docLanguage !== "English" || docTone !== "Professional" || addedLinks.length > 0) && (
+          {/* Document source pills */}
+          {selectedType === "document" && selectedSubMode && addedLinks.length > 0 && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
-              {docModel !== "Auto" && (
-                <button type="button" className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
-                  <Cpu size={12} />
-                  {docModel}
-                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={() => setDocModel("Auto")} />
-                </button>
-              )}
-              {docLanguage !== "English" && (
-                <button type="button" className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
-                  <Languages size={12} />
-                  {docLanguage}
-                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={() => setDocLanguage("English")} />
-                </button>
-              )}
-              {docTone !== "Professional" && (
-                <button type="button" className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
-                  <MessageCircle size={12} />
-                  {docTone}
-                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={() => setDocTone("Professional")} />
-                </button>
-              )}
-              {addedLinks.length > 0 && (
-                <button type="button" onClick={() => togglePanel("source")} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
-                  <LinkChain size={12} />
-                  {addedLinks.length} source{addedLinks.length !== 1 ? "s" : ""}
-                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAddedLinks([]); }} />
-                </button>
-              )}
+              <button type="button" onClick={() => togglePanel("source")} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                <LinkChain size={12} />
+                {addedLinks.length} source{addedLinks.length !== 1 ? "s" : ""}
+                <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAddedLinks([]); }} />
+              </button>
             </div>
           )}
 
