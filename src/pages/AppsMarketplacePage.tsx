@@ -51,7 +51,7 @@ const topPicks: AppItem[] = [
   { name: "Ghost Ink", category: "Content Tools", description: "AI ghostwriting for articles, blogs, and ebooks", thumbnail: "photo-1455390582262-044cdead277a", badge: "NEW", rating: 4.7 },
   { name: "Editor", category: "Tools", description: "Professional image, video, and audio editor", thumbnail: "photo-1611532736597-de2d4265fba3", badge: "HOT", rating: 4.8 },
   { name: "Digital Spy", category: "Content Intelligence", description: "Competitor social intelligence and content insights", thumbnail: "photo-1551288049-bebda4e38f71", badge: "NEW", rating: 4.6 },
-  { name: "Transcribe", category: "Audio Tools", description: "Convert speech to text with high accuracy", thumbnail: "photo-1590602847861-f357a9332bbc", badge: "NEW", rating: 4.8 },
+  { name: "Transcribe", category: "Audio Tools", description: "Convert speech to text with high accuracy", thumbnail: "photo-1590602847861-f357a9332bbc", badge: "NEW", rating: 4.8, href: "/transcribe" },
 ];
 
 const imageApps: AppItem[] = [
