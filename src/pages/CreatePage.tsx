@@ -2142,10 +2142,6 @@ function CreatePageInner() {
     setStudioActive(true);
   };
 
-  if (studioActive) {
-    return <EbookStudio />;
-  }
-
   // Fetch real user creations from DB
   useEffect(() => {
     let cancelled = false;
