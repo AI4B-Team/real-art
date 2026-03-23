@@ -1688,12 +1688,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           { label: "Creative", icon: Brush },
                         ].map(o => {
                           const isSelected = docTone === o.label;
-                          const isDefault = o.label === "Professional" && docTone === "Professional";
                           return (
-                            <button key={o.label} onClick={() => setDocTone(o.label)} className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.82rem] transition-colors ${isSelected && !isDefault ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                              <o.icon size={14} className={isSelected && !isDefault ? "text-accent" : "text-muted"} />
+                            <button key={o.label} onClick={() => setDocTone(o.label)} className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.82rem] transition-colors ${isSelected ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                              <o.icon size={14} className={isSelected ? "text-accent" : "text-muted"} />
                               {o.label}
-                              {isSelected && !isDefault && <Check size={12} className="ml-auto text-accent" />}
+                              {isSelected && <Check size={12} className="ml-auto text-accent" />}
                             </button>
                           );
                         })}
