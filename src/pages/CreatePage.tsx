@@ -1591,9 +1591,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
                     {/* Language (icon only) */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${docLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
+                          {docLanguage !== "English" && <span className="text-[0.75rem] font-medium pr-0.5">{docLanguage}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
                       <PopoverContent className="w-56 p-2" side="bottom" align="start" sideOffset={6}>
