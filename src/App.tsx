@@ -56,11 +56,15 @@ import BoardsPage from "./pages/BoardsPage";
 import BoardDetailPage from "./pages/BoardDetailPage";
 import TopicPage from "./pages/TopicPage";
 import AppsMarketplacePage from "./pages/AppsMarketplacePage";
+import EbookCreatorPage from "./pages/EbookCreatorPage";
+import NewEbookPage from "./pages/NewEbookPage";
+import { EbookProvider } from "./contexts/EbookContext";
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
+    <EbookProvider>
     <TooltipProvider>
       <Toaster />
       <Sonner />
@@ -126,6 +130,9 @@ const App = () => (
             <Route path="/account" element={<AccountPage />} />
             <Route path="/brand" element={<BrandPage />} />
             <Route path="/apps" element={<AppsMarketplacePage />} />
+            <Route path="/ebook-creator" element={<EbookCreatorPage />} />
+            <Route path="/ebook-creator/new" element={<NewEbookPage />} />
+            <Route path="/ghost-ink" element={<EbookCreatorPage />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
@@ -134,6 +141,7 @@ const App = () => (
         </QuickViewProvider>
       </BrowserRouter>
     </TooltipProvider>
+    </EbookProvider>
   </QueryClientProvider>
 );
 
