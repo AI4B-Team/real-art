@@ -775,7 +775,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <TooltipContent side="right">Inspire Me</TooltipContent>
                 </Tooltip>
               </div>
-              </div>
             ) : (
               <div className="relative shrink-0 pt-[2px]" ref={typeRef}>
                 <Tooltip>
