@@ -1573,34 +1573,23 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           <LinkChain size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Source</TooltipContent></Tooltip>
-                      <PopoverContent className="w-[420px] p-4" side="bottom" align="start" sideOffset={6}>
-                        <div className="grid grid-cols-3 gap-3">
-                          <button type="button" className="flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 border-dashed border-foreground/[0.12] hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors">
-                            <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center"><Upload size={22} className="text-amber-500" /></div>
-                            <span className="text-[0.84rem] font-semibold text-foreground">Upload File</span>
-                            <div className="flex items-center gap-1.5">
-                              <span className="text-[0.68rem] px-1.5 py-0.5 rounded bg-foreground/[0.06] text-muted">PDF</span>
-                              <span className="text-[0.68rem] px-1.5 py-0.5 rounded bg-foreground/[0.06] text-muted">DOCX</span>
-                              <span className="text-[0.68rem] text-muted">+</span>
+                      <PopoverContent className="w-72 p-1.5" side="bottom" align="start" sideOffset={6}>
+                        <p className="text-[0.72rem] text-muted px-3 pt-2 pb-1.5 font-medium uppercase tracking-wide">Add Source</p>
+                        {[
+                          { icon: Upload, label: "Upload File", desc: "PDF, DOCX, TXT, MD", color: "text-amber-500" },
+                          { icon: LinkIcon, label: "Paste URL", desc: "Web page, article, or blog", color: "text-blue-500" },
+                          { icon: FileText, label: "Paste Text", desc: "Copy & paste raw content", color: "text-emerald-500" },
+                          { icon: Mic, label: "Record Audio", desc: "Transcribe voice to text", color: "text-accent" },
+                          { icon: FolderOpen, label: "My Collections", desc: "Import from saved collections", color: "text-purple-500" },
+                        ].map(s => (
+                          <button key={s.label} type="button" className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[0.84rem] transition-colors hover:bg-foreground/[0.04] text-foreground">
+                            <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center shrink-0"><s.icon size={16} className={s.color} /></div>
+                            <div className="flex-1 text-left">
+                              <p className="font-medium text-[0.82rem] leading-tight">{s.label}</p>
+                              <p className="text-[0.7rem] text-muted leading-tight">{s.desc}</p>
                             </div>
                           </button>
-                          <button type="button" className="flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 border-dashed border-foreground/[0.12] hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors">
-                            <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center"><LinkIcon size={22} className="text-blue-500" /></div>
-                            <span className="text-[0.84rem] font-semibold text-foreground">Insert Link</span>
-                            <div className="flex items-center gap-1 text-muted">
-                              <span className="text-[0.75rem]">🔗</span>
-                              <span className="text-[0.68rem]">+45</span>
-                            </div>
-                          </button>
-                          <button type="button" className="flex flex-col items-center gap-2.5 p-4 rounded-xl border-2 border-dashed border-foreground/[0.12] hover:border-foreground/25 hover:bg-foreground/[0.02] transition-colors">
-                            <div className="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center"><Mic size={22} className="text-red-500" /></div>
-                            <span className="text-[0.84rem] font-semibold text-foreground">Record Audio</span>
-                            <div className="flex items-center gap-1.5">
-                              <span className="w-2 h-2 rounded-full bg-red-500" />
-                              <span className="text-[0.68rem] px-1.5 py-0.5 rounded border border-red-200 text-red-500 font-semibold">LIVE</span>
-                            </div>
-                          </button>
-                        </div>
+                        ))}
                       </PopoverContent>
                     </Popover>
 
