@@ -1607,10 +1607,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Source */}
                     <Tooltip><TooltipTrigger asChild>
                       <button type="button" onClick={() => togglePanel("source")}
-                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" || addedLinks.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                         <LinkChain size={14} />
                       </button>
-                    </TooltipTrigger><TooltipContent>Source</TooltipContent></Tooltip>
+                    </TooltipTrigger><TooltipContent>Source{addedLinks.length > 0 ? ` (${addedLinks.length})` : ""}</TooltipContent></Tooltip>
 
                     {/* Language (icon only) */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
