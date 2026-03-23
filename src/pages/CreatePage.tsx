@@ -2193,7 +2193,7 @@ function CreatePageInner() {
     <PageShell>
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0 overflow-visible">
         <div className="mb-10">
-          <PromptBox onGenerate={() => setGenerated(true)} />
+          <PromptBox onGenerate={() => setGenerated(true)} onEbookGenerate={handleEbookGenerate} />
         </div>
       </div>
 
