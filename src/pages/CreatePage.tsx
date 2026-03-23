@@ -404,6 +404,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
   const [audioTranscript, setAudioTranscript] = useState("");
   const sourceFileRef = useRef<HTMLInputElement>(null);
+  const [showAllPlatforms, setShowAllPlatforms] = useState(false);
   const audioRecogRef = useRef<any>(null);
 
   // Helper to clear a frame and remove associated character/reference
@@ -2088,15 +2089,23 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {/* Insert Link tab */}
               {activeSourceTab === "url" && (
                 <>
-                  <p className="text-[0.78rem] text-muted mb-3">Quick import from a platform</p>
+                  <p className="text-[0.78rem] text-muted mb-3">Quick import from a public link</p>
                   <div className="flex items-center gap-2 flex-wrap mb-4">
                     {[
-                      { name: "RSS Feed", icon: Rss, color: "text-orange-500", placeholder: "https://example.com/feed.xml" },
-                      { name: "YouTube", icon: Play, color: "text-red-500", placeholder: "https://youtube.com/watch?v=..." },
-                      { name: "TikTok", icon: Music, color: "text-foreground", placeholder: "https://tiktok.com/@user/video/..." },
-                      { name: "Instagram", icon: Camera, color: "text-pink-500", placeholder: "https://instagram.com/p/..." },
-                      { name: "Facebook", icon: Users, color: "text-blue-600", placeholder: "https://facebook.com/..." },
-                    ].map(platform => (
+                      { name: "YouTube", icon: Play, color: "text-red-500", placeholder: "https://youtube.com/watch?v=" },
+                      { name: "X / Twitter", icon: Hash, color: "text-foreground", placeholder: "https://x.com/" },
+                      { name: "Instagram", icon: Camera, color: "text-pink-500", placeholder: "https://instagram.com/p/" },
+                      { name: "TikTok", icon: Music, color: "text-foreground", placeholder: "https://tiktok.com/@" },
+                      { name: "LinkedIn", icon: Users, color: "text-blue-600", placeholder: "https://linkedin.com/in/" },
+                      { name: "Reddit", icon: MessageCircle, color: "text-orange-500", placeholder: "https://reddit.com/r/" },
+                      { name: "Pinterest", icon: Heart, color: "text-red-600", placeholder: "https://pinterest.com/pin/" },
+                      { name: "Facebook", icon: Globe, color: "text-blue-500", placeholder: "https://facebook.com/" },
+                      { name: "Medium", icon: BookOpen, color: "text-foreground", placeholder: "https://medium.com/@" },
+                      { name: "Substack", icon: FileText, color: "text-orange-600", placeholder: "https://substack.com/" },
+                      { name: "GitHub", icon: Github, color: "text-foreground", placeholder: "https://github.com/" },
+                      { name: "Spotify", icon: Music, color: "text-green-500", placeholder: "https://open.spotify.com/" },
+                      { name: "RSS Feed", icon: Rss, color: "text-orange-400", placeholder: "https://example.com/feed.xml" },
+                    ].slice(0, showAllPlatforms ? undefined : 5).map(platform => (
                       <Tooltip key={platform.name}>
                         <TooltipTrigger asChild>
                           <button
@@ -2110,8 +2119,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         <TooltipContent>{platform.name}</TooltipContent>
                       </Tooltip>
                     ))}
-                    {addedLinks.length > 0 && (
-                      <span className="text-[0.72rem] text-muted font-medium ml-1">+{addedLinks.length}</span>
+                    {!showAllPlatforms && (
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button type="button" onClick={() => setShowAllPlatforms(true)} className="p-2.5 rounded-xl bg-foreground/[0.03] hover:bg-foreground/[0.07] border border-foreground/[0.06] transition-colors text-[0.72rem] font-bold text-muted">
+                            +8
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent>Show more platforms</TooltipContent>
+                      </Tooltip>
                     )}
                   </div>
                   <div className="flex items-center gap-2">
