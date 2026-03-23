@@ -863,13 +863,36 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           )}
 
           {/* Document source pills */}
-          {selectedType === "document" && selectedSubMode && addedLinks.length > 0 && (
+          {selectedType === "document" && selectedSubMode && (addedLinks.length > 0 || sourceFiles.length > 0 || pastedText.length > 0 || audioTranscript.length > 0) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
-              <button type="button" onClick={() => togglePanel("source")} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
-                <LinkChain size={12} />
-                {addedLinks.length} source{addedLinks.length !== 1 ? "s" : ""}
-                <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAddedLinks([]); }} />
-              </button>
+              {sourceFiles.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("upload"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <Upload size={12} />
+                  {sourceFiles.length} file{sourceFiles.length !== 1 ? "s" : ""}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setSourceFiles([]); }} />
+                </button>
+              )}
+              {addedLinks.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("url"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <LinkChain size={12} />
+                  {addedLinks.length} link{addedLinks.length !== 1 ? "s" : ""}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAddedLinks([]); }} />
+                </button>
+              )}
+              {pastedText.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("text"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <FileText size={12} />
+                  Pasted text
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setPastedText(""); }} />
+                </button>
+              )}
+              {audioTranscript.length > 0 && (
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("audio"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <Mic size={12} />
+                  Audio transcript
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAudioTranscript(""); }} />
+                </button>
+              )}
             </div>
           )}
 
