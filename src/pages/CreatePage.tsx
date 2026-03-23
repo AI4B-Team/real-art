@@ -395,6 +395,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedCharacters, setSelectedCharacters] = useState<string[]>([]);
   const [characterInfoMap, setCharacterInfoMap] = useState<Record<string, { name: string; avatar: string | null }>>({});
 
+  // Source panel tab & link state
+  const [activeSourceTab, setActiveSourceTab] = useState("upload");
+  const [sourceUrl, setSourceUrl] = useState("");
+  const [addedLinks, setAddedLinks] = useState<string[]>([]);
+
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
     const meta = which === "start" ? startFrameMeta : endFrameMeta;
