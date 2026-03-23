@@ -1620,11 +1620,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
                     {/* Tone */}
                     <Popover>
-                      <PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <MessageCircle size={12} />Tone<ChevronDown size={10} className="opacity-60" />
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${docTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <MessageCircle size={14} />
                         </button>
-                      </PopoverTrigger>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                       <PopoverContent className="w-48 p-1.5" side="bottom" align="start" sideOffset={6}>
                         {[
                           { label: "Professional", icon: Package },
