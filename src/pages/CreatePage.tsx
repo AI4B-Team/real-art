@@ -2185,6 +2185,10 @@ function CreatePageInner() {
     ? creations
     : creations.filter(c => c.type === mediaFilter);
 
+  if (studioActive) {
+    return <EbookStudio />;
+  }
+
   return (
     <PageShell>
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0 overflow-visible">
