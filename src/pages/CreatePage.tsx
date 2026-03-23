@@ -856,6 +856,39 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
             </div>
           )}
 
+          {/* Document selection pills */}
+          {selectedType === "document" && selectedSubMode && (docModel !== "Auto" || docLanguage !== "English" || docTone !== "Professional" || addedLinks.length > 0) && (
+            <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
+              {docModel !== "Auto" && (
+                <button type="button" className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <Cpu size={12} />
+                  {docModel}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={() => setDocModel("Auto")} />
+                </button>
+              )}
+              {docLanguage !== "English" && (
+                <button type="button" className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <Languages size={12} />
+                  {docLanguage}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={() => setDocLanguage("English")} />
+                </button>
+              )}
+              {docTone !== "Professional" && (
+                <button type="button" className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <MessageCircle size={12} />
+                  {docTone}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={() => setDocTone("Professional")} />
+                </button>
+              )}
+              {addedLinks.length > 0 && (
+                <button type="button" onClick={() => togglePanel("source")} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-accent/20 bg-accent/8 text-accent text-[0.78rem] font-semibold transition-all hover:border-accent/40">
+                  <LinkChain size={12} />
+                  {addedLinks.length} source{addedLinks.length !== 1 ? "s" : ""}
+                  <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAddedLinks([]); }} />
+                </button>
+              )}
+            </div>
+          )}
 
 
           {/* Inline frame uploads for video animate mode */}
@@ -1574,10 +1607,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Source */}
                     <Tooltip><TooltipTrigger asChild>
                       <button type="button" onClick={() => togglePanel("source")}
-                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" || addedLinks.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                         <LinkChain size={14} />
                       </button>
-                    </TooltipTrigger><TooltipContent>Source</TooltipContent></Tooltip>
+                    </TooltipTrigger><TooltipContent>Source{addedLinks.length > 0 ? ` (${addedLinks.length})` : ""}</TooltipContent></Tooltip>
 
                     {/* Language (icon only) */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
