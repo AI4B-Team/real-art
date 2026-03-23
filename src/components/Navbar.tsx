@@ -11,6 +11,7 @@ import {
   Mic, Camera, ImagePlus, ArrowUpFromLine, ScanText, SlidersHorizontal, Link2, Clapperboard,
   CreditCard, Mail, UserPlus2, Zap, Power, HelpCircle, BookOpen, Route, MessageSquarePlus
 } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "./Logo";
 
