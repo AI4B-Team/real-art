@@ -868,7 +868,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
         )}
         {isLoggedIn && (
           <div className="relative" ref={creditRef}>
-            <div className="flex items-center bg-foreground/[0.06] rounded-full pl-3 pr-1 py-1 gap-2">
+            <div className="flex items-center bg-foreground/[0.06] rounded-lg pl-3 pr-1 py-1 gap-2">
               <span className="text-green-500 text-[0.8rem]">◆</span>
               <span className="text-[0.82rem] font-semibold tabular-nums">273,245</span>
               <button
