@@ -211,3 +211,9 @@
 .toolbar-btn:active {
   transform: scale(0.95);
 }
+
+@keyframes audioBar {
+  0% { transform: scaleY(0.3); }
+  50% { transform: scaleY(1); }
+  100% { transform: scaleY(0.5); }
+}
