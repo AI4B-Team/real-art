@@ -16,6 +16,7 @@ import {
   Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
   Github, Smile, Rss, LinkIcon, ShoppingCart,
   Minus, Settings, Upload, ArrowLeftRight,
+  Link as LinkChain,
 } from "lucide-react";
 import stylePhotorealistic from "@/assets/styles/photorealistic.jpg";
 import styleAnime from "@/assets/styles/anime.jpg";
