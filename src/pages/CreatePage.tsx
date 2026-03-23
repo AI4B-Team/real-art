@@ -349,8 +349,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [contentStyle, setContentStyle] = useState("Informative");
 
   // Document-specific states
-  const [docLanguage, setDocLanguage] = useState("English");
-  const [docTone, setDocTone] = useState("Professional");
+  const [docLanguage, setDocLanguage] = useState<string | null>(null);
+  const [docTone, setDocTone] = useState<string | null>(null);
   const [docModel, setDocModel] = useState("Auto");
   const [docModelOpen, setDocModelOpen] = useState(false);
   
@@ -1605,7 +1605,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Model (Auto) */}
                     <Popover open={docModelOpen} onOpenChange={setDocModelOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docModel !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docModel === "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Cpu size={12} />{docModel}<ChevronDown size={10} className="opacity-60" />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
@@ -1641,9 +1641,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Language (icon only) */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docLanguage !== "English" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Languages size={14} />
-                          {docLanguage !== "English" && <span className="text-[0.75rem] font-medium pr-0.5">{docLanguage}</span>}
+                          {docLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{docLanguage}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
                       <PopoverContent className="w-56 p-2" side="bottom" align="start" sideOffset={6}>
@@ -1686,9 +1686,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Tone */}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docTone ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
-                          {docTone !== "Professional" && <span className="text-[0.75rem] font-medium pr-0.5">{docTone}</span>}
+                          {docTone && <span className="text-[0.75rem] font-medium pr-0.5">{docTone}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                       <PopoverContent className="w-48 p-1.5" side="bottom" align="start" sideOffset={6}>
