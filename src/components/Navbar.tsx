@@ -757,7 +757,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
         <div className="hidden md:flex flex-1 max-w-6xl ml-0 mr-4 items-center gap-2">
           {isLoggedIn && (
             <Link to="/create" className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold bg-accent text-primary-foreground hover:bg-accent/85 transition-colors no-underline shrink-0">
-              <Sparkles className="w-3.5 h-3.5" /> Create
+              <WandSparkles className="w-3.5 h-3.5" /> Create
             </Link>
           )}
           <div ref={searchSuggestRef} className="relative w-full flex items-center bg-foreground/[0.06] rounded-lg h-[42px] focus-within:ring-2 focus-within:ring-accent/20">
