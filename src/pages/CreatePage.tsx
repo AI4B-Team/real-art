@@ -12,12 +12,19 @@ import {
   LayoutGrid, Filter, Star, Download, Bookmark, Plus,
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
-  Film, Package, BarChart2, ShoppingBag, Brush, Link2,
+  Film, Package, BarChart2, ShoppingBag, Brush,
   Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
-  Github, Smile, Rss, LinkIcon, ShoppingCart,
+  Github, Smile, Rss, ShoppingCart,
   Minus, Settings, Upload, ArrowLeftRight,
   Link as LinkChain,
 } from "lucide-react";
+
+const ChainLinkIcon = ({ size = 14, className = "" }: { size?: number; className?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+  </svg>
+);
 import stylePhotorealistic from "@/assets/styles/photorealistic.jpg";
 import styleAnime from "@/assets/styles/anime.jpg";
 import styleDigitalArt from "@/assets/styles/digital-art.jpg";
@@ -163,7 +170,7 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
 const APP_BUILD_MODES: { id: string; label: string; icon: typeof Image }[] = [
   { id: "landing",     label: "Landing Page",    icon: FileText },
   { id: "multi-page",  label: "Multi-Page Site", icon: LayoutGrid },
-  { id: "link-in-bio", label: "Link In Bio",     icon: LinkIcon },
+  { id: "link-in-bio", label: "Link In Bio",     icon: ChainLinkIcon as any },
   { id: "blog",        label: "Blog",            icon: Rss },
   { id: "membership",  label: "Membership",      icon: Lock },
   { id: "ecommerce",   label: "Ecommerce",       icon: ShoppingCart },
@@ -1744,7 +1751,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     {/* Link */}
                     <Tooltip><TooltipTrigger asChild>
                       <button type="button" className="p-1.5 rounded-lg transition-colors shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
-                        <Link2 size={14} />
+                        <ChainLinkIcon size={14} />
                       </button>
                     </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
 
@@ -2013,7 +2020,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               <div className="flex items-center gap-1 mb-4 overflow-x-auto">
                 {[
                   { id: "upload", label: "Upload File", icon: Upload },
-                  { id: "url", label: "Insert Link", icon: LinkIcon },
+                  { id: "url", label: "Insert Link", icon: ChainLinkIcon as any },
                   { id: "text", label: "Paste Text", icon: FileText },
                   { id: "audio", label: "Record Audio", icon: Mic },
                   { id: "collections", label: "Collections", icon: FolderOpen },
@@ -2158,7 +2165,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     <div className="mt-3 flex flex-col gap-1.5">
                       {addedLinks.map((link, i) => (
                         <div key={i} className="flex items-center gap-2 px-3 py-2 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
-                          <LinkIcon size={12} className="text-muted shrink-0" />
+                          <ChainLinkIcon size={12} className="text-muted shrink-0" />
                           <span className="text-[0.75rem] text-foreground truncate flex-1">{link}</span>
                           <button type="button" onClick={() => setAddedLinks(prev => prev.filter((_, idx) => idx !== i))} className="text-muted hover:text-foreground transition-colors shrink-0">
                             <X size={12} />
@@ -2432,7 +2439,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               ) : (
                 <div>
                   <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.1]">
-                    <Link2 size={14} className="text-muted shrink-0" />
+                    <ChainLinkIcon size={14} className="text-muted shrink-0" />
                     <input value={appGithubUrl} onChange={e => setAppGithubUrl(e.target.value)} placeholder="Paste public GitHub repository URL..." className="bg-transparent border-none outline-none text-[0.82rem] text-foreground placeholder:text-muted/50 w-full" />
                   </div>
                   {appGithubUrl.trim() && (
