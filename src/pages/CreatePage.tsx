@@ -2151,24 +2151,101 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {/* Record Audio tab */}
               {activeSourceTab === "audio" && (
                 <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
-                  <Mic size={28} className="text-accent mb-3" />
-                  <p className="text-[0.92rem] font-bold text-foreground mb-1">Record Audio</p>
-                  <p className="text-[0.75rem] text-muted/60 mb-4">Dictate your ideas and we'll transcribe them</p>
-                  <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
-                    Start Recording
-                  </button>
+                  {!isRecordingAudio && !audioTranscript && (
+                    <>
+                      <Mic size={28} className="text-accent mb-3" />
+                      <p className="text-[0.92rem] font-bold text-foreground mb-1">Record Audio</p>
+                      <p className="text-[0.75rem] text-muted/60 mb-4">Dictate your ideas and we'll transcribe them</p>
+                      <button type="button" onClick={() => {
+                        const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                        if (!SR) { toast({ title: "Not Supported", description: "Speech recognition is not supported in this browser." }); return; }
+                        const r = new SR();
+                        r.continuous = true;
+                        r.interimResults = true;
+                        let transcript = "";
+                        r.onresult = (e: any) => {
+                          let t = "";
+                          for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+                          setAudioTranscript(t);
+                        };
+                        r.onerror = () => setIsRecordingAudio(false);
+                        r.onend = () => setIsRecordingAudio(false);
+                        audioRecogRef.current = r;
+                        r.start();
+                        setIsRecordingAudio(true);
+                      }} className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                        Start Recording
+                      </button>
+                    </>
+                  )}
+                  {isRecordingAudio && (
+                    <>
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-3 h-3 rounded-full bg-accent animate-pulse" />
+                        <span className="text-[0.85rem] font-semibold text-accent">Recording...</span>
+                      </div>
+                      <AudioWaveAnimation />
+                      {audioTranscript && <p className="text-[0.82rem] text-foreground mt-4 text-center max-w-md">{audioTranscript}</p>}
+                      <button type="button" onClick={() => { audioRecogRef.current?.stop(); setIsRecordingAudio(false); }} className="mt-4 px-6 py-2.5 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/90 transition-colors">
+                        Stop Recording
+                      </button>
+                    </>
+                  )}
+                  {!isRecordingAudio && audioTranscript && (
+                    <>
+                      <Check size={28} className="text-accent mb-3" />
+                      <p className="text-[0.92rem] font-bold text-foreground mb-2">Transcription Ready</p>
+                      <p className="text-[0.82rem] text-foreground text-center max-w-md mb-4">{audioTranscript}</p>
+                      <div className="flex items-center gap-2">
+                        <button type="button" onClick={() => setAudioTranscript("")} className="px-4 py-2 rounded-lg bg-foreground/[0.06] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.1] transition-colors">Clear</button>
+                        <button type="button" onClick={() => {
+                          const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+                          if (!SR) return;
+                          const r = new SR();
+                          r.continuous = true;
+                          r.interimResults = true;
+                          r.onresult = (e: any) => {
+                            let t = "";
+                            for (let i = 0; i < e.results.length; i++) t += e.results[i][0].transcript;
+                            setAudioTranscript(t);
+                          };
+                          r.onerror = () => setIsRecordingAudio(false);
+                          r.onend = () => setIsRecordingAudio(false);
+                          audioRecogRef.current = r;
+                          r.start();
+                          setIsRecordingAudio(true);
+                        }} className="px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-medium hover:bg-accent transition-colors">Re-record</button>
+                      </div>
+                    </>
+                  )}
                 </div>
               )}
 
               {/* Collections tab */}
               {activeSourceTab === "collections" && (
-                <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
-                  <FolderOpen size={28} className="text-accent mb-3" />
-                  <p className="text-[0.92rem] font-bold text-foreground mb-1">Browse Collections</p>
-                  <p className="text-[0.75rem] text-muted/60 mb-4">Select from your saved collections</p>
-                  <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
-                    Browse
-                  </button>
+                <div className="space-y-3">
+                  <p className="text-[0.78rem] text-muted">Select from your saved collections to use as source material.</p>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {[
+                      { id: "c1", name: "Brand Assets", count: 12, icon: Palette },
+                      { id: "c2", name: "Research Notes", count: 8, icon: BookOpen },
+                      { id: "c3", name: "Product Photos", count: 24, icon: Camera },
+                      { id: "c4", name: "Templates", count: 6, icon: Layers },
+                    ].map(col => (
+                      <button key={col.id} type="button" className="flex items-center gap-2.5 p-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] hover:border-accent/30 hover:bg-accent/[0.03] transition-colors text-left">
+                        <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                          <col.icon size={16} className="text-accent" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[0.78rem] font-semibold text-foreground truncate">{col.name}</p>
+                          <p className="text-[0.65rem] text-muted">{col.count} items</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                  <Link to="/collections" className="inline-flex items-center gap-1.5 text-[0.75rem] text-accent font-medium hover:underline mt-1">
+                    View all collections <ArrowRight size={12} />
+                  </Link>
                 </div>
               )}
             </div>
