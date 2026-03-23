@@ -1303,7 +1303,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Style, Character, Reference — hidden for ebook & voiceover mode */}
-                {selectedType !== "document" && !(selectedType === "audio" && selectedSubMode === "voiceover") && (
+                {!(selectedType === "audio" && selectedSubMode === "voiceover") && (
                   <>
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
