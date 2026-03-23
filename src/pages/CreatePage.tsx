@@ -170,7 +170,7 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
 const APP_BUILD_MODES: { id: string; label: string; icon: typeof Image }[] = [
   { id: "landing",     label: "Landing Page",    icon: FileText },
   { id: "multi-page",  label: "Multi-Page Site", icon: LayoutGrid },
-  { id: "link-in-bio", label: "Link In Bio",     icon: LinkIcon },
+  { id: "link-in-bio", label: "Link In Bio",     icon: ChainLinkIcon as any },
   { id: "blog",        label: "Blog",            icon: Rss },
   { id: "membership",  label: "Membership",      icon: Lock },
   { id: "ecommerce",   label: "Ecommerce",       icon: ShoppingCart },
