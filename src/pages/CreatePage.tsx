@@ -404,6 +404,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [isRecordingAudio, setIsRecordingAudio] = useState(false);
   const [audioTranscript, setAudioTranscript] = useState("");
   const sourceFileRef = useRef<HTMLInputElement>(null);
+  const [showAllPlatforms, setShowAllPlatforms] = useState(false);
   const audioRecogRef = useRef<any>(null);
 
   // Helper to clear a frame and remove associated character/reference
