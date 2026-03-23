@@ -59,6 +59,8 @@ import AppsMarketplacePage from "./pages/AppsMarketplacePage";
 import EbookCreatorPage from "./pages/EbookCreatorPage";
 import NewEbookPage from "./pages/NewEbookPage";
 import { EbookProvider } from "./contexts/EbookContext";
+import TranscribePage from "./pages/TranscribePage";
+import TranscriptDetailPage from "./pages/TranscriptDetailPage";
 
 const queryClient = new QueryClient();
 
