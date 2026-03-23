@@ -1947,6 +1947,42 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               }}
             />
           )}
+          {activePanel === "source" && (
+            <div className="border border-foreground/[0.08] rounded-2xl p-5 mb-4">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="text-[0.95rem] font-bold text-foreground">Sources</h3>
+                <button type="button" onClick={() => setActivePanel(null)} className="p-1 rounded-lg hover:bg-foreground/[0.06] text-muted hover:text-foreground transition-colors"><X size={16} /></button>
+              </div>
+              <p className="text-[0.75rem] text-muted mb-4">Upload or link source material to guide the AI</p>
+
+              {/* Source type tabs */}
+              <div className="flex items-center gap-1 mb-4 overflow-x-auto">
+                {[
+                  { id: "upload", label: "Upload", icon: Upload },
+                  { id: "url", label: "Paste URL", icon: LinkIcon },
+                  { id: "text", label: "Paste Text", icon: FileText },
+                  { id: "audio", label: "Record", icon: Mic },
+                  { id: "collections", label: "Collections", icon: FolderOpen },
+                ].map(t => (
+                  <button key={t.id} type="button"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.75rem] font-semibold whitespace-nowrap transition-colors bg-foreground/[0.04] text-muted hover:text-foreground hover:bg-foreground/[0.08]">
+                    <t.icon size={13} />{t.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Default upload area */}
+              <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
+                <Upload size={28} className="text-accent mb-3" />
+                <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
+                <p className="text-[0.75rem] text-muted/60 mb-4">PDF, DOCX, TXT, MD — up to 50MB each</p>
+                <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                  Browse Files
+                </button>
+              </div>
+
+              <p className="text-[0.72rem] text-muted/50 mt-3">Add up to 10 source files to guide the AI generation.</p>
+            </div>
           {activePanel === "character" && (
             <CharacterPanel
               onClose={() => setActivePanel(null)}
