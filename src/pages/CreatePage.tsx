@@ -2001,14 +2001,63 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {/* Upload tab */}
               {activeSourceTab === "upload" && (
                 <>
-                  <div className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px]">
+                  <input
+                    ref={sourceFileRef}
+                    type="file"
+                    multiple
+                    accept=".pdf,.docx,.doc,.txt,.md,.csv,.json"
+                    className="hidden"
+                    onChange={e => {
+                      const files = e.target.files;
+                      if (!files) return;
+                      const newFiles = Array.from(files).map(f => ({
+                        name: f.name,
+                        size: f.size < 1024 * 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+                        type: f.name.split(".").pop()?.toUpperCase() || "FILE",
+                      }));
+                      setSourceFiles(prev => [...prev, ...newFiles].slice(0, 10));
+                      e.target.value = "";
+                    }}
+                  />
+                  <div
+                    className="rounded-xl border-2 border-dashed border-foreground/[0.10] bg-foreground/[0.02] p-8 flex flex-col items-center justify-center min-h-[180px] cursor-pointer hover:border-accent/40 hover:bg-accent/[0.02] transition-colors"
+                    onClick={() => sourceFileRef.current?.click()}
+                    onDragOver={e => { e.preventDefault(); e.currentTarget.classList.add("border-accent/40", "bg-accent/[0.04]"); }}
+                    onDragLeave={e => { e.currentTarget.classList.remove("border-accent/40", "bg-accent/[0.04]"); }}
+                    onDrop={e => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove("border-accent/40", "bg-accent/[0.04]");
+                      const files = e.dataTransfer.files;
+                      if (!files) return;
+                      const newFiles = Array.from(files).map(f => ({
+                        name: f.name,
+                        size: f.size < 1024 * 1024 ? `${(f.size / 1024).toFixed(1)} KB` : `${(f.size / (1024 * 1024)).toFixed(1)} MB`,
+                        type: f.name.split(".").pop()?.toUpperCase() || "FILE",
+                      }));
+                      setSourceFiles(prev => [...prev, ...newFiles].slice(0, 10));
+                    }}
+                  >
                     <Upload size={28} className="text-accent mb-3" />
                     <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
                     <p className="text-[0.75rem] text-muted/60 mb-4">PDF, DOCX, TXT, MD — up to 50MB each</p>
-                    <button type="button" className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
+                    <button type="button" onClick={e => { e.stopPropagation(); sourceFileRef.current?.click(); }} className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors">
                       Browse Files
                     </button>
                   </div>
+                  {sourceFiles.length > 0 && (
+                    <div className="mt-3 flex flex-col gap-1.5">
+                      {sourceFiles.map((f, i) => (
+                        <div key={i} className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06]">
+                          <FileText size={14} className="text-accent shrink-0" />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[0.78rem] font-medium text-foreground truncate">{f.name}</p>
+                            <p className="text-[0.65rem] text-muted">{f.type} · {f.size}</p>
+                          </div>
+                          <button type="button" onClick={() => setSourceFiles(prev => prev.filter((_, idx) => idx !== i))} className="text-muted hover:text-foreground transition-colors shrink-0"><X size={13} /></button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                   <p className="text-[0.72rem] text-muted/50 mt-3">Add up to 10 source files to guide the AI generation.</p>
                 </>
               )}
