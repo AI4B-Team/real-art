@@ -61,6 +61,7 @@ import NewEbookPage from "./pages/NewEbookPage";
 import { EbookProvider } from "./contexts/EbookContext";
 import TranscribePage from "./pages/TranscribePage";
 import TranscriptDetailPage from "./pages/TranscriptDetailPage";
+import EditorPage from "./pages/EditorPage";
 
 const queryClient = new QueryClient();
 
@@ -137,6 +138,7 @@ const App = () => (
             <Route path="/ghost-ink" element={<EbookCreatorPage />} />
             <Route path="/transcribe" element={<TranscribePage />} />
             <Route path="/transcribe/:id" element={<TranscriptDetailPage />} />
+            <Route path="/editor" element={<EditorPage />} />
 
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
