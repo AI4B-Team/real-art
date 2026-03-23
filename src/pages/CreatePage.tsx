@@ -1497,9 +1497,9 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                     </Popover>
                     <Popover open={contentToneOpen} onOpenChange={setContentToneOpen}>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentTone !== "Professional" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentTone ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <MessageCircle size={14} />
-                          {contentTone !== "Professional" && <span className="text-[0.75rem] font-medium pr-0.5">{contentTone}</span>}
+                          {contentTone && <span className="text-[0.75rem] font-medium pr-0.5">{contentTone}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="top" align="start">
