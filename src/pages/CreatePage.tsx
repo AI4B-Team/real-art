@@ -2232,10 +2232,10 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   {isRecordingAudio && (
                     <div className="w-full flex flex-col items-center">
                       {/* LIVE badge */}
-                      <div className="flex items-center gap-2.5 mb-5">
-                        <div className="w-2.5 h-2.5 rounded-full bg-accent animate-pulse" />
-                        <span className="px-2.5 py-1 rounded-md bg-accent text-white text-[0.7rem] font-black tracking-wider uppercase">Live</span>
-                        <span className="text-[0.85rem] font-semibold text-foreground">Real-Time Transcription</span>
+                      <div className="flex items-center gap-3 mb-5">
+                        <div className="w-2.5 h-2.5 rounded-full bg-accent/40" />
+                        <span className="px-3 py-1 rounded-lg bg-accent/90 text-white text-[0.72rem] font-extrabold tracking-widest uppercase">LIVE</span>
+                        <span className="text-[0.88rem] font-medium text-muted-foreground">Real-Time Transcription</span>
                       </div>
 
                       {/* Animated audio waveform */}
