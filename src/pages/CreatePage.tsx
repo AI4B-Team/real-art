@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { EbookProvider, useEbook } from "@/components/ebook/context/EbookContext";
+import EbookStudio from "@/components/ebook/components/EbookStudio";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   Image, Video, Music, Palette, Calendar, FileText, Code,
@@ -300,7 +302,7 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
 
-function PromptBox({ onGenerate }: { onGenerate: () => void }) {
+function PromptBox({ onGenerate, onEbookGenerate }: { onGenerate: () => void; onEbookGenerate?: (prompt: string) => void }) {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedType, setSelectedType] = useState<ContentType | null>(() => {
@@ -650,6 +652,11 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
   const handleGenerate = async () => {
     if (!prompt.trim()) { textareaRef.current?.focus(); return; }
+    // If in document/ebook mode, transition to eBook Studio
+    if (selectedType === "document" && selectedSubMode === "ebook" && onEbookGenerate) {
+      onEbookGenerate(prompt);
+      return;
+    }
     setIsGenerating(true);
     await new Promise(r => setTimeout(r, 2000));
     setIsGenerating(false);
@@ -2119,8 +2126,9 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string }[] = [
 
 /* ─── Main Page ──────────────────────────────────────────────── */
 
-export default function CreatePage() {
+function CreatePageInner() {
   const { toast } = useToast();
+  const { studioActive, setStudioActive, updateSettings } = useEbook();
   const [activeTab, setActiveTab] = useState<GalleryTab>("creations");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [filterOpen, setFilterOpen] = useState(false);
@@ -2128,6 +2136,15 @@ export default function CreatePage() {
   const [generated, setGenerated] = useState(false);
   const [creations, setCreations] = useState<UserCreation[]>([]);
   const [loadingCreations, setLoadingCreations] = useState(true);
+
+  const handleEbookGenerate = (prompt: string) => {
+    updateSettings({ prompt });
+    setStudioActive(true);
+  };
+
+  if (studioActive) {
+    return <EbookStudio />;
+  }
 
   // Fetch real user creations from DB
   useEffect(() => {
@@ -2176,7 +2193,7 @@ export default function CreatePage() {
     <PageShell>
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0 overflow-visible">
         <div className="mb-10">
-          <PromptBox onGenerate={() => setGenerated(true)} />
+          <PromptBox onGenerate={() => setGenerated(true)} onEbookGenerate={handleEbookGenerate} />
         </div>
       </div>
 
@@ -2385,5 +2402,13 @@ export default function CreatePage() {
         )}
       </div>
     </PageShell>
+  );
+}
+
+export default function CreatePage() {
+  return (
+    <EbookProvider>
+      <CreatePageInner />
+    </EbookProvider>
   );
 }
