@@ -2132,10 +2132,19 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {activeSourceTab === "text" && (
                 <>
                   <textarea
+                    value={pastedText}
+                    onChange={e => setPastedText(e.target.value)}
                     placeholder="Paste your source text here..."
                     className="w-full min-h-[180px] px-4 py-3 rounded-xl border border-foreground/[0.10] bg-foreground/[0.02] text-[0.85rem] text-foreground placeholder:text-muted/50 focus:outline-none focus:ring-1 focus:ring-accent/40 resize-y"
                   />
-                  <p className="text-[0.72rem] text-muted/50 mt-2">Paste articles, notes, or any text to use as source material.</p>
+                  <div className="flex items-center justify-between mt-2">
+                    <p className="text-[0.72rem] text-muted/50">
+                      {pastedText.length > 0 ? `${pastedText.length.toLocaleString()} characters · ${pastedText.trim().split(/\s+/).filter(Boolean).length.toLocaleString()} words` : "Paste articles, notes, or any text to use as source material."}
+                    </p>
+                    {pastedText.length > 0 && (
+                      <button type="button" onClick={() => setPastedText("")} className="text-[0.72rem] text-muted hover:text-foreground transition-colors">Clear</button>
+                    )}
+                  </div>
                 </>
               )}
 
