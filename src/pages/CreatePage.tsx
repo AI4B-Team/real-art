@@ -1125,7 +1125,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
 
                 {/* Non-app generic controls */}
-                {selectedType !== "app" && selectedSubMode && (
+                {selectedType !== "app" && selectedType !== "document" && selectedSubMode && (
                   <>
                 <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
