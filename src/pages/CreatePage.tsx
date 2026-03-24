@@ -1099,7 +1099,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           )}
 
           {/* ── Bottom toolbar ── */}
-          {(
+          {hasType && (
             <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-nowrap">
               {/* Child 1 — Scrollable pills (never wraps) */}
               <div className="relative flex-1 min-w-0 overflow-hidden">
