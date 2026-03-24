@@ -762,8 +762,8 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                 <WandSparkles className="w-3.5 h-3.5" /> Create
               </Link>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 rounded-lg bg-foreground/[0.06] hover:bg-foreground/[0.1] transition-colors shrink-0">
-                  <Sparkles className="w-4 h-4 text-foreground/70" />
+                <button className="p-2 rounded-lg bg-amber-500/15 hover:bg-amber-500/25 transition-colors shrink-0">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
                 </button>
               </TooltipTrigger><TooltipContent>AIVA</TooltipContent></Tooltip>
             </>
