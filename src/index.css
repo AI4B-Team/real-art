@@ -36,6 +36,7 @@
     --ring: 0 0% 4%;
 
     --radius: 0.75rem;
+    --aiva: 45 93% 58%;
 
     /* Custom tokens */
     --font-display: 'DM Sans', sans-serif;
@@ -83,6 +84,7 @@
     --border: 0 0% 100% / 0.1;
     --input: 0 0% 100% / 0.15;
     --ring: 0 0% 95%;
+    --aiva: 45 93% 52%;
 
     --shadow-card: 0 24px 64px rgba(0,0,0,0.4);
     --shadow-search: 0 8px 40px rgba(0,0,0,0.3), 0 2px 8px rgba(0,0,0,0.2);
