@@ -3,7 +3,9 @@ import {
   MousePointer2, Paintbrush, Eraser, PaintBucket, Type, Layers,
   ZoomIn, Play, SlidersHorizontal, Download, Save, Globe, ExternalLink,
   Trash2, Upload, Scissors, Wand2, Plus, X, Check, ChevronDown, Image,
-  RotateCcw, RotateCw, Eye, EyeOff, Lock, Unlock,
+  RotateCcw, RotateCw, Eye, EyeOff, Lock, Unlock, Search, Settings,
+  FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
+  Film, Send, ChevronLeft,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
@@ -67,12 +69,45 @@ const CANVAS_TOOLS = [
   { id: "delete", icon: Trash2, tooltip: "Delete" },
 ];
 
+/* ─── Left Panel Tab Config ─── */
+type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "templates" | "settings";
+
+const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
+  { id: "creations", icon: Image, label: "Creations" },
+  { id: "layers", icon: Layers, label: "Layers" },
+  { id: "adjustments", icon: SlidersHorizontal, label: "Adjustments" },
+  { id: "filters", icon: Sparkles, label: "Filters" },
+  { id: "ai-tools", icon: Wand2, label: "AI Tools" },
+  { id: "templates", icon: LayoutGrid, label: "Templates" },
+  { id: "settings", icon: Settings, label: "Settings" },
+];
+
 const SAMPLE_IMAGES = [
   "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?w=200",
   "https://images.unsplash.com/photo-1547891654-e66ed7ebb968?w=200",
   "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200",
   "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=200",
   "https://images.unsplash.com/photo-1552168324-d612d77725e3?w=200",
+];
+
+const FILTER_PRESETS = [
+  { name: "Original", value: "none" },
+  { name: "Vivid", value: "saturate(1.4) contrast(1.1)" },
+  { name: "Warm", value: "sepia(0.3) saturate(1.2)" },
+  { name: "Cool", value: "hue-rotate(20deg) saturate(0.9)" },
+  { name: "B&W", value: "grayscale(1)" },
+  { name: "Vintage", value: "sepia(0.5) contrast(0.9) brightness(1.1)" },
+  { name: "Dramatic", value: "contrast(1.4) brightness(0.9)" },
+  { name: "Fade", value: "brightness(1.1) contrast(0.85) saturate(0.8)" },
+];
+
+const AI_IMAGE_TOOLS = [
+  { name: "Remove Background", desc: "Isolate Subject From Background", icon: Scissors },
+  { name: "Upscale", desc: "Enhance Resolution Up To 4x", icon: ZoomIn },
+  { name: "AI Enhance", desc: "Auto-improve Colors And Sharpness", icon: Sparkles },
+  { name: "Inpaint", desc: "Remove Or Replace Objects", icon: Eraser },
+  { name: "Outpaint", desc: "Extend Image Beyond Borders", icon: Image },
+  { name: "Style Transfer", desc: "Apply Artistic Styles", icon: Paintbrush },
 ];
 
 interface Props {
@@ -89,6 +124,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [inputValue, setInputValue] = useState("");
+  const [activeLeftTab, setActiveLeftTab] = useState<LeftTab>("creations");
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
   const drawingCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -271,6 +308,271 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
 
   return (
     <div className="h-full flex overflow-hidden">
+      {/* Left Panel */}
+      {!isLeftPanelCollapsed && (
+        <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex flex-col overflow-hidden shrink-0">
+          {/* Icon strip - horizontal at top */}
+          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex items-center px-3 py-2 gap-1 shrink-0 overflow-x-auto">
+            {LEFT_TABS.map(tab => (
+              <Tooltip key={tab.id}><TooltipTrigger asChild>
+                <button onClick={() => setActiveLeftTab(tab.id)}
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all shrink-0 ${activeLeftTab === tab.id ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <tab.icon className="w-5 h-5" />
+                </button>
+              </TooltipTrigger><TooltipContent>{tab.label}</TooltipContent></Tooltip>
+            ))}
+          </div>
+
+          {/* Search bar */}
+          <div className="px-4 py-3 shrink-0">
+            <div className="relative">
+              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+              <input type="text" placeholder="Search" className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
+            </div>
+          </div>
+
+          {/* Panel content */}
+          <div className="flex-1 overflow-y-auto px-4 pb-4">
+            {/* Creations Tab */}
+            {activeLeftTab === "creations" && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold">Creations</h3>
+                  <button onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-1.5 px-3 py-1.5 bg-accent text-white rounded-lg text-xs font-medium hover:bg-accent/90 transition-colors">
+                    <Upload className="w-3.5 h-3.5" />Upload
+                  </button>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  <button onClick={() => fileInputRef.current?.click()}
+                    className="aspect-square rounded-xl border-2 border-dashed border-foreground/[0.12] flex items-center justify-center hover:border-foreground/[0.25] transition-colors">
+                    <Plus className="w-5 h-5 text-muted" />
+                  </button>
+                  {creations.map(c => (
+                    <button key={c.id} onClick={() => handleSelectCreation(c)}
+                      className={`aspect-square rounded-xl overflow-hidden transition-all ${c.isActive ? "ring-2 ring-accent" : "opacity-70 hover:opacity-100"}`}>
+                      <img src={c.thumbnail} alt={c.title} className="w-full h-full object-cover" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Layers Tab */}
+            {activeLeftTab === "layers" && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold">Layers</h3>
+                {layers.map(layer => (
+                  <div key={layer.id} onClick={() => setSelectedLayerId(layer.id)}
+                    className={`flex items-center gap-2 p-3 rounded-xl cursor-pointer transition-all ${selectedLayerId === layer.id ? "bg-accent/10 ring-1 ring-accent" : "bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12]"}`}>
+                    <button onClick={(e) => { e.stopPropagation(); setLayers(prev => prev.map(l => l.id === layer.id ? { ...l, visible: !l.visible } : l)); }}
+                      className={`p-1 rounded transition-colors ${layer.visible ? "text-foreground" : "text-muted"}`}>
+                      {layer.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                    </button>
+                    <div className="w-8 h-8 bg-foreground/[0.06] rounded-lg flex items-center justify-center">
+                      {layer.type === "image" && <Image className="w-4 h-4 text-muted" />}
+                      {layer.type === "drawing" && <Paintbrush className="w-4 h-4 text-muted" />}
+                      {layer.type === "text" && <Type className="w-4 h-4 text-muted" />}
+                    </div>
+                    <span className="flex-1 text-sm truncate">{layer.name}</span>
+                    <button onClick={(e) => { e.stopPropagation(); setLayers(prev => prev.map(l => l.id === layer.id ? { ...l, locked: !l.locked } : l)); }}
+                      className={`p-1 rounded transition-colors ${layer.locked ? "text-amber-500" : "text-muted hover:text-foreground"}`}>
+                      {layer.locked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
+                    </button>
+                  </div>
+                ))}
+                {selectedLayerId && (
+                  <div className="space-y-2 pt-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted">Opacity</span>
+                      <span className="text-sm text-muted tabular-nums">{layers.find(l => l.id === selectedLayerId)?.opacity ?? 100}%</span>
+                    </div>
+                    <input type="range" min={0} max={100} value={layers.find(l => l.id === selectedLayerId)?.opacity ?? 100}
+                      onChange={e => setLayers(prev => prev.map(l => l.id === selectedLayerId ? { ...l, opacity: Number(e.target.value) } : l))}
+                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.12]
+                        [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
+                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-lg" />
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Adjustments Tab */}
+            {activeLeftTab === "adjustments" && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold">Adjustments</h3>
+                {[
+                  { label: "Brightness", key: "brightness", min: -100, max: 100 },
+                  { label: "Contrast", key: "contrast", min: -100, max: 100 },
+                  { label: "Saturation", key: "saturation", min: -100, max: 100 },
+                  { label: "Exposure", key: "exposure", min: -100, max: 100 },
+                  { label: "Highlights", key: "highlights", min: -100, max: 100 },
+                  { label: "Shadows", key: "shadows", min: -100, max: 100 },
+                  { label: "Temperature", key: "temperature", min: -100, max: 100 },
+                  { label: "Sharpness", key: "sharpness", min: 0, max: 100 },
+                ].map(adj => (
+                  <div key={adj.key} className="space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted">{adj.label}</span>
+                      <span className="text-xs text-muted tabular-nums">{toolSettings[adj.key] ?? 0}</span>
+                    </div>
+                    <input type="range" min={adj.min} max={adj.max}
+                      value={toolSettings[adj.key] ?? 0}
+                      onChange={e => setToolSettings(prev => ({ ...prev, [adj.key]: Number(e.target.value) }))}
+                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.12]
+                        [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
+                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent [&::-webkit-slider-thumb]:shadow-lg" />
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Filters Tab */}
+            {activeLeftTab === "filters" && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold">Filters</h3>
+                <div className="grid grid-cols-2 gap-2">
+                  {FILTER_PRESETS.map(f => (
+                    <button key={f.name}
+                      className="rounded-xl overflow-hidden border border-foreground/[0.08] hover:border-accent transition-colors group">
+                      <div className="aspect-video bg-foreground/[0.04] flex items-center justify-center">
+                        {selectedImage ? (
+                          <img src={selectedImage} alt={f.name} className="w-full h-full object-cover" style={{ filter: f.value }} />
+                        ) : (
+                          <div className="w-full h-full bg-gradient-to-br from-foreground/[0.06] to-foreground/[0.02]" style={{ filter: f.value }} />
+                        )}
+                      </div>
+                      <div className="px-2 py-1.5 text-center">
+                        <span className="text-xs font-medium">{f.name}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* AI Tools Tab */}
+            {activeLeftTab === "ai-tools" && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold">AI Tools</h3>
+                {AI_IMAGE_TOOLS.map(tool => (
+                  <button key={tool.name}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
+                    <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                      <tool.icon className="w-5 h-5 text-accent" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium">{tool.name}</p>
+                      <p className="text-xs text-muted">{tool.desc}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Templates Tab */}
+            {activeLeftTab === "templates" && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-bold">Templates</h3>
+                  <button className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground text-background rounded-lg text-xs font-medium hover:bg-foreground/90 transition-colors">
+                    <Plus className="w-3.5 h-3.5" />Create Template
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  {["Social Post", "Story", "Banner", "Thumbnail", "Flyer", "Card"].map(t => (
+                    <button key={t}
+                      className="aspect-video rounded-xl bg-foreground/[0.04] border border-foreground/[0.08] hover:border-accent flex items-center justify-center transition-colors">
+                      <span className="text-xs font-medium text-muted">{t}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Settings Tab */}
+            {activeLeftTab === "settings" && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold">Settings</h3>
+                <div className="space-y-3">
+                  <div>
+                    <span className="text-xs font-medium text-muted uppercase tracking-wider">Size</span>
+                    <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08]">
+                      <div className="flex items-center gap-2">
+                        <Image className="w-4 h-4 text-muted" />
+                        <span className="text-sm font-medium">Landscape (16:9)</span>
+                        <ChevronDown className="w-4 h-4 text-muted ml-auto" />
+                      </div>
+                    </div>
+                    <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08]">
+                      <p className="text-sm font-medium">Resize For Social Media</p>
+                      <p className="text-xs text-muted">Create New Version For Social Media</p>
+                    </div>
+                  </div>
+                  <div className="border-t border-foreground/[0.06] pt-3">
+                    <span className="text-xs font-medium text-muted uppercase tracking-wider">Background</span>
+                    <div className="mt-2 space-y-2">
+                      <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-full border-2 border-accent flex items-center justify-center">
+                            <div className="w-2 h-2 rounded-full bg-accent" />
+                          </div>
+                          <span className="text-sm font-medium">Color</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted">#FF4F4A</span>
+                          <div className="w-5 h-5 rounded bg-accent" />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                        <div className="flex items-center gap-2">
+                          <div className="w-4 h-4 rounded-full border-2 border-foreground/[0.2]" />
+                          <span className="text-sm font-medium">Image</span>
+                        </div>
+                        <span className="text-xs text-muted">Upload</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* AI Prompt at bottom of left panel */}
+          <div className="px-4 pb-4 pt-2 border-t border-foreground/[0.06] shrink-0">
+            <div className="rounded-xl border-2 border-accent/30 p-3">
+              <textarea
+                value={inputValue}
+                onChange={e => setInputValue(e.target.value)}
+                placeholder="Describe what you want to create..."
+                className="w-full bg-transparent text-sm placeholder:text-muted focus:outline-none resize-none min-h-[60px]"
+              />
+              <div className="flex items-center justify-between mt-2">
+                <button className="p-1.5 text-muted hover:text-foreground transition-colors">
+                  <LayoutGrid className="w-4 h-4" />
+                </button>
+                <div className="flex items-center gap-2">
+                  <button className="flex items-center gap-1 text-muted hover:text-foreground transition-colors">
+                    <Sparkles className="w-4 h-4" />
+                    <ChevronDown className="w-3 h-3" />
+                  </button>
+                  <button className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center hover:bg-accent/90 transition-colors">
+                    <Send className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Collapse toggle */}
+      <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
+        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-card border border-foreground/[0.08] rounded-r-lg flex items-center justify-center hover:bg-foreground/[0.04] transition-colors"
+        style={{ left: isLeftPanelCollapsed ? 0 : 420 }}>
+        <ChevronLeft className={`w-3 h-3 text-muted transition-transform ${isLeftPanelCollapsed ? "rotate-180" : ""}`} />
+      </button>
+
       {/* Center: Canvas */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div ref={canvasRef} className="flex-1 bg-foreground/[0.03] relative overflow-hidden"
@@ -364,7 +666,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                   <Image className="w-10 h-10 text-muted/30" />
                 </div>
                 <div>
-                  <p className="text-lg font-semibold text-foreground mb-1"><p className="text-lg font-semibold text-foreground mb-1">No Image Selected</p></p>
+                  <p className="text-lg font-semibold text-foreground mb-1">No Image Selected</p>
                   <p className="text-sm text-muted mb-4">Upload an image or select from your creations</p>
                 </div>
                 <button onClick={() => fileInputRef.current?.click()}
@@ -373,31 +675,6 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                 </button>
               </div>
             )}
-          </div>
-        </div>
-
-        {/* Creations Strip */}
-        <div className="h-24 bg-foreground/[0.95] border-t border-foreground/[0.2] flex items-center px-4 gap-3">
-          <div className="flex items-center gap-2 overflow-x-auto py-2">
-            <button onClick={() => fileInputRef.current?.click()}
-              className="w-14 h-14 rounded-lg border-2 border-dashed border-background/20 flex items-center justify-center hover:border-background/40 transition-colors shrink-0">
-              <Plus className="w-5 h-5 text-background/40" />
-            </button>
-            {creations.map(c => (
-              <button key={c.id} onClick={() => handleSelectCreation(c)}
-                className={`w-14 h-14 rounded-lg overflow-hidden shrink-0 transition-all ${c.isActive ? "ring-2 ring-accent ring-offset-2 ring-offset-foreground" : "opacity-60 hover:opacity-100"}`}>
-                <img src={c.thumbnail} alt={c.title} className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
-
-          {/* Prompt input */}
-          <div className="flex-1 ml-4">
-            <div className="flex items-center gap-2 bg-background/10 rounded-xl px-4 py-2">
-              <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} placeholder="Describe changes or generate new image..."
-                className="flex-1 bg-transparent text-sm text-background placeholder:text-background/30 focus:outline-none" />
-              <button className="px-4 py-1.5 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors">Generate</button>
-            </div>
           </div>
         </div>
       </div>
