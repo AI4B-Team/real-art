@@ -116,7 +116,7 @@ const VideoEditor = ({ video }: Props) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration] = useState(596); // 9:56
   const [zoom, setZoom] = useState(3);
-  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(true);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState("16:9");
   const [isMuted, setIsMuted] = useState(false);
