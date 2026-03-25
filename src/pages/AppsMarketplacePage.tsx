@@ -207,6 +207,11 @@ const AppsMarketplacePage = () => {
   const [activeTab, setActiveTab] = useState<"marketplace" | "my-apps">("marketplace");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedCat, setSelectedCat] = useState("Select All");
+  const { openAppByName } = useAppTabs();
+
+  const handleOpenApp = (name: string) => {
+    openAppByName(name);
+  };
 
   const filterApps = (apps: AppItem[]) => {
     let result = apps;
