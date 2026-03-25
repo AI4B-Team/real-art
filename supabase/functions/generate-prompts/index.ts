@@ -32,11 +32,11 @@ serve(async (req) => {
             content: [
               {
                 type: "text",
-                text: `Analyze this image and return two prompts:
+                text: `Analyze this image and return two prompts, each formatted with structured paragraphs using these section headers: [Subject], [Action], [Environment], [Cinematography], [Lighting/Style], [Technical]. Each section should be on its own paragraph (separated by double newlines).
 
-1. **Image Prompt**: A detailed text-to-image prompt that could recreate this image. Include style, composition, lighting, colors, mood, subject matter, and technical details (e.g. "8k", "cinematic lighting", etc). Make it vivid and usable in AI image generators.
+1. **Image Prompt**: A detailed text-to-image prompt that could recreate this image. Format it with the section headers above. Be vivid, specific, and usable in AI image generators.
 
-2. **Video Prompt**: An inspirational text-to-video prompt based on this image. Imagine the image coming to life — describe camera movement, animation, atmosphere, sound design cues, and cinematic feel. Make it feel like a short film concept.
+2. **Video Prompt**: An inspirational text-to-video prompt based on this image. Format it with the section headers above. Imagine the image coming to life — describe camera movement, animation, atmosphere, and cinematic feel.
 
 Return ONLY valid JSON in this exact format, no markdown:
 {"image_prompt": "...", "video_prompt": "..."}`
