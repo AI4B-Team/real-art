@@ -598,18 +598,18 @@ const VideoEditor = ({ video }: Props) => {
             )}
           </div>
 
-          {/* Canvas overlay controls */}
-          <div className="absolute bottom-4 right-4 flex items-center gap-2">
-            <button onClick={() => setIsMuted(!isMuted)} className="p-2 bg-card/60 rounded-lg text-foreground/60 hover:text-foreground transition-colors">
+          {/* Canvas overlay controls - centered bottom */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card/80 backdrop-blur-sm rounded-full px-2 py-1.5 shadow-lg border border-foreground/[0.08]">
+            <button onClick={() => setIsMuted(!isMuted)} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
             <Popover>
               <PopoverTrigger asChild>
-                <button className="px-3 py-1.5 bg-card/60 rounded-lg text-xs font-medium text-foreground/60 hover:text-foreground transition-colors flex items-center gap-1.5">
+                <button className="px-3 py-1.5 rounded-full text-xs font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors flex items-center gap-1.5">
                   <Settings className="w-3.5 h-3.5" />Ratio: {selectedRatio}
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-36 p-1.5" align="end">
+              <PopoverContent className="w-36 p-1.5" align="center">
                 {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
                   <button key={r} onClick={() => setSelectedRatio(r)}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
@@ -618,7 +618,7 @@ const VideoEditor = ({ video }: Props) => {
                 ))}
               </PopoverContent>
             </Popover>
-            <button className="p-2 bg-card/60 rounded-lg text-foreground/60 hover:text-foreground transition-colors">
+            <button className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
               <Maximize className="w-4 h-4" />
             </button>
           </div>
