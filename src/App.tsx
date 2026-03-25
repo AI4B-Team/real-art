@@ -135,6 +135,7 @@ const App = () => (
             <Route path="/account" element={<AccountPage />} />
             <Route path="/brand" element={<BrandPage />} />
             <Route path="/apps" element={<AppsMarketplacePage />} />
+            <Route path="/apps/:appId" element={<AppsMarketplacePage />} />
             <Route path="/ebook-creator" element={<EbookCreatorPage />} />
             <Route path="/ebook-creator/new" element={<NewEbookPage />} />
             <Route path="/ghost-ink" element={<EbookCreatorPage />} />
