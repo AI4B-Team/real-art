@@ -14,6 +14,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import Logo from "./Logo";
+import AppTabs from "./AppTabs";
 
 type NotifEntry = {
   id: string;
