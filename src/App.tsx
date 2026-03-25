@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import AuthLayout from "@/components/AuthLayout";
 import { QuickViewProvider } from "@/context/QuickViewContext";
+import { AppTabsProvider } from "@/context/AppTabsContext";
 import QuickViewPanel from "@/components/QuickViewPanel";
 
 import Index from "./pages/Index";
