@@ -573,13 +573,15 @@ const VideoEditor = ({ video }: Props) => {
       )}
 
       {/* Collapse toggle */}
-      <Tooltip><TooltipTrigger asChild>
-        <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-20 flex items-center justify-center w-5 h-12 bg-card hover:bg-foreground/[0.06] rounded-r-md border border-l-0 border-foreground/[0.08] transition-colors"
-          style={{ left: isLeftPanelCollapsed ? 0 : 420 }}>
-          {isLeftPanelCollapsed ? <ChevronRight className="w-4 h-4 text-muted" /> : <ChevronLeft className="w-4 h-4 text-muted" />}
-        </button>
-      </TooltipTrigger><TooltipContent side="right">{isLeftPanelCollapsed ? "Show Panel" : "Hide Panel"}</TooltipContent></Tooltip>
+      {/* Collapse toggle */}
+      <div className="flex items-center shrink-0">
+        <Tooltip><TooltipTrigger asChild>
+          <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
+            className="flex items-center justify-center w-5 h-12 bg-card hover:bg-foreground/[0.06] rounded-r-md border border-l-0 border-foreground/[0.08] transition-colors">
+            {isLeftPanelCollapsed ? <ChevronRight className="w-4 h-4 text-muted" /> : <ChevronLeft className="w-4 h-4 text-muted" />}
+          </button>
+        </TooltipTrigger><TooltipContent side="right">{isLeftPanelCollapsed ? "Show Panel" : "Hide Panel"}</TooltipContent></Tooltip>
+      </div>
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
