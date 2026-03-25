@@ -136,14 +136,15 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
           {/* Fanned card stack */}
           <div className="relative w-[180px] h-[120px] mb-5">
             {[
-              { img: "photo-1534528741775-53994a69daeb", rotate: -12, x: -20, z: 1 },
-              { img: "photo-1506794778202-cad84cf45f1d", rotate: -4, x: 0, z: 2 },
-              { img: "photo-1531746020798-e6953c6e8e04", rotate: 4, x: 20, z: 3 },
-              { img: "photo-1507003211169-0a1dd7228f2d", rotate: 12, x: 40, z: 4 },
+              { img: "photo-1579546929518-9e396f3cc809", rotate: -18, x: -60, z: 1 },
+              { img: "photo-1506794778202-cad84cf45f1d", rotate: -9, x: -25, z: 2 },
+              { img: "photo-1557682250-33bd709cbe85", rotate: 0, x: 10, z: 3 },
+              { img: "photo-1531746020798-e6953c6e8e04", rotate: 9, x: 45, z: 4 },
+              { img: "photo-1534528741775-53994a69daeb", rotate: 18, x: 80, z: 5 },
             ].map((card, i) => (
               <div
                 key={i}
-                className="absolute top-0 w-[80px] h-[100px] rounded-xl overflow-hidden shadow-lg border-[3px] border-background"
+                className="absolute top-0 w-[80px] h-[110px] rounded-xl overflow-hidden shadow-lg border-[3px] border-background"
                 style={{
                   transform: `translateX(${card.x}px) rotate(${card.rotate}deg)`,
                   zIndex: card.z,
@@ -151,7 +152,7 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
                 }}
               >
                 <img
-                  src={`https://images.unsplash.com/${card.img}?w=200&h=260&fit=crop&q=75`}
+                  src={`https://images.unsplash.com/${card.img}?w=200&h=280&fit=crop&q=75`}
                   alt=""
                   className="w-full h-full object-cover"
                 />
