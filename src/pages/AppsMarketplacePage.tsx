@@ -280,18 +280,18 @@ const AppsMarketplacePage = () => {
         {activeTab === "marketplace" ? (
           <>
             {/* Trending */}
-            <Section title="🔥 Trending Apps" apps={filterApps(trendingApps)} view={viewMode} />
+            <Section title="🔥 Trending Apps" apps={filterApps(trendingApps)} view={viewMode} onOpen={handleOpenApp} />
 
             {/* Top Picks */}
-            <Section title="⭐ Top Picks" apps={filterApps(topPicks)} view={viewMode} />
+            <Section title="⭐ Top Picks" apps={filterApps(topPicks)} view={viewMode} onOpen={handleOpenApp} />
 
             {/* Categorized */}
-            <Section title="Image Apps" apps={filterApps(imageApps)} view={viewMode} />
-            <Section title="Video Apps" apps={filterApps(videoApps)} view={viewMode} />
-            <Section title="Audio Apps" apps={filterApps(audioApps)} view={viewMode} />
-            <Section title="Design Apps" apps={filterApps(designApps)} view={viewMode} />
-            <Section title="Content Apps" apps={filterApps(contentApps)} view={viewMode} />
-            <Section title="Tools" apps={filterApps(toolsApps)} view={viewMode} />
+            <Section title="Image Apps" apps={filterApps(imageApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Video Apps" apps={filterApps(videoApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Audio Apps" apps={filterApps(audioApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Design Apps" apps={filterApps(designApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Content Apps" apps={filterApps(contentApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Tools" apps={filterApps(toolsApps)} view={viewMode} onOpen={handleOpenApp} />
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">
