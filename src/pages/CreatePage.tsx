@@ -865,7 +865,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
                 {!isListening && !hasType && isSupported && (
                   <Tooltip><TooltipTrigger asChild>
-                    <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"><Mic size={17} className="text-foreground" /></button>
+                    <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors hover:bg-foreground/[0.06]"><Mic size={17} className="!text-black dark:!text-white" /></button>
                   </TooltipTrigger><TooltipContent side="bottom">Speak</TooltipContent></Tooltip>
                 )}
                 {!hasType && (
@@ -1854,7 +1854,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
                 {isSupported && (
                   <Tooltip><TooltipTrigger asChild>
-                    <button type="button" onClick={isListening ? cancelSpeech : startListening} className={`p-1.5 rounded-lg transition-colors mr-2 ${isListening ? "bg-accent/10 text-accent animate-pulse" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}><Mic size={15} /></button>
+                    <button type="button" onClick={isListening ? cancelSpeech : startListening} className={`p-1.5 rounded-lg transition-colors mr-2 ${isListening ? "bg-accent/10 text-accent animate-pulse" : "bg-foreground/[0.04] hover:bg-foreground/[0.08]"}`}><Mic size={15} className={isListening ? "" : "!text-black dark:!text-white"} /></button>
                   </TooltipTrigger><TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent></Tooltip>
                 )}
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
