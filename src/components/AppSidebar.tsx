@@ -58,6 +58,7 @@ const navItems: NavItem[] = [
   { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
   { id: "challenges-browse", label: "Challenges", icon: Trophy, type: "route", href: "/challenges" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
+  { id: "aiva", label: "AIVA", icon: Zap, type: "route", href: "#aiva" },
   { id: "apps", label: "Apps", icon: LayoutGrid, type: "route", href: "/apps" },
   { id: "overview", label: "Insights", icon: Sparkles, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
@@ -718,15 +719,16 @@ const AppSidebar = () => {
           }
 
           const active = isActive(item);
+          const isAiva = item.id === "aiva";
           if (sidebarCollapsed) {
             return (
               <button
                 key={item.id}
                 onClick={() => handleClick(item)}
-                className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+                className={`flex items-center justify-center py-2.5 rounded-xl text-[0.84rem] font-medium w-full transition-colors ${isAiva ? "text-aiva hover:bg-aiva/10" : active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
                 title={item.label}
               >
-                <item.icon className="w-4 h-4 shrink-0" />
+                <item.icon className={`w-4 h-4 shrink-0 ${isAiva ? "text-aiva" : ""}`} />
               </button>
             );
           }
@@ -734,9 +736,9 @@ const AppSidebar = () => {
             <button
               key={item.id}
               onClick={() => handleClick(item)}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-[0.84rem] font-medium w-full text-left transition-colors ${isAiva ? "text-aiva hover:bg-aiva/10" : active ? "bg-foreground text-primary-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}
             >
-              <item.icon className="w-4 h-4 shrink-0" />
+              <item.icon className={`w-4 h-4 shrink-0 ${isAiva ? "text-aiva" : ""}`} />
               {item.label}
             </button>
           );
