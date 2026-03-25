@@ -177,31 +177,29 @@ const VideoEditor = ({ video }: Props) => {
     <div className="h-full flex overflow-hidden bg-background">
       {/* Left Sidebar */}
       {!isLeftPanelCollapsed && (
-        <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex overflow-hidden shrink-0">
-          {/* Icon strip */}
-          <div className="w-14 bg-foreground/[0.03] border-r border-foreground/[0.06] flex flex-col items-center py-3 gap-1 shrink-0 overflow-y-auto">
+        <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex flex-col overflow-hidden shrink-0">
+          {/* Icon strip - horizontal at top */}
+          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex items-center px-3 py-2 gap-1 shrink-0 overflow-x-auto">
             {LEFT_TABS.map(tab => (
               <Tooltip key={tab.id}><TooltipTrigger asChild>
                 <button onClick={() => setActiveTab(tab.id)}
-                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all ${activeTab === tab.id ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
-                  <tab.icon className="w-4.5 h-4.5" />
+                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all shrink-0 ${activeTab === tab.id ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <tab.icon className="w-5 h-5" />
                 </button>
-              </TooltipTrigger><TooltipContent side="right">{tab.label}</TooltipContent></Tooltip>
+              </TooltipTrigger><TooltipContent>{tab.label}</TooltipContent></Tooltip>
             ))}
           </div>
 
           {/* Panel content */}
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Active tab label */}
-            <div className="px-4 pt-4 pb-2 shrink-0">
-              <div className="flex items-center gap-2">
-                {activeTab !== "script" && (
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.06] rounded-lg">
-                    {(() => { const TabIcon = LEFT_TABS.find(t => t.id === activeTab)?.icon || FileText; return <TabIcon className="w-4 h-4" />; })()}
-                    <span className="text-sm font-medium">{LEFT_TABS.find(t => t.id === activeTab)?.label}</span>
-                  </div>
-                )}
-              </div>
+            <div className="px-4 pt-3 pb-2 shrink-0">
+              {activeTab !== "script" && (
+                <div className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.06] rounded-lg w-fit">
+                  {(() => { const TabIcon = LEFT_TABS.find(t => t.id === activeTab)?.icon || FileText; return <TabIcon className="w-4 h-4" />; })()}
+                  <span className="text-sm font-medium">{LEFT_TABS.find(t => t.id === activeTab)?.label}</span>
+                </div>
+              )}
             </div>
 
             {/* Search bar for applicable tabs */}
