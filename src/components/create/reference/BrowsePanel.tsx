@@ -136,11 +136,11 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
           {/* Fanned card stack */}
           <div className="relative w-[180px] h-[120px] mb-5">
             {[
-              { img: "photo-1579546929518-9e396f3cc809", rotate: -18, x: -60, z: 1 },
-              { img: "photo-1506794778202-cad84cf45f1d", rotate: -9, x: -25, z: 2 },
-              { img: "photo-1557682250-33bd709cbe85", rotate: 0, x: 10, z: 3 },
-              { img: "photo-1531746020798-e6953c6e8e04", rotate: 9, x: 45, z: 4 },
-              { img: "photo-1534528741775-53994a69daeb", rotate: 18, x: 80, z: 5 },
+              { img: "photo-1506744038136-46273834b3fb", rotate: -20, x: -75, z: 1 },
+              { img: "photo-1470071459604-3b5ec3a7fe05", rotate: -10, x: -35, z: 2 },
+              { img: "photo-1506794778202-cad84cf45f1d", rotate: 0, x: 10, z: 3 },
+              { img: "photo-1531746020798-e6953c6e8e04", rotate: 10, x: 55, z: 4 },
+              { img: "photo-1534528741775-53994a69daeb", rotate: 20, x: 95, z: 5 },
             ].map((card, i) => (
               <div
                 key={i}
