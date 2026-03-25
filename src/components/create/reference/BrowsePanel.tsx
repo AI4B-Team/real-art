@@ -126,14 +126,39 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
       {/* Upload tab content */}
       {isUpload && (
         <div
-          className={`rounded-xl border-2 border-dashed transition-colors p-8 flex flex-col items-center justify-center min-h-[220px] ${
+          className={`rounded-xl border-2 border-dashed transition-colors p-8 flex flex-col items-center justify-center min-h-[260px] ${
             dragActive ? "border-accent bg-accent/5" : "border-foreground/[0.10] bg-foreground/[0.02]"
           }`}
           onDragOver={e => { e.preventDefault(); setDragActive(true); }}
           onDragLeave={() => setDragActive(false)}
           onDrop={handleDrop}
         >
-          <Upload size={28} className="text-accent mb-3" />
+          {/* Fanned card stack */}
+          <div className="relative w-[180px] h-[120px] mb-5">
+            {[
+              { img: "photo-1534528741775-53994a69daeb", rotate: -12, x: -20, z: 1 },
+              { img: "photo-1506794778202-cad84cf45f1d", rotate: -4, x: 0, z: 2 },
+              { img: "photo-1531746020798-e6953c6e8e04", rotate: 4, x: 20, z: 3 },
+              { img: "photo-1507003211169-0a1dd7228f2d", rotate: 12, x: 40, z: 4 },
+            ].map((card, i) => (
+              <div
+                key={i}
+                className="absolute top-0 w-[80px] h-[100px] rounded-xl overflow-hidden shadow-lg border-[3px] border-background"
+                style={{
+                  transform: `translateX(${card.x}px) rotate(${card.rotate}deg)`,
+                  zIndex: card.z,
+                  left: "calc(50% - 40px)",
+                }}
+              >
+                <img
+                  src={`https://images.unsplash.com/${card.img}?w=200&h=260&fit=crop&q=75`}
+                  alt=""
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+
           <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
           <p className="text-[0.75rem] text-muted/60 mb-4">Images — up to 50MB each</p>
           <button
