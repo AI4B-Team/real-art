@@ -585,7 +585,7 @@ const VideoEditor = ({ video }: Props) => {
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Video Canvas */}
         <div className="flex-1 bg-foreground/[0.03] flex items-center justify-center relative overflow-hidden min-h-0">
-          <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl" style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : "16/9" }}>
+          <div className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl" style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : "16/9" }}>
             {video ? (
               <video ref={videoRef} src={video} className="w-full h-full object-contain" />
             ) : (
@@ -600,7 +600,7 @@ const VideoEditor = ({ video }: Props) => {
 
           {/* Canvas overlay controls - centered bottom */}
           <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card/80 backdrop-blur-sm rounded-full px-2 py-1.5 shadow-lg border border-foreground/[0.08]">
-            <button onClick={() => setIsMuted(!isMuted)} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+            <button onClick={() => { setIsMuted(!isMuted); if (videoRef.current) videoRef.current.muted = !isMuted; }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
               {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
             </button>
             <Popover>
@@ -618,7 +618,7 @@ const VideoEditor = ({ video }: Props) => {
                 ))}
               </PopoverContent>
             </Popover>
-            <button className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+            <button onClick={() => { const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
               <Maximize className="w-4 h-4" />
             </button>
           </div>
