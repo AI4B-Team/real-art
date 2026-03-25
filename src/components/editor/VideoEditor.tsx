@@ -585,7 +585,7 @@ const VideoEditor = ({ video }: Props) => {
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Video Canvas */}
         <div className="flex-1 bg-foreground/[0.03] flex items-center justify-center relative overflow-hidden min-h-0">
-          <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl" style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : "16/9" }}>
+          <div className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl" style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : "16/9" }}>
             {video ? (
               <video ref={videoRef} src={video} className="w-full h-full object-contain" />
             ) : (
