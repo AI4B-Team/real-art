@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
+import { useAppTabs, findAppByName } from "@/context/AppTabsContext";
 
 /* ─── Types ─── */
 interface AppItem {
@@ -122,14 +123,14 @@ const RatingStars = ({ rating }: { rating: number }) => (
 );
 
 /* ─── App Card ─── */
-const AppCard = ({ app, view }: { app: AppItem; view: "grid" | "list" }) => {
+const AppCard = ({ app, view, onOpen }: { app: AppItem; view: "grid" | "list"; onOpen: (name: string) => void }) => {
   const Icon = catIcon[app.category] || Wrench;
   const color = catColor[app.category] || "bg-foreground/60";
   const [fav, setFav] = useState(false);
 
   if (view === "list") {
     return (
-      <div className="flex items-center gap-4 p-3 rounded-xl border border-foreground/[0.06] bg-card hover:border-foreground/[0.12] hover:shadow-sm transition-all group cursor-pointer">
+      <div onClick={() => onOpen(app.name)} className="flex items-center gap-4 p-3 rounded-xl border border-foreground/[0.06] bg-card hover:border-foreground/[0.12] hover:shadow-sm transition-all group cursor-pointer">
         <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
           <img src={imgUrl(app.thumbnail)} alt={app.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
           {app.badge === "HOT" && <div className="absolute top-1 right-1 bg-red-500 text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"><Flame size={7} /></div>}
@@ -157,7 +158,7 @@ const AppCard = ({ app, view }: { app: AppItem; view: "grid" | "list" }) => {
   }
 
   return (
-    <div className="bg-card rounded-2xl overflow-hidden border border-foreground/[0.06] hover:border-foreground/[0.14] hover:shadow-lg hover:-translate-y-1 transition-all group cursor-pointer flex flex-col h-full">
+    <div onClick={() => onOpen(app.name)} className="bg-card rounded-2xl overflow-hidden border border-foreground/[0.06] hover:border-foreground/[0.14] hover:shadow-lg hover:-translate-y-1 transition-all group cursor-pointer flex flex-col h-full">
       <div className="relative aspect-[4/3] overflow-hidden">
         <img src={imgUrl(app.thumbnail)} alt={app.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         <div className="absolute bottom-3 left-3 bg-black/70 text-white text-[0.6rem] font-medium px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
@@ -182,7 +183,7 @@ const AppCard = ({ app, view }: { app: AppItem; view: "grid" | "list" }) => {
 };
 
 /* ─── Section ─── */
-const Section = ({ title, apps, view }: { title: string; apps: AppItem[]; view: "grid" | "list" }) => {
+const Section = ({ title, apps, view, onOpen }: { title: string; apps: AppItem[]; view: "grid" | "list"; onOpen: (name: string) => void }) => {
   const [expanded, setExpanded] = useState(false);
   const shown = expanded ? apps : apps.slice(0, 6);
   return (
@@ -194,7 +195,7 @@ const Section = ({ title, apps, view }: { title: string; apps: AppItem[]; view: 
         </button>
       </div>
       <div className={view === "list" ? "flex flex-col gap-3" : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4"}>
-        {shown.map((app, i) => <AppCard key={i} app={app} view={view} />)}
+        {shown.map((app, i) => <AppCard key={i} app={app} view={view} onOpen={onOpen} />)}
       </div>
     </section>
   );
@@ -206,6 +207,11 @@ const AppsMarketplacePage = () => {
   const [activeTab, setActiveTab] = useState<"marketplace" | "my-apps">("marketplace");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [selectedCat, setSelectedCat] = useState("Select All");
+  const { openAppByName } = useAppTabs();
+
+  const handleOpenApp = (name: string) => {
+    openAppByName(name);
+  };
 
   const filterApps = (apps: AppItem[]) => {
     let result = apps;
@@ -274,18 +280,18 @@ const AppsMarketplacePage = () => {
         {activeTab === "marketplace" ? (
           <>
             {/* Trending */}
-            <Section title="🔥 Trending Apps" apps={filterApps(trendingApps)} view={viewMode} />
+            <Section title="🔥 Trending Apps" apps={filterApps(trendingApps)} view={viewMode} onOpen={handleOpenApp} />
 
             {/* Top Picks */}
-            <Section title="⭐ Top Picks" apps={filterApps(topPicks)} view={viewMode} />
+            <Section title="⭐ Top Picks" apps={filterApps(topPicks)} view={viewMode} onOpen={handleOpenApp} />
 
             {/* Categorized */}
-            <Section title="Image Apps" apps={filterApps(imageApps)} view={viewMode} />
-            <Section title="Video Apps" apps={filterApps(videoApps)} view={viewMode} />
-            <Section title="Audio Apps" apps={filterApps(audioApps)} view={viewMode} />
-            <Section title="Design Apps" apps={filterApps(designApps)} view={viewMode} />
-            <Section title="Content Apps" apps={filterApps(contentApps)} view={viewMode} />
-            <Section title="Tools" apps={filterApps(toolsApps)} view={viewMode} />
+            <Section title="Image Apps" apps={filterApps(imageApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Video Apps" apps={filterApps(videoApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Audio Apps" apps={filterApps(audioApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Design Apps" apps={filterApps(designApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Content Apps" apps={filterApps(contentApps)} view={viewMode} onOpen={handleOpenApp} />
+            <Section title="Tools" apps={filterApps(toolsApps)} view={viewMode} onOpen={handleOpenApp} />
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center">

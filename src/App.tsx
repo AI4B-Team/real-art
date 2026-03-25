@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import AuthLayout from "@/components/AuthLayout";
 import { QuickViewProvider } from "@/context/QuickViewContext";
+import { AppTabsProvider } from "@/context/AppTabsContext";
 import QuickViewPanel from "@/components/QuickViewPanel";
 
 import Index from "./pages/Index";
@@ -73,6 +74,7 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <ScrollToTop />
+        <AppTabsProvider>
         <QuickViewProvider>
         <QuickViewPanel />
         <AuthLayout>
@@ -133,6 +135,7 @@ const App = () => (
             <Route path="/account" element={<AccountPage />} />
             <Route path="/brand" element={<BrandPage />} />
             <Route path="/apps" element={<AppsMarketplacePage />} />
+            <Route path="/apps/:appId" element={<AppsMarketplacePage />} />
             <Route path="/ebook-creator" element={<EbookCreatorPage />} />
             <Route path="/ebook-creator/new" element={<NewEbookPage />} />
             <Route path="/ghost-ink" element={<EbookCreatorPage />} />
@@ -145,6 +148,7 @@ const App = () => (
           </Routes>
         </AuthLayout>
         </QuickViewProvider>
+        </AppTabsProvider>
       </BrowserRouter>
     </TooltipProvider>
     </EbookProvider>
