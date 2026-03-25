@@ -58,6 +58,7 @@ const navItems: NavItem[] = [
   { id: "communities-browse", label: "Communities", icon: Users, type: "communities-dropdown" },
   { id: "challenges-browse", label: "Challenges", icon: Trophy, type: "route", href: "/challenges" },
   { id: "divider1", label: "", icon: LayoutDashboard, type: "divider" },
+  { id: "aiva", label: "AIVA", icon: Zap, type: "route", href: "#aiva" },
   { id: "apps", label: "Apps", icon: LayoutGrid, type: "route", href: "/apps" },
   { id: "overview", label: "Insights", icon: Sparkles, type: "dashboard-section" },
   { id: "ads", label: "Ads", icon: Megaphone, type: "dashboard-section" },
