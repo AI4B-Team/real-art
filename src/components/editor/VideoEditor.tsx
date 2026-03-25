@@ -618,7 +618,7 @@ const VideoEditor = ({ video }: Props) => {
                 ))}
               </PopoverContent>
             </Popover>
-            <button className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+            <button onClick={() => { const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
               <Maximize className="w-4 h-4" />
             </button>
           </div>
