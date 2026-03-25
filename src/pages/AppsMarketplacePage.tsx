@@ -158,7 +158,7 @@ const AppCard = ({ app, view, onOpen }: { app: AppItem; view: "grid" | "list"; o
   }
 
   return (
-    <div className="bg-card rounded-2xl overflow-hidden border border-foreground/[0.06] hover:border-foreground/[0.14] hover:shadow-lg hover:-translate-y-1 transition-all group cursor-pointer flex flex-col h-full">
+    <div onClick={() => onOpen(app.name)} className="bg-card rounded-2xl overflow-hidden border border-foreground/[0.06] hover:border-foreground/[0.14] hover:shadow-lg hover:-translate-y-1 transition-all group cursor-pointer flex flex-col h-full">
       <div className="relative aspect-[4/3] overflow-hidden">
         <img src={imgUrl(app.thumbnail)} alt={app.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
         <div className="absolute bottom-3 left-3 bg-black/70 text-white text-[0.6rem] font-medium px-2 py-1 rounded-full flex items-center gap-1 backdrop-blur-sm">
