@@ -123,14 +123,14 @@ const RatingStars = ({ rating }: { rating: number }) => (
 );
 
 /* ─── App Card ─── */
-const AppCard = ({ app, view }: { app: AppItem; view: "grid" | "list" }) => {
+const AppCard = ({ app, view, onOpen }: { app: AppItem; view: "grid" | "list"; onOpen: (name: string) => void }) => {
   const Icon = catIcon[app.category] || Wrench;
   const color = catColor[app.category] || "bg-foreground/60";
   const [fav, setFav] = useState(false);
 
   if (view === "list") {
     return (
-      <div className="flex items-center gap-4 p-3 rounded-xl border border-foreground/[0.06] bg-card hover:border-foreground/[0.12] hover:shadow-sm transition-all group cursor-pointer">
+      <div onClick={() => onOpen(app.name)} className="flex items-center gap-4 p-3 rounded-xl border border-foreground/[0.06] bg-card hover:border-foreground/[0.12] hover:shadow-sm transition-all group cursor-pointer">
         <div className="relative w-20 h-20 rounded-lg overflow-hidden shrink-0">
           <img src={imgUrl(app.thumbnail)} alt={app.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
           {app.badge === "HOT" && <div className="absolute top-1 right-1 bg-red-500 text-white text-[7px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5"><Flame size={7} /></div>}
