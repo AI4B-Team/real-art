@@ -865,7 +865,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 )}
                 {!isListening && !hasType && isSupported && (
                   <Tooltip><TooltipTrigger asChild>
-                    <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors text-foreground hover:bg-foreground/[0.06]"><Mic size={17} className="text-foreground" /></button>
+                    <button type="button" onClick={startListening} className="shrink-0 flex items-center justify-center w-9 h-9 rounded-xl transition-colors hover:bg-foreground/[0.06]"><Mic size={17} className="!text-black dark:!text-white" /></button>
                   </TooltipTrigger><TooltipContent side="bottom">Speak</TooltipContent></Tooltip>
                 )}
                 {!hasType && (
