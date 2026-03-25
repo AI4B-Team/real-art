@@ -183,7 +183,7 @@ const AppCard = ({ app, view, onOpen }: { app: AppItem; view: "grid" | "list"; o
 };
 
 /* ─── Section ─── */
-const Section = ({ title, apps, view }: { title: string; apps: AppItem[]; view: "grid" | "list" }) => {
+const Section = ({ title, apps, view, onOpen }: { title: string; apps: AppItem[]; view: "grid" | "list"; onOpen: (name: string) => void }) => {
   const [expanded, setExpanded] = useState(false);
   const shown = expanded ? apps : apps.slice(0, 6);
   return (
@@ -195,7 +195,7 @@ const Section = ({ title, apps, view }: { title: string; apps: AppItem[]; view: 
         </button>
       </div>
       <div className={view === "list" ? "flex flex-col gap-3" : "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4"}>
-        {shown.map((app, i) => <AppCard key={i} app={app} view={view} />)}
+        {shown.map((app, i) => <AppCard key={i} app={app} view={view} onOpen={onOpen} />)}
       </div>
     </section>
   );
