@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/popover";
 import PageShell from "@/components/PageShell";
 import Footer from "@/components/Footer";
+import { useAppTabs, findAppByName } from "@/context/AppTabsContext";
 
 /* ─── Types ─── */
 interface AppItem {
