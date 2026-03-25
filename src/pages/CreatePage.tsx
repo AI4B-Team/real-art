@@ -637,10 +637,24 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const handleEnhance = async () => {
     if (!prompt.trim()) return;
     setIsEnhancing(true);
-    await new Promise(r => setTimeout(r, 1100));
-    setPrompt(p => p.trimEnd() + " — ultra detailed, professional quality, award-winning.");
-    setIsEnhancing(false);
-    toast({ title: "Prompt enhanced!" });
+    try {
+      const { data, error } = await supabase.functions.invoke("enhance-prompt", {
+        body: { prompt: prompt.trim(), type: selectedType || "image" },
+      });
+      if (error) throw error;
+      if (data?.enhanced) {
+        setPrompt(data.enhanced);
+      } else {
+        setPrompt(p => p.trimEnd() + " — ultra detailed, professional quality, award-winning.");
+      }
+      toast({ title: "Prompt enhanced!" });
+    } catch (e: any) {
+      console.error("Enhance error:", e);
+      setPrompt(p => p.trimEnd() + " — ultra detailed, professional quality, award-winning.");
+      toast({ title: "Prompt enhanced!" });
+    } finally {
+      setIsEnhancing(false);
+    }
   };
 
   const handleExtractPrompt = async (file: File) => {
