@@ -712,26 +712,31 @@ const VideoEditor = ({ video }: Props) => {
                     <div key={track.id} className="h-14 flex items-center gap-1.5 px-2 border-b border-foreground/[0.04] group">
                       <GripVertical className="w-3 h-3 text-muted/30 cursor-grab" />
                       <span className="text-xs font-medium text-muted w-4 text-center">{track.name}</span>
-                      {/* Track type icon */}
-                      <button className={`p-1 rounded transition-colors ${track.type === "audio" ? "text-purple-500" : "text-muted"}`}>
-                        {track.type === "video" ? <Video className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                      </button>
-                      {/* Mute */}
-                      <button onClick={() => toggleTrackMute(track.id)} className={`p-1 rounded transition-colors ${track.muted ? "text-accent" : "text-muted/50 hover:text-muted"}`}>
-                        <Volume2 className="w-3.5 h-3.5" />
-                      </button>
-                      {/* Lock */}
-                      <button onClick={() => toggleTrackLock(track.id)} className={`p-1 rounded transition-colors ${track.locked ? "text-amber-500" : "text-muted/50 hover:text-muted"}`}>
-                        {track.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
-                      </button>
-                      {/* Visibility */}
-                      <button onClick={() => toggleTrackVisibility(track.id)} className={`p-1 rounded transition-colors ${!track.visible ? "text-muted/30" : "text-muted/50 hover:text-muted"}`}>
-                        {track.visible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                      </button>
-                      {/* More */}
-                      <button className="p-1 rounded text-muted/50 hover:text-muted opacity-0 group-hover:opacity-100 transition-opacity">
-                        <MoreVertical className="w-3.5 h-3.5" />
-                      </button>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button className={`p-1 rounded transition-colors ${track.type === "audio" ? "text-purple-500" : "text-muted"}`}>
+                          {track.type === "video" ? <Video className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
+                        </button>
+                      </TooltipTrigger><TooltipContent>{track.type === "video" ? "Video Track" : "Audio Track"}</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => toggleTrackMute(track.id)} className={`p-1 rounded transition-colors ${track.muted ? "text-accent" : "text-muted/50 hover:text-muted"}`}>
+                          <Volume2 className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger><TooltipContent>{track.muted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => toggleTrackLock(track.id)} className={`p-1 rounded transition-colors ${track.locked ? "text-amber-500" : "text-muted/50 hover:text-muted"}`}>
+                          {track.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
+                        </button>
+                      </TooltipTrigger><TooltipContent>{track.locked ? "Unlock" : "Lock"}</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => toggleTrackVisibility(track.id)} className={`p-1 rounded transition-colors ${!track.visible ? "text-muted/30" : "text-muted/50 hover:text-muted"}`}>
+                          {track.visible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
+                        </button>
+                      </TooltipTrigger><TooltipContent>{track.visible ? "Hide" : "Show"}</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button className="p-1 rounded text-muted/50 hover:text-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                          <MoreVertical className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger><TooltipContent>More Options</TooltipContent></Tooltip>
                     </div>
                   ))}
                 </div>
