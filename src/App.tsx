@@ -147,6 +147,7 @@ const App = () => (
           </Routes>
         </AuthLayout>
         </QuickViewProvider>
+        </AppTabsProvider>
       </BrowserRouter>
     </TooltipProvider>
     </EbookProvider>
