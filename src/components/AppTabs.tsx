@@ -21,7 +21,7 @@ interface AppDef {
 }
 
 export const ALL_APPS: AppDef[] = [
-  { id: "create",            label: "Create",            icon: Wand2,         bgColor: "bg-emerald-500", path: "/create" },
+  { id: "create",            label: "Create",            icon: Wand2,         bgColor: "bg-accent", path: "/create" },
   { id: "master-closer",     label: "Master Closer",     icon: Zap,           bgColor: "bg-emerald-600", path: "/apps" },
   { id: "editor",            label: "Editor",            icon: Edit3,         bgColor: "bg-purple-500",  path: "/editor" },
   { id: "sessions",          label: "Sessions",          icon: Video,         bgColor: "bg-blue-500",    path: "/apps" },
