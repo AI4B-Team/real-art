@@ -364,7 +364,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                   <Image className="w-10 h-10 text-muted/30" />
                 </div>
                 <div>
-                  <p className="text-lg font-semibold text-foreground mb-1">No image selected</p>
+                  <p className="text-lg font-semibold text-foreground mb-1"><p className="text-lg font-semibold text-foreground mb-1">No Image Selected</p></p>
                   <p className="text-sm text-muted mb-4">Upload an image or select from your creations</p>
                 </div>
                 <button onClick={() => fileInputRef.current?.click()}
