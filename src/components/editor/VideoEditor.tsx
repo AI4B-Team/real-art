@@ -35,7 +35,7 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "translate" | "effects" | "captions" | "templates" | "brand" | "ai-tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "translate" | "effects" | "captions" | "transcript" | "clips" | "metadata" | "templates" | "brand" | "ai-tools" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
@@ -43,10 +43,13 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "character", icon: User, label: "Character" },
   { id: "visuals", icon: Video, label: "Visuals" },
   { id: "audio", icon: AudioLines, label: "Audio" },
+  { id: "transcript", icon: FileText, label: "Transcript" },
   { id: "text", icon: Type, label: "Text" },
   { id: "translate", icon: Languages, label: "Translate" },
   { id: "effects", icon: Sparkles, label: "Effects" },
   { id: "captions", icon: Captions, label: "Captions" },
+  { id: "clips", icon: Film, label: "Create Clips" },
+  { id: "metadata", icon: BookOpen, label: "AI Notes" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "brand", icon: Palette, label: "Brand" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
