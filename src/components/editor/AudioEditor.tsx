@@ -10,7 +10,7 @@ import {
   Film, Loader2, Shuffle, Type, BookOpen,
   X as XIcon, Languages, GripVertical,
   Image, Video, ArrowRight, FolderOpen,
-  Repeat, BarChart3, Headphones,
+  Repeat, BarChart3, Headphones, Magnet, Diamond, Circle,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
