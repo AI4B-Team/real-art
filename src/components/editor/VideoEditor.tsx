@@ -271,7 +271,7 @@ const VideoEditor = ({ video }: Props) => {
   const [languageSearch, setLanguageSearch] = useState("");
   const [storyboardSubTab, setStoryboardSubTab] = useState<"scenes" | "script" | "brief">("scenes");
   const [textSubTab, setTextSubTab] = useState<"text" | "captions">("text");
-  const [captionSubTab, setCaptionSubTab] = useState<"edit" | "style">("edit");
+  const [captionSubTab, setCaptionSubTab] = useState<"edit" | "style" | "transcript" | "clips" | "notes">("edit");
   const [captionStyle, setCaptionStyle] = useState("classic");
   const [captionDisplayMode, setCaptionDisplayMode] = useState("sentence");
   const [hasCaptions, setHasCaptions] = useState(false);
