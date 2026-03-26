@@ -1630,9 +1630,9 @@ const VideoEditor = ({ video }: Props) => {
         {/* Timeline */}
         <div className={`bg-card border-t border-foreground/[0.08] flex flex-col ${isTimelineMinimized ? "h-12" : "h-64"} transition-all`}>
           {/* Timeline toolbar */}
-          <div className="flex items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             {/* Left tools */}
-            <div className="flex items-center gap-1 flex-1">
+            <div className="flex items-center gap-1">
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={handleUndo} disabled={undoStack.length === 0}
                   className={`flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium transition-colors ${undoStack.length === 0 ? "text-muted/40" : "text-muted hover:bg-foreground/[0.08]"}`}>
