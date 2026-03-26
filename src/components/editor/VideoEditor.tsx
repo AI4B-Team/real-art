@@ -2880,10 +2880,11 @@ const VideoEditor = ({ video }: Props) => {
                                         ))}
                                       </div>
                                     )}
-                                    <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
+                                    <span className="text-[10px] text-white font-medium truncate relative z-[1]">{clip.name}</span>
                                     {clipWidth > 80 && (
-                                      <span className="text-[8px] text-white/50 font-mono shrink-0">{formatTime(clip.duration)}</span>
+                                      <span className="text-[8px] text-white/50 font-mono shrink-0 relative z-[1]">{formatTime(clip.duration)}</span>
                                     )}
+                                    {clip.mediaUrl && <Film className="w-3 h-3 text-white/60 shrink-0 relative z-[1]" />}
                                   </div>
 
                                   {/* Volume indicator line */}
