@@ -1397,22 +1397,9 @@ const VideoEditor = ({ video }: Props) => {
                   </div>
                 </div>
               ) : (
-                /* Timeline View */
                 <div className="flex min-h-full">
                   {/* Track labels */}
                   <div className="w-44 shrink-0 border-r border-foreground/[0.06]">
-                    {/* Header buttons */}
-                    <div className="h-6 flex items-center gap-1 px-2 border-b border-foreground/[0.06]">
-                      <Tooltip><TooltipTrigger asChild>
-                        <button onClick={handleAddTrack} className="p-0.5 text-muted hover:text-foreground transition-colors"><Plus className="w-3.5 h-3.5" /></button>
-                      </TooltipTrigger><TooltipContent>Add Track</TooltipContent></Tooltip>
-                      <Tooltip><TooltipTrigger asChild>
-                        <button onClick={() => setTimelineViewMode('timeline')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'timeline' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><Rows3 className="w-3.5 h-3.5" /></button>
-                      </TooltipTrigger><TooltipContent>Timeline</TooltipContent></Tooltip>
-                      <Tooltip><TooltipTrigger asChild>
-                        <button onClick={() => setTimelineViewMode('storyboard')} className={`p-0.5 rounded transition-colors ${(timelineViewMode as string) === 'storyboard' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><LayoutGrid className="w-3.5 h-3.5" /></button>
-                      </TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
-                    </div>
                     {tracks.map((track, trackIndex) => (
                       <div key={track.id} className="h-14 flex items-center gap-1 px-2 border-b border-foreground/[0.04] group">
                         <GripVertical className="w-3 h-3 text-muted/30 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity" />
