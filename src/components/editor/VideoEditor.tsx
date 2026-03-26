@@ -458,6 +458,38 @@ const VideoEditor = ({ video }: Props) => {
     ));
   }, [scenes, tracks]);
 
+  const deleteScene = useCallback((clipId: string) => {
+    pushUndo();
+    const clip = scenes.find(s => s.id === clipId);
+    if (!clip) return;
+    setTracks(prev => prev.map(track => ({
+      ...track,
+      clips: track.clips.filter(c => c.id !== clipId).map(c =>
+        c.startTime > clip.startTime ? { ...c, startTime: c.startTime - clip.duration } : c
+      )
+    })));
+    if (selectedClip === clipId) setSelectedClip(null);
+    toast({ title: "Scene deleted", description: `"${clip.name}" removed` });
+  }, [scenes, pushUndo, selectedClip]);
+
+  const duplicateScene = useCallback((clipId: string) => {
+    pushUndo();
+    const clip = scenes.find(s => s.id === clipId);
+    if (!clip) return;
+    const sceneIndex = scenes.findIndex(s => s.id === clipId);
+    const newClip: TimelineClip = {
+      ...clip, id: `clip-${Date.now()}`, name: `${clip.name} (copy)`,
+      startTime: clip.startTime + clip.duration,
+    };
+    setTracks(prev => prev.map(track => ({
+      ...track,
+      clips: track.clips.map(c =>
+        scenes.findIndex(s => s.id === c.id) > sceneIndex ? { ...c, startTime: c.startTime + clip.duration } : c
+      ).concat(track.clips.some(c => c.id === clipId) ? [newClip] : [])
+    })));
+    toast({ title: "Scene duplicated" });
+  }, [scenes, pushUndo]);
+
   const filteredCaptions = captionSearch
     ? CAPTION_DATA.filter(c => c.text.toLowerCase().includes(captionSearch.toLowerCase()))
     : CAPTION_DATA;
