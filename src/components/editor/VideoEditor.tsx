@@ -278,6 +278,32 @@ const VideoEditor = ({ video }: Props) => {
   const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "transitions" | "elements">("effects");
   const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand" | "languages" | "ai-tools">("general");
 
+  // Transcript state
+  const [transcriptTokens, setTranscriptTokens] = useState<WordToken[]>(SAMPLE_TRANSCRIPT);
+  const [fillerMode, setFillerMode] = useState(false);
+  const [transcriptLoading, setTranscriptLoading] = useState(false);
+  const [hasTranscript, setHasTranscript] = useState(false);
+
+  // Create Clips state
+  const [clipCount, setClipCount] = useState(3);
+  const [clipDuration, setClipDuration] = useState("30s");
+  const [clipsGenerated, setClipsGenerated] = useState(false);
+  const [acceptedClips, setAcceptedClips] = useState<Set<number>>(new Set());
+
+  // AI Metadata state
+  const [metadataGenerated, setMetadataGenerated] = useState(false);
+  const [metaTitles] = useState(["How AI Is Revolutionizing Content Creation", "The Future of Video Editing with AI", "Why Every Creator Needs AI Tools in 2026"]);
+  const [metaDescription] = useState("Discover how AI-powered tools are transforming the way creators edit video, generate content, and grow their audience. In this video, we explore the cutting-edge features that make editing as simple as editing text.");
+  const [metaTags] = useState(["AI", "content creation", "video editing", "creator tools", "automation"]);
+  const [metaChapters] = useState([{ time: "0:00", label: "Intro" }, { time: "0:06", label: "AI Tools Overview" }, { time: "0:09", label: "Text-Based Editing" }]);
+  const [metaShowNotes] = useState("In this episode, we dive deep into the world of AI-powered content creation. We discuss the revolutionary text-based editing approach, explore available AI tools, and demonstrate how creators can edit video simply by editing text. Key takeaways include understanding the current landscape of AI tools and practical tips for integrating them into your workflow.");
+
+  // Studio Sound / Remove Silences state
+  const [studioSoundStatus, setStudioSoundStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [silenceThreshold, setSilenceThreshold] = useState(400);
+  const [silencesFound, setSilencesFound] = useState(0);
+  const [showSilencePanel, setShowSilencePanel] = useState(false);
+
   // Toolbar state
   const [snapEnabled, setSnapEnabled] = useState(false);
   const [markers, setMarkers] = useState<number[]>([]);
