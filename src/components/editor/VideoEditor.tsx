@@ -131,10 +131,10 @@ const formatTimeColon = (s: number) => {
 interface Props { video?: string }
 
 const VideoEditor = ({ video }: Props) => {
-  const [activeTab, setActiveTab] = useState<LeftTab>("script");
+  const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration] = useState(596); // 9:56
+  const [duration] = useState(596);
   const [zoom, setZoom] = useState(3);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(true);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
@@ -149,6 +149,29 @@ const VideoEditor = ({ video }: Props) => {
     "I'm going to tell you something shocking."
   );
   const videoRef = useRef<HTMLVideoElement>(null);
+
+  // New feature state
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [briefStyle, setBriefStyle] = useState("Realistic film");
+  const [briefNarrator, setBriefNarrator] = useState("Jurin");
+  const [briefPlatform, setBriefPlatform] = useState("TikTok");
+  const [briefDuration, setBriefDuration] = useState("30s");
+  const [briefMediaType, setBriefMediaType] = useState("Video clip");
+
+  const handleSendChat = () => {
+    if (!chatInput.trim()) return;
+    const userMsg: ChatMessage = { role: "user", content: chatInput };
+    setChatMessages(prev => [...prev, userMsg]);
+    setChatInput("");
+    // Simulate AI response
+    setTimeout(() => {
+      setChatMessages(prev => [...prev, {
+        role: "assistant",
+        content: "I've come up with three story options for you:\n\n1. **The Guardian of the Whispering Woods**: Clara discovers she has the rare gift to communicate with ancient forest spirits.\n\n2. **The Dragon's Apprentice**: After finding a lost dragon hatchling, Clara embarks on a perilous journey.\n\n3. **The Starlight Hunter**: In a world where stars fall to earth as magical crystals, Clara must collect them before darkness spreads."
+      }]);
+    }, 1500);
+  };
 
   const [tracks, setTracks] = useState<TimelineTrack[]>([
     { id: "video-1", type: "video", name: "1", visible: true, clips: [
