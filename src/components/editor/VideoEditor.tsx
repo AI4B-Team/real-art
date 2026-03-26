@@ -1379,7 +1379,7 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
 
                 {/* Bottom toolbar */}
-                <div className="flex items-center justify-between px-3 pb-2.5">
+                <div className="flex flex-wrap items-center gap-y-2 px-3 pb-2.5">
                   <div className="flex items-center gap-1.5">
                     {/* Content Type Pill */}
                     <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
