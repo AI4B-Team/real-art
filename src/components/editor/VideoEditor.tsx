@@ -1244,15 +1244,12 @@ const VideoEditor = ({ video }: Props) => {
                 <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Scissors className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Split (S)</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Eraser className="w-5 h-5" /></button>
-              </TooltipTrigger><TooltipContent>Erase</TooltipContent></Tooltip>
+                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Link className="w-5 h-5" /></button>
+              </TooltipTrigger><TooltipContent>Enable Snap</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Layers className="w-5 h-5" /></button>
-              </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
-            </div>
+                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
+              </TooltipTrigger><TooltipContent>Add Marker</TooltipContent></Tooltip>
 
-            {/* Center playback */}
-            <div className="flex items-center gap-3">
               {/* Record */}
               <button className="flex items-center gap-1.5 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white text-sm font-medium transition-colors">
                 <Circle className="w-3 h-3 fill-current" />Record
