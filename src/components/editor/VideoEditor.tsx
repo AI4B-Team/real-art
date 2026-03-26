@@ -27,7 +27,7 @@ import { AnimatePresence, motion } from "framer-motion";
 /* ─── Types ─── */
 interface TimelineClip {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
-  startTime: number; duration: number; color?: string;
+  startTime: number; duration: number; color?: string; volume?: number;
 }
 interface TimelineTrack {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
@@ -358,6 +358,69 @@ const VideoEditor = ({ video }: Props) => {
   // Scene management
   const [hoveredSceneGap, setHoveredSceneGap] = useState<number | null>(null);
   const [selectedClip, setSelectedClip] = useState<string | null>(null);
+  const [clipContextMenu, setClipContextMenu] = useState<{ clipId: string; trackId: string; x: number; y: number } | null>(null);
+
+  // Drag state for clips
+  const dragRef = useRef<{
+    mode: "move" | "resize-left" | "resize-right";
+    clipId: string;
+    trackId: string;
+    startX: number;
+    origStart: number;
+    origDuration: number;
+  } | null>(null);
+
+  const handleClipMouseDown = useCallback((e: React.MouseEvent, clipId: string, trackId: string, mode: "move" | "resize-left" | "resize-right") => {
+    e.stopPropagation();
+    e.preventDefault();
+    const track = tracks.find(t => t.id === trackId);
+    const clip = track?.clips.find(c => c.id === clipId);
+    if (!clip || track?.locked) return;
+    // Save undo state inline
+    setUndoStack(prev => [...prev.slice(-20), tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setRedoStack([]);
+    dragRef.current = { mode, clipId, trackId, startX: e.clientX, origStart: clip.startTime, origDuration: clip.duration };
+    setSelectedClip(clipId);
+
+    const onMove = (ev: MouseEvent) => {
+      const d = dragRef.current;
+      if (!d) return;
+      const dx = (ev.clientX - d.startX) / pixelsPerSecond;
+      if (d.mode === "move") {
+        const newStart = Math.max(0, d.origStart + dx);
+        setTracks(prev => prev.map(t => t.id === d.trackId ? {
+          ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, startTime: snapEnabled ? Math.round(newStart * 2) / 2 : newStart } : c)
+        } : t));
+      } else if (d.mode === "resize-left") {
+        const delta = Math.min(dx, d.origDuration - 0.5);
+        const newStart = Math.max(0, d.origStart + delta);
+        const newDur = d.origDuration - (newStart - d.origStart);
+        if (newDur >= 0.5) {
+          setTracks(prev => prev.map(t => t.id === d.trackId ? {
+            ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, startTime: newStart, duration: newDur } : c)
+          } : t));
+        }
+      } else if (d.mode === "resize-right") {
+        const newDur = Math.max(0.5, d.origDuration + dx);
+        setTracks(prev => prev.map(t => t.id === d.trackId ? {
+          ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, duration: newDur } : c)
+        } : t));
+      }
+    };
+    const onUp = () => {
+      dragRef.current = null;
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  }, [tracks, pixelsPerSecond, snapEnabled]);
+
+  const handleClipVolumeChange = useCallback((clipId: string, volume: number) => {
+    setTracks(prev => prev.map(t => ({
+      ...t, clips: t.clips.map(c => c.id === clipId ? { ...c, volume } : c)
+    })));
+  }, []);
 
   // Undo/Redo helpers
   const pushUndo = useCallback(() => {
@@ -2453,14 +2516,48 @@ const VideoEditor = ({ video }: Props) => {
                           </Tooltip>
                         ) : (
                           <>
-                            {track.clips.map(clip => (
-                              <div key={clip.id}
-                                onClick={() => setSelectedClip(clip.id)}
-                                className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-pointer hover:brightness-110 transition-all flex items-center px-2 gap-1.5 overflow-hidden ${track.locked ? "opacity-60" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1" : ""}`}
-                                style={{ left: clip.startTime * pixelsPerSecond, width: clip.duration * pixelsPerSecond }}>
-                                <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
-                              </div>
-                            ))}
+                            {track.clips.map(clip => {
+                              const clipWidth = clip.duration * pixelsPerSecond;
+                              const vol = clip.volume ?? 100;
+                              return (
+                                <div key={clip.id}
+                                  className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-grab active:cursor-grabbing hover:brightness-110 transition-all overflow-hidden group/clip ${track.locked ? "opacity-60 pointer-events-none" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1 z-10" : ""}`}
+                                  style={{ left: clip.startTime * pixelsPerSecond, width: clipWidth }}
+                                  onMouseDown={(e) => { if (e.button === 0) handleClipMouseDown(e, clip.id, track.id, "move"); }}
+                                  onClick={(e) => { e.stopPropagation(); setSelectedClip(clip.id); }}
+                                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setClipContextMenu({ clipId: clip.id, trackId: track.id, x: e.clientX, y: e.clientY }); }}
+                                >
+                                  {/* Left resize handle */}
+                                  <div className="absolute left-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-white/20 z-10 group-hover/clip:bg-white/10 transition-colors rounded-l-lg"
+                                    onMouseDown={(e) => handleClipMouseDown(e, clip.id, track.id, "resize-left")} />
+
+                                  {/* Clip content */}
+                                  <div className="flex items-center h-full px-3 gap-1.5 min-w-0">
+                                    {/* Mini waveform for audio clips */}
+                                    {(clip.type === "audio") && clipWidth > 60 && (
+                                      <div className="flex items-center gap-[1px] h-5 opacity-40 shrink-0">
+                                        {Array.from({ length: Math.min(20, Math.floor(clipWidth / 4)) }, (_, i) => (
+                                          <div key={i} className="w-[2px] rounded-full bg-white" style={{ height: `${30 + Math.sin(i * 0.8) * 40 + Math.random() * 20}%` }} />
+                                        ))}
+                                      </div>
+                                    )}
+                                    <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
+                                    {clipWidth > 80 && (
+                                      <span className="text-[8px] text-white/50 font-mono shrink-0">{formatTime(clip.duration)}</span>
+                                    )}
+                                  </div>
+
+                                  {/* Volume indicator line */}
+                                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/20">
+                                    <div className="h-full bg-white/40 transition-all" style={{ width: `${vol}%` }} />
+                                  </div>
+
+                                  {/* Right resize handle */}
+                                  <div className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-white/20 z-10 group-hover/clip:bg-white/10 transition-colors rounded-r-lg"
+                                    onMouseDown={(e) => handleClipMouseDown(e, clip.id, track.id, "resize-right")} />
+                                </div>
+                              );
+                            })}
                             {/* Add clip button after last clip */}
                             {!track.locked && (
                               <button className="absolute top-1/2 -translate-y-1/2 opacity-0 hover:opacity-100 transition-opacity"
@@ -2481,6 +2578,49 @@ const VideoEditor = ({ video }: Props) => {
           )}
         </div>
       </div>
+      {/* Clip context menu */}
+      {clipContextMenu && (
+        <>
+          <div className="fixed inset-0 z-[60]" onClick={() => setClipContextMenu(null)} />
+          <div className="fixed z-[61] bg-card rounded-xl border border-foreground/[0.08] shadow-xl py-1.5 w-48"
+            style={{ left: clipContextMenu.x, top: clipContextMenu.y }}>
+            {(() => {
+              const clip = tracks.flatMap(t => t.clips).find(c => c.id === clipContextMenu.clipId);
+              const vol = clip?.volume ?? 100;
+              return (
+                <>
+                  <button onClick={() => { handleSplit(); setClipContextMenu(null); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Scissors className="w-3.5 h-3.5 text-muted" />Split at Playhead
+                  </button>
+                  <button onClick={() => { if (clip) duplicateScene(clip.id); setClipContextMenu(null); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Copy className="w-3.5 h-3.5 text-muted" />Duplicate
+                  </button>
+                  <div className="border-t border-foreground/[0.06] my-1" />
+                  <div className="px-3 py-2">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-medium text-muted flex items-center gap-1.5">
+                        <Volume2 className="w-3 h-3" />Volume
+                      </span>
+                      <span className="text-[10px] font-mono text-muted">{vol}%</span>
+                    </div>
+                    <input type="range" min="0" max="200" value={vol}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) => handleClipVolumeChange(clipContextMenu.clipId, Number(e.target.value))}
+                      className="w-full h-1.5 accent-accent cursor-pointer" />
+                  </div>
+                  <div className="border-t border-foreground/[0.06] my-1" />
+                  <button onClick={() => { if (clip) { pushUndo(); setTracks(prev => prev.map(t => ({ ...t, clips: t.clips.filter(c => c.id !== clip.id) }))); setSelectedClip(null); toast({ title: "Clip deleted" }); } setClipContextMenu(null); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-500 hover:bg-red-500/[0.06] transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" />Delete
+                  </button>
+                </>
+              );
+            })()}
+          </div>
+        </>
+      )}
       <RecordingModeModal
         open={showRecordingModal}
         onClose={() => setShowRecordingModal(false)}
