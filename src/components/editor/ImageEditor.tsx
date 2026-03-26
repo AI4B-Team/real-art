@@ -320,6 +320,11 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
       link.href = selectedImage; link.download = `image-${Date.now()}.png`; link.click();
       toast({ title: "Downloading..." });
     } else if (toolId === "save") {
+      if (!hasChanges || !selectedImage) return;
+      const newCreation = { id: `saved-${Date.now()}`, thumbnail: selectedImage, title: `Saved ${new Date().toLocaleTimeString()}`, isActive: true };
+      setCreations(prev => [newCreation, ...prev.map(c => ({ ...c, isActive: false }))]);
+      setActiveCreationId(newCreation.id);
+      setHasChanges(false);
       toast({ title: "Saved to creations" });
     } else if (toolId === "select") {
       setActiveTool(activeTool === "select" ? null : "select");
