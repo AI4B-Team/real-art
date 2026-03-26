@@ -126,6 +126,7 @@ interface Props {
 const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(image);
   const [isImageSelected, setIsImageSelected] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
@@ -255,6 +256,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
         opacity: activeTool === "eraser" ? toolSettings.eraserOpacity : toolSettings.opacity,
         isEraser: activeTool === "eraser",
       }]);
+      setHasChanges(true);
       setCurrentStroke([]);
     }
     setIsDrawing(false);
@@ -270,6 +272,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
       isBold: false, isItalic: false, isUnderline: false,
     };
     setTextElements(prev => [...prev, newText]);
+    setHasChanges(true);
     setSelectedTextId(newText.id);
     setEditingTextId(newText.id);
   };
@@ -319,6 +322,11 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
       link.href = selectedImage; link.download = `image-${Date.now()}.png`; link.click();
       toast({ title: "Downloading..." });
     } else if (toolId === "save") {
+      if (!hasChanges || !selectedImage) return;
+      const newCreation = { id: `saved-${Date.now()}`, thumbnail: selectedImage, title: `Saved ${new Date().toLocaleTimeString()}`, isActive: true };
+      setCreations(prev => [newCreation, ...prev.map(c => ({ ...c, isActive: false }))]);
+      setActiveCreationId(newCreation.id);
+      setHasChanges(false);
       toast({ title: "Saved to creations" });
     } else if (toolId === "select") {
       setActiveTool(activeTool === "select" ? null : "select");
@@ -891,14 +899,17 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                 {isImageSelected && (
                   <div className="absolute -top-16 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card rounded-xl p-1.5 shadow-lg border border-foreground/[0.08] z-10"
                     style={{ transform: `translateX(-50%) scale(${100 / zoomLevel})`, transformOrigin: "center bottom" }}>
-                    {CANVAS_TOOLS.map(tool => (
-                      <Tooltip key={tool.id}><TooltipTrigger asChild>
-                        <button onClick={() => handleToolClick(tool.id)}
-                          className={`p-2.5 rounded-lg transition-all ${activeTool === tool.id ? "bg-accent text-white shadow-lg" : "bg-card text-muted hover:bg-foreground/[0.06] hover:text-foreground shadow-sm"}`}>
-                          <tool.icon className="w-4 h-4" />
-                        </button>
-                      </TooltipTrigger><TooltipContent>{tool.tooltip}</TooltipContent></Tooltip>
-                    ))}
+                    {CANVAS_TOOLS.map(tool => {
+                      const isDisabled = tool.id === "save" && !hasChanges;
+                      return (
+                        <Tooltip key={tool.id}><TooltipTrigger asChild>
+                          <button onClick={() => !isDisabled && handleToolClick(tool.id)}
+                            className={`p-2.5 rounded-lg transition-all ${isDisabled ? "bg-card text-muted/30 cursor-not-allowed" : activeTool === tool.id ? "bg-accent text-white shadow-lg" : "bg-card text-muted hover:bg-foreground/[0.06] hover:text-foreground shadow-sm"}`}>
+                            <tool.icon className="w-4 h-4" />
+                          </button>
+                        </TooltipTrigger><TooltipContent>{tool.id === "save" && !hasChanges ? "No changes to save" : tool.tooltip}</TooltipContent></Tooltip>
+                      );
+                    })}
                   </div>
                 )}
 
