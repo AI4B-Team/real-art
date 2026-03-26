@@ -971,6 +971,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Captions Tab */}
               {activeTab === "captions" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Captions</h3>
                   <div className="flex items-center justify-end gap-2">
                     <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download SRT</TooltipContent></Tooltip>
