@@ -30,7 +30,37 @@ const LEFT_TABS: { id: LeftTab; icon: typeof Music; label: string }[] = [
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
-const VOICE_PRESETS = [
+interface AudioTrack {
+  id: string;
+  name: string;
+  type: "voice" | "music" | "sfx" | "recorded" | "imported";
+  duration: number;
+  startTime: number;
+  color: string;
+  muted: boolean;
+  solo: boolean;
+  volume: number;
+  pan: number;
+  locked: boolean;
+}
+
+interface Marker {
+  id: string;
+  time: number;
+  label: string;
+  color: string;
+}
+
+interface ChatMessage { role: "user" | "assistant"; content: string; }
+
+interface SharedAsset {
+  id: string;
+  name: string;
+  type: "image" | "video" | "audio";
+  url: string;
+  thumbnail?: string;
+}
+
   { name: "Maya", desc: "Feminine, warm, conversational", color: "bg-emerald-500", lang: "English" },
   { name: "Arjun", desc: "Masculine, deep, authoritative", color: "bg-blue-500", lang: "English" },
   { name: "Sophia", desc: "Feminine, mature, soothing", color: "bg-purple-500", lang: "English" },
