@@ -152,69 +152,7 @@ const SAFE_ZONE_PLATFORMS = [
 
 type SafeZonePlatform = typeof SAFE_ZONE_PLATFORMS[number]["id"];
 
-/* Safe zone overlay data per platform */
-const SAFE_ZONE_OVERLAYS: Record<Exclude<SafeZonePlatform, "hide">, { topBar?: boolean; bottomBar?: boolean; rightIcons?: boolean; statusBar?: boolean; elements: { type: string; text?: string; position: string; className?: string }[] }> = {
-  reels: {
-    statusBar: true, rightIcons: true,
-    elements: [
-      { type: "title", text: "Reels", position: "top-left" },
-      { type: "avatar", text: "username", position: "bottom-left" },
-      { type: "follow", text: "Follow", position: "bottom-left-btn" },
-      { type: "music", text: "Music", position: "bottom-left-music" },
-      { type: "caption", text: "Caption goes here...", position: "bottom-left-caption" },
-      { type: "likes", text: "Liked by user and 30,240 others", position: "bottom-left-likes" },
-    ],
-  },
-  facebook: {
-    statusBar: true,
-    elements: [
-      { type: "close", text: "✕", position: "top-left" },
-      { type: "dropdown", text: "Reels ▾", position: "top-left-title" },
-      { type: "avatar", text: "Facebook", position: "bottom-left" },
-      { type: "platform-icon", text: "📷", position: "bottom-left-icon" },
-      { type: "caption", text: "This is a Facebook video", position: "bottom-left-caption" },
-      { type: "music", text: "Soundtrack", position: "bottom-left-music" },
-    ],
-  },
-  tiktok: {
-    statusBar: true, rightIcons: true,
-    elements: [
-      { type: "tabs", text: "Following  For you", position: "top-center" },
-      { type: "live", text: "LIVE", position: "top-left-badge" },
-      { type: "badge", text: "Your friend", position: "bottom-left-badge" },
-      { type: "avatar", text: "@username", position: "bottom-left" },
-      { type: "verified", position: "bottom-left-verified" },
-      { type: "caption", text: "This is a TikTok video with a long description of the video content. #tiktok #viral... more", position: "bottom-left-caption" },
-      { type: "translation", text: "See translation", position: "bottom-left-translate" },
-    ],
-  },
-  shorts: {
-    statusBar: true, rightIcons: true,
-    elements: [
-      { type: "avatar", text: "@youtube", position: "bottom-left" },
-      { type: "subscribe", text: "Subscribe", position: "bottom-left-btn" },
-      { type: "playlist", text: "▶ Playlist 1", position: "bottom-left-playlist" },
-      { type: "caption", text: "Youtube shorts interface #youtube #shorts #viral", position: "bottom-left-caption" },
-    ],
-  },
-  linkedin: {
-    statusBar: true,
-    elements: [
-      { type: "avatar", text: "Linkedin", position: "bottom-left" },
-      { type: "follow", text: "Follow", position: "bottom-left-btn" },
-      { type: "followers", text: "1,814 followers", position: "bottom-left-followers" },
-      { type: "caption", text: "This is a Linkedin video", position: "bottom-left-caption" },
-      { type: "progress", position: "bottom-progress" },
-    ],
-  },
-  snapchat: {
-    statusBar: true,
-    elements: [
-      { type: "avatar", text: "username", position: "bottom-left" },
-      { type: "caption", text: "Snap story content", position: "bottom-left-caption" },
-    ],
-  },
-};
+
 
 const VideoEditor = ({ video }: Props) => {
   const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
