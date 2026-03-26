@@ -1097,8 +1097,33 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
           )}
         </div>
 
+        {/* Resize handle */}
+        {!isTimelineMinimized && (
+          <div
+            className="h-2 bg-card border-t border-foreground/[0.08] flex items-center justify-center cursor-row-resize hover:bg-foreground/[0.04] transition-colors group shrink-0"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              timelineResizeRef.current = { startY: e.clientY, startH: timelineHeight };
+              const onMove = (ev: MouseEvent) => {
+                if (!timelineResizeRef.current) return;
+                const delta = timelineResizeRef.current.startY - ev.clientY;
+                setTimelineHeight(Math.max(120, Math.min(600, timelineResizeRef.current.startH + delta)));
+              };
+              const onUp = () => {
+                timelineResizeRef.current = null;
+                window.removeEventListener("mousemove", onMove);
+                window.removeEventListener("mouseup", onUp);
+              };
+              window.addEventListener("mousemove", onMove);
+              window.addEventListener("mouseup", onUp);
+            }}
+          >
+            <GripHorizontal className="w-5 h-3.5 text-muted/40 group-hover:text-muted transition-colors" />
+          </div>
+        )}
+
         {/* Transport Controls — matches video timeline style */}
-        <div className="bg-card border-t border-foreground/[0.08] flex flex-col">
+        <div className="bg-card flex flex-col">
           <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             {/* Left tools */}
             <div className="flex items-center gap-1">
