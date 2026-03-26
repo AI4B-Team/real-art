@@ -508,13 +508,13 @@ const VideoEditor = ({ video }: Props) => {
       {/* Left Sidebar */}
       {!isLeftPanelCollapsed && (
         <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex flex-col overflow-hidden shrink-0">
-          {/* Icon strip - horizontal at top */}
-          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex items-center px-3 py-2 gap-1 shrink-0 overflow-x-auto">
+          {/* Icon strip - horizontal at top, wrapping */}
+          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex flex-wrap items-center px-3 py-2 gap-1 shrink-0">
             {LEFT_TABS.map(tab => (
               <Tooltip key={tab.id}><TooltipTrigger asChild>
                 <button onClick={() => setActiveTab(tab.id)}
-                  className={`w-10 h-10 rounded-lg flex items-center justify-center transition-all shrink-0 ${activeTab === tab.id ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
-                  <tab.icon className="w-5 h-5" />
+                  className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all shrink-0 ${activeTab === tab.id ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <tab.icon className="w-4.5 h-4.5" />
                 </button>
               </TooltipTrigger><TooltipContent>{tab.label}</TooltipContent></Tooltip>
             ))}
