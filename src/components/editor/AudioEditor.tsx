@@ -1229,6 +1229,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             </div>
           </div>
         </div>
+        )}
+        </div>
       </div>
     </div>
   );
