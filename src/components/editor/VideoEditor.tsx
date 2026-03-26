@@ -1683,7 +1683,7 @@ const VideoEditor = ({ video }: Props) => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
                     className="absolute inset-0 flex items-center justify-center z-10"
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={() => setShowCanvasControls(false)}
                   >
                     <div className="flex items-center gap-4">
                       <button onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
