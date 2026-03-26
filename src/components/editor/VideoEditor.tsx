@@ -1379,8 +1379,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
 
                 {/* Bottom toolbar */}
-                <div className="flex items-center justify-between px-3 pb-2.5">
-                  <div className="flex items-center gap-1.5">
+                <div className="flex flex-wrap items-center gap-y-2 px-3 pb-2.5">
+                  <div className="flex items-center gap-1 flex-wrap">
                     {/* Content Type Pill */}
                     <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
                       promptContentType === "video" ? "bg-accent/15 text-accent" : promptContentType === "audio" ? "bg-emerald-500/15 text-emerald-600" : "bg-blue-500/15 text-blue-600"
@@ -1448,7 +1448,7 @@ const VideoEditor = ({ video }: Props) => {
                   </div>
 
                   {/* Right side: Agent dropdown + Send */}
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 ml-auto">
                     <Popover>
                       <PopoverTrigger asChild>
                         <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-muted hover:text-foreground transition-colors hover:bg-foreground/[0.04]">
