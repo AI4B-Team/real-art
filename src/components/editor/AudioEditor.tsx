@@ -17,6 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
 import RecordingModeModal from "./RecordingModeModal";
+import EditorPromptBox from "./EditorPromptBox";
 
 /* ─── Types ─── */
 type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "effects" | "text" | "templates" | "settings";
@@ -939,48 +940,13 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
           {/* Bottom prompt */}
           <div className="p-3 border-t border-foreground/[0.06] shrink-0">
-            <div className="rounded-xl border-2 border-accent/30 bg-background overflow-hidden">
-              <textarea
-                value={chatInput}
-                onChange={e => setChatInput(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
-                placeholder="Describe what you want to create..."
-                rows={2}
-                className="w-full px-4 py-3 text-sm text-foreground placeholder:text-muted bg-transparent resize-none focus:outline-none"
-              />
-              <div className="flex flex-wrap items-center gap-y-2 px-3 pb-2.5">
-                <div className="flex items-center gap-1 flex-wrap">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-emerald-500/15 text-emerald-600">
-                    <AudioLines className="w-3.5 h-3.5" />Audio
-                    <button className="ml-0.5 hover:opacity-70"><XIcon className="w-3 h-3" /></button>
-                  </div>
-                  <div className="w-px h-5 bg-foreground/[0.1] mx-1" />
-                  <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Mic className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
-                  <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Heart className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Emotion</TooltipContent></Tooltip>
-                  <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Sparkles className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Effects</TooltipContent></Tooltip>
-                  <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Music className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Music Style</TooltipContent></Tooltip>
-                  <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Upload className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Upload</TooltipContent></Tooltip>
-                </div>
-                <div className="flex items-center gap-2 ml-auto">
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm text-muted hover:text-foreground transition-colors hover:bg-foreground/[0.04]">
-                        <Sparkles className="w-4 h-4" />Agent<ChevronDown className="w-3 h-3 opacity-60" />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-52 p-1.5" align="end">
-                      {["Auto", "Creative", "Precise", "Balanced"].map(m => (
-                        <button key={m} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04]">{m}</button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                  <button onClick={handleSendChat} disabled={isStreaming || !chatInput.trim()}
-                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${chatInput.trim() && !isStreaming ? "bg-accent text-white hover:bg-accent/90" : "bg-accent/20 text-accent/50"}`}>
-                    <Send className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-            </div>
+            <EditorPromptBox
+              editorType="audio"
+              chatInput={chatInput}
+              onChatInputChange={setChatInput}
+              onSend={handleSendChat}
+              isStreaming={isStreaming}
+            />
           </div>
         </div>
       )}
