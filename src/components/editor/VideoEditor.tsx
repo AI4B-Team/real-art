@@ -150,6 +150,7 @@ const VideoEditor = ({ video }: Props) => {
   const [selectedRatio, setSelectedRatio] = useState("16:9");
   const [timelineViewMode, setTimelineViewMode] = useState<"timeline" | "storyboard">("timeline");
   const [isMuted, setIsMuted] = useState(false);
+  const [isLooping, setIsLooping] = useState(false);
   const [captionSearch, setCaptionSearch] = useState("");
   
   const [audioSubTab, setAudioSubTab] = useState("Voices");
