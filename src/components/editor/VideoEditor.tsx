@@ -1380,7 +1380,7 @@ const VideoEditor = ({ video }: Props) => {
 
                 {/* Bottom toolbar */}
                 <div className="flex flex-wrap items-center gap-y-2 px-3 pb-2.5">
-                  <div className="flex items-center gap-1.5">
+                  <div className="flex items-center gap-1 flex-wrap">
                     {/* Content Type Pill */}
                     <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${
                       promptContentType === "video" ? "bg-accent/15 text-accent" : promptContentType === "audio" ? "bg-emerald-500/15 text-emerald-600" : "bg-blue-500/15 text-blue-600"
