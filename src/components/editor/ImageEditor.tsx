@@ -803,7 +803,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-1 text-center">
-                <img src={emptyImageCards} alt="" className="w-56 h-56 object-contain -mb-2" />
+                <img src={emptyImageCards} alt="" className="w-80 h-80 object-contain -mb-4" />
                 <p className="text-lg font-semibold text-foreground">No Image Selected</p>
                 <p className="text-sm text-muted mb-3">Upload an image or select from your creations to start editing</p>
                 <div className="flex items-center gap-3">
