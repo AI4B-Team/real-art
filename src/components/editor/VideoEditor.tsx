@@ -33,26 +33,17 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "languages" | "templates" | "tools" | "settings" | "brand";
+type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "effects" | "templates" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
   { id: "storyboard", icon: BookOpen, label: "Storyboard" },
-  { id: "video-brief", icon: Clapperboard, label: "Video Brief" },
-  { id: "script", icon: FileText, label: "Script" },
   { id: "character", icon: User, label: "Character" },
   { id: "visuals", icon: Video, label: "Visuals" },
   { id: "audio", icon: AudioLines, label: "Audio" },
   { id: "text", icon: Type, label: "Text" },
-  { id: "captions", icon: Captions, label: "Captions" },
   { id: "effects", icon: Sparkles, label: "Effects" },
-  { id: "elements", icon: Layers, label: "Elements" },
-  { id: "transitions", icon: SlidersHorizontal, label: "Transitions" },
-  { id: "brand", icon: Palette, label: "Brand Kit" },
-  { id: "languages", icon: Languages, label: "Languages" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  
-  { id: "tools", icon: Wand2, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
