@@ -15,6 +15,7 @@ import {
   Link, Hash, Clock, Heart, Box, X as XIcon, Repeat,
 } from "lucide-react";
 import AIToolsPanel from "./AIToolsPanel";
+import RecordingModeModal from "./RecordingModeModal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -192,6 +193,7 @@ const VideoEditor = ({ video }: Props) => {
   const [snapEnabled, setSnapEnabled] = useState(false);
   const [markers, setMarkers] = useState<number[]>([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [showRecordingModal, setShowRecordingModal] = useState(false);
   const [undoStack, setUndoStack] = useState<TimelineTrack[][]>([]);
   const [redoStack, setRedoStack] = useState<TimelineTrack[][]>([]);
 
@@ -386,8 +388,7 @@ const VideoEditor = ({ video }: Props) => {
       setIsRecording(false);
       toast({ title: "Recording stopped" });
     } else {
-      setIsRecording(true);
-      toast({ title: "Recording started", description: "Recording your screen..." });
+      setShowRecordingModal(true);
     }
   }, [isRecording]);
 
@@ -2011,6 +2012,15 @@ const VideoEditor = ({ video }: Props) => {
           )}
         </div>
       </div>
+      <RecordingModeModal
+        open={showRecordingModal}
+        onClose={() => setShowRecordingModal(false)}
+        editorType="video"
+        onRecordingComplete={(mode, duration) => {
+          handleAddTrack();
+          toast({ title: `${mode} recording added`, description: `${duration}s clip added to timeline` });
+        }}
+      />
     </div>
   );
 };

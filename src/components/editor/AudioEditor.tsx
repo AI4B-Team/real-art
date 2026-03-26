@@ -15,6 +15,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
+import RecordingModeModal from "./RecordingModeModal";
 
 /* ─── Types ─── */
 type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "effects" | "text" | "templates" | "settings";
@@ -164,6 +165,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [showSpectral, setShowSpectral] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [showRecordingModal, setShowRecordingModal] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [selectedEffect, setSelectedEffect] = useState<string | null>(null);
 
@@ -1122,7 +1124,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
             {/* Center transport */}
             <div className="flex items-center gap-1 shrink-0">
-              <button onClick={isRecording ? handleStopRecording : handleStartRecording}
+              <button onClick={() => isRecording ? handleStopRecording() : setShowRecordingModal(true)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
                 <Circle className={`w-3 h-3 fill-current`} />{isRecording ? "Stop" : "Record"}
               </button>
@@ -1228,6 +1230,14 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
         )}
         </div>
       </div>
+      <RecordingModeModal
+        open={showRecordingModal}
+        onClose={() => setShowRecordingModal(false)}
+        editorType="audio"
+        onRecordingComplete={(mode, duration) => {
+          addTrack(`Recording ${tracks.filter(t => t.type === "recorded").length + 1}`, "recorded", duration, currentTime);
+        }}
+      />
     </div>
   );
 };
