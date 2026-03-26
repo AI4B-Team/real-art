@@ -457,46 +457,64 @@ const VideoEditor = ({ video }: Props) => {
     }
   }, [activeClipAtPlayhead, currentTime, isPlaying]);
 
-  const handleVideoFileUpload = useCallback((files: FileList | null) => {
+  const handleMediaFileUpload = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
     const file = files[0];
-    if (!file.type.startsWith("video/")) {
-      toast({ title: "Invalid file", description: "Please select a video file.", variant: "destructive" });
+    const isVideo = file.type.startsWith("video/");
+    const isImage = file.type.startsWith("image/");
+    if (!isVideo && !isImage) {
+      toast({ title: "Invalid file", description: "Please select a video or image file.", variant: "destructive" });
       return;
     }
     const url = URL.createObjectURL(file);
-    const tempVideo = document.createElement("video");
-    tempVideo.preload = "metadata";
-    tempVideo.onloadedmetadata = () => {
-      const dur = Math.min(tempVideo.duration, 600);
-      const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
-      if (!videoTrack) return;
-      const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
-      const startTime = lastClip ? lastClip.startTime + lastClip.duration : 0;
-      const newClip: TimelineClip = {
-        id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
-        startTime, duration: dur, color: "bg-blue-500", mediaUrl: url,
-      };
-      tempVideo.currentTime = Math.min(1, dur / 2);
-      tempVideo.onseeked = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = 160; canvas.height = 90;
-        canvas.getContext("2d")?.drawImage(tempVideo, 0, 0, 160, 90);
-        newClip.thumbnail = canvas.toDataURL("image/jpeg", 0.7);
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
+    const startTime = lastClip ? lastClip.startTime + lastClip.duration : 0;
+
+    if (isImage) {
+      const img = new Image();
+      img.onload = () => {
+        const newClip: TimelineClip = {
+          id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
+          startTime, duration: 5, color: "bg-emerald-500", mediaUrl: url, mediaType: "image", thumbnail: url,
+        };
         setTracks(prev => prev.map(t =>
           t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
         ));
-        toast({ title: "Video added", description: `${file.name} (${formatTime(dur)})` });
+        toast({ title: "Image added", description: `${file.name} (5s duration)` });
       };
-    };
-    tempVideo.src = url;
+      img.src = url;
+    } else {
+      const tempVideo = document.createElement("video");
+      tempVideo.preload = "metadata";
+      tempVideo.onloadedmetadata = () => {
+        const dur = Math.min(tempVideo.duration, 600);
+        const newClip: TimelineClip = {
+          id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
+          startTime, duration: dur, color: "bg-blue-500", mediaUrl: url, mediaType: "video",
+        };
+        tempVideo.currentTime = Math.min(1, dur / 2);
+        tempVideo.onseeked = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = 160; canvas.height = 90;
+          canvas.getContext("2d")?.drawImage(tempVideo, 0, 0, 160, 90);
+          newClip.thumbnail = canvas.toDataURL("image/jpeg", 0.7);
+          setTracks(prev => prev.map(t =>
+            t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+          ));
+          toast({ title: "Video added", description: `${file.name} (${formatTime(dur)})` });
+        };
+      };
+      tempVideo.src = url;
+    }
   }, [tracks]);
 
   const handleCanvasDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    handleVideoFileUpload(e.dataTransfer.files);
-  }, [handleVideoFileUpload]);
+    handleMediaFileUpload(e.dataTransfer.files);
+  }, [handleMediaFileUpload]);
 
   useEffect(() => {
     if (!isPlaying) return;
