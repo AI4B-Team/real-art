@@ -1048,7 +1048,7 @@ const VideoEditor = ({ video }: Props) => {
               {activeTab === "templates" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-foreground">Templates</h3>
+                    <h3 className="text-sm font-bold">Templates</h3>
                     <button className="flex items-center gap-1.5 px-4 py-2 bg-foreground text-background rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors">
                       <Plus className="w-4 h-4" />Create template
                     </button>
