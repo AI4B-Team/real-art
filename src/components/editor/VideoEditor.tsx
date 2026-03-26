@@ -1658,6 +1658,21 @@ const VideoEditor = ({ video }: Props) => {
                 <button onClick={handleAddMarker} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Add Marker (M)</TooltipContent></Tooltip>
 
+              {/* Loop */}
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => setIsLooping(!isLooping)}
+                  className={`p-2 rounded-lg transition-colors ${isLooping ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <Repeat className="w-5 h-5" />
+                </button>
+              </TooltipTrigger><TooltipContent>{isLooping ? "Disable Loop" : "Enable Loop"}</TooltipContent></Tooltip>
+
+              {/* Mute */}
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => setIsMuted(!isMuted)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
+                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                </button>
+              </TooltipTrigger><TooltipContent>{isMuted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
+
               {/* Record */}
               <button onClick={handleRecord}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
