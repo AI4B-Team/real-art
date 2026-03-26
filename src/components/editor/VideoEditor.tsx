@@ -1175,8 +1175,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Brand Kit Tab */}
-              {activeTab === "brand" && (
+              {/* Brand Kit */}
+              {activeTab === "settings" && settingsSubTab === "brand" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Brand Kit</h3>
                   <p className="text-sm text-muted">Define your brand identity for consistent content.</p>
