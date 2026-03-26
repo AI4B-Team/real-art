@@ -1018,9 +1018,11 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
           )}
 
           {/* Waveform / Spectral visualization */}
-          <div className="w-full max-w-5xl px-8">
-            <div className="relative h-56 bg-foreground/[0.03] rounded-2xl border border-foreground/[0.06] overflow-hidden cursor-crosshair"
+           <div className="w-full max-w-5xl px-8 pt-4">
+            <div className="relative h-56 bg-foreground/[0.03] rounded-2xl border border-foreground/[0.06] cursor-crosshair"
               onClick={handleWaveformClick}>
+              {/* Waveform inner with overflow hidden */}
+              <div className="absolute inset-0 rounded-2xl overflow-hidden">
               {!showSpectral ? (
                 /* Waveform view */
                 <div className="absolute inset-0 flex items-center gap-[1px] px-4">
@@ -1049,12 +1051,13 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
                   ))}
                 </div>
               )}
+              </div>
 
-              {/* Markers */}
+              {/* Markers — outside overflow-hidden so badges aren't clipped */}
               {markers.map(marker => (
-                <div key={marker.id} className="absolute top-0 z-20" style={{ left: `${(marker.time / duration) * 100}%` }}>
+                <div key={marker.id} className="absolute top-0 bottom-0 z-20" style={{ left: `${(marker.time / duration) * 100}%` }}>
                   <div className={`w-0.5 h-full ${marker.color} opacity-50`} />
-                  <div className={`absolute -top-0.5 -translate-x-1/2 px-1.5 py-0.5 ${marker.color} rounded text-[8px] font-medium text-white whitespace-nowrap`}>
+                  <div className={`absolute top-1 -translate-x-1/2 px-1.5 py-0.5 ${marker.color} rounded text-[8px] font-medium text-white whitespace-nowrap`}>
                     {marker.label}
                   </div>
                 </div>
