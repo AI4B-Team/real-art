@@ -7,7 +7,7 @@ import {
   Trash2, Video, Eye, EyeOff, Lock, Unlock,
   Maximize, Minimize, Check, Search, Copy, Download, Diamond, Link2,
   Wand2, GripVertical, Captions, User, SlidersHorizontal,
-  LayoutGrid, VolumeX as VolX, Send, Mic, Eraser,
+  LayoutGrid, VolumeX as VolX, Send, Mic,
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
   AudioLines, VolumeOff, MoreVertical, ArrowLeftRight,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
