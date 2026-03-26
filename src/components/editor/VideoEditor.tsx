@@ -1381,6 +1381,13 @@ const VideoEditor = ({ video }: Props) => {
                       );
                     })}
 
+                    {/* Dot before add scene */}
+                    <div className="flex items-center justify-center mx-1">
+                      <div className="w-4 h-4 rounded-full bg-foreground/[0.08] flex items-center justify-center">
+                        <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+                      </div>
+                    </div>
+
                     {/* Add scene button */}
                     <Tooltip>
                       <TooltipTrigger asChild>
