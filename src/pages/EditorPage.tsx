@@ -58,7 +58,7 @@ const EditorPage = () => {
               <input
                 value={projectName}
                 onChange={e => setProjectName(e.target.value)}
-                onBlur={() => setIsEditingName(false)}
+                onBlur={() => { if (!projectName.trim()) setProjectName("Untitled Project"); setIsEditingName(false); }}
                 onKeyDown={e => e.key === "Enter" && setIsEditingName(false)}
                 autoFocus
                 className="bg-background/10 text-background text-sm font-medium px-3 py-1.5 rounded-lg border border-background/20 focus:outline-none focus:border-accent w-40"
