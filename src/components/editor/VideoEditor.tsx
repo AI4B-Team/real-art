@@ -1464,6 +1464,8 @@ const VideoEditor = ({ video }: Props) => {
                   )}
                 </div>
               )}
+                </div>
+              )}
 
               {/* Effects Sub-Tab Nav */}
               {activeTab === "effects" && (
