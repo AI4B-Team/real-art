@@ -632,7 +632,7 @@ const VideoEditor = ({ video }: Props) => {
                     <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Key Elements</h4>
 
                     <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                      <span className="text-sm text-muted">Visual style</span>
+                      <span className="text-sm text-muted">Visual Style</span>
                       <button className="flex items-center gap-1.5 text-sm font-medium">
                         <Image className="w-4 h-4 text-accent" /> {briefStyle} <ChevronDown className="w-3 h-3 text-muted" />
                       </button>
