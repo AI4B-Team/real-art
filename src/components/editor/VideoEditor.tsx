@@ -2175,7 +2175,7 @@ const VideoEditor = ({ video }: Props) => {
               <button onClick={() => setCurrentTime(0)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
                 <SkipBack className="w-5 h-5" />
               </button>
-              <button onClick={togglePlay} className="w-12 h-12 flex items-center justify-center bg-accent rounded-full hover:bg-accent/90 transition-colors text-white shadow-lg">
+              <button onClick={togglePlay} className="w-12 h-12 flex items-center justify-center bg-emerald-500 rounded-full hover:bg-emerald-600 transition-colors text-white shadow-lg">
                 {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
               </button>
               <button onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
