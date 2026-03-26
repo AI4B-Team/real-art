@@ -1230,6 +1230,14 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
         )}
         </div>
       </div>
+      <RecordingModeModal
+        open={showRecordingModal}
+        onClose={() => setShowRecordingModal(false)}
+        editorType="audio"
+        onRecordingComplete={(mode, duration) => {
+          addTrack(`Recording ${tracks.filter(t => t.type === "recorded").length + 1}`, "recorded", duration, currentTime);
+        }}
+      />
     </div>
   );
 };
