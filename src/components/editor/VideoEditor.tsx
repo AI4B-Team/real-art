@@ -1850,10 +1850,51 @@ const VideoEditor = ({ video }: Props) => {
                     </PopoverContent>
                   </Popover>
                   <div className="w-px h-5 bg-foreground/[0.08]" />
-                  <button onClick={() => toast({ title: "Layouts coming soon" })}
-                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
-                    <LayoutGrid className="w-4 h-4 text-muted" /> Layouts
-                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                        <LayoutGrid className="w-4 h-4 text-muted" /> Layouts
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[340px] p-4" align="center">
+                      <div className="flex items-center justify-between mb-4">
+                        <h4 className="text-sm font-semibold">Layout</h4>
+                        <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
+                          <input type="checkbox" checked={applyLayoutToAll} onChange={() => setApplyLayoutToAll(!applyLayoutToAll)} className="rounded border-foreground/20 accent-accent w-4 h-4" />
+                          Apply To All
+                        </label>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2.5">
+                        {[
+                          /* Row 1 */
+                          { id: 0, cells: [{ x: 0, y: 0, w: 1, h: 1, person: true }] },
+                          { id: 1, cells: [{ x: 0, y: 0, w: 0.5, h: 0.5, person: false }, { x: 0, y: 0.5, w: 1, h: 0.5, person: false }] },
+                          { id: 2, cells: [{ x: 0, y: 0, w: 1, h: 0.6, person: true }, { x: 0, y: 0.6, w: 1, h: 0.4, person: false }] },
+                          { id: 3, cells: [{ x: 0, y: 0, w: 1, h: 0.5, person: false }, { x: 0.6, y: 0.5, w: 0.4, h: 0.5, person: false }] },
+                          /* Row 2 */
+                          { id: 4, cells: [{ x: 0, y: 0, w: 1, h: 0.5, person: false }, { x: 0, y: 0.5, w: 1, h: 0.5, person: false }] },
+                          { id: 5, cells: [{ x: 0, y: 0, w: 0.5, h: 1, person: true }, { x: 0.5, y: 0, w: 0.5, h: 1, person: true }] },
+                          { id: 6, cells: [{ x: 0, y: 0, w: 0.5, h: 0.5, person: true }, { x: 0.5, y: 0, w: 0.5, h: 0.5, person: true }, { x: 0, y: 0.5, w: 1, h: 0.5, person: false }] },
+                          { id: 7, cells: [{ x: 0, y: 0, w: 1, h: 0.5, person: false }, { x: 0, y: 0.5, w: 0.5, h: 0.5, person: false }, { x: 0.5, y: 0.5, w: 0.5, h: 0.5, person: false }] },
+                          /* Row 3 */
+                          { id: 8, cells: [{ x: 0, y: 0, w: 0.5, h: 1, person: true }, { x: 0.5, y: 0, w: 0.5, h: 0.5, person: true }, { x: 0.5, y: 0.5, w: 0.5, h: 0.5, person: true }] },
+                          { id: 9, cells: [{ x: 0, y: 0, w: 0.5, h: 0.5, person: true }, { x: 0.5, y: 0, w: 0.5, h: 0.5, person: true }, { x: 0, y: 0.5, w: 0.5, h: 0.5, person: true }, { x: 0.5, y: 0.5, w: 0.5, h: 0.5, person: false, small: true }] },
+                        ].map(layout => (
+                          <button key={layout.id} onClick={() => setSelectedLayout(layout.id)}
+                            className={`relative w-full aspect-[4/3] rounded-lg border-2 transition-all ${selectedLayout === layout.id ? "border-accent bg-accent/5" : "border-foreground/[0.08] hover:border-foreground/20"}`}>
+                            <div className="absolute inset-1.5">
+                              {layout.cells.map((cell, i) => (
+                                <div key={i} className={`absolute rounded-sm flex items-center justify-center ${cell.person ? "bg-blue-400" : "bg-foreground/[0.08]"}`}
+                                  style={{ left: `${cell.x * 100}%`, top: `${cell.y * 100}%`, width: `${cell.w * 100 - 4}%`, height: `${cell.h * 100 - 4}%` }}>
+                                  {cell.person && <Users className="w-3 h-3 text-white" />}
+                                </div>
+                              ))}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
                   <div className="w-px h-5 bg-foreground/[0.08]" />
                   <Popover>
                     <PopoverTrigger asChild>
@@ -1861,15 +1902,132 @@ const VideoEditor = ({ video }: Props) => {
                         <div className="w-4 h-4 rounded-full border border-foreground/20" style={{ background: canvasBgColor }} /> Background
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-48 p-3" align="center">
-                      <p className="text-xs font-medium text-muted mb-2">Background Color</p>
-                      <div className="grid grid-cols-6 gap-2">
-                        {["#000000", "#FFFFFF", "#1a1a2e", "#16213e", "#0f3460", "#e94560", "#533483", "#2b2d42", "#8d99ae", "#ef233c", "#2b9348", "#fb8500"].map(c => (
-                          <button key={c} onClick={() => setCanvasBgColor(c)}
-                            className={`w-6 h-6 rounded-full border-2 transition-all ${canvasBgColor === c ? "border-accent scale-110" : "border-foreground/10 hover:border-foreground/30"}`}
-                            style={{ background: c }} />
-                        ))}
+                    <PopoverContent className="w-[320px] p-4" align="center">
+                      {/* Tabs + Apply to all */}
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex gap-4">
+                          {(["color", "image", "upload"] as const).map(t => (
+                            <button key={t} onClick={() => setBgTab(t)}
+                              className={`text-sm font-medium capitalize transition-colors ${bgTab === t ? "text-accent" : "text-muted hover:text-foreground"}`}>
+                              {t === "color" ? "Color" : t === "image" ? "Image" : "Upload"}
+                            </button>
+                          ))}
+                        </div>
+                        <label className="flex items-center gap-2 text-xs text-muted cursor-pointer">
+                          <input type="checkbox" checked={applyBgToAll} onChange={() => setApplyBgToAll(!applyBgToAll)} className="rounded border-foreground/20 accent-accent w-4 h-4" />
+                          Apply To All
+                        </label>
                       </div>
+
+                      {bgTab === "color" && (
+                        <>
+                          {/* Color gradient picker area */}
+                          <div className="relative w-full aspect-[5/3] rounded-lg mb-3 overflow-hidden cursor-crosshair"
+                            style={{ background: `linear-gradient(to bottom, transparent, #000), linear-gradient(to right, #fff, ${canvasBgColor})` }}
+                            onClick={(e) => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+                              const y = Math.max(0, Math.min(1, (e.clientY - rect.top) / rect.height));
+                              const r = Math.round(255 * (1 - x) * (1 - y));
+                              const g = Math.round(0);
+                              const b = Math.round(0);
+                              setBgRgb({ r, g, b });
+                            }}
+                          />
+                          {/* Hue slider */}
+                          <div className="relative w-full h-3 rounded-full mb-2 cursor-pointer"
+                            style={{ background: "linear-gradient(to right, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00)" }}
+                            onClick={(e) => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = (e.clientX - rect.left) / rect.width;
+                              const hue = Math.round(x * 360);
+                              const h = hue / 60;
+                              const c = 255;
+                              const xv = c * (1 - Math.abs(h % 2 - 1));
+                              let r = 0, g = 0, b = 0;
+                              if (h < 1) { r = c; g = Math.round(xv); }
+                              else if (h < 2) { r = Math.round(xv); g = c; }
+                              else if (h < 3) { g = c; b = Math.round(xv); }
+                              else if (h < 4) { g = Math.round(xv); b = c; }
+                              else if (h < 5) { r = Math.round(xv); b = c; }
+                              else { r = c; b = Math.round(xv); }
+                              const hex = `#${r.toString(16).padStart(2,"0")}${g.toString(16).padStart(2,"0")}${b.toString(16).padStart(2,"0")}`;
+                              setCanvasBgColor(hex);
+                              setBgRgb({ r, g, b });
+                            }}
+                          />
+                          {/* Opacity slider */}
+                          <div className="relative w-full h-3 rounded-full mb-3 cursor-pointer"
+                            style={{ background: `linear-gradient(to right, transparent, ${canvasBgColor})` }}
+                            onClick={(e) => {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              setBgOpacity(Math.round((e.clientX - rect.left) / rect.width * 100));
+                            }}
+                          />
+                          {/* RGB inputs */}
+                          <div className="flex items-center gap-2 mb-4">
+                            <span className="text-xs font-medium text-muted w-8">RGB</span>
+                            {[{ k: "r", v: bgRgb.r }, { k: "g", v: bgRgb.g }, { k: "b", v: bgRgb.b }].map(({ k, v }) => (
+                              <input key={k} type="number" min={0} max={255} value={v}
+                                onChange={(e) => {
+                                  const val = Math.min(255, Math.max(0, parseInt(e.target.value) || 0));
+                                  const newRgb = { ...bgRgb, [k]: val };
+                                  setBgRgb(newRgb);
+                                  setCanvasBgColor(`#${newRgb.r.toString(16).padStart(2,"0")}${newRgb.g.toString(16).padStart(2,"0")}${newRgb.b.toString(16).padStart(2,"0")}`);
+                                }}
+                                className="w-14 px-2 py-1.5 text-xs text-center bg-card border border-foreground/[0.1] rounded-lg" />
+                            ))}
+                            <input type="number" min={0} max={100} value={bgOpacity}
+                              onChange={(e) => setBgOpacity(Math.min(100, Math.max(0, parseInt(e.target.value) || 0)))}
+                              className="w-14 px-2 py-1.5 text-xs text-center bg-card border border-foreground/[0.1] rounded-lg" />
+                            <span className="text-xs text-muted">%</span>
+                          </div>
+                          {/* Color swatches */}
+                          <div className="space-y-2">
+                            {[
+                              ["#1a0033", "#000000", "#1a1a2e", "#2b2d42", "#495057", "#8d99ae", "#adb5bd", "#dee2e6"],
+                              ["#fff0f0", "#ffcccc", "#ffe8d6", "#fff3cd", "#d4edda", "#d1ecf1", "#cce5ff", "#e8d5f5"],
+                              ["#e91e63", "#f44336", "#ff9800", "#ffc107", "#4caf50", "#009688", "#2196f3", "#9c27b0"],
+                            ].map((row, ri) => (
+                              <div key={ri} className="flex gap-2 justify-between">
+                                {row.map(c => (
+                                  <button key={c} onClick={() => {
+                                    setCanvasBgColor(c);
+                                    const r = parseInt(c.slice(1,3), 16), g = parseInt(c.slice(3,5), 16), b = parseInt(c.slice(5,7), 16);
+                                    setBgRgb({ r, g, b });
+                                  }}
+                                    className={`w-7 h-7 rounded-full border-2 transition-all ${canvasBgColor === c ? "border-accent scale-110" : "border-foreground/[0.06] hover:border-foreground/20"}`}
+                                    style={{ background: c }} />
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+
+                      {bgTab === "image" && (
+                        <div className="grid grid-cols-3 gap-2">
+                          {["https://images.unsplash.com/photo-1557682250-33bd709cbe85?w=120&h=80&fit=crop",
+                            "https://images.unsplash.com/photo-1579546929518-9e396f3cc809?w=120&h=80&fit=crop",
+                            "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=120&h=80&fit=crop",
+                            "https://images.unsplash.com/photo-1519681393784-d120267933ba?w=120&h=80&fit=crop",
+                            "https://images.unsplash.com/photo-1501854140801-50d01698950b?w=120&h=80&fit=crop",
+                            "https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=120&h=80&fit=crop",
+                          ].map((url, i) => (
+                            <button key={i} className="rounded-lg overflow-hidden border-2 border-foreground/[0.06] hover:border-accent transition-colors aspect-video"
+                              onClick={() => toast({ title: "Background image applied" })}>
+                              <img src={url} alt="" className="w-full h-full object-cover" />
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {bgTab === "upload" && (
+                        <div className="border-2 border-dashed border-foreground/[0.12] rounded-xl p-8 text-center">
+                          <Upload className="w-8 h-8 mx-auto mb-2 text-muted" />
+                          <p className="text-sm text-muted">Drop an image or click to upload</p>
+                        </div>
+                      )}
                     </PopoverContent>
                   </Popover>
                   <div className="w-px h-5 bg-foreground/[0.08]" />
