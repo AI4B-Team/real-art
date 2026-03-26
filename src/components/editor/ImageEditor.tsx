@@ -501,6 +501,136 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
+            {/* Elements Tab */}
+            {activeLeftTab === "elements" && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold">Elements</h3>
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
+                  {["Shapes", "Stickers", "Frames", "Icons"].map(sub => (
+                    <button key={sub} className="flex-1 py-2 rounded-md text-xs font-medium text-muted hover:text-foreground hover:bg-background transition-colors">{sub}</button>
+                  ))}
+                </div>
+                <div className="grid grid-cols-4 gap-3">
+                  {["Circle", "Rectangle", "Triangle", "Star", "Arrow", "Line", "Heart", "Diamond", "Hexagon", "Pentagon", "Cross", "Ring"].map(shape => (
+                    <button key={shape} onClick={() => toast({ title: `${shape} added` })}
+                      className="aspect-square rounded-xl bg-foreground/[0.04] border border-foreground/[0.06] hover:border-accent/40 flex items-center justify-center transition-all">
+                      <div className="w-8 h-8 bg-foreground/[0.1] rounded-md" />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Text Tab */}
+            {activeLeftTab === "text" && (
+              <div className="space-y-3">
+                <h3 className="text-sm font-bold">Text</h3>
+                {["Heading", "Subheading", "Body Text", "Caption", "Watermark", "Logo Text"].map(preset => (
+                  <button key={preset} onClick={() => toast({ title: `${preset} added` })}
+                    className="w-full p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-accent/40 text-left transition-all">
+                    <span className={`text-foreground font-medium ${preset === "Heading" ? "text-xl" : preset === "Subheading" ? "text-base" : "text-sm"}`}>{preset}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* Effects Tab */}
+            {activeLeftTab === "effects" && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold">Effects</h3>
+                <div className="grid grid-cols-3 gap-2">
+                  {["Blur", "Sharpen", "Noise", "Vignette", "Glow", "Pixelate", "Grain", "Tilt Shift", "Distort"].map(fx => (
+                    <button key={fx} onClick={() => toast({ title: `${fx} applied` })}
+                      className="aspect-square rounded-xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-foreground/[0.06] hover:border-accent/40 flex flex-col items-center justify-center gap-1 transition-all">
+                      <Sparkles className="w-5 h-5 text-purple-500" />
+                      <span className="text-[10px] font-medium">{fx}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Brand Kit Tab */}
+            {activeLeftTab === "brand" && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold">Brand Kit</h3>
+                <div className="space-y-3">
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Logo</h4>
+                  <button className="w-full h-24 border-2 border-dashed border-foreground/[0.1] rounded-xl flex flex-col items-center justify-center gap-2 text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors">
+                    <Upload className="w-5 h-5" />
+                    <span className="text-xs">Upload Logo</span>
+                  </button>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Brand Colors</h4>
+                  <div className="flex gap-2">
+                    {["#E8472A", "#1a1a2e", "#f5f5f0", "#3b82f6", "#10b981"].map((color, i) => (
+                      <button key={i} className="w-10 h-10 rounded-lg border border-foreground/[0.08] hover:scale-110 transition-transform" style={{ backgroundColor: color }} />
+                    ))}
+                    <button className="w-10 h-10 rounded-lg border-2 border-dashed border-foreground/[0.1] flex items-center justify-center text-muted hover:text-foreground transition-colors">
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Fonts</h4>
+                  {["Heading — Playfair Display", "Body — DM Sans"].map(font => (
+                    <div key={font} className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm font-medium">{font}</span>
+                      <ChevronDown className="w-4 h-4 text-muted" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Export Tab */}
+            {activeLeftTab === "export" && (
+              <div className="space-y-4">
+                <h3 className="text-sm font-bold">Export</h3>
+                <div className="space-y-3">
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Format</h4>
+                  {[
+                    { name: "PNG", desc: "Lossless, supports transparency", recommended: true },
+                    { name: "JPG", desc: "Compressed, smaller files" },
+                    { name: "WEBP", desc: "Modern, best compression" },
+                    { name: "SVG", desc: "Vector, scalable" },
+                    { name: "PDF", desc: "Print-ready document" },
+                  ].map(fmt => (
+                    <button key={fmt.name} className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
+                      <Image className="w-4 h-4 text-muted shrink-0" />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-medium">{fmt.name}</span>
+                          {fmt.recommended && <span className="text-[10px] bg-accent/10 text-accent px-1.5 py-0.5 rounded-full font-medium">Recommended</span>}
+                        </div>
+                        <span className="text-xs text-muted">{fmt.desc}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Resolution</h4>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["1x (Original)", "2x (Retina)", "3x (Print)", "Custom"].map(res => (
+                      <button key={res} className="p-3 rounded-xl border border-foreground/[0.08] hover:border-accent/40 text-center text-sm font-medium transition-colors">{res}</button>
+                    ))}
+                  </div>
+                </div>
+                <div className="space-y-3">
+                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Quality</h4>
+                  <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                    <span className="text-sm font-medium">High Quality</span>
+                    <span className="text-xs text-muted">100%</span>
+                  </div>
+                </div>
+                <button onClick={() => toast({ title: "Exporting image..." })}
+                  className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors">
+                  <Download className="w-4 h-4" /> Export Image
+                </button>
+              </div>
+            )}
+
             {/* Settings Tab */}
             {activeLeftTab === "settings" && (
               <div className="space-y-4">
