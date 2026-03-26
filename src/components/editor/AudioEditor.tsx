@@ -1085,7 +1085,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
               {/* Playhead */}
               <div className="absolute top-0 bottom-0 w-0.5 bg-accent z-10" style={{ left: `${(currentTime / duration) * 100}%` }}>
-                <div className="w-3 h-3 rounded-full bg-accent -translate-x-[5px] -translate-y-0.5" />
+                <div className="absolute left-1/2 -translate-x-1/2 -top-1" style={{ width: 0, height: 0, borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "8px solid hsl(var(--accent))" }} />
               </div>
 
               {/* Time display */}
