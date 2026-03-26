@@ -51,7 +51,7 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "brand", icon: Palette, label: "Brand Kit" },
   { id: "languages", icon: Languages, label: "Languages" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "export", icon: Download, label: "Export" },
+  
   { id: "tools", icon: Wand2, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
