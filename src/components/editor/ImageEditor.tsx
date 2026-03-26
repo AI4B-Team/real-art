@@ -72,7 +72,7 @@ const CANVAS_TOOLS = [
 ];
 
 /* ─── Left Panel Tab Config ─── */
-type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "elements" | "text" | "effects" | "templates" | "brand" | "export" | "tools" | "settings";
+type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "elements" | "text" | "effects" | "templates" | "brand" | "tools" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "creations", icon: Image, label: "Creations" },
@@ -85,7 +85,7 @@ const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "effects", icon: Zap, label: "Effects" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "brand", icon: Palette, label: "Brand Kit" },
-  { id: "export", icon: Download, label: "Export" },
+  
   { id: "tools", icon: Wrench, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
@@ -581,53 +581,6 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
-
-            {/* Export Tab */}
-            {activeLeftTab === "export" && (
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold">Export</h3>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Format</h4>
-                  {[
-                    { name: "PNG", desc: "Lossless, supports transparency", recommended: true },
-                    { name: "JPG", desc: "Compressed, smaller files" },
-                    { name: "WEBP", desc: "Modern, best compression" },
-                    { name: "SVG", desc: "Vector, scalable" },
-                    { name: "PDF", desc: "Print-ready document" },
-                  ].map(fmt => (
-                    <button key={fmt.name} className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
-                      <Image className="w-4 h-4 text-muted shrink-0" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">{fmt.name}</span>
-                          {fmt.recommended && <span className="text-[10px] bg-accent/10 text-accent px-1.5 py-0.5 rounded-full font-medium">Recommended</span>}
-                        </div>
-                        <span className="text-xs text-muted">{fmt.desc}</span>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Resolution</h4>
-                  <div className="grid grid-cols-2 gap-2">
-                    {["1x (Original)", "2x (Retina)", "3x (Print)", "Custom"].map(res => (
-                      <button key={res} className="p-3 rounded-xl border border-foreground/[0.08] hover:border-accent/40 text-center text-sm font-medium transition-colors">{res}</button>
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Quality</h4>
-                  <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                    <span className="text-sm font-medium">High Quality</span>
-                    <span className="text-xs text-muted">100%</span>
-                  </div>
-                </div>
-                <button onClick={() => toast({ title: "Exporting image..." })}
-                  className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors">
-                  <Download className="w-4 h-4" /> Export Image
-                </button>
               </div>
             )}
 

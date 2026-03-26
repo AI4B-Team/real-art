@@ -17,7 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "@/hooks/use-toast";
 
 /* ─── Types ─── */
-type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "sfx" | "effects" | "text" | "templates" | "tools" | "export" | "settings";
+type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "sfx" | "effects" | "text" | "templates" | "tools" | "settings";
 
 interface AudioTrack {
   id: string;
@@ -61,7 +61,7 @@ const LEFT_TABS: { id: LeftTab; icon: typeof Music; label: string }[] = [
   { id: "text", icon: Type, label: "Text To Speech" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "tools", icon: Wand2, label: "AI Tools" },
-  { id: "export", icon: Download, label: "Export" },
+  
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
@@ -831,79 +831,6 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
                     </div>
                   </button>
                 ))}
-              </div>
-            )}
-
-            {/* Export */}
-            {activeTab === "export" && (
-              <div className="space-y-4">
-                <h3 className="text-sm font-bold">Export</h3>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Format</h4>
-                  {[
-                    { name: "MP3", desc: "Compressed, universal", recommended: true },
-                    { name: "WAV", desc: "Lossless, high quality" },
-                    { name: "FLAC", desc: "Lossless, compressed" },
-                    { name: "AAC", desc: "High quality, smaller size" },
-                    { name: "OGG", desc: "Open format, good quality" },
-                  ].map(fmt => (
-                    <button key={fmt.name} onClick={() => setExportFormat(fmt.name)}
-                      className={`w-full flex items-center gap-3 p-3 rounded-xl border transition-colors text-left ${
-                        exportFormat === fmt.name ? "border-accent bg-accent/5" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
-                      }`}>
-                      <AudioLines className="w-4 h-4 text-muted shrink-0" />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-medium">{fmt.name}</span>
-                          {fmt.recommended && <span className="text-[10px] bg-accent/10 text-accent px-1.5 py-0.5 rounded-full font-medium">Recommended</span>}
-                        </div>
-                        <span className="text-xs text-muted">{fmt.desc}</span>
-                      </div>
-                      {exportFormat === fmt.name && <Check className="w-4 h-4 text-accent shrink-0" />}
-                    </button>
-                  ))}
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Quality</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {["128kbps", "256kbps", "320kbps"].map(q => (
-                      <button key={q} onClick={() => setExportQuality(q)}
-                        className={`p-2.5 rounded-xl border text-center text-sm font-medium transition-colors ${
-                          exportQuality === q ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.08] hover:border-accent/40"
-                        }`}>{q}</button>
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Sample Rate</h4>
-                  <div className="grid grid-cols-3 gap-2">
-                    {["44.1kHz", "48kHz", "96kHz"].map(r => (
-                      <button key={r} onClick={() => setExportSampleRate(r)}
-                        className={`p-2.5 rounded-xl border text-center text-sm font-medium transition-colors ${
-                          exportSampleRate === r ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.08] hover:border-accent/40"
-                        }`}>{r}</button>
-                    ))}
-                  </div>
-                </div>
-                <div className="space-y-3">
-                  <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Options</h4>
-                  <label className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08] cursor-pointer">
-                    <span className="text-sm font-medium">Normalize</span>
-                    <input type="checkbox" defaultChecked className="accent-accent" />
-                  </label>
-                  <label className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08] cursor-pointer">
-                    <span className="text-sm font-medium">Trim Silence</span>
-                    <input type="checkbox" className="accent-accent" />
-                  </label>
-                  <label className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08] cursor-pointer">
-                    <span className="text-sm font-medium">Split Tracks</span>
-                    <input type="checkbox" className="accent-accent" />
-                  </label>
-                </div>
-                <button onClick={() => toast({ title: `Exporting as ${exportFormat} at ${exportQuality}...` })}
-                  className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors">
-                  <Download className="w-4 h-4" /> Export Audio
-                </button>
               </div>
             )}
 
