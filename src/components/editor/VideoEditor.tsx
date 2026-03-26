@@ -616,7 +616,8 @@ const VideoEditor = ({ video }: Props) => {
               {/* Video Brief Tab */}
               {activeTab === "video-brief" && (
                 <div className="space-y-5">
-                  <h3 className="text-sm font-bold">Video Brief</h3>
+                   <h3 className="text-sm font-bold">Video Brief</h3>
+
 
                   {/* Character preview */}
                   <div className="flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06]">
