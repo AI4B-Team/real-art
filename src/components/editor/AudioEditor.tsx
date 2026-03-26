@@ -1051,12 +1051,13 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
                   ))}
                 </div>
               )}
+              </div>
 
-              {/* Markers */}
+              {/* Markers — outside overflow-hidden so badges aren't clipped */}
               {markers.map(marker => (
-                <div key={marker.id} className="absolute top-0 z-20" style={{ left: `${(marker.time / duration) * 100}%` }}>
+                <div key={marker.id} className="absolute top-0 bottom-0 z-20" style={{ left: `${(marker.time / duration) * 100}%` }}>
                   <div className={`w-0.5 h-full ${marker.color} opacity-50`} />
-                  <div className={`absolute -top-0.5 -translate-x-1/2 px-1.5 py-0.5 ${marker.color} rounded text-[8px] font-medium text-white whitespace-nowrap`}>
+                  <div className={`absolute top-1 -translate-x-1/2 px-1.5 py-0.5 ${marker.color} rounded text-[8px] font-medium text-white whitespace-nowrap`}>
                     {marker.label}
                   </div>
                 </div>
