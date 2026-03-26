@@ -1795,30 +1795,11 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Bottom canvas overlay — always visible (original position) */}
-              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card/80 backdrop-blur-sm rounded-full px-2 py-1.5 shadow-lg border border-foreground/[0.08] z-[6]" onClick={(e) => e.stopPropagation()}>
-                <button onClick={() => { setIsMuted(!isMuted); if (videoRef.current) videoRef.current.muted = !isMuted; }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
-                  {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                </button>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="px-3 py-1.5 rounded-full text-xs font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors flex items-center gap-1.5">
-                      <Settings className="w-3.5 h-3.5" />Ratio: {selectedRatio}
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-36 p-1.5" align="center">
-                    {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
-                      <button key={r} onClick={() => setSelectedRatio(r)}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                        {r}{selectedRatio === r && <Check className="w-3.5 h-3.5" />}
-                      </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-                <button onClick={() => { const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
-                  <Maximize className="w-4 h-4" />
-                </button>
-              </div>
+              {/* Fullscreen button — bottom right of video */}
+              <button onClick={(e) => { e.stopPropagation(); const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }}
+                className="absolute bottom-3 right-3 p-2 rounded-lg bg-card/80 backdrop-blur-sm text-foreground/60 hover:text-foreground hover:bg-card/90 transition-colors shadow-lg border border-foreground/[0.08] z-[6]">
+                <Maximize className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
