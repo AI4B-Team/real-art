@@ -1290,10 +1290,23 @@ const VideoEditor = ({ video }: Props) => {
 
           {/* Timeline tracks */}
           {!isTimelineMinimized && (
-            <div className="flex-1 overflow-auto">
+            <div className="flex-1 overflow-auto flex flex-col">
+              {/* View mode buttons - always visible */}
+              <div className="h-7 flex items-center gap-1 px-3 border-b border-foreground/[0.06] shrink-0">
+                <Tooltip><TooltipTrigger asChild>
+                  <button onClick={handleAddTrack} className="p-0.5 text-muted hover:text-foreground transition-colors"><Plus className="w-3.5 h-3.5" /></button>
+                </TooltipTrigger><TooltipContent>Add Track</TooltipContent></Tooltip>
+                <Tooltip><TooltipTrigger asChild>
+                  <button onClick={() => setTimelineViewMode('timeline')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'timeline' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><Rows3 className="w-3.5 h-3.5" /></button>
+                </TooltipTrigger><TooltipContent>Timeline</TooltipContent></Tooltip>
+                <Tooltip><TooltipTrigger asChild>
+                  <button onClick={() => setTimelineViewMode('storyboard')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'storyboard' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><LayoutGrid className="w-3.5 h-3.5" /></button>
+                </TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
+              </div>
+
               {/* Storyboard View */}
               {timelineViewMode === "storyboard" ? (
-                <div className="p-4">
+                <div className="flex-1 overflow-auto p-4">
                   <div className="flex flex-wrap items-center gap-y-4">
                     {scenes.map((clip, index) => {
                       const isSelected = selectedClip === clip.id;
