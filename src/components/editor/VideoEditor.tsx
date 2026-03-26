@@ -1207,7 +1207,7 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
                )}
 
-              {/* ═══ TRANSCRIPT TAB (P1) ═══ */}
+              {/* Captions tab — consolidated */}
               {activeTab === "transcript" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
