@@ -420,7 +420,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
           {/* Search */}
           {["music", "effects", "templates"].includes(activeTab) && (
-            <div className="px-4 pt-4 pb-3 shrink-0">
+            <div className="px-4 pt-4 pb-3 shrink-0 space-y-3">
+              <h3 className="text-sm font-bold text-foreground capitalize">{activeTab === "effects" ? "Effects" : activeTab === "templates" ? "Templates" : "Audio"}</h3>
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                 <input type="text" placeholder={`Search ${activeTab}...`} className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
