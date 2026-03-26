@@ -760,17 +760,20 @@ const VideoEditor = ({ video }: Props) => {
                           const lines = text.split(/\n+/).map(l => l.trim()).filter(Boolean);
                           if (lines.length > 0) {
                             setScriptContent(text);
-                            // Parse lines into scenes
-                            const newTracks = { ...tracks };
+                            // Parse lines into scenes on the first video track
+                            const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+                            if (!videoTrack) return;
                             const sceneDur = 5;
-                            newTracks.video = lines.map((line, i) => ({
+                            const newClips: TimelineClip[] = lines.map((line, i) => ({
                               id: `uploaded-scene-${Date.now()}-${i}`,
-                              name: line.length > 50 ? line.slice(0, 50) + "..." : line,
+                              type: "video" as const,
+                              name: line.length > 60 ? line.slice(0, 60) + "..." : line,
                               startTime: i * sceneDur,
                               duration: sceneDur,
-                              color: `hsl(${(i * 60) % 360}, 60%, 55%)`,
                             }));
-                            setTracks(newTracks);
+                            setTracks(prev => prev.map(t =>
+                              t.id === videoTrack.id ? { ...t, clips: newClips } : t
+                            ));
                             toast({ title: "Script imported", description: `${lines.length} scenes created from script.` });
                           }
                         };
