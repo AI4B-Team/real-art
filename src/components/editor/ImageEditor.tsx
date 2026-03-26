@@ -307,7 +307,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const currentToolConfig = activeTool ? TOOL_CONFIGS[activeTool] : null;
 
   return (
-    <div className="h-full flex overflow-hidden">
+    <div className="h-full flex overflow-hidden relative">
       {/* Left Panel */}
       {!isLeftPanelCollapsed && (
         <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex flex-col overflow-hidden shrink-0">
