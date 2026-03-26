@@ -252,7 +252,7 @@ const VideoEditor = ({ video }: Props) => {
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Active tab label */}
             <div className="px-4 pt-3 pb-2 shrink-0">
-              {!["script", "ai-chat"].includes(activeTab) && (
+              {!["script", "ai-chat", "visuals"].includes(activeTab) && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.06] rounded-lg w-fit">
                   {(() => { const TabIcon = LEFT_TABS.find(t => t.id === activeTab)?.icon || FileText; return <TabIcon className="w-4 h-4" />; })()}
                   <span className="text-sm font-medium">{LEFT_TABS.find(t => t.id === activeTab)?.label}</span>
@@ -516,14 +516,17 @@ const VideoEditor = ({ video }: Props) => {
                         className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${visualsSubTab === sub ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub}</button>
                     ))}
                   </div>
-                  <div className="flex gap-2">
-                    <button className="flex-1 py-2.5 bg-foreground/[0.06] rounded-lg text-xs font-medium text-foreground flex items-center justify-center gap-1.5 hover:bg-foreground/[0.1] transition-colors">
+                  <div className="flex items-center gap-2">
+                    <button className="px-3 h-9 bg-foreground/[0.06] rounded-lg text-xs font-medium text-foreground flex items-center gap-1.5 hover:bg-foreground/[0.1] transition-colors shrink-0">
                       <Upload className="w-3.5 h-3.5" />Upload
                     </button>
-                  </div>
-                  <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-                    <input type="text" placeholder="Search Assets" className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
+                    <div className="relative flex-1">
+                      <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                      <input type="text" placeholder="Search Assets" className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
+                    </div>
+                    <button className="w-9 h-9 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors shrink-0">
+                      <SlidersHorizontal className="w-4 h-4" />
+                    </button>
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     {SAMPLE_MEDIA.map(m => (
