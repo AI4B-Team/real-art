@@ -61,6 +61,7 @@ interface SharedAsset {
   thumbnail?: string;
 }
 
+const VOICE_PRESETS = [
   { name: "Maya", desc: "Feminine, warm, conversational", color: "bg-emerald-500", lang: "English" },
   { name: "Arjun", desc: "Masculine, deep, authoritative", color: "bg-blue-500", lang: "English" },
   { name: "Sophia", desc: "Feminine, mature, soothing", color: "bg-purple-500", lang: "English" },
