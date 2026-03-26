@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useSearchParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link, useNavigate } from "react-router-dom";
 import {
   Download, Heart, Bookmark, Share2, RefreshCw, Pencil,
   Copy, Check, ArrowLeft, Eye, ChevronRight, Shield, Globe, Sparkles, Code, X, Layout, ShoppingBag, Video, Image,
@@ -113,6 +113,7 @@ const shopSimilarItems: ShopSimilarItem[] = [
 
 const ImagePage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const idx = parseInt(id || "0") % photos.length;
   const photo = searchParams.get("photo") || photos[idx];
@@ -347,7 +348,8 @@ const ImagePage = () => {
                 <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Layout className="w-4 h-4" /> Animate
                 </button>
-                <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
+                <button onClick={() => navigate("/editor", { state: { imageUrl: `https://images.unsplash.com/${photo}?w=1600&q=90`, editorTab: "image" } })}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg text-[0.84rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors">
                   <Pencil className="w-4 h-4" /> Edit
                 </button>
               </div>
