@@ -994,12 +994,10 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
         {/* Waveform / Canvas area */}
         <div className="flex-1 flex items-center justify-center bg-foreground/[0.02] relative overflow-hidden">
           {tracks.length === 0 ? (
-            <div className="flex flex-col items-center gap-3 text-center px-6">
-              <img src={emptyAudioCards} alt="" className="w-56 h-56 object-contain" />
-              <div>
-                <p className="text-base font-semibold text-foreground mb-1">No Audio Loaded</p>
-                <p className="text-sm text-muted mb-4">Record, import, or generate audio to get started</p>
-              </div>
+            <div className="flex flex-col items-center gap-1 text-center px-6">
+              <img src={emptyAudioCards} alt="" className="w-56 h-56 object-contain -mb-2" />
+              <p className="text-base font-semibold text-foreground">No Audio Loaded</p>
+              <p className="text-sm text-muted mb-3">Record, import, or generate audio to get started</p>
               <div className="flex items-center gap-3">
                 <button onClick={() => setShowRecordingModal(true)}
                   className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">

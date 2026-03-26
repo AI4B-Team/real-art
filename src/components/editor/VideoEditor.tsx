@@ -1795,11 +1795,19 @@ const VideoEditor = ({ video }: Props) => {
               </button>
             </div>
             ) : (
-              <div className="flex flex-col items-center gap-3 text-center">
-                <img src={emptyVideoCards} alt="" className="w-56 h-56 object-contain" />
-                <div>
-                  <p className="text-lg font-semibold text-foreground mb-1">Add Media To The Timeline To Start Creating</p>
-                  <p className="text-sm text-muted">Drop media here, use the panel, or click Add Scene below</p>
+              <div className="flex flex-col items-center gap-1 text-center">
+                <img src={emptyVideoCards} alt="" className="w-56 h-56 object-contain -mb-2" />
+                <p className="text-lg font-semibold text-foreground">Add Media To The Timeline To Start Creating</p>
+                <p className="text-sm text-muted mb-3">Drop media here, use the panel, or click Add Scene below</p>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => handleAddScene()}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">
+                    <Plus className="w-4 h-4" />Add Scene
+                  </button>
+                  <button onClick={() => setActiveTab("visuals")}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-foreground/[0.06] text-foreground rounded-lg font-medium hover:bg-foreground/[0.1] transition-colors text-sm">
+                    <Video className="w-4 h-4" />Browse Media
+                  </button>
                 </div>
               </div>
             )}
