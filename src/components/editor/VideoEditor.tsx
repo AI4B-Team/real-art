@@ -1397,7 +1397,7 @@ const VideoEditor = ({ video }: Props) => {
                         <button onClick={() => setTimelineViewMode('timeline')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'timeline' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><Rows3 className="w-3.5 h-3.5" /></button>
                       </TooltipTrigger><TooltipContent>Timeline</TooltipContent></Tooltip>
                       <Tooltip><TooltipTrigger asChild>
-                        <button onClick={() => setTimelineViewMode('storyboard')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'storyboard' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><LayoutGrid className="w-3.5 h-3.5" /></button>
+                        <button onClick={() => setTimelineViewMode('storyboard')} className={`p-0.5 rounded transition-colors ${(timelineViewMode as string) === 'storyboard' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><LayoutGrid className="w-3.5 h-3.5" /></button>
                       </TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
                     </div>
                     {tracks.map((track, trackIndex) => (
