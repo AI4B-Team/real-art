@@ -252,6 +252,7 @@ const VideoEditor = ({ video }: Props) => {
   // New feature state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
+  const [aiChatSubTab, setAiChatSubTab] = useState<"chat" | "tools">("chat");
   const [briefStyle, setBriefStyle] = useState("Realistic film");
   const [briefNarrator, setBriefNarrator] = useState("Jurin");
   const [briefPlatform, setBriefPlatform] = useState("TikTok");
