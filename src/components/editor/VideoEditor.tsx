@@ -404,6 +404,7 @@ const VideoEditor = ({ video }: Props) => {
     return () => window.removeEventListener('keydown', handler);
   }, [handleUndo, handleRedo, handleSplit, handleAddMarker, selectedClip, pushUndo]);
 
+  const scenes = useMemo(() => {
     return tracks
       .filter(t => t.type === "video" || t.id.includes("video"))
       .flatMap(t => t.clips)
