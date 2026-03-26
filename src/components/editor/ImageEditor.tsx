@@ -73,9 +73,10 @@ const CANVAS_TOOLS = [
 ];
 
 /* ─── Left Panel Tab Config ─── */
-type LeftTab = "creations" | "layers" | "adjustments" | "ai-tools" | "text" | "effects" | "templates" | "settings";
+type LeftTab = "ai-chat" | "creations" | "layers" | "adjustments" | "ai-tools" | "text" | "effects" | "templates" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
+  { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
   { id: "creations", icon: Image, label: "Creations" },
   { id: "layers", icon: Layers, label: "Layers" },
   { id: "adjustments", icon: SlidersHorizontal, label: "Adjustments" },
