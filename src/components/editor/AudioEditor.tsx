@@ -61,7 +61,7 @@ const LEFT_TABS: { id: LeftTab; icon: typeof Music; label: string }[] = [
   { id: "text", icon: Type, label: "Text To Speech" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "tools", icon: Wand2, label: "AI Tools" },
-  { id: "export", icon: Download, label: "Export" },
+  
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
