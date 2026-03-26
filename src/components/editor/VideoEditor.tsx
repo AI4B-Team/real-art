@@ -984,8 +984,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Captions Tab */}
-              {activeTab === "captions" && (
+              {/* Captions */}
+              {activeTab === "text" && textSubTab === "captions" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Captions</h3>
                   <div className="flex items-center justify-end gap-2">
