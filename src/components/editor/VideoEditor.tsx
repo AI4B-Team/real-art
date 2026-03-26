@@ -249,6 +249,7 @@ const VideoEditor = ({ video }: Props) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasVideoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioElementsRef = useRef<Map<string, HTMLAudioElement>>(new Map());
 
   // New feature state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
