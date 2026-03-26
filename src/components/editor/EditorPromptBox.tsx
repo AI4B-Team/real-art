@@ -1,13 +1,68 @@
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect, KeyboardEvent } from "react";
 import {
   Video, Image, AudioLines, Mic, User, Link, Copy, Clock, Hash,
   Heart, Sparkles, Music, Upload, Box, Send, ChevronDown, Shuffle,
-  Loader2, Zap, Check, X as XIcon,
+  Loader2, Zap, Check, X as XIcon, Plus, FileText,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 
 type ContentType = "video" | "image" | "audio";
+
+/* ─── Asset Chip Types ─── */
+export interface AssetChip {
+  id: string;
+  type: "character" | "video" | "image" | "script" | "music" | "audio";
+  label: string;
+  thumbnail?: string;
+}
+
+const CHIP_STYLES: Record<AssetChip["type"], { icon: typeof User; bg: string; text: string }> = {
+  character: { icon: User, bg: "bg-foreground/[0.06]", text: "text-foreground" },
+  video: { icon: Video, bg: "bg-foreground/[0.06]", text: "text-foreground" },
+  image: { icon: Image, bg: "bg-foreground/[0.06]", text: "text-foreground" },
+  script: { icon: FileText, bg: "bg-foreground/[0.06]", text: "text-foreground" },
+  music: { icon: Music, bg: "bg-foreground/[0.06]", text: "text-foreground" },
+  audio: { icon: AudioLines, bg: "bg-foreground/[0.06]", text: "text-foreground" },
+};
+
+/* ─── Sample assets to pick from ─── */
+const SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; items: { id: string; label: string; thumbnail?: string }[] }[] = [
+  {
+    category: "Characters",
+    type: "character",
+    items: [
+      { id: "char-clara", label: "Clara", thumbnail: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
+      { id: "char-alex", label: "Alex", thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
+      { id: "char-maya", label: "Maya", thumbnail: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop" },
+    ],
+  },
+  {
+    category: "Videos",
+    type: "video",
+    items: [
+      { id: "vid-1", label: "Video 1", thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=40&h=40&fit=crop" },
+      { id: "vid-2", label: "Video 2", thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=40&h=40&fit=crop" },
+    ],
+  },
+  {
+    category: "Scripts",
+    type: "script",
+    items: [
+      { id: "script-v1", label: "Script V1" },
+      { id: "script-v2", label: "Script V2" },
+    ],
+  },
+  {
+    category: "Music",
+    type: "music",
+    items: [
+      { id: "bgm-1", label: "BGM for Clara" },
+      { id: "bgm-2", label: "Upbeat Track" },
+      { id: "bgm-3", label: "Ambient Mood" },
+    ],
+  },
+];
 
 interface EditorPromptBoxProps {
   editorType: ContentType;
@@ -36,6 +91,10 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const [aspectRatio, setAspectRatio] = useState(editorType === "video" ? "16:9" : "1:1");
   const [duration, setDuration] = useState("10");
   const [imageCount, setImageCount] = useState(1);
+  const [chips, setChips] = useState<AssetChip[]>([]);
+  const [assetPickerOpen, setAssetPickerOpen] = useState(false);
+  const [assetSearch, setAssetSearch] = useState("");
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
   const ContentIcon = currentType.icon;
@@ -49,11 +108,40 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     }, 1200);
   };
 
+  const addChip = (type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
+    if (chips.find(c => c.id === item.id)) return;
+    setChips(prev => [...prev, { id: item.id, type, label: item.label, thumbnail: item.thumbnail }]);
+    setAssetPickerOpen(false);
+    setAssetSearch("");
+    // Focus textarea after adding
+    setTimeout(() => textareaRef.current?.focus(), 50);
+  };
+
+  const removeChip = (chipId: string) => {
+    setChips(prev => prev.filter(c => c.id !== chipId));
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      onSend();
+    }
+  };
+
+  const hasContent = chatInput.trim() || chips.length > 0;
+
+  const filteredAssets = SAMPLE_ASSETS.map(cat => ({
+    ...cat,
+    items: cat.items.filter(item =>
+      assetSearch ? item.label.toLowerCase().includes(assetSearch.toLowerCase()) : true
+    ),
+  })).filter(cat => cat.items.length > 0);
+
   return (
     <div className="rounded-xl border-2 border-accent/30 bg-background overflow-hidden">
-      {/* Textarea with content type icon + auto-prompt */}
-      <div className="relative">
-        <div className="absolute top-3 left-3 flex flex-col gap-1.5">
+      {/* Rich input area with inline chips */}
+      <div className="relative min-h-[80px]">
+        <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           <Tooltip>
             <TooltipTrigger asChild>
               <button onClick={() => setIsContentTypeOpen(!isContentTypeOpen)} className="p-1 transition hover:opacity-70">
@@ -84,122 +172,146 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           </div>
         )}
 
-        <textarea
-          value={chatInput}
-          onChange={e => onChatInputChange(e.target.value)}
-          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onSend(); } }}
-          placeholder={PLACEHOLDERS[contentType]}
-          rows={3}
-          className="w-full pl-12 pr-4 py-3 text-sm text-foreground placeholder:text-muted bg-transparent resize-none focus:outline-none"
-        />
+        {/* Chip + text area */}
+        <div className="pl-12 pr-4 pt-3 pb-1 cursor-text" onClick={() => textareaRef.current?.focus()}>
+          {/* Inline chips rendered above textarea */}
+          {chips.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mb-2">
+              {chips.map(chip => {
+                const style = CHIP_STYLES[chip.type];
+                const ChipIcon = style.icon;
+                return (
+                  <span key={chip.id} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[0.8rem] font-medium ${style.bg} ${style.text}`}>
+                    {chip.thumbnail ? (
+                      <img src={chip.thumbnail} alt="" className="w-5 h-5 rounded object-cover" />
+                    ) : (
+                      <span className="w-5 h-5 rounded bg-foreground/[0.08] flex items-center justify-center">
+                        <ChipIcon className="w-3 h-3 text-muted" />
+                      </span>
+                    )}
+                    {chip.label}
+                    <button onClick={(e) => { e.stopPropagation(); removeChip(chip.id); }}
+                      className="ml-0.5 p-0.5 rounded hover:bg-foreground/[0.08] transition-colors">
+                      <XIcon className="w-3 h-3 text-muted" />
+                    </button>
+                  </span>
+                );
+              })}
+            </div>
+          )}
+          <textarea
+            ref={textareaRef}
+            value={chatInput}
+            onChange={e => onChatInputChange(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={chips.length > 0 ? "Add more details..." : PLACEHOLDERS[contentType]}
+            rows={2}
+            className="w-full text-sm text-foreground placeholder:text-muted bg-transparent resize-none focus:outline-none"
+          />
+        </div>
       </div>
 
-      {/* Bottom toolbar — uses flex-nowrap + overflow-hidden to never wrap/scroll */}
+      {/* Bottom toolbar */}
       <div className="flex items-center px-3 pb-2.5 gap-1 min-w-0">
-        {/* Content Type Pill */}
-        <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium shrink-0 ${currentType.bgColor} ${currentType.color}`}>
-          <ContentIcon className="w-3.5 h-3.5" />
-          {currentType.label}
-          <button onClick={() => setContentType(editorType)} className="ml-0.5 hover:opacity-70"><XIcon className="w-3 h-3" /></button>
-        </div>
+        {/* + Button to add asset references */}
+        <Popover open={assetPickerOpen} onOpenChange={setAssetPickerOpen}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <PopoverTrigger asChild>
+                <button className="p-1.5 rounded-lg text-foreground hover:bg-foreground/[0.06] transition-colors shrink-0">
+                  <Plus className="w-5 h-5" />
+                </button>
+              </PopoverTrigger>
+            </TooltipTrigger>
+            <TooltipContent>Add Reference</TooltipContent>
+          </Tooltip>
+          <PopoverContent className="w-64 p-0" align="start" sideOffset={8}>
+            {/* Search */}
+            <div className="p-2 border-b border-foreground/[0.06]">
+              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
+                <Hash className="w-3.5 h-3.5 text-muted" />
+                <input
+                  value={assetSearch}
+                  onChange={e => setAssetSearch(e.target.value)}
+                  placeholder="Search assets..."
+                  className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted"
+                  autoFocus
+                />
+              </div>
+            </div>
+            <div className="max-h-64 overflow-y-auto p-1.5">
+              {filteredAssets.map(cat => (
+                <div key={cat.category}>
+                  <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
+                  {cat.items.map(item => {
+                    const isAdded = chips.find(c => c.id === item.id);
+                    const style = CHIP_STYLES[cat.type];
+                    const ItemIcon = style.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        onClick={() => addChip(cat.type, item)}
+                        disabled={!!isAdded}
+                        className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}
+                      >
+                        {item.thumbnail ? (
+                          <img src={item.thumbnail} alt="" className="w-7 h-7 rounded object-cover" />
+                        ) : (
+                          <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
+                            <ItemIcon className="w-3.5 h-3.5 text-muted" />
+                          </span>
+                        )}
+                        <span className="font-medium">{item.label}</span>
+                        {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              ))}
+              {filteredAssets.length === 0 && (
+                <p className="text-center text-sm text-muted py-4">No assets found</p>
+              )}
+            </div>
+          </PopoverContent>
+        </Popover>
 
-        <div className="w-px h-5 bg-foreground/[0.1] mx-1 shrink-0" />
+        <div className="w-px h-5 bg-foreground/[0.1] mx-0.5 shrink-0" />
 
-        {/* Mode-specific toolbar icons — shrink-0 each to prevent wrapping */}
-        <div className="flex items-center gap-0.5 shrink-0">
-          {contentType === "video" && (
-            <>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Box className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Tools</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><User className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Character</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Link className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Reference</TooltipContent></Tooltip>
-              <Popover>
-                <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors flex items-center gap-0.5"><Copy className="w-4 h-4" /><span className="text-[10px] font-medium">{aspectRatio}</span></button></PopoverTrigger></TooltipTrigger><TooltipContent>Ratio</TooltipContent></Tooltip>
-                <PopoverContent className="w-44 p-1.5" align="start">
-                  {["16:9", "9:16", "1:1", "4:3"].map(r => (
-                    <button key={r} onClick={() => setAspectRatio(r)} className={`w-full px-3 py-2 text-left text-sm rounded-lg transition-colors ${aspectRatio === r ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>{r}{aspectRatio === r && <Check className="w-3 h-3 inline ml-auto float-right mt-0.5" />}</button>
-                  ))}
-                </PopoverContent>
-              </Popover>
-              <Popover>
-                <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors flex items-center gap-0.5"><Clock className="w-4 h-4" /><span className="text-[10px] font-medium">{duration}s</span></button></PopoverTrigger></TooltipTrigger><TooltipContent>Duration</TooltipContent></Tooltip>
-                <PopoverContent className="w-40 p-1.5" align="start">
-                  {["5", "10", "15", "25", "30"].map(d => (
-                    <button key={d} onClick={() => setDuration(d)} className={`w-full px-3 py-2 text-left text-sm rounded-lg transition-colors ${duration === d ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>{d}s</button>
-                  ))}
-                </PopoverContent>
-              </Popover>
-            </>
-          )}
-          {contentType === "image" && (
-            <>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors flex items-center gap-0.5"><Box className="w-4 h-4" /><span className="text-[10px] font-medium">Auto</span></button></TooltipTrigger><TooltipContent>Tools</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><User className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Character</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Link className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Reference</TooltipContent></Tooltip>
-              <Popover>
-                <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors flex items-center gap-0.5"><Copy className="w-4 h-4" /><span className="text-[10px] font-medium">{aspectRatio}</span></button></PopoverTrigger></TooltipTrigger><TooltipContent>Ratio</TooltipContent></Tooltip>
-                <PopoverContent className="w-44 p-1.5" align="start">
-                  {["1:1", "16:9", "9:16", "4:3", "3:4"].map(r => (
-                    <button key={r} onClick={() => setAspectRatio(r)} className={`w-full px-3 py-2 text-left text-sm rounded-lg transition-colors ${aspectRatio === r ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>{r}</button>
-                  ))}
-                </PopoverContent>
-              </Popover>
-              <Popover>
-                <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors flex items-center gap-0.5"><Hash className="w-4 h-4" /><span className="text-[10px] font-medium">{imageCount}</span></button></PopoverTrigger></TooltipTrigger><TooltipContent>Number</TooltipContent></Tooltip>
-                <PopoverContent className="w-40 p-1.5" align="start">
-                  {[1, 2, 3, 4].map(n => (
-                    <button key={n} onClick={() => setImageCount(n)} className={`w-full px-3 py-2 text-left text-sm rounded-lg transition-colors ${imageCount === n ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>{n} Image{n > 1 ? "s" : ""}</button>
-                  ))}
-                </PopoverContent>
-              </Popover>
-            </>
-          )}
-          {contentType === "audio" && (
-            <>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Box className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Tools</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Mic className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Heart className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Emotion</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Sparkles className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Effects</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"><Music className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Music Style</TooltipContent></Tooltip>
-            </>
-          )}
-        </div>
+        {/* AI Agent dropdown */}
+        <Popover>
+          <PopoverTrigger asChild>
+            <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm text-muted hover:text-foreground transition-colors hover:bg-foreground/[0.04] shrink-0">
+              <Sparkles className="w-4 h-4" />
+              <span className="text-xs font-medium">AI agent</span>
+              <ChevronDown className="w-3 h-3 opacity-60" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent className="w-52 p-1.5" align="start">
+            <p className="px-3 py-1.5 text-xs font-medium text-muted">Enhance Prompt</p>
+            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { onChatInputChange(chatInput + " — quick enhancement"); setIsEnhancing(false); }, 800); }}
+              className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
+              <Zap className="w-3.5 h-3.5 text-amber-500" /> Fast Enhance
+            </button>
+            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { onChatInputChange(chatInput + " — cinematic, detailed, high quality"); setIsEnhancing(false); }, 1500); }}
+              className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
+              <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Deep Enhance
+            </button>
+            <div className="border-t border-foreground/[0.06] my-1" />
+            <p className="px-3 py-1.5 text-xs font-medium text-muted">Agent Mode</p>
+            {["Auto", "Creative", "Precise", "Balanced"].map(m => (
+              <button key={m} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04]">{m}</button>
+            ))}
+          </PopoverContent>
+        </Popover>
 
         {/* Spacer */}
         <div className="flex-1 min-w-0" />
 
-        {/* Right side: Agent dropdown + Send */}
-        <div className="flex items-center gap-2 shrink-0">
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm text-muted hover:text-foreground transition-colors hover:bg-foreground/[0.04]">
-                <Sparkles className="w-4 h-4" />
-                <span className="hidden sm:inline">Agent</span>
-                <ChevronDown className="w-3 h-3 opacity-60" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="w-52 p-1.5" align="end">
-              <p className="px-3 py-1.5 text-xs font-medium text-muted">Enhance Prompt</p>
-              <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { onChatInputChange(chatInput + " — quick enhancement"); setIsEnhancing(false); }, 800); }}
-                className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
-                <Zap className="w-3.5 h-3.5 text-amber-500" /> Fast Enhance
-              </button>
-              <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { onChatInputChange(chatInput + " — cinematic, detailed, high quality"); setIsEnhancing(false); }, 1500); }}
-                className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
-                <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Deep Enhance
-              </button>
-              <div className="border-t border-foreground/[0.06] my-1" />
-              <p className="px-3 py-1.5 text-xs font-medium text-muted">Agent Mode</p>
-              {["Auto", "Creative", "Precise", "Balanced"].map(m => (
-                <button key={m} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04]">{m}</button>
-              ))}
-            </PopoverContent>
-          </Popover>
-
-          <button onClick={onSend} disabled={isStreaming || !chatInput.trim()}
-            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors shrink-0 ${chatInput.trim() && !isStreaming ? "bg-accent text-white hover:bg-accent/90" : "bg-accent/20 text-accent/50"}`}>
-            <Send className="w-4 h-4" />
-          </button>
-        </div>
+        {/* Send button */}
+        <button onClick={onSend} disabled={isStreaming || !hasContent}
+          className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors shrink-0 ${hasContent && !isStreaming ? "bg-foreground text-background hover:bg-foreground/90" : "bg-foreground/10 text-muted"}`}>
+          <Send className="w-4 h-4 -rotate-45" />
+        </button>
       </div>
     </div>
   );
