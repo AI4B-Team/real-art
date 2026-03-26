@@ -1098,7 +1098,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               <div className="absolute bottom-3 right-4 text-xs font-mono text-muted">{formatTime(duration)}</div>
             </div>
           </div>
-        </div>
+          </>
           )}
         </div>
 
