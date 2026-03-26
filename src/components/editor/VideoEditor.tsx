@@ -174,18 +174,89 @@ const VideoEditor = ({ video }: Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [languageSearch, setLanguageSearch] = useState("");
 
-  const handleSendChat = () => {
-    if (!chatInput.trim()) return;
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  const handleSendChat = async () => {
+    if (!chatInput.trim() || isStreaming) return;
     const userMsg: ChatMessage = { role: "user", content: chatInput };
-    setChatMessages(prev => [...prev, userMsg]);
+    const newMessages = [...chatMessages, userMsg];
+    setChatMessages(newMessages);
     setChatInput("");
-    // Simulate AI response
-    setTimeout(() => {
-      setChatMessages(prev => [...prev, {
-        role: "assistant",
-        content: "I've come up with three story options for you:\n\n1. **The Guardian of the Whispering Woods**: Clara discovers she has the rare gift to communicate with ancient forest spirits.\n\n2. **The Dragon's Apprentice**: After finding a lost dragon hatchling, Clara embarks on a perilous journey.\n\n3. **The Starlight Hunter**: In a world where stars fall to earth as magical crystals, Clara must collect them before darkness spreads."
-      }]);
-    }, 1500);
+    setIsStreaming(true);
+    
+    // Switch to AI Chat tab to show response
+    setActiveTab("ai-chat");
+
+    try {
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/video-chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ messages: newMessages }),
+      });
+
+      if (!resp.ok || !resp.body) {
+        if (resp.status === 429) {
+          toast({ title: "Rate limited", description: "Please try again in a moment.", variant: "destructive" });
+        } else if (resp.status === 402) {
+          toast({ title: "Usage limit reached", description: "Please add credits to continue.", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: "Failed to get AI response.", variant: "destructive" });
+        }
+        setIsStreaming(false);
+        return;
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+      let assistantSoFar = "";
+      let streamDone = false;
+
+      while (!streamDone) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") { streamDone = true; break; }
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            if (content) {
+              assistantSoFar += content;
+              const currentContent = assistantSoFar;
+              setChatMessages(prev => {
+                const last = prev[prev.length - 1];
+                if (last?.role === "assistant") {
+                  return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: currentContent } : m));
+                }
+                return [...prev, { role: "assistant", content: currentContent }];
+              });
+            }
+          } catch {
+            textBuffer = line + "\n" + textBuffer;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Chat error:", e);
+      toast({ title: "Connection error", description: "Could not reach AI service.", variant: "destructive" });
+    }
+    setIsStreaming(false);
   };
 
   const [tracks, setTracks] = useState<TimelineTrack[]>([
