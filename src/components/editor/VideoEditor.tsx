@@ -2606,23 +2606,18 @@ const VideoEditor = ({ video }: Props) => {
                       );
                     })}
 
-                    {/* Dot before add scene */}
-                    <div className="flex items-center justify-center mx-1">
-                      <div className="w-4 h-4 rounded-full bg-foreground/[0.08] flex items-center justify-center">
-                        <div className="w-1.5 h-1.5 rounded-full bg-muted" />
-                      </div>
+                    {/* Add scene button — inline dashed circle */}
+                    <div className="flex items-center ml-2">
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <button onClick={addSceneAtEnd}
+                            className="w-12 h-12 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center cursor-pointer hover:border-accent hover:bg-accent/5 transition-all group">
+                            <Plus className="w-5 h-5 text-muted group-hover:text-accent transition-colors" />
+                          </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="bottom">Add Scene</TooltipContent>
+                      </Tooltip>
                     </div>
-
-                    {/* Add scene button */}
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <div onClick={addSceneAtEnd}
-                          className="w-32 h-20 rounded-lg border-2 border-dashed border-foreground/[0.12] flex items-center justify-center cursor-pointer hover:border-accent hover:bg-accent/5 transition-all group ml-1">
-                          <Plus className="w-6 h-6 text-muted group-hover:text-accent transition-colors" />
-                        </div>
-                      </TooltipTrigger>
-                      <TooltipContent side="bottom">Add New Scene</TooltipContent>
-                    </Tooltip>
                   </div>
                 </div>
               ) : (
