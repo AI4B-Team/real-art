@@ -740,7 +740,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
 
       {/* Logo — hidden when sidebar has logo */}
       {!hideLogo && (
-        <div className="hidden md:flex items-center gap-0 shrink-0">
+        <div className="hidden md:flex items-center gap-0 shrink-0 ml-1 mr-3">
           <Logo to={isLoggedIn ? "/dashboard" : "/"} />
         </div>
       )}
