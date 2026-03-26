@@ -226,7 +226,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
                   </Tooltip>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <button onClick={e => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}`); }} className={iconBtn}>
+                      <button onClick={e => { e.stopPropagation(); e.preventDefault(); navigate("/editor", { state: { imageUrl: `https://images.unsplash.com/${photo}?w=1600&q=90`, editorTab: "image" } }); }} className={iconBtn}>
                         <Pencil className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger>
