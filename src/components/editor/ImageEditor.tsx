@@ -128,6 +128,9 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [inputValue, setInputValue] = useState("");
   const [activeLeftTab, setActiveLeftTab] = useState<LeftTab>("creations");
+  const [adjustSubTab, setAdjustSubTab] = useState<"adjustments" | "filters">("adjustments");
+  const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "elements">("effects");
+  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand">("general");
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
   const drawingCanvasRef = useRef<HTMLCanvasElement>(null);
