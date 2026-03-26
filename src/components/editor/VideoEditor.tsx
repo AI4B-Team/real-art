@@ -746,7 +746,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Script Tab */}
               {activeTab === "script" && (
                 <div className="space-y-4">
-                  {/* Upload / Import script */}
+                  <h3 className="text-sm font-bold">Script</h3>
                   <div className="flex items-center gap-2">
                     <label className="flex-1 flex items-center gap-2 px-3 py-2 bg-foreground/[0.04] border border-dashed border-foreground/[0.15] rounded-lg text-sm text-muted hover:border-foreground/[0.25] hover:text-foreground cursor-pointer transition-colors">
                       <Upload className="w-4 h-4 shrink-0" />
@@ -828,6 +828,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Character Tab */}
               {activeTab === "character" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Character</h3>
                   <p className="text-sm text-muted">Create and manage AI characters for your videos.</p>
                   <button className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors">
                     <Plus className="w-4 h-4" />Create Character
@@ -852,6 +853,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Visuals Tab */}
               {activeTab === "visuals" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Visuals</h3>
                   <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
                     {["Videos", "Images", "Elements"].map(sub => (
                       <button key={sub} onClick={() => setVisualsSubTab(sub)}
@@ -889,6 +891,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Audio Tab */}
               {activeTab === "audio" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Audio</h3>
                   <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
                     {["Voices", "Music", "Sound Effects"].map(sub => (
                       <button key={sub} onClick={() => setAudioSubTab(sub)}
@@ -958,6 +961,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Text Tab */}
               {activeTab === "text" && (
                 <div className="space-y-3">
+                  <h3 className="text-sm font-bold">Text</h3>
                   {["Heading", "Subheading", "Body Text", "Caption", "Lower Third", "Title Card"].map(preset => (
                     <button key={preset} onClick={() => toast({ title: `${preset} added to timeline` })}
                       className="w-full p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-accent/40 text-left transition-all group">
@@ -970,6 +974,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Captions Tab */}
               {activeTab === "captions" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Captions</h3>
                   <div className="flex items-center justify-end gap-2">
                     <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download SRT</TooltipContent></Tooltip>
@@ -990,6 +995,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Effects Tab */}
               {activeTab === "effects" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Effects</h3>
                   <div className="grid grid-cols-4 gap-2">
                     {EFFECTS_DATA.map(effect => (
                       <button key={effect} onClick={() => toast({ title: `${effect} applied` })}
@@ -1007,6 +1013,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Elements Tab */}
               {activeTab === "elements" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Elements</h3>
                   <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
                     {["Shapes", "Stickers", "Overlays"].map(sub => (
                       <button key={sub} className="flex-1 py-2 rounded-md text-xs font-medium text-muted hover:text-foreground hover:bg-background transition-colors">{sub}</button>
@@ -1026,6 +1033,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Transitions Tab */}
               {activeTab === "transitions" && (
                 <div className="space-y-3">
+                  <h3 className="text-sm font-bold">Transitions</h3>
                   {["Fade", "Dissolve", "Wipe Left", "Wipe Right", "Zoom In", "Zoom Out", "Slide Up", "Slide Down", "Spin", "Glitch"].map(tr => (
                     <button key={tr} onClick={() => toast({ title: `${tr} transition applied` })}
                       className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-accent/40 transition-all text-left">
@@ -1040,7 +1048,7 @@ const VideoEditor = ({ video }: Props) => {
               {activeTab === "templates" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-bold text-foreground">Templates</h3>
+                    <h3 className="text-sm font-bold">Templates</h3>
                     <button className="flex items-center gap-1.5 px-4 py-2 bg-foreground text-background rounded-lg text-sm font-medium hover:bg-foreground/90 transition-colors">
                       <Plus className="w-4 h-4" />Create template
                     </button>
@@ -1082,7 +1090,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Languages Tab */}
               {activeTab === "languages" && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-foreground">Languages</h3>
+                  <h3 className="text-sm font-bold">Languages</h3>
                   <p className="text-sm text-muted">Translate and dub your video into different languages.</p>
                   
                   <div className="relative">
@@ -1141,7 +1149,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Settings Tab */}
               {activeTab === "settings" && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-foreground">Settings</h3>
+                  <h3 className="text-sm font-bold">Settings</h3>
 
                   {/* Size */}
                   <div className="space-y-3">
