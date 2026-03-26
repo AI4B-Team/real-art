@@ -85,7 +85,7 @@ const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "effects", icon: Zap, label: "Effects" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "brand", icon: Palette, label: "Brand Kit" },
-  { id: "export", icon: Download, label: "Export" },
+  
   { id: "tools", icon: Wrench, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
