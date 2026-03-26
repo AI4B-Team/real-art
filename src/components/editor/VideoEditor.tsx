@@ -2012,6 +2012,15 @@ const VideoEditor = ({ video }: Props) => {
           )}
         </div>
       </div>
+      <RecordingModeModal
+        open={showRecordingModal}
+        onClose={() => setShowRecordingModal(false)}
+        editorType="video"
+        onRecordingComplete={(mode, duration) => {
+          handleAddTrack();
+          toast({ title: `${mode} recording added`, description: `${duration}s clip added to timeline` });
+        }}
+      />
     </div>
   );
 };
