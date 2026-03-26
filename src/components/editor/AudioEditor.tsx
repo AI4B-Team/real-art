@@ -163,6 +163,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [isLooping, setIsLooping] = useState(false);
   const [snapEnabled, setSnapEnabled] = useState(true);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
+  const [timelineHeight, setTimelineHeight] = useState(208);
+  const timelineResizeRef = useRef<{ startY: number; startH: number } | null>(null);
   const [showSpectral, setShowSpectral] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
