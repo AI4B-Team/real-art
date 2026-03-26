@@ -746,7 +746,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Script Tab */}
               {activeTab === "script" && (
                 <div className="space-y-4">
-                  {/* Upload / Import script */}
+                  <h3 className="text-sm font-bold">Script</h3>
                   <div className="flex items-center gap-2">
                     <label className="flex-1 flex items-center gap-2 px-3 py-2 bg-foreground/[0.04] border border-dashed border-foreground/[0.15] rounded-lg text-sm text-muted hover:border-foreground/[0.25] hover:text-foreground cursor-pointer transition-colors">
                       <Upload className="w-4 h-4 shrink-0" />
