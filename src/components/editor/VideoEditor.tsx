@@ -1207,420 +1207,116 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
                )}
 
-              {/* Captions tab — consolidated */}
-              {activeTab === "transcript" && (
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold">Transcript</h3>
-                    {hasTranscript && (
-                      <span className="text-xs text-muted">{transcriptTokens.length} words</span>
-                    )}
-                  </div>
-
-                  {!hasTranscript ? (
-                    <div className="flex flex-col items-center justify-center py-10 text-center">
-                      <div className="w-14 h-14 bg-foreground/[0.04] rounded-2xl flex items-center justify-center mb-4">
-                        <FileText className="w-7 h-7 text-muted/50" />
-                      </div>
-                      <h4 className="text-sm font-bold text-foreground mb-1">No Transcript Yet</h4>
-                      <p className="text-xs text-muted leading-relaxed max-w-[220px] mb-6">Transcribe your video's audio to enable text-based editing, filler word removal, and more.</p>
-                      <button onClick={() => { setTranscriptLoading(true); setTimeout(() => { setHasTranscript(true); setTranscriptLoading(false); toast({ title: "Transcript generated", description: `${SAMPLE_TRANSCRIPT.length} words transcribed` }); }, 2000); }}
-                        disabled={transcriptLoading}
-                        className="flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-xl text-sm font-medium hover:bg-foreground/90 transition-colors disabled:opacity-50">
-                        {transcriptLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mic className="w-4 h-4" />}
-                        {transcriptLoading ? "Transcribing..." : "Transcribe Audio"}
-                      </button>
-                    </div>
-                  ) : (
-                    <>
-                      {/* Action buttons */}
-                      <div className="flex items-center gap-2">
-                        <button onClick={() => { setFillerMode(!fillerMode); if (!fillerMode) { const count = transcriptTokens.filter(t => t.isFiller).length; toast({ title: `Found ${count} filler words` }); } }}
-                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${fillerMode ? "bg-accent text-white" : "bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}>
-                          <Wand2 className="w-3.5 h-3.5" />AI Clean
-                        </button>
-                        {fillerMode && (
-                          <button onClick={() => {
-                            const fillers = transcriptTokens.filter(t => t.isFiller);
-                            setTranscriptTokens(prev => prev.filter(t => !t.isFiller));
-                            toast({ title: `Removed ${fillers.length} filler words`, description: `Cut ${fillers.reduce((sum, t) => sum + (t.end - t.start), 0).toFixed(1)}s from timeline` });
-                            setFillerMode(false);
-                          }}
-                            className="flex items-center gap-2 px-3 py-2 bg-destructive/10 text-destructive rounded-lg text-xs font-medium hover:bg-destructive/20 transition-colors">
-                            <Trash2 className="w-3.5 h-3.5" />Remove {transcriptTokens.filter(t => t.isFiller).length} Fillers
-                          </button>
-                        )}
-                        <div className="flex-1" />
-                        <Tooltip><TooltipTrigger asChild><button onClick={() => { navigator.clipboard.writeText(transcriptTokens.map(t => t.word).join(" ")); toast({ title: "Copied to clipboard" }); }} className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
-                        <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Export SRT</TooltipContent></Tooltip>
-                      </div>
-
-                      {fillerMode && (
-                        <div className="flex items-center gap-2 p-3 rounded-xl bg-accent/[0.06] border border-accent/[0.15]">
-                          <Wand2 className="w-4 h-4 text-accent shrink-0" />
-                          <p className="text-xs text-foreground/80">
-                            <span className="font-semibold text-accent">{transcriptTokens.filter(t => t.isFiller).length}</span> filler words detected. Click to review or remove all at once.
-                          </p>
-                        </div>
-                      )}
-
-                      {/* Word tokens */}
-                      <div className="p-4 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] leading-relaxed">
-                        {transcriptTokens.map(token => (
-                          <span key={token.id}
-                            onClick={() => setCurrentTime(token.start)}
-                            className={`cursor-pointer rounded px-0.5 py-0.5 transition-colors text-sm ${
-                              currentTime >= token.start && currentTime < token.end ? "bg-yellow-200 text-foreground" : ""
-                            } ${token.isFiller && fillerMode ? "bg-destructive/20 text-destructive line-through" : ""
-                            } hover:bg-accent/10`}>
-                            {token.word}{" "}
-                          </span>
-                        ))}
-                      </div>
-
-                      {/* Remove Retakes (P5) */}
-                      <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
-                        <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">AI Clean Tools</h4>
-                        <button onClick={() => toast({ title: "Scanning for retakes...", description: "AI is analyzing repeated sentences" })}
-                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
-                          <RefreshCw className="w-5 h-5 text-muted shrink-0" />
-                          <div>
-                            <p className="text-sm font-medium">Remove Retakes</p>
-                            <p className="text-xs text-muted">Find and remove repeated sentences</p>
-                          </div>
-                        </button>
-                        <button onClick={() => { setShowSilencePanel(true); setSilencesFound(8); toast({ title: "Found 8 silent segments", description: "12.4s total silence detected" }); }}
-                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
-                          <Scissors className="w-5 h-5 text-muted shrink-0" />
-                          <div>
-                            <p className="text-sm font-medium">Remove Silences</p>
-                            <p className="text-xs text-muted">Cut segments below -45dB threshold</p>
-                          </div>
-                        </button>
-                        {showSilencePanel && silencesFound > 0 && (
-                          <div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] space-y-3">
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs font-medium">Found {silencesFound} segments (12.4s)</span>
-                              <button onClick={() => setShowSilencePanel(false)} className="p-1 text-muted hover:text-foreground"><XIcon className="w-3 h-3" /></button>
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-xs text-muted">Silence threshold: {silenceThreshold}ms</label>
-                              <input type="range" min={100} max={1000} step={50} value={silenceThreshold} onChange={e => setSilenceThreshold(Number(e.target.value))}
-                                className="w-full accent-accent" />
-                            </div>
-                            <button onClick={() => { setShowSilencePanel(false); setSilencesFound(0); toast({ title: "Silences removed", description: "12.4s cut from timeline" }); }}
-                              className="w-full py-2.5 bg-accent text-white rounded-lg text-xs font-medium hover:bg-accent/90 transition-colors">
-                              Remove All Silences
-                            </button>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Fix Word (P5) */}
-                      <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
-                        <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Voice Repair</h4>
-                        <button onClick={() => toast({ title: "Fix Word mode", description: "Click any word in the transcript to fix it with AI voice clone" })}
-                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
-                          <Mic className="w-5 h-5 text-muted shrink-0" />
-                          <div>
-                            <p className="text-sm font-medium">Fix Word</p>
-                            <p className="text-xs text-muted">AI voice clone to fix mispronunciations</p>
-                          </div>
-                        </button>
-                      </div>
-                    </>
-                  )}
-                </div>
-              )}
-
-              {/* ═══ CREATE CLIPS TAB (P4) ═══ */}
-              {activeTab === "clips" && (
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold">Create Clips</h3>
-                  <p className="text-xs text-muted leading-relaxed">Let AI find your best moments and package them as short-form clips for social media.</p>
-
-                  {!clipsGenerated ? (
-                    <div className="space-y-4">
-                      <div className="space-y-3">
-                        <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                          <span className="text-sm text-muted">Number of Clips</span>
-                          <div className="flex items-center gap-2">
-                            {[1, 3, 5].map(n => (
-                              <button key={n} onClick={() => setClipCount(n)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${clipCount === n ? "bg-foreground text-background" : "bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}>
-                                {n}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                          <span className="text-sm text-muted">Target Duration</span>
-                          <div className="flex items-center gap-2">
-                            {["15s", "30s", "60s"].map(d => (
-                              <button key={d} onClick={() => setClipDuration(d)}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${clipDuration === d ? "bg-foreground text-background" : "bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}>
-                                {d}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-
-                      <button onClick={() => { setClipsGenerated(true); toast({ title: "Clips generated", description: `Found ${CLIP_SUGGESTIONS.length} best moments` }); }}
-                        className="w-full flex items-center justify-center gap-2 py-3 bg-accent text-white rounded-xl font-medium text-sm hover:bg-accent/90 transition-colors">
-                        <Sparkles className="w-4 h-4" />
-                        Find Best Moments
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="space-y-3">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-medium text-muted">{CLIP_SUGGESTIONS.length} clips found</span>
-                        <button onClick={() => { setClipsGenerated(false); setAcceptedClips(new Set()); }}
-                          className="text-xs text-accent hover:underline">Regenerate</button>
-                      </div>
-                      {CLIP_SUGGESTIONS.map((clip, i) => (
-                        <div key={i} className={`p-4 rounded-xl border transition-all ${acceptedClips.has(i) ? "border-emerald-500/40 bg-emerald-500/[0.04]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="text-sm font-semibold text-foreground">{clip.label}</h4>
-                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-foreground/[0.06] text-muted capitalize">{clip.platform}</span>
-                          </div>
-                          <p className="text-xs text-muted mb-3">{clip.rationale}</p>
-                          <div className="flex items-center justify-between">
-                            <span className="text-xs font-mono text-muted">{clip.start.toFixed(1)}s — {clip.end.toFixed(1)}s</span>
-                            <div className="flex items-center gap-2">
-                              <button onClick={() => setCurrentTime(clip.start)}
-                                className="px-3 py-1.5 bg-foreground/[0.06] rounded-lg text-xs font-medium hover:bg-foreground/[0.1] transition-colors">
-                                Preview
-                              </button>
-                              <button onClick={() => { setAcceptedClips(prev => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; }); toast({ title: acceptedClips.has(i) ? "Clip removed" : "Clip accepted" }); }}
-                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${acceptedClips.has(i) ? "bg-emerald-500 text-white" : "bg-foreground text-background hover:bg-foreground/90"}`}>
-                                {acceptedClips.has(i) ? <><Check className="w-3 h-3 inline mr-1" />Accepted</> : "Accept"}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                      {acceptedClips.size > 0 && (
-                        <button onClick={() => toast({ title: `Exporting ${acceptedClips.size} clips...` })}
-                          className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90 transition-colors">
-                          <Download className="w-4 h-4" />Export {acceptedClips.size} Clip{acceptedClips.size !== 1 ? "s" : ""}
-                        </button>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Social Export Presets */}
-                  <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
-                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Social Export Presets</h4>
-                    {SOCIAL_EXPORT_PRESETS.map(preset => (
-                      <button key={preset.platform} onClick={() => { setSelectedRatio(preset.ratio); toast({ title: `${preset.platform} preset applied`, description: `${preset.ratio} · ${preset.res}` }); }}
-                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
-                        <span className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center text-sm">{preset.icon}</span>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-foreground">{preset.platform}</p>
-                          <p className="text-[10px] text-muted">{preset.ratio} · {preset.res} · Max {preset.maxDur}</p>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* ═══ AI METADATA TAB (P6) ═══ */}
-              {activeTab === "metadata" && (
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold">AI Show Notes</h3>
-                  <p className="text-xs text-muted leading-relaxed">Generate YouTube descriptions, show notes, chapters, and social media posts from your video transcript in one click.</p>
-
-                  {!metadataGenerated ? (
-                    <button onClick={() => { setMetadataGenerated(true); toast({ title: "Metadata generated", description: "All content fields are ready to edit" }); }}
-                      className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90 transition-colors">
-                      <Sparkles className="w-4 h-4" />Generate All
-                    </button>
-                  ) : (
-                    <div className="space-y-4">
-                      {/* Titles */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Title Options</h4>
-                          <button onClick={() => { navigator.clipboard.writeText(metaTitles[0]); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
-                        </div>
-                        {metaTitles.map((title, i) => (
-                          <div key={i} className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-sm text-foreground cursor-pointer hover:border-foreground/[0.12] transition-colors">{title}</div>
-                        ))}
-                      </div>
-
-                      {/* Description */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Description</h4>
-                          <button onClick={() => { navigator.clipboard.writeText(metaDescription); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
-                        </div>
-                        <div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-xs text-foreground/80 leading-relaxed">{metaDescription}</div>
-                      </div>
-
-                      {/* Tags */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Tags</h4>
-                          <button onClick={() => { navigator.clipboard.writeText(metaTags.join(", ")); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          {metaTags.map(tag => (
-                            <span key={tag} className="px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-xs font-medium text-foreground">#{tag}</span>
-                          ))}
-                        </div>
-                      </div>
-
-                      {/* Chapters */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Chapters</h4>
-                          <button onClick={() => { navigator.clipboard.writeText(metaChapters.map(c => `${c.time} ${c.label}`).join("\n")); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
-                        </div>
-                        {metaChapters.map((ch, i) => (
-                          <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/[0.03] transition-colors">
-                            <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md">{ch.time}</span>
-                            <span className="text-sm text-foreground">{ch.label}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      {/* Show Notes */}
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Show Notes</h4>
-                          <button onClick={() => { navigator.clipboard.writeText(metaShowNotes); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
-                        </div>
-                        <div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-xs text-foreground/80 leading-relaxed">{metaShowNotes}</div>
-                      </div>
-
-                      <button onClick={() => setMetadataGenerated(false)} className="w-full flex items-center justify-center gap-2 py-2.5 bg-foreground/[0.06] text-foreground rounded-xl text-xs font-medium hover:bg-foreground/[0.1] transition-colors">
-                        <RefreshCw className="w-3.5 h-3.5" />Regenerate
-                      </button>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Captions — standalone tab */}
+              {/* Captions tab — all features consolidated under sub-tabs */}
               {activeTab === "captions" && (
                 <div className="space-y-4">
-                  {/* Edit / Style sub-tabs */}
                   <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
-                    {([{id:"edit",label:"Edit"},{id:"style",label:"Style"}] as {id:"edit"|"style";label:string}[]).map(sub => (
-                      <button key={sub.id} onClick={() => setCaptionSubTab(sub.id)}
-                        className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-colors ${captionSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                    {([{id:"edit",label:"Edit"},{id:"style",label:"Style"},{id:"transcript",label:"Transcript"},{id:"clips",label:"Clips"},{id:"notes",label:"AI Notes"}] as {id:string;label:string}[]).map(sub => (
+                      <button key={sub.id} onClick={() => setCaptionSubTab(sub.id as any)}
+                        className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${captionSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
                     ))}
                   </div>
-
-                  {/* Edit sub-tab */}
                   {captionSubTab === "edit" && (
                     <div className="space-y-3">
-                      {/* Search + display mode */}
                       <div className="flex gap-2">
-                        <div className="flex-1 flex items-center gap-2 bg-foreground/[0.04] rounded-lg px-3 py-2">
-                          <Search className="w-4 h-4 text-muted shrink-0" />
-                          <input value={captionSearch} onChange={e => setCaptionSearch(e.target.value)} placeholder="Search" className="bg-transparent text-sm w-full outline-none placeholder:text-muted" />
-                        </div>
-                        <Popover>
-                          <PopoverTrigger asChild>
-                            <button className="flex items-center gap-2 bg-foreground/[0.04] rounded-lg px-3 py-2 text-sm text-muted hover:text-foreground transition-colors shrink-0">
-                              <Captions className="w-4 h-4" />
-                              <span className="capitalize">{captionDisplayMode}</span>
-                              <ChevronDown className="w-3 h-3" />
-                            </button>
-                          </PopoverTrigger>
-                          <PopoverContent className="w-36 p-1.5" align="end">
-                            {["word", "sentence", "paragraph"].map(mode => (
-                              <button key={mode} onClick={() => setCaptionDisplayMode(mode)}
-                                className={`w-full px-3 py-2 text-left text-sm rounded-lg capitalize transition-colors ${captionDisplayMode === mode ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>
-                                {mode}
-                                {captionDisplayMode === mode && <Check className="w-3.5 h-3.5 float-right mt-0.5" />}
-                              </button>
-                            ))}
-                          </PopoverContent>
+                        <div className="flex-1 flex items-center gap-2 bg-foreground/[0.04] rounded-lg px-3 py-2"><Search className="w-4 h-4 text-muted shrink-0" /><input value={captionSearch} onChange={e => setCaptionSearch(e.target.value)} placeholder="Search" className="bg-transparent text-sm w-full outline-none placeholder:text-muted" /></div>
+                        <Popover><PopoverTrigger asChild><button className="flex items-center gap-2 bg-foreground/[0.04] rounded-lg px-3 py-2 text-sm text-muted hover:text-foreground transition-colors shrink-0"><Captions className="w-4 h-4" /><span className="capitalize">{captionDisplayMode}</span><ChevronDown className="w-3 h-3" /></button></PopoverTrigger>
+                          <PopoverContent className="w-36 p-1.5" align="end">{["word","sentence","paragraph"].map(mode=>(<button key={mode} onClick={()=>setCaptionDisplayMode(mode)} className={`w-full px-3 py-2 text-left text-sm rounded-lg capitalize transition-colors ${captionDisplayMode===mode?"bg-accent/10 text-accent font-medium":"hover:bg-foreground/[0.04]"}`}>{mode}{captionDisplayMode===mode&&<Check className="w-3.5 h-3.5 float-right mt-0.5"/>}</button>))}</PopoverContent>
                         </Popover>
                       </div>
-
-                      {/* Tool icons row */}
                       <div className="flex items-center gap-1">
                         <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><SlidersHorizontal className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Adjust Timing</TooltipContent></Tooltip>
                         <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Languages className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Translate</TooltipContent></Tooltip>
-                        <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Settings className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Caption Settings</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Settings className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Settings</TooltipContent></Tooltip>
                       </div>
-
-                      {/* Auto Generate button */}
-                      <button onClick={() => { setHasCaptions(true); toast({ title: "Captions generated", description: "Auto-generated captions from audio" }); }}
-                        className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90 transition-colors">
-                        <Sparkles className="w-4 h-4" />
-                        Auto Generate Captions
-                      </button>
-
-                      {/* Add Manual + Import SRT */}
+                      <button onClick={()=>{setHasCaptions(true);toast({title:"Captions generated"});}} className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90 transition-colors"><Sparkles className="w-4 h-4"/>Auto Generate Captions</button>
                       <div className="grid grid-cols-2 gap-2">
-                        <button onClick={() => { setHasCaptions(true); toast({ title: "Manual caption added" }); }}
-                          className="flex items-center justify-center gap-2 py-3 bg-foreground/[0.04] border border-foreground/[0.06] rounded-xl text-sm font-medium text-foreground hover:bg-foreground/[0.08] transition-colors">
-                          <Type className="w-4 h-4" />Add Manual
-                        </button>
-                        <button onClick={() => toast({ title: "Import SRT", description: "Select an SRT file to import" })}
-                          className="flex items-center justify-center gap-2 py-3 bg-foreground/[0.04] border border-foreground/[0.06] rounded-xl text-sm font-medium text-foreground hover:bg-foreground/[0.08] transition-colors">
-                          <Upload className="w-4 h-4" />Import SRT
-                        </button>
+                        <button onClick={()=>setHasCaptions(true)} className="flex items-center justify-center gap-2 py-3 bg-foreground/[0.04] border border-foreground/[0.06] rounded-xl text-sm font-medium text-foreground hover:bg-foreground/[0.08] transition-colors"><Type className="w-4 h-4"/>Add Manual</button>
+                        <button onClick={()=>toast({title:"Import SRT"})} className="flex items-center justify-center gap-2 py-3 bg-foreground/[0.04] border border-foreground/[0.06] rounded-xl text-sm font-medium text-foreground hover:bg-foreground/[0.08] transition-colors"><Upload className="w-4 h-4"/>Import SRT</button>
                       </div>
-
-                      {/* Caption list or empty state */}
                       {hasCaptions ? (
                         <div className="space-y-2 pt-2">
                           <div className="flex items-center justify-end gap-2 mb-2">
-                            <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
-                            <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download SRT</TooltipContent></Tooltip>
+                            <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground"><Copy className="w-4 h-4"/></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
+                            <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground"><Download className="w-4 h-4"/></button></TooltipTrigger><TooltipContent>Download SRT</TooltipContent></Tooltip>
                           </div>
-                          <div className="border-t border-foreground/[0.06] pt-3" />
-                          {filteredCaptions.map((cap, i) => (
-                            <div key={i} className="flex items-start gap-3 group cursor-pointer hover:bg-foreground/[0.03] rounded-lg p-2 -mx-2 transition-colors">
-                              <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md shrink-0 mt-0.5">{cap.time}</span>
-                              <span className="text-sm text-foreground leading-relaxed">{cap.text}</span>
-                            </div>
-                          ))}
+                          <div className="border-t border-foreground/[0.06] pt-3"/>
+                          {filteredCaptions.map((cap,i)=>(<div key={i} className="flex items-start gap-3 group cursor-pointer hover:bg-foreground/[0.03] rounded-lg p-2 -mx-2 transition-colors"><span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md shrink-0 mt-0.5">{cap.time}</span><span className="text-sm text-foreground leading-relaxed">{cap.text}</span></div>))}
                         </div>
                       ) : (
-                        <div className="flex flex-col items-center justify-center py-8 text-center">
-                          <div className="w-14 h-14 bg-foreground/[0.04] rounded-2xl flex items-center justify-center mb-4">
-                            <Captions className="w-7 h-7 text-muted/50" />
-                          </div>
-                          <h4 className="text-sm font-bold text-foreground mb-1">No Captions Yet</h4>
-                          <p className="text-xs text-muted leading-relaxed max-w-[200px]">Generate captions automatically from your video's audio or add them manually</p>
-                        </div>
+                        <div className="flex flex-col items-center justify-center py-8 text-center"><div className="w-14 h-14 bg-foreground/[0.04] rounded-2xl flex items-center justify-center mb-4"><Captions className="w-7 h-7 text-muted/50"/></div><h4 className="text-sm font-bold mb-1">No Captions Yet</h4><p className="text-xs text-muted max-w-[200px]">Generate captions automatically or add them manually</p></div>
                       )}
                     </div>
                   )}
-
-                  {/* Style sub-tab */}
                   {captionSubTab === "style" && (
                     <div className="space-y-4">
                       <h4 className="text-sm font-bold">Caption Style</h4>
                       <div className="grid grid-cols-2 gap-2">
-                        {([
-                          { id: "classic", label: "Classic", preview: "Classic", bg: "bg-foreground", text: "text-background" },
-                          { id: "slam", label: "Yellow Slam", preview: "SLAM", bg: "bg-yellow-400", text: "text-foreground" },
-                          { id: "neon", label: "Neon Glow", preview: "Neon", bg: "bg-transparent", text: "text-pink-500", border: true },
-                          { id: "brat", label: "Brat", preview: "BRAT", bg: "bg-lime-400", text: "text-foreground" },
-                          { id: "chaotic", label: "Chaotic", preview: "Chaos", bg: "bg-purple-500", text: "text-white" },
-                          { id: "elegant", label: "Elegant", preview: "Elegant", bg: "bg-transparent", text: "text-foreground italic underline" },
-                          { id: "outline", label: "Outline", preview: "Outline", bg: "bg-transparent", text: "text-foreground font-black" },
-                          { id: "gradient", label: "Gradient", preview: "Gradient", bg: "bg-gradient-to-r from-blue-500 to-purple-500", text: "text-white" },
-                        ]).map(style => (
-                          <button key={style.id} onClick={() => { setCaptionStyle(style.id); toast({ title: `${style.label} style applied` }); }}
-                            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${captionStyle === style.id ? "border-foreground shadow-sm" : "border-foreground/[0.06] hover:border-foreground/[0.15]"}`}>
-                            <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-md text-sm font-bold ${style.bg} ${style.text} ${style.border ? "border border-current" : ""}`}>
-                              {style.preview}
-                            </span>
-                            <span className="text-xs font-medium text-muted">{style.label}</span>
-                          </button>
-                        ))}
+                        {([{id:"classic",label:"Classic",preview:"Classic",bg:"bg-foreground",text:"text-background"},{id:"slam",label:"Yellow Slam",preview:"SLAM",bg:"bg-yellow-400",text:"text-foreground"},{id:"neon",label:"Neon Glow",preview:"Neon",bg:"bg-transparent",text:"text-pink-500",border:true},{id:"brat",label:"Brat",preview:"BRAT",bg:"bg-lime-400",text:"text-foreground"},{id:"chaotic",label:"Chaotic",preview:"Chaos",bg:"bg-purple-500",text:"text-white"},{id:"elegant",label:"Elegant",preview:"Elegant",bg:"bg-transparent",text:"text-foreground italic underline"},{id:"outline",label:"Outline",preview:"Outline",bg:"bg-transparent",text:"text-foreground font-black"},{id:"gradient",label:"Gradient",preview:"Gradient",bg:"bg-gradient-to-r from-blue-500 to-purple-500",text:"text-white"}]).map(style=>(<button key={style.id} onClick={()=>{setCaptionStyle(style.id);toast({title:`${style.label} style applied`});}} className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${captionStyle===style.id?"border-foreground shadow-sm":"border-foreground/[0.06] hover:border-foreground/[0.15]"}`}><span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-md text-sm font-bold ${style.bg} ${style.text} ${style.border?"border border-current":""}`}>{style.preview}</span><span className="text-xs font-medium text-muted">{style.label}</span></button>))}
                       </div>
+                    </div>
+                  )}
+                  {captionSubTab === "transcript" && (
+                    <div className="space-y-4">
+                      {!hasTranscript ? (
+                        <div className="flex flex-col items-center justify-center py-10 text-center"><div className="w-14 h-14 bg-foreground/[0.04] rounded-2xl flex items-center justify-center mb-4"><FileText className="w-7 h-7 text-muted/50"/></div><h4 className="text-sm font-bold mb-1">No Transcript Yet</h4><p className="text-xs text-muted max-w-[220px] mb-6">Transcribe your video's audio to enable text-based editing and filler word removal.</p>
+                          <button onClick={()=>{setTranscriptLoading(true);setTimeout(()=>{setHasTranscript(true);setTranscriptLoading(false);toast({title:"Transcript generated"});},2000);}} disabled={transcriptLoading} className="flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-xl text-sm font-medium hover:bg-foreground/90 disabled:opacity-50">{transcriptLoading?<Loader2 className="w-4 h-4 animate-spin"/>:<Mic className="w-4 h-4"/>}{transcriptLoading?"Transcribing...":"Transcribe Audio"}</button>
+                        </div>
+                      ) : (
+                        <>
+                          <div className="flex items-center gap-2">
+                            <button onClick={()=>{setFillerMode(!fillerMode);if(!fillerMode)toast({title:`Found ${transcriptTokens.filter(t=>t.isFiller).length} filler words`});}} className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${fillerMode?"bg-accent text-white":"bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}><Wand2 className="w-3.5 h-3.5"/>AI Clean</button>
+                            {fillerMode&&(<button onClick={()=>{setTranscriptTokens(p=>p.filter(t=>!t.isFiller));setFillerMode(false);toast({title:"Filler words removed"});}} className="flex items-center gap-2 px-3 py-2 bg-destructive/10 text-destructive rounded-lg text-xs font-medium hover:bg-destructive/20"><Trash2 className="w-3.5 h-3.5"/>Remove {transcriptTokens.filter(t=>t.isFiller).length}</button>)}
+                            <div className="flex-1"/>
+                            <Tooltip><TooltipTrigger asChild><button onClick={()=>{navigator.clipboard.writeText(transcriptTokens.map(t=>t.word).join(" "));toast({title:"Copied"});}} className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground"><Copy className="w-4 h-4"/></button></TooltipTrigger><TooltipContent>Copy</TooltipContent></Tooltip>
+                          </div>
+                          {fillerMode&&(<div className="flex items-center gap-2 p-3 rounded-xl bg-accent/[0.06] border border-accent/[0.15]"><Wand2 className="w-4 h-4 text-accent shrink-0"/><p className="text-xs text-foreground/80"><span className="font-semibold text-accent">{transcriptTokens.filter(t=>t.isFiller).length}</span> filler words detected.</p></div>)}
+                          <div className="p-4 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] leading-relaxed">{transcriptTokens.map(token=>(<span key={token.id} onClick={()=>setCurrentTime(token.start)} className={`cursor-pointer rounded px-0.5 py-0.5 transition-colors text-sm ${currentTime>=token.start&&currentTime<token.end?"bg-yellow-200 text-foreground":""} ${token.isFiller&&fillerMode?"bg-destructive/20 text-destructive line-through":""} hover:bg-accent/10`}>{token.word}{" "}</span>))}</div>
+                          <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
+                            <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">AI Clean Tools</h4>
+                            <button onClick={()=>toast({title:"Scanning for retakes..."})} className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left"><RefreshCw className="w-5 h-5 text-muted shrink-0"/><div><p className="text-sm font-medium">Remove Retakes</p><p className="text-xs text-muted">Find repeated sentences</p></div></button>
+                            <button onClick={()=>{setShowSilencePanel(true);setSilencesFound(8);}} className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left"><Scissors className="w-5 h-5 text-muted shrink-0"/><div><p className="text-sm font-medium">Remove Silences</p><p className="text-xs text-muted">Cut segments below -45dB</p></div></button>
+                            {showSilencePanel&&silencesFound>0&&(<div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] space-y-3"><div className="flex items-center justify-between"><span className="text-xs font-medium">Found {silencesFound} segments</span><button onClick={()=>setShowSilencePanel(false)} className="p-1 text-muted hover:text-foreground"><XIcon className="w-3 h-3"/></button></div><div className="space-y-2"><label className="text-xs text-muted">Threshold: {silenceThreshold}ms</label><input type="range" min={100} max={1000} step={50} value={silenceThreshold} onChange={e=>setSilenceThreshold(Number(e.target.value))} className="w-full accent-accent"/></div><button onClick={()=>{setShowSilencePanel(false);toast({title:"Silences removed"});}} className="w-full py-2.5 bg-accent text-white rounded-lg text-xs font-medium hover:bg-accent/90">Remove All</button></div>)}
+                            <button onClick={()=>toast({title:"Fix Word mode"})} className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left"><Mic className="w-5 h-5 text-muted shrink-0"/><div><p className="text-sm font-medium">Fix Word</p><p className="text-xs text-muted">AI voice clone to fix mispronunciations</p></div></button>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )}
+                  {captionSubTab === "clips" && (
+                    <div className="space-y-4">
+                      <p className="text-xs text-muted">AI finds your best moments for social clips.</p>
+                      {!clipsGenerated ? (
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]"><span className="text-sm text-muted">Clips</span><div className="flex gap-2">{[1,3,5].map(n=>(<button key={n} onClick={()=>setClipCount(n)} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${clipCount===n?"bg-foreground text-background":"bg-foreground/[0.06] hover:bg-foreground/[0.1]"}`}>{n}</button>))}</div></div>
+                          <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]"><span className="text-sm text-muted">Duration</span><div className="flex gap-2">{["15s","30s","60s"].map(d=>(<button key={d} onClick={()=>setClipDuration(d)} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${clipDuration===d?"bg-foreground text-background":"bg-foreground/[0.06] hover:bg-foreground/[0.1]"}`}>{d}</button>))}</div></div>
+                          <button onClick={()=>{setClipsGenerated(true);toast({title:"Clips generated"});}} className="w-full flex items-center justify-center gap-2 py-3 bg-accent text-white rounded-xl font-medium text-sm hover:bg-accent/90"><Sparkles className="w-4 h-4"/>Find Best Moments</button>
+                        </div>
+                      ) : (
+                        <div className="space-y-3">
+                          <div className="flex items-center justify-between"><span className="text-xs text-muted">{CLIP_SUGGESTIONS.length} clips</span><button onClick={()=>{setClipsGenerated(false);setAcceptedClips(new Set());}} className="text-xs text-accent hover:underline">Regenerate</button></div>
+                          {CLIP_SUGGESTIONS.map((clip,i)=>(<div key={i} className={`p-4 rounded-xl border ${acceptedClips.has(i)?"border-emerald-500/40 bg-emerald-500/[0.04]":"border-foreground/[0.08] hover:border-foreground/[0.15]"}`}><div className="flex items-start justify-between mb-2"><h4 className="text-sm font-semibold">{clip.label}</h4><span className="text-[10px] px-2 py-0.5 rounded-md bg-foreground/[0.06] text-muted capitalize">{clip.platform}</span></div><p className="text-xs text-muted mb-3">{clip.rationale}</p><div className="flex items-center justify-between"><span className="text-xs font-mono text-muted">{clip.start.toFixed(1)}s—{clip.end.toFixed(1)}s</span><div className="flex gap-2"><button onClick={()=>setCurrentTime(clip.start)} className="px-3 py-1.5 bg-foreground/[0.06] rounded-lg text-xs font-medium hover:bg-foreground/[0.1]">Preview</button><button onClick={()=>{setAcceptedClips(p=>{const n=new Set(p);if(n.has(i))n.delete(i);else n.add(i);return n;});}} className={`px-3 py-1.5 rounded-lg text-xs font-medium ${acceptedClips.has(i)?"bg-emerald-500 text-white":"bg-foreground text-background hover:bg-foreground/90"}`}>{acceptedClips.has(i)?<><Check className="w-3 h-3 inline mr-1"/>Accepted</>:"Accept"}</button></div></div></div>))}
+                          {acceptedClips.size>0&&(<button onClick={()=>toast({title:`Exporting ${acceptedClips.size} clips...`})} className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm"><Download className="w-4 h-4"/>Export {acceptedClips.size} Clip{acceptedClips.size!==1?"s":""}</button>)}
+                        </div>
+                      )}
+                      <div className="border-t border-foreground/[0.06] pt-4 space-y-3"><h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Social Export Presets</h4>{SOCIAL_EXPORT_PRESETS.map(p=>(<button key={p.platform} onClick={()=>{setSelectedRatio(p.ratio);toast({title:`${p.platform} preset`});}} className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left"><span className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center text-sm">{p.icon}</span><div className="flex-1"><p className="text-sm font-medium">{p.platform}</p><p className="text-[10px] text-muted">{p.ratio} · {p.res}</p></div></button>))}</div>
+                    </div>
+                  )}
+                  {captionSubTab === "notes" && (
+                    <div className="space-y-4">
+                      <p className="text-xs text-muted">Generate descriptions, show notes, chapters, and social posts.</p>
+                      {!metadataGenerated ? (
+                        <button onClick={()=>{setMetadataGenerated(true);toast({title:"Metadata generated"});}} className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90"><Sparkles className="w-4 h-4"/>Generate All</button>
+                      ) : (
+                        <div className="space-y-4">
+                          <div className="space-y-2"><div className="flex items-center justify-between"><h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Titles</h4><button onClick={()=>{navigator.clipboard.writeText(metaTitles[0]);toast({title:"Copied"});}} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5"/></button></div>{metaTitles.map((t,i)=>(<div key={i} className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-sm cursor-pointer hover:border-foreground/[0.12]">{t}</div>))}</div>
+                          <div className="space-y-2"><div className="flex items-center justify-between"><h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Description</h4><button onClick={()=>{navigator.clipboard.writeText(metaDescription);toast({title:"Copied"});}} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5"/></button></div><div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-xs text-foreground/80 leading-relaxed">{metaDescription}</div></div>
+                          <div className="space-y-2"><div className="flex items-center justify-between"><h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Tags</h4><button onClick={()=>{navigator.clipboard.writeText(metaTags.join(", "));toast({title:"Copied"});}} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5"/></button></div><div className="flex flex-wrap gap-2">{metaTags.map(tag=>(<span key={tag} className="px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-xs font-medium">#{tag}</span>))}</div></div>
+                          <div className="space-y-2"><div className="flex items-center justify-between"><h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Chapters</h4><button onClick={()=>{navigator.clipboard.writeText(metaChapters.map(c=>`${c.time} ${c.label}`).join("\n"));toast({title:"Copied"});}} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5"/></button></div>{metaChapters.map((ch,i)=>(<div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/[0.03]"><span className="px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono rounded-md">{ch.time}</span><span className="text-sm">{ch.label}</span></div>))}</div>
+                          <div className="space-y-2"><div className="flex items-center justify-between"><h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Show Notes</h4><button onClick={()=>{navigator.clipboard.writeText(metaShowNotes);toast({title:"Copied"});}} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5"/></button></div><div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-xs text-foreground/80 leading-relaxed">{metaShowNotes}</div></div>
+                          <button onClick={()=>setMetadataGenerated(false)} className="w-full flex items-center justify-center gap-2 py-2.5 bg-foreground/[0.06] rounded-xl text-xs font-medium hover:bg-foreground/[0.1]"><RefreshCw className="w-3.5 h-3.5"/>Regenerate</button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
