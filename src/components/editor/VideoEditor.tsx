@@ -1030,6 +1030,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Transitions Tab */}
               {activeTab === "transitions" && (
                 <div className="space-y-3">
+                  <h3 className="text-sm font-bold">Transitions</h3>
                   {["Fade", "Dissolve", "Wipe Left", "Wipe Right", "Zoom In", "Zoom Out", "Slide Up", "Slide Down", "Spin", "Glitch"].map(tr => (
                     <button key={tr} onClick={() => toast({ title: `${tr} transition applied` })}
                       className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-accent/40 transition-all text-left">
