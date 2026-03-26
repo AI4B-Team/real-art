@@ -29,7 +29,7 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "templates" | "tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "languages" | "templates" | "tools" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
@@ -44,6 +44,7 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "effects", icon: Sparkles, label: "Effects" },
   { id: "elements", icon: Layers, label: "Elements" },
   { id: "transitions", icon: SlidersHorizontal, label: "Transitions" },
+  { id: "languages", icon: Languages, label: "Languages" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "tools", icon: Wand2, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
