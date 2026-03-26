@@ -70,7 +70,7 @@ const CANVAS_TOOLS = [
 ];
 
 /* ─── Left Panel Tab Config ─── */
-type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "templates" | "settings";
+type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "templates" | "transitions" | "tools" | "languages" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "creations", icon: Image, label: "Creations" },
@@ -78,7 +78,10 @@ const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "adjustments", icon: SlidersHorizontal, label: "Adjustments" },
   { id: "filters", icon: Sparkles, label: "Filters" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
+  { id: "languages", icon: Languages, label: "Languages" },
+  { id: "transitions", icon: ArrowLeftRight, label: "Transitions" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
+  { id: "tools", icon: Wrench, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
