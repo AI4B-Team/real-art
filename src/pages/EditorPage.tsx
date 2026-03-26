@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import ImageEditor from "@/components/editor/ImageEditor";
 import VideoEditor from "@/components/editor/VideoEditor";
+import AudioEditor from "@/components/editor/AudioEditor";
 
 const EDITING_MODES = ["Editing", "Reviewing", "Presenting"];
 
