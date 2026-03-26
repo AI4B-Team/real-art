@@ -88,14 +88,19 @@ const LoginPage = () => {
                 </h1>
                 <p className="text-[0.88rem] text-muted mb-8">Log in to your REAL ART account.</p>
 
-                <label className="block text-[0.82rem] font-semibold mb-2">Email Address</label>
-                <input
-                  type="email" value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleLogin()}
-                  className="w-full px-4 py-3 rounded-xl bg-card border border-foreground/[0.1] text-[0.88rem] focus:outline-none focus:border-accent transition-colors mb-1"
-                  placeholder="you@email.com"
-                />
+                <div className="relative">
+                  {lastUsedMethod === "email" && (
+                    <span className="absolute -top-1 right-0 text-[0.68rem] font-semibold bg-accent/[0.12] text-accent px-2 py-0.5 rounded-md">Last Used</span>
+                  )}
+                  <label className="block text-[0.82rem] font-semibold mb-2">Email Address</label>
+                  <input
+                    type="email" value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && handleLogin()}
+                    className="w-full px-4 py-3 rounded-xl bg-card border border-foreground/[0.1] text-[0.88rem] focus:outline-none focus:border-accent transition-colors mb-1"
+                    placeholder="you@email.com"
+                  />
+                </div>
                 {errors.email && <p className="text-[0.75rem] text-red-500 mb-3">{errors.email}</p>}
 
                 <div className="flex items-center justify-between mt-4 mb-2">
