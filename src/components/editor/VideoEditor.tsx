@@ -535,7 +535,7 @@ const VideoEditor = ({ video }: Props) => {
             )}
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto px-4 pb-4 pt-4">
+            <div className="flex-1 overflow-y-auto px-4 pb-4 pt-2">
 
               {/* AI Chat Tab */}
               {activeTab === "ai-chat" && (
@@ -746,26 +746,82 @@ const VideoEditor = ({ video }: Props) => {
               {/* Script Tab */}
               {activeTab === "script" && (
                 <div className="space-y-4">
-                  {/* Action buttons row */}
-                  <div className="flex items-center justify-end gap-2">
-                    <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download</TooltipContent></Tooltip>
+                  {/* Upload / Import script */}
+                  <div className="flex items-center gap-2">
+                    <label className="flex-1 flex items-center gap-2 px-3 py-2 bg-foreground/[0.04] border border-dashed border-foreground/[0.15] rounded-lg text-sm text-muted hover:border-foreground/[0.25] hover:text-foreground cursor-pointer transition-colors">
+                      <Upload className="w-4 h-4 shrink-0" />
+                      <span>Upload Script</span>
+                      <input type="file" accept=".txt,.srt,.vtt,.md" className="hidden" onChange={e => {
+                        const file = e.target.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const text = reader.result as string;
+                          const lines = text.split(/\n+/).map(l => l.trim()).filter(Boolean);
+                          if (lines.length > 0) {
+                            setScriptContent(text);
+                            // Parse lines into scenes on the first video track
+                            const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+                            if (!videoTrack) return;
+                            const sceneDur = 5;
+                            const newClips: TimelineClip[] = lines.map((line, i) => ({
+                              id: `uploaded-scene-${Date.now()}-${i}`,
+                              type: "video" as const,
+                              name: line.length > 60 ? line.slice(0, 60) + "..." : line,
+                              startTime: i * sceneDur,
+                              duration: sceneDur,
+                            }));
+                            setTracks(prev => prev.map(t =>
+                              t.id === videoTrack.id ? { ...t, clips: newClips } : t
+                            ));
+                            toast({ title: "Script imported", description: `${lines.length} scenes created from script.` });
+                          }
+                        };
+                        reader.readAsText(file);
+                        e.target.value = "";
+                      }} />
+                    </label>
+                    <Tooltip><TooltipTrigger asChild><button onClick={() => { navigator.clipboard.writeText(scenes.map((s, i) => `${formatTime(s.startTime)} — ${s.name}`).join("\n")); toast({ title: "Copied to clipboard" }); }} className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild><button onClick={() => { const blob = new Blob([scenes.map((s, i) => `${formatTime(s.startTime)} — ${s.name}`).join("\n")], { type: "text/plain" }); const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "script.txt"; a.click(); }} className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><SlidersHorizontal className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Settings</TooltipContent></Tooltip>
                   </div>
 
-                  <div className="border-t border-foreground/[0.06] pt-4" />
+                  <div className="border-t border-foreground/[0.06]" />
 
-                  {/* Script with captions */}
-                  <p className="text-sm font-medium text-foreground leading-relaxed">{scriptContent}</p>
-
-                  <div className="space-y-4 mt-4">
-                    {CAPTION_DATA.map((cap, i) => (
-                      <div key={i} className="flex items-start gap-3">
-                        <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md shrink-0 mt-0.5">{cap.time}</span>
-                        <span className="text-sm text-foreground leading-relaxed">{cap.text}</span>
+                  {/* Synced script lines from storyboard scenes */}
+                  <div className="space-y-3">
+                    {scenes.map((scene, i) => (
+                      <div key={scene.id} className={`flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer group ${
+                        selectedClip === scene.id ? "border-accent bg-accent/5" : "border-foreground/[0.06] hover:border-foreground/[0.12]"
+                      }`} onClick={() => { setSelectedClip(scene.id); setCurrentTime(scene.startTime); }}>
+                        <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md shrink-0 mt-0.5">{formatTime(scene.startTime)}</span>
+                        <div className="flex-1 min-w-0">
+                          <input
+                            value={scene.name}
+                            onClick={e => e.stopPropagation()}
+                          onChange={e => {
+                              const newName = e.target.value;
+                              const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+                              if (!videoTrack) return;
+                              setTracks(prev => prev.map(t =>
+                                t.id === videoTrack.id
+                                  ? { ...t, clips: t.clips.map(c => c.id === scene.id ? { ...c, name: newName } : c) }
+                                  : t
+                              ));
+                            }}
+                            className="w-full text-sm text-foreground bg-transparent border-none outline-none focus:bg-foreground/[0.03] rounded px-1 -mx-1"
+                          />
+                          <span className="text-[10px] text-muted">{scene.duration.toFixed(1)}s</span>
+                        </div>
                       </div>
                     ))}
                   </div>
+
+                  {/* Add new script line / scene */}
+                  <button onClick={() => insertSceneAtIndex(scenes.length)}
+                    className="w-full py-2.5 border-2 border-dashed border-foreground/[0.1] rounded-xl text-sm text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors flex items-center justify-center gap-2">
+                    <Plus className="w-4 h-4" /> Add Line
+                  </button>
                 </div>
               )}
 
