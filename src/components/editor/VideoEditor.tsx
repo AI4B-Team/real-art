@@ -385,28 +385,15 @@ const VideoEditor = ({ video }: Props) => {
                           </div>
                         </div>
                       ))}
+                      {isStreaming && (
+                        <div className="flex justify-start">
+                          <div className="px-4 py-3 rounded-2xl text-sm">
+                            <span className="inline-block w-2 h-2 bg-accent rounded-full animate-pulse" />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
-
-                  {/* Chat input */}
-                  <div className="mt-4 rounded-xl border-2 border-foreground/[0.1] bg-background overflow-hidden">
-                    <textarea value={chatInput} onChange={e => setChatInput(e.target.value)}
-                      onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
-                      placeholder="Enter your ideas or upload images to get started."
-                      rows={2} className="w-full px-4 py-3 text-sm bg-transparent placeholder:text-muted focus:outline-none resize-none" />
-                    <div className="flex items-center justify-between px-3 pb-2">
-                      <div className="flex items-center gap-2">
-                        <button className="p-1.5 text-muted hover:text-foreground transition-colors"><Plus className="w-5 h-5" /></button>
-                        <button className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors text-sm">
-                          <Sparkles className="w-4 h-4" />AI agent <ChevronDown className="w-3 h-3" />
-                        </button>
-                      </div>
-                      <button onClick={handleSendChat}
-                        className="w-9 h-9 bg-foreground text-background rounded-full flex items-center justify-center hover:bg-foreground/90 transition-colors">
-                        <ArrowUp className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
                 </div>
               )}
 
