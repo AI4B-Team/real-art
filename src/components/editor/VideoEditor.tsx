@@ -376,7 +376,9 @@ const VideoEditor = ({ video }: Props) => {
     const track = tracks.find(t => t.id === trackId);
     const clip = track?.clips.find(c => c.id === clipId);
     if (!clip || track?.locked) return;
-    pushUndo();
+    // Save undo state inline
+    setUndoStack(prev => [...prev.slice(-20), tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setRedoStack([]);
     dragRef.current = { mode, clipId, trackId, startX: e.clientX, origStart: clip.startTime, origDuration: clip.duration };
     setSelectedClip(clipId);
 
@@ -412,7 +414,7 @@ const VideoEditor = ({ video }: Props) => {
     };
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
-  }, [tracks, pixelsPerSecond, snapEnabled, pushUndo]);
+  }, [tracks, pixelsPerSecond, snapEnabled]);
 
   const handleClipVolumeChange = useCallback((clipId: string, volume: number) => {
     setTracks(prev => prev.map(t => ({
