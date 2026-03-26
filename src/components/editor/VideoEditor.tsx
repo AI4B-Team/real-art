@@ -1010,6 +1010,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Elements Tab */}
               {activeTab === "elements" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Elements</h3>
                   <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
                     {["Shapes", "Stickers", "Overlays"].map(sub => (
                       <button key={sub} className="flex-1 py-2 rounded-md text-xs font-medium text-muted hover:text-foreground hover:bg-background transition-colors">{sub}</button>
