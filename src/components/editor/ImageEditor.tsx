@@ -5,7 +5,9 @@ import {
   Trash2, Upload, Scissors, Wand2, Plus, X, Check, ChevronDown, Image,
   RotateCcw, RotateCw, Eye, EyeOff, Lock, Unlock, Search, Settings,
   FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
-  Film, Send, ChevronLeft, Wrench,
+  Film, Send, ChevronLeft, Wrench, Palette, Heart, Zap,
+  MessageSquare, RefreshCw, Loader2, Shuffle, X as XIcon,
+  Hash, Copy, Box, Link, Clock,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
