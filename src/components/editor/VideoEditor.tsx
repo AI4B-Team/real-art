@@ -2045,7 +2045,7 @@ const VideoEditor = ({ video }: Props) => {
             onDrop={handleCanvasDrop}
           >
             {/* Hidden file input for video upload */}
-            <input ref={fileInputRef} type="file" accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaFileUpload(e.target.files)} />
+            <input ref={fileInputRef} type="file" accept="video/*,image/*,audio/*" className="hidden" onChange={(e) => handleMediaFileUpload(e.target.files)} />
             {(video || activeClipAtPlayhead) ? (
             <div
               className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer max-h-full"
