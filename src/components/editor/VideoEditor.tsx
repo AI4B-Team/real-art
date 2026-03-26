@@ -36,7 +36,7 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "effects" | "captions" | "templates" | "ai-tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "effects" | "templates" | "ai-tools" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
@@ -46,7 +46,6 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "audio", icon: AudioLines, label: "Audio" },
   { id: "text", icon: Type, label: "Text" },
   { id: "effects", icon: Sparkles, label: "Effects" },
-  { id: "captions", icon: Captions, label: "Captions" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
@@ -1332,21 +1331,27 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Text Tab - no sub-tabs, captions is now its own tab */}
+              {/* Text Tab - with Text/Captions sub-tabs */}
               {activeTab === "text" && (
                 <div className="space-y-3">
-                  <h3 className="text-sm font-bold">Text</h3>
-                  {["Heading", "Subheading", "Body Text", "Caption", "Lower Third", "Title Card"].map(preset => (
-                    <button key={preset} onClick={() => toast({ title: `${preset} added to timeline` })}
-                      className="w-full p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-accent/40 text-left transition-all group">
-                      <span className={`text-foreground font-medium ${preset === "Heading" ? "text-xl" : preset === "Subheading" ? "text-base" : "text-sm"}`}>{preset}</span>
-                    </button>
-                  ))}
-                </div>
-               )}
-
-              {/* Captions tab — all features consolidated under sub-tabs */}
-              {activeTab === "captions" && (
+                  <h3 className="text-sm font-bold">Text & Captions</h3>
+                  <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                    {([{id:"text",label:"Text"},{id:"captions",label:"Captions"}] as const).map(sub => (
+                      <button key={sub.id} onClick={() => setTextSubTab(sub.id)}
+                        className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${textSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                    ))}
+                  </div>
+                  {textSubTab === "text" && (
+                    <div className="space-y-3">
+                      {["Heading", "Subheading", "Body Text", "Caption", "Lower Third", "Title Card"].map(preset => (
+                        <button key={preset} onClick={() => toast({ title: `${preset} added to timeline` })}
+                          className="w-full p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-accent/40 text-left transition-all group">
+                          <span className={`text-foreground font-medium ${preset === "Heading" ? "text-xl" : preset === "Subheading" ? "text-base" : "text-sm"}`}>{preset}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {textSubTab === "captions" && (
                 <div className="space-y-4">
                   <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
                     {([{id:"edit",label:"Edit"},{id:"style",label:"Style"},{id:"transcript",label:"Transcript"},{id:"clips",label:"Clips"},{id:"notes",label:"AI Notes"}] as {id:string;label:string}[]).map(sub => (
@@ -1457,6 +1462,8 @@ const VideoEditor = ({ video }: Props) => {
                       )}
                     </div>
                   )}
+                </div>
+              )}
                 </div>
               )}
 

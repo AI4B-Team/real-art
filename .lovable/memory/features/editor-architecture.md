@@ -9,7 +9,7 @@ Three-mode editor (Image/Video/Audio) accessible from EditorPage top toolbar tab
 All editors use ONE row of icon tabs. Related features are grouped via sub-tab navigation within panels.
 
 ### Video Editor (16 tabs):
-AI Chat, Storyboard (sub: Scenes/Script/Brief), Character, Visuals, Audio, Transcript (word tokens + filler removal + remove silences + remove retakes + fix word), Text, Translate, Effects (sub: Effects/Transitions/Elements), Captions (sub: Edit/Style), Create Clips (clip finder + social export presets), AI Notes (titles/desc/tags/chapters/show notes), Templates, Brand, AI Tools, Settings (sub: General/Brand/Languages/AI Tools)
+AI Chat, Storyboard (sub: Scenes/Script/Brief), Character, Visuals, Audio, Text (sub: Text/Captions — Captions has sub: Edit/Style/Transcript/Clips/AI Notes), Effects (sub: Effects/Transitions/Elements), Templates, AI Tools, Settings
 
 ### Image Editor (8 tabs):
 Creations, Layers, Adjustments (sub: Adjustments/Filters), AI Tools, Text, Effects (sub: Effects/Elements), Templates, Settings (sub: General/Brand)
