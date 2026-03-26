@@ -1235,8 +1235,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Settings Tab */}
-              {activeTab === "settings" && (
+              {/* Settings General */}
+              {activeTab === "settings" && settingsSubTab === "general" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Settings</h3>
 

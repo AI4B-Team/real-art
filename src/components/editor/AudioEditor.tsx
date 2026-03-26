@@ -817,8 +817,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               </div>
             )}
 
-            {/* Settings */}
-            {activeTab === "settings" && (
+            {/* Settings General */}
+            {activeTab === "settings" && settingsSubTab === "general" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Settings</h3>
                 <div className="space-y-3">

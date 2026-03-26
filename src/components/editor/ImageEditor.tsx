@@ -598,8 +598,16 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
-            {/* Settings Tab */}
+            {/* Settings Sub-Tab Nav */}
             {activeLeftTab === "settings" && (
+              <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                {([{id:"general",label:"General"},{id:"brand",label:"Brand"}] as const).map(sub => (
+                  <button key={sub.id} onClick={() => setSettingsSubTab(sub.id)}
+                    className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${settingsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                ))}
+              </div>
+            )}
+            {activeLeftTab === "settings" && settingsSubTab === "general" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Settings</h3>
 
