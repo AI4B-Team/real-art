@@ -182,6 +182,10 @@ const VideoEditor = ({ video }: Props) => {
   const [framesPerSecond, setFramesPerSecond] = useState("30");
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [languageSearch, setLanguageSearch] = useState("");
+  const [storyboardSubTab, setStoryboardSubTab] = useState<"scenes" | "script" | "brief">("scenes");
+  const [textSubTab, setTextSubTab] = useState<"text" | "captions">("text");
+  const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "transitions" | "elements">("effects");
+  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand" | "languages" | "ai-tools">("general");
 
   // Toolbar state
   const [snapEnabled, setSnapEnabled] = useState(false);
