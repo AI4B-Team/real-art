@@ -13,6 +13,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
 import AIToolsPanel from "./AIToolsPanel";
+import EditorPromptBox from "./EditorPromptBox";
 
 /* ─── Types ─── */
 interface Layer {
