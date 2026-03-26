@@ -5,7 +5,7 @@ import {
   Type, Music, Image, Sparkles, FileText, Layers, Settings,
   ChevronDown, ChevronLeft, ChevronRight,
   Trash2, Video, Eye, EyeOff, Lock, Unlock,
-  Maximize, Minimize, Check, Search, Copy, Download, Diamond, Link2,
+  Maximize, Minimize, Check, Search, Copy, Download, Diamond, Magnet,
   Wand2, GripVertical, Captions, User, SlidersHorizontal,
   LayoutGrid, VolumeX as VolX, Send, Mic,
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
@@ -1244,7 +1244,7 @@ const VideoEditor = ({ video }: Props) => {
                 <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Scissors className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Split (S)</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Link2 className="w-5 h-5" /></button>
+                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Magnet className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Enable Snap</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
                 <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
