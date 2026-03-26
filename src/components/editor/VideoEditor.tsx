@@ -961,6 +961,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Text Tab */}
               {activeTab === "text" && (
                 <div className="space-y-3">
+                  <h3 className="text-sm font-bold">Text</h3>
                   {["Heading", "Subheading", "Body Text", "Caption", "Lower Third", "Title Card"].map(preset => (
                     <button key={preset} onClick={() => toast({ title: `${preset} added to timeline` })}
                       className="w-full p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-accent/40 text-left transition-all group">
