@@ -40,7 +40,7 @@ const LoginPage = () => {
         }
         window.dispatchEvent(new Event("ra_auth_changed"));
       } catch {}
-      navigate("/dashboard");
+      navigate("/home");
     }
   };
 
