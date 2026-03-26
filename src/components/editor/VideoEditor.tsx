@@ -36,7 +36,7 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "effects" | "templates" | "ai-tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "effects" | "templates" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
@@ -47,7 +47,6 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "text", icon: Type, label: "Text" },
   { id: "effects", icon: Sparkles, label: "Effects" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "ai-tools", icon: Wand2, label: "AI Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
