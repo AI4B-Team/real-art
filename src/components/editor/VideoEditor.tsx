@@ -652,7 +652,7 @@ const VideoEditor = ({ video }: Props) => {
                     </div>
 
                     <div className="p-3 rounded-xl border border-foreground/[0.08]">
-                      <span className="text-sm text-muted">Scene media</span>
+                      <span className="text-sm text-muted">Scene Media</span>
                       <div className="flex gap-2 mt-2">
                         {["Video clip", "Still image"].map(m => (
                           <button key={m} onClick={() => setBriefMediaType(m)}
