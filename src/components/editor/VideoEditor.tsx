@@ -2578,6 +2578,49 @@ const VideoEditor = ({ video }: Props) => {
           )}
         </div>
       </div>
+      {/* Clip context menu */}
+      {clipContextMenu && (
+        <>
+          <div className="fixed inset-0 z-[60]" onClick={() => setClipContextMenu(null)} />
+          <div className="fixed z-[61] bg-card rounded-xl border border-foreground/[0.08] shadow-xl py-1.5 w-48"
+            style={{ left: clipContextMenu.x, top: clipContextMenu.y }}>
+            {(() => {
+              const clip = tracks.flatMap(t => t.clips).find(c => c.id === clipContextMenu.clipId);
+              const vol = clip?.volume ?? 100;
+              return (
+                <>
+                  <button onClick={() => { handleSplit(); setClipContextMenu(null); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Scissors className="w-3.5 h-3.5 text-muted" />Split at Playhead
+                  </button>
+                  <button onClick={() => { if (clip) duplicateScene(clip.id); setClipContextMenu(null); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Copy className="w-3.5 h-3.5 text-muted" />Duplicate
+                  </button>
+                  <div className="border-t border-foreground/[0.06] my-1" />
+                  <div className="px-3 py-2">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <span className="text-[11px] font-medium text-muted flex items-center gap-1.5">
+                        <Volume2 className="w-3 h-3" />Volume
+                      </span>
+                      <span className="text-[10px] font-mono text-muted">{vol}%</span>
+                    </div>
+                    <input type="range" min="0" max="200" value={vol}
+                      onClick={(e) => e.stopPropagation()}
+                      onChange={(e) => handleClipVolumeChange(clipContextMenu.clipId, Number(e.target.value))}
+                      className="w-full h-1.5 accent-accent cursor-pointer" />
+                  </div>
+                  <div className="border-t border-foreground/[0.06] my-1" />
+                  <button onClick={() => { if (clip) { pushUndo(); setTracks(prev => prev.map(t => ({ ...t, clips: t.clips.filter(c => c.id !== clip.id) }))); setSelectedClip(null); toast({ title: "Clip deleted" }); } setClipContextMenu(null); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 text-sm text-red-500 hover:bg-red-500/[0.06] transition-colors">
+                    <Trash2 className="w-3.5 h-3.5" />Delete
+                  </button>
+                </>
+              );
+            })()}
+          </div>
+        </>
+      )}
       <RecordingModeModal
         open={showRecordingModal}
         onClose={() => setShowRecordingModal(false)}
