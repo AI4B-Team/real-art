@@ -1060,35 +1060,36 @@ const VideoEditor = ({ video }: Props) => {
             <div className="p-3 border-t border-foreground/[0.06] shrink-0">
               <div className="rounded-xl border-2 border-accent/30 bg-background overflow-hidden">
                 <textarea
-                  value={aiPrompt}
-                  onChange={e => setAiPrompt(e.target.value)}
+                  value={chatInput}
+                  onChange={e => setChatInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
                   placeholder="Describe what you want to create..."
                   rows={3}
                   className="w-full px-4 py-3 text-sm text-foreground placeholder:text-muted bg-transparent resize-none focus:outline-none"
                 />
                 <div className="flex items-center justify-between px-3 pb-2">
-                  <button className="p-1.5 text-muted hover:text-foreground transition-colors">
-                    <LayoutGrid className="w-5 h-5" />
-                  </button>
                   <div className="flex items-center gap-2">
+                    <button className="p-1.5 text-muted hover:text-foreground transition-colors">
+                      <Plus className="w-5 h-5" />
+                    </button>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button className="flex items-center gap-1 text-muted hover:text-foreground transition-colors">
-                          <Sparkles className="w-4 h-4" />
+                        <button className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors text-sm">
+                          <Sparkles className="w-4 h-4" />AI Agent
                           <ChevronDown className="w-3 h-3" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-40 p-1.5" align="end">
+                      <PopoverContent className="w-40 p-1.5" align="start">
                         {["Auto", "Creative", "Precise", "Balanced"].map(m => (
                           <button key={m} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04]">{m}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
-                    <button onClick={() => { if (aiPrompt.trim()) { toast({ title: "Generating..." }); setAiPrompt(""); } }}
-                      className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-accent hover:bg-accent/30 transition-colors">
-                      <Send className="w-4 h-4" />
-                    </button>
                   </div>
+                  <button onClick={handleSendChat} disabled={isStreaming || !chatInput.trim()}
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${chatInput.trim() && !isStreaming ? "bg-accent text-white hover:bg-accent/90" : "bg-accent/20 text-accent/50"}`}>
+                    <Send className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
