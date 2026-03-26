@@ -437,7 +437,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
             {activeLeftTab === "ai-chat" && (
               <div className="flex flex-col h-full">
                 <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-3">
-                  {([{id:"chat",label:"Chat"},{id:"tools",label:"AI Tools"}] as const).map(sub => (
+                  {([{id:"chat",label:"Chat"},{id:"tools",label:"Tools"}] as const).map(sub => (
                     <button key={sub.id} onClick={() => setAiChatSubTab(sub.id)}
                       className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${aiChatSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
                   ))}
