@@ -1662,7 +1662,7 @@ const VideoEditor = ({ video }: Props) => {
 
               {/* Delete button - top right */}
               <AnimatePresence>
-                {showCanvasControls && (
+                {showCanvasControls && video && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
