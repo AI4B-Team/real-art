@@ -2867,7 +2867,11 @@ const VideoEditor = ({ video }: Props) => {
                                     onMouseDown={(e) => handleClipMouseDown(e, clip.id, track.id, "resize-left")} />
 
                                   {/* Clip content */}
-                                  <div className="flex items-center h-full px-3 gap-1.5 min-w-0">
+                                  <div className="flex items-center h-full px-3 gap-1.5 min-w-0 relative">
+                                    {/* Video thumbnail background */}
+                                    {clip.thumbnail && (
+                                      <img src={clip.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover opacity-40 rounded-lg" />
+                                    )}
                                     {/* Mini waveform for audio clips */}
                                     {(clip.type === "audio") && clipWidth > 60 && (
                                       <div className="flex items-center gap-[1px] h-5 opacity-40 shrink-0">
