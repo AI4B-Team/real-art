@@ -1104,16 +1104,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Text Sub-Tab Nav */}
+              {/* Text Tab - no sub-tabs, captions is now its own tab */}
               {activeTab === "text" && (
-                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
-                  {([{id:"text",label:"Text"},{id:"captions",label:"Captions"}] as const).map(sub => (
-                    <button key={sub.id} onClick={() => setTextSubTab(sub.id)}
-                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${textSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
-                  ))}
-                </div>
-              )}
-              {activeTab === "text" && textSubTab === "text" && (
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold">Text</h3>
                   {["Heading", "Subheading", "Body Text", "Caption", "Lower Third", "Title Card"].map(preset => (
@@ -1125,24 +1117,125 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Captions */}
-              {activeTab === "text" && textSubTab === "captions" && (
+              {/* Captions — standalone tab */}
+              {activeTab === "captions" && (
                 <div className="space-y-4">
-                  <h3 className="text-sm font-bold">Captions</h3>
-                  <div className="flex items-center justify-end gap-2">
-                    <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download SRT</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><SlidersHorizontal className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Settings</TooltipContent></Tooltip>
-                  </div>
-                  <div className="border-t border-foreground/[0.06] pt-4" />
-                  <div className="space-y-4">
-                    {filteredCaptions.map((cap, i) => (
-                      <div key={i} className="flex items-start gap-3 group cursor-pointer hover:bg-foreground/[0.03] rounded-lg p-2 -mx-2 transition-colors">
-                        <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md shrink-0 mt-0.5">{cap.time}</span>
-                        <span className="text-sm text-foreground leading-relaxed">{cap.text}</span>
-                      </div>
+                  {/* Edit / Style sub-tabs */}
+                  <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
+                    {([{id:"edit",label:"Edit"},{id:"style",label:"Style"}] as {id:"edit"|"style";label:string}[]).map(sub => (
+                      <button key={sub.id} onClick={() => setCaptionSubTab(sub.id)}
+                        className={`flex-1 py-2.5 rounded-md text-sm font-medium transition-colors ${captionSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
                     ))}
                   </div>
+
+                  {/* Edit sub-tab */}
+                  {captionSubTab === "edit" && (
+                    <div className="space-y-3">
+                      {/* Search + display mode */}
+                      <div className="flex gap-2">
+                        <div className="flex-1 flex items-center gap-2 bg-foreground/[0.04] rounded-lg px-3 py-2">
+                          <Search className="w-4 h-4 text-muted shrink-0" />
+                          <input value={captionSearch} onChange={e => setCaptionSearch(e.target.value)} placeholder="Search" className="bg-transparent text-sm w-full outline-none placeholder:text-muted" />
+                        </div>
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button className="flex items-center gap-2 bg-foreground/[0.04] rounded-lg px-3 py-2 text-sm text-muted hover:text-foreground transition-colors shrink-0">
+                              <Captions className="w-4 h-4" />
+                              <span className="capitalize">{captionDisplayMode}</span>
+                              <ChevronDown className="w-3 h-3" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-36 p-1.5" align="end">
+                            {["word", "sentence", "paragraph"].map(mode => (
+                              <button key={mode} onClick={() => setCaptionDisplayMode(mode)}
+                                className={`w-full px-3 py-2 text-left text-sm rounded-lg capitalize transition-colors ${captionDisplayMode === mode ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>
+                                {mode}
+                                {captionDisplayMode === mode && <Check className="w-3.5 h-3.5 float-right mt-0.5" />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </div>
+
+                      {/* Tool icons row */}
+                      <div className="flex items-center gap-1">
+                        <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><SlidersHorizontal className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Adjust Timing</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Languages className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Translate</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Settings className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Caption Settings</TooltipContent></Tooltip>
+                      </div>
+
+                      {/* Auto Generate button */}
+                      <button onClick={() => { setHasCaptions(true); toast({ title: "Captions generated", description: "Auto-generated captions from audio" }); }}
+                        className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90 transition-colors">
+                        <Sparkles className="w-4 h-4" />
+                        Auto Generate Captions
+                      </button>
+
+                      {/* Add Manual + Import SRT */}
+                      <div className="grid grid-cols-2 gap-2">
+                        <button onClick={() => { setHasCaptions(true); toast({ title: "Manual caption added" }); }}
+                          className="flex items-center justify-center gap-2 py-3 bg-foreground/[0.04] border border-foreground/[0.06] rounded-xl text-sm font-medium text-foreground hover:bg-foreground/[0.08] transition-colors">
+                          <Type className="w-4 h-4" />Add Manual
+                        </button>
+                        <button onClick={() => toast({ title: "Import SRT", description: "Select an SRT file to import" })}
+                          className="flex items-center justify-center gap-2 py-3 bg-foreground/[0.04] border border-foreground/[0.06] rounded-xl text-sm font-medium text-foreground hover:bg-foreground/[0.08] transition-colors">
+                          <Upload className="w-4 h-4" />Import SRT
+                        </button>
+                      </div>
+
+                      {/* Caption list or empty state */}
+                      {hasCaptions ? (
+                        <div className="space-y-2 pt-2">
+                          <div className="flex items-center justify-end gap-2 mb-2">
+                            <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
+                            <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download SRT</TooltipContent></Tooltip>
+                          </div>
+                          <div className="border-t border-foreground/[0.06] pt-3" />
+                          {filteredCaptions.map((cap, i) => (
+                            <div key={i} className="flex items-start gap-3 group cursor-pointer hover:bg-foreground/[0.03] rounded-lg p-2 -mx-2 transition-colors">
+                              <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md shrink-0 mt-0.5">{cap.time}</span>
+                              <span className="text-sm text-foreground leading-relaxed">{cap.text}</span>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center py-8 text-center">
+                          <div className="w-14 h-14 bg-foreground/[0.04] rounded-2xl flex items-center justify-center mb-4">
+                            <Captions className="w-7 h-7 text-muted/50" />
+                          </div>
+                          <h4 className="text-sm font-bold text-foreground mb-1">No Captions Yet</h4>
+                          <p className="text-xs text-muted leading-relaxed max-w-[200px]">Generate captions automatically from your video's audio or add them manually</p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Style sub-tab */}
+                  {captionSubTab === "style" && (
+                    <div className="space-y-4">
+                      <h4 className="text-sm font-bold">Caption Style</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        {([
+                          { id: "classic", label: "Classic", preview: "Classic", bg: "bg-foreground", text: "text-background" },
+                          { id: "slam", label: "Yellow Slam", preview: "SLAM", bg: "bg-yellow-400", text: "text-foreground" },
+                          { id: "neon", label: "Neon Glow", preview: "Neon", bg: "bg-transparent", text: "text-pink-500", border: true },
+                          { id: "brat", label: "Brat", preview: "BRAT", bg: "bg-lime-400", text: "text-foreground" },
+                          { id: "chaotic", label: "Chaotic", preview: "Chaos", bg: "bg-purple-500", text: "text-white" },
+                          { id: "elegant", label: "Elegant", preview: "Elegant", bg: "bg-transparent", text: "text-foreground italic underline" },
+                          { id: "outline", label: "Outline", preview: "Outline", bg: "bg-transparent", text: "text-foreground font-black" },
+                          { id: "gradient", label: "Gradient", preview: "Gradient", bg: "bg-gradient-to-r from-blue-500 to-purple-500", text: "text-white" },
+                        ]).map(style => (
+                          <button key={style.id} onClick={() => { setCaptionStyle(style.id); toast({ title: `${style.label} style applied` }); }}
+                            className={`flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all ${captionStyle === style.id ? "border-foreground shadow-sm" : "border-foreground/[0.06] hover:border-foreground/[0.15]"}`}>
+                            <span className={`inline-flex items-center justify-center px-3 py-1.5 rounded-md text-sm font-bold ${style.bg} ${style.text} ${style.border ? "border border-current" : ""}`}>
+                              {style.preview}
+                            </span>
+                            <span className="text-xs font-medium text-muted">{style.label}</span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
