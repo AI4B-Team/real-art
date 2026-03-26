@@ -458,7 +458,30 @@ const VideoEditor = ({ video }: Props) => {
     }
   }, [activeClipAtPlayhead, currentTime, isPlaying]);
 
-  const handleMediaFileUpload = useCallback((files: FileList | null) => {
+  // Sync audio clips with playhead
+  useEffect(() => {
+    const audioClips = tracks
+      .filter(t => (t.type === "audio" || t.id.includes("audio")) && t.visible !== false)
+      .flatMap(t => t.clips)
+      .filter(c => c.mediaUrl && c.mediaType === "audio");
+    
+    audioClips.forEach(clip => {
+      let el = audioElementsRef.current.get(clip.id);
+      if (!el) {
+        el = new Audio(clip.mediaUrl);
+        audioElementsRef.current.set(clip.id, el);
+      }
+      const inRange = currentTime >= clip.startTime && currentTime < clip.startTime + clip.duration;
+      if (inRange && isPlaying) {
+        const localTime = currentTime - clip.startTime;
+        if (Math.abs(el.currentTime - localTime) > 0.3) el.currentTime = localTime;
+        if (el.paused) el.play().catch(() => {});
+      } else {
+        if (!el.paused) el.pause();
+      }
+    });
+  }, [tracks, currentTime, isPlaying]);
+
     if (!files || files.length === 0) return;
     const file = files[0];
     const isVideo = file.type.startsWith("video/");
