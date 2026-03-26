@@ -1685,7 +1685,7 @@ const VideoEditor = ({ video }: Props) => {
                     className="absolute inset-0 flex items-center justify-center z-10"
                     onClick={() => setShowCanvasControls(false)}
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4" onClick={(e) => e.stopPropagation()}>
                       <button onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
                         className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors">
                         <SkipBack className="w-5 h-5" />
