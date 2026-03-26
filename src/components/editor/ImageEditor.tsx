@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import emptyImageImg from "@/assets/empty-image.png";
+import emptyImageCards from "@/assets/empty-image-cards.png";
 import {
   MousePointer2, Paintbrush, Eraser, PaintBucket, Type, Layers,
   ZoomIn, Play, SlidersHorizontal, Download, Save, Globe, ExternalLink,
