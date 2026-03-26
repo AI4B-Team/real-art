@@ -8,7 +8,7 @@ import {
   Maximize, Minimize, Check, Search, Copy, Download,
   Wand2, GripVertical, Captions, User, SlidersHorizontal,
   LayoutGrid, VolumeX as VolX, Send, Mic, Eraser,
-  Circle, Grid3X3, Palette, Zap, Film, Clapperboard,
+  Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
   AudioLines, VolumeOff, MoreVertical,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
   Languages, Ghost, History,
