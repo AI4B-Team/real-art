@@ -1821,11 +1821,19 @@ const VideoEditor = ({ video }: Props) => {
                         <Settings className="w-4 h-4 text-muted" /> Ratio: {selectedRatio}
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-36 p-1.5" align="center">
-                      {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
+                    <PopoverContent className="w-44 p-1.5" align="center">
+                      {[
+                        { r: "16:9", icon: "▬" },
+                        { r: "9:16", icon: "▮" },
+                        { r: "1:1", icon: "■" },
+                        { r: "4:5", icon: "▯" },
+                        { r: "4:3", icon: "▭" },
+                      ].map(({ r, icon }) => (
                         <button key={r} onClick={() => setSelectedRatio(r)}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                          {r}{selectedRatio === r && <Check className="w-3.5 h-3.5" />}
+                          className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                          <div className={`border border-current rounded-sm flex items-center justify-center ${r === "16:9" ? "w-7 h-4" : r === "9:16" ? "w-4 h-7" : r === "1:1" ? "w-5 h-5" : r === "4:5" ? "w-4 h-5" : "w-6 h-[18px]"}`} />
+                          <span className="flex-1">{r}</span>
+                          {selectedRatio === r && <Check className="w-3.5 h-3.5" />}
                         </button>
                       ))}
                     </PopoverContent>
