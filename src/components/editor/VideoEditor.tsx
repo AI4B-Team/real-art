@@ -1090,7 +1090,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Languages Tab */}
               {activeTab === "languages" && (
                 <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-foreground">Languages</h3>
+                  <h3 className="text-sm font-bold">Languages</h3>
                   <p className="text-sm text-muted">Translate and dub your video into different languages.</p>
                   
                   <div className="relative">
