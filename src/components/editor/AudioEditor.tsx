@@ -1018,9 +1018,11 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
           )}
 
           {/* Waveform / Spectral visualization */}
-          <div className="w-full max-w-5xl px-8">
-            <div className="relative h-56 bg-foreground/[0.03] rounded-2xl border border-foreground/[0.06] overflow-hidden cursor-crosshair"
+           <div className="w-full max-w-5xl px-8 pt-4">
+            <div className="relative h-56 bg-foreground/[0.03] rounded-2xl border border-foreground/[0.06] cursor-crosshair"
               onClick={handleWaveformClick}>
+              {/* Waveform inner with overflow hidden */}
+              <div className="absolute inset-0 rounded-2xl overflow-hidden">
               {!showSpectral ? (
                 /* Waveform view */
                 <div className="absolute inset-0 flex items-center gap-[1px] px-4">
