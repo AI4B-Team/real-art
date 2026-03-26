@@ -9,9 +9,9 @@ import {
   Wand2, GripVertical, Captions, User, SlidersHorizontal,
   LayoutGrid, VolumeX as VolX, Send, Mic, Eraser,
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
-  AudioLines, VolumeOff, MoreVertical,
+  AudioLines, VolumeOff, MoreVertical, ArrowLeftRight,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
-  Languages, Ghost, History,
+  Languages, Ghost, History, Flag,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
