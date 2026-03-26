@@ -178,6 +178,8 @@ const VideoEditor = ({ video }: Props) => {
   const [fixedDuration, setFixedDuration] = useState("00:05.0");
   const [showComments, setShowComments] = useState(false);
   const [showSoundwaves, setShowSoundwaves] = useState(true);
+  const [suggestionOffset, setSuggestionOffset] = useState(0);
+  const visibleSuggestions = ALL_AI_SUGGESTIONS.slice(suggestionOffset, suggestionOffset + 3);
   const [showGhostPlayhead, setShowGhostPlayhead] = useState(true);
   const [framesPerSecond, setFramesPerSecond] = useState("30");
   const [selectedLanguage, setSelectedLanguage] = useState("en");
