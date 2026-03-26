@@ -992,13 +992,6 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Waveform / Canvas area */}
         <div className="flex-1 flex items-center justify-center bg-foreground/[0.02] relative overflow-hidden">
-          {/* Collapse button */}
-          {!isLeftPanelCollapsed && (
-            <button onClick={() => setIsLeftPanelCollapsed(true)}
-              className="absolute left-3 top-3 z-10 w-8 h-8 rounded-lg bg-background border border-foreground/[0.08] flex items-center justify-center text-muted hover:text-foreground transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-          )}
 
           {/* View toggle */}
           <div className="absolute right-3 top-3 z-10 flex items-center gap-1 bg-background border border-foreground/[0.08] rounded-lg p-1">
