@@ -360,7 +360,7 @@ const VideoEditor = ({ video }: Props) => {
   const [selectedClip, setSelectedClip] = useState<string | null>(null);
   const [clipContextMenu, setClipContextMenu] = useState<{ clipId: string; trackId: string; x: number; y: number } | null>(null);
 
-  // Drag state for clips
+  // Drag state for clips — uses RAF for smooth dragging
   const dragRef = useRef<{
     mode: "move" | "resize-left" | "resize-right";
     clipId: string;
@@ -368,6 +368,10 @@ const VideoEditor = ({ video }: Props) => {
     startX: number;
     origStart: number;
     origDuration: number;
+    el: HTMLElement | null;
+    rafId: number | null;
+    latestX: number;
+    committed: boolean;
   } | null>(null);
 
   const handleClipMouseDown = useCallback((e: React.MouseEvent, clipId: string, trackId: string, mode: "move" | "resize-left" | "resize-right") => {
@@ -376,38 +380,74 @@ const VideoEditor = ({ video }: Props) => {
     const track = tracks.find(t => t.id === trackId);
     const clip = track?.clips.find(c => c.id === clipId);
     if (!clip || track?.locked) return;
-    // Save undo state inline
     setUndoStack(prev => [...prev.slice(-20), tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
     setRedoStack([]);
-    dragRef.current = { mode, clipId, trackId, startX: e.clientX, origStart: clip.startTime, origDuration: clip.duration };
+    const el = e.currentTarget as HTMLElement;
+    dragRef.current = { mode, clipId, trackId, startX: e.clientX, origStart: clip.startTime, origDuration: clip.duration, el, rafId: null, latestX: e.clientX, committed: false };
     setSelectedClip(clipId);
 
-    const onMove = (ev: MouseEvent) => {
+    const pps = pixelsPerSecond;
+    const snap = snapEnabled;
+
+    const tick = () => {
       const d = dragRef.current;
-      if (!d) return;
-      const dx = (ev.clientX - d.startX) / pixelsPerSecond;
+      if (!d || !d.el) return;
+      const dx = (d.latestX - d.startX) / pps;
       if (d.mode === "move") {
-        const newStart = Math.max(0, d.origStart + dx);
-        setTracks(prev => prev.map(t => t.id === d.trackId ? {
-          ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, startTime: snapEnabled ? Math.round(newStart * 2) / 2 : newStart } : c)
-        } : t));
+        let newStart = Math.max(0, d.origStart + dx);
+        if (snap) newStart = Math.round(newStart * 2) / 2;
+        d.el.style.left = `${newStart * pps}px`;
       } else if (d.mode === "resize-left") {
         const delta = Math.min(dx, d.origDuration - 0.5);
         const newStart = Math.max(0, d.origStart + delta);
         const newDur = d.origDuration - (newStart - d.origStart);
         if (newDur >= 0.5) {
-          setTracks(prev => prev.map(t => t.id === d.trackId ? {
-            ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, startTime: newStart, duration: newDur } : c)
-          } : t));
+          d.el.style.left = `${newStart * pps}px`;
+          d.el.style.width = `${newDur * pps}px`;
         }
       } else if (d.mode === "resize-right") {
         const newDur = Math.max(0.5, d.origDuration + dx);
-        setTracks(prev => prev.map(t => t.id === d.trackId ? {
-          ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, duration: newDur } : c)
-        } : t));
+        d.el.style.width = `${newDur * pps}px`;
       }
     };
+
+    const onMove = (ev: MouseEvent) => {
+      const d = dragRef.current;
+      if (!d) return;
+      d.latestX = ev.clientX;
+      if (d.rafId === null) {
+        d.rafId = requestAnimationFrame(() => {
+          tick();
+          if (d) d.rafId = null;
+        });
+      }
+    };
+
     const onUp = () => {
+      const d = dragRef.current;
+      if (d) {
+        if (d.rafId !== null) cancelAnimationFrame(d.rafId);
+        // Commit final position to state
+        const dx = (d.latestX - d.startX) / pps;
+        setTracks(prev => prev.map(t => {
+          if (t.id !== d.trackId) return t;
+          return { ...t, clips: t.clips.map(c => {
+            if (c.id !== d.clipId) return c;
+            if (d.mode === "move") {
+              let newStart = Math.max(0, d.origStart + dx);
+              if (snap) newStart = Math.round(newStart * 2) / 2;
+              return { ...c, startTime: newStart };
+            } else if (d.mode === "resize-left") {
+              const delta = Math.min(dx, d.origDuration - 0.5);
+              const newStart = Math.max(0, d.origStart + delta);
+              const newDur = d.origDuration - (newStart - d.origStart);
+              return newDur >= 0.5 ? { ...c, startTime: newStart, duration: newDur } : c;
+            } else {
+              return { ...c, duration: Math.max(0.5, d.origDuration + dx) };
+            }
+          })};
+        }));
+      }
       dragRef.current = null;
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
