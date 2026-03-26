@@ -72,21 +72,16 @@ const CANVAS_TOOLS = [
 ];
 
 /* ─── Left Panel Tab Config ─── */
-type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "elements" | "text" | "effects" | "templates" | "brand" | "tools" | "settings";
+type LeftTab = "creations" | "layers" | "adjustments" | "ai-tools" | "text" | "effects" | "templates" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "creations", icon: Image, label: "Creations" },
   { id: "layers", icon: Layers, label: "Layers" },
   { id: "adjustments", icon: SlidersHorizontal, label: "Adjustments" },
-  { id: "filters", icon: Sparkles, label: "Filters" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
-  { id: "elements", icon: Box, label: "Elements" },
   { id: "text", icon: Type, label: "Text" },
   { id: "effects", icon: Zap, label: "Effects" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "brand", icon: Palette, label: "Brand Kit" },
-  
-  { id: "tools", icon: Wrench, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
