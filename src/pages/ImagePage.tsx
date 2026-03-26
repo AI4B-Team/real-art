@@ -113,6 +113,7 @@ const shopSimilarItems: ShopSimilarItem[] = [
 
 const ImagePage = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const idx = parseInt(id || "0") % photos.length;
   const photo = searchParams.get("photo") || photos[idx];
