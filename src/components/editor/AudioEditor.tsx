@@ -118,6 +118,8 @@ interface Props {
 
 const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
+  const [musicSubTab, setMusicSubTab] = useState<"music" | "sfx">("music");
+  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "ai-tools">("general");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration] = useState(180);
