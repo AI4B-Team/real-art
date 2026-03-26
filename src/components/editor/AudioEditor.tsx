@@ -1213,7 +1213,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             <div className="flex-1 relative">
               {Array.from({ length: Math.ceil(duration / 10) }, (_, i) => (
                 <div key={i} className="absolute top-0 bottom-0 border-l border-foreground/[0.06]" style={{ left: `${(i * 10 / duration) * 100}%` }}>
-                  <span className="text-[8px] text-muted/50 font-mono ml-1">{formatTimeShort(i * 10)}</span>
+                  <span className="text-[8px] text-foreground font-mono ml-1">{formatTimeShort(i * 10)}</span>
                 </div>
               ))}
               {/* Playhead on ruler */}

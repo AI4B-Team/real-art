@@ -2734,7 +2734,7 @@ const VideoEditor = ({ video }: Props) => {
                       {Array.from({ length: Math.ceil(duration / 10) + 1 }, (_, i) => (
                         <div key={i} className="absolute" style={{ left: i * 10 * pixelsPerSecond }}>
                           <div className="w-px h-2 bg-foreground/[0.1]" />
-                          <span className="text-[9px] text-muted/50 ml-1 select-none">{formatTimeColon(i * 10)}</span>
+                          <span className="text-[9px] text-foreground ml-1 select-none">{formatTimeColon(i * 10)}</span>
                         </div>
                       ))}
                     </div>
