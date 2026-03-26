@@ -366,14 +366,15 @@ const VideoEditor = ({ video }: Props) => {
                       <h3 className="text-lg font-bold mb-1">Hi There!</h3>
                       <p className="text-2xl font-black tracking-tight mb-6">What Are We<br />Creating Today?</p>
                       <div className="space-y-2 w-full">
-                        {AI_SUGGESTIONS.map((s, i) => (
-                          <button key={i} onClick={() => { setChatInput(s); }}
+                        {visibleSuggestions.map((s, i) => (
+                          <button key={s} onClick={() => { setChatInput(s); }}
                             className="w-full text-left px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-colors text-sm">
                             {s}
                           </button>
                         ))}
                       </div>
-                      <button className="mt-4 p-2 text-muted hover:text-foreground transition-colors">
+                      <button onClick={() => setSuggestionOffset(prev => (prev + 3) % ALL_AI_SUGGESTIONS.length)}
+                        className="mt-4 p-2 text-muted hover:text-foreground transition-colors">
                         <RefreshCw className="w-4 h-4" />
                       </button>
                     </div>
