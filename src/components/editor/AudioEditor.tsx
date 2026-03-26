@@ -998,7 +998,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
         <div className="flex-1 flex items-center justify-center bg-foreground/[0.02] relative overflow-hidden">
           {tracks.length === 0 ? (
             <div className="flex flex-col items-center gap-1 text-center px-6">
-              <img src={emptyAudioCards} alt="" className="w-[26rem] h-[26rem] object-contain -mb-4" />
+              <img src={emptyAudioCards} alt="" className="w-[18rem] h-[18rem] object-contain -mb-1" />
               <p className="text-base font-semibold text-foreground">No Audio Loaded</p>
               <p className="text-sm text-muted mb-3">Record, import, or generate audio to get started</p>
               <div className="flex items-center gap-3">
