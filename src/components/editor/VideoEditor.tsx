@@ -13,6 +13,7 @@ import {
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
   Languages, Ghost, History, Flag,
 } from "lucide-react";
+import AIToolsPanel from "./AIToolsPanel";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -974,29 +975,9 @@ const VideoEditor = ({ video }: Props) => {
 
               {/* Tools / AI Tab */}
               {activeTab === "tools" && (
-                <div className="space-y-4">
-                  <h3 className="text-lg font-bold text-foreground">AI Tools</h3>
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-semibold text-foreground mb-3">Audio Suite</h4>
-                    {AI_TOOLS.filter((_, i) => i < 4).map(tool => (
-                      <button key={tool.name} onClick={() => toast({ title: `${tool.name} processing...` })}
-                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-all text-left">
-                        <tool.icon className="w-5 h-5 text-muted shrink-0" />
-                        <div><p className="text-sm font-medium text-foreground">{tool.name}</p><p className="text-xs text-muted">{tool.desc}</p></div>
-                      </button>
-                    ))}
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="text-sm font-semibold text-foreground mb-3">Video Suite</h4>
-                    {AI_TOOLS.filter((_, i) => i >= 4).map(tool => (
-                      <button key={tool.name} onClick={() => toast({ title: `${tool.name} processing...` })}
-                        className="w-full flex items-center gap-3 p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-all text-left">
-                        <tool.icon className="w-5 h-5 text-muted shrink-0" />
-                        <div><p className="text-sm font-medium text-foreground">{tool.name}</p><p className="text-xs text-muted">{tool.desc}</p></div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                <AIToolsPanel onAssetCreated={(url, type) => {
+                  toast({ title: "Asset added", description: `New ${type} asset is ready to use in your project.` });
+                }} />
               )}
 
 
