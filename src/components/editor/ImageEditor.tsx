@@ -823,14 +823,15 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
 
           {/* AI Prompt at bottom of left panel */}
           <div className="px-4 pb-4 pt-2 border-t border-foreground/[0.06] shrink-0">
-            <div className="rounded-xl border-2 border-accent/30 p-3">
+            <div className="rounded-xl border-2 border-accent/30 overflow-hidden">
               <textarea
-                value={inputValue}
-                onChange={e => setInputValue(e.target.value)}
+                value={chatInput}
+                onChange={e => setChatInput(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendImageChat(); } }}
                 placeholder="Describe what you want to create..."
-                className="w-full bg-transparent text-sm placeholder:text-muted focus:outline-none resize-none min-h-[60px]"
+                className="w-full bg-transparent text-sm placeholder:text-muted focus:outline-none resize-none min-h-[60px] p-3 pb-0"
               />
-              <div className="flex items-center justify-between mt-2">
+              <div className="flex items-center justify-between p-3 pt-2">
                 <button className="p-1.5 text-muted hover:text-foreground transition-colors">
                   <LayoutGrid className="w-4 h-4" />
                 </button>
@@ -839,7 +840,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                     <Sparkles className="w-4 h-4" />
                     <ChevronDown className="w-3 h-3" />
                   </button>
-                  <button className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center hover:bg-accent/90 transition-colors">
+                  <button onClick={handleSendImageChat} disabled={isStreaming || !chatInput.trim()}
+                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors ${chatInput.trim() && !isStreaming ? "bg-accent text-white hover:bg-accent/90" : "bg-accent/20 text-accent/50"}`}>
                     <Send className="w-4 h-4" />
                   </button>
                 </div>
