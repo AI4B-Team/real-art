@@ -1208,67 +1208,6 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Export Tab */}
-              {activeTab === "export" && (
-                <div className="space-y-4">
-                  <h3 className="text-sm font-bold">Export</h3>
-
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Format</h4>
-                    <div className="space-y-2">
-                      {[
-                        { name: "MP4 (H.264)", desc: "Best compatibility", recommended: true },
-                        { name: "MOV (ProRes)", desc: "Professional quality" },
-                        { name: "WebM (VP9)", desc: "Web optimized" },
-                        { name: "GIF", desc: "Animated, no audio" },
-                      ].map(fmt => (
-                        <button key={fmt.name} className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
-                          <Film className="w-4 h-4 text-muted shrink-0" />
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium">{fmt.name}</span>
-                              {fmt.recommended && <span className="text-[10px] bg-accent/10 text-accent px-1.5 py-0.5 rounded-full font-medium">Recommended</span>}
-                            </div>
-                            <span className="text-xs text-muted">{fmt.desc}</span>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Resolution</h4>
-                    <div className="grid grid-cols-2 gap-2">
-                      {["720p", "1080p", "2K", "4K"].map(res => (
-                        <button key={res} className="p-3 rounded-xl border border-foreground/[0.08] hover:border-accent/40 text-center text-sm font-medium transition-colors">{res}</button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Frame Rate</h4>
-                    <div className="flex gap-2">
-                      {["24fps", "30fps", "60fps"].map(fps => (
-                        <button key={fps} className="flex-1 p-2.5 rounded-xl border border-foreground/[0.08] hover:border-accent/40 text-center text-sm font-medium transition-colors">{fps}</button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Quality</h4>
-                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                      <span className="text-sm font-medium">High Quality</span>
-                      <span className="text-xs text-muted">~250 MB</span>
-                    </div>
-                  </div>
-
-                  <button onClick={() => toast({ title: "Exporting video...", description: "Your video is being rendered." })}
-                    className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors">
-                    <Download className="w-4 h-4" /> Export Video
-                  </button>
-                </div>
-              )}
-
               {/* Settings Tab */}
               {activeTab === "settings" && (
                 <div className="space-y-4">
