@@ -1582,17 +1582,11 @@ const VideoEditor = ({ video }: Props) => {
               {/* Settings Sub-Tab Nav */}
               {activeTab === "settings" && (
                 <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
-                  {([{id:"general",label:"General"},{id:"brand",label:"Brand"},{id:"languages",label:"Languages"},{id:"ai-tools",label:"AI Tools"}] as const).map(sub => (
+                  {([{id:"general",label:"General"},{id:"brand",label:"Brand"},{id:"languages",label:"Languages"}] as const).map(sub => (
                     <button key={sub.id} onClick={() => setSettingsSubTab(sub.id)}
                       className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${settingsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
                   ))}
                 </div>
-              )}
-              {/* AI Tools */}
-              {activeTab === "settings" && settingsSubTab === "ai-tools" && (
-                <AIToolsPanel onAssetCreated={(url, type) => {
-                  toast({ title: "Asset added", description: `New ${type} asset is ready to use in your project.` });
-                }} />
               )}
 
               {/* Languages */}
