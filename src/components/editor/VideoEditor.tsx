@@ -2827,28 +2827,35 @@ const VideoEditor = ({ video }: Props) => {
                     {tracks.map(track => (
                       <div key={track.id} className="h-14 relative border-b border-foreground/[0.04]">
                         {track.clips.length === 0 && !track.locked ? (
-                          /* Empty track — always-visible "Add Scene" button */
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() => {
-                                  const newClip: TimelineClip = {
-                                    id: `clip-${Date.now()}`, type: track.type, name: `Scene 1`,
-                                    startTime: 0, duration: 5,
-                                  };
+                          /* Empty track — Add Scene or Upload */
+                          <div className="absolute top-1.5 left-4 h-11 flex items-center gap-3">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2">
+                                  <div className="w-10 h-10 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
+                                    <Upload className="w-4 h-4 text-muted" />
+                                  </div>
+                                  <span className="text-xs text-muted font-medium">Upload</span>
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Upload Video File</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button onClick={() => {
+                                  const newClip: TimelineClip = { id: `clip-${Date.now()}`, type: track.type, name: `Scene 1`, startTime: 0, duration: 5 };
                                   setTracks(prev => prev.map(t => t.id === track.id ? { ...t, clips: [...t.clips, newClip] } : t));
                                   toast({ title: "Scene added" });
-                                }}
-                                className="absolute top-1.5 left-4 h-11 flex items-center gap-2"
-                              >
-                                <div className="w-10 h-10 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
-                                  <Plus className="w-4 h-4 text-muted" />
-                                </div>
-                                <span className="text-xs text-muted font-medium">Add Scene</span>
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>Add Scene</TooltipContent>
-                          </Tooltip>
+                                }} className="flex items-center gap-2">
+                                  <div className="w-10 h-10 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
+                                    <Plus className="w-4 h-4 text-muted" />
+                                  </div>
+                                  <span className="text-xs text-muted font-medium">Add Scene</span>
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Add Empty Scene</TooltipContent>
+                            </Tooltip>
+                          </div>
                         ) : (
                           <>
                             {track.clips.map(clip => {
