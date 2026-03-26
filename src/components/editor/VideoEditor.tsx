@@ -10,6 +10,7 @@ import {
   LayoutGrid, VolumeX as VolX, Send, Mic, Eraser,
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard,
   AudioLines, VolumeOff, MoreVertical,
+  MessageSquare, BookOpen, RefreshCw, ArrowUp,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
