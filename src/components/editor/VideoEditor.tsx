@@ -161,6 +161,11 @@ const AI_TOOLS = [
   { name: "Scene Detection", desc: "Auto-detect Scene Changes", icon: Clapperboard },
   { name: "Color Match", desc: "Match Colors Across Clips", icon: Palette },
   { name: "AI Voiceover", desc: "Generate Narration From Script", icon: Mic },
+  { name: "Create Clips", desc: "Find Best Moments For Social Media", icon: Film },
+  { name: "AI Show Notes", desc: "Generate Descriptions And Metadata", icon: BookOpen },
+  { name: "Remove Retakes", desc: "Detect And Remove Repeated Sentences", icon: RefreshCw },
+  { name: "Fix Word", desc: "AI Voice Clone To Fix Mispronunciations", icon: Wand2 },
+  { name: "Transcribe", desc: "Convert Audio To Editable Text", icon: FileText },
 ];
 
 const VOICE_DATA = [
