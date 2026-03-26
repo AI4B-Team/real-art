@@ -93,11 +93,20 @@ const AI_TOOLS = [
   { name: "AI Voiceover", desc: "Generate Narration From Script", icon: Mic },
 ];
 
-const VOICE_DATA = [
-  { name: "Maya", desc: "feminine, young, chill", color: "bg-emerald-500" },
-  { name: "Arjun", desc: "masculine, middle aged, intense", color: "bg-blue-500" },
-  { name: "Sophia", desc: "feminine, mature, warm", color: "bg-purple-500" },
-  { name: "Kai", desc: "non-binary, youthful, energetic", color: "bg-amber-500" },
+const STORYBOARD_SCENES = [
+  { time: "00:03", narrator: "Jurin", desc: "Clara stands at a desolate, snow-covered border crossing.", thumb: "https://images.unsplash.com/photo-1477601263568-180e2c6d046e?w=120" },
+  { time: "00:05", narrator: "Jurin", desc: "As a sudden blizzard intensifies, she uses the snow as cover to slip past the checkpoint.", thumb: "https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=120" },
+  { time: "00:05", narrator: "Jurin", desc: "Her expression shifts from confusion to horror, realizing she has been betrayed.", thumb: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120" },
+  { time: "00:05", narrator: "Jurin", desc: "The screen reflects in her eyes, showing a coded transmission.", thumb: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" },
+  { time: "00:05", narrator: "Jurin", desc: "Huddled behind cover, she pulls out a small device.", thumb: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=120" },
+];
+
+interface ChatMessage { role: "user" | "assistant"; content: string; }
+
+const AI_SUGGESTIONS = [
+  "❤️ Create a love story",
+  "🐒 Top 5 fun facts about animals 🌎",
+  "📺 Create a video about current world news",
 ];
 
 const formatTime = (s: number) => {
