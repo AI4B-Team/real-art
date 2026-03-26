@@ -193,6 +193,7 @@ const VideoEditor = ({ video }: Props) => {
   const [snapEnabled, setSnapEnabled] = useState(false);
   const [markers, setMarkers] = useState<number[]>([]);
   const [isRecording, setIsRecording] = useState(false);
+  const [showRecordingModal, setShowRecordingModal] = useState(false);
   const [undoStack, setUndoStack] = useState<TimelineTrack[][]>([]);
   const [redoStack, setRedoStack] = useState<TimelineTrack[][]>([]);
 
