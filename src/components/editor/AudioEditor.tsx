@@ -1182,7 +1182,12 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
             {/* Right: zoom + hide timeline */}
             <div className="flex items-center gap-2 justify-end">
-              <button onClick={() => setZoom(Math.max(1, zoom - 1))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomOut className="w-5 h-5" /></button>
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => setIsMuted(!isMuted)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
+                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                </button>
+              </TooltipTrigger><TooltipContent>{isMuted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
+              <div className="w-px h-6 bg-foreground/[0.08] mx-1" />
               <input type="range" min={1} max={10} step={1} value={zoom} onChange={e => setZoom(Number(e.target.value))}
                 className="w-20 h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent" />
               <button onClick={() => setZoom(Math.min(10, zoom + 1))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomIn className="w-5 h-5" /></button>
