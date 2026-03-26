@@ -13,7 +13,7 @@ import {
   AudioLines, VolumeOff, MoreVertical, ArrowLeftRight,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
   Languages, Ghost, History, Flag, Shuffle, Loader2,
-  Link, Hash, Clock, Heart, Box, X as XIcon, Repeat,
+  Link, Hash, Clock, Heart, Box, X as XIcon, Repeat, GripHorizontal,
 } from "lucide-react";
 import AIToolsPanel from "./AIToolsPanel";
 import RecordingModeModal from "./RecordingModeModal";
@@ -163,6 +163,8 @@ const VideoEditor = ({ video }: Props) => {
   const [zoom, setZoom] = useState(3);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
+  const [timelineHeight, setTimelineHeight] = useState(256);
+  const timelineResizeRef = useRef<{ startY: number; startH: number } | null>(null);
   const [selectedRatio, setSelectedRatio] = useState("16:9");
   const [timelineViewMode, setTimelineViewMode] = useState<"timeline" | "storyboard">("timeline");
   const [isMuted, setIsMuted] = useState(false);
@@ -2167,8 +2169,33 @@ const VideoEditor = ({ video }: Props) => {
           </AnimatePresence>
         </div>
 
+        {/* Resize handle */}
+        {!isTimelineMinimized && (
+          <div
+            className="h-2 bg-card border-t border-foreground/[0.08] flex items-center justify-center cursor-row-resize hover:bg-foreground/[0.04] transition-colors group shrink-0"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              timelineResizeRef.current = { startY: e.clientY, startH: timelineHeight };
+              const onMove = (ev: MouseEvent) => {
+                if (!timelineResizeRef.current) return;
+                const delta = timelineResizeRef.current.startY - ev.clientY;
+                setTimelineHeight(Math.max(120, Math.min(600, timelineResizeRef.current.startH + delta)));
+              };
+              const onUp = () => {
+                timelineResizeRef.current = null;
+                window.removeEventListener("mousemove", onMove);
+                window.removeEventListener("mouseup", onUp);
+              };
+              window.addEventListener("mousemove", onMove);
+              window.addEventListener("mouseup", onUp);
+            }}
+          >
+            <GripHorizontal className="w-5 h-3.5 text-muted/40 group-hover:text-muted transition-colors" />
+          </div>
+        )}
+
         {/* Timeline */}
-        <div className={`bg-card border-t border-foreground/[0.08] flex flex-col ${isTimelineMinimized ? "h-12" : "h-64"} transition-all`}>
+        <div className="bg-card flex flex-col shrink-0 transition-all" style={{ height: isTimelineMinimized ? 48 : timelineHeight }}>
           {/* Timeline toolbar */}
           <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             {/* Left tools */}
