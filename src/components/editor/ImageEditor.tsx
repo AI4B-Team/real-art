@@ -860,7 +860,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
 
       {/* Center: Canvas */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div ref={canvasRef} className="flex-1 bg-foreground/[0.03] relative overflow-hidden"
+        <div ref={canvasRef} className={`flex-1 bg-foreground/[0.03] relative overflow-hidden ${!selectedImage ? "flex items-center justify-center" : ""}`}
           style={{ cursor: selectedImage ? (isDragging ? "grabbing" : "grab") : "default" }}
           onClick={(e) => { if (e.target === e.currentTarget && activeTool !== "select") { setIsImageSelected(false); setActiveTool(null); } }}
           onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
