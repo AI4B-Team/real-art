@@ -2450,7 +2450,7 @@ const VideoEditor = ({ video }: Props) => {
                   </div>
 
                   {/* Timeline clips */}
-                  <div className="flex-1 relative"
+                  <div className="flex-1 relative min-h-full"
                     ref={(el) => { (window as any).__timelineEl = el; }}
                     onMouseDown={(e) => {
                       // Click on ruler area (top 24px) to seek
