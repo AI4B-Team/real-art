@@ -10,7 +10,7 @@ import {
   Film, Loader2, Shuffle, Type, BookOpen,
   X as XIcon, Languages, GripVertical,
   Image, Video, ArrowRight, FolderOpen,
-  Repeat, BarChart3, Headphones,
+  Repeat, BarChart3, Headphones, Magnet, Diamond, Circle,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -159,6 +159,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [volume, setVolume] = useState(80);
   const [zoom, setZoom] = useState(3);
   const [isLooping, setIsLooping] = useState(false);
+  const [snapEnabled, setSnapEnabled] = useState(true);
+  const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
   const [showSpectral, setShowSpectral] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -1075,68 +1077,92 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
           </div>
         </div>
 
-        {/* Transport Controls */}
-        <div className="h-14 border-t border-foreground/[0.06] flex items-center justify-between gap-2 px-4 shrink-0 bg-background">
-          {/* Left tools */}
-          <div className="flex items-center gap-1">
-            <Tooltip><TooltipTrigger asChild>
-              <button onClick={undo} className="p-2 text-muted hover:text-foreground transition-colors"><Undo2 className="w-4 h-4" /></button>
-            </TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild>
-              <button onClick={redo} className="p-2 text-muted hover:text-foreground transition-colors"><Redo2 className="w-4 h-4" /></button>
-            </TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
-            <div className="w-px h-6 bg-foreground/[0.1] mx-1" />
-            <Tooltip><TooltipTrigger asChild>
-              <button onClick={() => toast({ title: "Split at playhead" })} className="p-2 text-muted hover:text-foreground transition-colors"><Scissors className="w-4 h-4" /></button>
-            </TooltipTrigger><TooltipContent>Split</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild>
-              <button onClick={addMarker} className="p-2 text-muted hover:text-foreground transition-colors"><Hash className="w-4 h-4" /></button>
-            </TooltipTrigger><TooltipContent>Add Marker</TooltipContent></Tooltip>
-          </div>
+        {/* Transport Controls — matches video timeline style */}
+        <div className="bg-card border-t border-foreground/[0.08] flex flex-col">
+          <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06] shrink-0">
+            {/* Left tools */}
+            <div className="flex items-center gap-1">
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={undo}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium text-muted hover:bg-foreground/[0.08] transition-colors">
+                  <Undo2 className="w-4 h-4" />Undo
+                </button>
+              </TooltipTrigger><TooltipContent>Undo (Ctrl+Z)</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={redo}
+                  className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium text-muted hover:bg-foreground/[0.08] transition-colors">
+                  <Redo2 className="w-4 h-4" />Redo
+                </button>
+              </TooltipTrigger><TooltipContent>Redo (Ctrl+Y)</TooltipContent></Tooltip>
+              <div className="w-px h-6 bg-foreground/[0.08] mx-2" />
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => toast({ title: "Split at playhead" })} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Scissors className="w-5 h-5" /></button>
+              </TooltipTrigger><TooltipContent>Split (S)</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => { setSnapEnabled(!snapEnabled); toast({ title: snapEnabled ? "Snap disabled" : "Snap enabled" }); }}
+                  className={`p-2 rounded-lg transition-colors ${snapEnabled ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <Magnet className="w-5 h-5" />
+                </button>
+              </TooltipTrigger><TooltipContent>{snapEnabled ? "Disable Snap" : "Enable Snap"}</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={addMarker} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
+              </TooltipTrigger><TooltipContent>Add Marker (M)</TooltipContent></Tooltip>
 
-          {/* Center transport */}
-          <div className="flex items-center gap-3">
-            <span className="text-xs font-mono text-muted w-20 text-right">{formatTime(currentTime)}</span>
-            <button onClick={() => setCurrentTime(0)} className="p-2 text-muted hover:text-foreground transition-colors">
-              <SkipBack className="w-4 h-4" />
-            </button>
-            <button onClick={() => setIsPlaying(!isPlaying)}
-              className="w-11 h-11 rounded-full bg-accent text-white flex items-center justify-center hover:bg-accent/90 transition-colors">
-              {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
-            </button>
-            <button onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))} className="p-2 text-muted hover:text-foreground transition-colors">
-              <SkipForward className="w-4 h-4" />
-            </button>
-            <span className="text-xs font-mono text-muted w-20">{formatTime(duration)}</span>
-          </div>
+              {/* Loop */}
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => setIsLooping(!isLooping)}
+                  className={`p-2 rounded-lg transition-colors ${isLooping ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <Repeat className="w-5 h-5" />
+                </button>
+              </TooltipTrigger><TooltipContent>{isLooping ? "Disable Loop" : "Enable Loop"}</TooltipContent></Tooltip>
 
-          {/* Right controls */}
-          <div className="flex items-center gap-1">
-            <Tooltip><TooltipTrigger asChild>
-              <button onClick={() => setIsLooping(!isLooping)}
-                className={`p-2 transition-colors ${isLooping ? "text-accent" : "text-muted hover:text-foreground"}`}>
-                <Repeat className="w-4 h-4" />
-              </button>
-            </TooltipTrigger><TooltipContent>Loop</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild>
-              <button onClick={() => setIsMuted(!isMuted)} className="p-2 text-muted hover:text-foreground transition-colors">
-                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-              </button>
-            </TooltipTrigger><TooltipContent>{isMuted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
-            <Tooltip><TooltipTrigger asChild>
+              {/* Mute */}
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => setIsMuted(!isMuted)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
+                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+                </button>
+              </TooltipTrigger><TooltipContent>{isMuted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
+
+              {/* Record */}
               <button onClick={isRecording ? handleStopRecording : handleStartRecording}
-                className={`p-2 transition-colors ${isRecording ? "text-red-500" : "text-muted hover:text-foreground"}`}>
-                <Mic className="w-4 h-4" />
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
+                <Circle className={`w-3 h-3 fill-current`} />{isRecording ? "Stop" : "Record"}
               </button>
-            </TooltipTrigger><TooltipContent>{isRecording ? "Stop Recording" : "Record"}</TooltipContent></Tooltip>
-            <div className="w-px h-6 bg-foreground/[0.1] mx-1" />
-            <button onClick={() => setZoom(Math.max(1, zoom - 1))} className="p-2 text-muted hover:text-foreground transition-colors"><ZoomOut className="w-4 h-4" /></button>
-            <span className="text-xs text-muted w-6 text-center">{zoom}x</span>
-            <button onClick={() => setZoom(Math.min(10, zoom + 1))} className="p-2 text-muted hover:text-foreground transition-colors"><ZoomIn className="w-4 h-4" /></button>
+
+              {/* Transport */}
+              <button onClick={() => setCurrentTime(0)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
+                <SkipBack className="w-5 h-5" />
+              </button>
+              <button onClick={() => setIsPlaying(!isPlaying)}
+                className="w-12 h-12 flex items-center justify-center bg-accent rounded-full hover:bg-accent/90 transition-colors text-white shadow-lg">
+                {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+              </button>
+              <button onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
+                <SkipForward className="w-5 h-5" />
+              </button>
+              <span className="text-sm font-mono text-muted min-w-[120px]">{formatTime(currentTime)} / {formatTime(duration)}</span>
+            </div>
+
+            {/* Right: zoom + hide timeline */}
+            <div className="flex items-center gap-2">
+              <button onClick={() => setZoom(Math.max(1, zoom - 1))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomOut className="w-5 h-5" /></button>
+              <input type="range" min={1} max={10} step={1} value={zoom} onChange={e => setZoom(Number(e.target.value))}
+                className="w-20 h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent" />
+              <button onClick={() => setZoom(Math.min(10, zoom + 1))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomIn className="w-5 h-5" /></button>
+              <div className="w-px h-6 bg-foreground/[0.08] mx-1" />
+              <Tooltip><TooltipTrigger asChild>
+                <button className="px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium text-muted hover:bg-foreground/[0.08] transition-colors">Fit</button>
+              </TooltipTrigger><TooltipContent>Fit to View</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => setIsTimelineMinimized(!isTimelineMinimized)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted">
+                  <ChevronDown className={`w-5 h-5 transition-transform ${isTimelineMinimized ? "rotate-180" : ""}`} />
+                </button>
+              </TooltipTrigger><TooltipContent>{isTimelineMinimized ? "Show Timeline" : "Hide Timeline"}</TooltipContent></Tooltip>
+            </div>
           </div>
-        </div>
 
         {/* Multi-track timeline */}
+        {!isTimelineMinimized && (
         <div className="h-52 border-t border-foreground/[0.06] bg-foreground/[0.02] flex flex-col shrink-0">
           {/* Timeline ruler */}
           <div className="h-6 border-b border-foreground/[0.06] flex shrink-0">
@@ -1202,6 +1228,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               </button>
             </div>
           </div>
+        </div>
+        )}
         </div>
       </div>
     </div>
