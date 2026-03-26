@@ -144,7 +144,7 @@ const VideoEditor = ({ video }: Props) => {
   const [selectedRatio, setSelectedRatio] = useState("16:9");
   const [isMuted, setIsMuted] = useState(false);
   const [captionSearch, setCaptionSearch] = useState("");
-  const [aiPrompt, setAiPrompt] = useState("");
+  
   const [audioSubTab, setAudioSubTab] = useState("Voices");
   const [visualsSubTab, setVisualsSubTab] = useState("Videos");
   const [templateSearch, setTemplateSearch] = useState("");
@@ -174,18 +174,89 @@ const VideoEditor = ({ video }: Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [languageSearch, setLanguageSearch] = useState("");
 
-  const handleSendChat = () => {
-    if (!chatInput.trim()) return;
+  const [isStreaming, setIsStreaming] = useState(false);
+
+  const handleSendChat = async () => {
+    if (!chatInput.trim() || isStreaming) return;
     const userMsg: ChatMessage = { role: "user", content: chatInput };
-    setChatMessages(prev => [...prev, userMsg]);
+    const newMessages = [...chatMessages, userMsg];
+    setChatMessages(newMessages);
     setChatInput("");
-    // Simulate AI response
-    setTimeout(() => {
-      setChatMessages(prev => [...prev, {
-        role: "assistant",
-        content: "I've come up with three story options for you:\n\n1. **The Guardian of the Whispering Woods**: Clara discovers she has the rare gift to communicate with ancient forest spirits.\n\n2. **The Dragon's Apprentice**: After finding a lost dragon hatchling, Clara embarks on a perilous journey.\n\n3. **The Starlight Hunter**: In a world where stars fall to earth as magical crystals, Clara must collect them before darkness spreads."
-      }]);
-    }, 1500);
+    setIsStreaming(true);
+    
+    // Switch to AI Chat tab to show response
+    setActiveTab("ai-chat");
+
+    try {
+      const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/video-chat`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ messages: newMessages }),
+      });
+
+      if (!resp.ok || !resp.body) {
+        if (resp.status === 429) {
+          toast({ title: "Rate limited", description: "Please try again in a moment.", variant: "destructive" });
+        } else if (resp.status === 402) {
+          toast({ title: "Usage limit reached", description: "Please add credits to continue.", variant: "destructive" });
+        } else {
+          toast({ title: "Error", description: "Failed to get AI response.", variant: "destructive" });
+        }
+        setIsStreaming(false);
+        return;
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+      let assistantSoFar = "";
+      let streamDone = false;
+
+      while (!streamDone) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") { streamDone = true; break; }
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            if (content) {
+              assistantSoFar += content;
+              const currentContent = assistantSoFar;
+              setChatMessages(prev => {
+                const last = prev[prev.length - 1];
+                if (last?.role === "assistant") {
+                  return prev.map((m, i) => (i === prev.length - 1 ? { ...m, content: currentContent } : m));
+                }
+                return [...prev, { role: "assistant", content: currentContent }];
+              });
+            }
+          } catch {
+            textBuffer = line + "\n" + textBuffer;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Chat error:", e);
+      toast({ title: "Connection error", description: "Could not reach AI service.", variant: "destructive" });
+    }
+    setIsStreaming(false);
   };
 
   const [tracks, setTracks] = useState<TimelineTrack[]>([
@@ -314,28 +385,15 @@ const VideoEditor = ({ video }: Props) => {
                           </div>
                         </div>
                       ))}
+                      {isStreaming && (
+                        <div className="flex justify-start">
+                          <div className="px-4 py-3 rounded-2xl text-sm">
+                            <span className="inline-block w-2 h-2 bg-accent rounded-full animate-pulse" />
+                          </div>
+                        </div>
+                      )}
                     </div>
                   )}
-
-                  {/* Chat input */}
-                  <div className="mt-4 rounded-xl border-2 border-foreground/[0.1] bg-background overflow-hidden">
-                    <textarea value={chatInput} onChange={e => setChatInput(e.target.value)}
-                      onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
-                      placeholder="Enter your ideas or upload images to get started."
-                      rows={2} className="w-full px-4 py-3 text-sm bg-transparent placeholder:text-muted focus:outline-none resize-none" />
-                    <div className="flex items-center justify-between px-3 pb-2">
-                      <div className="flex items-center gap-2">
-                        <button className="p-1.5 text-muted hover:text-foreground transition-colors"><Plus className="w-5 h-5" /></button>
-                        <button className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors text-sm">
-                          <Sparkles className="w-4 h-4" />AI agent <ChevronDown className="w-3 h-3" />
-                        </button>
-                      </div>
-                      <button onClick={handleSendChat}
-                        className="w-9 h-9 bg-foreground text-background rounded-full flex items-center justify-center hover:bg-foreground/90 transition-colors">
-                        <ArrowUp className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
                 </div>
               )}
 
@@ -1002,35 +1060,36 @@ const VideoEditor = ({ video }: Props) => {
             <div className="p-3 border-t border-foreground/[0.06] shrink-0">
               <div className="rounded-xl border-2 border-accent/30 bg-background overflow-hidden">
                 <textarea
-                  value={aiPrompt}
-                  onChange={e => setAiPrompt(e.target.value)}
+                  value={chatInput}
+                  onChange={e => setChatInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
                   placeholder="Describe what you want to create..."
                   rows={3}
                   className="w-full px-4 py-3 text-sm text-foreground placeholder:text-muted bg-transparent resize-none focus:outline-none"
                 />
                 <div className="flex items-center justify-between px-3 pb-2">
-                  <button className="p-1.5 text-muted hover:text-foreground transition-colors">
-                    <LayoutGrid className="w-5 h-5" />
-                  </button>
                   <div className="flex items-center gap-2">
+                    <button className="p-1.5 text-muted hover:text-foreground transition-colors">
+                      <Plus className="w-5 h-5" />
+                    </button>
                     <Popover>
                       <PopoverTrigger asChild>
-                        <button className="flex items-center gap-1 text-muted hover:text-foreground transition-colors">
-                          <Sparkles className="w-4 h-4" />
+                        <button className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors text-sm">
+                          <Sparkles className="w-4 h-4" />AI Agent
                           <ChevronDown className="w-3 h-3" />
                         </button>
                       </PopoverTrigger>
-                      <PopoverContent className="w-40 p-1.5" align="end">
+                      <PopoverContent className="w-40 p-1.5" align="start">
                         {["Auto", "Creative", "Precise", "Balanced"].map(m => (
                           <button key={m} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04]">{m}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
-                    <button onClick={() => { if (aiPrompt.trim()) { toast({ title: "Generating..." }); setAiPrompt(""); } }}
-                      className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center text-accent hover:bg-accent/30 transition-colors">
-                      <Send className="w-4 h-4" />
-                    </button>
                   </div>
+                  <button onClick={handleSendChat} disabled={isStreaming || !chatInput.trim()}
+                    className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${chatInput.trim() && !isStreaming ? "bg-accent text-white hover:bg-accent/90" : "bg-accent/20 text-accent/50"}`}>
+                    <Send className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
             </div>
