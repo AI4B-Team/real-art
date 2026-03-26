@@ -546,41 +546,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                   </div>
                 </div>
 
-                {/* Duration */}
-                <div className="border-t border-foreground/[0.06] pt-3">
-                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Duration</span>
-                  <div className="mt-2 space-y-2">
-                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full border-2 border-accent flex items-center justify-center">
-                          <div className="w-2 h-2 rounded-full bg-accent" />
-                        </div>
-                        <span className="text-sm font-medium">Automatic</span>
-                      </div>
-                    </div>
-                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                      <div className="flex items-center gap-2">
-                        <div className="w-4 h-4 rounded-full border-2 border-foreground/[0.2]" />
-                        <span className="text-sm font-medium">Fixed</span>
-                      </div>
-                      <span className="text-xs text-muted font-mono bg-foreground/[0.04] px-2 py-1 rounded">00:05.0</span>
-                    </div>
-                  </div>
-                </div>
 
-                {/* Timeline Settings */}
-                <div className="border-t border-foreground/[0.06] pt-3">
-                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Timeline Settings</span>
-                  <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08]">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium">FPS</span>
-                      <div className="flex items-center gap-2">
-                        <span className="text-sm">30</span>
-                        <ChevronDown className="w-4 h-4 text-muted" />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
 
                 {/* Version History */}
                 <div className="border-t border-foreground/[0.06] pt-3">
