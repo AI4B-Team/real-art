@@ -151,6 +151,7 @@ const VideoEditor = ({ video }: Props) => {
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState("16:9");
+  const [timelineViewMode, setTimelineViewMode] = useState<"timeline" | "storyboard">("timeline");
   const [isMuted, setIsMuted] = useState(false);
   const [captionSearch, setCaptionSearch] = useState("");
   
