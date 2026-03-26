@@ -1645,22 +1645,13 @@ const VideoEditor = ({ video }: Props) => {
 
           {/* Canvas area */}
           <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4 py-2 overflow-hidden">
+            {video ? (
             <div
               className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer max-h-full"
               style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
               onClick={() => setShowCanvasControls(!showCanvasControls)}
             >
-              {video ? (
                 <video ref={videoRef} src={video} className="w-full h-full object-contain" />
-              ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-3 px-6">
-                  <img src={emptyVideoImg} alt="" className="w-40 h-40 object-contain" />
-                  <div className="text-center">
-                    <p className="text-base font-semibold text-white/70 mb-1">Add Media To The Timeline To Start Creating</p>
-                    <p className="text-sm text-white/30">Drop media here, use the panel, or click Add Scene below</p>
-                  </div>
-                </div>
-              )}
 
               {/* Delete button - top right */}
               <AnimatePresence>
