@@ -281,8 +281,8 @@ const VideoEditor = ({ video }: Props) => {
                       <div className="w-12 h-12 rounded-full bg-foreground/[0.06] flex items-center justify-center mb-4">
                         <Sparkles className="w-6 h-6 text-accent" />
                       </div>
-                      <h3 className="text-lg font-bold mb-1">Hi there!</h3>
-                      <p className="text-2xl font-black tracking-tight mb-6">What are we<br />creating <span className="text-accent">today</span>?</p>
+                      <h3 className="text-lg font-bold mb-1">Hi There!</h3>
+                      <p className="text-2xl font-black tracking-tight mb-6">What Are We<br />Creating Today?</p>
                       <div className="space-y-2 w-full">
                         {AI_SUGGESTIONS.map((s, i) => (
                           <button key={i} onClick={() => { setChatInput(s); }}
