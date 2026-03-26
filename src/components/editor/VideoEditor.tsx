@@ -511,7 +511,7 @@ const VideoEditor = ({ video }: Props) => {
       {!isLeftPanelCollapsed && (
         <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex flex-col overflow-hidden shrink-0">
           {/* Icon strip - horizontal at top, wrapping */}
-          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex flex-wrap items-center px-3 py-2 gap-1 shrink-0">
+          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex flex-wrap items-center justify-center px-3 py-2 gap-1 shrink-0">
             {LEFT_TABS.map(tab => (
               <Tooltip key={tab.id}><TooltipTrigger asChild>
                 <button onClick={() => setActiveTab(tab.id)}
