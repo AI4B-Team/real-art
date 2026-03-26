@@ -38,7 +38,7 @@ type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "t
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
-  { id: "storyboard", icon: BookOpen, label: "Storyboard" },
+  { id: "storyboard", icon: Clapperboard, label: "Storyboard" },
   { id: "character", icon: User, label: "Character" },
   { id: "visuals", icon: Video, label: "Visuals" },
   { id: "audio", icon: AudioLines, label: "Audio" },
