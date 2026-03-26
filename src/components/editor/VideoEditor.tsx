@@ -753,21 +753,243 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
+
+              {/* Languages Tab */}
+              {activeTab === "languages" && (
+                <div className="space-y-4">
+                  <h3 className="text-lg font-bold text-foreground">Languages</h3>
+                  <p className="text-sm text-muted">Translate and dub your video into different languages.</p>
+                  
+                  <div className="relative">
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+                    <input type="text" placeholder="Search languages..." value={languageSearch} onChange={e => setLanguageSearch(e.target.value)}
+                      className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
+                  </div>
+
+                  <div className="space-y-1">
+                    {[
+                      { code: "en", label: "English", flag: "🇺🇸" },
+                      { code: "es", label: "Spanish", flag: "🇪🇸" },
+                      { code: "fr", label: "French", flag: "🇫🇷" },
+                      { code: "de", label: "German", flag: "🇩🇪" },
+                      { code: "it", label: "Italian", flag: "🇮🇹" },
+                      { code: "pt", label: "Portuguese", flag: "🇧🇷" },
+                      { code: "ja", label: "Japanese", flag: "🇯🇵" },
+                      { code: "ko", label: "Korean", flag: "🇰🇷" },
+                      { code: "zh", label: "Chinese", flag: "🇨🇳" },
+                      { code: "ar", label: "Arabic", flag: "🇸🇦" },
+                      { code: "hi", label: "Hindi", flag: "🇮🇳" },
+                      { code: "ru", label: "Russian", flag: "🇷🇺" },
+                    ].filter(l => l.label.toLowerCase().includes(languageSearch.toLowerCase())).map(lang => (
+                      <button key={lang.code} onClick={() => { setSelectedLanguage(lang.code); toast({ title: `Language set to ${lang.label}` }); }}
+                        className={`w-full flex items-center gap-3 p-3 rounded-xl transition-colors text-left ${selectedLanguage === lang.code ? "bg-accent/10 border border-accent/30" : "bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12]"}`}>
+                        <span className="text-lg">{lang.flag}</span>
+                        <span className="text-sm font-medium text-foreground flex-1">{lang.label}</span>
+                        {selectedLanguage === lang.code && <Check className="w-4 h-4 text-accent" />}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
+                    <h4 className="text-sm font-semibold">AI Dubbing</h4>
+                    <button onClick={() => toast({ title: "AI Dubbing started..." })}
+                      className="w-full flex items-center gap-3 p-4 rounded-xl bg-accent/[0.08] border border-accent/[0.15] hover:bg-accent/[0.12] transition-colors text-left">
+                      <Languages className="w-5 h-5 text-accent shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">Translate & Dub</p>
+                        <p className="text-xs text-muted">Auto-translate dialogue and generate voiceover</p>
+                      </div>
+                      <div className="w-2 h-2 rounded-full bg-accent shrink-0" />
+                    </button>
+                    <button onClick={() => toast({ title: "Generating subtitles..." })}
+                      className="w-full flex items-center gap-3 p-4 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
+                      <Captions className="w-5 h-5 text-muted shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium">Auto Subtitles</p>
+                        <p className="text-xs text-muted">Generate translated subtitles</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
+
               {/* Settings Tab */}
               {activeTab === "settings" && (
                 <div className="space-y-4">
+                  <h3 className="text-lg font-bold text-foreground">Settings</h3>
+
+                  {/* Size */}
                   <div className="space-y-3">
-                    {[
-                      { label: "Resolution", value: "1920 × 1080" },
-                      { label: "Frame Rate", value: "30 fps" },
-                      { label: "Aspect Ratio", value: selectedRatio },
-                      { label: "Background Color", value: "#000000" },
-                    ].map(setting => (
-                      <div key={setting.label} className="flex items-center justify-between p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06]">
-                        <span className="text-sm text-foreground">{setting.label}</span>
-                        <span className="text-sm font-medium text-muted">{setting.value}</span>
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Size</h4>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="w-full flex items-center gap-2 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
+                          <Video className="w-4 h-4 text-muted" />
+                          <span className="text-sm font-medium flex-1">
+                            {selectedRatio === "16:9" ? "Landscape (16:9)" : selectedRatio === "9:16" ? "Portrait (9:16)" : selectedRatio === "1:1" ? "Square (1:1)" : selectedRatio === "4:5" ? "Vertical (4:5)" : `Custom (${selectedRatio})`}
+                          </span>
+                          <ChevronDown className="w-4 h-4 text-muted" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-56 p-1.5" align="start">
+                        {[
+                          { value: "16:9", label: "Landscape (16:9)" },
+                          { value: "9:16", label: "Portrait (9:16)" },
+                          { value: "1:1", label: "Square (1:1)" },
+                          { value: "4:5", label: "Vertical (4:5)" },
+                          { value: "4:3", label: "Standard (4:3)" },
+                          { value: "21:9", label: "Ultrawide (21:9)" },
+                        ].map(r => (
+                          <button key={r.value} onClick={() => setSelectedRatio(r.value)}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r.value ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>
+                            {r.label}{selectedRatio === r.value && <Check className="w-3.5 h-3.5" />}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+                    <button onClick={() => toast({ title: "Opening social media resize..." })}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
+                      <FileText className="w-4 h-4 text-muted" />
+                      <div>
+                        <p className="text-sm font-medium">Resize For Social Media</p>
+                        <p className="text-xs text-muted">Create New Version For Social Media</p>
                       </div>
-                    ))}
+                    </button>
+                  </div>
+
+                  {/* Background */}
+                  <div className="border-t border-foreground/[0.06] pt-3 space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Background</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                        <button onClick={() => setBackgroundType("color")} className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${backgroundType === "color" ? "border-accent" : "border-foreground/[0.2]"}`}>
+                            {backgroundType === "color" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                          </div>
+                          <span className="text-sm font-medium">Color</span>
+                        </button>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs text-muted font-mono">{backgroundColor.toUpperCase()}</span>
+                          <input type="color" value={backgroundColor} onChange={e => setBackgroundColor(e.target.value)}
+                            className="w-6 h-6 rounded border-0 cursor-pointer" />
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08] cursor-pointer hover:border-foreground/[0.15] transition-colors">
+                        <button onClick={() => setBackgroundType("image")} className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${backgroundType === "image" ? "border-accent" : "border-foreground/[0.2]"}`}>
+                            {backgroundType === "image" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                          </div>
+                          <span className="text-sm font-medium">Image</span>
+                        </button>
+                        <span className="text-xs text-muted">Upload</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Duration */}
+                  <div className="border-t border-foreground/[0.06] pt-3 space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Duration</h4>
+                    <div className="space-y-2">
+                      <button onClick={() => setDurationType("automatic")} className="w-full flex items-center gap-2 p-3 rounded-xl border border-foreground/[0.08]">
+                        <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${durationType === "automatic" ? "border-accent" : "border-foreground/[0.2]"}`}>
+                          {durationType === "automatic" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                        </div>
+                        <span className="text-sm font-medium">Automatic</span>
+                      </button>
+                      <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                        <button onClick={() => setDurationType("fixed")} className="flex items-center gap-2">
+                          <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${durationType === "fixed" ? "border-accent" : "border-foreground/[0.2]"}`}>
+                            {durationType === "fixed" && <div className="w-2 h-2 rounded-full bg-accent" />}
+                          </div>
+                          <span className="text-sm font-medium">Fixed</span>
+                        </button>
+                        <input value={fixedDuration} onChange={e => setFixedDuration(e.target.value)}
+                          disabled={durationType !== "fixed"}
+                          className="w-20 text-right text-xs font-mono bg-foreground/[0.04] px-2 py-1 rounded border border-foreground/[0.08] focus:outline-none disabled:opacity-50" />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Timeline Settings */}
+                  <div className="border-t border-foreground/[0.06] pt-3 space-y-1">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3">Timeline Settings</h4>
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <div className="flex items-center gap-3">
+                        <MessageSquare className="w-4 h-4 text-muted" />
+                        <span className="text-sm">Show Comments</span>
+                      </div>
+                      <Switch checked={showComments} onCheckedChange={setShowComments} />
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <div className="flex items-center gap-3">
+                        <AudioLines className="w-4 h-4 text-muted" />
+                        <span className="text-sm">Show Soundwaves</span>
+                      </div>
+                      <Switch checked={showSoundwaves} onCheckedChange={setShowSoundwaves} />
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <div className="flex items-center gap-3">
+                        <Ghost className="w-4 h-4 text-muted" />
+                        <span className="text-sm">Show Ghost Playhead</span>
+                      </div>
+                      <Switch checked={showGhostPlayhead} onCheckedChange={setShowGhostPlayhead} />
+                    </div>
+                  </div>
+
+                  {/* Frames Per Second */}
+                  <div className="border-t border-foreground/[0.06] pt-3 space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Frames Per Second</h4>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <button className="w-full flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors">
+                          <span className="text-sm font-medium">{framesPerSecond} fps</span>
+                          <ChevronDown className="w-4 h-4 text-muted" />
+                        </button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-36 p-1.5" align="start">
+                        {["24", "25", "30", "60"].map(fps => (
+                          <button key={fps} onClick={() => setFramesPerSecond(fps)}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${framesPerSecond === fps ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>
+                            {fps} fps{framesPerSecond === fps && <Check className="w-3.5 h-3.5" />}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+
+                  {/* Version History */}
+                  <div className="border-t border-foreground/[0.06] pt-3 space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Version History</h4>
+                    <button onClick={() => toast({ title: "Opening version history..." })}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
+                      <History className="w-5 h-5 text-muted shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium">Restore To A Previous Version</p>
+                        <p className="text-xs text-muted">Creates A New Project</p>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Audio */}
+                  <div className="border-t border-foreground/[0.06] pt-3 space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Audio</h4>
+                    <button onClick={() => toast({ title: "Opening AI Dubbing..." })}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-accent/[0.08] border border-accent/[0.15] hover:bg-accent/[0.12] transition-colors text-left">
+                      <Languages className="w-5 h-5 text-accent shrink-0" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium">AI Dubbing</p>
+                        <p className="text-xs text-muted">Translate Dialogue To Different Languages</p>
+                      </div>
+                      <div className="w-2 h-2 rounded-full bg-accent shrink-0" />
+                    </button>
+                    <button onClick={() => toast({ title: "Cleaning audio..." })}
+                      className="w-full flex items-center gap-3 p-3 rounded-xl bg-accent/[0.08] border border-accent/[0.15] hover:bg-accent/[0.12] transition-colors text-left">
+                      <Sparkles className="w-5 h-5 text-accent shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium">Clean Audio</p>
+                        <p className="text-xs text-muted">Remove Background Noise</p>
+                      </div>
+                    </button>
                   </div>
                 </div>
               )}
