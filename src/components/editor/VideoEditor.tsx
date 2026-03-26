@@ -963,8 +963,16 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Text Tab */}
+              {/* Text Sub-Tab Nav */}
               {activeTab === "text" && (
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                  {([{id:"text",label:"Text"},{id:"captions",label:"Captions"}] as const).map(sub => (
+                    <button key={sub.id} onClick={() => setTextSubTab(sub.id)}
+                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${textSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                  ))}
+                </div>
+              )}
+              {activeTab === "text" && textSubTab === "text" && (
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold">Text</h3>
                   {["Heading", "Subheading", "Body Text", "Caption", "Lower Third", "Title Card"].map(preset => (
