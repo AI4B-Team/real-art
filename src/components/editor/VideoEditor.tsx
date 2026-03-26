@@ -312,6 +312,64 @@ const VideoEditor = ({ video }: Props) => {
     setTracks(prev => prev.map(t => t.id === trackId ? { ...t, visible: !t.visible } : t));
   };
 
+  // Scene management
+  const [hoveredSceneGap, setHoveredSceneGap] = useState<number | null>(null);
+  const [selectedClip, setSelectedClip] = useState<string | null>(null);
+
+  const scenes = useMemo(() => {
+    return tracks
+      .filter(t => t.type === "video" || t.id.includes("video"))
+      .flatMap(t => t.clips)
+      .sort((a, b) => a.startTime - b.startTime);
+  }, [tracks]);
+
+  const handleAddTrack = useCallback(() => {
+    setTracks(prev => [...prev, {
+      id: `track-${Date.now()}`,
+      type: "video",
+      name: String(prev.length + 1),
+      clips: [],
+      muted: false,
+      locked: false,
+      visible: true,
+    }]);
+  }, []);
+
+  const insertSceneAtIndex = useCallback((index: number) => {
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    let insertTime = 0;
+    if (index > 0 && scenes[index - 1]) {
+      insertTime = scenes[index - 1].startTime + scenes[index - 1].duration;
+    }
+    const newClip: TimelineClip = {
+      id: `clip-${Date.now()}`, type: "video", name: `Scene ${scenes.length + 1}`,
+      startTime: insertTime, duration: 5,
+    };
+    setTracks(prev => prev.map(track => ({
+      ...track,
+      clips: track.clips.map(clip => {
+        const si = scenes.findIndex(s => s.id === clip.id);
+        if (si >= index) return { ...clip, startTime: clip.startTime + 5 };
+        return clip;
+      }).concat(track.id === videoTrack.id ? [newClip] : [])
+    })));
+  }, [scenes, tracks]);
+
+  const addSceneAtEnd = useCallback(() => {
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    const lastScene = scenes[scenes.length - 1];
+    const newStartTime = lastScene ? lastScene.startTime + lastScene.duration : 0;
+    const newClip: TimelineClip = {
+      id: `clip-${Date.now()}`, type: "video", name: `Scene ${scenes.length + 1}`,
+      startTime: newStartTime, duration: 5,
+    };
+    setTracks(prev => prev.map(t =>
+      t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+    ));
+  }, [scenes, tracks]);
+
   const filteredCaptions = captionSearch
     ? CAPTION_DATA.filter(c => c.text.toLowerCase().includes(captionSearch.toLowerCase()))
     : CAPTION_DATA;
