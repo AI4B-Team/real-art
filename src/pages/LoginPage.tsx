@@ -134,13 +134,13 @@ const LoginPage = () => {
                 </div>
 
                 {[
-                  { label: "Continue with Google", logo: "G", lastUsed: true },
-                  { label: "Continue with Apple", logo: "⌘", lastUsed: false },
+                  { label: "Continue with Google", logo: "G", method: "google" },
+                  { label: "Continue with Apple", logo: "⌘", method: "apple" },
                 ].map(btn => (
-                  <button key={btn.label} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-foreground/[0.1] text-[0.86rem] font-medium hover:border-foreground/30 transition-colors mb-2.5 relative">
+                  <button key={btn.label} onClick={() => { localStorage.setItem("ra_last_login_method", btn.method); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-foreground/[0.1] text-[0.86rem] font-medium hover:border-foreground/30 transition-colors mb-2.5 relative">
                     <span className="w-6 h-6 rounded-full bg-foreground/[0.06] flex items-center justify-center text-[0.72rem] font-bold">{btn.logo}</span>
                     {btn.label}
-                    {btn.lastUsed && (
+                    {lastUsedMethod === btn.method && (
                       <span className="ml-auto text-[0.68rem] font-semibold bg-accent/[0.12] text-accent px-2 py-0.5 rounded-md">Last Used</span>
                     )}
                   </button>
