@@ -358,6 +358,67 @@ const VideoEditor = ({ video }: Props) => {
   // Scene management
   const [hoveredSceneGap, setHoveredSceneGap] = useState<number | null>(null);
   const [selectedClip, setSelectedClip] = useState<string | null>(null);
+  const [clipContextMenu, setClipContextMenu] = useState<{ clipId: string; trackId: string; x: number; y: number } | null>(null);
+
+  // Drag state for clips
+  const dragRef = useRef<{
+    mode: "move" | "resize-left" | "resize-right";
+    clipId: string;
+    trackId: string;
+    startX: number;
+    origStart: number;
+    origDuration: number;
+  } | null>(null);
+
+  const handleClipMouseDown = useCallback((e: React.MouseEvent, clipId: string, trackId: string, mode: "move" | "resize-left" | "resize-right") => {
+    e.stopPropagation();
+    e.preventDefault();
+    const track = tracks.find(t => t.id === trackId);
+    const clip = track?.clips.find(c => c.id === clipId);
+    if (!clip || track?.locked) return;
+    pushUndo();
+    dragRef.current = { mode, clipId, trackId, startX: e.clientX, origStart: clip.startTime, origDuration: clip.duration };
+    setSelectedClip(clipId);
+
+    const onMove = (ev: MouseEvent) => {
+      const d = dragRef.current;
+      if (!d) return;
+      const dx = (ev.clientX - d.startX) / pixelsPerSecond;
+      if (d.mode === "move") {
+        const newStart = Math.max(0, d.origStart + dx);
+        setTracks(prev => prev.map(t => t.id === d.trackId ? {
+          ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, startTime: snapEnabled ? Math.round(newStart * 2) / 2 : newStart } : c)
+        } : t));
+      } else if (d.mode === "resize-left") {
+        const delta = Math.min(dx, d.origDuration - 0.5);
+        const newStart = Math.max(0, d.origStart + delta);
+        const newDur = d.origDuration - (newStart - d.origStart);
+        if (newDur >= 0.5) {
+          setTracks(prev => prev.map(t => t.id === d.trackId ? {
+            ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, startTime: newStart, duration: newDur } : c)
+          } : t));
+        }
+      } else if (d.mode === "resize-right") {
+        const newDur = Math.max(0.5, d.origDuration + dx);
+        setTracks(prev => prev.map(t => t.id === d.trackId ? {
+          ...t, clips: t.clips.map(c => c.id === d.clipId ? { ...c, duration: newDur } : c)
+        } : t));
+      }
+    };
+    const onUp = () => {
+      dragRef.current = null;
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+    };
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  }, [tracks, pixelsPerSecond, snapEnabled, pushUndo]);
+
+  const handleClipVolumeChange = useCallback((clipId: string, volume: number) => {
+    setTracks(prev => prev.map(t => ({
+      ...t, clips: t.clips.map(c => c.id === clipId ? { ...c, volume } : c)
+    })));
+  }, []);
 
   // Undo/Redo helpers
   const pushUndo = useCallback(() => {
