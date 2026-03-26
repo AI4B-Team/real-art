@@ -9,7 +9,7 @@ import {
   AudioLines, Send, MessageSquare, RefreshCw,
   Palette, Heart, Zap, FileText, Clock, Hash,
   Film, Loader2, Shuffle, Type, BookOpen,
-  X as XIcon, Languages, GripVertical,
+  X as XIcon, Languages, GripVertical, GripHorizontal,
   Image, Video, ArrowRight, FolderOpen,
   Repeat, BarChart3, Headphones, Magnet, Diamond, Circle,
 } from "lucide-react";
@@ -163,6 +163,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [isLooping, setIsLooping] = useState(false);
   const [snapEnabled, setSnapEnabled] = useState(true);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
+  const [timelineHeight, setTimelineHeight] = useState(208);
+  const timelineResizeRef = useRef<{ startY: number; startH: number } | null>(null);
   const [showSpectral, setShowSpectral] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -1095,8 +1097,33 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
           )}
         </div>
 
+        {/* Resize handle */}
+        {!isTimelineMinimized && (
+          <div
+            className="h-2 bg-card border-t border-foreground/[0.08] flex items-center justify-center cursor-row-resize hover:bg-foreground/[0.04] transition-colors group shrink-0"
+            onMouseDown={(e) => {
+              e.preventDefault();
+              timelineResizeRef.current = { startY: e.clientY, startH: timelineHeight };
+              const onMove = (ev: MouseEvent) => {
+                if (!timelineResizeRef.current) return;
+                const delta = timelineResizeRef.current.startY - ev.clientY;
+                setTimelineHeight(Math.max(120, Math.min(600, timelineResizeRef.current.startH + delta)));
+              };
+              const onUp = () => {
+                timelineResizeRef.current = null;
+                window.removeEventListener("mousemove", onMove);
+                window.removeEventListener("mouseup", onUp);
+              };
+              window.addEventListener("mousemove", onMove);
+              window.addEventListener("mouseup", onUp);
+            }}
+          >
+            <GripHorizontal className="w-5 h-3.5 text-muted/40 group-hover:text-muted transition-colors" />
+          </div>
+        )}
+
         {/* Transport Controls — matches video timeline style */}
-        <div className="bg-card border-t border-foreground/[0.08] flex flex-col">
+        <div className="bg-card flex flex-col">
           <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             {/* Left tools */}
             <div className="flex items-center gap-1">
@@ -1177,7 +1204,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
         {/* Multi-track timeline */}
         {!isTimelineMinimized && (
-        <div className="h-52 border-t border-foreground/[0.06] bg-foreground/[0.02] flex flex-col shrink-0">
+        <div className="border-t border-foreground/[0.06] bg-foreground/[0.02] flex flex-col shrink-0" style={{ height: timelineHeight }}>
           {/* Timeline ruler */}
           <div className="h-6 border-b border-foreground/[0.06] flex shrink-0">
             <div className="w-36 shrink-0 border-r border-foreground/[0.06] bg-background flex items-center px-3">
