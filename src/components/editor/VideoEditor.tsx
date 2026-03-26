@@ -1613,11 +1613,56 @@ const VideoEditor = ({ video }: Props) => {
                   </div>
 
                   {/* Timeline clips */}
-                  <div className="flex-1 relative">
-                    {/* Playhead */}
-                    <div className="absolute top-0 bottom-0 z-10 pointer-events-none" style={{ left: playheadPosition }}>
-                      <div className="w-0.5 h-full bg-accent" />
-                      <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-accent rounded-b-sm rotate-45" style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
+                  <div className="flex-1 relative"
+                    ref={(el) => { (window as any).__timelineEl = el; }}
+                    onMouseDown={(e) => {
+                      // Click on ruler area (top 24px) to seek
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const y = e.clientY - rect.top;
+                      if (y <= 24) {
+                        const x = e.clientX - rect.left;
+                        const newTime = Math.max(0, Math.min(duration, x / pixelsPerSecond));
+                        setCurrentTime(newTime);
+                        setIsPlaying(false);
+                        // Start dragging
+                        const onMove = (ev: MouseEvent) => {
+                          const mx = ev.clientX - rect.left;
+                          setCurrentTime(Math.max(0, Math.min(duration, mx / pixelsPerSecond)));
+                        };
+                        const onUp = () => {
+                          window.removeEventListener("mousemove", onMove);
+                          window.removeEventListener("mouseup", onUp);
+                        };
+                        window.addEventListener("mousemove", onMove);
+                        window.addEventListener("mouseup", onUp);
+                      }
+                    }}
+                  >
+                    {/* Playhead - draggable */}
+                    <div
+                      className="absolute top-0 bottom-0 z-10 cursor-col-resize"
+                      style={{ left: playheadPosition - 6, width: 12 }}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        setIsPlaying(false);
+                        const container = (window as any).__timelineEl as HTMLDivElement;
+                        if (!container) return;
+                        const rect = container.getBoundingClientRect();
+                        const onMove = (ev: MouseEvent) => {
+                          const x = ev.clientX - rect.left;
+                          setCurrentTime(Math.max(0, Math.min(duration, x / pixelsPerSecond)));
+                        };
+                        const onUp = () => {
+                          window.removeEventListener("mousemove", onMove);
+                          window.removeEventListener("mouseup", onUp);
+                        };
+                        window.addEventListener("mousemove", onMove);
+                        window.addEventListener("mouseup", onUp);
+                      }}
+                    >
+                      <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-accent pointer-events-none" />
+                      <div className="absolute left-1/2 -translate-x-1/2 -top-0.5 w-3 h-3 bg-accent rounded-b-sm rotate-45 pointer-events-none" style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
                     </div>
 
                     {/* Markers */}
@@ -1636,12 +1681,12 @@ const VideoEditor = ({ video }: Props) => {
                       </Tooltip>
                     ))}
 
-                    {/* Time ruler */}
-                    <div className="h-6 border-b border-foreground/[0.06] flex items-end relative">
+                    {/* Time ruler - clickable */}
+                    <div className="h-6 border-b border-foreground/[0.06] flex items-end relative cursor-pointer">
                       {Array.from({ length: Math.ceil(duration / 10) + 1 }, (_, i) => (
                         <div key={i} className="absolute" style={{ left: i * 10 * pixelsPerSecond }}>
                           <div className="w-px h-2 bg-foreground/[0.1]" />
-                          <span className="text-[9px] text-muted/50 ml-1">{formatTimeColon(i * 10)}</span>
+                          <span className="text-[9px] text-muted/50 ml-1 select-none">{formatTimeColon(i * 10)}</span>
                         </div>
                       ))}
                     </div>
