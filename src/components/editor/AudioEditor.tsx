@@ -1183,7 +1183,9 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
         <div className="h-52 border-t border-foreground/[0.06] bg-foreground/[0.02] flex flex-col shrink-0">
           {/* Timeline ruler */}
           <div className="h-6 border-b border-foreground/[0.06] flex shrink-0">
-            <div className="w-36 shrink-0 border-r border-foreground/[0.06] bg-background" />
+            <div className="w-36 shrink-0 border-r border-foreground/[0.06] bg-background flex items-center px-3">
+              <span className="text-[9px] font-semibold text-muted uppercase tracking-wider">Tracks</span>
+            </div>
             <div className="flex-1 relative">
               {Array.from({ length: Math.ceil(duration / 10) }, (_, i) => (
                 <div key={i} className="absolute top-0 bottom-0 border-l border-foreground/[0.06]" style={{ left: `${(i * 10 / duration) * 100}%` }}>
