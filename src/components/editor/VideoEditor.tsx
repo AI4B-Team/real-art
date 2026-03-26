@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
-import emptyVideoImg from "@/assets/empty-video.png";
+import emptyVideoCards from "@/assets/empty-video-cards.png";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX,
   Scissors, Undo2, Redo2, ZoomIn, ZoomOut, Plus, Upload,
