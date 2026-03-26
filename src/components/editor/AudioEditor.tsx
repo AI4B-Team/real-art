@@ -639,7 +639,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             )}
 
             {/* Sound FX */}
-            {activeTab === "sfx" && (
+            {activeTab === "music" && musicSubTab === "sfx" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Sound Effects</h3>
                 <div className="flex gap-2 flex-wrap">
