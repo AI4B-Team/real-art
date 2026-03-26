@@ -444,8 +444,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
-            {/* Filters Tab */}
-            {activeLeftTab === "filters" && (
+            {/* Filters */}
+            {activeLeftTab === "adjustments" && adjustSubTab === "filters" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Filters</h3>
                 <div className="grid grid-cols-2 gap-2">
