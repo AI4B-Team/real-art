@@ -93,6 +93,13 @@ const AI_TOOLS = [
   { name: "AI Voiceover", desc: "Generate Narration From Script", icon: Mic },
 ];
 
+const VOICE_DATA = [
+  { name: "Maya", desc: "feminine, young, chill", color: "bg-emerald-500" },
+  { name: "Arjun", desc: "masculine, middle aged, intense", color: "bg-blue-500" },
+  { name: "Sophia", desc: "feminine, mature, warm", color: "bg-purple-500" },
+  { name: "Kai", desc: "non-binary, youthful, energetic", color: "bg-amber-500" },
+];
+
 const STORYBOARD_SCENES = [
   { time: "00:03", narrator: "Jurin", desc: "Clara stands at a desolate, snow-covered border crossing.", thumb: "https://images.unsplash.com/photo-1477601263568-180e2c6d046e?w=120" },
   { time: "00:05", narrator: "Jurin", desc: "As a sudden blizzard intensifies, she uses the snow as cover to slip past the checkpoint.", thumb: "https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=120" },
