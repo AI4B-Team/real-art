@@ -76,6 +76,67 @@ const CAPTION_DATA = [
   { time: "16.50s", text: "And I'm changing the game." },
 ];
 
+const FILLER_WORDS = ["um", "uh", "like", "you know", "right", "so", "actually", "basically", "literally"];
+
+interface WordToken {
+  id: string; word: string; start: number; end: number; isFiller?: boolean;
+}
+
+const SAMPLE_TRANSCRIPT: WordToken[] = [
+  { id: "w0", word: "So", start: 0.0, end: 0.3, isFiller: true },
+  { id: "w1", word: "today", start: 0.3, end: 0.7 },
+  { id: "w2", word: "we're", start: 0.7, end: 0.9 },
+  { id: "w3", word: "going", start: 0.9, end: 1.2 },
+  { id: "w4", word: "to", start: 1.2, end: 1.3 },
+  { id: "w5", word: "um", start: 1.3, end: 1.6, isFiller: true },
+  { id: "w6", word: "talk", start: 1.6, end: 1.9 },
+  { id: "w7", word: "about", start: 1.9, end: 2.2 },
+  { id: "w8", word: "something", start: 2.2, end: 2.7 },
+  { id: "w9", word: "really", start: 2.7, end: 3.1 },
+  { id: "w10", word: "like", start: 3.1, end: 3.4, isFiller: true },
+  { id: "w11", word: "important", start: 3.4, end: 4.0 },
+  { id: "w12", word: "about", start: 4.0, end: 4.3 },
+  { id: "w13", word: "AI", start: 4.3, end: 4.6 },
+  { id: "w14", word: "content", start: 4.6, end: 5.1 },
+  { id: "w15", word: "creation.", start: 5.1, end: 5.6 },
+  { id: "w16", word: "You know", start: 5.6, end: 6.0, isFiller: true },
+  { id: "w17", word: "the", start: 6.0, end: 6.1 },
+  { id: "w18", word: "tools", start: 6.1, end: 6.4 },
+  { id: "w19", word: "we", start: 6.4, end: 6.5 },
+  { id: "w20", word: "have", start: 6.5, end: 6.8 },
+  { id: "w21", word: "uh", start: 6.8, end: 7.0, isFiller: true },
+  { id: "w22", word: "available", start: 7.0, end: 7.5 },
+  { id: "w23", word: "right", start: 7.5, end: 7.7, isFiller: true },
+  { id: "w24", word: "now", start: 7.7, end: 7.9 },
+  { id: "w25", word: "are", start: 7.9, end: 8.1 },
+  { id: "w26", word: "actually", start: 8.1, end: 8.6, isFiller: true },
+  { id: "w27", word: "incredible.", start: 8.6, end: 9.2 },
+  { id: "w28", word: "Basically", start: 9.2, end: 9.7, isFiller: true },
+  { id: "w29", word: "you", start: 9.7, end: 9.9 },
+  { id: "w30", word: "can", start: 9.9, end: 10.1 },
+  { id: "w31", word: "edit", start: 10.1, end: 10.4 },
+  { id: "w32", word: "video", start: 10.4, end: 10.8 },
+  { id: "w33", word: "by", start: 10.8, end: 10.9 },
+  { id: "w34", word: "editing", start: 10.9, end: 11.3 },
+  { id: "w35", word: "text.", start: 11.3, end: 11.7 },
+];
+
+const CLIP_SUGGESTIONS = [
+  { label: "Strong Hook — Opening Statement", start: 0.0, end: 5.6, rationale: "Punchy opening that grabs attention with a direct statement about the topic.", platform: "tiktok" },
+  { label: "Key Insight — AI Tools Overview", start: 5.6, end: 9.2, rationale: "Compelling section about available tools that stands alone as a shareable moment.", platform: "reels" },
+  { label: "Actionable Takeaway — Edit by Text", start: 9.2, end: 11.7, rationale: "Clear, actionable tip that provides immediate value to viewers.", platform: "shorts" },
+];
+
+const SOCIAL_EXPORT_PRESETS = [
+  { platform: "TikTok", ratio: "9:16", maxDur: "60s", res: "1080×1920", icon: "♪" },
+  { platform: "Instagram Reels", ratio: "9:16", maxDur: "90s", res: "1080×1920", icon: "📷" },
+  { platform: "YouTube Shorts", ratio: "9:16", maxDur: "60s", res: "1080×1920", icon: "▶" },
+  { platform: "LinkedIn", ratio: "16:9", maxDur: "10min", res: "1920×1080", icon: "in" },
+  { platform: "Twitter/X", ratio: "16:9", maxDur: "2m20s", res: "1280×720", icon: "𝕏" },
+  { platform: "YouTube", ratio: "16:9", maxDur: "No limit", res: "1920×1080", icon: "▶" },
+  { platform: "Podcast", ratio: "1:1", maxDur: "No limit", res: "Audiogram", icon: "🎙" },
+];
+
 const EFFECTS_DATA = [
   "Audio Dust", "Audio Glitch", "Audio Glow", "Audio Meltdown",
   "Audio Mosh", "Audio RGB", "Audio Shake", "Black & White",
