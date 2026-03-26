@@ -217,6 +217,12 @@ const VideoEditor = ({ video }: Props) => {
   const [safeZone, setSafeZone] = useState<SafeZonePlatform>("hide");
   const [showCanvasControls, setShowCanvasControls] = useState(false);
   const [canvasBgColor, setCanvasBgColor] = useState("#000000");
+  const [selectedLayout, setSelectedLayout] = useState(0);
+  const [bgTab, setBgTab] = useState<"color" | "image" | "upload">("color");
+  const [applyBgToAll, setApplyBgToAll] = useState(true);
+  const [applyLayoutToAll, setApplyLayoutToAll] = useState(false);
+  const [bgRgb, setBgRgb] = useState({ r: 0, g: 0, b: 0 });
+  const [bgOpacity, setBgOpacity] = useState(100);
 
   // Prompt box state
   const [promptContentType, setPromptContentType] = useState<"video" | "audio" | "image">("video");
