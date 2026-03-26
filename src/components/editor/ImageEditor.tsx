@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import AIToolsPanel from "./AIToolsPanel";
 
 /* ─── Types ─── */
 interface Layer {
@@ -153,6 +154,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
     "🎪 Generate a surreal version of this scene",
   ];
   const visibleChatSuggestions = AI_CHAT_SUGGESTIONS.slice(suggestionOffset, suggestionOffset + 3);
+  const [aiChatSubTab, setAiChatSubTab] = useState<"chat" | "tools">("chat");
   const canvasRef = useRef<HTMLDivElement>(null);
   const drawingCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
@@ -433,54 +435,71 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
           <div className="flex-1 overflow-y-auto px-4 pb-4">
             {/* AI Chat Tab */}
             {activeLeftTab === "ai-chat" && (
-              <div className="flex flex-col h-full min-h-[400px]">
-                {chatMessages.length === 0 ? (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
-                    <div className="w-12 h-12 rounded-full bg-foreground/[0.06] flex items-center justify-center mb-4">
-                      <Sparkles className="w-6 h-6 text-accent" />
-                    </div>
-                    <h3 className="text-lg font-bold mb-1">Hi There!</h3>
-                    <p className="text-2xl font-black tracking-tight mb-6">What Are We<br />Creating Today?</p>
-                    <div className="space-y-2 w-full">
-                      {visibleChatSuggestions.map(s => (
-                        <button key={s} onClick={() => setChatInput(s)}
-                          className="w-full text-left px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-colors text-sm">
-                          {s}
+              <div className="flex flex-col h-full">
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-3">
+                  {([{id:"chat",label:"Chat"},{id:"tools",label:"AI Tools"}] as const).map(sub => (
+                    <button key={sub.id} onClick={() => setAiChatSubTab(sub.id)}
+                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${aiChatSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                  ))}
+                </div>
+
+                {aiChatSubTab === "chat" && (
+                  <div className="flex flex-col flex-1 min-h-[400px]">
+                    {chatMessages.length === 0 ? (
+                      <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+                        <div className="w-12 h-12 rounded-full bg-foreground/[0.06] flex items-center justify-center mb-4">
+                          <Sparkles className="w-6 h-6 text-accent" />
+                        </div>
+                        <h3 className="text-lg font-bold mb-1">Hi There!</h3>
+                        <p className="text-2xl font-black tracking-tight mb-6">What Are We<br />Creating Today?</p>
+                        <div className="space-y-2 w-full">
+                          {visibleChatSuggestions.map(s => (
+                            <button key={s} onClick={() => setChatInput(s)}
+                              className="w-full text-left px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-colors text-sm">
+                              {s}
+                            </button>
+                          ))}
+                        </div>
+                        <button onClick={() => setSuggestionOffset(prev => (prev + 3) % AI_CHAT_SUGGESTIONS.length)}
+                          className="mt-4 p-2 text-muted hover:text-foreground transition-colors">
+                          <RefreshCw className="w-4 h-4" />
                         </button>
-                      ))}
-                    </div>
-                    <button onClick={() => setSuggestionOffset(prev => (prev + 3) % AI_CHAT_SUGGESTIONS.length)}
-                      className="mt-4 p-2 text-muted hover:text-foreground transition-colors">
-                      <RefreshCw className="w-4 h-4" />
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex-1 space-y-4 py-2">
-                    {chatMessages.map((msg, i) => (
-                      <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
-                        <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
-                          msg.role === "user"
-                            ? "bg-foreground/[0.06] text-foreground rounded-br-md"
-                            : "bg-transparent text-foreground"
-                        }`}>
-                          {msg.role === "assistant" ? (
-                            <div className="space-y-2">
-                              {msg.content.split("\n").map((line, j) => (
-                                <p key={j} className={line.startsWith("**") ? "font-bold" : ""}>{line.replace(/\*\*/g, "")}</p>
-                              ))}
-                            </div>
-                          ) : msg.content}
-                        </div>
                       </div>
-                    ))}
-                    {isStreaming && (
-                      <div className="flex justify-start">
-                        <div className="px-4 py-3 rounded-2xl text-sm">
-                          <span className="inline-block w-2 h-2 bg-accent rounded-full animate-pulse" />
-                        </div>
+                    ) : (
+                      <div className="flex-1 space-y-4 py-2">
+                        {chatMessages.map((msg, i) => (
+                          <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                            <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                              msg.role === "user"
+                                ? "bg-foreground/[0.06] text-foreground rounded-br-md"
+                                : "bg-transparent text-foreground"
+                            }`}>
+                              {msg.role === "assistant" ? (
+                                <div className="space-y-2">
+                                  {msg.content.split("\n").map((line, j) => (
+                                    <p key={j} className={line.startsWith("**") ? "font-bold" : ""}>{line.replace(/\*\*/g, "")}</p>
+                                  ))}
+                                </div>
+                              ) : msg.content}
+                            </div>
+                          </div>
+                        ))}
+                        {isStreaming && (
+                          <div className="flex justify-start">
+                            <div className="px-4 py-3 rounded-2xl text-sm">
+                              <span className="inline-block w-2 h-2 bg-accent rounded-full animate-pulse" />
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
+                )}
+
+                {aiChatSubTab === "tools" && (
+                  <AIToolsPanel onAssetCreated={(url, type) => {
+                    toast({ title: "Asset added", description: `New ${type} asset is ready to use in your project.` });
+                  }} />
                 )}
               </div>
             )}
