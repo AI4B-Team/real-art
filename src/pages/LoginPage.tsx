@@ -22,6 +22,9 @@ const LoginPage = () => {
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSent, setForgotSent] = useState(false);
+  const [lastUsedMethod, setLastUsedMethod] = useState<string>(() => {
+    try { return localStorage.getItem("ra_last_login_method") || ""; } catch { return ""; }
+  });
 
   const handleLogin = () => {
     const e: Record<string, string> = {};
