@@ -323,12 +323,15 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
             ))}
           </div>
 
-          {/* Search bar */}
-          <div className="px-4 py-3 shrink-0">
-            <div className="relative">
+          {/* Search bar + action icons */}
+          <div className="px-4 py-3 shrink-0 flex items-center gap-2">
+            <div className="relative flex-1">
               <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
               <input type="text" placeholder="Search" className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
             </div>
+            <Tooltip><TooltipTrigger asChild><button className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors shrink-0"><LayoutGrid className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Grid View</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><button className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors shrink-0"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Download</TooltipContent></Tooltip>
+            <Tooltip><TooltipTrigger asChild><button className="w-9 h-9 rounded-lg flex items-center justify-center text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors shrink-0"><SlidersHorizontal className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Settings</TooltipContent></Tooltip>
           </div>
 
           {/* Panel content */}
