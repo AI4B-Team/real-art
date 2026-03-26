@@ -526,7 +526,7 @@ const VideoEditor = ({ video }: Props) => {
             )}
 
             {/* Scrollable content */}
-            <div className="flex-1 overflow-y-auto px-4 pb-4">
+            <div className="flex-1 overflow-y-auto px-4 pb-4 pt-4">
 
               {/* AI Chat Tab */}
               {activeTab === "ai-chat" && (
