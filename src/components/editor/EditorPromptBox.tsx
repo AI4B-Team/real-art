@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, KeyboardEvent } from "react";
+import { useState, useRef, useCallback, KeyboardEvent } from "react";
 import {
   Video, Image, AudioLines, Mic, User, Link, Copy, Clock, Hash,
   Heart, Sparkles, Music, Upload, Box, Send, ChevronDown, Shuffle,
@@ -9,7 +9,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 
 type ContentType = "video" | "image" | "audio";
 
-/* ─── Asset Chip Types ─── */
 export interface AssetChip {
   id: string;
   type: "character" | "video" | "image" | "script" | "music" | "audio";
@@ -17,11 +16,19 @@ export interface AssetChip {
   thumbnail?: string;
 }
 
-const CHIP_ICON: Record<AssetChip["type"], typeof User> = {
+const CHIP_ICON: Record<AssetChip["type"], string> = {
+  character: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
+  video: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>`,
+  image: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`,
+  script: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>`,
+  music: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
+  audio: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>`,
+};
+
+const LUCIDE_ICONS: Record<AssetChip["type"], typeof User> = {
   character: User, video: Video, image: Image, script: FileText, music: Music, audio: AudioLines,
 };
 
-/* ─── Sample assets ─── */
 const SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; items: { id: string; label: string; thumbnail?: string }[] }[] = [
   {
     category: "Characters", type: "character",
@@ -48,6 +55,8 @@ const SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; items: { id: s
   },
 ];
 
+const X_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
+
 interface EditorPromptBoxProps {
   editorType: ContentType;
   chatInput: string;
@@ -68,61 +77,79 @@ const PLACEHOLDERS: Record<ContentType, string> = {
   audio: "Describe the audio you want to create...",
 };
 
-/* ─── Chip component (inline) ─── */
-function InlineChip({ chip, onRemove }: { chip: AssetChip; onRemove: () => void }) {
-  const Icon = CHIP_ICON[chip.type];
-  return (
-    <span contentEditable={false} className="inline-flex items-center gap-1 px-2 py-0.5 mx-0.5 rounded-lg bg-foreground/[0.06] text-[0.82rem] font-medium text-foreground align-middle whitespace-nowrap select-none">
-      {chip.thumbnail ? (
-        <img src={chip.thumbnail} alt="" className="w-5 h-5 rounded object-cover" />
-      ) : (
-        <span className="w-5 h-5 rounded bg-foreground/[0.08] flex items-center justify-center">
-          <Icon className="w-3 h-3 text-muted" />
-        </span>
-      )}
-      {chip.label}
-      <button onMouseDown={(e) => { e.preventDefault(); e.stopPropagation(); onRemove(); }}
-        className="ml-0.5 p-0.5 rounded hover:bg-foreground/[0.1] transition-colors">
-        <XIcon className="w-2.5 h-2.5 text-muted" />
-      </button>
-    </span>
-  );
+function createChipElement(chip: AssetChip, onRemoveCallback: (id: string) => void): HTMLSpanElement {
+  const chipSpan = document.createElement("span");
+  chipSpan.contentEditable = "false";
+  chipSpan.dataset.chipId = chip.id;
+  chipSpan.dataset.chipType = chip.type;
+  chipSpan.style.cssText = "display:inline-flex;align-items:center;gap:4px;padding:2px 8px;margin:0 2px;border-radius:8px;font-size:0.82rem;font-weight:500;white-space:nowrap;user-select:none;vertical-align:middle;background:hsl(var(--foreground)/0.06);color:hsl(var(--foreground));";
+
+  if (chip.thumbnail) {
+    const img = document.createElement("img");
+    img.src = chip.thumbnail;
+    img.alt = "";
+    img.style.cssText = "width:20px;height:20px;border-radius:4px;object-fit:cover;";
+    chipSpan.appendChild(img);
+  } else {
+    const iconWrap = document.createElement("span");
+    iconWrap.style.cssText = "width:20px;height:20px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;background:hsl(var(--foreground)/0.08);color:hsl(var(--muted-foreground));";
+    iconWrap.innerHTML = CHIP_ICON[chip.type];
+    chipSpan.appendChild(iconWrap);
+  }
+
+  const labelNode = document.createTextNode(chip.label);
+  chipSpan.appendChild(labelNode);
+
+  const removeBtn = document.createElement("button");
+  removeBtn.style.cssText = "margin-left:2px;padding:2px;border-radius:4px;border:none;background:transparent;cursor:pointer;display:inline-flex;align-items:center;";
+  removeBtn.innerHTML = X_SVG;
+  removeBtn.onmousedown = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    chipSpan.remove();
+    onRemoveCallback(chip.id);
+  };
+  chipSpan.appendChild(removeBtn);
+
+  return chipSpan;
 }
 
 export default function EditorPromptBox({ editorType, chatInput, onChatInputChange, onSend, isStreaming = false }: EditorPromptBoxProps) {
   const [contentType, setContentType] = useState<ContentType>(editorType);
   const [isContentTypeOpen, setIsContentTypeOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
-  const [chips, setChips] = useState<AssetChip[]>([]);
+  const [chipIds, setChipIds] = useState<Set<string>>(new Set());
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
   const [assetSearch, setAssetSearch] = useState("");
   const editableRef = useRef<HTMLDivElement>(null);
+  const savedRangeRef = useRef<Range | null>(null);
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
   const ContentIcon = currentType.icon;
 
-  // Sync plain text out of contenteditable (ignoring chip nodes)
   const extractText = useCallback(() => {
     if (!editableRef.current) return "";
     let text = "";
-    editableRef.current.childNodes.forEach(node => {
+    const walk = (node: Node) => {
       if (node.nodeType === Node.TEXT_NODE) {
         text += node.textContent || "";
-      } else if ((node as HTMLElement).dataset?.chipId) {
-        // skip chip nodes for text extraction
       } else if (node.nodeName === "BR") {
         text += "\n";
+      } else if ((node as HTMLElement).dataset?.chipId) {
+        // chip — skip for text extraction
       } else {
-        text += (node as HTMLElement).innerText || "";
+        node.childNodes.forEach(walk);
       }
-    });
+    };
+    editableRef.current.childNodes.forEach(walk);
     return text;
   }, []);
 
-  const handleInput = useCallback(() => {
-    const text = extractText();
-    onChatInputChange(text);
+  const syncText = useCallback(() => {
+    onChatInputChange(extractText());
   }, [extractText, onChatInputChange]);
+
+  const handleInput = useCallback(() => { syncText(); }, [syncText]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -135,101 +162,83 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     if (!chatInput.trim()) return;
     setIsEnhancing(true);
     setTimeout(() => {
-      onChatInputChange(chatInput + " — cinematic lighting, dramatic composition");
-      // Also update the editable div
       if (editableRef.current) {
-        editableRef.current.childNodes.forEach(node => {
-          if (node.nodeType === Node.TEXT_NODE && node.textContent) {
-            node.textContent = node.textContent + " — cinematic lighting, dramatic composition";
-          }
-        });
+        editableRef.current.appendChild(document.createTextNode(" — cinematic lighting, dramatic composition"));
+        syncText();
       }
       setIsEnhancing(false);
     }, 1200);
   };
 
-  // Insert a chip at cursor position in contenteditable
-  const insertChipAtCursor = useCallback((chip: AssetChip) => {
-    const el = editableRef.current;
-    if (!el) return;
-    el.focus();
-
+  // Save cursor position before popover opens
+  const saveSelection = useCallback(() => {
     const sel = window.getSelection();
-    if (!sel || sel.rangeCount === 0) {
-      // If no selection, place at end
-      const range = document.createRange();
-      range.selectNodeContents(el);
-      range.collapse(false);
-      sel?.removeAllRanges();
-      sel?.addRange(range);
+    if (sel && sel.rangeCount > 0 && editableRef.current?.contains(sel.anchorNode)) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
     }
+  }, []);
 
-    const range = sel!.getRangeAt(0);
+  const removeChip = useCallback((id: string) => {
+    setChipIds(prev => { const n = new Set(prev); n.delete(id); return n; });
+    syncText();
+  }, [syncText]);
 
-    // Create chip span
-    const chipSpan = document.createElement("span");
-    chipSpan.contentEditable = "false";
-    chipSpan.dataset.chipId = chip.id;
-    chipSpan.className = "inline-flex items-center gap-1 px-2 py-0.5 mx-0.5 rounded-lg bg-foreground/[0.06] text-[0.82rem] font-medium text-foreground align-middle whitespace-nowrap select-none";
-
-    if (chip.thumbnail) {
-      const img = document.createElement("img");
-      img.src = chip.thumbnail;
-      img.alt = "";
-      img.className = "w-5 h-5 rounded object-cover";
-      chipSpan.appendChild(img);
-    } else {
-      const iconWrap = document.createElement("span");
-      iconWrap.className = "w-5 h-5 rounded bg-foreground/[0.08] flex items-center justify-center";
-      iconWrap.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>`;
-      chipSpan.appendChild(iconWrap);
-    }
-
-    const labelSpan = document.createElement("span");
-    labelSpan.textContent = chip.label;
-    chipSpan.appendChild(labelSpan);
-
-    // Remove button
-    const removeBtn = document.createElement("button");
-    removeBtn.className = "ml-0.5 p-0.5 rounded hover:bg-foreground/[0.1] transition-colors";
-    removeBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
-    removeBtn.onmousedown = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      chipSpan.remove();
-      setChips(prev => prev.filter(c => c.id !== chip.id));
-      handleInput();
-    };
-    chipSpan.appendChild(removeBtn);
-
-    range.deleteContents();
-    range.insertNode(chipSpan);
-
-    // Add a space after chip for typing
-    const space = document.createTextNode("\u00A0");
-    chipSpan.after(space);
-
-    // Move cursor after the space
-    const newRange = document.createRange();
-    newRange.setStartAfter(space);
-    newRange.collapse(true);
-    sel!.removeAllRanges();
-    sel!.addRange(newRange);
-
-    handleInput();
-  }, [handleInput]);
-
-  const addChip = (type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
-    if (chips.find(c => c.id === item.id)) return;
+  const addChip = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
+    if (chipIds.has(item.id)) return;
     const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
-    setChips(prev => [...prev, chip]);
+
+    setChipIds(prev => new Set(prev).add(item.id));
     setAssetPickerOpen(false);
     setAssetSearch("");
-    // Insert chip inline at cursor
-    setTimeout(() => insertChipAtCursor(chip), 50);
-  };
 
-  const hasContent = chatInput.trim() || chips.length > 0;
+    // Restore saved selection or place at end
+    requestAnimationFrame(() => {
+      const el = editableRef.current;
+      if (!el) return;
+      el.focus();
+
+      const sel = window.getSelection();
+      if (!sel) return;
+
+      let range: Range;
+      if (savedRangeRef.current && el.contains(savedRangeRef.current.startContainer)) {
+        range = savedRangeRef.current;
+      } else {
+        range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+      }
+
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const chipEl = createChipElement(chip, removeChip);
+      range.deleteContents();
+      range.insertNode(chipEl);
+
+      // Add a space after chip
+      const space = document.createTextNode("\u00A0");
+      chipEl.after(space);
+
+      // Move cursor after space
+      const newRange = document.createRange();
+      newRange.setStartAfter(space);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+
+      savedRangeRef.current = null;
+      syncText();
+    });
+  }, [chipIds, removeChip, syncText]);
+
+  const handlePaste = useCallback((e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const text = e.clipboardData.getData("text/plain");
+    document.execCommand("insertText", false, text);
+  }, []);
+
+  const hasContent = chatInput.trim() || chipIds.size > 0;
 
   const filteredAssets = SAMPLE_ASSETS.map(cat => ({
     ...cat,
@@ -238,16 +247,9 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     ),
   })).filter(cat => cat.items.length > 0);
 
-  // Handle paste — strip formatting
-  const handlePaste = useCallback((e: React.ClipboardEvent) => {
-    e.preventDefault();
-    const text = e.clipboardData.getData("text/plain");
-    document.execCommand("insertText", false, text);
-  }, []);
-
   return (
     <div className="rounded-xl border-2 border-accent/30 bg-background overflow-hidden">
-      {/* Rich contenteditable input area */}
+      {/* Rich contenteditable input */}
       <div className="relative min-h-[80px]">
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           <Tooltip>
@@ -268,7 +270,6 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           </Tooltip>
         </div>
 
-        {/* Content type dropdown */}
         {isContentTypeOpen && (
           <div className="absolute top-12 left-3 bg-foreground text-background rounded-xl shadow-lg p-2 z-50 min-w-[140px]">
             {CONTENT_TYPES.map(t => (
@@ -280,8 +281,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           </div>
         )}
 
-        {/* Contenteditable div — chips inline with text */}
-        <div className="pl-12 pr-4 pt-3 pb-2 relative">
+        <div className="pl-12 pr-4 pt-3 pb-2">
           <div
             ref={editableRef}
             contentEditable
@@ -290,7 +290,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
             onKeyDown={handleKeyDown}
             onPaste={handlePaste}
             data-placeholder={PLACEHOLDERS[contentType]}
-            className="min-h-[48px] text-sm text-foreground leading-relaxed outline-none break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted [&:empty]:before:pointer-events-none"
+            className="min-h-[48px] text-sm text-foreground leading-[1.8] outline-none break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted [&:empty]:before:pointer-events-none"
             style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
           />
         </div>
@@ -298,18 +298,15 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
       {/* Bottom toolbar */}
       <div className="flex items-center px-3 pb-2.5 gap-1 min-w-0">
-        {/* + Button */}
-        <Popover open={assetPickerOpen} onOpenChange={setAssetPickerOpen}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <PopoverTrigger asChild>
-                <button className="p-1.5 rounded-lg text-foreground hover:bg-foreground/[0.06] transition-colors shrink-0">
-                  <Plus className="w-5 h-5" />
-                </button>
-              </PopoverTrigger>
-            </TooltipTrigger>
-            <TooltipContent>Add Reference</TooltipContent>
-          </Tooltip>
+        <Popover open={assetPickerOpen} onOpenChange={(open) => {
+          if (open) saveSelection();
+          setAssetPickerOpen(open);
+        }}>
+          <PopoverTrigger asChild>
+            <button className="p-1.5 rounded-lg text-foreground hover:bg-foreground/[0.06] transition-colors shrink-0">
+              <Plus className="w-5 h-5" />
+            </button>
+          </PopoverTrigger>
           <PopoverContent className="w-64 p-0" align="start" sideOffset={8}>
             <div className="p-2 border-b border-foreground/[0.06]">
               <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
@@ -323,10 +320,10 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
                 <div key={cat.category}>
                   <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
                   {cat.items.map(item => {
-                    const isAdded = chips.find(c => c.id === item.id);
-                    const Icon = CHIP_ICON[cat.type];
+                    const isAdded = chipIds.has(item.id);
+                    const Icon = LUCIDE_ICONS[cat.type];
                     return (
-                      <button key={item.id} onClick={() => addChip(cat.type, item)} disabled={!!isAdded}
+                      <button key={item.id} onClick={() => addChip(cat.type, item)} disabled={isAdded}
                         className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
                         {item.thumbnail ? (
                           <img src={item.thumbnail} alt="" className="w-7 h-7 rounded object-cover" />
@@ -349,7 +346,6 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
         <div className="w-px h-5 bg-foreground/[0.1] mx-0.5 shrink-0" />
 
-        {/* AI Agent dropdown */}
         <Popover>
           <PopoverTrigger asChild>
             <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm text-muted hover:text-foreground transition-colors hover:bg-foreground/[0.04] shrink-0">
@@ -360,11 +356,11 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           </PopoverTrigger>
           <PopoverContent className="w-52 p-1.5" align="start">
             <p className="px-3 py-1.5 text-xs font-medium text-muted">Enhance Prompt</p>
-            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { onChatInputChange(chatInput + " — quick enhancement"); setIsEnhancing(false); }, 800); }}
+            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { if (editableRef.current) { editableRef.current.appendChild(document.createTextNode(" — quick enhancement")); syncText(); } setIsEnhancing(false); }, 800); }}
               className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
               <Zap className="w-3.5 h-3.5 text-amber-500" /> Fast Enhance
             </button>
-            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { onChatInputChange(chatInput + " — cinematic, detailed, high quality"); setIsEnhancing(false); }, 1500); }}
+            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { if (editableRef.current) { editableRef.current.appendChild(document.createTextNode(" — cinematic, detailed, high quality")); syncText(); } setIsEnhancing(false); }, 1500); }}
               className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
               <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Deep Enhance
             </button>
@@ -378,7 +374,6 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
         <div className="flex-1 min-w-0" />
 
-        {/* Send */}
         <button onClick={onSend} disabled={isStreaming || !hasContent}
           className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors shrink-0 ${hasContent && !isStreaming ? "bg-foreground text-background hover:bg-foreground/90" : "bg-foreground/10 text-muted"}`}>
           <Send className="w-4 h-4 -rotate-45" />
