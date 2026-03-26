@@ -688,6 +688,7 @@ const VideoEditor = ({ video }: Props) => {
                   {/* Video Content */}
                   <div className="space-y-3">
                     <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Video Content</h4>
+
                     <div className="space-y-2 text-sm text-foreground/80">
                       <p>• <strong>Opening:</strong> A resistance courier waits at a desolate, snow-covered border crossing.</p>
                       <p>• <strong>Rising action:</strong> She intercepts a transmission and realizes she has been betrayed.</p>
