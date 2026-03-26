@@ -144,7 +144,7 @@ const VideoEditor = ({ video }: Props) => {
   const [selectedRatio, setSelectedRatio] = useState("16:9");
   const [isMuted, setIsMuted] = useState(false);
   const [captionSearch, setCaptionSearch] = useState("");
-  const [aiPrompt, setAiPrompt] = useState("");
+  
   const [audioSubTab, setAudioSubTab] = useState("Voices");
   const [visualsSubTab, setVisualsSubTab] = useState("Videos");
   const [templateSearch, setTemplateSearch] = useState("");
