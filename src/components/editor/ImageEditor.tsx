@@ -566,10 +566,10 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
         </div>
       )}
 
-      {/* Collapse toggle */}
+      {/* Collapse toggle — pinned to right edge of left panel */}
       <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
-        className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-card border border-foreground/[0.08] rounded-r-lg flex items-center justify-center hover:bg-foreground/[0.04] transition-colors"
-        style={{ left: isLeftPanelCollapsed ? 0 : 420 }}>
+        className="absolute top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-card border border-foreground/[0.08] rounded-r-lg flex items-center justify-center hover:bg-foreground/[0.04] transition-colors"
+        style={{ left: isLeftPanelCollapsed ? 0 : 420, transform: "translateY(-50%) translateX(0)" }}>
         <ChevronLeft className={`w-3 h-3 text-muted transition-transform ${isLeftPanelCollapsed ? "rotate-180" : ""}`} />
       </button>
 
