@@ -1124,7 +1124,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
             {/* Center transport */}
             <div className="flex items-center gap-1 shrink-0">
-              <button onClick={isRecording ? handleStopRecording : handleStartRecording}
+              <button onClick={() => isRecording ? handleStopRecording() : setShowRecordingModal(true)}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
                 <Circle className={`w-3 h-3 fill-current`} />{isRecording ? "Stop" : "Record"}
               </button>
