@@ -17,51 +17,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "@/hooks/use-toast";
 
 /* ─── Types ─── */
-type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "sfx" | "effects" | "text" | "templates" | "tools" | "settings";
+type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "effects" | "text" | "templates" | "settings";
 
-interface AudioTrack {
-  id: string;
-  name: string;
-  type: "voice" | "music" | "sfx" | "recorded" | "imported";
-  duration: number;
-  startTime: number;
-  color: string;
-  muted: boolean;
-  solo: boolean;
-  volume: number;
-  pan: number;
-  locked: boolean;
-}
-
-interface Marker {
-  id: string;
-  time: number;
-  label: string;
-  color: string;
-}
-
-interface ChatMessage { role: "user" | "assistant"; content: string; }
-
-interface SharedAsset {
-  id: string;
-  name: string;
-  type: "image" | "video" | "audio";
-  url: string;
-  thumbnail?: string;
-}
-
-/* ─── Tab Config ─── */
 const LEFT_TABS: { id: LeftTab; icon: typeof Music; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
   { id: "tracks", icon: Layers, label: "Tracks" },
   { id: "voice", icon: Mic, label: "Voice" },
   { id: "music", icon: Music, label: "Music" },
-  { id: "sfx", icon: Zap, label: "Sound FX" },
   { id: "effects", icon: Sparkles, label: "Effects" },
   { id: "text", icon: Type, label: "Text To Speech" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "tools", icon: Wand2, label: "AI Tools" },
-  
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
