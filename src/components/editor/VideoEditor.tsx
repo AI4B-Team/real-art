@@ -1459,6 +1459,32 @@ const VideoEditor = ({ video }: Props) => {
                               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <p className="text-[10px] text-background truncate">{clip.name}</p>
                               </div>
+                              {/* Delete button on hover */}
+                              {scenes.length > 1 && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); deleteScene(clip.id); }}
+                                      className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-destructive/80 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>Delete Scene</TooltipContent>
+                                </Tooltip>
+                              )}
+                              {/* Duplicate button on hover */}
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); duplicateScene(clip.id); }}
+                                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-foreground/60 backdrop-blur-sm text-background flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-foreground/80"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>Duplicate Scene</TooltipContent>
+                              </Tooltip>
                             </div>
                           </div>
 
