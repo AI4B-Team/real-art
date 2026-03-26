@@ -17,7 +17,18 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "@/hooks/use-toast";
 
 /* ─── Types ─── */
-type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "sfx" | "effects" | "text" | "templates" | "tools" | "settings";
+type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "effects" | "text" | "templates" | "settings";
+
+const LEFT_TABS: { id: LeftTab; icon: typeof Music; label: string }[] = [
+  { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
+  { id: "tracks", icon: Layers, label: "Tracks" },
+  { id: "voice", icon: Mic, label: "Voice" },
+  { id: "music", icon: Music, label: "Music" },
+  { id: "effects", icon: Sparkles, label: "Effects" },
+  { id: "text", icon: Type, label: "Text To Speech" },
+  { id: "templates", icon: LayoutGrid, label: "Templates" },
+  { id: "settings", icon: Settings, label: "Settings" },
+];
 
 interface AudioTrack {
   id: string;
@@ -49,21 +60,6 @@ interface SharedAsset {
   url: string;
   thumbnail?: string;
 }
-
-/* ─── Tab Config ─── */
-const LEFT_TABS: { id: LeftTab; icon: typeof Music; label: string }[] = [
-  { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
-  { id: "tracks", icon: Layers, label: "Tracks" },
-  { id: "voice", icon: Mic, label: "Voice" },
-  { id: "music", icon: Music, label: "Music" },
-  { id: "sfx", icon: Zap, label: "Sound FX" },
-  { id: "effects", icon: Sparkles, label: "Effects" },
-  { id: "text", icon: Type, label: "Text To Speech" },
-  { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "tools", icon: Wand2, label: "AI Tools" },
-  
-  { id: "settings", icon: Settings, label: "Settings" },
-];
 
 const VOICE_PRESETS = [
   { name: "Maya", desc: "Feminine, warm, conversational", color: "bg-emerald-500", lang: "English" },
@@ -153,6 +149,8 @@ interface Props {
 
 const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
+  const [musicSubTab, setMusicSubTab] = useState<"music" | "sfx">("music");
+  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "ai-tools">("general");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration] = useState(180);
@@ -418,11 +416,11 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
           </div>
 
           {/* Search */}
-          {["sfx", "music", "effects", "templates", "tools"].includes(activeTab) && (
+          {["music", "effects", "templates"].includes(activeTab) && (
             <div className="px-4 pt-4 pb-3 shrink-0">
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-                <input type="text" placeholder={`Search ${activeTab === "sfx" ? "sound effects" : activeTab}...`} className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
+                <input type="text" placeholder={`Search ${activeTab}...`} className="w-full pl-9 pr-3 h-9 bg-foreground/[0.04] border border-foreground/[0.08] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-accent/20" />
               </div>
             </div>
           )}
@@ -625,8 +623,16 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               </div>
             )}
 
-            {/* Music */}
+            {/* Music Sub-Tab Nav */}
             {activeTab === "music" && (
+              <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                {([{id:"music",label:"Music"},{id:"sfx",label:"Sound FX"}] as const).map(sub => (
+                  <button key={sub.id} onClick={() => setMusicSubTab(sub.id)}
+                    className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${musicSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                ))}
+              </div>
+            )}
+            {activeTab === "music" && musicSubTab === "music" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Music Library</h3>
                 <div className="flex gap-2 flex-wrap">
@@ -664,7 +670,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             )}
 
             {/* Sound FX */}
-            {activeTab === "sfx" && (
+            {activeTab === "music" && musicSubTab === "sfx" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Sound Effects</h3>
                 <div className="flex gap-2 flex-wrap">
@@ -802,8 +808,16 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               </div>
             )}
 
-            {/* AI Tools */}
-            {activeTab === "tools" && (
+            {/* Settings Sub-Tab Nav */}
+            {activeTab === "settings" && (
+              <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                {([{id:"general",label:"General"},{id:"ai-tools",label:"AI Tools"}] as const).map(sub => (
+                  <button key={sub.id} onClick={() => setSettingsSubTab(sub.id)}
+                    className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${settingsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                ))}
+              </div>
+            )}
+            {activeTab === "settings" && settingsSubTab === "ai-tools" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">AI Tools</h3>
                 {[
@@ -834,8 +848,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               </div>
             )}
 
-            {/* Settings */}
-            {activeTab === "settings" && (
+            {/* Settings General */}
+            {activeTab === "settings" && settingsSubTab === "general" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Settings</h3>
                 <div className="space-y-3">

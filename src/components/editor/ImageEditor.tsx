@@ -72,21 +72,16 @@ const CANVAS_TOOLS = [
 ];
 
 /* ─── Left Panel Tab Config ─── */
-type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "elements" | "text" | "effects" | "templates" | "brand" | "tools" | "settings";
+type LeftTab = "creations" | "layers" | "adjustments" | "ai-tools" | "text" | "effects" | "templates" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "creations", icon: Image, label: "Creations" },
   { id: "layers", icon: Layers, label: "Layers" },
   { id: "adjustments", icon: SlidersHorizontal, label: "Adjustments" },
-  { id: "filters", icon: Sparkles, label: "Filters" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
-  { id: "elements", icon: Box, label: "Elements" },
   { id: "text", icon: Type, label: "Text" },
   { id: "effects", icon: Zap, label: "Effects" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  { id: "brand", icon: Palette, label: "Brand Kit" },
-  
-  { id: "tools", icon: Wrench, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
@@ -133,6 +128,9 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [inputValue, setInputValue] = useState("");
   const [activeLeftTab, setActiveLeftTab] = useState<LeftTab>("creations");
+  const [adjustSubTab, setAdjustSubTab] = useState<"adjustments" | "filters">("adjustments");
+  const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "elements">("effects");
+  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand">("general");
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const canvasRef = useRef<HTMLDivElement>(null);
   const drawingCanvasRef = useRef<HTMLCanvasElement>(null);
@@ -408,8 +406,16 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
-            {/* Adjustments Tab */}
+            {/* Adjustments Sub-Tab Nav */}
             {activeLeftTab === "adjustments" && (
+              <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                {([{id:"adjustments",label:"Adjustments"},{id:"filters",label:"Filters"}] as const).map(sub => (
+                  <button key={sub.id} onClick={() => setAdjustSubTab(sub.id)}
+                    className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${adjustSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                ))}
+              </div>
+            )}
+            {activeLeftTab === "adjustments" && adjustSubTab === "adjustments" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Adjustments</h3>
                 {[
@@ -438,8 +444,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
-            {/* Filters Tab */}
-            {activeLeftTab === "filters" && (
+            {/* Filters */}
+            {activeLeftTab === "adjustments" && adjustSubTab === "filters" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Filters</h3>
                 <div className="grid grid-cols-2 gap-2">
@@ -501,8 +507,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
-            {/* Elements Tab */}
-            {activeLeftTab === "elements" && (
+            {/* Elements */}
+            {activeLeftTab === "effects" && effectsSubTab === "elements" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Elements</h3>
                 <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
@@ -534,8 +540,16 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
-            {/* Effects Tab */}
+            {/* Effects Sub-Tab Nav */}
             {activeLeftTab === "effects" && (
+              <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                {([{id:"effects",label:"Effects"},{id:"elements",label:"Elements"}] as const).map(sub => (
+                  <button key={sub.id} onClick={() => setEffectsSubTab(sub.id)}
+                    className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${effectsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                ))}
+              </div>
+            )}
+            {activeLeftTab === "effects" && effectsSubTab === "effects" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Effects</h3>
                 <div className="grid grid-cols-3 gap-2">
@@ -551,7 +565,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
             )}
 
             {/* Brand Kit Tab */}
-            {activeLeftTab === "brand" && (
+            {activeLeftTab === "settings" && settingsSubTab === "brand" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Brand Kit</h3>
                 <div className="space-y-3">
@@ -584,8 +598,16 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
 
-            {/* Settings Tab */}
+            {/* Settings Sub-Tab Nav */}
             {activeLeftTab === "settings" && (
+              <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                {([{id:"general",label:"General"},{id:"brand",label:"Brand"}] as const).map(sub => (
+                  <button key={sub.id} onClick={() => setSettingsSubTab(sub.id)}
+                    className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${settingsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                ))}
+              </div>
+            )}
+            {activeLeftTab === "settings" && settingsSubTab === "general" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Settings</h3>
 

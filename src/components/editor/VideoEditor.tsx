@@ -33,26 +33,17 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "languages" | "templates" | "tools" | "settings" | "brand";
+type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "effects" | "templates" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
   { id: "storyboard", icon: BookOpen, label: "Storyboard" },
-  { id: "video-brief", icon: Clapperboard, label: "Video Brief" },
-  { id: "script", icon: FileText, label: "Script" },
   { id: "character", icon: User, label: "Character" },
   { id: "visuals", icon: Video, label: "Visuals" },
   { id: "audio", icon: AudioLines, label: "Audio" },
   { id: "text", icon: Type, label: "Text" },
-  { id: "captions", icon: Captions, label: "Captions" },
   { id: "effects", icon: Sparkles, label: "Effects" },
-  { id: "elements", icon: Layers, label: "Elements" },
-  { id: "transitions", icon: SlidersHorizontal, label: "Transitions" },
-  { id: "brand", icon: Palette, label: "Brand Kit" },
-  { id: "languages", icon: Languages, label: "Languages" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
-  
-  { id: "tools", icon: Wand2, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
 
@@ -191,6 +182,10 @@ const VideoEditor = ({ video }: Props) => {
   const [framesPerSecond, setFramesPerSecond] = useState("30");
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [languageSearch, setLanguageSearch] = useState("");
+  const [storyboardSubTab, setStoryboardSubTab] = useState<"scenes" | "script" | "brief">("scenes");
+  const [textSubTab, setTextSubTab] = useState<"text" | "captions">("text");
+  const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "transitions" | "elements">("effects");
+  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand" | "languages" | "ai-tools">("general");
 
   // Toolbar state
   const [snapEnabled, setSnapEnabled] = useState(false);
@@ -527,7 +522,7 @@ const VideoEditor = ({ video }: Props) => {
             {/* Active tab content */}
 
             {/* Search bar for applicable tabs */}
-            {["script", "captions", "audio", "effects", "templates", "tools", "elements"].includes(activeTab) && (
+            {["audio", "effects", "templates"].includes(activeTab) && (
               <div className="px-4 pt-3 pb-3 shrink-0">
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
@@ -593,8 +588,16 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Storyboard Tab */}
+              {/* Storyboard Sub-Tab Nav */}
               {activeTab === "storyboard" && (
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                  {([{id:"scenes",label:"Scenes"},{id:"script",label:"Script"},{id:"brief",label:"Brief"}] as const).map(sub => (
+                    <button key={sub.id} onClick={() => setStoryboardSubTab(sub.id)}
+                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${storyboardSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                  ))}
+                </div>
+              )}
+              {activeTab === "storyboard" && storyboardSubTab === "scenes" && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-bold">Storyboard</h3>
@@ -654,8 +657,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Video Brief Tab */}
-              {activeTab === "video-brief" && (
+              {/* Video Brief */}
+              {activeTab === "storyboard" && storyboardSubTab === "brief" && (
                 <div className="space-y-5">
                    <h3 className="text-sm font-bold">Video Brief</h3>
 
@@ -745,8 +748,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Script Tab */}
-              {activeTab === "script" && (
+              {/* Script */}
+              {activeTab === "storyboard" && storyboardSubTab === "script" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Script</h3>
                   <div className="flex items-center gap-2">
@@ -960,8 +963,16 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Text Tab */}
+              {/* Text Sub-Tab Nav */}
               {activeTab === "text" && (
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                  {([{id:"text",label:"Text"},{id:"captions",label:"Captions"}] as const).map(sub => (
+                    <button key={sub.id} onClick={() => setTextSubTab(sub.id)}
+                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${textSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                  ))}
+                </div>
+              )}
+              {activeTab === "text" && textSubTab === "text" && (
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold">Text</h3>
                   {["Heading", "Subheading", "Body Text", "Caption", "Lower Third", "Title Card"].map(preset => (
@@ -973,8 +984,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Captions Tab */}
-              {activeTab === "captions" && (
+              {/* Captions */}
+              {activeTab === "text" && textSubTab === "captions" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Captions</h3>
                   <div className="flex items-center justify-end gap-2">
@@ -994,8 +1005,16 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Effects Tab */}
+              {/* Effects Sub-Tab Nav */}
               {activeTab === "effects" && (
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                  {([{id:"effects",label:"Effects"},{id:"transitions",label:"Transitions"},{id:"elements",label:"Elements"}] as const).map(sub => (
+                    <button key={sub.id} onClick={() => setEffectsSubTab(sub.id)}
+                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${effectsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                  ))}
+                </div>
+              )}
+              {activeTab === "effects" && effectsSubTab === "effects" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Effects</h3>
                   <div className="grid grid-cols-4 gap-2">
@@ -1012,8 +1031,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Elements Tab */}
-              {activeTab === "elements" && (
+              {/* Elements */}
+              {activeTab === "effects" && effectsSubTab === "elements" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Elements</h3>
                   <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1">
@@ -1032,8 +1051,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Transitions Tab */}
-              {activeTab === "transitions" && (
+              {/* Transitions */}
+              {activeTab === "effects" && effectsSubTab === "transitions" && (
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold">Transitions</h3>
                   {["Fade", "Dissolve", "Wipe Left", "Wipe Right", "Zoom In", "Zoom Out", "Slide Up", "Slide Down", "Spin", "Glitch"].map(tr => (
@@ -1081,16 +1100,24 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Tools / AI Tab */}
-              {activeTab === "tools" && (
+              {/* Settings Sub-Tab Nav */}
+              {activeTab === "settings" && (
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                  {([{id:"general",label:"General"},{id:"brand",label:"Brand"},{id:"languages",label:"Languages"},{id:"ai-tools",label:"AI Tools"}] as const).map(sub => (
+                    <button key={sub.id} onClick={() => setSettingsSubTab(sub.id)}
+                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${settingsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                  ))}
+                </div>
+              )}
+              {/* AI Tools */}
+              {activeTab === "settings" && settingsSubTab === "ai-tools" && (
                 <AIToolsPanel onAssetCreated={(url, type) => {
                   toast({ title: "Asset added", description: `New ${type} asset is ready to use in your project.` });
                 }} />
               )}
 
-
-              {/* Languages Tab */}
-              {activeTab === "languages" && (
+              {/* Languages */}
+              {activeTab === "settings" && settingsSubTab === "languages" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Languages</h3>
                   <p className="text-sm text-muted">Translate and dub your video into different languages.</p>
@@ -1148,8 +1175,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Brand Kit Tab */}
-              {activeTab === "brand" && (
+              {/* Brand Kit */}
+              {activeTab === "settings" && settingsSubTab === "brand" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Brand Kit</h3>
                   <p className="text-sm text-muted">Define your brand identity for consistent content.</p>
@@ -1208,8 +1235,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Settings Tab */}
-              {activeTab === "settings" && (
+              {/* Settings General */}
+              {activeTab === "settings" && settingsSubTab === "general" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Settings</h3>
 
