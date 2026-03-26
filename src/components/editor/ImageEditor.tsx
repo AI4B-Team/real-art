@@ -134,6 +134,25 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "elements">("effects");
   const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand">("general");
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+
+  // AI Chat state
+  interface ChatMessage { role: "user" | "assistant"; content: string; }
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [suggestionOffset, setSuggestionOffset] = useState(0);
+  const AI_CHAT_SUGGESTIONS = [
+    "🎨 Remove the background from my image",
+    "✨ Enhance the colors and sharpness",
+    "🖼️ Apply a cinematic style transfer",
+    "🔍 Upscale this image to 4x resolution",
+    "🎭 Create an artistic version of this photo",
+    "🌈 Colorize this black and white image",
+    "🖌️ Add a watercolor painting effect",
+    "📸 Improve the lighting and contrast",
+    "🎪 Generate a surreal version of this scene",
+  ];
+  const visibleChatSuggestions = AI_CHAT_SUGGESTIONS.slice(suggestionOffset, suggestionOffset + 3);
   const canvasRef = useRef<HTMLDivElement>(null);
   const drawingCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
