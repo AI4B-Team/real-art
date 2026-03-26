@@ -140,6 +140,20 @@ const formatTimeColon = (s: number) => {
 
 interface Props { video?: string }
 
+const SAFE_ZONE_PLATFORMS = [
+  { id: "hide", label: "Hide Safe Zone", icon: "🚫" },
+  { id: "reels", label: "Reels", icon: "📷", color: "bg-gradient-to-br from-pink-500 to-purple-600" },
+  { id: "facebook", label: "Facebook", icon: "f", color: "bg-[#1877F2]" },
+  { id: "tiktok", label: "TikTok", icon: "♪", color: "bg-foreground" },
+  { id: "shorts", label: "Shorts", icon: "▶", color: "bg-red-600" },
+  { id: "linkedin", label: "LinkedIn", icon: "in", color: "bg-[#0A66C2]" },
+  { id: "snapchat", label: "Snapchat", icon: "👻", color: "bg-[#FFFC00]" },
+] as const;
+
+type SafeZonePlatform = typeof SAFE_ZONE_PLATFORMS[number]["id"];
+
+
+
 const VideoEditor = ({ video }: Props) => {
   const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -198,6 +212,11 @@ const VideoEditor = ({ video }: Props) => {
   const [redoStack, setRedoStack] = useState<TimelineTrack[][]>([]);
 
   const [isStreaming, setIsStreaming] = useState(false);
+
+  // Canvas overlay state
+  const [safeZone, setSafeZone] = useState<SafeZonePlatform>("hide");
+  const [showCanvasControls, setShowCanvasControls] = useState(false);
+  const [canvasBgColor, setCanvasBgColor] = useState("#000000");
 
   // Prompt box state
   const [promptContentType, setPromptContentType] = useState<"video" | "audio" | "image">("video");
@@ -1588,43 +1607,240 @@ const VideoEditor = ({ video }: Props) => {
       {/* Main Area */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Video Canvas */}
-        <div className="flex-1 bg-foreground/[0.03] flex items-center justify-center relative overflow-hidden min-h-0">
-          <div className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl" style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : "16/9" }}>
-            {video ? (
-              <video ref={videoRef} src={video} className="w-full h-full object-contain" />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center">
-                <div className="text-center text-white/40">
-                  <Video className="w-16 h-16 mx-auto mb-3 opacity-30" />
-                  <p className="text-sm font-medium">Drop media or add from panel</p>
+        <div className="flex-1 bg-foreground/[0.03] flex flex-col items-center justify-center relative overflow-hidden min-h-0">
+          <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4">
+            <div
+              className="video-canvas-container relative bg-black rounded-2xl overflow-hidden shadow-2xl cursor-pointer group/canvas border-2 border-foreground/[0.06]"
+              style={{ width: "85%", maxWidth: 860, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
+              onClick={() => setShowCanvasControls(!showCanvasControls)}
+            >
+              {video ? (
+                <video ref={videoRef} src={video} className="w-full h-full object-contain" />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center">
+                  <div className="text-center text-white/40">
+                    <Video className="w-16 h-16 mx-auto mb-3 opacity-30" />
+                    <p className="text-sm font-medium">Drop media or add from panel</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Delete button - top right */}
+              <AnimatePresence>
+                {showCanvasControls && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={(e) => { e.stopPropagation(); toast({ title: "Media removed" }); }}
+                    className="absolute top-3 right-3 w-10 h-10 rounded-xl bg-accent text-white flex items-center justify-center hover:bg-accent/90 transition-colors shadow-lg z-20"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+
+              {/* Canvas play controls - centered */}
+              <AnimatePresence>
+                {showCanvasControls && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.9 }}
+                    className="absolute inset-0 flex items-center justify-center z-10"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex items-center gap-4">
+                      <button onClick={() => setCurrentTime(Math.max(0, currentTime - 10))}
+                        className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                        <SkipBack className="w-5 h-5" />
+                      </button>
+                      <button onClick={togglePlay}
+                        className="w-16 h-16 rounded-full bg-white/25 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/35 transition-colors">
+                        {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1" />}
+                      </button>
+                      <button onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))}
+                        className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+                        <SkipForward className="w-5 h-5" />
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Safe Zone Overlay */}
+              {safeZone !== "hide" && (
+                <div className="absolute inset-0 pointer-events-none z-[5]">
+                  {/* Status bar */}
+                  <div className="absolute top-0 left-0 right-0 px-4 pt-2 flex justify-between items-center">
+                    <span className="text-white text-xs font-semibold">9:41</span>
+                    {safeZone === "reels" && <div className="w-6 h-3.5 rounded-full border border-white/40" />}
+                  </div>
+
+                  {/* Platform top elements */}
+                  {safeZone === "reels" && <div className="absolute top-8 left-4"><span className="text-white text-lg font-bold">Reels</span></div>}
+                  {safeZone === "tiktok" && (
+                    <>
+                      <div className="absolute top-8 left-1/2 -translate-x-1/2 flex gap-4">
+                        <span className="text-white/60 text-sm font-medium">Following</span>
+                        <span className="text-white text-sm font-bold">For you</span>
+                      </div>
+                      <div className="absolute top-16 left-4">
+                        <span className="bg-accent/80 text-white text-[10px] font-bold px-2.5 py-1 rounded-md">LIVE</span>
+                      </div>
+                    </>
+                  )}
+                  {safeZone === "facebook" && (
+                    <div className="absolute top-8 left-4 flex items-center gap-2">
+                      <span className="text-white text-lg">✕</span>
+                      <span className="text-white text-sm font-medium">Reels ▾</span>
+                    </div>
+                  )}
+
+                  {/* Right side social icons */}
+                  {(safeZone === "reels" || safeZone === "tiktok" || safeZone === "shorts") && (
+                    <div className="absolute right-3 top-1/4 flex flex-col items-center gap-5">
+                      {safeZone === "reels" && (
+                        <>
+                          <div className="flex flex-col items-center gap-1"><Heart className="w-6 h-6 text-white" /><span className="text-white text-[10px]">30.2K</span></div>
+                          <div className="flex flex-col items-center gap-1"><MessageSquare className="w-6 h-6 text-white" /><span className="text-white text-[10px]">671</span></div>
+                          <div className="flex flex-col items-center gap-1"><Send className="w-6 h-6 text-white" /><span className="text-white text-[10px]">1,054</span></div>
+                        </>
+                      )}
+                      {safeZone === "tiktok" && (
+                        <>
+                          <div className="flex flex-col items-center gap-1"><MessageSquare className="w-5 h-5 text-white" /><span className="text-white text-[10px]">942</span></div>
+                          <div className="flex flex-col items-center gap-1"><Flag className="w-5 h-5 text-white" /><span className="text-white text-[10px]">6180</span></div>
+                          <div className="flex flex-col items-center gap-1"><Send className="w-5 h-5 text-white" /><span className="text-white text-[10px]">28.1K</span></div>
+                          <div className="w-8 h-8 rounded-lg bg-white/30 mt-2" />
+                        </>
+                      )}
+                      {safeZone === "shorts" && (
+                        <>
+                          <div className="flex flex-col items-center gap-1"><Heart className="w-6 h-6 text-white" /><span className="text-white text-[10px]">Like</span></div>
+                          <div className="flex flex-col items-center gap-1"><MessageSquare className="w-6 h-6 text-white" /><span className="text-white text-[10px]">25</span></div>
+                          <div className="flex flex-col items-center gap-1"><Send className="w-6 h-6 text-white" /><span className="text-white text-[10px]">Share</span></div>
+                          <div className="flex flex-col items-center gap-1"><Scissors className="w-6 h-6 text-white" /><span className="text-white text-[10px]">Remix</span></div>
+                        </>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Bottom elements */}
+                  <div className="absolute bottom-4 left-4 right-16">
+                    {safeZone === "tiktok" && <div className="mb-1"><span className="bg-white/20 text-white text-[10px] px-2 py-0.5 rounded-md">Your friend</span></div>}
+                    <div className="flex items-center gap-2 mb-1">
+                      <div className="w-8 h-8 rounded-full bg-white/30" />
+                      <span className="text-white text-sm font-bold">
+                        {safeZone === "reels" ? "username" : safeZone === "tiktok" ? "@username" : safeZone === "shorts" ? "@youtube" : safeZone === "facebook" ? "Facebook" : safeZone === "linkedin" ? "Linkedin" : "username"}
+                      </span>
+                      {safeZone === "tiktok" && <div className="w-3.5 h-3.5 rounded-full bg-blue-500 flex items-center justify-center"><Check className="w-2 h-2 text-white" /></div>}
+                      {(safeZone === "reels" || safeZone === "linkedin") && <span className="text-white text-xs border border-white/50 rounded-md px-2 py-0.5">Follow</span>}
+                      {safeZone === "shorts" && <span className="text-black text-xs bg-white rounded-md px-2.5 py-1 font-medium">Subscribe</span>}
+                    </div>
+                    {safeZone === "linkedin" && <p className="text-white/70 text-[10px] mb-1">1,814 followers</p>}
+                    {safeZone === "shorts" && <p className="text-white text-xs mb-1">▶ Playlist 1</p>}
+                    {safeZone === "reels" && <p className="text-white text-xs mb-0.5">♪ Music</p>}
+                    <p className="text-white text-xs leading-relaxed">
+                      {safeZone === "reels" ? "Caption goes here..." : safeZone === "tiktok" ? "This is a TikTok video with a long description... #tiktok #viral... more" : safeZone === "shorts" ? "Youtube shorts interface #youtube #shorts #viral" : safeZone === "facebook" ? "This is a Facebook video" : safeZone === "linkedin" ? "This is a Linkedin video" : ""}
+                    </p>
+                    {safeZone === "reels" && <p className="text-white/50 text-[10px] mt-1">Liked by user and 30,240 others</p>}
+                    {safeZone === "tiktok" && <p className="text-white/60 text-[10px] mt-1">See translation</p>}
+                    {safeZone === "facebook" && <p className="text-white text-xs mt-1">♪ Soundtrack</p>}
+                  </div>
+
+                  {safeZone === "linkedin" && (
+                    <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/20">
+                      <div className="h-full bg-white w-1/3" />
+                    </div>
+                  )}
+
+                  {/* Dashed safe zone border */}
+                  <div className="absolute inset-3 border-2 border-dashed border-white/30 rounded-xl" />
+                </div>
+              )}
+
+              {/* Bottom canvas bar */}
+              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-end px-3 py-2 bg-gradient-to-t from-black/60 to-transparent z-[6]" onClick={(e) => e.stopPropagation()}>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => { setIsMuted(!isMuted); if (videoRef.current) videoRef.current.muted = !isMuted; }} className="p-1.5 rounded-lg text-white/70 hover:text-white transition-colors">
+                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                  </button>
+                  <span className="text-white/60 text-xs font-medium flex items-center gap-1"><Settings className="w-3 h-3" /> Ratio: {selectedRatio}</span>
+                  <button onClick={() => { const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }} className="p-1.5 rounded-lg text-white/70 hover:text-white transition-colors">
+                    <Maximize className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-            )}
+            </div>
           </div>
 
-          {/* Canvas overlay controls - centered bottom */}
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card/80 backdrop-blur-sm rounded-full px-2 py-1.5 shadow-lg border border-foreground/[0.08]">
-            <button onClick={() => { setIsMuted(!isMuted); if (videoRef.current) videoRef.current.muted = !isMuted; }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
-              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-            </button>
-            <Popover>
-              <PopoverTrigger asChild>
-                <button className="px-3 py-1.5 rounded-full text-xs font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors flex items-center gap-1.5">
-                  <Settings className="w-3.5 h-3.5" />Ratio: {selectedRatio}
-                </button>
-              </PopoverTrigger>
-              <PopoverContent className="w-36 p-1.5" align="center">
-                {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
-                  <button key={r} onClick={() => setSelectedRatio(r)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                    {r}{selectedRatio === r && <Check className="w-3.5 h-3.5" />}
+          {/* Canvas toolbar below video */}
+          <div className="shrink-0 py-2 flex items-center justify-center">
+            <div className="flex items-center gap-1 bg-card border border-foreground/[0.08] rounded-xl px-2 py-1.5 shadow-sm">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                    <Settings className="w-4 h-4 text-muted" /> Ratio: {selectedRatio}
                   </button>
-                ))}
-              </PopoverContent>
-            </Popover>
-            <button onClick={() => { const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
-              <Maximize className="w-4 h-4" />
-            </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-36 p-1.5" align="center">
+                  {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
+                    <button key={r} onClick={() => setSelectedRatio(r)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                      {r}{selectedRatio === r && <Check className="w-3.5 h-3.5" />}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              <button onClick={() => toast({ title: "Layouts coming soon" })}
+                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                <LayoutGrid className="w-4 h-4 text-muted" /> Layouts
+              </button>
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                    <div className="w-4 h-4 rounded-full border border-foreground/20" style={{ background: canvasBgColor }} /> Background
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-48 p-3" align="center">
+                  <p className="text-xs font-medium text-muted mb-2">Background Color</p>
+                  <div className="grid grid-cols-6 gap-2">
+                    {["#000000", "#FFFFFF", "#1a1a2e", "#16213e", "#0f3460", "#e94560", "#533483", "#2b2d42", "#8d99ae", "#ef233c", "#2b9348", "#fb8500"].map(c => (
+                      <button key={c} onClick={() => setCanvasBgColor(c)}
+                        className={`w-6 h-6 rounded-full border-2 transition-all ${canvasBgColor === c ? "border-accent scale-110" : "border-foreground/10 hover:border-foreground/30"}`}
+                        style={{ background: c }} />
+                    ))}
+                  </div>
+                </PopoverContent>
+              </Popover>
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                    <Eye className="w-4 h-4 text-muted" /> Safe Zone {safeZone !== "hide" && "▴"}
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-56 p-2" align="center">
+                  {SAFE_ZONE_PLATFORMS.map(p => (
+                    <button key={p.id} onClick={() => setSafeZone(p.id)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${safeZone === p.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                      {p.id === "hide" ? (
+                        <EyeOff className="w-5 h-5 text-muted" />
+                      ) : (
+                        <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold text-white ${(p as any).color || "bg-foreground"}`}>
+                          {p.id === "reels" ? "📷" : p.id === "facebook" ? "f" : p.id === "tiktok" ? "♪" : p.id === "shorts" ? "▶" : p.id === "linkedin" ? "in" : "👻"}
+                        </span>
+                      )}
+                      {p.label}
+                      {safeZone === p.id && <Check className="w-4 h-4 ml-auto" />}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+            </div>
           </div>
         </div>
 
