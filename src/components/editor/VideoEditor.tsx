@@ -1630,8 +1630,9 @@ const VideoEditor = ({ video }: Props) => {
         {/* Timeline */}
         <div className={`bg-card border-t border-foreground/[0.08] flex flex-col ${isTimelineMinimized ? "h-12" : "h-64"} transition-all`}>
           {/* Timeline toolbar */}
-          <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06] shrink-0">
-            <div className="flex items-center gap-1">
+          <div className="flex items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
+            {/* Left tools */}
+            <div className="flex items-center gap-1 flex-1">
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={handleUndo} disabled={undoStack.length === 0}
                   className={`flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium transition-colors ${undoStack.length === 0 ? "text-muted/40" : "text-muted hover:bg-foreground/[0.08]"}`}>
@@ -1657,32 +1658,29 @@ const VideoEditor = ({ video }: Props) => {
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={handleAddMarker} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Add Marker (M)</TooltipContent></Tooltip>
-
-              {/* Loop */}
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => setIsLooping(!isLooping)}
                   className={`p-2 rounded-lg transition-colors ${isLooping ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
                   <Repeat className="w-5 h-5" />
                 </button>
               </TooltipTrigger><TooltipContent>{isLooping ? "Disable Loop" : "Enable Loop"}</TooltipContent></Tooltip>
-
-              {/* Mute */}
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => setIsMuted(!isMuted)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
                   {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                 </button>
               </TooltipTrigger><TooltipContent>{isMuted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
+            </div>
 
-              {/* Record */}
+            {/* Center transport */}
+            <div className="flex items-center gap-1 shrink-0">
               <button onClick={handleRecord}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
-                <Circle className={`w-3 h-3 ${isRecording ? "fill-current" : "fill-current"}`} />{isRecording ? "Stop" : "Record"}
+                <Circle className={`w-3 h-3 fill-current`} />{isRecording ? "Stop" : "Record"}
               </button>
-
               <button onClick={() => setCurrentTime(0)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
                 <SkipBack className="w-5 h-5" />
               </button>
-              <button onClick={togglePlay} className="w-12 h-12 flex items-center justify-center bg-emerald-500 rounded-full hover:bg-emerald-600 transition-colors text-white shadow-lg">
+              <button onClick={togglePlay} className="w-12 h-12 flex items-center justify-center bg-accent rounded-full hover:bg-accent/90 transition-colors text-white shadow-lg">
                 {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
               </button>
               <button onClick={() => setCurrentTime(Math.min(duration, currentTime + 10))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
@@ -1692,7 +1690,7 @@ const VideoEditor = ({ video }: Props) => {
             </div>
 
             {/* Right: zoom + hide timeline */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-1 justify-end">
               <button onClick={() => setZoom(Math.max(0.5, zoom - 0.5))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomOut className="w-5 h-5" /></button>
               <input type="range" min={0.5} max={6} step={0.25} value={zoom} onChange={e => setZoom(Number(e.target.value))}
                 className="w-20 h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent" />

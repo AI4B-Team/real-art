@@ -1079,9 +1079,9 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
         {/* Transport Controls — matches video timeline style */}
         <div className="bg-card border-t border-foreground/[0.08] flex flex-col">
-          <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06] shrink-0">
+          <div className="flex items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             {/* Left tools */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1 flex-1">
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={undo}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium text-muted hover:bg-foreground/[0.08] transition-colors">
@@ -1107,29 +1107,25 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={addMarker} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Add Marker (M)</TooltipContent></Tooltip>
-
-              {/* Loop */}
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => setIsLooping(!isLooping)}
                   className={`p-2 rounded-lg transition-colors ${isLooping ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
                   <Repeat className="w-5 h-5" />
                 </button>
               </TooltipTrigger><TooltipContent>{isLooping ? "Disable Loop" : "Enable Loop"}</TooltipContent></Tooltip>
-
-              {/* Mute */}
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => setIsMuted(!isMuted)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
                   {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
                 </button>
               </TooltipTrigger><TooltipContent>{isMuted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
+            </div>
 
-              {/* Record */}
+            {/* Center transport */}
+            <div className="flex items-center gap-1 shrink-0">
               <button onClick={isRecording ? handleStopRecording : handleStartRecording}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
                 <Circle className={`w-3 h-3 fill-current`} />{isRecording ? "Stop" : "Record"}
               </button>
-
-              {/* Transport */}
               <button onClick={() => setCurrentTime(0)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
                 <SkipBack className="w-5 h-5" />
               </button>
@@ -1144,7 +1140,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             </div>
 
             {/* Right: zoom + hide timeline */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-1 justify-end">
               <button onClick={() => setZoom(Math.max(1, zoom - 1))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomOut className="w-5 h-5" /></button>
               <input type="range" min={1} max={10} step={1} value={zoom} onChange={e => setZoom(Number(e.target.value))}
                 className="w-20 h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent" />
