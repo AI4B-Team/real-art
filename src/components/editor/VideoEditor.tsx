@@ -1800,7 +1800,7 @@ const VideoEditor = ({ video }: Props) => {
                 <p className="text-lg font-semibold text-foreground">Add Media To The Timeline To Start Creating</p>
                 <p className="text-sm text-muted mb-3">Drop media here, use the panel, or click Add Scene below</p>
                 <div className="flex items-center gap-3">
-                  <button onClick={() => handleAddScene()}
+                  <button onClick={() => insertSceneAtIndex(scenes.length)}
                     className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">
                     <Plus className="w-4 h-4" />Add Scene
                   </button>
