@@ -138,7 +138,7 @@ const EditorPage = () => {
         <main className="flex-1 min-h-0 overflow-hidden">
           {editorTab === "image" && <ImageEditor image={imageUrl} zoomLevel={zoomLevel} onZoomChange={setZoomLevel} />}
           {editorTab === "video" && <VideoEditor video={videoUrl} />}
-          {editorTab === "audio" && <AudioEditor />}
+          {editorTab === "audio" && <AudioEditor onSendToEditor={(asset, target) => { setEditorTab(target); }} />}
         </main>
       </div>
     </div>
