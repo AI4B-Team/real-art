@@ -5,7 +5,7 @@ import {
   Type, Music, Image, Sparkles, FileText, Layers, Settings,
   ChevronDown, ChevronLeft, ChevronRight,
   Trash2, Video, Eye, EyeOff, Lock, Unlock,
-  Maximize, Minimize, Check, Search, Copy, Download, Diamond, Link2,
+  Maximize, Minimize, Check, Search, Copy, Download, Diamond, Magnet,
   Wand2, GripVertical, Captions, User, SlidersHorizontal,
   LayoutGrid, VolumeX as VolX, Send, Mic,
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
