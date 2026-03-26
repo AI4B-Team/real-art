@@ -28,6 +28,7 @@ import { AnimatePresence, motion } from "framer-motion";
 interface TimelineClip {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
   startTime: number; duration: number; color?: string; volume?: number;
+  mediaUrl?: string; thumbnail?: string;
 }
 interface TimelineTrack {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
@@ -246,6 +247,8 @@ const VideoEditor = ({ video }: Props) => {
     "I'm going to tell you something shocking."
   );
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasVideoRef = useRef<HTMLVideoElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // New feature state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -432,6 +435,68 @@ const VideoEditor = ({ video }: Props) => {
       { id: "vo-clip-1", type: "audio", name: "Voiceover", startTime: 10, duration: 400, color: "bg-teal-500" },
     ]},
   ]);
+
+  // Find the clip at the current playhead position
+  const activeClipAtPlayhead = useMemo(() => {
+    const videoClips = tracks
+      .filter(t => (t.type === "video" || t.id.includes("video")) && t.visible !== false)
+      .flatMap(t => t.clips)
+      .filter(c => c.mediaUrl && currentTime >= c.startTime && currentTime < c.startTime + c.duration);
+    return videoClips[0] || null;
+  }, [tracks, currentTime]);
+
+  // Sync canvas video with playhead
+  useEffect(() => {
+    if (canvasVideoRef.current && activeClipAtPlayhead?.mediaUrl) {
+      const clipLocalTime = currentTime - activeClipAtPlayhead.startTime;
+      if (Math.abs(canvasVideoRef.current.currentTime - clipLocalTime) > 0.3) {
+        canvasVideoRef.current.currentTime = clipLocalTime;
+      }
+      if (isPlaying && canvasVideoRef.current.paused) canvasVideoRef.current.play().catch(() => {});
+      if (!isPlaying && !canvasVideoRef.current.paused) canvasVideoRef.current.pause();
+    }
+  }, [activeClipAtPlayhead, currentTime, isPlaying]);
+
+  const handleVideoFileUpload = useCallback((files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (!file.type.startsWith("video/")) {
+      toast({ title: "Invalid file", description: "Please select a video file.", variant: "destructive" });
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    const tempVideo = document.createElement("video");
+    tempVideo.preload = "metadata";
+    tempVideo.onloadedmetadata = () => {
+      const dur = Math.min(tempVideo.duration, 600);
+      const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+      if (!videoTrack) return;
+      const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
+      const startTime = lastClip ? lastClip.startTime + lastClip.duration : 0;
+      const newClip: TimelineClip = {
+        id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
+        startTime, duration: dur, color: "bg-blue-500", mediaUrl: url,
+      };
+      tempVideo.currentTime = Math.min(1, dur / 2);
+      tempVideo.onseeked = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 160; canvas.height = 90;
+        canvas.getContext("2d")?.drawImage(tempVideo, 0, 0, 160, 90);
+        newClip.thumbnail = canvas.toDataURL("image/jpeg", 0.7);
+        setTracks(prev => prev.map(t =>
+          t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+        ));
+        toast({ title: "Video added", description: `${file.name} (${formatTime(dur)})` });
+      };
+    };
+    tempVideo.src = url;
+  }, [tracks]);
+
+  const handleCanvasDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleVideoFileUpload(e.dataTransfer.files);
+  }, [handleVideoFileUpload]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -1933,18 +1998,27 @@ const VideoEditor = ({ video }: Props) => {
           </AnimatePresence>
 
           {/* Canvas area */}
-          <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4 py-2 overflow-hidden">
-            {video ? (
+          <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4 py-2 overflow-hidden"
+            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+            onDrop={handleCanvasDrop}
+          >
+            {/* Hidden file input for video upload */}
+            <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => handleVideoFileUpload(e.target.files)} />
+            {(video || activeClipAtPlayhead) ? (
             <div
               className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer max-h-full"
               style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
               onClick={() => setShowCanvasControls(!showCanvasControls)}
             >
-                <video ref={videoRef} src={video} className="w-full h-full object-contain" />
+                {activeClipAtPlayhead?.mediaUrl ? (
+                  <video ref={canvasVideoRef} src={activeClipAtPlayhead.mediaUrl} className="w-full h-full object-contain" muted={isMuted} />
+                ) : video ? (
+                  <video ref={videoRef} src={video} className="w-full h-full object-contain" />
+                ) : null}
 
               {/* Delete button - top right */}
               <AnimatePresence>
-                {showCanvasControls && video && (
+                {showCanvasControls && (video || activeClipAtPlayhead) && (
                   <motion.button
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -1959,7 +2033,7 @@ const VideoEditor = ({ video }: Props) => {
 
               {/* Canvas play controls - centered */}
               <AnimatePresence>
-                {showCanvasControls && video && (
+                {showCanvasControls && (video || activeClipAtPlayhead) && (
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -2087,15 +2161,15 @@ const VideoEditor = ({ video }: Props) => {
               <div className="flex flex-col items-center gap-1 text-center">
                 <img src={emptyVideoCards} alt="" className="w-[26rem] h-[26rem] object-contain -mb-4" />
                 <p className="text-lg font-semibold text-foreground">Add Media To The Timeline To Start Creating</p>
-                <p className="text-sm text-muted mb-3">Drop media here, use the panel, or click Add Scene below</p>
+                <p className="text-sm text-muted mb-3">Drop a video file here, upload from your device, or add a scene</p>
                 <div className="flex items-center gap-3">
-                  <button onClick={() => insertSceneAtIndex(scenes.length)}
+                  <button onClick={() => fileInputRef.current?.click()}
                     className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">
-                    <Plus className="w-4 h-4" />Add Scene
+                    <Upload className="w-4 h-4" />Upload Video
                   </button>
-                  <button onClick={() => setActiveTab("visuals")}
+                  <button onClick={() => insertSceneAtIndex(scenes.length)}
                     className="flex items-center gap-2 px-5 py-2.5 bg-foreground/[0.06] text-foreground rounded-lg font-medium hover:bg-foreground/[0.1] transition-colors text-sm">
-                    <Video className="w-4 h-4" />Browse Media
+                    <Plus className="w-4 h-4" />Add Scene
                   </button>
                 </div>
               </div>
@@ -2753,28 +2827,35 @@ const VideoEditor = ({ video }: Props) => {
                     {tracks.map(track => (
                       <div key={track.id} className="h-14 relative border-b border-foreground/[0.04]">
                         {track.clips.length === 0 && !track.locked ? (
-                          /* Empty track — always-visible "Add Scene" button */
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <button
-                                onClick={() => {
-                                  const newClip: TimelineClip = {
-                                    id: `clip-${Date.now()}`, type: track.type, name: `Scene 1`,
-                                    startTime: 0, duration: 5,
-                                  };
+                          /* Empty track — Add Scene or Upload */
+                          <div className="absolute top-1.5 left-4 h-11 flex items-center gap-3">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2">
+                                  <div className="w-10 h-10 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
+                                    <Upload className="w-4 h-4 text-muted" />
+                                  </div>
+                                  <span className="text-xs text-muted font-medium">Upload</span>
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Upload Video File</TooltipContent>
+                            </Tooltip>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <button onClick={() => {
+                                  const newClip: TimelineClip = { id: `clip-${Date.now()}`, type: track.type, name: `Scene 1`, startTime: 0, duration: 5 };
                                   setTracks(prev => prev.map(t => t.id === track.id ? { ...t, clips: [...t.clips, newClip] } : t));
                                   toast({ title: "Scene added" });
-                                }}
-                                className="absolute top-1.5 left-4 h-11 flex items-center gap-2"
-                              >
-                                <div className="w-10 h-10 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
-                                  <Plus className="w-4 h-4 text-muted" />
-                                </div>
-                                <span className="text-xs text-muted font-medium">Add Scene</span>
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent>Add Scene</TooltipContent>
-                          </Tooltip>
+                                }} className="flex items-center gap-2">
+                                  <div className="w-10 h-10 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
+                                    <Plus className="w-4 h-4 text-muted" />
+                                  </div>
+                                  <span className="text-xs text-muted font-medium">Add Scene</span>
+                                </button>
+                              </TooltipTrigger>
+                              <TooltipContent>Add Empty Scene</TooltipContent>
+                            </Tooltip>
+                          </div>
                         ) : (
                           <>
                             {track.clips.map(clip => {
@@ -2793,7 +2874,11 @@ const VideoEditor = ({ video }: Props) => {
                                     onMouseDown={(e) => handleClipMouseDown(e, clip.id, track.id, "resize-left")} />
 
                                   {/* Clip content */}
-                                  <div className="flex items-center h-full px-3 gap-1.5 min-w-0">
+                                  <div className="flex items-center h-full px-3 gap-1.5 min-w-0 relative">
+                                    {/* Video thumbnail background */}
+                                    {clip.thumbnail && (
+                                      <img src={clip.thumbnail} alt="" className="absolute inset-0 w-full h-full object-cover opacity-40 rounded-lg" />
+                                    )}
                                     {/* Mini waveform for audio clips */}
                                     {(clip.type === "audio") && clipWidth > 60 && (
                                       <div className="flex items-center gap-[1px] h-5 opacity-40 shrink-0">
@@ -2802,10 +2887,11 @@ const VideoEditor = ({ video }: Props) => {
                                         ))}
                                       </div>
                                     )}
-                                    <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
+                                    <span className="text-[10px] text-white font-medium truncate relative z-[1]">{clip.name}</span>
                                     {clipWidth > 80 && (
-                                      <span className="text-[8px] text-white/50 font-mono shrink-0">{formatTime(clip.duration)}</span>
+                                      <span className="text-[8px] text-white/50 font-mono shrink-0 relative z-[1]">{formatTime(clip.duration)}</span>
                                     )}
+                                    {clip.mediaUrl && <Film className="w-3 h-3 text-white/60 shrink-0 relative z-[1]" />}
                                   </div>
 
                                   {/* Volume indicator line */}
