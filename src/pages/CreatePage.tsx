@@ -802,7 +802,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 />
               </div>
             ) : hasType && typeCfg && selectedType === "document" ? (
-              <div className="shrink-0 pt-[6px]">
+              <div className="flex flex-col gap-1 shrink-0 pt-[2px]">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button type="button" className="flex items-center justify-center w-9 h-9 rounded-xl bg-blue-50 text-blue-500">
+                      <FileText size={17} />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="right">Document</TooltipContent>
+                </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button type="button" onClick={handleShuffle} className="p-1.5 rounded-lg bg-foreground/[0.06] text-emerald-500 hover:bg-emerald-50 transition-colors">
