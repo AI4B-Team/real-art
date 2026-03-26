@@ -8,7 +8,7 @@ import {
   Maximize, Minimize, Check, Search, Copy, Download,
   Wand2, GripVertical, Captions, User, SlidersHorizontal,
   LayoutGrid, VolumeX as VolX, Send, Mic, Eraser,
-  Circle, Grid3X3, Palette, Zap, Film, Clapperboard,
+  Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
   AudioLines, VolumeOff, MoreVertical,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
   Languages, Ghost, History,
@@ -151,6 +151,7 @@ const VideoEditor = ({ video }: Props) => {
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
   const [selectedRatio, setSelectedRatio] = useState("16:9");
+  const [timelineViewMode, setTimelineViewMode] = useState<"timeline" | "storyboard">("timeline");
   const [isMuted, setIsMuted] = useState(false);
   const [captionSearch, setCaptionSearch] = useState("");
   
@@ -1236,14 +1237,14 @@ const VideoEditor = ({ video }: Props) => {
                   {/* Add scene / view buttons */}
                   <div className="h-6 flex items-center gap-1 px-2 border-b border-foreground/[0.06]">
                     <Tooltip><TooltipTrigger asChild>
-                      <button className="p-0.5 text-muted hover:text-foreground"><Plus className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Add Scene</TooltipContent></Tooltip>
+                      <button onClick={() => setTracks(prev => [...prev, { id: `track-${Date.now()}`, type: "video", name: String(prev.length + 1), visible: true, clips: [] }])} className="p-0.5 text-muted hover:text-foreground transition-colors"><Plus className="w-3.5 h-3.5" /></button>
+                    </TooltipTrigger><TooltipContent>Add Track</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button className="p-0.5 text-muted hover:text-foreground"><FileText className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>List View</TooltipContent></Tooltip>
+                      <button onClick={() => setTimelineViewMode('timeline')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'timeline' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><Rows3 className="w-3.5 h-3.5" /></button>
+                    </TooltipTrigger><TooltipContent>Timeline</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button className="p-0.5 text-muted hover:text-foreground"><Grid3X3 className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Grid View</TooltipContent></Tooltip>
+                      <button onClick={() => setTimelineViewMode('storyboard')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'storyboard' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><LayoutGrid className="w-3.5 h-3.5" /></button>
+                    </TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
                   </div>
                   {tracks.map(track => (
                     <div key={track.id} className="h-14 flex items-center gap-1.5 px-2 border-b border-foreground/[0.04] group">
