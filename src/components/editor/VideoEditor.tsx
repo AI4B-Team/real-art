@@ -199,6 +199,13 @@ const VideoEditor = ({ video }: Props) => {
 
   const [isStreaming, setIsStreaming] = useState(false);
 
+  // Prompt box state
+  const [promptContentType, setPromptContentType] = useState<"video" | "audio" | "image">("video");
+  const [isContentTypeOpen, setIsContentTypeOpen] = useState(false);
+  const [isEnhancing, setIsEnhancing] = useState(false);
+  const [promptAspectRatio, setPromptAspectRatio] = useState("16:9");
+  const [promptDuration, setPromptDuration] = useState("10");
+  const [promptImageCount, setPromptImageCount] = useState(1);
 
   const handleSendChat = async () => {
     if (!chatInput.trim() || isStreaming) return;
