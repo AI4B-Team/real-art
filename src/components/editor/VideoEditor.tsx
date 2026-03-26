@@ -12,7 +12,7 @@ import {
   AudioLines, VolumeOff, MoreVertical, ArrowLeftRight,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
   Languages, Ghost, History, Flag, Shuffle, Loader2,
-  Link, Hash, Clock, Heart, Box, X as XIcon,
+  Link, Hash, Clock, Heart, Box, X as XIcon, Repeat,
 } from "lucide-react";
 import AIToolsPanel from "./AIToolsPanel";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
