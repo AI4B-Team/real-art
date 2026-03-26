@@ -588,26 +588,57 @@ const VideoEditor = ({ video }: Props) => {
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-sm font-bold">Storyboard</h3>
-                    <button className="text-xs text-accent hover:underline">+ Add speaker</button>
+                    <span className="text-xs text-muted">{scenes.length} scene{scenes.length !== 1 ? "s" : ""}</span>
                   </div>
                   <div className="space-y-3">
-                    {STORYBOARD_SCENES.map((scene, i) => (
-                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors cursor-pointer group">
-                        <div className="shrink-0 space-y-1">
-                          <span className="text-[10px] font-mono text-muted">{scene.time}</span>
-                          <div className="flex items-center gap-1">
-                            <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
-                              <User className="w-2.5 h-2.5 text-white" />
+                    {scenes.map((clip, i) => {
+                      const isCurrent = currentTime >= clip.startTime && currentTime < clip.startTime + clip.duration;
+                      const isSelected = selectedClip === clip.id;
+                      return (
+                        <div
+                          key={clip.id}
+                          onClick={() => { setSelectedClip(clip.id); setCurrentTime(clip.startTime); }}
+                          className={`flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer group ${
+                            isSelected ? "border-accent bg-accent/5" : isCurrent ? "border-accent/40 bg-accent/[0.02]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                          }`}
+                        >
+                          <div className="shrink-0 space-y-1">
+                            <span className="text-[10px] font-mono text-muted">{formatTime(clip.startTime)}</span>
+                            <div className="flex items-center gap-1">
+                              <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
+                                <User className="w-2.5 h-2.5 text-white" />
+                              </div>
+                              <span className="text-[10px] text-muted">{briefNarrator}</span>
                             </div>
-                            <span className="text-[10px] text-muted">{scene.narrator}</span>
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-foreground font-medium">{clip.name}</p>
+                            <p className="text-xs text-muted mt-0.5">{clip.duration.toFixed(1)}s</p>
+                          </div>
+                          <div className="shrink-0 flex items-center gap-1">
+                            {scenes.length > 1 && (
+                              <button
+                                onClick={(e) => { e.stopPropagation(); deleteScene(clip.id); }}
+                                className="w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-muted hover:text-destructive"
+                              >
+                                <Trash2 className="w-3 h-3" />
+                              </button>
+                            )}
+                            <button
+                              onClick={(e) => { e.stopPropagation(); duplicateScene(clip.id); }}
+                              className="w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-muted hover:text-foreground"
+                            >
+                              <Copy className="w-3 h-3" />
+                            </button>
                           </div>
                         </div>
-                        <p className="text-sm text-foreground flex-1 leading-relaxed">{scene.desc}</p>
-                        <img src={scene.thumb} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0" />
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
-                  <button className="w-full py-3 border-2 border-dashed border-foreground/[0.1] rounded-xl text-sm text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors flex items-center justify-center gap-2">
+                  <button
+                    onClick={() => insertSceneAtIndex(scenes.length)}
+                    className="w-full py-3 border-2 border-dashed border-foreground/[0.1] rounded-xl text-sm text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors flex items-center justify-center gap-2"
+                  >
                     <Plus className="w-4 h-4" /> Add Scene
                   </button>
                 </div>
