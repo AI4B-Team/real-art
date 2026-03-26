@@ -947,7 +947,6 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               isStreaming={isStreaming}
             />
           </div>
-          </div>
         </div>
       )}
 
