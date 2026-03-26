@@ -657,8 +657,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Video Brief Tab */}
-              {activeTab === "video-brief" && (
+              {/* Video Brief */}
+              {activeTab === "storyboard" && storyboardSubTab === "brief" && (
                 <div className="space-y-5">
                    <h3 className="text-sm font-bold">Video Brief</h3>
 
