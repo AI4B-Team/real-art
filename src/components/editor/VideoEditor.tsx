@@ -237,7 +237,7 @@ const VideoEditor = ({ video }: Props) => {
           <div className="flex-1 flex flex-col overflow-hidden">
             {/* Active tab label */}
             <div className="px-4 pt-3 pb-2 shrink-0">
-              {activeTab !== "script" && (
+              {!["script", "ai-chat"].includes(activeTab) && (
                 <div className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.06] rounded-lg w-fit">
                   {(() => { const TabIcon = LEFT_TABS.find(t => t.id === activeTab)?.icon || FileText; return <TabIcon className="w-4 h-4" />; })()}
                   <span className="text-sm font-medium">{LEFT_TABS.find(t => t.id === activeTab)?.label}</span>
