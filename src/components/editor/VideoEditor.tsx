@@ -188,7 +188,15 @@ const VideoEditor = ({ video }: Props) => {
   const [selectedLanguage, setSelectedLanguage] = useState("en");
   const [languageSearch, setLanguageSearch] = useState("");
 
+  // Toolbar state
+  const [snapEnabled, setSnapEnabled] = useState(false);
+  const [markers, setMarkers] = useState<number[]>([]);
+  const [isRecording, setIsRecording] = useState(false);
+  const [undoStack, setUndoStack] = useState<TimelineTrack[][]>([]);
+  const [redoStack, setRedoStack] = useState<TimelineTrack[][]>([]);
+
   const [isStreaming, setIsStreaming] = useState(false);
+
 
   const handleSendChat = async () => {
     if (!chatInput.trim() || isStreaming) return;
@@ -315,6 +323,86 @@ const VideoEditor = ({ video }: Props) => {
   // Scene management
   const [hoveredSceneGap, setHoveredSceneGap] = useState<number | null>(null);
   const [selectedClip, setSelectedClip] = useState<string | null>(null);
+
+  // Undo/Redo helpers
+  const pushUndo = useCallback(() => {
+    setUndoStack(prev => [...prev.slice(-20), tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setRedoStack([]);
+  }, [tracks]);
+
+  const handleUndo = useCallback(() => {
+    if (undoStack.length === 0) return;
+    const prev = undoStack[undoStack.length - 1];
+    setRedoStack(r => [...r, tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setUndoStack(s => s.slice(0, -1));
+    setTracks(prev);
+  }, [undoStack, tracks]);
+
+  const handleRedo = useCallback(() => {
+    if (redoStack.length === 0) return;
+    const next = redoStack[redoStack.length - 1];
+    setUndoStack(s => [...s, tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setRedoStack(r => r.slice(0, -1));
+    setTracks(next);
+  }, [redoStack, tracks]);
+
+  const handleSplit = useCallback(() => {
+    pushUndo();
+    setTracks(prev => prev.map(track => {
+      const clipAtPlayhead = track.clips.find(c => currentTime > c.startTime && currentTime < c.startTime + c.duration);
+      if (!clipAtPlayhead) return track;
+      const splitPoint = currentTime - clipAtPlayhead.startTime;
+      const leftClip: TimelineClip = { ...clipAtPlayhead, duration: splitPoint };
+      const rightClip: TimelineClip = {
+        ...clipAtPlayhead,
+        id: `clip-${Date.now()}-${Math.random()}`,
+        name: `${clipAtPlayhead.name} (2)`,
+        startTime: currentTime,
+        duration: clipAtPlayhead.duration - splitPoint,
+      };
+      return { ...track, clips: track.clips.map(c => c.id === clipAtPlayhead.id ? leftClip : c).concat(rightClip) };
+    }));
+    toast({ title: "Split", description: `Clip split at ${formatTime(currentTime)}` });
+  }, [currentTime, pushUndo]);
+
+  const handleAddMarker = useCallback(() => {
+    if (markers.includes(currentTime)) {
+      toast({ title: "Marker exists", description: "A marker already exists at this position." });
+      return;
+    }
+    setMarkers(prev => [...prev, currentTime].sort((a, b) => a - b));
+    toast({ title: "Marker added", description: `Marker at ${formatTime(currentTime)}` });
+  }, [currentTime, markers]);
+
+  const handleRecord = useCallback(() => {
+    if (isRecording) {
+      setIsRecording(false);
+      toast({ title: "Recording stopped" });
+    } else {
+      setIsRecording(true);
+      toast({ title: "Recording started", description: "Recording your screen..." });
+    }
+  }, [isRecording]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); handleUndo(); }
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); handleRedo(); }
+      if (e.key === 's' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); handleSplit(); }
+      if (e.key === 'm' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); handleAddMarker(); }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedClip) {
+        e.preventDefault();
+        pushUndo();
+        setTracks(prev => prev.map(t => ({ ...t, clips: t.clips.filter(c => c.id !== selectedClip) })));
+        setSelectedClip(null);
+        toast({ title: "Clip deleted" });
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [handleUndo, handleRedo, handleSplit, handleAddMarker, selectedClip, pushUndo]);
 
   const scenes = useMemo(() => {
     return tracks
@@ -1230,29 +1318,35 @@ const VideoEditor = ({ video }: Props) => {
           <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             <div className="flex items-center gap-1">
               <Tooltip><TooltipTrigger asChild>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.08] transition-colors">
+                <button onClick={handleUndo} disabled={undoStack.length === 0}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium transition-colors ${undoStack.length === 0 ? "text-muted/40" : "text-muted hover:bg-foreground/[0.08]"}`}>
                   <Undo2 className="w-4 h-4" />Undo
                 </button>
               </TooltipTrigger><TooltipContent>Undo (Ctrl+Z)</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.08] transition-colors">
+                <button onClick={handleRedo} disabled={redoStack.length === 0}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium transition-colors ${redoStack.length === 0 ? "text-muted/40" : "text-muted hover:bg-foreground/[0.08]"}`}>
                   <Redo2 className="w-4 h-4" />Redo
                 </button>
               </TooltipTrigger><TooltipContent>Redo (Ctrl+Y)</TooltipContent></Tooltip>
               <div className="w-px h-6 bg-foreground/[0.08] mx-2" />
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Scissors className="w-5 h-5" /></button>
+                <button onClick={handleSplit} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Scissors className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Split (S)</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Magnet className="w-5 h-5" /></button>
-              </TooltipTrigger><TooltipContent>Enable Snap</TooltipContent></Tooltip>
+                <button onClick={() => { setSnapEnabled(!snapEnabled); toast({ title: snapEnabled ? "Snap disabled" : "Snap enabled" }); }}
+                  className={`p-2 rounded-lg transition-colors ${snapEnabled ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <Magnet className="w-5 h-5" />
+                </button>
+              </TooltipTrigger><TooltipContent>{snapEnabled ? "Disable Snap" : "Enable Snap"}</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
-              </TooltipTrigger><TooltipContent>Add Marker</TooltipContent></Tooltip>
+                <button onClick={handleAddMarker} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
+              </TooltipTrigger><TooltipContent>Add Marker (M)</TooltipContent></Tooltip>
 
               {/* Record */}
-              <button className="flex items-center gap-1.5 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white text-sm font-medium transition-colors">
-                <Circle className="w-3 h-3 fill-current" />Record
+              <button onClick={handleRecord}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
+                <Circle className={`w-3 h-3 ${isRecording ? "fill-current" : "fill-current"}`} />{isRecording ? "Stop" : "Record"}
               </button>
 
               <button onClick={() => setCurrentTime(0)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
@@ -1467,6 +1561,22 @@ const VideoEditor = ({ video }: Props) => {
                       <div className="w-0.5 h-full bg-accent" />
                       <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-accent rounded-b-sm rotate-45" style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
                     </div>
+
+                    {/* Markers */}
+                    {markers.map((markerTime, idx) => (
+                      <Tooltip key={idx}>
+                        <TooltipTrigger asChild>
+                          <div
+                            className="absolute top-0 bottom-0 w-0.5 bg-amber-400 z-[5] cursor-pointer hover:bg-amber-300"
+                            style={{ left: markerTime * pixelsPerSecond }}
+                            onClick={() => setCurrentTime(markerTime)}
+                          >
+                            <Flag className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 text-amber-400" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>Marker at {formatTime(markerTime)}</TooltipContent>
+                      </Tooltip>
+                    ))}
 
                     {/* Time ruler */}
                     <div className="h-6 border-b border-foreground/[0.06] flex items-end relative">
