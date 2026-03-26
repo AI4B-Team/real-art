@@ -159,6 +159,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [volume, setVolume] = useState(80);
   const [zoom, setZoom] = useState(3);
   const [isLooping, setIsLooping] = useState(false);
+  const [snapEnabled, setSnapEnabled] = useState(true);
+  const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
   const [showSpectral, setShowSpectral] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
