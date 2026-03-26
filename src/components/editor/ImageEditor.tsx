@@ -126,6 +126,7 @@ interface Props {
 const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [selectedImage, setSelectedImage] = useState<string | undefined>(image);
   const [isImageSelected, setIsImageSelected] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
   const [activeTool, setActiveTool] = useState<string | null>(null);
   const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
