@@ -22,6 +22,9 @@ const LoginPage = () => {
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotSent, setForgotSent] = useState(false);
+  const [lastUsedMethod, setLastUsedMethod] = useState<string>(() => {
+    try { return localStorage.getItem("ra_last_login_method") || ""; } catch { return ""; }
+  });
 
   const handleLogin = () => {
     const e: Record<string, string> = {};
@@ -31,6 +34,7 @@ const LoginPage = () => {
     if (Object.keys(e).length === 0) {
       try {
         localStorage.setItem("ra_auth", "1");
+        localStorage.setItem("ra_last_login_method", "email");
         // Set username/display from email if not already set from signup
         if (!localStorage.getItem("ra_username")) {
           const username = email.split("@")[0].replace(/[^a-zA-Z0-9._]/g, "").toLowerCase();
@@ -84,14 +88,19 @@ const LoginPage = () => {
                 </h1>
                 <p className="text-[0.88rem] text-muted mb-8">Log in to your REAL ART account.</p>
 
-                <label className="block text-[0.82rem] font-semibold mb-2">Email Address</label>
-                <input
-                  type="email" value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handleLogin()}
-                  className="w-full px-4 py-3 rounded-xl bg-card border border-foreground/[0.1] text-[0.88rem] focus:outline-none focus:border-accent transition-colors mb-1"
-                  placeholder="you@email.com"
-                />
+                <div className="relative">
+                  {lastUsedMethod === "email" && (
+                    <span className="absolute -top-1 right-0 text-[0.68rem] font-semibold bg-accent/[0.12] text-accent px-2 py-0.5 rounded-md">Last Used</span>
+                  )}
+                  <label className="block text-[0.82rem] font-semibold mb-2">Email Address</label>
+                  <input
+                    type="email" value={email}
+                    onChange={e => setEmail(e.target.value)}
+                    onKeyDown={e => e.key === "Enter" && handleLogin()}
+                    className="w-full px-4 py-3 rounded-xl bg-card border border-foreground/[0.1] text-[0.88rem] focus:outline-none focus:border-accent transition-colors mb-1"
+                    placeholder="you@email.com"
+                  />
+                </div>
                 {errors.email && <p className="text-[0.75rem] text-red-500 mb-3">{errors.email}</p>}
 
                 <div className="flex items-center justify-between mt-4 mb-2">
@@ -125,13 +134,13 @@ const LoginPage = () => {
                 </div>
 
                 {[
-                  { label: "Continue with Google", logo: "G", lastUsed: true },
-                  { label: "Continue with Apple", logo: "⌘", lastUsed: false },
+                  { label: "Continue with Google", logo: "G", method: "google" },
+                  { label: "Continue with Apple", logo: "⌘", method: "apple" },
                 ].map(btn => (
-                  <button key={btn.label} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-foreground/[0.1] text-[0.86rem] font-medium hover:border-foreground/30 transition-colors mb-2.5 relative">
+                  <button key={btn.label} onClick={() => { localStorage.setItem("ra_last_login_method", btn.method); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-foreground/[0.1] text-[0.86rem] font-medium hover:border-foreground/30 transition-colors mb-2.5 relative">
                     <span className="w-6 h-6 rounded-full bg-foreground/[0.06] flex items-center justify-center text-[0.72rem] font-bold">{btn.logo}</span>
                     {btn.label}
-                    {btn.lastUsed && (
+                    {lastUsedMethod === btn.method && (
                       <span className="ml-auto text-[0.68rem] font-semibold bg-accent/[0.12] text-accent px-2 py-0.5 rounded-md">Last Used</span>
                     )}
                   </button>
