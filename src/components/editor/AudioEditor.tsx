@@ -384,7 +384,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const filteredSfx = sfxCategory === "All" ? SFX_LIBRARY : SFX_LIBRARY.filter(s => s.category === sfxCategory);
 
   return (
-    <div className="flex h-full overflow-hidden bg-background"
+    <div className="flex h-full overflow-hidden bg-background relative"
       onDragOver={e => { e.preventDefault(); setIsDraggingOver(true); }}
       onDragLeave={() => setIsDraggingOver(false)}
       onDrop={handleFileDrop}
@@ -401,7 +401,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
       )}
 
       {/* Left Panel */}
-      {!isLeftPanelCollapsed ? (
+      {!isLeftPanelCollapsed && (
         <div className="w-[420px] shrink-0 border-r border-foreground/[0.06] flex flex-col bg-background">
           {/* Tab icons */}
           <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex flex-wrap items-center justify-center px-3 py-2 gap-1 shrink-0">
@@ -979,24 +979,19 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             </div>
           </div>
         </div>
-      ) : (
-        <button onClick={() => setIsLeftPanelCollapsed(false)}
-          className="w-10 shrink-0 border-r border-foreground/[0.06] flex items-center justify-center hover:bg-foreground/[0.03] transition-colors">
-          <ChevronLeft className="w-4 h-4 text-muted rotate-180" />
-        </button>
       )}
+
+      {/* Collapse toggle — pinned to right edge of left panel */}
+      <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
+        className="absolute top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-accent rounded-r-lg flex items-center justify-center hover:bg-accent/90 transition-colors"
+        style={{ left: isLeftPanelCollapsed ? 0 : 420 }}>
+        <ChevronLeft className={`w-3 h-3 text-white transition-transform ${isLeftPanelCollapsed ? "rotate-180" : ""}`} />
+      </button>
 
       {/* Main Area */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Waveform / Canvas area */}
         <div className="flex-1 flex items-center justify-center bg-foreground/[0.02] relative overflow-hidden">
-          {/* Collapse button */}
-          {!isLeftPanelCollapsed && (
-            <button onClick={() => setIsLeftPanelCollapsed(true)}
-              className="absolute left-3 top-3 z-10 w-8 h-8 rounded-lg bg-background border border-foreground/[0.08] flex items-center justify-center text-muted hover:text-foreground transition-colors">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-          )}
 
           {/* View toggle */}
           <div className="absolute right-3 top-3 z-10 flex items-center gap-1 bg-background border border-foreground/[0.08] rounded-lg p-1">
