@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX,
   Scissors, Undo2, Redo2, ZoomIn, ZoomOut, Plus, Upload,
