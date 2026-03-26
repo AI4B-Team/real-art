@@ -2085,7 +2085,7 @@ const VideoEditor = ({ video }: Props) => {
             </div>
             ) : (
               <div className="flex flex-col items-center gap-1 text-center">
-                <img src={emptyVideoCards} alt="" className="w-80 h-80 object-contain -mb-4" />
+                <img src={emptyVideoCards} alt="" className="w-[26rem] h-[26rem] object-contain -mb-4" />
                 <p className="text-lg font-semibold text-foreground">Add Media To The Timeline To Start Creating</p>
                 <p className="text-sm text-muted mb-3">Drop media here, use the panel, or click Add Scene below</p>
                 <div className="flex items-center gap-3">
