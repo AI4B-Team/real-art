@@ -802,16 +802,20 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                 </div>
               </div>
             ) : (
-              <div className="flex flex-col items-center gap-3 text-center">
-                <img src={emptyImageCards} alt="" className="w-56 h-56 object-contain" />
-                <div>
-                  <p className="text-lg font-semibold text-foreground mb-1">No Image Selected</p>
-                  <p className="text-sm text-muted mb-4">Upload an image or select from your creations</p>
+              <div className="flex flex-col items-center gap-1 text-center">
+                <img src={emptyImageCards} alt="" className="w-56 h-56 object-contain -mb-2" />
+                <p className="text-lg font-semibold text-foreground">No Image Selected</p>
+                <p className="text-sm text-muted mb-3">Upload an image or select from your creations to start editing</p>
+                <div className="flex items-center gap-3">
+                  <button onClick={() => fileInputRef.current?.click()}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">
+                    <Upload className="w-4 h-4" />Upload Image
+                  </button>
+                  <button onClick={() => setActiveLeftTab("creations")}
+                    className="flex items-center gap-2 px-5 py-2.5 bg-foreground/[0.06] text-foreground rounded-lg font-medium hover:bg-foreground/[0.1] transition-colors text-sm">
+                    <Image className="w-4 h-4" />Browse Creations
+                  </button>
                 </div>
-                <button onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2 px-6 py-3 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors">
-                  <Upload className="w-5 h-5" />Upload Image
-                </button>
               </div>
             )}
           </div>
