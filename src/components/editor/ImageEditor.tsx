@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import AIToolsPanel from "./AIToolsPanel";
 
 /* ─── Types ─── */
 interface Layer {
