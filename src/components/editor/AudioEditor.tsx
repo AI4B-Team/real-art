@@ -9,7 +9,7 @@ import {
   AudioLines, Send, MessageSquare, RefreshCw,
   Palette, Heart, Zap, FileText, Clock, Hash,
   Film, Loader2, Shuffle, Type, BookOpen,
-  X as XIcon, Languages, GripVertical,
+  X as XIcon, Languages, GripVertical, GripHorizontal,
   Image, Video, ArrowRight, FolderOpen,
   Repeat, BarChart3, Headphones, Magnet, Diamond, Circle,
 } from "lucide-react";
