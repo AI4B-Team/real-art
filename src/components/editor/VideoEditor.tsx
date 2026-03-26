@@ -2202,22 +2202,49 @@ const VideoEditor = ({ video }: Props) => {
                     {/* Track rows */}
                     {tracks.map(track => (
                       <div key={track.id} className="h-14 relative border-b border-foreground/[0.04]">
-                        {track.clips.map(clip => (
-                          <div key={clip.id}
-                            onClick={() => setSelectedClip(clip.id)}
-                            className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-pointer hover:brightness-110 transition-all flex items-center px-2 gap-1.5 overflow-hidden ${track.locked ? "opacity-60" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1" : ""}`}
-                            style={{ left: clip.startTime * pixelsPerSecond, width: clip.duration * pixelsPerSecond }}>
-                            <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
-                          </div>
-                        ))}
-                        {/* Add clip button */}
-                        {!track.locked && (
-                          <button className="absolute top-1/2 -translate-y-1/2 opacity-0 hover:opacity-100 transition-opacity"
-                            style={{ left: (track.clips.length > 0 ? track.clips[track.clips.length - 1].startTime + track.clips[track.clips.length - 1].duration : 0) * pixelsPerSecond + 8 }}>
-                            <div className="w-7 h-7 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-foreground/[0.3] transition-colors">
-                              <Plus className="w-3 h-3 text-muted" />
-                            </div>
-                          </button>
+                        {track.clips.length === 0 && !track.locked ? (
+                          /* Empty track — always-visible "Add Scene" button */
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                onClick={() => {
+                                  const newClip: TimelineClip = {
+                                    id: `clip-${Date.now()}`, type: track.type, name: `Scene 1`,
+                                    startTime: 0, duration: 5,
+                                  };
+                                  setTracks(prev => prev.map(t => t.id === track.id ? { ...t, clips: [...t.clips, newClip] } : t));
+                                  toast({ title: "Scene added" });
+                                }}
+                                className="absolute top-1.5 left-4 h-11 flex items-center gap-2"
+                              >
+                                <div className="w-10 h-10 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
+                                  <Plus className="w-4 h-4 text-muted" />
+                                </div>
+                                <span className="text-xs text-muted font-medium">Add Scene</span>
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>Add Scene</TooltipContent>
+                          </Tooltip>
+                        ) : (
+                          <>
+                            {track.clips.map(clip => (
+                              <div key={clip.id}
+                                onClick={() => setSelectedClip(clip.id)}
+                                className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-pointer hover:brightness-110 transition-all flex items-center px-2 gap-1.5 overflow-hidden ${track.locked ? "opacity-60" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1" : ""}`}
+                                style={{ left: clip.startTime * pixelsPerSecond, width: clip.duration * pixelsPerSecond }}>
+                                <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
+                              </div>
+                            ))}
+                            {/* Add clip button after last clip */}
+                            {!track.locked && (
+                              <button className="absolute top-1/2 -translate-y-1/2 opacity-0 hover:opacity-100 transition-opacity"
+                                style={{ left: (track.clips.length > 0 ? track.clips[track.clips.length - 1].startTime + track.clips[track.clips.length - 1].duration : 0) * pixelsPerSecond + 8 }}>
+                                <div className="w-7 h-7 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-foreground/[0.3] transition-colors">
+                                  <Plus className="w-3 h-3 text-muted" />
+                                </div>
+                              </button>
+                            )}
+                          </>
                         )}
                       </div>
                     ))}
