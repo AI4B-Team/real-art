@@ -1240,7 +1240,9 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             })}
             {/* Add track row */}
             <div className="flex h-10 border-b border-foreground/[0.04]">
-              <div className="w-36 shrink-0 border-r border-foreground/[0.06] bg-background" />
+              <div className="w-36 shrink-0 border-r border-foreground/[0.06] bg-background flex items-center justify-center">
+                <span className="text-[9px] text-muted/40">No tracks</span>
+              </div>
               <button onClick={() => { pushHistory(); addTrack(`Track ${tracks.length + 1}`, "voice", 30, 0); }}
                 className="flex-1 flex items-center justify-center gap-2 text-muted/40 hover:text-muted transition-colors">
                 <Plus className="w-3.5 h-3.5" /><span className="text-[10px]">Add Track</span>
