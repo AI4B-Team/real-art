@@ -2604,6 +2604,16 @@ const VideoEditor = ({ video }: Props) => {
                 <div className="flex min-h-full">
                   {/* Track labels */}
                   <div className="w-44 shrink-0 border-r border-foreground/[0.06]">
+                    {/* Add Scene button — aligned with ruler */}
+                    <div className="h-6 border-b border-foreground/[0.06] flex items-center px-2">
+                      <button onClick={() => insertSceneAtIndex(scenes.length)}
+                        className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors">
+                        <div className="w-5 h-5 border border-dashed border-foreground/[0.2] rounded-md flex items-center justify-center hover:border-accent hover:bg-accent/5 transition-all">
+                          <Plus className="w-3 h-3" />
+                        </div>
+                        <span className="text-[10px] font-medium">Add Scene</span>
+                      </button>
+                    </div>
                     {tracks.map((track, trackIndex) => (
                       <div key={track.id} className="h-14 flex items-center gap-1 px-2 border-b border-foreground/[0.04] group">
                         <GripVertical className="w-3 h-3 text-muted/30 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity" />
