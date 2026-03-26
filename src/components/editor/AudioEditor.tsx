@@ -440,8 +440,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
                     <div className="w-12 h-12 rounded-full bg-foreground/[0.06] flex items-center justify-center mb-4">
                       <Sparkles className="w-6 h-6 text-accent" />
                     </div>
-                    <h3 className="text-lg font-bold mb-1">Audio Studio</h3>
-                    <p className="text-2xl font-black tracking-tight mb-6">What Audio Are<br />We Creating?</p>
+                    <h3 className="text-lg font-bold mb-1">Hi There!</h3>
+                    <p className="text-2xl font-black tracking-tight mb-6">What Are We<br />Creating Today?</p>
                     <div className="space-y-2 w-full">
                       {visibleSuggestions.map(s => (
                         <button key={s} onClick={() => setChatInput(s)}
