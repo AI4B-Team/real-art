@@ -11,7 +11,8 @@ import {
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
   AudioLines, VolumeOff, MoreVertical, ArrowLeftRight,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
-  Languages, Ghost, History, Flag,
+  Languages, Ghost, History, Flag, Shuffle, Loader2,
+  Link, Hash, Clock, Heart, Box, X as XIcon,
 } from "lucide-react";
 import AIToolsPanel from "./AIToolsPanel";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
