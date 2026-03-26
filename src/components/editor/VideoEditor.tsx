@@ -247,6 +247,71 @@ const VideoEditor = ({ video }: Props) => {
     "I'm going to tell you something shocking."
   );
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasVideoRef = useRef<HTMLVideoElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Find the clip at the current playhead position
+  const activeClipAtPlayhead = useMemo(() => {
+    const videoClips = tracks
+      .filter(t => (t.type === "video" || t.id.includes("video")) && t.visible !== false)
+      .flatMap(t => t.clips)
+      .filter(c => c.mediaUrl && currentTime >= c.startTime && currentTime < c.startTime + c.duration);
+    return videoClips[0] || null;
+  }, [tracks, currentTime]);
+
+  // Sync canvas video with playhead
+  useEffect(() => {
+    if (canvasVideoRef.current && activeClipAtPlayhead?.mediaUrl) {
+      const clipLocalTime = currentTime - activeClipAtPlayhead.startTime;
+      if (Math.abs(canvasVideoRef.current.currentTime - clipLocalTime) > 0.3) {
+        canvasVideoRef.current.currentTime = clipLocalTime;
+      }
+      if (isPlaying && canvasVideoRef.current.paused) canvasVideoRef.current.play();
+      if (!isPlaying && !canvasVideoRef.current.paused) canvasVideoRef.current.pause();
+    }
+  }, [activeClipAtPlayhead, currentTime, isPlaying]);
+
+  const handleVideoFileUpload = useCallback((files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    if (!file.type.startsWith("video/")) {
+      toast({ title: "Invalid file", description: "Please select a video file.", variant: "destructive" });
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    const tempVideo = document.createElement("video");
+    tempVideo.preload = "metadata";
+    tempVideo.onloadedmetadata = () => {
+      const dur = Math.min(tempVideo.duration, 600); // cap at 10min
+      const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+      if (!videoTrack) return;
+      const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
+      const startTime = lastClip ? lastClip.startTime + lastClip.duration : 0;
+      const newClip: TimelineClip = {
+        id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
+        startTime, duration: dur, color: "bg-blue-500", mediaUrl: url,
+      };
+      // Generate thumbnail
+      tempVideo.currentTime = Math.min(1, dur / 2);
+      tempVideo.onseeked = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 160; canvas.height = 90;
+        canvas.getContext("2d")?.drawImage(tempVideo, 0, 0, 160, 90);
+        newClip.thumbnail = canvas.toDataURL("image/jpeg", 0.7);
+        setTracks(prev => prev.map(t =>
+          t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+        ));
+        toast({ title: "Video added", description: `${file.name} (${formatTime(dur)})` });
+      };
+    };
+    tempVideo.src = url;
+  }, [tracks]);
+
+  const handleCanvasDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleVideoFileUpload(e.dataTransfer.files);
+  }, [handleVideoFileUpload]);
 
   // New feature state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
