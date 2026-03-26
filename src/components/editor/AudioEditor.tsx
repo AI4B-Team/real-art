@@ -592,8 +592,16 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               </div>
             )}
 
-            {/* Music */}
+            {/* Music Sub-Tab Nav */}
             {activeTab === "music" && (
+              <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                {([{id:"music",label:"Music"},{id:"sfx",label:"Sound FX"}] as const).map(sub => (
+                  <button key={sub.id} onClick={() => setMusicSubTab(sub.id)}
+                    className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${musicSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                ))}
+              </div>
+            )}
+            {activeTab === "music" && musicSubTab === "music" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Music Library</h3>
                 <div className="flex gap-2 flex-wrap">
