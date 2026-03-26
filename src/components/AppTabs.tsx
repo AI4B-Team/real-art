@@ -71,7 +71,19 @@ export default function AppTabs() {
       {/* Tabs */}
       {tabApps.map(app => {
         const isActive = app.id === activeId;
+        const isCreate = app.id === "create";
         const Icon = app.icon;
+
+        // Create tab is ALWAYS expanded with accent color
+        if (isCreate) {
+          return (
+            <button key={app.id} onClick={() => clickTab(app)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.78rem] font-semibold transition-all ${app.bgColor} text-white shrink-0`}>
+              <Icon size={14} />
+              <span>{app.label}</span>
+            </button>
+          );
+        }
 
         if (isActive) {
           return (
@@ -79,9 +91,7 @@ export default function AppTabs() {
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.78rem] font-semibold transition-all ${app.bgColor} text-white shrink-0`}>
               <Icon size={14} />
               <span>{app.label}</span>
-              {app.id !== "create" && (
-                <X size={12} className="ml-0.5 hover:bg-white/20 rounded p-0.5 cursor-pointer" onClick={e => handleCloseTab(e, app.id)} />
-              )}
+              <X size={12} className="ml-0.5 hover:bg-white/20 rounded p-0.5 cursor-pointer" onClick={e => handleCloseTab(e, app.id)} />
             </button>
           );
         }
@@ -92,12 +102,10 @@ export default function AppTabs() {
               <div onClick={() => clickTab(app)}
                 className="relative p-2 rounded-lg border border-foreground/[0.08] bg-card hover:bg-foreground/[0.04] transition-colors text-muted-foreground group cursor-pointer shrink-0">
                 <Icon size={16} />
-                {app.id !== "create" && (
-                  <span onClick={e => handleCloseTab(e, app.id)}
-                    className="absolute -top-1.5 -right-1.5 p-0.5 rounded-full bg-foreground/10 hover:bg-foreground/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10">
-                    <X size={10} />
-                  </span>
-                )}
+                <span onClick={e => handleCloseTab(e, app.id)}
+                  className="absolute -top-1.5 -right-1.5 p-0.5 rounded-full bg-foreground/10 hover:bg-foreground/20 opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-10">
+                  <X size={10} />
+                </span>
               </div>
             </TooltipTrigger>
             <TooltipContent>{app.label}</TooltipContent>
