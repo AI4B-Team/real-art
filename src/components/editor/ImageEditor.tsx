@@ -272,6 +272,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
       isBold: false, isItalic: false, isUnderline: false,
     };
     setTextElements(prev => [...prev, newText]);
+    setHasChanges(true);
     setSelectedTextId(newText.id);
     setEditingTextId(newText.id);
   };
