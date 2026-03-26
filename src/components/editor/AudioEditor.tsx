@@ -385,7 +385,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
           </div>
 
           {/* Search */}
-          {["sfx", "music", "effects", "templates", "tools"].includes(activeTab) && (
+          {["music", "effects", "templates"].includes(activeTab) && (
             <div className="px-4 pt-4 pb-3 shrink-0">
               <div className="relative">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
