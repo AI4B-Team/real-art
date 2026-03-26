@@ -2187,7 +2187,7 @@ const VideoEditor = ({ video }: Props) => {
                 <div className="flex items-center gap-3">
                   <button onClick={() => fileInputRef.current?.click()}
                     className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">
-                    <Upload className="w-4 h-4" />Upload Video
+                    <Upload className="w-4 h-4" />Upload Media
                   </button>
                   <button onClick={() => insertSceneAtIndex(scenes.length)}
                     className="flex items-center gap-2 px-5 py-2.5 bg-foreground/[0.06] text-foreground rounded-lg font-medium hover:bg-foreground/[0.1] transition-colors text-sm">
