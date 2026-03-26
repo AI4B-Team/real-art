@@ -828,6 +828,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Character Tab */}
               {activeTab === "character" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Character</h3>
                   <p className="text-sm text-muted">Create and manage AI characters for your videos.</p>
                   <button className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors">
                     <Plus className="w-4 h-4" />Create Character
