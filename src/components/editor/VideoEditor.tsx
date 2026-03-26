@@ -498,6 +498,7 @@ const VideoEditor = ({ video }: Props) => {
     handleVideoFileUpload(e.dataTransfer.files);
   }, [handleVideoFileUpload]);
 
+  useEffect(() => {
     if (!isPlaying) return;
     const interval = setInterval(() => {
       setCurrentTime(prev => { if (prev >= duration) { setIsPlaying(false); return 0; } return prev + 0.1; });
