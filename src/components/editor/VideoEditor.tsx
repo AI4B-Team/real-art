@@ -1051,8 +1051,8 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Transitions Tab */}
-              {activeTab === "transitions" && (
+              {/* Transitions */}
+              {activeTab === "effects" && effectsSubTab === "transitions" && (
                 <div className="space-y-3">
                   <h3 className="text-sm font-bold">Transitions</h3>
                   {["Fade", "Dissolve", "Wipe Left", "Wipe Right", "Zoom In", "Zoom Out", "Slide Up", "Slide Down", "Spin", "Glitch"].map(tr => (
