@@ -28,7 +28,7 @@ import { AnimatePresence, motion } from "framer-motion";
 interface TimelineClip {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
   startTime: number; duration: number; color?: string; volume?: number;
-  mediaUrl?: string; thumbnail?: string; mediaType?: "video" | "image";
+  mediaUrl?: string; thumbnail?: string; mediaType?: "video" | "image" | "audio";
 }
 interface TimelineTrack {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
@@ -249,6 +249,7 @@ const VideoEditor = ({ video }: Props) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasVideoRef = useRef<HTMLVideoElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioElementsRef = useRef<Map<string, HTMLAudioElement>>(new Map());
 
   // New feature state
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
@@ -457,16 +458,64 @@ const VideoEditor = ({ video }: Props) => {
     }
   }, [activeClipAtPlayhead, currentTime, isPlaying]);
 
+  // Sync audio clips with playhead
+  useEffect(() => {
+    const audioClips = tracks
+      .filter(t => (t.type === "audio" || t.id.includes("audio")) && t.visible !== false)
+      .flatMap(t => t.clips)
+      .filter(c => c.mediaUrl && c.mediaType === "audio");
+    
+    audioClips.forEach(clip => {
+      let el = audioElementsRef.current.get(clip.id);
+      if (!el) {
+        el = new Audio(clip.mediaUrl);
+        audioElementsRef.current.set(clip.id, el);
+      }
+      const inRange = currentTime >= clip.startTime && currentTime < clip.startTime + clip.duration;
+      if (inRange && isPlaying) {
+        const localTime = currentTime - clip.startTime;
+        if (Math.abs(el.currentTime - localTime) > 0.3) el.currentTime = localTime;
+        if (el.paused) el.play().catch(() => {});
+      } else {
+        if (!el.paused) el.pause();
+      }
+    });
+  }, [tracks, currentTime, isPlaying]);
+
   const handleMediaFileUpload = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
     const file = files[0];
     const isVideo = file.type.startsWith("video/");
     const isImage = file.type.startsWith("image/");
-    if (!isVideo && !isImage) {
-      toast({ title: "Invalid file", description: "Please select a video or image file.", variant: "destructive" });
+    const isAudio = file.type.startsWith("audio/");
+    if (!isVideo && !isImage && !isAudio) {
+      toast({ title: "Invalid file", description: "Please select a video, image, or audio file.", variant: "destructive" });
       return;
     }
     const url = URL.createObjectURL(file);
+
+    if (isAudio) {
+      const audioTrack = tracks.find(t => t.type === "audio" || t.id.includes("audio"));
+      if (!audioTrack) return;
+      const lastClip = audioTrack.clips[audioTrack.clips.length - 1];
+      const audioStart = lastClip ? lastClip.startTime + lastClip.duration : 0;
+      const tempAudio = document.createElement("audio");
+      tempAudio.preload = "metadata";
+      tempAudio.onloadedmetadata = () => {
+        const dur = Math.min(tempAudio.duration, 600);
+        const newClip: TimelineClip = {
+          id: `clip-${Date.now()}`, type: "audio", name: file.name.replace(/\.[^.]+$/, ""),
+          startTime: audioStart, duration: dur, color: "bg-purple-500", mediaUrl: url, mediaType: "audio",
+        };
+        setTracks(prev => prev.map(t =>
+          t.id === audioTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+        ));
+        toast({ title: "Audio added", description: `${file.name} (${formatTime(dur)})` });
+      };
+      tempAudio.src = url;
+      return;
+    }
+
     const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
     if (!videoTrack) return;
     const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
@@ -2021,7 +2070,7 @@ const VideoEditor = ({ video }: Props) => {
             onDrop={handleCanvasDrop}
           >
             {/* Hidden file input for video upload */}
-            <input ref={fileInputRef} type="file" accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaFileUpload(e.target.files)} />
+            <input ref={fileInputRef} type="file" accept="video/*,image/*,audio/*" className="hidden" onChange={(e) => handleMediaFileUpload(e.target.files)} />
             {(video || activeClipAtPlayhead) ? (
             <div
               className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer max-h-full"
