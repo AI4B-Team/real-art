@@ -402,7 +402,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
       {/* Left Panel */}
       {!isLeftPanelCollapsed ? (
-        <div className="w-[340px] shrink-0 border-r border-foreground/[0.06] flex flex-col bg-background">
+        <div className="w-[420px] shrink-0 border-r border-foreground/[0.06] flex flex-col bg-background">
           {/* Tab icons */}
           <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex flex-wrap items-center justify-center px-3 py-2 gap-1 shrink-0">
             {LEFT_TABS.map(tab => (
