@@ -28,7 +28,7 @@ import { AnimatePresence, motion } from "framer-motion";
 interface TimelineClip {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
   startTime: number; duration: number; color?: string; volume?: number;
-  mediaUrl?: string; thumbnail?: string;
+  mediaUrl?: string; thumbnail?: string; mediaType?: "video" | "image";
 }
 interface TimelineTrack {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
@@ -457,46 +457,64 @@ const VideoEditor = ({ video }: Props) => {
     }
   }, [activeClipAtPlayhead, currentTime, isPlaying]);
 
-  const handleVideoFileUpload = useCallback((files: FileList | null) => {
+  const handleMediaFileUpload = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
     const file = files[0];
-    if (!file.type.startsWith("video/")) {
-      toast({ title: "Invalid file", description: "Please select a video file.", variant: "destructive" });
+    const isVideo = file.type.startsWith("video/");
+    const isImage = file.type.startsWith("image/");
+    if (!isVideo && !isImage) {
+      toast({ title: "Invalid file", description: "Please select a video or image file.", variant: "destructive" });
       return;
     }
     const url = URL.createObjectURL(file);
-    const tempVideo = document.createElement("video");
-    tempVideo.preload = "metadata";
-    tempVideo.onloadedmetadata = () => {
-      const dur = Math.min(tempVideo.duration, 600);
-      const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
-      if (!videoTrack) return;
-      const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
-      const startTime = lastClip ? lastClip.startTime + lastClip.duration : 0;
-      const newClip: TimelineClip = {
-        id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
-        startTime, duration: dur, color: "bg-blue-500", mediaUrl: url,
-      };
-      tempVideo.currentTime = Math.min(1, dur / 2);
-      tempVideo.onseeked = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = 160; canvas.height = 90;
-        canvas.getContext("2d")?.drawImage(tempVideo, 0, 0, 160, 90);
-        newClip.thumbnail = canvas.toDataURL("image/jpeg", 0.7);
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
+    const startTime = lastClip ? lastClip.startTime + lastClip.duration : 0;
+
+    if (isImage) {
+      const img = document.createElement("img");
+      img.onload = () => {
+        const newClip: TimelineClip = {
+          id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
+          startTime, duration: 5, color: "bg-emerald-500", mediaUrl: url, mediaType: "image", thumbnail: url,
+        };
         setTracks(prev => prev.map(t =>
           t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
         ));
-        toast({ title: "Video added", description: `${file.name} (${formatTime(dur)})` });
+        toast({ title: "Image added", description: `${file.name} (5s duration)` });
       };
-    };
-    tempVideo.src = url;
+      img.src = url;
+    } else {
+      const tempVideo = document.createElement("video");
+      tempVideo.preload = "metadata";
+      tempVideo.onloadedmetadata = () => {
+        const dur = Math.min(tempVideo.duration, 600);
+        const newClip: TimelineClip = {
+          id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
+          startTime, duration: dur, color: "bg-blue-500", mediaUrl: url, mediaType: "video",
+        };
+        tempVideo.currentTime = Math.min(1, dur / 2);
+        tempVideo.onseeked = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = 160; canvas.height = 90;
+          canvas.getContext("2d")?.drawImage(tempVideo, 0, 0, 160, 90);
+          newClip.thumbnail = canvas.toDataURL("image/jpeg", 0.7);
+          setTracks(prev => prev.map(t =>
+            t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+          ));
+          toast({ title: "Video added", description: `${file.name} (${formatTime(dur)})` });
+        };
+      };
+      tempVideo.src = url;
+    }
   }, [tracks]);
 
   const handleCanvasDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    handleVideoFileUpload(e.dataTransfer.files);
-  }, [handleVideoFileUpload]);
+    handleMediaFileUpload(e.dataTransfer.files);
+  }, [handleMediaFileUpload]);
 
   useEffect(() => {
     if (!isPlaying) return;
@@ -2003,7 +2021,7 @@ const VideoEditor = ({ video }: Props) => {
             onDrop={handleCanvasDrop}
           >
             {/* Hidden file input for video upload */}
-            <input ref={fileInputRef} type="file" accept="video/*" className="hidden" onChange={(e) => handleVideoFileUpload(e.target.files)} />
+            <input ref={fileInputRef} type="file" accept="video/*,image/*" className="hidden" onChange={(e) => handleMediaFileUpload(e.target.files)} />
             {(video || activeClipAtPlayhead) ? (
             <div
               className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer max-h-full"
@@ -2011,7 +2029,11 @@ const VideoEditor = ({ video }: Props) => {
               onClick={() => setShowCanvasControls(!showCanvasControls)}
             >
                 {activeClipAtPlayhead?.mediaUrl ? (
-                  <video ref={canvasVideoRef} src={activeClipAtPlayhead.mediaUrl} className="w-full h-full object-contain" muted={isMuted} />
+                  activeClipAtPlayhead.mediaType === "image" ? (
+                    <img src={activeClipAtPlayhead.mediaUrl} alt={activeClipAtPlayhead.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <video ref={canvasVideoRef} src={activeClipAtPlayhead.mediaUrl} className="w-full h-full object-contain" muted={isMuted} />
+                  )
                 ) : video ? (
                   <video ref={videoRef} src={video} className="w-full h-full object-contain" />
                 ) : null}
@@ -2165,7 +2187,7 @@ const VideoEditor = ({ video }: Props) => {
                 <div className="flex items-center gap-3">
                   <button onClick={() => fileInputRef.current?.click()}
                     className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">
-                    <Upload className="w-4 h-4" />Upload Video
+                    <Upload className="w-4 h-4" />Upload Media
                   </button>
                   <button onClick={() => insertSceneAtIndex(scenes.length)}
                     className="flex items-center gap-2 px-5 py-2.5 bg-foreground/[0.06] text-foreground rounded-lg font-medium hover:bg-foreground/[0.1] transition-colors text-sm">
@@ -2838,7 +2860,7 @@ const VideoEditor = ({ video }: Props) => {
                                   <span className="text-xs text-muted font-medium">Upload</span>
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent>Upload Video File</TooltipContent>
+                              <TooltipContent>Upload Media</TooltipContent>
                             </Tooltip>
                             <Tooltip>
                               <TooltipTrigger asChild>
