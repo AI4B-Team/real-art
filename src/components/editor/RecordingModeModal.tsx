@@ -353,7 +353,7 @@ const RecordingModeModal = ({ open, onClose, onRecordingComplete, editorType }: 
                     { label: "1:1", desc: "Square" },
                     { label: "4:3", desc: "Standard" },
                     { label: "4:5", desc: "Social" },
-                    { label: "Custom", desc: "Set size" },
+                    { label: "Custom", desc: "Set Size" },
                   ].map(s => (
                     <button key={s.label} className="p-3 rounded-xl border border-foreground/[0.08] hover:border-accent/40 text-center transition-colors">
                       <span className="text-sm font-bold">{s.label}</span>
