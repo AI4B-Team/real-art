@@ -256,6 +256,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
         opacity: activeTool === "eraser" ? toolSettings.eraserOpacity : toolSettings.opacity,
         isEraser: activeTool === "eraser",
       }]);
+      setHasChanges(true);
       setCurrentStroke([]);
     }
     setIsDrawing(false);
