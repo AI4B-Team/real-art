@@ -33,7 +33,7 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "languages" | "templates" | "tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "languages" | "templates" | "tools" | "settings" | "brand" | "export";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
@@ -48,8 +48,10 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "effects", icon: Sparkles, label: "Effects" },
   { id: "elements", icon: Layers, label: "Elements" },
   { id: "transitions", icon: SlidersHorizontal, label: "Transitions" },
+  { id: "brand", icon: Palette, label: "Brand Kit" },
   { id: "languages", icon: Languages, label: "Languages" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
+  { id: "export", icon: Download, label: "Export" },
   { id: "tools", icon: Wand2, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
@@ -509,7 +511,7 @@ const VideoEditor = ({ video }: Props) => {
       {!isLeftPanelCollapsed && (
         <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex flex-col overflow-hidden shrink-0">
           {/* Icon strip - horizontal at top, wrapping */}
-          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex flex-wrap items-center px-3 py-2 gap-1 shrink-0">
+          <div className="bg-foreground/[0.03] border-b border-foreground/[0.06] flex flex-wrap items-center justify-center px-3 py-2 gap-1 shrink-0">
             {LEFT_TABS.map(tab => (
               <Tooltip key={tab.id}><TooltipTrigger asChild>
                 <button onClick={() => setActiveTab(tab.id)}
@@ -1143,6 +1145,127 @@ const VideoEditor = ({ video }: Props) => {
                       </div>
                     </button>
                   </div>
+                </div>
+              )}
+
+              {/* Brand Kit Tab */}
+              {activeTab === "brand" && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Brand Kit</h3>
+                  <p className="text-sm text-muted">Define your brand identity for consistent content.</p>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Logo</h4>
+                    <button className="w-full h-24 border-2 border-dashed border-foreground/[0.1] rounded-xl flex flex-col items-center justify-center gap-2 text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors">
+                      <Upload className="w-5 h-5" />
+                      <span className="text-xs">Upload Logo</span>
+                    </button>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Brand Colors</h4>
+                    <div className="flex gap-2">
+                      {["#E8472A", "#1a1a2e", "#f5f5f0", "#3b82f6", "#10b981"].map((color, i) => (
+                        <button key={i} className="w-10 h-10 rounded-lg border border-foreground/[0.08] hover:scale-110 transition-transform" style={{ backgroundColor: color }} />
+                      ))}
+                      <button className="w-10 h-10 rounded-lg border-2 border-dashed border-foreground/[0.1] flex items-center justify-center text-muted hover:text-foreground transition-colors">
+                        <Plus className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Fonts</h4>
+                    {["Heading — Playfair Display", "Body — DM Sans"].map(font => (
+                      <div key={font} className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                        <span className="text-sm font-medium">{font}</span>
+                        <ChevronDown className="w-4 h-4 text-muted" />
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Watermark</h4>
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm font-medium">Add Watermark</span>
+                      <button className="w-9 h-5 rounded-full bg-foreground/[0.1] relative transition-colors">
+                        <div className="w-4 h-4 rounded-full bg-foreground/[0.3] absolute top-0.5 left-0.5 transition-transform" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Intro / Outro</h4>
+                    <button className="w-full p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
+                      <p className="text-sm font-medium">Set Intro Clip</p>
+                      <p className="text-xs text-muted">Auto-add branded intro to all videos</p>
+                    </button>
+                    <button className="w-full p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
+                      <p className="text-sm font-medium">Set Outro Clip</p>
+                      <p className="text-xs text-muted">Auto-add branded outro to all videos</p>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Export Tab */}
+              {activeTab === "export" && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Export</h3>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Format</h4>
+                    <div className="space-y-2">
+                      {[
+                        { name: "MP4 (H.264)", desc: "Best compatibility", recommended: true },
+                        { name: "MOV (ProRes)", desc: "Professional quality" },
+                        { name: "WebM (VP9)", desc: "Web optimized" },
+                        { name: "GIF", desc: "Animated, no audio" },
+                      ].map(fmt => (
+                        <button key={fmt.name} className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors text-left">
+                          <Film className="w-4 h-4 text-muted shrink-0" />
+                          <div className="flex-1">
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-medium">{fmt.name}</span>
+                              {fmt.recommended && <span className="text-[10px] bg-accent/10 text-accent px-1.5 py-0.5 rounded-full font-medium">Recommended</span>}
+                            </div>
+                            <span className="text-xs text-muted">{fmt.desc}</span>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Resolution</h4>
+                    <div className="grid grid-cols-2 gap-2">
+                      {["720p", "1080p", "2K", "4K"].map(res => (
+                        <button key={res} className="p-3 rounded-xl border border-foreground/[0.08] hover:border-accent/40 text-center text-sm font-medium transition-colors">{res}</button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Frame Rate</h4>
+                    <div className="flex gap-2">
+                      {["24fps", "30fps", "60fps"].map(fps => (
+                        <button key={fps} className="flex-1 p-2.5 rounded-xl border border-foreground/[0.08] hover:border-accent/40 text-center text-sm font-medium transition-colors">{fps}</button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Quality</h4>
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm font-medium">High Quality</span>
+                      <span className="text-xs text-muted">~250 MB</span>
+                    </div>
+                  </div>
+
+                  <button onClick={() => toast({ title: "Exporting video...", description: "Your video is being rendered." })}
+                    className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium flex items-center justify-center gap-2 hover:bg-accent/90 transition-colors">
+                    <Download className="w-4 h-4" /> Export Video
+                  </button>
                 </div>
               )}
 
