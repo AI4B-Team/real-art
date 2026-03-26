@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import ImageEditor from "@/components/editor/ImageEditor";
 import VideoEditor from "@/components/editor/VideoEditor";
+import AudioEditor from "@/components/editor/AudioEditor";
 
 const EDITING_MODES = ["Editing", "Reviewing", "Presenting"];
 
@@ -137,15 +138,7 @@ const EditorPage = () => {
         <main className="flex-1 min-h-0 overflow-hidden">
           {editorTab === "image" && <ImageEditor image={imageUrl} zoomLevel={zoomLevel} onZoomChange={setZoomLevel} />}
           {editorTab === "video" && <VideoEditor video={videoUrl} />}
-          {editorTab === "audio" && (
-            <div className="flex items-center justify-center h-full bg-foreground/[0.02]">
-              <div className="text-center text-muted">
-                <Music className="w-16 h-16 mx-auto mb-4 opacity-30" />
-                <p className="text-lg font-medium">Audio Editor</p>
-                <p className="text-sm">Coming soon...</p>
-              </div>
-            </div>
-          )}
+          {editorTab === "audio" && <AudioEditor />}
         </main>
       </div>
     </div>
