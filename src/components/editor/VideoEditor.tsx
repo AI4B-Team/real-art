@@ -388,8 +388,7 @@ const VideoEditor = ({ video }: Props) => {
       setIsRecording(false);
       toast({ title: "Recording stopped" });
     } else {
-      setIsRecording(true);
-      toast({ title: "Recording started", description: "Recording your screen..." });
+      setShowRecordingModal(true);
     }
   }, [isRecording]);
 
