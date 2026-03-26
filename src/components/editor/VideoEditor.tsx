@@ -1643,9 +1643,9 @@ const VideoEditor = ({ video }: Props) => {
           </AnimatePresence>
 
           {/* Canvas area */}
-          <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4">
+          <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4 py-2 overflow-hidden">
             <div
-              className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer"
+              className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer max-h-full"
               style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
               onClick={() => setShowCanvasControls(!showCanvasControls)}
             >
