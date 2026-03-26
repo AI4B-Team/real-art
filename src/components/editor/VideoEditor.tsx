@@ -163,6 +163,8 @@ const VideoEditor = ({ video }: Props) => {
   const [zoom, setZoom] = useState(3);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
+  const [timelineHeight, setTimelineHeight] = useState(256);
+  const timelineResizeRef = useRef<{ startY: number; startH: number } | null>(null);
   const [selectedRatio, setSelectedRatio] = useState("16:9");
   const [timelineViewMode, setTimelineViewMode] = useState<"timeline" | "storyboard">("timeline");
   const [isMuted, setIsMuted] = useState(false);
