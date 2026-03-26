@@ -13,7 +13,7 @@ import {
   AudioLines, VolumeOff, MoreVertical, ArrowLeftRight,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
   Languages, Ghost, History, Flag, Shuffle, Loader2,
-  Link, Hash, Clock, Heart, Box, X as XIcon, Repeat,
+  Link, Hash, Clock, Heart, Box, X as XIcon, Repeat, GripHorizontal,
 } from "lucide-react";
 import AIToolsPanel from "./AIToolsPanel";
 import RecordingModeModal from "./RecordingModeModal";
