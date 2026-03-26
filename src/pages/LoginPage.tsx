@@ -35,6 +35,8 @@ const LoginPage = () => {
       try {
         localStorage.setItem("ra_auth", "1");
         localStorage.setItem("ra_last_login_method", "email");
+        // Reset app tabs to only Create on login
+        localStorage.setItem("ra_app_tabs", JSON.stringify(["create"]));
         // Set username/display from email if not already set from signup
         if (!localStorage.getItem("ra_username")) {
           const username = email.split("@")[0].replace(/[^a-zA-Z0-9._]/g, "").toLowerCase();
