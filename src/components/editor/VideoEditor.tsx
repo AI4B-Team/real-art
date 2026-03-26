@@ -162,6 +162,18 @@ const VideoEditor = ({ video }: Props) => {
   const [briefDuration, setBriefDuration] = useState("30s");
   const [briefMediaType, setBriefMediaType] = useState("Video clip");
 
+  // Settings state
+  const [backgroundType, setBackgroundType] = useState<"color" | "image">("color");
+  const [backgroundColor, setBackgroundColor] = useState("#FF4F4A");
+  const [durationType, setDurationType] = useState<"automatic" | "fixed">("automatic");
+  const [fixedDuration, setFixedDuration] = useState("00:05.0");
+  const [showComments, setShowComments] = useState(false);
+  const [showSoundwaves, setShowSoundwaves] = useState(true);
+  const [showGhostPlayhead, setShowGhostPlayhead] = useState(true);
+  const [framesPerSecond, setFramesPerSecond] = useState("30");
+  const [selectedLanguage, setSelectedLanguage] = useState("en");
+  const [languageSearch, setLanguageSearch] = useState("");
+
   const handleSendChat = () => {
     if (!chatInput.trim()) return;
     const userMsg: ChatMessage = { role: "user", content: chatInput };
