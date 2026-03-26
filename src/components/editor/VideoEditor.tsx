@@ -324,7 +324,86 @@ const VideoEditor = ({ video }: Props) => {
   const [hoveredSceneGap, setHoveredSceneGap] = useState<number | null>(null);
   const [selectedClip, setSelectedClip] = useState<string | null>(null);
 
-  const scenes = useMemo(() => {
+  // Undo/Redo helpers
+  const pushUndo = useCallback(() => {
+    setUndoStack(prev => [...prev.slice(-20), tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setRedoStack([]);
+  }, [tracks]);
+
+  const handleUndo = useCallback(() => {
+    if (undoStack.length === 0) return;
+    const prev = undoStack[undoStack.length - 1];
+    setRedoStack(r => [...r, tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setUndoStack(s => s.slice(0, -1));
+    setTracks(prev);
+  }, [undoStack, tracks]);
+
+  const handleRedo = useCallback(() => {
+    if (redoStack.length === 0) return;
+    const next = redoStack[redoStack.length - 1];
+    setUndoStack(s => [...s, tracks.map(t => ({ ...t, clips: [...t.clips] }))]);
+    setRedoStack(r => r.slice(0, -1));
+    setTracks(next);
+  }, [redoStack, tracks]);
+
+  const handleSplit = useCallback(() => {
+    pushUndo();
+    setTracks(prev => prev.map(track => {
+      const clipAtPlayhead = track.clips.find(c => currentTime > c.startTime && currentTime < c.startTime + c.duration);
+      if (!clipAtPlayhead) return track;
+      const splitPoint = currentTime - clipAtPlayhead.startTime;
+      const leftClip: TimelineClip = { ...clipAtPlayhead, duration: splitPoint };
+      const rightClip: TimelineClip = {
+        ...clipAtPlayhead,
+        id: `clip-${Date.now()}-${Math.random()}`,
+        name: `${clipAtPlayhead.name} (2)`,
+        startTime: currentTime,
+        duration: clipAtPlayhead.duration - splitPoint,
+      };
+      return { ...track, clips: track.clips.map(c => c.id === clipAtPlayhead.id ? leftClip : c).concat(rightClip) };
+    }));
+    toast({ title: "Split", description: `Clip split at ${formatTime(currentTime)}` });
+  }, [currentTime, pushUndo]);
+
+  const handleAddMarker = useCallback(() => {
+    if (markers.includes(currentTime)) {
+      toast({ title: "Marker exists", description: "A marker already exists at this position." });
+      return;
+    }
+    setMarkers(prev => [...prev, currentTime].sort((a, b) => a - b));
+    toast({ title: "Marker added", description: `Marker at ${formatTime(currentTime)}` });
+  }, [currentTime, markers]);
+
+  const handleRecord = useCallback(() => {
+    if (isRecording) {
+      setIsRecording(false);
+      toast({ title: "Recording stopped" });
+    } else {
+      setIsRecording(true);
+      toast({ title: "Recording started", description: "Recording your screen..." });
+    }
+  }, [isRecording]);
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) return;
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); handleUndo(); }
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); handleRedo(); }
+      if (e.key === 's' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); handleSplit(); }
+      if (e.key === 'm' && !e.metaKey && !e.ctrlKey) { e.preventDefault(); handleAddMarker(); }
+      if ((e.key === 'Delete' || e.key === 'Backspace') && selectedClip) {
+        e.preventDefault();
+        pushUndo();
+        setTracks(prev => prev.map(t => ({ ...t, clips: t.clips.filter(c => c.id !== selectedClip) })));
+        setSelectedClip(null);
+        toast({ title: "Clip deleted" });
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [handleUndo, handleRedo, handleSplit, handleAddMarker, selectedClip, pushUndo]);
+
     return tracks
       .filter(t => t.type === "video" || t.id.includes("video"))
       .flatMap(t => t.clips)
