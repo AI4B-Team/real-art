@@ -1204,7 +1204,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
         {/* Multi-track timeline */}
         {!isTimelineMinimized && (
-        <div className="h-52 border-t border-foreground/[0.06] bg-foreground/[0.02] flex flex-col shrink-0">
+        <div className="border-t border-foreground/[0.06] bg-foreground/[0.02] flex flex-col shrink-0" style={{ height: timelineHeight }}>
           {/* Timeline ruler */}
           <div className="h-6 border-b border-foreground/[0.06] flex shrink-0">
             <div className="w-36 shrink-0 border-r border-foreground/[0.06] bg-background flex items-center px-3">
