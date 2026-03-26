@@ -257,10 +257,13 @@ const RecordingModeModal = ({ open, onClose, onRecordingComplete, editorType }: 
                           : "text-foreground bg-foreground/[0.05]"
                         : "text-muted hover:text-foreground"
                     }`}>
-                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors relative ${
                       isActive && isRecordTab ? "bg-accent/10" : ""
                     }`}>
                       <tab.icon className={`w-5 h-5 ${isActive && isRecordTab ? "text-accent" : ""}`} />
+                      {tab.id === "size" && (
+                        <span className="absolute -top-0.5 -right-0.5 bg-accent text-white text-[8px] font-bold px-1 py-[1px] rounded leading-none">16:9</span>
+                      )}
                     </div>
                     <span className={`text-[11px] font-medium ${isActive && isRecordTab ? "text-accent" : ""}`}>{tab.label}</span>
                   </button>
