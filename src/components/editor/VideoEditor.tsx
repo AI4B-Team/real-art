@@ -1794,6 +1794,15 @@ const VideoEditor = ({ video }: Props) => {
                 <Maximize className="w-4 h-4" />
               </button>
             </div>
+            ) : (
+              <div className="flex flex-col items-center gap-3 text-center">
+                <img src={emptyVideoCards} alt="" className="w-56 h-56 object-contain" />
+                <div>
+                  <p className="text-lg font-semibold text-foreground mb-1">Add Media To The Timeline To Start Creating</p>
+                  <p className="text-sm text-muted">Drop media here, use the panel, or click Add Scene below</p>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Bottom toolbar — only when canvas is clicked */}
