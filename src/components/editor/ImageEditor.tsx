@@ -500,42 +500,125 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
             {activeLeftTab === "settings" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Settings</h3>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-xs font-medium text-muted uppercase tracking-wider">Size</span>
-                    <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08]">
-                      <div className="flex items-center gap-2">
-                        <Image className="w-4 h-4 text-muted" />
-                        <span className="text-sm font-medium">Landscape (16:9)</span>
-                        <ChevronDown className="w-4 h-4 text-muted ml-auto" />
-                      </div>
-                    </div>
-                    <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08]">
-                      <p className="text-sm font-medium">Resize For Social Media</p>
-                      <p className="text-xs text-muted">Create New Version For Social Media</p>
+
+                {/* Size */}
+                <div>
+                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Size</span>
+                  <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08] cursor-pointer hover:border-foreground/[0.15] transition-colors">
+                    <div className="flex items-center gap-2">
+                      <Image className="w-4 h-4 text-muted" />
+                      <span className="text-sm font-medium">Landscape (16:9)</span>
+                      <ChevronDown className="w-4 h-4 text-muted ml-auto" />
                     </div>
                   </div>
-                  <div className="border-t border-foreground/[0.06] pt-3">
-                    <span className="text-xs font-medium text-muted uppercase tracking-wider">Background</span>
-                    <div className="mt-2 space-y-2">
-                      <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                        <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 rounded-full border-2 border-accent flex items-center justify-center">
-                            <div className="w-2 h-2 rounded-full bg-accent" />
-                          </div>
-                          <span className="text-sm font-medium">Color</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs text-muted">#FF4F4A</span>
-                          <div className="w-5 h-5 rounded bg-accent" />
-                        </div>
+                  <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08] cursor-pointer hover:border-foreground/[0.15] transition-colors">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-muted" />
+                      <div>
+                        <p className="text-sm font-medium">Resize For Social Media</p>
+                        <p className="text-xs text-muted">Create New Version For Social Media</p>
                       </div>
-                      <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                        <div className="flex items-center gap-2">
-                          <div className="w-4 h-4 rounded-full border-2 border-foreground/[0.2]" />
-                          <span className="text-sm font-medium">Image</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Background */}
+                <div className="border-t border-foreground/[0.06] pt-3">
+                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Background</span>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full border-2 border-accent flex items-center justify-center">
+                          <div className="w-2 h-2 rounded-full bg-accent" />
                         </div>
-                        <span className="text-xs text-muted">Upload</span>
+                        <span className="text-sm font-medium">Color</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs text-muted">#FF4F4A</span>
+                        <div className="w-5 h-5 rounded bg-accent" />
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08] cursor-pointer hover:border-foreground/[0.15] transition-colors">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full border-2 border-foreground/[0.2]" />
+                        <span className="text-sm font-medium">Image</span>
+                      </div>
+                      <span className="text-xs text-muted">Upload</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Duration */}
+                <div className="border-t border-foreground/[0.06] pt-3">
+                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Duration</span>
+                  <div className="mt-2 space-y-2">
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full border-2 border-accent flex items-center justify-center">
+                          <div className="w-2 h-2 rounded-full bg-accent" />
+                        </div>
+                        <span className="text-sm font-medium">Automatic</span>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <div className="flex items-center gap-2">
+                        <div className="w-4 h-4 rounded-full border-2 border-foreground/[0.2]" />
+                        <span className="text-sm font-medium">Fixed</span>
+                      </div>
+                      <span className="text-xs text-muted font-mono bg-foreground/[0.04] px-2 py-1 rounded">00:05.0</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Timeline Settings */}
+                <div className="border-t border-foreground/[0.06] pt-3">
+                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Timeline Settings</span>
+                  <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm font-medium">FPS</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm">30</span>
+                        <ChevronDown className="w-4 h-4 text-muted" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Version History */}
+                <div className="border-t border-foreground/[0.06] pt-3">
+                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Version History</span>
+                  <div className="mt-2 p-3 rounded-xl border border-foreground/[0.08] cursor-pointer hover:border-foreground/[0.15] transition-colors">
+                    <div className="flex items-center gap-3">
+                      <RotateCcw className="w-5 h-5 text-muted shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium">Restore To A Previous Version</p>
+                        <p className="text-xs text-muted">Creates A New Project</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Audio */}
+                <div className="border-t border-foreground/[0.06] pt-3">
+                  <span className="text-xs font-medium text-muted uppercase tracking-wider">Audio</span>
+                  <div className="mt-2 space-y-2">
+                    <div className="p-3 rounded-xl bg-accent/[0.08] border border-accent/[0.15] cursor-pointer hover:bg-accent/[0.12] transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Languages className="w-5 h-5 text-accent shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">AI Dubbing</p>
+                          <p className="text-xs text-muted">Translate Dialogue To Different Languages</p>
+                        </div>
+                        <div className="w-2 h-2 rounded-full bg-accent shrink-0" />
+                      </div>
+                    </div>
+                    <div className="p-3 rounded-xl bg-accent/[0.08] border border-accent/[0.15] cursor-pointer hover:bg-accent/[0.12] transition-colors">
+                      <div className="flex items-center gap-3">
+                        <Sparkles className="w-5 h-5 text-accent shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium">Clean Audio</p>
+                          <p className="text-xs text-muted">Remove Background Noise</p>
+                        </div>
                       </div>
                     </div>
                   </div>
