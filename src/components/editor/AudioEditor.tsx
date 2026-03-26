@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
-import emptyAudioImg from "@/assets/empty-audio.png";
+import emptyAudioCards from "@/assets/empty-audio-cards.png";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX,
   Scissors, Undo2, Redo2, ZoomIn, ZoomOut, Plus, Upload,
@@ -995,7 +995,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
         <div className="flex-1 flex items-center justify-center bg-foreground/[0.02] relative overflow-hidden">
           {tracks.length === 0 ? (
             <div className="flex flex-col items-center gap-3 text-center px-6">
-              <img src={emptyAudioImg} alt="" className="w-40 h-40 object-contain" />
+              <img src={emptyAudioCards} alt="" className="w-56 h-56 object-contain" />
               <div>
                 <p className="text-base font-semibold text-foreground mb-1">No Audio Loaded</p>
                 <p className="text-sm text-muted mb-4">Record, import, or generate audio to get started</p>

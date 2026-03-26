@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import emptyImageImg from "@/assets/empty-image.png";
+import emptyImageCards from "@/assets/empty-image-cards.png";
 import {
   MousePointer2, Paintbrush, Eraser, PaintBucket, Type, Layers,
   ZoomIn, Play, SlidersHorizontal, Download, Save, Globe, ExternalLink,
@@ -803,7 +803,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-3 text-center">
-                <img src={emptyImageImg} alt="" className="w-40 h-40 object-contain" />
+                <img src={emptyImageCards} alt="" className="w-56 h-56 object-contain" />
                 <div>
                   <p className="text-lg font-semibold text-foreground mb-1">No Image Selected</p>
                   <p className="text-sm text-muted mb-4">Upload an image or select from your creations</p>
