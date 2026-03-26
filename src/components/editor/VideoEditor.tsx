@@ -799,12 +799,15 @@ const VideoEditor = ({ video }: Props) => {
                           <input
                             value={scene.name}
                             onClick={e => e.stopPropagation()}
-                            onChange={e => {
+                          onChange={e => {
                               const newName = e.target.value;
-                              setTracks(prev => ({
-                                ...prev,
-                                video: prev.video.map(c => c.id === scene.id ? { ...c, name: newName } : c),
-                              }));
+                              const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+                              if (!videoTrack) return;
+                              setTracks(prev => prev.map(t =>
+                                t.id === videoTrack.id
+                                  ? { ...t, clips: t.clips.map(c => c.id === scene.id ? { ...c, name: newName } : c) }
+                                  : t
+                              ));
                             }}
                             className="w-full text-sm text-foreground bg-transparent border-none outline-none focus:bg-foreground/[0.03] rounded px-1 -mx-1"
                           />
