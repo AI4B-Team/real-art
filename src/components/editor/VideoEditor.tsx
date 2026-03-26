@@ -27,9 +27,12 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "templates" | "tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "templates" | "tools" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
+  { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
+  { id: "storyboard", icon: BookOpen, label: "Storyboard" },
+  { id: "video-brief", icon: Clapperboard, label: "Video Brief" },
   { id: "script", icon: FileText, label: "Script" },
   { id: "character", icon: User, label: "Character" },
   { id: "visuals", icon: Video, label: "Visuals" },
