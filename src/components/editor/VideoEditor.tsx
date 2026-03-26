@@ -522,7 +522,7 @@ const VideoEditor = ({ video }: Props) => {
             {/* Active tab content */}
 
             {/* Search bar for applicable tabs */}
-            {["script", "captions", "audio", "effects", "templates", "tools", "elements"].includes(activeTab) && (
+            {["audio", "effects", "templates"].includes(activeTab) && (
               <div className="px-4 pt-3 pb-3 shrink-0">
                 <div className="relative">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
