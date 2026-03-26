@@ -1607,11 +1607,40 @@ const VideoEditor = ({ video }: Props) => {
       {/* Main Area */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Video Canvas */}
-        <div className="flex-1 bg-foreground/[0.03] flex flex-col items-center justify-center relative overflow-hidden min-h-0">
+        <div className="flex-1 bg-foreground/[0.03] flex flex-col items-center relative overflow-hidden min-h-0">
+
+          {/* Top context toolbar — only when canvas is clicked */}
+          <AnimatePresence>
+            {showCanvasControls && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.15 }}
+                className="shrink-0 w-full flex items-center justify-center gap-4 px-4 py-2 border-b border-foreground/[0.06] bg-card/80 backdrop-blur-sm z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="text-sm font-semibold text-accent">Replace media</span>
+                <div className="w-px h-5 bg-foreground/[0.08]" />
+                <button className="text-sm text-foreground hover:text-accent transition-colors">Position</button>
+                <button className="p-1.5 text-muted hover:text-foreground"><Copy className="w-4 h-4" /></button>
+                <button className="p-1.5 text-muted hover:text-foreground"><RefreshCw className="w-4 h-4" /></button>
+                <button className="p-1.5 text-muted hover:text-foreground"><Maximize className="w-4 h-4" /></button>
+                <span className="text-sm text-muted">100%</span>
+                <button className="p-1.5 text-muted hover:text-foreground"><Layers className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-foreground/[0.08]" />
+                <button className="text-sm text-foreground hover:text-accent transition-colors">Effects</button>
+                <button className="text-sm text-foreground hover:text-accent transition-colors">Animation</button>
+                <button className="p-1.5 text-muted hover:text-foreground"><MoreVertical className="w-4 h-4" /></button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Canvas area */}
           <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4">
             <div
-              className="video-canvas-container relative bg-black rounded-2xl overflow-hidden shadow-2xl cursor-pointer group/canvas border-2 border-foreground/[0.06]"
-              style={{ width: "85%", maxWidth: 860, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
+              className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer"
+              style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
               onClick={() => setShowCanvasControls(!showCanvasControls)}
             >
               {video ? (
