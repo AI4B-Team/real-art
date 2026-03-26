@@ -992,6 +992,7 @@ const VideoEditor = ({ video }: Props) => {
               {/* Effects Tab */}
               {activeTab === "effects" && (
                 <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Effects</h3>
                   <div className="grid grid-cols-4 gap-2">
                     {EFFECTS_DATA.map(effect => (
                       <button key={effect} onClick={() => toast({ title: `${effect} applied` })}
