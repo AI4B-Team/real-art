@@ -468,6 +468,29 @@ const VideoEditor = ({ video }: Props) => {
       return;
     }
     const url = URL.createObjectURL(file);
+
+    if (isAudio) {
+      const audioTrack = tracks.find(t => t.type === "audio" || t.id.includes("audio"));
+      if (!audioTrack) return;
+      const lastClip = audioTrack.clips[audioTrack.clips.length - 1];
+      const audioStart = lastClip ? lastClip.startTime + lastClip.duration : 0;
+      const tempAudio = document.createElement("audio");
+      tempAudio.preload = "metadata";
+      tempAudio.onloadedmetadata = () => {
+        const dur = Math.min(tempAudio.duration, 600);
+        const newClip: TimelineClip = {
+          id: `clip-${Date.now()}`, type: "audio", name: file.name.replace(/\.[^.]+$/, ""),
+          startTime: audioStart, duration: dur, color: "bg-purple-500", mediaUrl: url, mediaType: "audio",
+        };
+        setTracks(prev => prev.map(t =>
+          t.id === audioTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+        ));
+        toast({ title: "Audio added", description: `${file.name} (${formatTime(dur)})` });
+      };
+      tempAudio.src = url;
+      return;
+    }
+
     const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
     if (!videoTrack) return;
     const lastClip = videoTrack.clips[videoTrack.clips.length - 1];
