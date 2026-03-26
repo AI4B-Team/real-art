@@ -1886,7 +1886,7 @@ const VideoEditor = ({ video }: Props) => {
                               {layout.cells.map((cell, i) => (
                                 <div key={i} className={`absolute rounded-sm flex items-center justify-center ${cell.person ? "bg-blue-400" : "bg-foreground/[0.08]"}`}
                                   style={{ left: `${cell.x * 100}%`, top: `${cell.y * 100}%`, width: `${cell.w * 100 - 4}%`, height: `${cell.h * 100 - 4}%` }}>
-                                  {cell.person && <Users className="w-3 h-3 text-white" />}
+                                  {cell.person && <User className="w-3 h-3 text-white" />}
                                 </div>
                               ))}
                             </div>
