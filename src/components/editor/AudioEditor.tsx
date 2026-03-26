@@ -384,7 +384,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const filteredSfx = sfxCategory === "All" ? SFX_LIBRARY : SFX_LIBRARY.filter(s => s.category === sfxCategory);
 
   return (
-    <div className="flex h-full overflow-hidden bg-background"
+    <div className="flex h-full overflow-hidden bg-background relative"
       onDragOver={e => { e.preventDefault(); setIsDraggingOver(true); }}
       onDragLeave={() => setIsDraggingOver(false)}
       onDrop={handleFileDrop}
