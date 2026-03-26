@@ -616,7 +616,8 @@ const VideoEditor = ({ video }: Props) => {
               {/* Video Brief Tab */}
               {activeTab === "video-brief" && (
                 <div className="space-y-5">
-                  <h3 className="text-sm font-bold">Video Brief</h3>
+                   <h3 className="text-sm font-bold">Video Brief</h3>
+
 
                   {/* Character preview */}
                   <div className="flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06]">
@@ -631,8 +632,9 @@ const VideoEditor = ({ video }: Props) => {
                   <div className="space-y-3">
                     <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Key Elements</h4>
 
+
                     <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                      <span className="text-sm text-muted">Visual style</span>
+                      <span className="text-sm text-muted">Visual Style</span>
                       <button className="flex items-center gap-1.5 text-sm font-medium">
                         <Image className="w-4 h-4 text-accent" /> {briefStyle} <ChevronDown className="w-3 h-3 text-muted" />
                       </button>
@@ -652,7 +654,7 @@ const VideoEditor = ({ video }: Props) => {
                     </div>
 
                     <div className="p-3 rounded-xl border border-foreground/[0.08]">
-                      <span className="text-sm text-muted">Scene media</span>
+                      <span className="text-sm text-muted">Scene Media</span>
                       <div className="flex gap-2 mt-2">
                         {["Video clip", "Still image"].map(m => (
                           <button key={m} onClick={() => setBriefMediaType(m)}
@@ -664,7 +666,7 @@ const VideoEditor = ({ video }: Props) => {
                     </div>
 
                     <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                      <span className="text-sm text-muted">Aspect ratio</span>
+                      <span className="text-sm text-muted">Aspect Ratio</span>
                       <button className="flex items-center gap-1.5 text-sm font-medium">
                         <Video className="w-4 h-4" /> {selectedRatio} <ChevronDown className="w-3 h-3 text-muted" />
                       </button>
@@ -686,6 +688,7 @@ const VideoEditor = ({ video }: Props) => {
                   {/* Video Content */}
                   <div className="space-y-3">
                     <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Video Content</h4>
+
                     <div className="space-y-2 text-sm text-foreground/80">
                       <p>• <strong>Opening:</strong> A resistance courier waits at a desolate, snow-covered border crossing.</p>
                       <p>• <strong>Rising action:</strong> She intercepts a transmission and realizes she has been betrayed.</p>
