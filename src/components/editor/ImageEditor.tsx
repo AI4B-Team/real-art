@@ -896,7 +896,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
             </button>
           </div>
 
-          <div className={`absolute inset-0 flex items-center justify-center p-8 ${!selectedImage ? "pb-32" : ""}`}>
+          <div className="absolute inset-0 flex items-center justify-center p-8">
             {selectedImage ? (
               <div className="relative" style={{
                 transform: `scale(${zoomLevel / 100}) translate(${imagePosition.x / (zoomLevel / 100)}px, ${imagePosition.y / (zoomLevel / 100)}px)`,
