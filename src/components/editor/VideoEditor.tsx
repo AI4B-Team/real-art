@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import emptyVideoImg from "@/assets/empty-video.png";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX,
   Scissors, Undo2, Redo2, ZoomIn, ZoomOut, Plus, Upload,
@@ -1652,10 +1653,8 @@ const VideoEditor = ({ video }: Props) => {
               {video ? (
                 <video ref={videoRef} src={video} className="w-full h-full object-contain" />
               ) : (
-                <div className="w-full h-full flex flex-col items-center justify-center gap-4 px-6">
-                  <div className="w-20 h-20 rounded-2xl bg-white/[0.06] flex items-center justify-center">
-                    <Video className="w-10 h-10 text-white/20" />
-                  </div>
+                <div className="w-full h-full flex flex-col items-center justify-center gap-3 px-6">
+                  <img src={emptyVideoImg} alt="" className="w-40 h-40 object-contain" />
                   <div className="text-center">
                     <p className="text-base font-semibold text-white/70 mb-1">Add Media To The Timeline To Start Creating</p>
                     <p className="text-sm text-white/30">Drop media here, use the panel, or click Add Scene below</p>
