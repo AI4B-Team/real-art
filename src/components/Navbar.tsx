@@ -725,7 +725,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   };
 
   return (
-    <nav className="fixed top-0 right-0 z-[600] h-16 px-3 md:px-5 flex items-center justify-between bg-background border-b border-foreground/[0.08]" style={{ left: sidebarOffset ? `${sidebarOffset}px` : 0 }}>
+    <nav className="fixed top-0 right-0 z-[600] h-16 px-3 md:px-5 flex items-center justify-between overflow-visible bg-background border-b border-foreground/[0.08]" style={{ left: sidebarOffset ? `${sidebarOffset}px` : 0 }}>
       {/* Mobile: ☰ left */}
       <div className="md:hidden relative" ref={menuRef}>
         <button onClick={() => setMenuOpen(!menuOpen)} className="w-[38px] h-[38px] rounded-full flex items-center justify-center hover:bg-foreground/[0.06] transition-colors">
@@ -740,9 +740,12 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
 
       {/* Logo — hidden when sidebar has logo */}
       {!hideLogo && (
-        <div className="hidden md:flex items-center gap-0 shrink-0 ml-1 mr-3">
-          <Logo to={isLoggedIn ? "/dashboard" : "/"} />
-        </div>
+        <>
+          <div className="hidden md:block w-[172px] shrink-0" aria-hidden="true" />
+          <div className="hidden md:flex absolute items-start z-[610]" style={{ left: "24px", top: "4px" }}>
+            <Logo to={isLoggedIn ? "/dashboard" : "/"} />
+          </div>
+        </>
       )}
       <div className="absolute left-1/2 -translate-x-1/2 md:hidden">
         <Logo to={isLoggedIn ? "/dashboard" : "/"} />
