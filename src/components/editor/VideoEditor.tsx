@@ -27,7 +27,7 @@ import { AnimatePresence, motion } from "framer-motion";
 /* ─── Types ─── */
 interface TimelineClip {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
-  startTime: number; duration: number; color?: string;
+  startTime: number; duration: number; color?: string; volume?: number;
 }
 interface TimelineTrack {
   id: string; type: "video" | "audio" | "text" | "effect"; name: string;
