@@ -13,6 +13,7 @@ import {
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
   Languages, Ghost, History, Flag,
 } from "lucide-react";
+import AIToolsPanel from "./AIToolsPanel";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
