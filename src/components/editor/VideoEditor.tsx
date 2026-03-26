@@ -462,8 +462,9 @@ const VideoEditor = ({ video }: Props) => {
     const file = files[0];
     const isVideo = file.type.startsWith("video/");
     const isImage = file.type.startsWith("image/");
-    if (!isVideo && !isImage) {
-      toast({ title: "Invalid file", description: "Please select a video or image file.", variant: "destructive" });
+    const isAudio = file.type.startsWith("audio/");
+    if (!isVideo && !isImage && !isAudio) {
+      toast({ title: "Invalid file", description: "Please select a video, image, or audio file.", variant: "destructive" });
       return;
     }
     const url = URL.createObjectURL(file);
