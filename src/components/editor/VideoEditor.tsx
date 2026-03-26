@@ -2516,14 +2516,48 @@ const VideoEditor = ({ video }: Props) => {
                           </Tooltip>
                         ) : (
                           <>
-                            {track.clips.map(clip => (
-                              <div key={clip.id}
-                                onClick={() => setSelectedClip(clip.id)}
-                                className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-pointer hover:brightness-110 transition-all flex items-center px-2 gap-1.5 overflow-hidden ${track.locked ? "opacity-60" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1" : ""}`}
-                                style={{ left: clip.startTime * pixelsPerSecond, width: clip.duration * pixelsPerSecond }}>
-                                <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
-                              </div>
-                            ))}
+                            {track.clips.map(clip => {
+                              const clipWidth = clip.duration * pixelsPerSecond;
+                              const vol = clip.volume ?? 100;
+                              return (
+                                <div key={clip.id}
+                                  className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-grab active:cursor-grabbing hover:brightness-110 transition-all overflow-hidden group/clip ${track.locked ? "opacity-60 pointer-events-none" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1 z-10" : ""}`}
+                                  style={{ left: clip.startTime * pixelsPerSecond, width: clipWidth }}
+                                  onMouseDown={(e) => { if (e.button === 0) handleClipMouseDown(e, clip.id, track.id, "move"); }}
+                                  onClick={(e) => { e.stopPropagation(); setSelectedClip(clip.id); }}
+                                  onContextMenu={(e) => { e.preventDefault(); e.stopPropagation(); setClipContextMenu({ clipId: clip.id, trackId: track.id, x: e.clientX, y: e.clientY }); }}
+                                >
+                                  {/* Left resize handle */}
+                                  <div className="absolute left-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-white/20 z-10 group-hover/clip:bg-white/10 transition-colors rounded-l-lg"
+                                    onMouseDown={(e) => handleClipMouseDown(e, clip.id, track.id, "resize-left")} />
+
+                                  {/* Clip content */}
+                                  <div className="flex items-center h-full px-3 gap-1.5 min-w-0">
+                                    {/* Mini waveform for audio clips */}
+                                    {(clip.type === "audio") && clipWidth > 60 && (
+                                      <div className="flex items-center gap-[1px] h-5 opacity-40 shrink-0">
+                                        {Array.from({ length: Math.min(20, Math.floor(clipWidth / 4)) }, (_, i) => (
+                                          <div key={i} className="w-[2px] rounded-full bg-white" style={{ height: `${30 + Math.sin(i * 0.8) * 40 + Math.random() * 20}%` }} />
+                                        ))}
+                                      </div>
+                                    )}
+                                    <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
+                                    {clipWidth > 80 && (
+                                      <span className="text-[8px] text-white/50 font-mono shrink-0">{formatTime(clip.duration)}</span>
+                                    )}
+                                  </div>
+
+                                  {/* Volume indicator line */}
+                                  <div className="absolute bottom-0 left-0 right-0 h-[3px] bg-black/20">
+                                    <div className="h-full bg-white/40 transition-all" style={{ width: `${vol}%` }} />
+                                  </div>
+
+                                  {/* Right resize handle */}
+                                  <div className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-white/20 z-10 group-hover/clip:bg-white/10 transition-colors rounded-r-lg"
+                                    onMouseDown={(e) => handleClipMouseDown(e, clip.id, track.id, "resize-right")} />
+                                </div>
+                              );
+                            })}
                             {/* Add clip button after last clip */}
                             {!track.locked && (
                               <button className="absolute top-1/2 -translate-y-1/2 opacity-0 hover:opacity-100 transition-opacity"
