@@ -35,7 +35,7 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "translate" | "effects" | "captions" | "templates" | "brand" | "ai-tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "character" | "visuals" | "audio" | "text" | "translate" | "effects" | "captions" | "transcript" | "clips" | "metadata" | "templates" | "brand" | "ai-tools" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
@@ -43,10 +43,13 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "character", icon: User, label: "Character" },
   { id: "visuals", icon: Video, label: "Visuals" },
   { id: "audio", icon: AudioLines, label: "Audio" },
+  { id: "transcript", icon: FileText, label: "Transcript" },
   { id: "text", icon: Type, label: "Text" },
   { id: "translate", icon: Languages, label: "Translate" },
   { id: "effects", icon: Sparkles, label: "Effects" },
   { id: "captions", icon: Captions, label: "Captions" },
+  { id: "clips", icon: Film, label: "Create Clips" },
+  { id: "metadata", icon: BookOpen, label: "AI Notes" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
   { id: "brand", icon: Palette, label: "Brand" },
   { id: "ai-tools", icon: Wand2, label: "AI Tools" },
@@ -73,6 +76,67 @@ const CAPTION_DATA = [
   { time: "16.50s", text: "And I'm changing the game." },
 ];
 
+const FILLER_WORDS = ["um", "uh", "like", "you know", "right", "so", "actually", "basically", "literally"];
+
+interface WordToken {
+  id: string; word: string; start: number; end: number; isFiller?: boolean;
+}
+
+const SAMPLE_TRANSCRIPT: WordToken[] = [
+  { id: "w0", word: "So", start: 0.0, end: 0.3, isFiller: true },
+  { id: "w1", word: "today", start: 0.3, end: 0.7 },
+  { id: "w2", word: "we're", start: 0.7, end: 0.9 },
+  { id: "w3", word: "going", start: 0.9, end: 1.2 },
+  { id: "w4", word: "to", start: 1.2, end: 1.3 },
+  { id: "w5", word: "um", start: 1.3, end: 1.6, isFiller: true },
+  { id: "w6", word: "talk", start: 1.6, end: 1.9 },
+  { id: "w7", word: "about", start: 1.9, end: 2.2 },
+  { id: "w8", word: "something", start: 2.2, end: 2.7 },
+  { id: "w9", word: "really", start: 2.7, end: 3.1 },
+  { id: "w10", word: "like", start: 3.1, end: 3.4, isFiller: true },
+  { id: "w11", word: "important", start: 3.4, end: 4.0 },
+  { id: "w12", word: "about", start: 4.0, end: 4.3 },
+  { id: "w13", word: "AI", start: 4.3, end: 4.6 },
+  { id: "w14", word: "content", start: 4.6, end: 5.1 },
+  { id: "w15", word: "creation.", start: 5.1, end: 5.6 },
+  { id: "w16", word: "You know", start: 5.6, end: 6.0, isFiller: true },
+  { id: "w17", word: "the", start: 6.0, end: 6.1 },
+  { id: "w18", word: "tools", start: 6.1, end: 6.4 },
+  { id: "w19", word: "we", start: 6.4, end: 6.5 },
+  { id: "w20", word: "have", start: 6.5, end: 6.8 },
+  { id: "w21", word: "uh", start: 6.8, end: 7.0, isFiller: true },
+  { id: "w22", word: "available", start: 7.0, end: 7.5 },
+  { id: "w23", word: "right", start: 7.5, end: 7.7, isFiller: true },
+  { id: "w24", word: "now", start: 7.7, end: 7.9 },
+  { id: "w25", word: "are", start: 7.9, end: 8.1 },
+  { id: "w26", word: "actually", start: 8.1, end: 8.6, isFiller: true },
+  { id: "w27", word: "incredible.", start: 8.6, end: 9.2 },
+  { id: "w28", word: "Basically", start: 9.2, end: 9.7, isFiller: true },
+  { id: "w29", word: "you", start: 9.7, end: 9.9 },
+  { id: "w30", word: "can", start: 9.9, end: 10.1 },
+  { id: "w31", word: "edit", start: 10.1, end: 10.4 },
+  { id: "w32", word: "video", start: 10.4, end: 10.8 },
+  { id: "w33", word: "by", start: 10.8, end: 10.9 },
+  { id: "w34", word: "editing", start: 10.9, end: 11.3 },
+  { id: "w35", word: "text.", start: 11.3, end: 11.7 },
+];
+
+const CLIP_SUGGESTIONS = [
+  { label: "Strong Hook — Opening Statement", start: 0.0, end: 5.6, rationale: "Punchy opening that grabs attention with a direct statement about the topic.", platform: "tiktok" },
+  { label: "Key Insight — AI Tools Overview", start: 5.6, end: 9.2, rationale: "Compelling section about available tools that stands alone as a shareable moment.", platform: "reels" },
+  { label: "Actionable Takeaway — Edit by Text", start: 9.2, end: 11.7, rationale: "Clear, actionable tip that provides immediate value to viewers.", platform: "shorts" },
+];
+
+const SOCIAL_EXPORT_PRESETS = [
+  { platform: "TikTok", ratio: "9:16", maxDur: "60s", res: "1080×1920", icon: "♪" },
+  { platform: "Instagram Reels", ratio: "9:16", maxDur: "90s", res: "1080×1920", icon: "📷" },
+  { platform: "YouTube Shorts", ratio: "9:16", maxDur: "60s", res: "1080×1920", icon: "▶" },
+  { platform: "LinkedIn", ratio: "16:9", maxDur: "10min", res: "1920×1080", icon: "in" },
+  { platform: "Twitter/X", ratio: "16:9", maxDur: "2m20s", res: "1280×720", icon: "𝕏" },
+  { platform: "YouTube", ratio: "16:9", maxDur: "No limit", res: "1920×1080", icon: "▶" },
+  { platform: "Podcast", ratio: "1:1", maxDur: "No limit", res: "Audiogram", icon: "🎙" },
+];
+
 const EFFECTS_DATA = [
   "Audio Dust", "Audio Glitch", "Audio Glow", "Audio Meltdown",
   "Audio Mosh", "Audio RGB", "Audio Shake", "Black & White",
@@ -97,6 +161,11 @@ const AI_TOOLS = [
   { name: "Scene Detection", desc: "Auto-detect Scene Changes", icon: Clapperboard },
   { name: "Color Match", desc: "Match Colors Across Clips", icon: Palette },
   { name: "AI Voiceover", desc: "Generate Narration From Script", icon: Mic },
+  { name: "Create Clips", desc: "Find Best Moments For Social Media", icon: Film },
+  { name: "AI Show Notes", desc: "Generate Descriptions And Metadata", icon: BookOpen },
+  { name: "Remove Retakes", desc: "Detect And Remove Repeated Sentences", icon: RefreshCw },
+  { name: "Fix Word", desc: "AI Voice Clone To Fix Mispronunciations", icon: Wand2 },
+  { name: "Transcribe", desc: "Convert Audio To Editable Text", icon: FileText },
 ];
 
 const VOICE_DATA = [
@@ -213,6 +282,32 @@ const VideoEditor = ({ video }: Props) => {
   const [hasCaptions, setHasCaptions] = useState(false);
   const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "transitions" | "elements">("effects");
   const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand" | "languages" | "ai-tools">("general");
+
+  // Transcript state
+  const [transcriptTokens, setTranscriptTokens] = useState<WordToken[]>(SAMPLE_TRANSCRIPT);
+  const [fillerMode, setFillerMode] = useState(false);
+  const [transcriptLoading, setTranscriptLoading] = useState(false);
+  const [hasTranscript, setHasTranscript] = useState(false);
+
+  // Create Clips state
+  const [clipCount, setClipCount] = useState(3);
+  const [clipDuration, setClipDuration] = useState("30s");
+  const [clipsGenerated, setClipsGenerated] = useState(false);
+  const [acceptedClips, setAcceptedClips] = useState<Set<number>>(new Set());
+
+  // AI Metadata state
+  const [metadataGenerated, setMetadataGenerated] = useState(false);
+  const [metaTitles] = useState(["How AI Is Revolutionizing Content Creation", "The Future of Video Editing with AI", "Why Every Creator Needs AI Tools in 2026"]);
+  const [metaDescription] = useState("Discover how AI-powered tools are transforming the way creators edit video, generate content, and grow their audience. In this video, we explore the cutting-edge features that make editing as simple as editing text.");
+  const [metaTags] = useState(["AI", "content creation", "video editing", "creator tools", "automation"]);
+  const [metaChapters] = useState([{ time: "0:00", label: "Intro" }, { time: "0:06", label: "AI Tools Overview" }, { time: "0:09", label: "Text-Based Editing" }]);
+  const [metaShowNotes] = useState("In this episode, we dive deep into the world of AI-powered content creation. We discuss the revolutionary text-based editing approach, explore available AI tools, and demonstrate how creators can edit video simply by editing text. Key takeaways include understanding the current landscape of AI tools and practical tips for integrating them into your workflow.");
+
+  // Studio Sound / Remove Silences state
+  const [studioSoundStatus, setStudioSoundStatus] = useState<"idle" | "loading" | "done">("idle");
+  const [silenceThreshold, setSilenceThreshold] = useState(400);
+  const [silencesFound, setSilencesFound] = useState(0);
+  const [showSilencePanel, setShowSilencePanel] = useState(false);
 
   // Toolbar state
   const [snapEnabled, setSnapEnabled] = useState(false);
@@ -1114,6 +1209,303 @@ const VideoEditor = ({ video }: Props) => {
                       <span className={`text-foreground font-medium ${preset === "Heading" ? "text-xl" : preset === "Subheading" ? "text-base" : "text-sm"}`}>{preset}</span>
                     </button>
                   ))}
+                </div>
+               )}
+
+              {/* ═══ TRANSCRIPT TAB (P1) ═══ */}
+              {activeTab === "transcript" && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold">Transcript</h3>
+                    {hasTranscript && (
+                      <span className="text-xs text-muted">{transcriptTokens.length} words</span>
+                    )}
+                  </div>
+
+                  {!hasTranscript ? (
+                    <div className="flex flex-col items-center justify-center py-10 text-center">
+                      <div className="w-14 h-14 bg-foreground/[0.04] rounded-2xl flex items-center justify-center mb-4">
+                        <FileText className="w-7 h-7 text-muted/50" />
+                      </div>
+                      <h4 className="text-sm font-bold text-foreground mb-1">No Transcript Yet</h4>
+                      <p className="text-xs text-muted leading-relaxed max-w-[220px] mb-6">Transcribe your video's audio to enable text-based editing, filler word removal, and more.</p>
+                      <button onClick={() => { setTranscriptLoading(true); setTimeout(() => { setHasTranscript(true); setTranscriptLoading(false); toast({ title: "Transcript generated", description: `${SAMPLE_TRANSCRIPT.length} words transcribed` }); }, 2000); }}
+                        disabled={transcriptLoading}
+                        className="flex items-center gap-2 px-6 py-3 bg-foreground text-background rounded-xl text-sm font-medium hover:bg-foreground/90 transition-colors disabled:opacity-50">
+                        {transcriptLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mic className="w-4 h-4" />}
+                        {transcriptLoading ? "Transcribing..." : "Transcribe Audio"}
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Action buttons */}
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => { setFillerMode(!fillerMode); if (!fillerMode) { const count = transcriptTokens.filter(t => t.isFiller).length; toast({ title: `Found ${count} filler words` }); } }}
+                          className={`flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-colors ${fillerMode ? "bg-accent text-white" : "bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}>
+                          <Wand2 className="w-3.5 h-3.5" />AI Clean
+                        </button>
+                        {fillerMode && (
+                          <button onClick={() => {
+                            const fillers = transcriptTokens.filter(t => t.isFiller);
+                            setTranscriptTokens(prev => prev.filter(t => !t.isFiller));
+                            toast({ title: `Removed ${fillers.length} filler words`, description: `Cut ${fillers.reduce((sum, t) => sum + (t.end - t.start), 0).toFixed(1)}s from timeline` });
+                            setFillerMode(false);
+                          }}
+                            className="flex items-center gap-2 px-3 py-2 bg-destructive/10 text-destructive rounded-lg text-xs font-medium hover:bg-destructive/20 transition-colors">
+                            <Trash2 className="w-3.5 h-3.5" />Remove {transcriptTokens.filter(t => t.isFiller).length} Fillers
+                          </button>
+                        )}
+                        <div className="flex-1" />
+                        <Tooltip><TooltipTrigger asChild><button onClick={() => { navigator.clipboard.writeText(transcriptTokens.map(t => t.word).join(" ")); toast({ title: "Copied to clipboard" }); }} className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Copy className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Copy All</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild><button className="p-2 hover:bg-foreground/[0.06] rounded-lg text-muted hover:text-foreground transition-colors"><Download className="w-4 h-4" /></button></TooltipTrigger><TooltipContent>Export SRT</TooltipContent></Tooltip>
+                      </div>
+
+                      {fillerMode && (
+                        <div className="flex items-center gap-2 p-3 rounded-xl bg-accent/[0.06] border border-accent/[0.15]">
+                          <Wand2 className="w-4 h-4 text-accent shrink-0" />
+                          <p className="text-xs text-foreground/80">
+                            <span className="font-semibold text-accent">{transcriptTokens.filter(t => t.isFiller).length}</span> filler words detected. Click to review or remove all at once.
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Word tokens */}
+                      <div className="p-4 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] leading-relaxed">
+                        {transcriptTokens.map(token => (
+                          <span key={token.id}
+                            onClick={() => setCurrentTime(token.start)}
+                            className={`cursor-pointer rounded px-0.5 py-0.5 transition-colors text-sm ${
+                              currentTime >= token.start && currentTime < token.end ? "bg-yellow-200 text-foreground" : ""
+                            } ${token.isFiller && fillerMode ? "bg-destructive/20 text-destructive line-through" : ""
+                            } hover:bg-accent/10`}>
+                            {token.word}{" "}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Remove Retakes (P5) */}
+                      <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
+                        <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">AI Clean Tools</h4>
+                        <button onClick={() => toast({ title: "Scanning for retakes...", description: "AI is analyzing repeated sentences" })}
+                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
+                          <RefreshCw className="w-5 h-5 text-muted shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">Remove Retakes</p>
+                            <p className="text-xs text-muted">Find and remove repeated sentences</p>
+                          </div>
+                        </button>
+                        <button onClick={() => { setShowSilencePanel(true); setSilencesFound(8); toast({ title: "Found 8 silent segments", description: "12.4s total silence detected" }); }}
+                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
+                          <Scissors className="w-5 h-5 text-muted shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">Remove Silences</p>
+                            <p className="text-xs text-muted">Cut segments below -45dB threshold</p>
+                          </div>
+                        </button>
+                        {showSilencePanel && silencesFound > 0 && (
+                          <div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-medium">Found {silencesFound} segments (12.4s)</span>
+                              <button onClick={() => setShowSilencePanel(false)} className="p-1 text-muted hover:text-foreground"><XIcon className="w-3 h-3" /></button>
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-xs text-muted">Silence threshold: {silenceThreshold}ms</label>
+                              <input type="range" min={100} max={1000} step={50} value={silenceThreshold} onChange={e => setSilenceThreshold(Number(e.target.value))}
+                                className="w-full accent-accent" />
+                            </div>
+                            <button onClick={() => { setShowSilencePanel(false); setSilencesFound(0); toast({ title: "Silences removed", description: "12.4s cut from timeline" }); }}
+                              className="w-full py-2.5 bg-accent text-white rounded-lg text-xs font-medium hover:bg-accent/90 transition-colors">
+                              Remove All Silences
+                            </button>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Fix Word (P5) */}
+                      <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
+                        <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Voice Repair</h4>
+                        <button onClick={() => toast({ title: "Fix Word mode", description: "Click any word in the transcript to fix it with AI voice clone" })}
+                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
+                          <Mic className="w-5 h-5 text-muted shrink-0" />
+                          <div>
+                            <p className="text-sm font-medium">Fix Word</p>
+                            <p className="text-xs text-muted">AI voice clone to fix mispronunciations</p>
+                          </div>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              )}
+
+              {/* ═══ CREATE CLIPS TAB (P4) ═══ */}
+              {activeTab === "clips" && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold">Create Clips</h3>
+                  <p className="text-xs text-muted leading-relaxed">Let AI find your best moments and package them as short-form clips for social media.</p>
+
+                  {!clipsGenerated ? (
+                    <div className="space-y-4">
+                      <div className="space-y-3">
+                        <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                          <span className="text-sm text-muted">Number of Clips</span>
+                          <div className="flex items-center gap-2">
+                            {[1, 3, 5].map(n => (
+                              <button key={n} onClick={() => setClipCount(n)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${clipCount === n ? "bg-foreground text-background" : "bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}>
+                                {n}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                          <span className="text-sm text-muted">Target Duration</span>
+                          <div className="flex items-center gap-2">
+                            {["15s", "30s", "60s"].map(d => (
+                              <button key={d} onClick={() => setClipDuration(d)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${clipDuration === d ? "bg-foreground text-background" : "bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}>
+                                {d}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+
+                      <button onClick={() => { setClipsGenerated(true); toast({ title: "Clips generated", description: `Found ${CLIP_SUGGESTIONS.length} best moments` }); }}
+                        className="w-full flex items-center justify-center gap-2 py-3 bg-accent text-white rounded-xl font-medium text-sm hover:bg-accent/90 transition-colors">
+                        <Sparkles className="w-4 h-4" />
+                        Find Best Moments
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-medium text-muted">{CLIP_SUGGESTIONS.length} clips found</span>
+                        <button onClick={() => { setClipsGenerated(false); setAcceptedClips(new Set()); }}
+                          className="text-xs text-accent hover:underline">Regenerate</button>
+                      </div>
+                      {CLIP_SUGGESTIONS.map((clip, i) => (
+                        <div key={i} className={`p-4 rounded-xl border transition-all ${acceptedClips.has(i) ? "border-emerald-500/40 bg-emerald-500/[0.04]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
+                          <div className="flex items-start justify-between mb-2">
+                            <h4 className="text-sm font-semibold text-foreground">{clip.label}</h4>
+                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-md bg-foreground/[0.06] text-muted capitalize">{clip.platform}</span>
+                          </div>
+                          <p className="text-xs text-muted mb-3">{clip.rationale}</p>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-mono text-muted">{clip.start.toFixed(1)}s — {clip.end.toFixed(1)}s</span>
+                            <div className="flex items-center gap-2">
+                              <button onClick={() => setCurrentTime(clip.start)}
+                                className="px-3 py-1.5 bg-foreground/[0.06] rounded-lg text-xs font-medium hover:bg-foreground/[0.1] transition-colors">
+                                Preview
+                              </button>
+                              <button onClick={() => { setAcceptedClips(prev => { const n = new Set(prev); if (n.has(i)) n.delete(i); else n.add(i); return n; }); toast({ title: acceptedClips.has(i) ? "Clip removed" : "Clip accepted" }); }}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${acceptedClips.has(i) ? "bg-emerald-500 text-white" : "bg-foreground text-background hover:bg-foreground/90"}`}>
+                                {acceptedClips.has(i) ? <><Check className="w-3 h-3 inline mr-1" />Accepted</> : "Accept"}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {acceptedClips.size > 0 && (
+                        <button onClick={() => toast({ title: `Exporting ${acceptedClips.size} clips...` })}
+                          className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90 transition-colors">
+                          <Download className="w-4 h-4" />Export {acceptedClips.size} Clip{acceptedClips.size !== 1 ? "s" : ""}
+                        </button>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Social Export Presets */}
+                  <div className="border-t border-foreground/[0.06] pt-4 space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Social Export Presets</h4>
+                    {SOCIAL_EXPORT_PRESETS.map(preset => (
+                      <button key={preset.platform} onClick={() => { setSelectedRatio(preset.ratio); toast({ title: `${preset.platform} preset applied`, description: `${preset.ratio} · ${preset.res}` }); }}
+                        className="w-full flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors text-left">
+                        <span className="w-8 h-8 rounded-lg bg-foreground/[0.06] flex items-center justify-center text-sm">{preset.icon}</span>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-foreground">{preset.platform}</p>
+                          <p className="text-[10px] text-muted">{preset.ratio} · {preset.res} · Max {preset.maxDur}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ═══ AI METADATA TAB (P6) ═══ */}
+              {activeTab === "metadata" && (
+                <div className="space-y-4">
+                  <h3 className="text-sm font-bold">AI Show Notes</h3>
+                  <p className="text-xs text-muted leading-relaxed">Generate YouTube descriptions, show notes, chapters, and social media posts from your video transcript in one click.</p>
+
+                  {!metadataGenerated ? (
+                    <button onClick={() => { setMetadataGenerated(true); toast({ title: "Metadata generated", description: "All content fields are ready to edit" }); }}
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-foreground text-background rounded-xl font-medium text-sm hover:bg-foreground/90 transition-colors">
+                      <Sparkles className="w-4 h-4" />Generate All
+                    </button>
+                  ) : (
+                    <div className="space-y-4">
+                      {/* Titles */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Title Options</h4>
+                          <button onClick={() => { navigator.clipboard.writeText(metaTitles[0]); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
+                        </div>
+                        {metaTitles.map((title, i) => (
+                          <div key={i} className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-sm text-foreground cursor-pointer hover:border-foreground/[0.12] transition-colors">{title}</div>
+                        ))}
+                      </div>
+
+                      {/* Description */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Description</h4>
+                          <button onClick={() => { navigator.clipboard.writeText(metaDescription); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
+                        </div>
+                        <div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-xs text-foreground/80 leading-relaxed">{metaDescription}</div>
+                      </div>
+
+                      {/* Tags */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Tags</h4>
+                          <button onClick={() => { navigator.clipboard.writeText(metaTags.join(", ")); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                          {metaTags.map(tag => (
+                            <span key={tag} className="px-3 py-1.5 rounded-lg bg-foreground/[0.06] text-xs font-medium text-foreground">#{tag}</span>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Chapters */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Chapters</h4>
+                          <button onClick={() => { navigator.clipboard.writeText(metaChapters.map(c => `${c.time} ${c.label}`).join("\n")); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
+                        </div>
+                        {metaChapters.map((ch, i) => (
+                          <div key={i} className="flex items-center gap-3 p-2 rounded-lg hover:bg-foreground/[0.03] transition-colors">
+                            <span className="inline-flex items-center px-2 py-0.5 bg-emerald-500/15 text-emerald-600 text-xs font-mono font-medium rounded-md">{ch.time}</span>
+                            <span className="text-sm text-foreground">{ch.label}</span>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Show Notes */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Show Notes</h4>
+                          <button onClick={() => { navigator.clipboard.writeText(metaShowNotes); toast({ title: "Copied" }); }} className="p-1 text-muted hover:text-foreground"><Copy className="w-3.5 h-3.5" /></button>
+                        </div>
+                        <div className="p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06] text-xs text-foreground/80 leading-relaxed">{metaShowNotes}</div>
+                      </div>
+
+                      <button onClick={() => setMetadataGenerated(false)} className="w-full flex items-center justify-center gap-2 py-2.5 bg-foreground/[0.06] text-foreground rounded-xl text-xs font-medium hover:bg-foreground/[0.1] transition-colors">
+                        <RefreshCw className="w-3.5 h-3.5" />Regenerate
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
 

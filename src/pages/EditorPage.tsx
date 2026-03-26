@@ -120,9 +120,26 @@ const EditorPage = () => {
                   <ChevronDown className="w-3 h-3 opacity-60" />
                 </button>
               </PopoverTrigger>
-              <PopoverContent className="w-48 p-1.5" align="end">
+              <PopoverContent className="w-56 p-1.5" align="end">
+                <p className="px-3 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Standard</p>
                 {["MP4 (H.264)", "MOV (ProRes)", "GIF", "PNG Sequence", "WAV Audio"].map(fmt => (
                   <button key={fmt} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] transition-colors">{fmt}</button>
+                ))}
+                <div className="my-1.5 border-t border-foreground/[0.06]" />
+                <p className="px-3 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">Social Presets</p>
+                {[
+                  { platform: "TikTok", spec: "9:16 · 1080×1920 · 60s" },
+                  { platform: "Instagram Reels", spec: "9:16 · 1080×1920 · 90s" },
+                  { platform: "YouTube Shorts", spec: "9:16 · 1080×1920 · 60s" },
+                  { platform: "LinkedIn", spec: "16:9 · 1920×1080 · 10min" },
+                  { platform: "Twitter/X", spec: "16:9 · 1280×720 · 2m20s" },
+                  { platform: "YouTube", spec: "16:9 · 1920×1080" },
+                  { platform: "Podcast", spec: "1:1 · Audiogram" },
+                ].map(p => (
+                  <button key={p.platform} className="w-full px-3 py-2 text-left rounded-lg hover:bg-foreground/[0.04] transition-colors">
+                    <p className="text-sm font-medium">{p.platform}</p>
+                    <p className="text-[10px] text-muted">{p.spec}</p>
+                  </button>
                 ))}
               </PopoverContent>
             </Popover>
