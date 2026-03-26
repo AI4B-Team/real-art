@@ -257,6 +257,191 @@ const VideoEditor = ({ video }: Props) => {
 
             {/* Scrollable content */}
             <div className="flex-1 overflow-y-auto px-4 pb-4">
+
+              {/* AI Chat Tab */}
+              {activeTab === "ai-chat" && (
+                <div className="flex flex-col h-full min-h-[400px]">
+                  {chatMessages.length === 0 ? (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center py-8">
+                      <div className="w-12 h-12 rounded-full bg-foreground/[0.06] flex items-center justify-center mb-4">
+                        <Sparkles className="w-6 h-6 text-accent" />
+                      </div>
+                      <h3 className="text-lg font-bold mb-1">Hi there!</h3>
+                      <p className="text-2xl font-black tracking-tight mb-6">What are we<br />creating <span className="text-accent">today</span>?</p>
+                      <div className="space-y-2 w-full">
+                        {AI_SUGGESTIONS.map((s, i) => (
+                          <button key={i} onClick={() => { setChatInput(s); }}
+                            className="w-full text-left px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-colors text-sm">
+                            {s}
+                          </button>
+                        ))}
+                      </div>
+                      <button className="mt-4 p-2 text-muted hover:text-foreground transition-colors">
+                        <RefreshCw className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex-1 space-y-4 py-2">
+                      {chatMessages.map((msg, i) => (
+                        <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                          <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                            msg.role === "user"
+                              ? "bg-foreground/[0.06] text-foreground rounded-br-md"
+                              : "bg-transparent text-foreground"
+                          }`}>
+                            {msg.role === "assistant" ? (
+                              <div className="space-y-2">
+                                {msg.content.split("\n").map((line, j) => (
+                                  <p key={j} className={line.startsWith("**") ? "font-bold" : ""}>{line.replace(/\*\*/g, "")}</p>
+                                ))}
+                              </div>
+                            ) : msg.content}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Chat input */}
+                  <div className="mt-4 rounded-xl border-2 border-foreground/[0.1] bg-background overflow-hidden">
+                    <textarea value={chatInput} onChange={e => setChatInput(e.target.value)}
+                      onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSendChat(); } }}
+                      placeholder="Enter your ideas or upload images to get started."
+                      rows={2} className="w-full px-4 py-3 text-sm bg-transparent placeholder:text-muted focus:outline-none resize-none" />
+                    <div className="flex items-center justify-between px-3 pb-2">
+                      <div className="flex items-center gap-2">
+                        <button className="p-1.5 text-muted hover:text-foreground transition-colors"><Plus className="w-5 h-5" /></button>
+                        <button className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors text-sm">
+                          <Sparkles className="w-4 h-4" />AI agent <ChevronDown className="w-3 h-3" />
+                        </button>
+                      </div>
+                      <button onClick={handleSendChat}
+                        className="w-9 h-9 bg-foreground text-background rounded-full flex items-center justify-center hover:bg-foreground/90 transition-colors">
+                        <ArrowUp className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Storyboard Tab */}
+              {activeTab === "storyboard" && (
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-sm font-bold">Storyboard</h3>
+                    <button className="text-xs text-accent hover:underline">+ Add speaker</button>
+                  </div>
+                  <div className="space-y-3">
+                    {STORYBOARD_SCENES.map((scene, i) => (
+                      <div key={i} className="flex items-start gap-3 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] transition-colors cursor-pointer group">
+                        <div className="shrink-0 space-y-1">
+                          <span className="text-[10px] font-mono text-muted">{scene.time}</span>
+                          <div className="flex items-center gap-1">
+                            <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center">
+                              <User className="w-2.5 h-2.5 text-white" />
+                            </div>
+                            <span className="text-[10px] text-muted">{scene.narrator}</span>
+                          </div>
+                        </div>
+                        <p className="text-sm text-foreground flex-1 leading-relaxed">{scene.desc}</p>
+                        <img src={scene.thumb} alt="" className="w-14 h-14 rounded-lg object-cover shrink-0" />
+                      </div>
+                    ))}
+                  </div>
+                  <button className="w-full py-3 border-2 border-dashed border-foreground/[0.1] rounded-xl text-sm text-muted hover:text-foreground hover:border-foreground/[0.2] transition-colors flex items-center justify-center gap-2">
+                    <Plus className="w-4 h-4" /> Add Scene
+                  </button>
+                </div>
+              )}
+
+              {/* Video Brief Tab */}
+              {activeTab === "video-brief" && (
+                <div className="space-y-5">
+                  <h3 className="text-sm font-bold">Video Brief</h3>
+
+                  {/* Character preview */}
+                  <div className="flex items-center gap-3 p-3 rounded-xl bg-foreground/[0.03] border border-foreground/[0.06]">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80" alt="Character" className="w-16 h-20 rounded-lg object-cover" />
+                    <div>
+                      <p className="text-xs text-muted uppercase tracking-wider">Character</p>
+                      <p className="text-sm font-medium">Clara</p>
+                    </div>
+                  </div>
+
+                  {/* Key Elements */}
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Key Elements</h4>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm text-muted">Visual style</span>
+                      <button className="flex items-center gap-1.5 text-sm font-medium">
+                        <Image className="w-4 h-4 text-accent" /> {briefStyle} <ChevronDown className="w-3 h-3 text-muted" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm text-muted">Narrator</span>
+                      <button className="flex items-center gap-1.5 text-sm font-medium">
+                        <div className="w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center"><User className="w-3 h-3 text-white" /></div>
+                        {briefNarrator} <ChevronDown className="w-3 h-3 text-muted" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm text-muted">Music</span>
+                      <span className="text-sm text-foreground/70">Suspenseful with an accelerating tempo</span>
+                    </div>
+
+                    <div className="p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm text-muted">Scene media</span>
+                      <div className="flex gap-2 mt-2">
+                        {["Video clip", "Still image"].map(m => (
+                          <button key={m} onClick={() => setBriefMediaType(m)}
+                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${briefMediaType === m ? "bg-foreground text-background" : "bg-foreground/[0.06] text-foreground hover:bg-foreground/[0.1]"}`}>
+                            {m}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm text-muted">Aspect ratio</span>
+                      <button className="flex items-center gap-1.5 text-sm font-medium">
+                        <Video className="w-4 h-4" /> {selectedRatio} <ChevronDown className="w-3 h-3 text-muted" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm text-muted">Duration</span>
+                      <span className="text-sm font-medium">{briefDuration}</span>
+                    </div>
+
+                    <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
+                      <span className="text-sm text-muted">Platform</span>
+                      <button className="flex items-center gap-1.5 text-sm font-medium">
+                        <Music className="w-4 h-4" /> {briefPlatform} <ChevronDown className="w-3 h-3 text-muted" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Video Content */}
+                  <div className="space-y-3">
+                    <h4 className="text-xs font-semibold text-muted uppercase tracking-wider">Video Content</h4>
+                    <div className="space-y-2 text-sm text-foreground/80">
+                      <p>• <strong>Opening:</strong> A resistance courier waits at a desolate, snow-covered border crossing.</p>
+                      <p>• <strong>Rising action:</strong> She intercepts a transmission and realizes she has been betrayed.</p>
+                      <p>• <strong>Climax:</strong> She must choose between destroying the evidence or bargaining for her life.</p>
+                      <p>• <strong>Falling action:</strong> She slips past the guards under the cover of a sudden blizzard.</p>
+                      <p>• <strong>Ending:</strong> She burns her identity to become a ghost in the shadows.</p>
+                    </div>
+                  </div>
+
+                  <button className="w-full py-3 bg-accent text-white rounded-lg text-sm font-medium hover:bg-accent/90 transition-colors flex items-center justify-center gap-2">
+                    <Sparkles className="w-4 h-4" /> Generate Video
+                  </button>
+                </div>
+              )}
+
               {/* Script Tab */}
               {activeTab === "script" && (
                 <div className="space-y-4">
