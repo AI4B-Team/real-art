@@ -1607,11 +1607,40 @@ const VideoEditor = ({ video }: Props) => {
       {/* Main Area */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* Video Canvas */}
-        <div className="flex-1 bg-foreground/[0.03] flex flex-col items-center justify-center relative overflow-hidden min-h-0">
+        <div className="flex-1 bg-foreground/[0.03] flex flex-col items-center relative overflow-hidden min-h-0">
+
+          {/* Top context toolbar — only when canvas is clicked */}
+          <AnimatePresence>
+            {showCanvasControls && (
+              <motion.div
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.15 }}
+                className="shrink-0 w-full flex items-center justify-center gap-4 px-4 py-2 border-b border-foreground/[0.06] bg-card/80 backdrop-blur-sm z-10"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <span className="text-sm font-semibold text-accent">Replace media</span>
+                <div className="w-px h-5 bg-foreground/[0.08]" />
+                <button className="text-sm text-foreground hover:text-accent transition-colors">Position</button>
+                <button className="p-1.5 text-muted hover:text-foreground"><Copy className="w-4 h-4" /></button>
+                <button className="p-1.5 text-muted hover:text-foreground"><RefreshCw className="w-4 h-4" /></button>
+                <button className="p-1.5 text-muted hover:text-foreground"><Maximize className="w-4 h-4" /></button>
+                <span className="text-sm text-muted">100%</span>
+                <button className="p-1.5 text-muted hover:text-foreground"><Layers className="w-4 h-4" /></button>
+                <div className="w-px h-5 bg-foreground/[0.08]" />
+                <button className="text-sm text-foreground hover:text-accent transition-colors">Effects</button>
+                <button className="text-sm text-foreground hover:text-accent transition-colors">Animation</button>
+                <button className="p-1.5 text-muted hover:text-foreground"><MoreVertical className="w-4 h-4" /></button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Canvas area */}
           <div className="flex-1 flex items-center justify-center w-full min-h-0 px-4">
             <div
-              className="video-canvas-container relative bg-black rounded-2xl overflow-hidden shadow-2xl cursor-pointer group/canvas border-2 border-foreground/[0.06]"
-              style={{ width: "85%", maxWidth: 860, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
+              className="video-canvas-container relative bg-black rounded-xl overflow-hidden shadow-2xl cursor-pointer"
+              style={{ width: "80%", maxWidth: 800, aspectRatio: selectedRatio === "9:16" ? "9/16" : selectedRatio === "1:1" ? "1/1" : selectedRatio === "4:5" ? "4/5" : selectedRatio === "4:3" ? "4/3" : "16/9" }}
               onClick={() => setShowCanvasControls(!showCanvasControls)}
             >
               {video ? (
@@ -1760,88 +1789,111 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Bottom canvas bar */}
-              <div className="absolute bottom-0 left-0 right-0 flex items-center justify-end px-3 py-2 bg-gradient-to-t from-black/60 to-transparent z-[6]" onClick={(e) => e.stopPropagation()}>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => { setIsMuted(!isMuted); if (videoRef.current) videoRef.current.muted = !isMuted; }} className="p-1.5 rounded-lg text-white/70 hover:text-white transition-colors">
-                    {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
-                  </button>
-                  <span className="text-white/60 text-xs font-medium flex items-center gap-1"><Settings className="w-3 h-3" /> Ratio: {selectedRatio}</span>
-                  <button onClick={() => { const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }} className="p-1.5 rounded-lg text-white/70 hover:text-white transition-colors">
-                    <Maximize className="w-4 h-4" />
-                  </button>
-                </div>
+              {/* Bottom canvas overlay — always visible (original position) */}
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card/80 backdrop-blur-sm rounded-full px-2 py-1.5 shadow-lg border border-foreground/[0.08] z-[6]" onClick={(e) => e.stopPropagation()}>
+                <button onClick={() => { setIsMuted(!isMuted); if (videoRef.current) videoRef.current.muted = !isMuted; }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                  {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                </button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="px-3 py-1.5 rounded-full text-xs font-medium text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors flex items-center gap-1.5">
+                      <Settings className="w-3.5 h-3.5" />Ratio: {selectedRatio}
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-36 p-1.5" align="center">
+                    {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
+                      <button key={r} onClick={() => setSelectedRatio(r)}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                        {r}{selectedRatio === r && <Check className="w-3.5 h-3.5" />}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+                <button onClick={() => { const el = document.querySelector('.video-canvas-container'); if (el) { if (document.fullscreenElement) document.exitFullscreen(); else el.requestFullscreen(); } }} className="p-2 rounded-full text-foreground/60 hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                  <Maximize className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
 
-          {/* Canvas toolbar below video */}
-          <div className="shrink-0 py-2 flex items-center justify-center">
-            <div className="flex items-center gap-1 bg-card border border-foreground/[0.08] rounded-xl px-2 py-1.5 shadow-sm">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
-                    <Settings className="w-4 h-4 text-muted" /> Ratio: {selectedRatio}
+          {/* Bottom toolbar — only when canvas is clicked */}
+          <AnimatePresence>
+            {showCanvasControls && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 10 }}
+                transition={{ duration: 0.15 }}
+                className="shrink-0 py-2 flex items-center justify-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="flex items-center gap-1 bg-card border border-foreground/[0.08] rounded-xl px-2 py-1.5 shadow-sm">
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                        <Settings className="w-4 h-4 text-muted" /> Ratio: {selectedRatio}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-36 p-1.5" align="center">
+                      {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
+                        <button key={r} onClick={() => setSelectedRatio(r)}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                          {r}{selectedRatio === r && <Check className="w-3.5 h-3.5" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  <button onClick={() => toast({ title: "Layouts coming soon" })}
+                    className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                    <LayoutGrid className="w-4 h-4 text-muted" /> Layouts
                   </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-36 p-1.5" align="center">
-                  {["16:9", "9:16", "1:1", "4:5", "4:3"].map(r => (
-                    <button key={r} onClick={() => setSelectedRatio(r)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedRatio === r ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                      {r}{selectedRatio === r && <Check className="w-3.5 h-3.5" />}
-                    </button>
-                  ))}
-                </PopoverContent>
-              </Popover>
-              <div className="w-px h-5 bg-foreground/[0.08]" />
-              <button onClick={() => toast({ title: "Layouts coming soon" })}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
-                <LayoutGrid className="w-4 h-4 text-muted" /> Layouts
-              </button>
-              <div className="w-px h-5 bg-foreground/[0.08]" />
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
-                    <div className="w-4 h-4 rounded-full border border-foreground/20" style={{ background: canvasBgColor }} /> Background
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-48 p-3" align="center">
-                  <p className="text-xs font-medium text-muted mb-2">Background Color</p>
-                  <div className="grid grid-cols-6 gap-2">
-                    {["#000000", "#FFFFFF", "#1a1a2e", "#16213e", "#0f3460", "#e94560", "#533483", "#2b2d42", "#8d99ae", "#ef233c", "#2b9348", "#fb8500"].map(c => (
-                      <button key={c} onClick={() => setCanvasBgColor(c)}
-                        className={`w-6 h-6 rounded-full border-2 transition-all ${canvasBgColor === c ? "border-accent scale-110" : "border-foreground/10 hover:border-foreground/30"}`}
-                        style={{ background: c }} />
-                    ))}
-                  </div>
-                </PopoverContent>
-              </Popover>
-              <div className="w-px h-5 bg-foreground/[0.08]" />
-              <Popover>
-                <PopoverTrigger asChild>
-                  <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
-                    <Eye className="w-4 h-4 text-muted" /> Safe Zone {safeZone !== "hide" && "▴"}
-                  </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-2" align="center">
-                  {SAFE_ZONE_PLATFORMS.map(p => (
-                    <button key={p.id} onClick={() => setSafeZone(p.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${safeZone === p.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                      {p.id === "hide" ? (
-                        <EyeOff className="w-5 h-5 text-muted" />
-                      ) : (
-                        <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold text-white ${(p as any).color || "bg-foreground"}`}>
-                          {p.id === "reels" ? "📷" : p.id === "facebook" ? "f" : p.id === "tiktok" ? "♪" : p.id === "shorts" ? "▶" : p.id === "linkedin" ? "in" : "👻"}
-                        </span>
-                      )}
-                      {p.label}
-                      {safeZone === p.id && <Check className="w-4 h-4 ml-auto" />}
-                    </button>
-                  ))}
-                </PopoverContent>
-              </Popover>
-            </div>
-          </div>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                        <div className="w-4 h-4 rounded-full border border-foreground/20" style={{ background: canvasBgColor }} /> Background
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48 p-3" align="center">
+                      <p className="text-xs font-medium text-muted mb-2">Background Color</p>
+                      <div className="grid grid-cols-6 gap-2">
+                        {["#000000", "#FFFFFF", "#1a1a2e", "#16213e", "#0f3460", "#e94560", "#533483", "#2b2d42", "#8d99ae", "#ef233c", "#2b9348", "#fb8500"].map(c => (
+                          <button key={c} onClick={() => setCanvasBgColor(c)}
+                            className={`w-6 h-6 rounded-full border-2 transition-all ${canvasBgColor === c ? "border-accent scale-110" : "border-foreground/10 hover:border-foreground/30"}`}
+                            style={{ background: c }} />
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-foreground hover:bg-foreground/[0.04] transition-colors">
+                        <Eye className="w-4 h-4 text-muted" /> Safe Zone {safeZone !== "hide" && "▴"}
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-56 p-2" align="center">
+                      {SAFE_ZONE_PLATFORMS.map(p => (
+                        <button key={p.id} onClick={() => setSafeZone(p.id)}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${safeZone === p.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {p.id === "hide" ? (
+                            <EyeOff className="w-5 h-5 text-muted" />
+                          ) : (
+                            <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs font-bold text-white ${(p as any).color || "bg-foreground"}`}>
+                              {p.id === "reels" ? "📷" : p.id === "facebook" ? "f" : p.id === "tiktok" ? "♪" : p.id === "shorts" ? "▶" : p.id === "linkedin" ? "in" : "👻"}
+                            </span>
+                          )}
+                          {p.label}
+                          {safeZone === p.id && <Check className="w-4 h-4 ml-auto" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Timeline */}
