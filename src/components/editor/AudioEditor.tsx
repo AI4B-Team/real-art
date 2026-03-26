@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect, useMemo } from "react";
+import emptyAudioImg from "@/assets/empty-audio.png";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX,
   Scissors, Undo2, Redo2, ZoomIn, ZoomOut, Plus, Upload,
