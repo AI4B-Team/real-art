@@ -1099,6 +1099,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             </div>
           </div>
         </div>
+          )}
+        </div>
 
         {/* Transport Controls — matches video timeline style */}
         <div className="bg-card border-t border-foreground/[0.08] flex flex-col">
