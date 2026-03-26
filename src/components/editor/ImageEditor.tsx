@@ -72,7 +72,7 @@ const CANVAS_TOOLS = [
 ];
 
 /* ─── Left Panel Tab Config ─── */
-type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "elements" | "text" | "effects" | "templates" | "brand" | "export" | "tools" | "settings";
+type LeftTab = "creations" | "layers" | "adjustments" | "filters" | "ai-tools" | "elements" | "text" | "effects" | "templates" | "brand" | "tools" | "settings";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof Image; label: string }[] = [
   { id: "creations", icon: Image, label: "Creations" },
