@@ -15,6 +15,7 @@ import {
   Link, Hash, Clock, Heart, Box, X as XIcon, Repeat,
 } from "lucide-react";
 import AIToolsPanel from "./AIToolsPanel";
+import RecordingModeModal from "./RecordingModeModal";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";

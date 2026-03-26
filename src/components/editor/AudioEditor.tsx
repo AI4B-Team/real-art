@@ -15,6 +15,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { toast } from "@/hooks/use-toast";
+import RecordingModeModal from "./RecordingModeModal";
 
 /* ─── Types ─── */
 type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "effects" | "text" | "templates" | "settings";
