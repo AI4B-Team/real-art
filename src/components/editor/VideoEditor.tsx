@@ -11,9 +11,11 @@ import {
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard,
   AudioLines, VolumeOff, MoreVertical,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
+  Languages, Ghost, History,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
 
 /* ─── Types ─── */
