@@ -482,6 +482,7 @@ const VideoEditor = ({ video }: Props) => {
     });
   }, [tracks, currentTime, isPlaying]);
 
+  const handleMediaFileUpload = useCallback((files: FileList | null) => {
     if (!files || files.length === 0) return;
     const file = files[0];
     const isVideo = file.type.startsWith("video/");
