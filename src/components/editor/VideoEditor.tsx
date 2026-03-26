@@ -113,10 +113,19 @@ const STORYBOARD_SCENES = [
 
 interface ChatMessage { role: "user" | "assistant"; content: string; }
 
-const AI_SUGGESTIONS = [
+const ALL_AI_SUGGESTIONS = [
   "❤️ Create a love story",
   "🐒 Top 5 fun facts about animals 🌎",
   "📺 Create a video about current world news",
+  "🎬 Write a short film script about time travel",
+  "🏔️ Create a cinematic travel montage",
+  "🎮 Make a gaming highlights compilation",
+  "🍳 Script a cooking tutorial video",
+  "🎵 Create a music video concept",
+  "📖 Turn a bedtime story into an animated short",
+  "🚀 Explain a science concept visually",
+  "💼 Create a professional brand intro",
+  "🌅 Make a relaxing ambient nature video",
 ];
 
 const formatTime = (s: number) => {
