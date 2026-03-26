@@ -154,6 +154,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
     "🎪 Generate a surreal version of this scene",
   ];
   const visibleChatSuggestions = AI_CHAT_SUGGESTIONS.slice(suggestionOffset, suggestionOffset + 3);
+  const [aiChatSubTab, setAiChatSubTab] = useState<"chat" | "tools">("chat");
   const canvasRef = useRef<HTMLDivElement>(null);
   const drawingCanvasRef = useRef<HTMLCanvasElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
