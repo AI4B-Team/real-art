@@ -2710,7 +2710,7 @@ const VideoEditor = ({ video }: Props) => {
                       }}
                     >
                       <div className="absolute left-1/2 -translate-x-1/2 top-0 bottom-0 w-0.5 bg-accent pointer-events-none" />
-                      <div className="absolute left-1/2 -translate-x-1/2 -top-0.5 w-3 h-3 bg-accent rounded-b-sm rotate-45 pointer-events-none" style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
+                      <div className="absolute left-1/2 -translate-x-1/2 -top-1" style={{ width: 0, height: 0, borderLeft: "6px solid transparent", borderRight: "6px solid transparent", borderTop: "8px solid hsl(var(--accent))" }} />
                     </div>
 
                     {/* Markers */}
@@ -2734,7 +2734,7 @@ const VideoEditor = ({ video }: Props) => {
                       {Array.from({ length: Math.ceil(duration / 10) + 1 }, (_, i) => (
                         <div key={i} className="absolute" style={{ left: i * 10 * pixelsPerSecond }}>
                           <div className="w-px h-2 bg-foreground/[0.1]" />
-                          <span className="text-[9px] text-muted/50 ml-1 select-none">{formatTimeColon(i * 10)}</span>
+                          <span className="text-[9px] text-foreground ml-1 select-none">{formatTimeColon(i * 10)}</span>
                         </div>
                       ))}
                     </div>
