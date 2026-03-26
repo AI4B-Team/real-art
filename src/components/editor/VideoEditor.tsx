@@ -664,7 +664,7 @@ const VideoEditor = ({ video }: Props) => {
                     </div>
 
                     <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08]">
-                      <span className="text-sm text-muted">Aspect ratio</span>
+                      <span className="text-sm text-muted">Aspect Ratio</span>
                       <button className="flex items-center gap-1.5 text-sm font-medium">
                         <Video className="w-4 h-4" /> {selectedRatio} <ChevronDown className="w-3 h-3 text-muted" />
                       </button>
