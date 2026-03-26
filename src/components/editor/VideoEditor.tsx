@@ -1005,8 +1005,16 @@ const VideoEditor = ({ video }: Props) => {
                 </div>
               )}
 
-              {/* Effects Tab */}
+              {/* Effects Sub-Tab Nav */}
               {activeTab === "effects" && (
+                <div className="flex gap-1 bg-foreground/[0.04] rounded-lg p-1 mb-2">
+                  {([{id:"effects",label:"Effects"},{id:"transitions",label:"Transitions"},{id:"elements",label:"Elements"}] as const).map(sub => (
+                    <button key={sub.id} onClick={() => setEffectsSubTab(sub.id)}
+                      className={`flex-1 py-2 rounded-md text-xs font-medium transition-colors ${effectsSubTab === sub.id ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>{sub.label}</button>
+                  ))}
+                </div>
+              )}
+              {activeTab === "effects" && effectsSubTab === "effects" && (
                 <div className="space-y-4">
                   <h3 className="text-sm font-bold">Effects</h3>
                   <div className="grid grid-cols-4 gap-2">
