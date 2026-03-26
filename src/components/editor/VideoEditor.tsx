@@ -501,7 +501,7 @@ const VideoEditor = ({ video }: Props) => {
     : CAPTION_DATA;
 
   return (
-    <div className="h-full flex overflow-hidden bg-background">
+    <div className="h-full flex overflow-hidden bg-background relative">
       {/* Left Sidebar */}
       {!isLeftPanelCollapsed && (
         <div className="w-[420px] bg-card border-r border-foreground/[0.08] flex flex-col overflow-hidden shrink-0">
