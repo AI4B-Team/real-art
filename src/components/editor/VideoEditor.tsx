@@ -2860,7 +2860,7 @@ const VideoEditor = ({ video }: Props) => {
                                   <span className="text-xs text-muted font-medium">Upload</span>
                                 </button>
                               </TooltipTrigger>
-                              <TooltipContent>Upload Video File</TooltipContent>
+                              <TooltipContent>Upload Media</TooltipContent>
                             </Tooltip>
                             <Tooltip>
                               <TooltipTrigger asChild>
