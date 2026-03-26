@@ -279,7 +279,7 @@ const VideoEditor = ({ video }: Props) => {
   const [captionDisplayMode, setCaptionDisplayMode] = useState("sentence");
   const [hasCaptions, setHasCaptions] = useState(false);
   const [effectsSubTab, setEffectsSubTab] = useState<"effects" | "transitions" | "elements">("effects");
-  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand" | "languages" | "ai-tools">("general");
+  const [settingsSubTab, setSettingsSubTab] = useState<"general" | "brand" | "languages">("general");
 
   // Transcript state
   const [transcriptTokens, setTranscriptTokens] = useState<WordToken[]>(SAMPLE_TRANSCRIPT);
