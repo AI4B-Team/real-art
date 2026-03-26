@@ -458,6 +458,38 @@ const VideoEditor = ({ video }: Props) => {
     ));
   }, [scenes, tracks]);
 
+  const deleteScene = useCallback((clipId: string) => {
+    pushUndo();
+    const clip = scenes.find(s => s.id === clipId);
+    if (!clip) return;
+    setTracks(prev => prev.map(track => ({
+      ...track,
+      clips: track.clips.filter(c => c.id !== clipId).map(c =>
+        c.startTime > clip.startTime ? { ...c, startTime: c.startTime - clip.duration } : c
+      )
+    })));
+    if (selectedClip === clipId) setSelectedClip(null);
+    toast({ title: "Scene deleted", description: `"${clip.name}" removed` });
+  }, [scenes, pushUndo, selectedClip]);
+
+  const duplicateScene = useCallback((clipId: string) => {
+    pushUndo();
+    const clip = scenes.find(s => s.id === clipId);
+    if (!clip) return;
+    const sceneIndex = scenes.findIndex(s => s.id === clipId);
+    const newClip: TimelineClip = {
+      ...clip, id: `clip-${Date.now()}`, name: `${clip.name} (copy)`,
+      startTime: clip.startTime + clip.duration,
+    };
+    setTracks(prev => prev.map(track => ({
+      ...track,
+      clips: track.clips.map(c =>
+        scenes.findIndex(s => s.id === c.id) > sceneIndex ? { ...c, startTime: c.startTime + clip.duration } : c
+      ).concat(track.clips.some(c => c.id === clipId) ? [newClip] : [])
+    })));
+    toast({ title: "Scene duplicated" });
+  }, [scenes, pushUndo]);
+
   const filteredCaptions = captionSearch
     ? CAPTION_DATA.filter(c => c.text.toLowerCase().includes(captionSearch.toLowerCase()))
     : CAPTION_DATA;
@@ -1427,6 +1459,32 @@ const VideoEditor = ({ video }: Props) => {
                               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                 <p className="text-[10px] text-background truncate">{clip.name}</p>
                               </div>
+                              {/* Delete button on hover */}
+                              {scenes.length > 1 && (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); deleteScene(clip.id); }}
+                                      className="absolute top-1.5 right-1.5 w-6 h-6 rounded-full bg-destructive/80 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-destructive"
+                                    >
+                                      <Trash2 className="w-3 h-3" />
+                                    </button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>Delete Scene</TooltipContent>
+                                </Tooltip>
+                              )}
+                              {/* Duplicate button on hover */}
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); duplicateScene(clip.id); }}
+                                    className="absolute top-1.5 left-1.5 w-6 h-6 rounded-full bg-foreground/60 backdrop-blur-sm text-background flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-foreground/80"
+                                  >
+                                    <Copy className="w-3 h-3" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent>Duplicate Scene</TooltipContent>
+                              </Tooltip>
                             </div>
                           </div>
 
