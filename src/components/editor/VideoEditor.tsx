@@ -140,6 +140,82 @@ const formatTimeColon = (s: number) => {
 
 interface Props { video?: string }
 
+const SAFE_ZONE_PLATFORMS = [
+  { id: "hide", label: "Hide Safe Zone", icon: "🚫" },
+  { id: "reels", label: "Reels", icon: "📷", color: "bg-gradient-to-br from-pink-500 to-purple-600" },
+  { id: "facebook", label: "Facebook", icon: "f", color: "bg-[#1877F2]" },
+  { id: "tiktok", label: "TikTok", icon: "♪", color: "bg-foreground" },
+  { id: "shorts", label: "Shorts", icon: "▶", color: "bg-red-600" },
+  { id: "linkedin", label: "LinkedIn", icon: "in", color: "bg-[#0A66C2]" },
+  { id: "snapchat", label: "Snapchat", icon: "👻", color: "bg-[#FFFC00]" },
+] as const;
+
+type SafeZonePlatform = typeof SAFE_ZONE_PLATFORMS[number]["id"];
+
+/* Safe zone overlay data per platform */
+const SAFE_ZONE_OVERLAYS: Record<Exclude<SafeZonePlatform, "hide">, { topBar?: boolean; bottomBar?: boolean; rightIcons?: boolean; statusBar?: boolean; elements: { type: string; text?: string; position: string; className?: string }[] }> = {
+  reels: {
+    statusBar: true, rightIcons: true,
+    elements: [
+      { type: "title", text: "Reels", position: "top-left" },
+      { type: "avatar", text: "username", position: "bottom-left" },
+      { type: "follow", text: "Follow", position: "bottom-left-btn" },
+      { type: "music", text: "Music", position: "bottom-left-music" },
+      { type: "caption", text: "Caption goes here...", position: "bottom-left-caption" },
+      { type: "likes", text: "Liked by user and 30,240 others", position: "bottom-left-likes" },
+    ],
+  },
+  facebook: {
+    statusBar: true,
+    elements: [
+      { type: "close", text: "✕", position: "top-left" },
+      { type: "dropdown", text: "Reels ▾", position: "top-left-title" },
+      { type: "avatar", text: "Facebook", position: "bottom-left" },
+      { type: "platform-icon", text: "📷", position: "bottom-left-icon" },
+      { type: "caption", text: "This is a Facebook video", position: "bottom-left-caption" },
+      { type: "music", text: "Soundtrack", position: "bottom-left-music" },
+    ],
+  },
+  tiktok: {
+    statusBar: true, rightIcons: true,
+    elements: [
+      { type: "tabs", text: "Following  For you", position: "top-center" },
+      { type: "live", text: "LIVE", position: "top-left-badge" },
+      { type: "badge", text: "Your friend", position: "bottom-left-badge" },
+      { type: "avatar", text: "@username", position: "bottom-left" },
+      { type: "verified", position: "bottom-left-verified" },
+      { type: "caption", text: "This is a TikTok video with a long description of the video content. #tiktok #viral... more", position: "bottom-left-caption" },
+      { type: "translation", text: "See translation", position: "bottom-left-translate" },
+    ],
+  },
+  shorts: {
+    statusBar: true, rightIcons: true,
+    elements: [
+      { type: "avatar", text: "@youtube", position: "bottom-left" },
+      { type: "subscribe", text: "Subscribe", position: "bottom-left-btn" },
+      { type: "playlist", text: "▶ Playlist 1", position: "bottom-left-playlist" },
+      { type: "caption", text: "Youtube shorts interface #youtube #shorts #viral", position: "bottom-left-caption" },
+    ],
+  },
+  linkedin: {
+    statusBar: true,
+    elements: [
+      { type: "avatar", text: "Linkedin", position: "bottom-left" },
+      { type: "follow", text: "Follow", position: "bottom-left-btn" },
+      { type: "followers", text: "1,814 followers", position: "bottom-left-followers" },
+      { type: "caption", text: "This is a Linkedin video", position: "bottom-left-caption" },
+      { type: "progress", position: "bottom-progress" },
+    ],
+  },
+  snapchat: {
+    statusBar: true,
+    elements: [
+      { type: "avatar", text: "username", position: "bottom-left" },
+      { type: "caption", text: "Snap story content", position: "bottom-left-caption" },
+    ],
+  },
+};
+
 const VideoEditor = ({ video }: Props) => {
   const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -198,6 +274,11 @@ const VideoEditor = ({ video }: Props) => {
   const [redoStack, setRedoStack] = useState<TimelineTrack[][]>([]);
 
   const [isStreaming, setIsStreaming] = useState(false);
+
+  // Canvas overlay state
+  const [safeZone, setSafeZone] = useState<SafeZonePlatform>("hide");
+  const [showCanvasControls, setShowCanvasControls] = useState(false);
+  const [canvasBgColor, setCanvasBgColor] = useState("#000000");
 
   // Prompt box state
   const [promptContentType, setPromptContentType] = useState<"video" | "audio" | "image">("video");
