@@ -17,7 +17,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { toast } from "@/hooks/use-toast";
 
 /* ─── Types ─── */
-type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "sfx" | "effects" | "text" | "templates" | "tools" | "export" | "settings";
+type LeftTab = "ai-chat" | "tracks" | "voice" | "music" | "sfx" | "effects" | "text" | "templates" | "tools" | "settings";
 
 interface AudioTrack {
   id: string;
