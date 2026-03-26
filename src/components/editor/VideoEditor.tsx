@@ -473,7 +473,7 @@ const VideoEditor = ({ video }: Props) => {
     const startTime = lastClip ? lastClip.startTime + lastClip.duration : 0;
 
     if (isImage) {
-      const img = new Image();
+      const img = document.createElement("img");
       img.onload = () => {
         const newClip: TimelineClip = {
           id: `clip-${Date.now()}`, type: "video", name: file.name.replace(/\.[^.]+$/, ""),
