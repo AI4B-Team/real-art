@@ -1079,9 +1079,9 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
         {/* Transport Controls — matches video timeline style */}
         <div className="bg-card border-t border-foreground/[0.08] flex flex-col">
-          <div className="flex items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
+          <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             {/* Left tools */}
-            <div className="flex items-center gap-1 flex-1">
+            <div className="flex items-center gap-1">
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={undo}
                   className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium text-muted hover:bg-foreground/[0.08] transition-colors">
@@ -1140,7 +1140,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
             </div>
 
             {/* Right: zoom + hide timeline */}
-            <div className="flex items-center gap-2 flex-1 justify-end">
+            <div className="flex items-center gap-2 justify-end">
               <button onClick={() => setZoom(Math.max(1, zoom - 1))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomOut className="w-5 h-5" /></button>
               <input type="range" min={1} max={10} step={1} value={zoom} onChange={e => setZoom(Number(e.target.value))}
                 className="w-20 h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.08] [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent" />
