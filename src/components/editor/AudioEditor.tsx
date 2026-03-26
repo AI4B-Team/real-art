@@ -165,6 +165,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const [showSpectral, setShowSpectral] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [showRecordingModal, setShowRecordingModal] = useState(false);
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [selectedEffect, setSelectedEffect] = useState<string | null>(null);
 
