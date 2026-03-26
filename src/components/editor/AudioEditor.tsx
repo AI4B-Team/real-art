@@ -1146,7 +1146,7 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               </TooltipTrigger><TooltipContent>Split (S)</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => { setSnapEnabled(!snapEnabled); toast({ title: snapEnabled ? "Snap disabled" : "Snap enabled" }); }}
-                  className={`p-2 rounded-lg transition-colors ${snapEnabled ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  className={`p-2 rounded-lg transition-colors ${snapEnabled ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
                   <Magnet className="w-5 h-5" />
                 </button>
               </TooltipTrigger><TooltipContent>{snapEnabled ? "Disable Snap" : "Enable Snap"}</TooltipContent></Tooltip>
