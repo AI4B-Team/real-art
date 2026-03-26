@@ -1159,11 +1159,6 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
                   <Repeat className="w-5 h-5" />
                 </button>
               </TooltipTrigger><TooltipContent>{isLooping ? "Disable Loop" : "Enable Loop"}</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild>
-                <button onClick={() => setIsMuted(!isMuted)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
-                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-                </button>
-              </TooltipTrigger><TooltipContent>{isMuted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
             </div>
 
             {/* Center transport */}
