@@ -2029,7 +2029,11 @@ const VideoEditor = ({ video }: Props) => {
               onClick={() => setShowCanvasControls(!showCanvasControls)}
             >
                 {activeClipAtPlayhead?.mediaUrl ? (
-                  <video ref={canvasVideoRef} src={activeClipAtPlayhead.mediaUrl} className="w-full h-full object-contain" muted={isMuted} />
+                  activeClipAtPlayhead.mediaType === "image" ? (
+                    <img src={activeClipAtPlayhead.mediaUrl} alt={activeClipAtPlayhead.name} className="w-full h-full object-contain" />
+                  ) : (
+                    <video ref={canvasVideoRef} src={activeClipAtPlayhead.mediaUrl} className="w-full h-full object-contain" muted={isMuted} />
+                  )
                 ) : video ? (
                   <video ref={videoRef} src={video} className="w-full h-full object-contain" />
                 ) : null}
