@@ -5,7 +5,7 @@ import {
   Trash2, Upload, Scissors, Wand2, Plus, X, Check, ChevronDown, Image,
   RotateCcw, RotateCw, Eye, EyeOff, Lock, Unlock, Search, Settings,
   FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
-  Film, Send, ChevronLeft,
+  Film, Send, ChevronLeft, Languages, ArrowLeftRight, Wrench,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
