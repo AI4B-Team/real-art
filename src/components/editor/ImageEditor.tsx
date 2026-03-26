@@ -897,14 +897,17 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                 {isImageSelected && (
                   <div className="absolute -top-16 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-card rounded-xl p-1.5 shadow-lg border border-foreground/[0.08] z-10"
                     style={{ transform: `translateX(-50%) scale(${100 / zoomLevel})`, transformOrigin: "center bottom" }}>
-                    {CANVAS_TOOLS.map(tool => (
-                      <Tooltip key={tool.id}><TooltipTrigger asChild>
-                        <button onClick={() => handleToolClick(tool.id)}
-                          className={`p-2.5 rounded-lg transition-all ${activeTool === tool.id ? "bg-accent text-white shadow-lg" : "bg-card text-muted hover:bg-foreground/[0.06] hover:text-foreground shadow-sm"}`}>
-                          <tool.icon className="w-4 h-4" />
-                        </button>
-                      </TooltipTrigger><TooltipContent>{tool.tooltip}</TooltipContent></Tooltip>
-                    ))}
+                    {CANVAS_TOOLS.map(tool => {
+                      const isDisabled = tool.id === "save" && !hasChanges;
+                      return (
+                        <Tooltip key={tool.id}><TooltipTrigger asChild>
+                          <button onClick={() => !isDisabled && handleToolClick(tool.id)}
+                            className={`p-2.5 rounded-lg transition-all ${isDisabled ? "bg-card text-muted/30 cursor-not-allowed" : activeTool === tool.id ? "bg-accent text-white shadow-lg" : "bg-card text-muted hover:bg-foreground/[0.06] hover:text-foreground shadow-sm"}`}>
+                            <tool.icon className="w-4 h-4" />
+                          </button>
+                        </TooltipTrigger><TooltipContent>{tool.id === "save" && !hasChanges ? "No changes to save" : tool.tooltip}</TooltipContent></Tooltip>
+                      );
+                    })}
                   </div>
                 )}
 
