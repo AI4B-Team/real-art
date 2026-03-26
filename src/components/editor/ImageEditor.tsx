@@ -565,7 +565,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
             )}
 
             {/* Brand Kit Tab */}
-            {activeLeftTab === "brand" && (
+            {activeLeftTab === "settings" && settingsSubTab === "brand" && (
               <div className="space-y-4">
                 <h3 className="text-sm font-bold">Brand Kit</h3>
                 <div className="space-y-3">
