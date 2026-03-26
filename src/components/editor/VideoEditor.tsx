@@ -1318,29 +1318,35 @@ const VideoEditor = ({ video }: Props) => {
           <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             <div className="flex items-center gap-1">
               <Tooltip><TooltipTrigger asChild>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.08] transition-colors">
+                <button onClick={handleUndo} disabled={undoStack.length === 0}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium transition-colors ${undoStack.length === 0 ? "text-muted/40" : "text-muted hover:bg-foreground/[0.08]"}`}>
                   <Undo2 className="w-4 h-4" />Undo
                 </button>
               </TooltipTrigger><TooltipContent>Undo (Ctrl+Z)</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.08] transition-colors">
+                <button onClick={handleRedo} disabled={redoStack.length === 0}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium transition-colors ${redoStack.length === 0 ? "text-muted/40" : "text-muted hover:bg-foreground/[0.08]"}`}>
                   <Redo2 className="w-4 h-4" />Redo
                 </button>
               </TooltipTrigger><TooltipContent>Redo (Ctrl+Y)</TooltipContent></Tooltip>
               <div className="w-px h-6 bg-foreground/[0.08] mx-2" />
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Scissors className="w-5 h-5" /></button>
+                <button onClick={handleSplit} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Scissors className="w-5 h-5" /></button>
               </TooltipTrigger><TooltipContent>Split (S)</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Magnet className="w-5 h-5" /></button>
-              </TooltipTrigger><TooltipContent>Enable Snap</TooltipContent></Tooltip>
+                <button onClick={() => { setSnapEnabled(!snapEnabled); toast({ title: snapEnabled ? "Snap disabled" : "Snap enabled" }); }}
+                  className={`p-2 rounded-lg transition-colors ${snapEnabled ? "bg-accent/10 text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                  <Magnet className="w-5 h-5" />
+                </button>
+              </TooltipTrigger><TooltipContent>{snapEnabled ? "Disable Snap" : "Enable Snap"}</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
-              </TooltipTrigger><TooltipContent>Add Marker</TooltipContent></Tooltip>
+                <button onClick={handleAddMarker} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors"><Diamond className="w-5 h-5" /></button>
+              </TooltipTrigger><TooltipContent>Add Marker (M)</TooltipContent></Tooltip>
 
               {/* Record */}
-              <button className="flex items-center gap-1.5 px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white text-sm font-medium transition-colors">
-                <Circle className="w-3 h-3 fill-current" />Record
+              <button onClick={handleRecord}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
+                <Circle className={`w-3 h-3 ${isRecording ? "fill-current" : "fill-current"}`} />{isRecording ? "Stop" : "Record"}
               </button>
 
               <button onClick={() => setCurrentTime(0)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted hover:text-foreground transition-colors">
