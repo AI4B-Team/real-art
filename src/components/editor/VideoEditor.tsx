@@ -1652,10 +1652,13 @@ const VideoEditor = ({ video }: Props) => {
               {video ? (
                 <video ref={videoRef} src={video} className="w-full h-full object-contain" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <div className="text-center text-white/40">
-                    <Video className="w-16 h-16 mx-auto mb-3 opacity-30" />
-                    <p className="text-sm font-medium">Drop media or add from panel</p>
+                <div className="w-full h-full flex flex-col items-center justify-center gap-4 px-6">
+                  <div className="w-20 h-20 rounded-2xl bg-white/[0.06] flex items-center justify-center">
+                    <Video className="w-10 h-10 text-white/20" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-base font-semibold text-white/70 mb-1">Add Media To The Timeline To Start Creating</p>
+                    <p className="text-sm text-white/30">Drop media here, use the panel, or click Add Scene below</p>
                   </div>
                 </div>
               )}

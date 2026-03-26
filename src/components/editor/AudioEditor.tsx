@@ -996,7 +996,28 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Waveform / Canvas area */}
         <div className="flex-1 flex items-center justify-center bg-foreground/[0.02] relative overflow-hidden">
-
+          {tracks.length === 0 ? (
+            <div className="flex flex-col items-center gap-4 text-center px-6">
+              <div className="w-20 h-20 rounded-2xl bg-foreground/[0.04] flex items-center justify-center">
+                <AudioLines className="w-10 h-10 text-muted/20" />
+              </div>
+              <div>
+                <p className="text-base font-semibold text-foreground mb-1">No Audio Loaded</p>
+                <p className="text-sm text-muted mb-4">Record, import, or generate audio to get started</p>
+              </div>
+              <div className="flex items-center gap-3">
+                <button onClick={() => setShowRecordingModal(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-medium hover:bg-accent/90 transition-colors text-sm">
+                  <Mic className="w-4 h-4" />Record
+                </button>
+                <button onClick={() => { pushHistory(); addTrack(`Track ${tracks.length + 1}`, "voice", 30, 0); }}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-foreground/[0.06] text-foreground rounded-lg font-medium hover:bg-foreground/[0.1] transition-colors text-sm">
+                  <Plus className="w-4 h-4" />Add Track
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
           {/* View toggle */}
           <div className="absolute right-3 top-3 z-10 flex items-center gap-1 bg-background border border-foreground/[0.08] rounded-lg p-1">
             <Tooltip><TooltipTrigger asChild>
@@ -1077,6 +1098,8 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
               <div className="absolute bottom-3 right-4 text-xs font-mono text-muted">{formatTime(duration)}</div>
             </div>
           </div>
+          </>
+          )}
         </div>
 
         {/* Transport Controls — matches video timeline style */}
