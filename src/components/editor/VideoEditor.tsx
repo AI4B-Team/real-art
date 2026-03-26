@@ -1562,6 +1562,22 @@ const VideoEditor = ({ video }: Props) => {
                       <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-accent rounded-b-sm rotate-45" style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
                     </div>
 
+                    {/* Markers */}
+                    {markers.map((markerTime, idx) => (
+                      <Tooltip key={idx}>
+                        <TooltipTrigger asChild>
+                          <div
+                            className="absolute top-0 bottom-0 w-0.5 bg-amber-400 z-[5] cursor-pointer hover:bg-amber-300"
+                            style={{ left: markerTime * pixelsPerSecond }}
+                            onClick={() => setCurrentTime(markerTime)}
+                          >
+                            <Flag className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 text-amber-400" />
+                          </div>
+                        </TooltipTrigger>
+                        <TooltipContent>Marker at {formatTime(markerTime)}</TooltipContent>
+                      </Tooltip>
+                    ))}
+
                     {/* Time ruler */}
                     <div className="h-6 border-b border-foreground/[0.06] flex items-end relative">
                       {Array.from({ length: Math.ceil(duration / 10) + 1 }, (_, i) => (
