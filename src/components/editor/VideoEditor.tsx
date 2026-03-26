@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import {
   Play, Pause, SkipBack, SkipForward, Volume2, VolumeX,
   Scissors, Undo2, Redo2, ZoomIn, ZoomOut, Plus, Upload,
@@ -9,14 +9,16 @@ import {
   Wand2, GripVertical, Captions, User, SlidersHorizontal,
   LayoutGrid, VolumeX as VolX, Send, Mic, Eraser,
   Circle, Grid3X3, Palette, Zap, Film, Clapperboard, Rows3,
-  AudioLines, VolumeOff, MoreVertical,
+  AudioLines, VolumeOff, MoreVertical, ArrowLeftRight,
   MessageSquare, BookOpen, RefreshCw, ArrowUp,
-  Languages, Ghost, History,
+  Languages, Ghost, History, Flag,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "@/hooks/use-toast";
+import { AnimatePresence, motion } from "framer-motion";
 
 /* ─── Types ─── */
 interface TimelineClip {
@@ -309,6 +311,64 @@ const VideoEditor = ({ video }: Props) => {
   const toggleTrackVisibility = (trackId: string) => {
     setTracks(prev => prev.map(t => t.id === trackId ? { ...t, visible: !t.visible } : t));
   };
+
+  // Scene management
+  const [hoveredSceneGap, setHoveredSceneGap] = useState<number | null>(null);
+  const [selectedClip, setSelectedClip] = useState<string | null>(null);
+
+  const scenes = useMemo(() => {
+    return tracks
+      .filter(t => t.type === "video" || t.id.includes("video"))
+      .flatMap(t => t.clips)
+      .sort((a, b) => a.startTime - b.startTime);
+  }, [tracks]);
+
+  const handleAddTrack = useCallback(() => {
+    setTracks(prev => [...prev, {
+      id: `track-${Date.now()}`,
+      type: "video",
+      name: String(prev.length + 1),
+      clips: [],
+      muted: false,
+      locked: false,
+      visible: true,
+    }]);
+  }, []);
+
+  const insertSceneAtIndex = useCallback((index: number) => {
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    let insertTime = 0;
+    if (index > 0 && scenes[index - 1]) {
+      insertTime = scenes[index - 1].startTime + scenes[index - 1].duration;
+    }
+    const newClip: TimelineClip = {
+      id: `clip-${Date.now()}`, type: "video", name: `Scene ${scenes.length + 1}`,
+      startTime: insertTime, duration: 5,
+    };
+    setTracks(prev => prev.map(track => ({
+      ...track,
+      clips: track.clips.map(clip => {
+        const si = scenes.findIndex(s => s.id === clip.id);
+        if (si >= index) return { ...clip, startTime: clip.startTime + 5 };
+        return clip;
+      }).concat(track.id === videoTrack.id ? [newClip] : [])
+    })));
+  }, [scenes, tracks]);
+
+  const addSceneAtEnd = useCallback(() => {
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    const lastScene = scenes[scenes.length - 1];
+    const newStartTime = lastScene ? lastScene.startTime + lastScene.duration : 0;
+    const newClip: TimelineClip = {
+      id: `clip-${Date.now()}`, type: "video", name: `Scene ${scenes.length + 1}`,
+      startTime: newStartTime, duration: 5,
+    };
+    setTracks(prev => prev.map(t =>
+      t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+    ));
+  }, [scenes, tracks]);
 
   const filteredCaptions = captionSearch
     ? CAPTION_DATA.filter(c => c.text.toLowerCase().includes(captionSearch.toLowerCase()))
@@ -1231,95 +1291,214 @@ const VideoEditor = ({ video }: Props) => {
           {/* Timeline tracks */}
           {!isTimelineMinimized && (
             <div className="flex-1 overflow-auto">
-              <div className="flex min-h-full">
-                {/* Track labels */}
-                <div className="w-40 shrink-0 border-r border-foreground/[0.06]">
-                  {/* Add scene / view buttons */}
-                  <div className="h-6 flex items-center gap-1 px-2 border-b border-foreground/[0.06]">
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => setTracks(prev => [...prev, { id: `track-${Date.now()}`, type: "video", name: String(prev.length + 1), visible: true, clips: [] }])} className="p-0.5 text-muted hover:text-foreground transition-colors"><Plus className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Add Track</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => setTimelineViewMode('timeline')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'timeline' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><Rows3 className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Timeline</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => setTimelineViewMode('storyboard')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'storyboard' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><LayoutGrid className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
+              {/* Storyboard View */}
+              {timelineViewMode === "storyboard" ? (
+                <div className="p-4">
+                  <div className="flex flex-wrap items-center gap-y-4">
+                    {scenes.map((clip, index) => {
+                      const isSelected = selectedClip === clip.id;
+                      const isCurrent = currentTime >= clip.startTime && currentTime < clip.startTime + clip.duration;
+                      return (
+                        <React.Fragment key={clip.id}>
+                          <div className="flex items-center">
+                            <div
+                              onClick={() => { setSelectedClip(clip.id); setCurrentTime(clip.startTime); }}
+                              className={`relative w-32 h-20 rounded-lg overflow-hidden cursor-pointer transition-all group ${
+                                isSelected ? "ring-2 ring-accent shadow-lg scale-105"
+                                  : isCurrent ? "ring-2 ring-accent/50"
+                                  : "hover:ring-2 hover:ring-foreground/20"
+                              }`}
+                            >
+                              <div className="absolute inset-0 bg-gradient-to-br from-foreground/20 to-foreground/30 flex items-center justify-center">
+                                <Video className="w-6 h-6 text-muted/50" />
+                              </div>
+                              {isCurrent && (
+                                <div className="absolute bottom-0 left-0 right-0 h-1 bg-foreground/20">
+                                  <div className="h-full bg-accent transition-all" style={{ width: `${((currentTime - clip.startTime) / clip.duration) * 100}%` }} />
+                                </div>
+                              )}
+                              <div className="absolute bottom-1.5 right-1.5 px-1.5 py-0.5 bg-foreground/70 backdrop-blur-sm rounded text-[10px] text-background font-mono">
+                                {clip.duration.toFixed(1)}s
+                              </div>
+                              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-foreground/80 to-transparent p-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <p className="text-[10px] text-background truncate">{clip.name}</p>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Gap action icons between scenes */}
+                          {index < scenes.length - 1 && (
+                            <div
+                              className="relative flex items-center justify-center mx-1 group/gap"
+                              onMouseEnter={() => setHoveredSceneGap(index)}
+                              onMouseLeave={() => setHoveredSceneGap(null)}
+                            >
+                              <div className={`w-4 h-4 rounded-full bg-foreground/[0.08] hover:bg-foreground/[0.15] transition-all cursor-pointer flex items-center justify-center ${hoveredSceneGap === index ? "opacity-0 scale-0" : "opacity-100 scale-100"}`}>
+                                <div className="w-1.5 h-1.5 rounded-full bg-muted" />
+                              </div>
+                              <AnimatePresence>
+                                {hoveredSceneGap === index && (
+                                  <motion.div
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.8 }}
+                                    transition={{ duration: 0.15 }}
+                                    className="absolute flex flex-col items-center gap-1 z-10"
+                                  >
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button onClick={(e) => { e.stopPropagation(); insertSceneAtIndex(index + 1); }}
+                                          className="w-7 h-7 rounded-full bg-background shadow-lg border border-foreground/[0.1] flex items-center justify-center hover:bg-foreground/[0.04] hover:scale-110 transition-all">
+                                          <Plus className="w-4 h-4 text-foreground" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="top">Insert Scene</TooltipContent>
+                                    </Tooltip>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button className="w-7 h-7 rounded-full bg-background shadow-lg border border-foreground/[0.1] flex items-center justify-center hover:bg-foreground/[0.04] hover:scale-110 transition-all">
+                                          <ArrowLeftRight className="w-4 h-4 text-foreground" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="bottom">Add Transition</TooltipContent>
+                                    </Tooltip>
+                                  </motion.div>
+                                )}
+                              </AnimatePresence>
+                            </div>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
+
+                    {/* Add scene button */}
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div onClick={addSceneAtEnd}
+                          className="w-32 h-20 rounded-lg border-2 border-dashed border-foreground/[0.12] flex items-center justify-center cursor-pointer hover:border-accent hover:bg-accent/5 transition-all group ml-1">
+                          <Plus className="w-6 h-6 text-muted group-hover:text-accent transition-colors" />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Add New Scene</TooltipContent>
+                    </Tooltip>
                   </div>
-                  {tracks.map(track => (
-                    <div key={track.id} className="h-14 flex items-center gap-1.5 px-2 border-b border-foreground/[0.04] group">
-                      <GripVertical className="w-3 h-3 text-muted/30 cursor-grab" />
-                      <span className="text-xs font-medium text-muted w-4 text-center">{track.name}</span>
-                      <Tooltip><TooltipTrigger asChild>
-                        <button className={`p-1 rounded transition-colors ${track.type === "audio" ? "text-purple-500" : "text-muted"}`}>
-                          {track.type === "video" ? <Video className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
-                        </button>
-                      </TooltipTrigger><TooltipContent>{track.type === "video" ? "Video Track" : "Audio Track"}</TooltipContent></Tooltip>
-                      <Tooltip><TooltipTrigger asChild>
-                        <button onClick={() => toggleTrackMute(track.id)} className={`p-1 rounded transition-colors ${track.muted ? "text-accent" : "text-muted/50 hover:text-muted"}`}>
-                          <Volume2 className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger><TooltipContent>{track.muted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
-                      <Tooltip><TooltipTrigger asChild>
-                        <button onClick={() => toggleTrackLock(track.id)} className={`p-1 rounded transition-colors ${track.locked ? "text-amber-500" : "text-muted/50 hover:text-muted"}`}>
-                          {track.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
-                        </button>
-                      </TooltipTrigger><TooltipContent>{track.locked ? "Unlock" : "Lock"}</TooltipContent></Tooltip>
-                      <Tooltip><TooltipTrigger asChild>
-                        <button onClick={() => toggleTrackVisibility(track.id)} className={`p-1 rounded transition-colors ${!track.visible ? "text-muted/30" : "text-muted/50 hover:text-muted"}`}>
-                          {track.visible ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                        </button>
-                      </TooltipTrigger><TooltipContent>{track.visible ? "Hide" : "Show"}</TooltipContent></Tooltip>
-                      <Tooltip><TooltipTrigger asChild>
-                        <button className="p-1 rounded text-muted/50 hover:text-muted opacity-0 group-hover:opacity-100 transition-opacity">
-                          <MoreVertical className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger><TooltipContent>More Options</TooltipContent></Tooltip>
-                    </div>
-                  ))}
                 </div>
-
-                {/* Timeline clips */}
-                <div className="flex-1 relative">
-                  {/* Playhead */}
-                  <div className="absolute top-0 bottom-0 z-10 pointer-events-none" style={{ left: playheadPosition }}>
-                    <div className="w-0.5 h-full bg-accent" />
-                    <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-accent rounded-b-sm rotate-45" style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
-                  </div>
-
-                  {/* Time ruler */}
-                  <div className="h-6 border-b border-foreground/[0.06] flex items-end relative">
-                    {Array.from({ length: Math.ceil(duration / 10) + 1 }, (_, i) => (
-                      <div key={i} className="absolute" style={{ left: i * 10 * pixelsPerSecond }}>
-                        <div className="w-px h-2 bg-foreground/[0.1]" />
-                        <span className="text-[9px] text-muted/50 ml-1">{formatTimeColon(i * 10)}</span>
+              ) : (
+                /* Timeline View */
+                <div className="flex min-h-full">
+                  {/* Track labels */}
+                  <div className="w-44 shrink-0 border-r border-foreground/[0.06]">
+                    {/* Header buttons */}
+                    <div className="h-6 flex items-center gap-1 px-2 border-b border-foreground/[0.06]">
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={handleAddTrack} className="p-0.5 text-muted hover:text-foreground transition-colors"><Plus className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Add Track</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => setTimelineViewMode('timeline')} className={`p-0.5 rounded transition-colors ${timelineViewMode === 'timeline' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><Rows3 className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Timeline</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => setTimelineViewMode('storyboard')} className={`p-0.5 rounded transition-colors ${(timelineViewMode as string) === 'storyboard' ? 'bg-foreground/[0.1] text-foreground' : 'text-muted hover:text-foreground'}`}><LayoutGrid className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Scenes</TooltipContent></Tooltip>
+                    </div>
+                    {tracks.map((track, trackIndex) => (
+                      <div key={track.id} className="h-14 flex items-center gap-1 px-2 border-b border-foreground/[0.04] group">
+                        <GripVertical className="w-3 h-3 text-muted/30 cursor-grab opacity-0 group-hover:opacity-100 transition-opacity" />
+                        <span className="text-xs font-medium text-muted w-4 text-center shrink-0">{track.name}</span>
+                        <Tooltip><TooltipTrigger asChild>
+                          <div className={`w-7 h-7 rounded-md bg-foreground/[0.04] flex items-center justify-center shrink-0 ${track.locked ? "opacity-50" : ""}`}>
+                            {track.type === "video" ? <Video className="w-3.5 h-3.5 text-accent" /> : <Volume2 className="w-3.5 h-3.5 text-purple-500" />}
+                          </div>
+                        </TooltipTrigger><TooltipContent>{track.name}</TooltipContent></Tooltip>
+                        <div className="flex items-center gap-0.5 shrink-0">
+                          <Tooltip><TooltipTrigger asChild>
+                            <button onClick={() => toggleTrackMute(track.id)} className={`p-1 rounded transition-colors ${track.muted ? "text-accent" : "text-muted/50 hover:text-muted"}`}>
+                              <Volume2 className="w-3 h-3" />
+                            </button>
+                          </TooltipTrigger><TooltipContent>{track.muted ? "Unmute" : "Mute"}</TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild>
+                            <button onClick={() => toggleTrackLock(track.id)} className={`p-1 rounded transition-colors ${track.locked ? "text-amber-500" : "text-muted/50 hover:text-muted"}`}>
+                              {track.locked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
+                            </button>
+                          </TooltipTrigger><TooltipContent>{track.locked ? "Unlock" : "Lock"}</TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild>
+                            <button onClick={() => toggleTrackVisibility(track.id)} className={`p-1 rounded transition-colors ${!track.visible ? "text-muted/30" : "text-muted/50 hover:text-muted"}`}>
+                              {track.visible ? <Eye className="w-3 h-3" /> : <EyeOff className="w-3 h-3" />}
+                            </button>
+                          </TooltipTrigger><TooltipContent>{track.visible ? "Hide" : "Show"}</TooltipContent></Tooltip>
+                          <DropdownMenu>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <DropdownMenuTrigger asChild>
+                                  <button className="p-1 rounded text-muted/50 hover:text-muted opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <MoreVertical className="w-3 h-3" />
+                                  </button>
+                                </DropdownMenuTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent>Track Options</TooltipContent>
+                            </Tooltip>
+                            <DropdownMenuContent align="end" className="w-40">
+                              <DropdownMenuItem onClick={() => {
+                                const newTrack = { ...track, id: `track-${Date.now()}`, name: `${track.name} Copy`, clips: track.clips.map(c => ({ ...c, id: `clip-${Date.now()}-${Math.random()}` })) };
+                                setTracks(prev => [...prev.slice(0, trackIndex + 1), newTrack, ...prev.slice(trackIndex + 1)]);
+                              }}>
+                                <Copy className="w-3.5 h-3.5 mr-2" />Duplicate Track
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setTracks(prev => prev.map(t => t.id === track.id ? { ...t, clips: [] } : t))}>
+                                <Scissors className="w-3.5 h-3.5 mr-2" />Clear Clips
+                              </DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => setTracks(prev => prev.filter(t => t.id !== track.id))} className="text-destructive focus:text-destructive">
+                                <Trash2 className="w-3.5 h-3.5 mr-2" />Delete Track
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Track rows */}
-                  {tracks.map(track => (
-                    <div key={track.id} className="h-14 relative border-b border-foreground/[0.04]">
-                      {track.clips.map(clip => (
-                        <div key={clip.id}
-                          className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-pointer hover:brightness-110 transition-all flex items-center px-2 gap-1.5 overflow-hidden ${track.locked ? "opacity-60" : ""}`}
-                          style={{ left: clip.startTime * pixelsPerSecond, width: clip.duration * pixelsPerSecond }}>
-                          <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
+                  {/* Timeline clips */}
+                  <div className="flex-1 relative">
+                    {/* Playhead */}
+                    <div className="absolute top-0 bottom-0 z-10 pointer-events-none" style={{ left: playheadPosition }}>
+                      <div className="w-0.5 h-full bg-accent" />
+                      <div className="absolute -top-0.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-accent rounded-b-sm rotate-45" style={{ clipPath: "polygon(0 0, 100% 0, 50% 100%)" }} />
+                    </div>
+
+                    {/* Time ruler */}
+                    <div className="h-6 border-b border-foreground/[0.06] flex items-end relative">
+                      {Array.from({ length: Math.ceil(duration / 10) + 1 }, (_, i) => (
+                        <div key={i} className="absolute" style={{ left: i * 10 * pixelsPerSecond }}>
+                          <div className="w-px h-2 bg-foreground/[0.1]" />
+                          <span className="text-[9px] text-muted/50 ml-1">{formatTimeColon(i * 10)}</span>
                         </div>
                       ))}
-                      {/* Add clip button */}
-                      {!track.locked && (
-                        <button className="absolute top-1/2 -translate-y-1/2 opacity-0 hover:opacity-100 transition-opacity"
-                          style={{ left: (track.clips.length > 0 ? track.clips[track.clips.length - 1].startTime + track.clips[track.clips.length - 1].duration : 0) * pixelsPerSecond + 8 }}>
-                          <div className="w-7 h-7 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-foreground/[0.3] transition-colors">
-                            <Plus className="w-3 h-3 text-muted" />
-                          </div>
-                        </button>
-                      )}
                     </div>
-                  ))}
+
+                    {/* Track rows */}
+                    {tracks.map(track => (
+                      <div key={track.id} className="h-14 relative border-b border-foreground/[0.04]">
+                        {track.clips.map(clip => (
+                          <div key={clip.id}
+                            onClick={() => setSelectedClip(clip.id)}
+                            className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-pointer hover:brightness-110 transition-all flex items-center px-2 gap-1.5 overflow-hidden ${track.locked ? "opacity-60" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1" : ""}`}
+                            style={{ left: clip.startTime * pixelsPerSecond, width: clip.duration * pixelsPerSecond }}>
+                            <span className="text-[10px] text-white font-medium truncate">{clip.name}</span>
+                          </div>
+                        ))}
+                        {/* Add clip button */}
+                        {!track.locked && (
+                          <button className="absolute top-1/2 -translate-y-1/2 opacity-0 hover:opacity-100 transition-opacity"
+                            style={{ left: (track.clips.length > 0 ? track.clips[track.clips.length - 1].startTime + track.clips[track.clips.length - 1].duration : 0) * pixelsPerSecond + 8 }}>
+                            <div className="w-7 h-7 border-2 border-dashed border-foreground/[0.15] rounded-full flex items-center justify-center hover:border-foreground/[0.3] transition-colors">
+                              <Plus className="w-3 h-3 text-muted" />
+                            </div>
+                          </button>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           )}
         </div>
