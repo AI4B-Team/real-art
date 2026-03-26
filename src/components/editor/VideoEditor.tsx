@@ -33,7 +33,7 @@ interface TimelineTrack {
 }
 
 /* ─── Tab Configs ─── */
-type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "languages" | "templates" | "tools" | "settings";
+type LeftTab = "ai-chat" | "storyboard" | "video-brief" | "script" | "character" | "visuals" | "audio" | "text" | "captions" | "effects" | "elements" | "transitions" | "languages" | "templates" | "tools" | "settings" | "brand" | "export";
 
 const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "ai-chat", icon: MessageSquare, label: "AI Chat" },
@@ -48,8 +48,10 @@ const LEFT_TABS: { id: LeftTab; icon: typeof FileText; label: string }[] = [
   { id: "effects", icon: Sparkles, label: "Effects" },
   { id: "elements", icon: Layers, label: "Elements" },
   { id: "transitions", icon: SlidersHorizontal, label: "Transitions" },
+  { id: "brand", icon: Palette, label: "Brand Kit" },
   { id: "languages", icon: Languages, label: "Languages" },
   { id: "templates", icon: LayoutGrid, label: "Templates" },
+  { id: "export", icon: Download, label: "Export" },
   { id: "tools", icon: Wand2, label: "Tools" },
   { id: "settings", icon: Settings, label: "Settings" },
 ];
