@@ -1090,7 +1090,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       className={`shrink-0 flex items-center justify-center w-11 h-11 rounded-2xl transition-colors ${prompt.trim() ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-destructive/20 text-destructive/40"}`}>
                       {isEnhancing ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
                     </button>
-                  </TooltipTrigger><TooltipContent side="bottom">Generate</TooltipContent></Tooltip>
+                  </TooltipTrigger><TooltipContent side="bottom">Create</TooltipContent></Tooltip>
                 )}
               </div>
             </div>
