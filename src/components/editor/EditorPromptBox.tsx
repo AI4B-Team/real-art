@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useAtMention } from "@/hooks/useAtMention";
+import MentionDropdown from "@/components/MentionDropdown";
 
 type ContentType = "video" | "image" | "audio";
 
