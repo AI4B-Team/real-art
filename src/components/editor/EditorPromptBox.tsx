@@ -372,7 +372,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           </div>
         )}
 
-        <div className="pl-12 pr-4 pt-3 pb-2">
+        <div className="pl-12 pr-4 pt-3 pb-2 relative">
           <div
             ref={editableRef}
             contentEditable
@@ -384,6 +384,15 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
             className="min-h-[48px] text-sm text-foreground leading-[1.8] outline-none break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted [&:empty]:before:pointer-events-none"
             style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
           />
+          {mention.active && mention.anchorRect && (
+            <MentionDropdown
+              assets={SAMPLE_ASSETS}
+              query={mention.query}
+              position={mention.anchorRect}
+              chipIds={chipIds}
+              onSelect={addChipFromMention}
+            />
+          )}
         </div>
       </div>
 
