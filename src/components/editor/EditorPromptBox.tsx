@@ -341,7 +341,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
                   <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
                   {cat.items.map(item => {
                     const isAdded = chipIds.has(item.id);
-                    const Icon = LUCIDE_ICONS[cat.type];
+                    const Icon = PROMPT_CHIP_ICONS[cat.type];
                     return (
                       <button key={item.id} onMouseDown={(e) => e.preventDefault()} onClick={() => addChip(cat.type, item)} disabled={isAdded}
                         className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
