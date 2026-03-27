@@ -285,9 +285,9 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
     }
   }, [history, historyIndex]);
 
-  const handleSendChat = useCallback(() => {
+  const handleSendChat = useCallback((richHtml?: string) => {
     if (!chatInput.trim() || isStreaming) return;
-    setChatMessages(prev => [...prev, { role: "user", content: chatInput }]);
+    setChatMessages(prev => [...prev, { role: "user", content: chatInput, richContent: richHtml }]);
     setChatInput("");
     setIsStreaming(true);
     setTimeout(() => {
