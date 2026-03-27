@@ -73,6 +73,7 @@ import SocialContentPanel from "@/components/create/SocialContentPanel";
 import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
+import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, type AssetChip } from "@/lib/promptChips";
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
@@ -356,7 +357,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   
   const [docLangOpen, setDocLangOpen] = useState(false);
   const [docLangSearch, setDocLangSearch] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
   // App-specific states
@@ -415,6 +416,14 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const sourceFileRef = useRef<HTMLInputElement>(null);
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
   const audioRecogRef = useRef<any>(null);
+
+  // Chip/asset picker state
+  const [chipIds, setChipIds] = useState<Set<string>>(new Set());
+  const [assetPickerOpen, setAssetPickerOpen] = useState(false);
+  const [assetSearch, setAssetSearch] = useState("");
+  const savedRangeRef = useRef<Range | null>(null);
+  const pendingFocusRangeRef = useRef<Range | null>(null);
+  const isInternalEditRef = useRef(false);
 
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
@@ -574,13 +583,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     const urlType = searchParams.get("type");
     if (urlPrompt) {
       setPrompt(urlPrompt);
-      // Auto-resize textarea after setting prompt
-      setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.style.height = "36px";
-          textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 140) + "px";
-        }
-      }, 0);
+      setTimeout(() => { textareaRef.current?.focus(); }, 0);
     }
     if (urlType && ["image","video","audio","design","content","document","app"].includes(urlType)) {
       setSelectedType(urlType as ContentType);
@@ -707,6 +710,142 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const togglePanel = (panel: PanelType) => {
     setActivePanel(prev => prev === panel ? null : panel);
   };
+
+  // ── Chip/contentEditable helpers ──
+  const extractText = useCallback(() => {
+    if (!textareaRef.current) return "";
+    let text = "";
+    const walk = (node: Node) => {
+      if (node.nodeType === Node.TEXT_NODE) text += node.textContent || "";
+      else if (node.nodeName === "BR") text += "\n";
+      else if (!(node as HTMLElement).dataset?.chipId) node.childNodes.forEach(walk);
+    };
+    textareaRef.current.childNodes.forEach(walk);
+    return text;
+  }, []);
+
+  const syncPromptFromEditable = useCallback(() => {
+    isInternalEditRef.current = true;
+    setPrompt(extractText());
+  }, [extractText]);
+
+  const saveSelection = useCallback(() => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && textareaRef.current?.contains(sel.anchorNode)) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+    }
+  }, []);
+
+  const restoreEditableCaret = useCallback((range?: Range | null) => {
+    const el = textareaRef.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      el.focus({ preventScroll: true });
+      const selection = window.getSelection();
+      if (!selection) return;
+      selection.removeAllRanges();
+      if (range) selection.addRange(range);
+    });
+  }, []);
+
+  const handleAssetPopoverCloseAutoFocus = useCallback((event: Event) => {
+    if (!pendingFocusRangeRef.current) return;
+    event.preventDefault();
+    const range = pendingFocusRangeRef.current.cloneRange();
+    pendingFocusRangeRef.current = null;
+    restoreEditableCaret(range);
+  }, [restoreEditableCaret]);
+
+  const removeChip = useCallback((id: string) => {
+    setChipIds(prev => { const n = new Set(prev); n.delete(id); return n; });
+    syncPromptFromEditable();
+  }, [syncPromptFromEditable]);
+
+  const addChip = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
+    if (chipIds.has(item.id)) return;
+    const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
+    setChipIds(prev => new Set(prev).add(item.id));
+    setAssetPickerOpen(false);
+    setAssetSearch("");
+
+    requestAnimationFrame(() => {
+      const el = textareaRef.current;
+      if (!el) return;
+      el.focus();
+      const sel = window.getSelection();
+      if (!sel) return;
+
+      let range: Range;
+      if (savedRangeRef.current && el.contains(savedRangeRef.current.startContainer)) {
+        range = savedRangeRef.current;
+      } else {
+        range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+      }
+
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const chipEl = createChipElement(chip, removeChip);
+      range.deleteContents();
+      range.insertNode(chipEl);
+
+      const space = document.createTextNode("\u00A0");
+      chipEl.after(space);
+
+      const newRange = document.createRange();
+      newRange.setStart(space, space.textContent?.length ?? 1);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+
+      const caretRange = newRange.cloneRange();
+      savedRangeRef.current = caretRange;
+      pendingFocusRangeRef.current = caretRange;
+      syncPromptFromEditable();
+
+      requestAnimationFrame(() => {
+        el.focus({ preventScroll: true });
+        const visibleSelection = window.getSelection();
+        if (!visibleSelection) return;
+        visibleSelection.removeAllRanges();
+        visibleSelection.addRange(newRange);
+      });
+    });
+  }, [chipIds, removeChip, syncPromptFromEditable]);
+
+  const filteredAssets = PROMPT_SAMPLE_ASSETS.map(cat => ({
+    ...cat,
+    items: cat.items.filter(item =>
+      assetSearch ? item.label.toLowerCase().includes(assetSearch.toLowerCase()) : true
+    ),
+  })).filter(cat => cat.items.length > 0);
+
+  // Sync external prompt changes (shuffle, enhance, speech) to contentEditable
+  useEffect(() => {
+    if (isInternalEditRef.current) {
+      isInternalEditRef.current = false;
+      return;
+    }
+    const el = textareaRef.current;
+    if (!el) return;
+
+    // Save chip elements before clearing
+    const chipEls = Array.from(el.querySelectorAll('[data-chip-id]'));
+    el.textContent = '';
+
+    // Re-add chips
+    chipEls.forEach(chipEl => {
+      el.appendChild(chipEl);
+      el.appendChild(document.createTextNode('\u00A0'));
+    });
+
+    // Add new text
+    if (prompt) {
+      el.appendChild(document.createTextNode(prompt));
+    }
+  }, [prompt]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const hasType = !!selectedType;
   const placeholder = selectedType === "video" && selectedSubMode === "story"
@@ -846,18 +985,18 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
             {/* Textarea + optional Recording overlay */}
             <div className="relative flex-1 min-h-[36px]">
-              <textarea
+              <div
                 ref={textareaRef}
-                value={prompt}
-                onChange={e => setPrompt(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={() => { isInternalEditRef.current = true; setPrompt(extractText()); }}
+                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); handleGenerate(); } }}
                 onFocus={() => setPromptFocused(true)}
                 onBlur={() => setPromptFocused(false)}
-                placeholder={placeholder}
-                rows={1}
-                className="w-full bg-transparent border-none outline-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px] resize-none"
-                style={{ height: "36px" }}
-                onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
+                onPaste={e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); }}
+                data-placeholder={placeholder}
+                className="w-full bg-transparent border-none outline-none text-[0.92rem] text-foreground leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px] break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted/50 [&:empty]:before:pointer-events-none"
+                style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
               />
               <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
                 {isListening && (
@@ -1127,6 +1266,55 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
               {/* Child 1 — Scrollable pills (never wraps) */}
               <div className="relative flex-1 min-w-0 overflow-hidden">
                 <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
+
+                {/* Asset Picker + */}
+                <Popover open={assetPickerOpen} onOpenChange={(open) => {
+                  if (open) saveSelection();
+                  setAssetPickerOpen(open);
+                }}>
+                  <PopoverTrigger asChild>
+                    <button type="button" className="p-1.5 rounded-lg text-foreground hover:bg-foreground/[0.06] transition-colors shrink-0">
+                      <Plus className="w-5 h-5" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-64 p-0" align="start" sideOffset={8} onCloseAutoFocus={handleAssetPopoverCloseAutoFocus}>
+                    <div className="p-2 border-b border-foreground/[0.06]">
+                      <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
+                        <Hash className="w-3.5 h-3.5 text-muted" />
+                        <input value={assetSearch} onChange={e => setAssetSearch(e.target.value)}
+                          placeholder="Search assets..." className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted" autoFocus />
+                      </div>
+                    </div>
+                    <div className="max-h-64 overflow-y-auto p-1.5">
+                      {filteredAssets.map(cat => (
+                        <div key={cat.category}>
+                          <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
+                          {cat.items.map(item => {
+                            const isAdded = chipIds.has(item.id);
+                            const ChipIcon = PROMPT_CHIP_ICONS[cat.type];
+                            return (
+                              <button key={item.id} onMouseDown={e => e.preventDefault()} onClick={() => addChip(cat.type, item)} disabled={isAdded}
+                                className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
+                                {item.thumbnail ? (
+                                  <img src={item.thumbnail} alt="" className="w-7 h-7 rounded object-cover" />
+                                ) : (
+                                  <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
+                                    <ChipIcon className="w-3.5 h-3.5 text-muted" />
+                                  </span>
+                                )}
+                                <span className="font-medium">{item.label}</span>
+                                {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ))}
+                      {filteredAssets.length === 0 && <p className="text-center text-sm text-muted py-4">No assets found</p>}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
                 {/* Type badge — always visible, clickable to switch type */}
                 <Popover>
