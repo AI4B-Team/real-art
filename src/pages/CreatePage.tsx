@@ -108,7 +108,7 @@ const CONTENT_TYPES: {
 
 const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof Image }[]> = {
   image: [
-    { id: "generate",   label: "Generate",   icon: Sparkles },
+    { id: "generate",   label: "Create",   icon: Sparkles },
     { id: "batch",      label: "Batch",      icon: Layers },
     { id: "draw",       label: "Draw",       icon: Pencil },
     { id: "swap",       label: "Swap",       icon: RefreshCw },
