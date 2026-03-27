@@ -67,6 +67,8 @@ interface EditorPromptBoxProps {
   isStreaming?: boolean;
 }
 
+export type { AssetChip };
+
 const CONTENT_TYPES: { id: ContentType; icon: typeof Video; label: string; color: string; bgColor: string }[] = [
   { id: "video", icon: Video, label: "Video", color: "text-accent", bgColor: "bg-accent/15" },
   { id: "image", icon: Image, label: "Image", color: "text-blue-600", bgColor: "bg-blue-500/15" },
