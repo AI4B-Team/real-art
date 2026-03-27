@@ -139,7 +139,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
   // AI Chat state
-  interface ChatMessage { role: "user" | "assistant"; content: string; }
+  interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
@@ -342,9 +342,9 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
     setCreations(prev => prev.map(cr => ({ ...cr, isActive: cr.id === c.id })));
   };
 
-  const handleSendImageChat = async () => {
+  const handleSendImageChat = async (richHtml?: string) => {
     if (!chatInput.trim() || isStreaming) return;
-    const userMsg: ChatMessage = { role: "user", content: chatInput };
+    const userMsg: ChatMessage = { role: "user", content: chatInput, richContent: richHtml };
     const newMessages = [...chatMessages, userMsg];
     setChatMessages(newMessages);
     setChatInput("");
@@ -489,6 +489,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                                     <p key={j} className={line.startsWith("**") ? "font-bold" : ""}>{line.replace(/\*\*/g, "")}</p>
                                   ))}
                                 </div>
+                              ) : msg.richContent ? (
+                                <span dangerouslySetInnerHTML={{ __html: msg.richContent }} className="[&_span[data-chip-id]]:inline-flex" />
                               ) : msg.content}
                             </div>
                           </div>

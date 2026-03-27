@@ -178,7 +178,7 @@ const STORYBOARD_SCENES = [
   { time: "00:05", narrator: "Jurin", desc: "Huddled behind cover, she pulls out a small device.", thumb: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=120" },
 ];
 
-interface ChatMessage { role: "user" | "assistant"; content: string; }
+interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
 
 const ALL_AI_SUGGESTIONS = [
   "❤️ Create a love story",
@@ -337,9 +337,9 @@ const VideoEditor = ({ video }: Props) => {
   const [promptDuration, setPromptDuration] = useState("10");
   const [promptImageCount, setPromptImageCount] = useState(1);
 
-  const handleSendChat = async () => {
+  const handleSendChat = async (richHtml?: string) => {
     if (!chatInput.trim() || isStreaming) return;
-    const userMsg: ChatMessage = { role: "user", content: chatInput };
+    const userMsg: ChatMessage = { role: "user", content: chatInput, richContent: richHtml };
     const newMessages = [...chatMessages, userMsg];
     setChatMessages(newMessages);
     setChatInput("");
@@ -944,6 +944,8 @@ const VideoEditor = ({ video }: Props) => {
                                       <p key={j} className={line.startsWith("**") ? "font-bold" : ""}>{line.replace(/\*\*/g, "")}</p>
                                     ))}
                                   </div>
+                                ) : msg.richContent ? (
+                                  <span dangerouslySetInnerHTML={{ __html: msg.richContent }} className="[&_span[data-chip-id]]:inline-flex" />
                                 ) : msg.content}
                               </div>
                             </div>

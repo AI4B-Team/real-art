@@ -54,7 +54,7 @@ interface Marker {
   color: string;
 }
 
-interface ChatMessage { role: "user" | "assistant"; content: string; }
+interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
 
 interface SharedAsset {
   id: string;
@@ -285,9 +285,9 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
     }
   }, [history, historyIndex]);
 
-  const handleSendChat = useCallback(() => {
+  const handleSendChat = useCallback((richHtml?: string) => {
     if (!chatInput.trim() || isStreaming) return;
-    setChatMessages(prev => [...prev, { role: "user", content: chatInput }]);
+    setChatMessages(prev => [...prev, { role: "user", content: chatInput, richContent: richHtml }]);
     setChatInput("");
     setIsStreaming(true);
     setTimeout(() => {
@@ -462,7 +462,11 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
                       <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                         <div className={`max-w-[85%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
                           msg.role === "user" ? "bg-foreground/[0.06] text-foreground rounded-br-md" : "bg-transparent text-foreground"
-                        }`}>{msg.content}</div>
+                        }`}>
+                          {msg.role === "user" && msg.richContent ? (
+                            <span dangerouslySetInnerHTML={{ __html: msg.richContent }} className="[&_span[data-chip-id]]:inline-flex" />
+                          ) : msg.content}
+                        </div>
                       </div>
                     ))}
                     {isStreaming && (
