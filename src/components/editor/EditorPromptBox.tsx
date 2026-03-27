@@ -306,7 +306,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           />
           {mention.active && mention.anchorRect && (
             <MentionDropdown
-              assets={SAMPLE_ASSETS}
+              assets={PROMPT_SAMPLE_ASSETS}
               query={mention.query}
               position={mention.anchorRect}
               chipIds={chipIds}
