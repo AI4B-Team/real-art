@@ -703,6 +703,142 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setActivePanel(prev => prev === panel ? null : panel);
   };
 
+  // ── Chip/contentEditable helpers ──
+  const extractText = useCallback(() => {
+    if (!textareaRef.current) return "";
+    let text = "";
+    const walk = (node: Node) => {
+      if (node.nodeType === Node.TEXT_NODE) text += node.textContent || "";
+      else if (node.nodeName === "BR") text += "\n";
+      else if (!(node as HTMLElement).dataset?.chipId) node.childNodes.forEach(walk);
+    };
+    textareaRef.current.childNodes.forEach(walk);
+    return text;
+  }, []);
+
+  const syncPromptFromEditable = useCallback(() => {
+    isInternalEditRef.current = true;
+    setPrompt(extractText());
+  }, [extractText]);
+
+  const saveSelection = useCallback(() => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && textareaRef.current?.contains(sel.anchorNode)) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+    }
+  }, []);
+
+  const restoreEditableCaret = useCallback((range?: Range | null) => {
+    const el = textareaRef.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      el.focus({ preventScroll: true });
+      const selection = window.getSelection();
+      if (!selection) return;
+      selection.removeAllRanges();
+      if (range) selection.addRange(range);
+    });
+  }, []);
+
+  const handleAssetPopoverCloseAutoFocus = useCallback((event: Event) => {
+    if (!pendingFocusRangeRef.current) return;
+    event.preventDefault();
+    const range = pendingFocusRangeRef.current.cloneRange();
+    pendingFocusRangeRef.current = null;
+    restoreEditableCaret(range);
+  }, [restoreEditableCaret]);
+
+  const removeChip = useCallback((id: string) => {
+    setChipIds(prev => { const n = new Set(prev); n.delete(id); return n; });
+    syncPromptFromEditable();
+  }, [syncPromptFromEditable]);
+
+  const addChip = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
+    if (chipIds.has(item.id)) return;
+    const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
+    setChipIds(prev => new Set(prev).add(item.id));
+    setAssetPickerOpen(false);
+    setAssetSearch("");
+
+    requestAnimationFrame(() => {
+      const el = textareaRef.current;
+      if (!el) return;
+      el.focus();
+      const sel = window.getSelection();
+      if (!sel) return;
+
+      let range: Range;
+      if (savedRangeRef.current && el.contains(savedRangeRef.current.startContainer)) {
+        range = savedRangeRef.current;
+      } else {
+        range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+      }
+
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const chipEl = createChipElement(chip, removeChip);
+      range.deleteContents();
+      range.insertNode(chipEl);
+
+      const space = document.createTextNode("\u00A0");
+      chipEl.after(space);
+
+      const newRange = document.createRange();
+      newRange.setStart(space, space.textContent?.length ?? 1);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+
+      const caretRange = newRange.cloneRange();
+      savedRangeRef.current = caretRange;
+      pendingFocusRangeRef.current = caretRange;
+      syncPromptFromEditable();
+
+      requestAnimationFrame(() => {
+        el.focus({ preventScroll: true });
+        const visibleSelection = window.getSelection();
+        if (!visibleSelection) return;
+        visibleSelection.removeAllRanges();
+        visibleSelection.addRange(newRange);
+      });
+    });
+  }, [chipIds, removeChip, syncPromptFromEditable]);
+
+  const filteredAssets = PROMPT_SAMPLE_ASSETS.map(cat => ({
+    ...cat,
+    items: cat.items.filter(item =>
+      assetSearch ? item.label.toLowerCase().includes(assetSearch.toLowerCase()) : true
+    ),
+  })).filter(cat => cat.items.length > 0);
+
+  // Sync external prompt changes (shuffle, enhance, speech) to contentEditable
+  useEffect(() => {
+    if (isInternalEditRef.current) {
+      isInternalEditRef.current = false;
+      return;
+    }
+    const el = textareaRef.current;
+    if (!el) return;
+
+    // Save chip elements before clearing
+    const chipEls = Array.from(el.querySelectorAll('[data-chip-id]'));
+    el.textContent = '';
+
+    // Re-add chips
+    chipEls.forEach(chipEl => {
+      el.appendChild(chipEl);
+      el.appendChild(document.createTextNode('\u00A0'));
+    });
+
+    // Add new text
+    if (prompt) {
+      el.appendChild(document.createTextNode(prompt));
+    }
+  }, [prompt]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const hasType = !!selectedType;
   const placeholder = selectedType === "video" && selectedSubMode === "story"
     ? "Upload References. Describe your vision. We'll create the scenes (e.g., Product reveal with smooth motion, premium feel, confident tone)"
