@@ -54,7 +54,7 @@ interface Marker {
   color: string;
 }
 
-interface ChatMessage { role: "user" | "assistant"; content: string; }
+interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
 
 interface SharedAsset {
   id: string;
