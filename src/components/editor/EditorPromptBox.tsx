@@ -251,7 +251,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
   const hasContent = chatInput.trim() || chipIds.size > 0;
 
-  const filteredAssets = SAMPLE_ASSETS.map(cat => ({
+  const filteredAssets = PROMPT_SAMPLE_ASSETS.map(cat => ({
     ...cat,
     items: cat.items.filter(item =>
       assetSearch ? item.label.toLowerCase().includes(assetSearch.toLowerCase()) : true
