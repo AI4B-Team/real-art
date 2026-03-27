@@ -1,63 +1,16 @@
-import { useState, useRef, useCallback, KeyboardEvent } from "react";
+import { useState, useRef, useCallback } from "react";
 import {
-  Video, Image, AudioLines, Mic, User, Link, Copy, Clock, Hash,
-  Heart, Sparkles, Music, Upload, Box, Send, ChevronDown, Shuffle,
-  Loader2, Zap, Check, X as XIcon, Plus, FileText,
+  Video, Image, AudioLines, Hash,
+  Sparkles, Send, ChevronDown, Shuffle,
+  Loader2, Zap, Check, Plus, Upload,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useAtMention } from "@/hooks/useAtMention";
 import MentionDropdown from "@/components/MentionDropdown";
+import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
 
 type ContentType = "video" | "image" | "audio";
-
-export interface AssetChip {
-  id: string;
-  type: "character" | "video" | "image" | "script" | "music" | "audio";
-  label: string;
-  thumbnail?: string;
-}
-
-const CHIP_ICON: Record<AssetChip["type"], string> = {
-  character: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`,
-  video: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>`,
-  image: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>`,
-  script: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>`,
-  music: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
-  audio: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>`,
-};
-
-const LUCIDE_ICONS: Record<AssetChip["type"], typeof User> = {
-  character: User, video: Video, image: Image, script: FileText, music: Music, audio: AudioLines,
-};
-
-const SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; items: { id: string; label: string; thumbnail?: string }[] }[] = [
-  {
-    category: "Characters", type: "character",
-    items: [
-      { id: "char-clara", label: "Clara", thumbnail: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
-      { id: "char-alex", label: "Alex", thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
-      { id: "char-maya", label: "Maya", thumbnail: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop" },
-    ],
-  },
-  {
-    category: "Videos", type: "video",
-    items: [
-      { id: "vid-1", label: "Video 1", thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=40&h=40&fit=crop" },
-      { id: "vid-2", label: "Video 2", thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=40&h=40&fit=crop" },
-    ],
-  },
-  {
-    category: "Scripts", type: "script",
-    items: [{ id: "script-v1", label: "Script V1" }, { id: "script-v2", label: "Script V2" }],
-  },
-  {
-    category: "Music", type: "music",
-    items: [{ id: "bgm-1", label: "BGM for Clara" }, { id: "bgm-2", label: "Upbeat Track" }, { id: "bgm-3", label: "Ambient Mood" }],
-  },
-];
-
-const X_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`;
 
 interface EditorPromptBoxProps {
   editorType: ContentType;
@@ -66,6 +19,8 @@ interface EditorPromptBoxProps {
   onSend: (richHtml?: string) => void;
   isStreaming?: boolean;
 }
+
+export type { AssetChip };
 
 const CONTENT_TYPES: { id: ContentType; icon: typeof Video; label: string; color: string; bgColor: string }[] = [
   { id: "video", icon: Video, label: "Video", color: "text-accent", bgColor: "bg-accent/15" },
@@ -79,53 +34,18 @@ const PLACEHOLDERS: Record<ContentType, string> = {
   audio: "Describe the audio you want to create...",
 };
 
-function createChipElement(chip: AssetChip, onRemoveCallback: (id: string) => void): HTMLSpanElement {
-  const chipSpan = document.createElement("span");
-  chipSpan.contentEditable = "false";
-  chipSpan.dataset.chipId = chip.id;
-  chipSpan.dataset.chipType = chip.type;
-  chipSpan.style.cssText = "display:inline-flex;align-items:center;gap:4px;padding:2px 8px;margin:0 2px;border-radius:8px;font-size:0.82rem;font-weight:500;white-space:nowrap;user-select:none;vertical-align:middle;background:hsl(var(--foreground)/0.06);color:hsl(var(--foreground));";
-
-  if (chip.thumbnail) {
-    const img = document.createElement("img");
-    img.src = chip.thumbnail;
-    img.alt = "";
-    img.style.cssText = "width:20px;height:20px;border-radius:4px;object-fit:cover;";
-    chipSpan.appendChild(img);
-  } else {
-    const iconWrap = document.createElement("span");
-    iconWrap.style.cssText = "width:20px;height:20px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;background:hsl(var(--foreground)/0.08);color:hsl(var(--muted-foreground));";
-    iconWrap.innerHTML = CHIP_ICON[chip.type];
-    chipSpan.appendChild(iconWrap);
-  }
-
-  const labelNode = document.createTextNode(chip.label);
-  chipSpan.appendChild(labelNode);
-
-  const removeBtn = document.createElement("button");
-  removeBtn.style.cssText = "margin-left:2px;padding:2px;border-radius:4px;border:none;background:transparent;cursor:pointer;display:inline-flex;align-items:center;";
-  removeBtn.innerHTML = X_SVG;
-  removeBtn.onmousedown = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    chipSpan.remove();
-    onRemoveCallback(chip.id);
-  };
-  chipSpan.appendChild(removeBtn);
-
-  return chipSpan;
-}
-
 export default function EditorPromptBox({ editorType, chatInput, onChatInputChange, onSend, isStreaming = false }: EditorPromptBoxProps) {
   const [contentType, setContentType] = useState<ContentType>(editorType);
   const [isContentTypeOpen, setIsContentTypeOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [chipIds, setChipIds] = useState<Set<string>>(new Set());
+  const [uploadedImgCount, setUploadedImgCount] = useState(0);
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
   const [assetSearch, setAssetSearch] = useState("");
   const editableRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
+  const imgUploadRef = useRef<HTMLInputElement>(null);
   const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(editableRef);
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
@@ -229,6 +149,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     syncText();
   }, [syncText]);
 
+
   const addChip = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
     if (chipIds.has(item.id)) return;
     const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
@@ -282,6 +203,19 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     });
   }, [chipIds, removeChip, restoreEditableCaret, syncText]);
 
+  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith("image/")) return;
+      const url = URL.createObjectURL(file);
+      const chip = makeUploadedImageChip(uploadedImgCount, url);
+      setUploadedImgCount(prev => prev + 1);
+      addChip(chip.type, { id: chip.id, label: chip.label, thumbnail: chip.thumbnail });
+    });
+    e.target.value = "";
+  }, [uploadedImgCount, addChip]);
+
   const addChipFromMention = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
     if (chipIds.has(item.id)) return;
     const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
@@ -331,7 +265,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
   const hasContent = chatInput.trim() || chipIds.size > 0;
 
-  const filteredAssets = SAMPLE_ASSETS.map(cat => ({
+  const filteredAssets = PROMPT_SAMPLE_ASSETS.map(cat => ({
     ...cat,
     items: cat.items.filter(item =>
       assetSearch ? item.label.toLowerCase().includes(assetSearch.toLowerCase()) : true
@@ -386,7 +320,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           />
           {mention.active && mention.anchorRect && (
             <MentionDropdown
-              assets={SAMPLE_ASSETS}
+              assets={PROMPT_SAMPLE_ASSETS}
               query={mention.query}
               position={mention.anchorRect}
               chipIds={chipIds}
@@ -421,7 +355,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
                   <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
                   {cat.items.map(item => {
                     const isAdded = chipIds.has(item.id);
-                    const Icon = LUCIDE_ICONS[cat.type];
+                    const Icon = PROMPT_CHIP_ICONS[cat.type];
                     return (
                       <button key={item.id} onMouseDown={(e) => e.preventDefault()} onClick={() => addChip(cat.type, item)} disabled={isAdded}
                         className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
@@ -432,7 +366,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
                             <Icon className="w-3.5 h-3.5 text-muted" />
                           </span>
                         )}
-                        <span className="font-medium">{item.label}</span>
+                        <span className="font-medium">@{item.label}</span>
                         {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
                       </button>
                     );
@@ -440,6 +374,18 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
                 </div>
               ))}
               {filteredAssets.length === 0 && <p className="text-center text-sm text-muted py-4">No assets found</p>}
+              <div className="border-t border-foreground/[0.06] mt-1 pt-1">
+                <button
+                  onMouseDown={e => e.preventDefault()}
+                  onClick={() => { setAssetPickerOpen(false); imgUploadRef.current?.click(); }}
+                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors"
+                >
+                  <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
+                    <Upload className="w-3.5 h-3.5 text-muted" />
+                  </span>
+                  <span className="font-medium">Upload Image</span>
+                </button>
+              </div>
             </div>
           </PopoverContent>
         </Popover>
@@ -479,6 +425,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           <Send className="w-4 h-4 -rotate-45" />
         </button>
       </div>
+      <input ref={imgUploadRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
     </div>
   );
 }

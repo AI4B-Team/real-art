@@ -73,7 +73,7 @@ import SocialContentPanel from "@/components/create/SocialContentPanel";
 import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
-import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, type AssetChip } from "@/lib/promptChips";
+import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
 import { useAtMention } from "@/hooks/useAtMention";
 import MentionDropdown from "@/components/MentionDropdown";
 
@@ -421,10 +421,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
   // Chip/asset picker state
   const [chipIds, setChipIds] = useState<Set<string>>(new Set());
+  const [uploadedImgCount, setUploadedImgCount] = useState(0);
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
   const [assetSearch, setAssetSearch] = useState("");
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
+  const imgUploadRef = useRef<HTMLInputElement>(null);
   const isInternalEditRef = useRef(false);
   const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(textareaRef);
 
@@ -818,6 +820,19 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     });
   }, [chipIds, removeChip, syncPromptFromEditable]);
 
+  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith("image/")) return;
+      const url = URL.createObjectURL(file);
+      const chip = makeUploadedImageChip(uploadedImgCount, url);
+      setUploadedImgCount(prev => prev + 1);
+      addChip(chip.type, { id: chip.id, label: chip.label, thumbnail: chip.thumbnail });
+    });
+    e.target.value = "";
+  }, [uploadedImgCount, addChip]);
+
   const addChipFromMention = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
     if (chipIds.has(item.id)) return;
     const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
@@ -1051,6 +1066,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   onSelect={addChipFromMention}
                 />
               )}
+              <input ref={imgUploadRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
               <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
                 {isListening && (
                   <>
@@ -1355,7 +1371,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                                     <ChipIcon className="w-3.5 h-3.5 text-muted" />
                                   </span>
                                 )}
-                                <span className="font-medium">{item.label}</span>
+                                <span className="font-medium">@{item.label}</span>
                                 {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
                               </button>
                             );
@@ -1363,6 +1379,18 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         </div>
                       ))}
                       {filteredAssets.length === 0 && <p className="text-center text-sm text-muted py-4">No assets found</p>}
+                      <div className="border-t border-foreground/[0.06] mt-1 pt-1">
+                        <button
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => { setAssetPickerOpen(false); imgUploadRef.current?.click(); }}
+                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors"
+                        >
+                          <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
+                            <Upload className="w-3.5 h-3.5 text-muted" />
+                          </span>
+                          <span className="font-medium">Upload Image</span>
+                        </button>
+                      </div>
                     </div>
                   </PopoverContent>
                 </Popover>

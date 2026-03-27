@@ -1,8 +1,8 @@
-import { User, Video, Image, FileText, Music, AudioLines } from "lucide-react";
+import { User, Video, Image, FileText, Music, AudioLines, Upload } from "lucide-react";
 
 export interface AssetChip {
   id: string;
-  type: "character" | "video" | "image" | "script" | "music" | "audio";
+  type: "character" | "video" | "image" | "script" | "music" | "audio" | "uploaded-image";
   label: string;
   thumbnail?: string;
 }
@@ -14,10 +14,11 @@ const CHIP_ICON_SVG: Record<AssetChip["type"], string> = {
   script: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>`,
   music: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
   audio: `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 10v3"/><path d="M6 6v11"/><path d="M10 3v18"/><path d="M14 8v7"/><path d="M18 5v13"/><path d="M22 10v3"/></svg>`,
+  "uploaded-image": `<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
 };
 
 export const PROMPT_CHIP_ICONS: Record<AssetChip["type"], typeof User> = {
-  character: User, video: Video, image: Image, script: FileText, music: Music, audio: AudioLines,
+  character: User, video: Video, image: Image, script: FileText, music: Music, audio: AudioLines, "uploaded-image": Upload,
 };
 
 export const PROMPT_SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; items: { id: string; label: string; thumbnail?: string }[] }[] = [
@@ -68,7 +69,8 @@ export function createChipElement(chip: AssetChip, onRemoveCallback: (id: string
     chipSpan.appendChild(iconWrap);
   }
 
-  const labelNode = document.createTextNode(chip.label);
+  // Always show @ prefix in the chip label
+  const labelNode = document.createTextNode(`@${chip.label}`);
   chipSpan.appendChild(labelNode);
 
   const removeBtn = document.createElement("button");
@@ -83,4 +85,15 @@ export function createChipElement(chip: AssetChip, onRemoveCallback: (id: string
   chipSpan.appendChild(removeBtn);
 
   return chipSpan;
+}
+
+/** Generate a unique uploaded-image chip ID and label based on current count */
+export function makeUploadedImageChip(imgCount: number, thumbnailUrl: string): AssetChip {
+  const num = imgCount + 1;
+  return {
+    id: `uploaded-img-${Date.now()}-${num}`,
+    type: "uploaded-image",
+    label: `img${num}`,
+    thumbnail: thumbnailUrl,
+  };
 }
