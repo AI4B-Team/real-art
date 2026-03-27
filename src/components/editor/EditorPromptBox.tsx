@@ -152,12 +152,26 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
   const handleInput = useCallback(() => { syncText(); }, [syncText]);
 
+  const handleSend = useCallback(() => {
+    const el = editableRef.current;
+    if (!el) return;
+    // Clone and strip remove buttons for clean chat display
+    const clone = el.cloneNode(true) as HTMLElement;
+    clone.querySelectorAll('button').forEach(btn => btn.remove());
+    const html = clone.innerHTML;
+    onSend(html || undefined);
+    // Clear contentEditable and chips
+    el.innerHTML = "";
+    setChipIds(new Set());
+    onChatInputChange("");
+  }, [onSend, onChatInputChange]);
+
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
-      onSend();
+      handleSend();
     }
-  }, [onSend]);
+  }, [handleSend]);
 
   const handleEnhance = () => {
     if (!chatInput.trim()) return;
