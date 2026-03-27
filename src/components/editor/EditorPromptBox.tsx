@@ -153,7 +153,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     onChatInputChange(extractText());
   }, [extractText, onChatInputChange]);
 
-  const handleInput = useCallback(() => { syncText(); }, [syncText]);
+  const handleInput = useCallback(() => { syncText(); checkForMention(); }, [syncText, checkForMention]);
 
   const handleSend = useCallback(() => {
     const el = editableRef.current;
