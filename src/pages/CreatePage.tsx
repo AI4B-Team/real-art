@@ -426,6 +426,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [assetSearch, setAssetSearch] = useState("");
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
+  const imgUploadRef = useRef<HTMLInputElement>(null);
   const isInternalEditRef = useRef(false);
   const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(textareaRef);
 
