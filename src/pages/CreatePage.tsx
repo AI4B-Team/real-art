@@ -1066,6 +1066,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   onSelect={addChipFromMention}
                 />
               )}
+              <input ref={imgUploadRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
               <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
                 {isListening && (
                   <>
