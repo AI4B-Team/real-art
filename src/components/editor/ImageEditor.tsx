@@ -342,9 +342,9 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
     setCreations(prev => prev.map(cr => ({ ...cr, isActive: cr.id === c.id })));
   };
 
-  const handleSendImageChat = async () => {
+  const handleSendImageChat = async (richHtml?: string) => {
     if (!chatInput.trim() || isStreaming) return;
-    const userMsg: ChatMessage = { role: "user", content: chatInput };
+    const userMsg: ChatMessage = { role: "user", content: chatInput, richContent: richHtml };
     const newMessages = [...chatMessages, userMsg];
     setChatMessages(newMessages);
     setChatInput("");
