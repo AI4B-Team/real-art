@@ -337,9 +337,9 @@ const VideoEditor = ({ video }: Props) => {
   const [promptDuration, setPromptDuration] = useState("10");
   const [promptImageCount, setPromptImageCount] = useState(1);
 
-  const handleSendChat = async () => {
+  const handleSendChat = async (richHtml?: string) => {
     if (!chatInput.trim() || isStreaming) return;
-    const userMsg: ChatMessage = { role: "user", content: chatInput };
+    const userMsg: ChatMessage = { role: "user", content: chatInput, richContent: richHtml };
     const newMessages = [...chatMessages, userMsg];
     setChatMessages(newMessages);
     setChatInput("");
