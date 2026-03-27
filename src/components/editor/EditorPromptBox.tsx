@@ -216,6 +216,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     e.target.value = "";
   }, [uploadedImgCount, addChip]);
 
+  const addChipFromMention = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
     if (chipIds.has(item.id)) return;
     const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
     const rangeAtMention = consumeMention();
