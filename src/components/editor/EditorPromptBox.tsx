@@ -238,7 +238,6 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
         visibleSelection.addRange(newRange);
       });
     });
-    });
   }, [chipIds, removeChip, syncText]);
 
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
