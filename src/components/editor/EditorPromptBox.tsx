@@ -61,7 +61,7 @@ interface EditorPromptBoxProps {
   editorType: ContentType;
   chatInput: string;
   onChatInputChange: (val: string) => void;
-  onSend: () => void;
+  onSend: (richHtml?: string) => void;
   isStreaming?: boolean;
 }
 
