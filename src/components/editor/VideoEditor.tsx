@@ -178,7 +178,7 @@ const STORYBOARD_SCENES = [
   { time: "00:05", narrator: "Jurin", desc: "Huddled behind cover, she pulls out a small device.", thumb: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=120" },
 ];
 
-interface ChatMessage { role: "user" | "assistant"; content: string; }
+interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
 
 const ALL_AI_SUGGESTIONS = [
   "❤️ Create a love story",
