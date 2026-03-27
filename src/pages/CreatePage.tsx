@@ -1370,7 +1370,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                                     <ChipIcon className="w-3.5 h-3.5 text-muted" />
                                   </span>
                                 )}
-                                <span className="font-medium">{item.label}</span>
+                                <span className="font-medium">@{item.label}</span>
                                 {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
                               </button>
                             );
@@ -1378,6 +1378,18 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         </div>
                       ))}
                       {filteredAssets.length === 0 && <p className="text-center text-sm text-muted py-4">No assets found</p>}
+                      <div className="border-t border-foreground/[0.06] mt-1 pt-1">
+                        <button
+                          onMouseDown={e => e.preventDefault()}
+                          onClick={() => { setAssetPickerOpen(false); imgUploadRef.current?.click(); }}
+                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors"
+                        >
+                          <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
+                            <Upload className="w-3.5 h-3.5 text-muted" />
+                          </span>
+                          <span className="font-medium">Upload Image</span>
+                        </button>
+                      </div>
                     </div>
                   </PopoverContent>
                 </Popover>
