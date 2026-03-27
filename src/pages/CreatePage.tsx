@@ -421,6 +421,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
   // Chip/asset picker state
   const [chipIds, setChipIds] = useState<Set<string>>(new Set());
+  const [uploadedImgCount, setUploadedImgCount] = useState(0);
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
   const [assetSearch, setAssetSearch] = useState("");
   const savedRangeRef = useRef<Range | null>(null);
