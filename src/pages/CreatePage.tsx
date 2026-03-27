@@ -575,13 +575,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     const urlType = searchParams.get("type");
     if (urlPrompt) {
       setPrompt(urlPrompt);
-      // Auto-resize textarea after setting prompt
-      setTimeout(() => {
-        if (textareaRef.current) {
-          textareaRef.current.style.height = "36px";
-          textareaRef.current.style.height = Math.min(textareaRef.current.scrollHeight, 140) + "px";
-        }
-      }, 0);
+      setTimeout(() => { textareaRef.current?.focus(); }, 0);
     }
     if (urlType && ["image","video","audio","design","content","document","app"].includes(urlType)) {
       setSelectedType(urlType as ContentType);
