@@ -818,6 +818,47 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     });
   }, [chipIds, removeChip, syncPromptFromEditable]);
 
+  const addChipFromMention = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
+    if (chipIds.has(item.id)) return;
+    const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
+    const rangeAtMention = consumeMention();
+    setChipIds(prev => new Set(prev).add(item.id));
+
+    requestAnimationFrame(() => {
+      const el = textareaRef.current;
+      if (!el) return;
+      el.focus();
+      const sel = window.getSelection();
+      if (!sel) return;
+
+      let range = rangeAtMention;
+      if (!range || !el.contains(range.startContainer)) {
+        range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+      }
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const chipEl = createChipElement(chip, removeChip);
+      range.deleteContents();
+      range.insertNode(chipEl);
+
+      const space = document.createTextNode("\u00A0");
+      chipEl.after(space);
+      const newRange = document.createRange();
+      newRange.setStart(space, 1);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+
+      savedRangeRef.current = newRange.cloneRange();
+      pendingFocusRangeRef.current = newRange.cloneRange();
+      syncPromptFromEditable();
+      restoreEditableCaret(newRange.cloneRange());
+    });
+  }, [chipIds, consumeMention, removeChip, restoreEditableCaret, syncPromptFromEditable]);
+
   const filteredAssets = PROMPT_SAMPLE_ASSETS.map(cat => ({
     ...cat,
     items: cat.items.filter(item =>
