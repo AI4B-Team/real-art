@@ -229,6 +229,16 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
       savedRangeRef.current = null;
       syncText();
+
+      // Ensure caret is visible by scrolling into view
+      const caretRect = newRange.getBoundingClientRect();
+      if (caretRect && el) {
+        el.scrollTop = el.scrollHeight;
+      }
+    });
+    // Second rAF to guarantee browser paints the caret
+    requestAnimationFrame(() => {
+      editableRef.current?.focus();
     });
   }, [chipIds, removeChip, syncText]);
 
