@@ -222,7 +222,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
       // Move cursor after space
       const newRange = document.createRange();
-      newRange.setStartAfter(space);
+      newRange.setStart(space, space.textContent?.length ?? 1);
       newRange.collapse(true);
       sel.removeAllRanges();
       sel.addRange(newRange);
@@ -230,15 +230,13 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
       savedRangeRef.current = null;
       syncText();
 
-      // Ensure caret is visible by scrolling into view
-      const caretRect = newRange.getBoundingClientRect();
-      if (caretRect && el) {
-        el.scrollTop = el.scrollHeight;
-      }
-    });
-    // Second rAF to guarantee browser paints the caret
-    requestAnimationFrame(() => {
-      editableRef.current?.focus();
+      requestAnimationFrame(() => {
+        el.focus({ preventScroll: true });
+        const visibleSelection = window.getSelection();
+        if (!visibleSelection) return;
+        visibleSelection.removeAllRanges();
+        visibleSelection.addRange(newRange);
+      });
     });
   }, [chipIds, removeChip, syncText]);
 
