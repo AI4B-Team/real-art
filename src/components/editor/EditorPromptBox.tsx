@@ -425,6 +425,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           <Send className="w-4 h-4 -rotate-45" />
         </button>
       </div>
+      <input ref={imgUploadRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
     </div>
   );
 }
