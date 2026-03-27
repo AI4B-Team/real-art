@@ -977,18 +977,18 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
 
             {/* Textarea + optional Recording overlay */}
             <div className="relative flex-1 min-h-[36px]">
-              <textarea
+              <div
                 ref={textareaRef}
-                value={prompt}
-                onChange={e => setPrompt(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleGenerate(); }}
+                contentEditable
+                suppressContentEditableWarning
+                onInput={() => { isInternalEditRef.current = true; setPrompt(extractText()); }}
+                onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); handleGenerate(); } }}
                 onFocus={() => setPromptFocused(true)}
                 onBlur={() => setPromptFocused(false)}
-                placeholder={placeholder}
-                rows={1}
-                className="w-full bg-transparent border-none outline-none text-[0.92rem] text-foreground placeholder:text-muted/50 leading-[1.6] font-body min-h-[36px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px] resize-none"
-                style={{ height: "36px" }}
-                onInput={e => { const el = e.currentTarget; el.style.height = "36px"; el.style.height = Math.min(el.scrollHeight, 140) + "px"; }}
+                onPaste={e => { e.preventDefault(); document.execCommand("insertText", false, e.clipboardData.getData("text/plain")); }}
+                data-placeholder={placeholder}
+                className="w-full bg-transparent border-none outline-none text-[0.92rem] text-foreground leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px] break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted/50 [&:empty]:before:pointer-events-none"
+                style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
               />
               <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
                 {isListening && (
