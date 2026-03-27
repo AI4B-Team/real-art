@@ -6,6 +6,8 @@ import {
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { useAtMention } from "@/hooks/useAtMention";
+import MentionDropdown from "@/components/MentionDropdown";
 
 type ContentType = "video" | "image" | "audio";
 
@@ -124,6 +126,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const editableRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
+  const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(editableRef);
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
   const ContentIcon = currentType.icon;
@@ -150,7 +153,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     onChatInputChange(extractText());
   }, [extractText, onChatInputChange]);
 
-  const handleInput = useCallback(() => { syncText(); }, [syncText]);
+  const handleInput = useCallback(() => { syncText(); checkForMention(); }, [syncText, checkForMention]);
 
   const handleSend = useCallback(() => {
     const el = editableRef.current;
@@ -167,11 +170,12 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   }, [onSend, onChatInputChange]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (mention.active && e.key === "Escape") { e.preventDefault(); dismissMention(); return; }
+    if (e.key === "Enter" && !e.shiftKey && !mention.active) {
       e.preventDefault();
       handleSend();
     }
-  }, [handleSend]);
+  }, [handleSend, mention.active, dismissMention]);
 
   const handleEnhance = () => {
     if (!chatInput.trim()) return;
@@ -278,6 +282,47 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     });
   }, [chipIds, removeChip, restoreEditableCaret, syncText]);
 
+  const addChipFromMention = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
+    if (chipIds.has(item.id)) return;
+    const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
+    const rangeAtMention = consumeMention();
+    setChipIds(prev => new Set(prev).add(item.id));
+
+    requestAnimationFrame(() => {
+      const el = editableRef.current;
+      if (!el) return;
+      el.focus();
+      const sel = window.getSelection();
+      if (!sel) return;
+
+      let range = rangeAtMention;
+      if (!range || !el.contains(range.startContainer)) {
+        range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+      }
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const chipEl = createChipElement(chip, removeChip);
+      range.deleteContents();
+      range.insertNode(chipEl);
+
+      const space = document.createTextNode("\u00A0");
+      chipEl.after(space);
+      const newRange = document.createRange();
+      newRange.setStart(space, 1);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+
+      savedRangeRef.current = newRange.cloneRange();
+      pendingFocusRangeRef.current = newRange.cloneRange();
+      syncText();
+      restoreEditableCaret(newRange.cloneRange());
+    });
+  }, [chipIds, consumeMention, removeChip, restoreEditableCaret, syncText]);
+
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
     e.preventDefault();
     const text = e.clipboardData.getData("text/plain");
@@ -327,7 +372,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           </div>
         )}
 
-        <div className="pl-12 pr-4 pt-3 pb-2">
+        <div className="pl-12 pr-4 pt-3 pb-2 relative">
           <div
             ref={editableRef}
             contentEditable
@@ -339,6 +384,15 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
             className="min-h-[48px] text-sm text-foreground leading-[1.8] outline-none break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted [&:empty]:before:pointer-events-none"
             style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
           />
+          {mention.active && mention.anchorRect && (
+            <MentionDropdown
+              assets={SAMPLE_ASSETS}
+              query={mention.query}
+              position={mention.anchorRect}
+              chipIds={chipIds}
+              onSelect={addChipFromMention}
+            />
+          )}
         </div>
       </div>
 

@@ -74,6 +74,8 @@ import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, type AssetChip } from "@/lib/promptChips";
+import { useAtMention } from "@/hooks/useAtMention";
+import MentionDropdown from "@/components/MentionDropdown";
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
@@ -424,6 +426,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
   const isInternalEditRef = useRef(false);
+  const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(textareaRef);
 
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
@@ -815,6 +818,47 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     });
   }, [chipIds, removeChip, syncPromptFromEditable]);
 
+  const addChipFromMention = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
+    if (chipIds.has(item.id)) return;
+    const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
+    const rangeAtMention = consumeMention();
+    setChipIds(prev => new Set(prev).add(item.id));
+
+    requestAnimationFrame(() => {
+      const el = textareaRef.current;
+      if (!el) return;
+      el.focus();
+      const sel = window.getSelection();
+      if (!sel) return;
+
+      let range = rangeAtMention;
+      if (!range || !el.contains(range.startContainer)) {
+        range = document.createRange();
+        range.selectNodeContents(el);
+        range.collapse(false);
+      }
+      sel.removeAllRanges();
+      sel.addRange(range);
+
+      const chipEl = createChipElement(chip, removeChip);
+      range.deleteContents();
+      range.insertNode(chipEl);
+
+      const space = document.createTextNode("\u00A0");
+      chipEl.after(space);
+      const newRange = document.createRange();
+      newRange.setStart(space, 1);
+      newRange.collapse(true);
+      sel.removeAllRanges();
+      sel.addRange(newRange);
+
+      savedRangeRef.current = newRange.cloneRange();
+      pendingFocusRangeRef.current = newRange.cloneRange();
+      syncPromptFromEditable();
+      restoreEditableCaret(newRange.cloneRange());
+    });
+  }, [chipIds, consumeMention, removeChip, restoreEditableCaret, syncPromptFromEditable]);
+
   const filteredAssets = PROMPT_SAMPLE_ASSETS.map(cat => ({
     ...cat,
     items: cat.items.filter(item =>
@@ -989,7 +1033,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 ref={textareaRef}
                 contentEditable
                 suppressContentEditableWarning
-                onInput={() => { isInternalEditRef.current = true; setPrompt(extractText()); }}
+                onInput={() => { isInternalEditRef.current = true; setPrompt(extractText()); checkForMention(); }}
                 onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); handleGenerate(); } }}
                 onFocus={() => setPromptFocused(true)}
                 onBlur={() => setPromptFocused(false)}
@@ -998,6 +1042,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 className="w-full bg-transparent border-none outline-none text-[0.92rem] text-foreground leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px] break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted/50 [&:empty]:before:pointer-events-none"
                 style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
               />
+              {mention.active && mention.anchorRect && (
+                <MentionDropdown
+                  assets={PROMPT_SAMPLE_ASSETS}
+                  query={mention.query}
+                  position={mention.anchorRect}
+                  chipIds={chipIds}
+                  onSelect={addChipFromMention}
+                />
+              )}
               <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
                 {isListening && (
                   <>
