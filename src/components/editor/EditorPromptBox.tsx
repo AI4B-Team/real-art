@@ -123,6 +123,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const [chipIds, setChipIds] = useState<Set<string>>(new Set());
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
   const [assetSearch, setAssetSearch] = useState("");
+  const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(editableRef);
   const editableRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
