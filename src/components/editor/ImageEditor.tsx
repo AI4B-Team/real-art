@@ -139,7 +139,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
 
   // AI Chat state
-  interface ChatMessage { role: "user" | "assistant"; content: string; }
+  interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
