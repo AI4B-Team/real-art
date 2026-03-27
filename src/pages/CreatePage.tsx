@@ -73,6 +73,7 @@ import SocialContentPanel from "@/components/create/SocialContentPanel";
 import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
+import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, type AssetChip } from "@/lib/promptChips";
 
 /* ─── Types ─────────────────────────────────────────────────── */
 
