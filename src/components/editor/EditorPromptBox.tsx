@@ -123,6 +123,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const [assetSearch, setAssetSearch] = useState("");
   const editableRef = useRef<HTMLDivElement>(null);
   const savedRangeRef = useRef<Range | null>(null);
+  const pendingFocusRangeRef = useRef<Range | null>(null);
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
   const ContentIcon = currentType.icon;
@@ -178,6 +179,33 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     }
   }, []);
 
+  const restoreEditableCaret = useCallback((range?: Range | null) => {
+    const el = editableRef.current;
+    if (!el) return;
+
+    requestAnimationFrame(() => {
+      el.focus({ preventScroll: true });
+
+      const selection = window.getSelection();
+      if (!selection) return;
+
+      selection.removeAllRanges();
+
+      if (range) {
+        selection.addRange(range);
+      }
+    });
+  }, []);
+
+  const handleAssetPopoverCloseAutoFocus = useCallback((event: Event) => {
+    if (!pendingFocusRangeRef.current) return;
+
+    event.preventDefault();
+    const range = pendingFocusRangeRef.current.cloneRange();
+    pendingFocusRangeRef.current = null;
+    restoreEditableCaret(range);
+  }, [restoreEditableCaret]);
+
   const removeChip = useCallback((id: string) => {
     setChipIds(prev => { const n = new Set(prev); n.delete(id); return n; });
     syncText();
@@ -227,18 +255,14 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
       sel.removeAllRanges();
       sel.addRange(newRange);
 
-      savedRangeRef.current = null;
+      const caretRange = newRange.cloneRange();
+      savedRangeRef.current = caretRange;
+      pendingFocusRangeRef.current = caretRange;
       syncText();
 
-      requestAnimationFrame(() => {
-        el.focus({ preventScroll: true });
-        const visibleSelection = window.getSelection();
-        if (!visibleSelection) return;
-        visibleSelection.removeAllRanges();
-        visibleSelection.addRange(newRange);
-      });
+      restoreEditableCaret(caretRange);
     });
-  }, [chipIds, removeChip, syncText]);
+  }, [chipIds, removeChip, restoreEditableCaret, syncText]);
 
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
     e.preventDefault();
@@ -315,7 +339,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
               <Plus className="w-5 h-5" />
             </button>
           </PopoverTrigger>
-          <PopoverContent className="w-64 p-0" align="start" sideOffset={8}>
+          <PopoverContent className="w-64 p-0" align="start" sideOffset={8} onCloseAutoFocus={handleAssetPopoverCloseAutoFocus}>
             <div className="p-2 border-b border-foreground/[0.06]">
               <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
                 <Hash className="w-3.5 h-3.5 text-muted" />
@@ -331,7 +355,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
                     const isAdded = chipIds.has(item.id);
                     const Icon = LUCIDE_ICONS[cat.type];
                     return (
-                      <button key={item.id} onClick={() => addChip(cat.type, item)} disabled={isAdded}
+                      <button key={item.id} onMouseDown={(e) => e.preventDefault()} onClick={() => addChip(cat.type, item)} disabled={isAdded}
                         className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
                         {item.thumbnail ? (
                           <img src={item.thumbnail} alt="" className="w-7 h-7 rounded object-cover" />
