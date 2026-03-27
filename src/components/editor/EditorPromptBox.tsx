@@ -149,6 +149,19 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     syncText();
   }, [syncText]);
 
+  const handleImageUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) return;
+    Array.from(files).forEach(file => {
+      if (!file.type.startsWith("image/")) return;
+      const url = URL.createObjectURL(file);
+      const chip = makeUploadedImageChip(uploadedImgCount, url);
+      setUploadedImgCount(prev => prev + 1);
+      addChip(chip.type, { id: chip.id, label: chip.label, thumbnail: chip.thumbnail });
+    });
+    e.target.value = "";
+  }, [uploadedImgCount, addChip]);
+
   const addChip = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
     if (chipIds.has(item.id)) return;
     const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
