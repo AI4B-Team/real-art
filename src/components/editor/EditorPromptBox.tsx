@@ -420,7 +420,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
         <div className="flex-1 min-w-0" />
 
-        <button onClick={onSend} disabled={isStreaming || !hasContent}
+        <button onClick={handleSend} disabled={isStreaming || !hasContent}
           className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors shrink-0 ${hasContent && !isStreaming ? "bg-foreground text-background hover:bg-foreground/90" : "bg-foreground/10 text-muted"}`}>
           <Send className="w-4 h-4 -rotate-45" />
         </button>

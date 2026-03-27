@@ -489,6 +489,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                                     <p key={j} className={line.startsWith("**") ? "font-bold" : ""}>{line.replace(/\*\*/g, "")}</p>
                                   ))}
                                 </div>
+                              ) : msg.richContent ? (
+                                <span dangerouslySetInnerHTML={{ __html: msg.richContent }} className="[&_span[data-chip-id]]:inline-flex" />
                               ) : msg.content}
                             </div>
                           </div>
