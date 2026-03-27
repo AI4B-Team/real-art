@@ -417,6 +417,14 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [showAllPlatforms, setShowAllPlatforms] = useState(false);
   const audioRecogRef = useRef<any>(null);
 
+  // Chip/asset picker state
+  const [chipIds, setChipIds] = useState<Set<string>>(new Set());
+  const [assetPickerOpen, setAssetPickerOpen] = useState(false);
+  const [assetSearch, setAssetSearch] = useState("");
+  const savedRangeRef = useRef<Range | null>(null);
+  const pendingFocusRangeRef = useRef<Range | null>(null);
+  const isInternalEditRef = useRef(false);
+
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
     const meta = which === "start" ? startFrameMeta : endFrameMeta;
