@@ -357,7 +357,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   
   const [docLangOpen, setDocLangOpen] = useState(false);
   const [docLangSearch, setDocLangSearch] = useState("");
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const textareaRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
   // App-specific states
