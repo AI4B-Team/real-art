@@ -2601,7 +2601,14 @@ const VideoEditor = ({ video }: Props) => {
               <button onClick={() => setZoom(Math.min(6, zoom + 0.5))} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted"><ZoomIn className="w-5 h-5" /></button>
               <div className="w-px h-6 bg-foreground/[0.08] mx-1" />
               <Tooltip><TooltipTrigger asChild>
-                <button className="px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium text-muted hover:bg-foreground/[0.08] transition-colors">Fit</button>
+                <button onClick={() => {
+                  const el = (window as any).__timelineEl as HTMLDivElement | null;
+                  if (el) {
+                    const containerWidth = el.getBoundingClientRect().width;
+                    const fitZoom = Math.max(0.5, Math.min(6, containerWidth / (duration * 12)));
+                    setZoom(fitZoom);
+                  }
+                }} className="px-3 py-1.5 bg-foreground/[0.04] border border-foreground/[0.06] rounded-lg text-sm font-medium text-muted hover:bg-foreground/[0.08] transition-colors">Fit</button>
               </TooltipTrigger><TooltipContent>Fit to View</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => setIsTimelineMinimized(!isTimelineMinimized)} className="p-2 hover:bg-foreground/[0.04] rounded-lg text-muted">
