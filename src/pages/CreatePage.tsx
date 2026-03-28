@@ -1058,6 +1058,15 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 className="w-full bg-transparent border-none outline-none text-[0.92rem] text-foreground leading-[1.6] font-body min-h-[36px] max-h-[140px] overflow-y-auto py-[6px] mt-[2px] caret-accent pr-[180px] break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted/50 [&:empty]:before:pointer-events-none"
                 style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
               />
+              {mention.active && mention.anchorRect && (
+                <MentionDropdown
+                  assets={PROMPT_SAMPLE_ASSETS}
+                  query={mention.query}
+                  position={mention.anchorRect}
+                  chipIds={chipIds}
+                  onSelect={addChipFromMention}
+                />
+              )}
               <input ref={imgUploadRef} type="file" accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
               <div className="absolute top-0 right-0 flex items-center gap-0 pt-[2px]">
                 {isListening && (
