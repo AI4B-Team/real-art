@@ -235,7 +235,7 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
-    </PageShell>
+    </>
   );
 };
 
