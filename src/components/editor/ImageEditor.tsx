@@ -909,7 +909,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                             className={`p-2.5 rounded-lg transition-all ${isDisabled ? "bg-card text-muted/30 cursor-not-allowed" : activeTool === tool.id ? "bg-accent text-white shadow-lg" : "bg-card text-muted hover:bg-foreground/[0.06] hover:text-foreground shadow-sm"}`}>
                             <tool.icon className="w-4 h-4" />
                           </button>
-                        </TooltipTrigger><TooltipContent>{tool.id === "save" && !hasChanges ? </TooltipTrigger><TooltipContent>{tool.id === "save" && !hasChanges ? "No Changes To Save" : tool.tooltip}</TooltipContent></Tooltip> : tool.tooltip}</TooltipContent></Tooltip>
+                        </TooltipTrigger><TooltipContent>{tool.id === "save" && !hasChanges ? "No Changes To Save" : tool.tooltip}</TooltipContent></Tooltip>
                       );
                     })}
                   </div>
