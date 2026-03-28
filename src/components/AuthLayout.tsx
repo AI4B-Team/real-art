@@ -55,6 +55,15 @@ const AuthLayout = ({ children }: AuthLayoutProps) => {
   const showSidebar = isLoggedIn && !NO_SIDEBAR_ROUTES.includes(location.pathname);
   const sidebarWidth = sidebarCollapsed ? 68 : 260;
 
+  // Bare routes render children with no navbar/sidebar
+  if (BARE_ROUTES.includes(location.pathname)) {
+    return (
+      <LayoutContext.Provider value={{ hasGlobalNavbar: false, sidebarCollapsed: true, setSidebarCollapsed: handleSetCollapsed }}>
+        {children}
+      </LayoutContext.Provider>
+    );
+  }
+
   return (
     <LayoutContext.Provider value={{ hasGlobalNavbar: true, sidebarCollapsed, setSidebarCollapsed: handleSetCollapsed }}>
       <div className="min-h-screen bg-background">
