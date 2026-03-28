@@ -3,7 +3,7 @@ import emptyImageCards from "@/assets/empty-image-cards.png";
 import {
   MousePointer2, Paintbrush, Eraser, PaintBucket, Type, Layers,
   ZoomIn, Play, SlidersHorizontal, Download, Save, Globe, ExternalLink,
-  Trash2, Upload, Scissors, Wand2, Plus, X, Check, ChevronDown, Image,
+  Trash2, Upload, Scissors, Wand2, Plus, Minus, X, Check, ChevronDown, Image,
   RotateCcw, RotateCw, Eye, EyeOff, Lock, Unlock, Search, Settings,
   FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
   Film, Send, ChevronLeft, Wrench, Palette, Heart, Zap,
@@ -979,6 +979,34 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               </div>
             )}
           </div>
+
+          {/* Zoom Controls */}
+          {selectedImage && (
+            <div className="absolute bottom-4 right-4 z-20 flex items-center gap-1.5 bg-card border border-foreground/[0.08] rounded-xl p-1.5 shadow-lg">
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => onZoomChange(100)}
+                  className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-muted hover:bg-foreground/[0.06] hover:text-foreground transition-colors">
+                  Fit
+                </button>
+              </TooltipTrigger><TooltipContent>Fit To Screen</TooltipContent></Tooltip>
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => onZoomChange(Math.max(25, zoomLevel - 10))}
+                  disabled={zoomLevel <= 25}
+                  className="p-1.5 rounded-lg text-muted hover:bg-foreground/[0.06] hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                  <Minus className="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
+              <span className="text-xs font-medium text-foreground w-10 text-center tabular-nums">{zoomLevel}%</span>
+              <Tooltip><TooltipTrigger asChild>
+                <button onClick={() => onZoomChange(Math.min(200, zoomLevel + 10))}
+                  disabled={zoomLevel >= 200}
+                  className="p-1.5 rounded-lg text-muted hover:bg-foreground/[0.06] hover:text-foreground transition-colors disabled:opacity-30 disabled:cursor-not-allowed">
+                  <Plus className="w-3.5 h-3.5" />
+                </button>
+              </TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
+            </div>
+          )}
         </div>
       </div>
 
