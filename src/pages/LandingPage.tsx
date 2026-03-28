@@ -284,6 +284,15 @@ const LandingPage = () => {
     (suggestionsPage + 1) * ITEMS_PER_PAGE
   );
 
+  // Close type dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (typeRef.current && !typeRef.current.contains(e.target as Node)) setTypeDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
+
   const handleGenerate = () => {
     navigate("/signup");
   };
