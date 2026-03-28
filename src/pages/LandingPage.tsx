@@ -7,7 +7,7 @@ import {
   Camera, Play, MessageCircle, Move, User, BookOpen, Presentation,
   Headphones, AudioLines, Captions, Pencil, Layers, Zap,
   Bot, Globe, Package, BarChart2, Film, LayoutGrid, Lock,
-  Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash,
+  Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash, SlidersHorizontal, Check,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import MinimalHeader from "@/components/MinimalHeader";
