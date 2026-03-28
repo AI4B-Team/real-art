@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight } from "lucide-react";
-import PageShell from "@/components/PageShell";
+import MinimalHeader from "@/components/MinimalHeader";
 import LanguageSelector from "@/components/LanguageSelector";
 
 const recentImages = [
