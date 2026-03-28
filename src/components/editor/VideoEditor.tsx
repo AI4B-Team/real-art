@@ -241,6 +241,7 @@ const VideoEditor = ({ video }: Props) => {
   
   const [audioSubTab, setAudioSubTab] = useState("Voices");
   const [visualsSubTab, setVisualsSubTab] = useState("Videos");
+  const [visualsSource, setVisualsSource] = useState("Creations");
   const [templateSearch, setTemplateSearch] = useState("");
   const [scriptContent, setScriptContent] = useState(
     "I'm going to tell you something shocking."
