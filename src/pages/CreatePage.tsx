@@ -1735,8 +1735,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </>
                 )}
 
-                {/* Ratio — image, design & video */}
-                {selectedSubMode && (selectedType === "image" || selectedType === "design" || selectedType === "video") && (
+                {/* Ratio — image & video (NOT design) */}
+                {selectedSubMode && (selectedType === "image" || selectedType === "video") && (
                   <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
@@ -1767,6 +1767,25 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           </span>
                           {r}
                           {selectedRatio === r && <Check size={12} className="ml-auto" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Orientation — design only (replaces ratio) */}
+                {selectedSubMode && selectedType === "design" && (
+                  <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-accent/10 text-accent"}`}>
+                        <ArrowLeftRight size={12} />{designOrientation}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
+                    <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                      {["Portrait", "Landscape"].map(o => (
+                        <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {o}{designOrientation === o && <Check size={12} />}
                         </button>
                       ))}
                     </PopoverContent>
