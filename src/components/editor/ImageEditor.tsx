@@ -1024,19 +1024,19 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               <div className="space-y-2">
                 {layers.map(layer => (
                   <div key={layer.id} onClick={() => setSelectedLayerId(layer.id)}
-                    className={`flex items-center gap-2 p-2.5 rounded-lg cursor-pointer transition-all ${selectedLayerId === layer.id ? "bg-accent/30 ring-1 ring-accent" : "bg-background/10 hover:bg-background/15"}`}>
+                    className={`flex items-center gap-2 p-2.5 rounded-lg cursor-pointer transition-all ${selectedLayerId === layer.id ? "bg-accent/10 ring-1 ring-accent" : "bg-foreground/[0.04] hover:bg-foreground/[0.06]"}`}>
                     <button onClick={(e) => { e.stopPropagation(); setLayers(prev => prev.map(l => l.id === layer.id ? { ...l, visible: !l.visible } : l)); }}
-                      className={`p-1 rounded transition-colors ${layer.visible ? "text-background" : "text-background/30"}`}>
+                      className={`p-1 rounded transition-colors ${layer.visible ? "text-foreground" : "text-muted"}`}>
                       {layer.visible ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
                     </button>
-                    <div className="w-8 h-8 bg-background/10 rounded flex items-center justify-center">
-                      {layer.type === "image" && <Image className="w-4 h-4 text-background/60" />}
-                      {layer.type === "drawing" && <Paintbrush className="w-4 h-4 text-background/60" />}
-                      {layer.type === "text" && <Type className="w-4 h-4 text-background/60" />}
+                    <div className="w-8 h-8 bg-foreground/[0.06] rounded flex items-center justify-center">
+                      {layer.type === "image" && <Image className="w-4 h-4 text-muted" />}
+                      {layer.type === "drawing" && <Paintbrush className="w-4 h-4 text-muted" />}
+                      {layer.type === "text" && <Type className="w-4 h-4 text-muted" />}
                     </div>
-                    <span className="flex-1 text-sm text-background truncate">{layer.name}</span>
+                    <span className="flex-1 text-sm text-foreground truncate">{layer.name}</span>
                     <button onClick={(e) => { e.stopPropagation(); setLayers(prev => prev.map(l => l.id === layer.id ? { ...l, locked: !l.locked } : l)); }}
-                      className={`p-1 rounded transition-colors ${layer.locked ? "text-amber-400" : "text-background/30 hover:text-background/60"}`}>
+                      className={`p-1 rounded transition-colors ${layer.locked ? "text-amber-400" : "text-muted hover:text-foreground"}`}>
                       {layer.locked ? <Lock className="w-4 h-4" /> : <Unlock className="w-4 h-4" />}
                     </button>
                   </div>
@@ -1044,14 +1044,14 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                 {selectedLayerId && (
                   <div className="space-y-2 pt-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-background/80">Opacity</span>
-                      <span className="text-sm text-background/60 tabular-nums">{layers.find(l => l.id === selectedLayerId)?.opacity ?? 100}%</span>
+                      <span className="text-sm text-foreground/80">Opacity</span>
+                      <span className="text-sm text-muted tabular-nums">{layers.find(l => l.id === selectedLayerId)?.opacity ?? 100}%</span>
                     </div>
                     <input type="range" min={0} max={100} value={layers.find(l => l.id === selectedLayerId)?.opacity ?? 100}
                       onChange={e => setLayers(prev => prev.map(l => l.id === selectedLayerId ? { ...l, opacity: Number(e.target.value) } : l))}
-                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-background/20
+                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.12]
                         [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
-                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-background [&::-webkit-slider-thumb]:shadow-lg" />
+                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground [&::-webkit-slider-thumb]:shadow-lg" />
                   </div>
                 )}
               </div>
