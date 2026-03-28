@@ -647,6 +647,19 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setStoryMode("auto");
     setTypeDropdownOpen(false);
     setActivePanel(null);
+    // Reset design-specific states
+    setDesignColorScheme("Auto");
+    setDesignIconStyle("Modern");
+    setDesignIndustry(null);
+    setDesignOrientation("Portrait");
+    setDesignPlatform("YouTube");
+    setDesignFinish("Matte");
+    setDesignFoldType("Tri-Fold");
+    setDesignPages(6);
+    setDesignChartType("Mixed");
+    setDesignLayout("Vertical");
+    setDesignSize("A4");
+    setDesignTextStyle("Bold");
     textareaRef.current?.focus();
   };
 
