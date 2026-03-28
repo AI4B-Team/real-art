@@ -1993,21 +1993,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                             ))}
                           </PopoverContent>
                         </Popover>
-                        <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <ArrowLeftRight size={12} />{designOrientation}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
-                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                            {["Portrait", "Landscape"].map(o => (
-                              <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {o}{designOrientation === o && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                       </>
                     )}
 
