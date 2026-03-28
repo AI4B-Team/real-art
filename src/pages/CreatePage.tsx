@@ -362,6 +362,32 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const textareaRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
+  // Design sub-mode specific states
+  const [designColorScheme, setDesignColorScheme] = useState("Auto");
+  const [designColorOpen, setDesignColorOpen] = useState(false);
+  const [designIconStyle, setDesignIconStyle] = useState("Modern");
+  const [designIconStyleOpen, setDesignIconStyleOpen] = useState(false);
+  const [designIndustry, setDesignIndustry] = useState<string | null>(null);
+  const [designIndustryOpen, setDesignIndustryOpen] = useState(false);
+  const [designOrientation, setDesignOrientation] = useState("Portrait");
+  const [designOrientationOpen, setDesignOrientationOpen] = useState(false);
+  const [designPlatform, setDesignPlatform] = useState("YouTube");
+  const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
+  const [designFinish, setDesignFinish] = useState("Matte");
+  const [designFinishOpen, setDesignFinishOpen] = useState(false);
+  const [designFoldType, setDesignFoldType] = useState("Tri-Fold");
+  const [designFoldOpen, setDesignFoldOpen] = useState(false);
+  const [designPages, setDesignPages] = useState(6);
+  const [designPagesOpen, setDesignPagesOpen] = useState(false);
+  const [designChartType, setDesignChartType] = useState("Mixed");
+  const [designChartOpen, setDesignChartOpen] = useState(false);
+  const [designLayout, setDesignLayout] = useState("Vertical");
+  const [designLayoutOpen, setDesignLayoutOpen] = useState(false);
+  const [designSize, setDesignSize] = useState("A4");
+  const [designSizeOpen, setDesignSizeOpen] = useState(false);
+  const [designTextStyle, setDesignTextStyle] = useState("Bold");
+  const [designTextStyleOpen, setDesignTextStyleOpen] = useState(false);
+
   // App-specific states
   const [appModel, setAppModel] = useState("Auto");
   const [appModelOpen, setAppModelOpen] = useState(false);
@@ -621,6 +647,19 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
     setStoryMode("auto");
     setTypeDropdownOpen(false);
     setActivePanel(null);
+    // Reset design-specific states
+    setDesignColorScheme("Auto");
+    setDesignIconStyle("Modern");
+    setDesignIndustry(null);
+    setDesignOrientation("Portrait");
+    setDesignPlatform("YouTube");
+    setDesignFinish("Matte");
+    setDesignFoldType("Tri-Fold");
+    setDesignPages(6);
+    setDesignChartType("Mixed");
+    setDesignLayout("Vertical");
+    setDesignSize("A4");
+    setDesignTextStyle("Bold");
     textareaRef.current?.focus();
   };
 
@@ -1784,6 +1823,352 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                       ))}
                     </PopoverContent>
                   </Popover>
+                )}
+
+                {/* Design sub-mode specific toolbar controls */}
+                {selectedType === "design" && selectedSubMode && (
+                  <div className="flex items-center gap-0.5 shrink-0">
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
+
+                    {/* ── Logo controls ── */}
+                    {selectedSubMode === "logo" && (
+                      <>
+                        <Popover open={designIconStyleOpen} onOpenChange={setDesignIconStyleOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designIconStyle !== "Modern" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <PenTool size={12} />{designIconStyle}<ChevronDown size={10} className="opacity-60" />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Icon Style</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["Minimal", "Modern", "Bold", "Vintage", "Playful", "Geometric", "Hand-drawn"].map(s => (
+                              <button key={s} type="button" onClick={() => { setDesignIconStyle(s); setDesignIconStyleOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designIconStyle === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {s}{designIconStyle === s && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Palette size={12} />{designColorScheme}<ChevronDown size={10} className="opacity-60" />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color Scheme</TooltipContent></Tooltip>
+                          <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
+                            {[
+                              { id: "Auto", colors: [] },
+                              { id: "Monochrome", colors: ["#1a1a1a","#444","#888","#ccc"] },
+                              { id: "Warm", colors: ["#dc2626","#ea580c","#f59e0b","#fbbf24"] },
+                              { id: "Cool", colors: ["#2563eb","#0ea5e9","#06b6d4","#67e8f9"] },
+                              { id: "Earth", colors: ["#78350f","#92400e","#a16207","#65a30d"] },
+                              { id: "Vibrant", colors: ["#dc2626","#7c3aed","#2563eb","#059669"] },
+                              { id: "Pastel", colors: ["#fca5a5","#c4b5fd","#93c5fd","#86efac"] },
+                            ].map(c => (
+                              <button key={c.id} type="button" onClick={() => { setDesignColorScheme(c.id); setDesignColorOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c.id ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                <span>{c.id}</span>
+                                {c.colors.length > 0 && (
+                                  <div className="flex gap-0.5">{c.colors.map((cl, i) => <div key={i} className="w-3.5 h-3.5 rounded-full border border-foreground/10" style={{ backgroundColor: cl }} />)}</div>
+                                )}
+                                {designColorScheme === c.id && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designIndustryOpen} onOpenChange={setDesignIndustryOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designIndustry ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Target size={12} />{designIndustry || "Industry"}<ChevronDown size={10} className="opacity-60" />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Industry</TooltipContent></Tooltip>
+                          <PopoverContent className="w-48 p-1.5 max-h-[50vh] overflow-y-auto" align="start" sideOffset={6}>
+                            {["Tech", "Food & Drink", "Fashion", "Health", "Finance", "Education", "Real Estate", "Sports", "Music", "Photography", "Gaming", "Travel"].map(ind => (
+                              <button key={ind} type="button" onClick={() => { setDesignIndustry(ind); setDesignIndustryOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designIndustry === ind ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {ind}{designIndustry === ind && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
+
+                    {/* ── Poster controls ── */}
+                    {selectedSubMode === "poster" && (
+                      <>
+                        <Popover open={designSizeOpen} onOpenChange={setDesignSizeOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                              <Copy size={12} />{designSize}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Size</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["A4", "A3", "A2", "Letter", "11x17", "24x36"].map(s => (
+                              <button key={s} type="button" onClick={() => { setDesignSize(s); setDesignSizeOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designSize === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {s}{designSize === s && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <ArrowLeftRight size={12} />{designOrientation}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
+                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                            {["Portrait", "Landscape"].map(o => (
+                              <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {o}{designOrientation === o && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Palette size={14} />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color Mood</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["Auto", "Bold", "Minimal", "Neon", "Earthy", "Monochrome", "Gradient"].map(c => (
+                              <button key={c} type="button" onClick={() => { setDesignColorScheme(c); setDesignColorOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {c}{designColorScheme === c && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
+
+                    {/* ── Thumbnail controls ── */}
+                    {selectedSubMode === "thumbnail" && (
+                      <>
+                        <Popover open={designPlatformOpen} onOpenChange={setDesignPlatformOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                              <Globe size={12} />{designPlatform}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Platform</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["YouTube", "Twitch", "Instagram", "TikTok", "X (Twitter)", "LinkedIn", "Facebook"].map(p => (
+                              <button key={p} type="button" onClick={() => { setDesignPlatform(p); setDesignPlatformOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designPlatform === p ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {p}{designPlatform === p && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designTextStyleOpen} onOpenChange={setDesignTextStyleOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designTextStyle !== "Bold" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Pencil size={12} />{designTextStyle}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Text Style</TooltipContent></Tooltip>
+                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                            {["Bold", "Clean", "Outlined", "3D", "Gradient", "Neon", "None"].map(t => (
+                              <button key={t} type="button" onClick={() => { setDesignTextStyle(t); setDesignTextStyleOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designTextStyle === t ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {t}{designTextStyle === t && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
+
+                    {/* ── Flyer controls ── */}
+                    {selectedSubMode === "flyer" && (
+                      <>
+                        <Popover open={designSizeOpen} onOpenChange={setDesignSizeOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                              <Copy size={12} />{designSize}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Size</TooltipContent></Tooltip>
+                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                            {["A4", "A5", "Letter", "Half Letter", "DL"].map(s => (
+                              <button key={s} type="button" onClick={() => { setDesignSize(s); setDesignSizeOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designSize === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {s}{designSize === s && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <ArrowLeftRight size={12} />{designOrientation}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
+                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                            {["Portrait", "Landscape"].map(o => (
+                              <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {o}{designOrientation === o && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
+
+                    {/* ── Business Card controls ── */}
+                    {selectedSubMode === "business-card" && (
+                      <>
+                        <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                              <ArrowLeftRight size={12} />{designOrientation}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
+                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                            {["Landscape", "Portrait"].map(o => (
+                              <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {o}{designOrientation === o && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designFinishOpen} onOpenChange={setDesignFinishOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designFinish !== "Matte" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Eye size={12} />{designFinish}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Finish</TooltipContent></Tooltip>
+                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                            {["Matte", "Glossy", "Textured", "Spot UV"].map(f => (
+                              <button key={f} type="button" onClick={() => { setDesignFinish(f); setDesignFinishOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designFinish === f ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {f}{designFinish === f && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Palette size={14} />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["Auto", "Corporate", "Creative", "Minimal", "Dark", "Luxury"].map(c => (
+                              <button key={c} type="button" onClick={() => { setDesignColorScheme(c); setDesignColorOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {c}{designColorScheme === c && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
+
+                    {/* ── Brochure controls ── */}
+                    {selectedSubMode === "brochure" && (
+                      <>
+                        <Popover open={designFoldOpen} onOpenChange={setDesignFoldOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                              <BookOpen size={12} />{designFoldType}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Fold Type</TooltipContent></Tooltip>
+                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                            {["Bi-Fold", "Tri-Fold", "Z-Fold", "Gate-Fold"].map(f => (
+                              <button key={f} type="button" onClick={() => { setDesignFoldType(f); setDesignFoldOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designFoldType === f ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {f}{designFoldType === f && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designPagesOpen} onOpenChange={setDesignPagesOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
+                              <Layers size={12} />{designPages}pg
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Pages</TooltipContent></Tooltip>
+                          <PopoverContent className="w-32 p-1.5" align="start" sideOffset={6}>
+                            {[4, 6, 8, 12, 16].map(p => (
+                              <button key={p} type="button" onClick={() => { setDesignPages(p); setDesignPagesOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designPages === p ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {p} pages{designPages === p && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designSizeOpen} onOpenChange={setDesignSizeOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designSize !== "A4" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Copy size={12} />{designSize}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Size</TooltipContent></Tooltip>
+                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                            {["A4", "Letter", "A5", "Legal"].map(s => (
+                              <button key={s} type="button" onClick={() => { setDesignSize(s); setDesignSizeOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designSize === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {s}{designSize === s && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
+
+                    {/* ── Infographic controls ── */}
+                    {selectedSubMode === "infographic" && (
+                      <>
+                        <Popover open={designLayoutOpen} onOpenChange={setDesignLayoutOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                              <LayoutGrid size={12} />{designLayout}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Layout</TooltipContent></Tooltip>
+                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                            {["Vertical", "Horizontal", "Timeline", "Comparison", "Process"].map(l => (
+                              <button key={l} type="button" onClick={() => { setDesignLayout(l); setDesignLayoutOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designLayout === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {l}{designLayout === l && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designChartOpen} onOpenChange={setDesignChartOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designChartType !== "Mixed" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <BarChart2 size={12} />{designChartType}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Chart Style</TooltipContent></Tooltip>
+                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                            {["Mixed", "Bar Charts", "Pie Charts", "Line Graphs", "Icons Only", "Numbers Only"].map(c => (
+                              <button key={c} type="button" onClick={() => { setDesignChartType(c); setDesignChartOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designChartType === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {c}{designChartType === c && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Palette size={14} />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color Theme</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["Auto", "Corporate", "Playful", "Dark", "Gradient", "Flat"].map(c => (
+                              <button key={c} type="button" onClick={() => { setDesignColorScheme(c); setDesignColorOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {c}{designColorScheme === c && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
+                  </div>
                 )}
 
                 {/* Content/Social toolbar icons */}
