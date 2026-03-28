@@ -508,18 +508,31 @@ const VideoEditor = ({ video }: Props) => {
 
   const [tracks, setTracks] = useState<TimelineTrack[]>([
     { id: "video-1", type: "video", name: "1", visible: true, clips: [
-      { id: "clip-1", type: "video", name: "Intro", startTime: 0, duration: 120, color: "bg-blue-500" },
-      { id: "clip-2", type: "video", name: "Main", startTime: 120, duration: 300, color: "bg-purple-500" },
-      { id: "clip-3", type: "video", name: "Outro", startTime: 420, duration: 176, color: "bg-emerald-500" },
+      { id: "clip-1", type: "video", name: "Cold Open", startTime: 0, duration: 6, color: "bg-blue-500" },
+      { id: "clip-2", type: "video", name: "Studio Direct", startTime: 6, duration: 8, color: "bg-blue-500" },
+      { id: "clip-3", type: "video", name: "Social Montage", startTime: 14, duration: 6, color: "bg-blue-500" },
+      { id: "clip-4", type: "video", name: "Face Generation", startTime: 20, duration: 11, color: "bg-blue-500" },
+      { id: "clip-5", type: "video", name: "Analytics Screen", startTime: 31, duration: 9, color: "bg-blue-500" },
+      { id: "clip-6", type: "video", name: "Close-Up Push", startTime: 40, duration: 6, color: "bg-blue-500" },
+      { id: "clip-7", type: "video", name: "Creator Grid", startTime: 46, duration: 4, color: "bg-blue-500" },
+      { id: "clip-8", type: "video", name: "End Card", startTime: 50, duration: 6, color: "bg-blue-500" },
     ]},
     { id: "video-2", type: "video", name: "2", visible: true, clips: [
-      { id: "clip-4", type: "video", name: "B-Roll", startTime: 60, duration: 200, color: "bg-indigo-500" },
+      { id: "clip-broll-1", type: "video", name: "B-Roll: Typing", startTime: 10, duration: 4, color: "bg-indigo-500" },
+      { id: "clip-broll-2", type: "video", name: "B-Roll: Phone Scroll", startTime: 31, duration: 5, color: "bg-indigo-500" },
+      { id: "clip-broll-3", type: "video", name: "B-Roll: Studio Gear", startTime: 42, duration: 4, color: "bg-indigo-500" },
     ]},
     { id: "audio-1", type: "audio", name: "3", muted: false, visible: true, clips: [
-      { id: "audio-clip-1", type: "audio", name: "Music", startTime: 0, duration: 596, color: "bg-rose-500" },
+      { id: "audio-music", type: "audio", name: "Ambient Score", startTime: 0, duration: 56, color: "bg-rose-500" },
     ]},
     { id: "audio-2", type: "audio", name: "4", muted: false, visible: true, clips: [
-      { id: "vo-clip-1", type: "audio", name: "Voiceover", startTime: 10, duration: 400, color: "bg-teal-500" },
+      { id: "vo-main", type: "audio", name: "Voiceover", startTime: 0, duration: 53, color: "bg-teal-500" },
+    ]},
+    { id: "audio-3", type: "audio", name: "5", muted: false, visible: true, clips: [
+      { id: "sfx-1", type: "audio", name: "Glitch SFX", startTime: 0, duration: 1.5, color: "bg-amber-500" },
+      { id: "sfx-2", type: "audio", name: "Whoosh", startTime: 14, duration: 1, color: "bg-amber-500" },
+      { id: "sfx-3", type: "audio", name: "Tension Riser", startTime: 40, duration: 2, color: "bg-amber-500" },
+      { id: "sfx-4", type: "audio", name: "Impact Hit", startTime: 46, duration: 0.8, color: "bg-amber-500" },
     ]},
   ]);
 
