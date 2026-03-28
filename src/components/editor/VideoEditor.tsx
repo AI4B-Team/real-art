@@ -2715,26 +2715,22 @@ const VideoEditor = ({ video }: Props) => {
                   <div className="flex-1 relative min-h-full"
                     ref={(el) => { (window as any).__timelineEl = el; }}
                     onMouseDown={(e) => {
-                      // Click on ruler area (top 24px) to seek
                       const rect = e.currentTarget.getBoundingClientRect();
-                      const y = e.clientY - rect.top;
-                      if (y <= 24) {
-                        const x = e.clientX - rect.left;
-                        const newTime = Math.max(0, Math.min(duration, x / pixelsPerSecond));
-                        setCurrentTime(newTime);
-                        setIsPlaying(false);
-                        // Start dragging
-                        const onMove = (ev: MouseEvent) => {
-                          const mx = ev.clientX - rect.left;
-                          setCurrentTime(Math.max(0, Math.min(duration, mx / pixelsPerSecond)));
-                        };
-                        const onUp = () => {
-                          window.removeEventListener("mousemove", onMove);
-                          window.removeEventListener("mouseup", onUp);
-                        };
-                        window.addEventListener("mousemove", onMove);
-                        window.addEventListener("mouseup", onUp);
-                      }
+                      const x = e.clientX - rect.left;
+                      const newTime = Math.max(0, Math.min(duration, x / pixelsPerSecond));
+                      setCurrentTime(newTime);
+                      setIsPlaying(false);
+                      // Start dragging
+                      const onMove = (ev: MouseEvent) => {
+                        const mx = ev.clientX - rect.left;
+                        setCurrentTime(Math.max(0, Math.min(duration, mx / pixelsPerSecond)));
+                      };
+                      const onUp = () => {
+                        window.removeEventListener("mousemove", onMove);
+                        window.removeEventListener("mouseup", onUp);
+                      };
+                      window.addEventListener("mousemove", onMove);
+                      window.addEventListener("mouseup", onUp);
                     }}
                   >
                     {/* Playhead - draggable */}
