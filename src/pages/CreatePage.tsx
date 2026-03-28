@@ -362,6 +362,32 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const textareaRef = useRef<HTMLDivElement>(null);
   const typeRef = useRef<HTMLDivElement>(null);
 
+  // Design sub-mode specific states
+  const [designColorScheme, setDesignColorScheme] = useState("Auto");
+  const [designColorOpen, setDesignColorOpen] = useState(false);
+  const [designIconStyle, setDesignIconStyle] = useState("Modern");
+  const [designIconStyleOpen, setDesignIconStyleOpen] = useState(false);
+  const [designIndustry, setDesignIndustry] = useState<string | null>(null);
+  const [designIndustryOpen, setDesignIndustryOpen] = useState(false);
+  const [designOrientation, setDesignOrientation] = useState("Portrait");
+  const [designOrientationOpen, setDesignOrientationOpen] = useState(false);
+  const [designPlatform, setDesignPlatform] = useState("YouTube");
+  const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
+  const [designFinish, setDesignFinish] = useState("Matte");
+  const [designFinishOpen, setDesignFinishOpen] = useState(false);
+  const [designFoldType, setDesignFoldType] = useState("Tri-Fold");
+  const [designFoldOpen, setDesignFoldOpen] = useState(false);
+  const [designPages, setDesignPages] = useState(6);
+  const [designPagesOpen, setDesignPagesOpen] = useState(false);
+  const [designChartType, setDesignChartType] = useState("Mixed");
+  const [designChartOpen, setDesignChartOpen] = useState(false);
+  const [designLayout, setDesignLayout] = useState("Vertical");
+  const [designLayoutOpen, setDesignLayoutOpen] = useState(false);
+  const [designSize, setDesignSize] = useState("A4");
+  const [designSizeOpen, setDesignSizeOpen] = useState(false);
+  const [designTextStyle, setDesignTextStyle] = useState("Bold");
+  const [designTextStyleOpen, setDesignTextStyleOpen] = useState(false);
+
   // App-specific states
   const [appModel, setAppModel] = useState("Auto");
   const [appModelOpen, setAppModelOpen] = useState(false);
