@@ -182,11 +182,11 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
 
   // Tracks
   const [tracks, setTracks] = useState<AudioTrack[]>([
-    { id: "track-1", name: "Track 1", type: "voice", clips: [], volume: 100, muted: false, solo: false },
-    { id: "track-2", name: "Track 2", type: "music", clips: [], volume: 100, muted: false, solo: false },
-    { id: "track-3", name: "Track 3", type: "sfx", clips: [], volume: 100, muted: false, solo: false },
-    { id: "track-4", name: "Track 4", type: "voice", clips: [], volume: 100, muted: false, solo: false },
-    { id: "track-5", name: "Track 5", type: "music", clips: [], volume: 100, muted: false, solo: false },
+    { id: "track-1", name: "Track 1", type: "voice", duration: 0, startTime: 0, color: "bg-teal-500", muted: false, solo: false, volume: 100, pan: 0, locked: false },
+    { id: "track-2", name: "Track 2", type: "music", duration: 0, startTime: 0, color: "bg-rose-500", muted: false, solo: false, volume: 100, pan: 0, locked: false },
+    { id: "track-3", name: "Track 3", type: "sfx", duration: 0, startTime: 0, color: "bg-amber-500", muted: false, solo: false, volume: 100, pan: 0, locked: false },
+    { id: "track-4", name: "Track 4", type: "voice", duration: 0, startTime: 0, color: "bg-blue-500", muted: false, solo: false, volume: 100, pan: 0, locked: false },
+    { id: "track-5", name: "Track 5", type: "music", duration: 0, startTime: 0, color: "bg-purple-500", muted: false, solo: false, volume: 100, pan: 0, locked: false },
   ]);
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
   const [draggingTrack, setDraggingTrack] = useState<string | null>(null);
