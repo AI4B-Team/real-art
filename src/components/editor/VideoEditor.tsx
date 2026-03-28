@@ -312,7 +312,7 @@ const VideoEditor = ({ video }: Props) => {
   const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration] = useState(596);
+  const [duration] = useState(56);
   const [zoom, setZoom] = useState(3);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
