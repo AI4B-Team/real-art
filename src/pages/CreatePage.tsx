@@ -2101,21 +2101,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                             ))}
                           </PopoverContent>
                         </Popover>
-                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Palette size={14} />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color Theme</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["Auto", "Corporate", "Playful", "Dark", "Gradient", "Flat"].map(c => (
-                              <button key={c} type="button" onClick={() => { setDesignColorScheme(c); setDesignColorOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {c}{designColorScheme === c && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                       </>
                     )}
                   </div>
