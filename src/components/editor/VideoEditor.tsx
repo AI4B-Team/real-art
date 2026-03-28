@@ -2408,7 +2408,7 @@ const VideoEditor = ({ video }: Props) => {
         {/* Timeline */}
         <div className="bg-card flex flex-col shrink-0 transition-all" style={{ height: isTimelineMinimized ? 48 : timelineHeight }}>
           {/* Timeline toolbar */}
-          <div className="grid grid-cols-[1fr_auto_1fr] items-center px-4 py-2 border-b border-foreground/[0.06] shrink-0">
+          <div className="relative flex items-center justify-between px-4 py-2 border-b border-foreground/[0.06] shrink-0">
             {/* Left tools */}
             <div className="flex items-center gap-1">
               <Tooltip><TooltipTrigger asChild>
@@ -2444,8 +2444,8 @@ const VideoEditor = ({ video }: Props) => {
               </TooltipTrigger><TooltipContent>{isLooping ? "Disable Loop" : "Enable Loop"}</TooltipContent></Tooltip>
             </div>
 
-            {/* Center transport */}
-            <div className="flex items-center gap-1 shrink-0">
+            {/* Center transport — absolutely centered to account for left panel offset */}
+            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 shrink-0">
               <button onClick={handleRecord}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
                 <Circle className={`w-3 h-3 fill-current`} />{isRecording ? "Stop" : "Record"}
