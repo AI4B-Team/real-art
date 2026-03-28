@@ -2528,7 +2528,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : "Art Style"}</h3>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
@@ -2543,7 +2543,33 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   ].map(s => (
                     <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
                       className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
-                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" />
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                    </button>
+                  ))}
+                </div>
+              ) : selectedType === "design" ? (
+                <div className="grid grid-cols-5 sm:grid-cols-7 gap-2">
+                  {[
+                    { id: "Bold", label: "Bold", img: styleMoodBold },
+                    { id: "Minimal", label: "Minimal", img: styleMoodMinimal },
+                    { id: "Neon", label: "Neon", img: styleMoodNeon },
+                    { id: "Earthy", label: "Earthy", img: styleMoodEarthy },
+                    { id: "Monochrome", label: "Monochrome", img: styleMoodMonochrome },
+                    { id: "Gradient", label: "Gradient", img: styleMoodGradient },
+                    { id: "Flat Illustration", label: "Flat", img: styleFlatIllustration },
+                    { id: "Pop Art", label: "Pop Art", img: stylePopArt },
+                    { id: "Retro", label: "Retro", img: styleRetro },
+                    { id: "Cyberpunk", label: "Cyberpunk", img: styleCyberpunk },
+                    { id: "Vaporwave", label: "Vaporwave", img: styleVaporwave },
+                    { id: "Pastel", label: "Pastel", img: stylePastel },
+                    { id: "Gothic", label: "Gothic", img: styleGothic },
+                    { id: "Art Nouveau", label: "Art Nouveau", img: styleArtNouveau },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setDesignColorScheme(prev => prev === s.id ? "Auto" : s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
                       <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
                       {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
                     </button>
@@ -2581,7 +2607,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
                     className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
                     {s.img ? (
-                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" />
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
                     ) : (
                       <div className="w-full aspect-square rounded-lg bg-foreground/[0.06] flex items-center justify-center text-muted">
                         <X size={16} />
