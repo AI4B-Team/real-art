@@ -297,6 +297,7 @@ const LandingPage = () => {
         <div className="absolute items-start flex" style={{ left: "24px", top: "4px" }}>
           <Logo to="/landing" />
         </div>
+        <div className="flex items-center gap-3">
           <Link to="/login" className="px-4 py-2 rounded-lg text-[0.84rem] font-semibold text-foreground hover:bg-foreground/[0.04] transition-colors">
             Login
           </Link>
