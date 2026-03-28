@@ -54,6 +54,12 @@ import styleVideoCinematic from "@/assets/styles/video-cinematic.jpg";
 import styleVideoDocumentary from "@/assets/styles/video-documentary.jpg";
 import styleVideoAnimation from "@/assets/styles/video-animation.jpg";
 import styleVideoRealistic from "@/assets/styles/video-realistic.jpg";
+import styleMoodBold from "@/assets/styles/mood-bold.jpg";
+import styleMoodMinimal from "@/assets/styles/mood-minimal.jpg";
+import styleMoodNeon from "@/assets/styles/mood-neon.jpg";
+import styleMoodEarthy from "@/assets/styles/mood-earthy.jpg";
+import styleMoodMonochrome from "@/assets/styles/mood-monochrome.jpg";
+import styleMoodGradient from "@/assets/styles/mood-gradient.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
@@ -1729,8 +1735,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   </>
                 )}
 
-                {/* Ratio — image, design & video */}
-                {selectedSubMode && (selectedType === "image" || selectedType === "design" || selectedType === "video") && (
+                {/* Ratio — image & video (NOT design) */}
+                {selectedSubMode && (selectedType === "image" || selectedType === "video") && (
                   <Popover open={ratioOpen} onOpenChange={setRatioOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
@@ -1761,6 +1767,25 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           </span>
                           {r}
                           {selectedRatio === r && <Check size={12} className="ml-auto" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Orientation — design only (replaces ratio) */}
+                {selectedSubMode && selectedType === "design" && (
+                  <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-accent/10 text-accent"}`}>
+                        <ArrowLeftRight size={12} />{designOrientation}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
+                    <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                      {["Portrait", "Landscape"].map(o => (
+                        <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {o}{designOrientation === o && <Check size={12} />}
                         </button>
                       ))}
                     </PopoverContent>
@@ -1911,36 +1936,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                             ))}
                           </PopoverContent>
                         </Popover>
-                        <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <ArrowLeftRight size={12} />{designOrientation}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
-                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                            {["Portrait", "Landscape"].map(o => (
-                              <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {o}{designOrientation === o && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Palette size={14} />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color Mood</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["Auto", "Bold", "Minimal", "Neon", "Earthy", "Monochrome", "Gradient"].map(c => (
-                              <button key={c} type="button" onClick={() => { setDesignColorScheme(c); setDesignColorOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {c}{designColorScheme === c && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                       </>
                     )}
 
@@ -1998,42 +1993,12 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                             ))}
                           </PopoverContent>
                         </Popover>
-                        <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <ArrowLeftRight size={12} />{designOrientation}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
-                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                            {["Portrait", "Landscape"].map(o => (
-                              <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {o}{designOrientation === o && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                       </>
                     )}
 
                     {/* ── Business Card controls ── */}
                     {selectedSubMode === "business-card" && (
                       <>
-                        <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                              <ArrowLeftRight size={12} />{designOrientation}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
-                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                            {["Landscape", "Portrait"].map(o => (
-                              <button key={o} type="button" onClick={() => { setDesignOrientation(o); setDesignOrientationOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designOrientation === o ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {o}{designOrientation === o && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                         <Popover open={designFinishOpen} onOpenChange={setDesignFinishOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designFinish !== "Matte" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2045,21 +2010,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                               <button key={f} type="button" onClick={() => { setDesignFinish(f); setDesignFinishOpen(false); }}
                                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designFinish === f ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                                 {f}{designFinish === f && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Palette size={14} />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["Auto", "Corporate", "Creative", "Minimal", "Dark", "Luxury"].map(c => (
-                              <button key={c} type="button" onClick={() => { setDesignColorScheme(c); setDesignColorOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {c}{designColorScheme === c && <Check size={12} />}
                               </button>
                             ))}
                           </PopoverContent>
@@ -2147,21 +2097,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                               <button key={c} type="button" onClick={() => { setDesignChartType(c); setDesignChartOpen(false); }}
                                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designChartType === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                                 {c}{designChartType === c && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Palette size={14} />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color Theme</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["Auto", "Corporate", "Playful", "Dark", "Gradient", "Flat"].map(c => (
-                              <button key={c} type="button" onClick={() => { setDesignColorScheme(c); setDesignColorOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {c}{designColorScheme === c && <Check size={12} />}
                               </button>
                             ))}
                           </PopoverContent>
@@ -2593,7 +2528,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : "Art Style"}</h3>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
@@ -2608,7 +2543,33 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   ].map(s => (
                     <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
                       className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
-                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" />
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                    </button>
+                  ))}
+                </div>
+              ) : selectedType === "design" ? (
+                <div className="grid grid-cols-5 sm:grid-cols-7 gap-2">
+                  {[
+                    { id: "Bold", label: "Bold", img: styleMoodBold },
+                    { id: "Minimal", label: "Minimal", img: styleMoodMinimal },
+                    { id: "Neon", label: "Neon", img: styleMoodNeon },
+                    { id: "Earthy", label: "Earthy", img: styleMoodEarthy },
+                    { id: "Monochrome", label: "Monochrome", img: styleMoodMonochrome },
+                    { id: "Gradient", label: "Gradient", img: styleMoodGradient },
+                    { id: "Flat Illustration", label: "Flat", img: styleFlatIllustration },
+                    { id: "Pop Art", label: "Pop Art", img: stylePopArt },
+                    { id: "Retro", label: "Retro", img: styleRetro },
+                    { id: "Cyberpunk", label: "Cyberpunk", img: styleCyberpunk },
+                    { id: "Vaporwave", label: "Vaporwave", img: styleVaporwave },
+                    { id: "Pastel", label: "Pastel", img: stylePastel },
+                    { id: "Gothic", label: "Gothic", img: styleGothic },
+                    { id: "Art Nouveau", label: "Art Nouveau", img: styleArtNouveau },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setDesignColorScheme(prev => prev === s.id ? "Auto" : s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
                       <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
                       {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
                     </button>
@@ -2646,7 +2607,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                   <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
                     className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
                     {s.img ? (
-                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" />
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
                     ) : (
                       <div className="w-full aspect-square rounded-lg bg-foreground/[0.06] flex items-center justify-center text-muted">
                         <X size={16} />
