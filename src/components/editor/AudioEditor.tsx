@@ -181,7 +181,13 @@ const AudioEditor = ({ audio, onSendToEditor }: Props) => {
   const visibleSuggestions = ALL_AI_SUGGESTIONS.slice(suggestionOffset, suggestionOffset + 3);
 
   // Tracks
-  const [tracks, setTracks] = useState<AudioTrack[]>([]);
+  const [tracks, setTracks] = useState<AudioTrack[]>([
+    { id: "track-1", name: "Track 1", type: "voice", clips: [], volume: 100, muted: false, solo: false },
+    { id: "track-2", name: "Track 2", type: "music", clips: [], volume: 100, muted: false, solo: false },
+    { id: "track-3", name: "Track 3", type: "sfx", clips: [], volume: 100, muted: false, solo: false },
+    { id: "track-4", name: "Track 4", type: "voice", clips: [], volume: 100, muted: false, solo: false },
+    { id: "track-5", name: "Track 5", type: "music", clips: [], volume: 100, muted: false, solo: false },
+  ]);
   const [selectedTrack, setSelectedTrack] = useState<string | null>(null);
   const [draggingTrack, setDraggingTrack] = useState<string | null>(null);
 
