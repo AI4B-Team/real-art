@@ -213,46 +213,6 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     e.target.value = "";
   }, [uploadedImgCount, addChip]);
 
-  const addChipFromMention = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
-    if (chipIds.has(item.id)) return;
-    const chip: AssetChip = { id: item.id, type, label: item.label, thumbnail: item.thumbnail };
-    const rangeAtMention = consumeMention();
-    setChipIds(prev => new Set(prev).add(item.id));
-
-    requestAnimationFrame(() => {
-      const el = editableRef.current;
-      if (!el) return;
-      el.focus();
-      const sel = window.getSelection();
-      if (!sel) return;
-
-      let range = rangeAtMention;
-      if (!range || !el.contains(range.startContainer)) {
-        range = document.createRange();
-        range.selectNodeContents(el);
-        range.collapse(false);
-      }
-      sel.removeAllRanges();
-      sel.addRange(range);
-
-      const chipEl = createChipElement(chip, removeChip);
-      range.deleteContents();
-      range.insertNode(chipEl);
-
-      const space = document.createTextNode("\u00A0");
-      chipEl.after(space);
-      const newRange = document.createRange();
-      newRange.setStart(space, 1);
-      newRange.collapse(true);
-      sel.removeAllRanges();
-      sel.addRange(newRange);
-
-      savedRangeRef.current = newRange.cloneRange();
-      pendingFocusRangeRef.current = newRange.cloneRange();
-      syncText();
-      restoreEditableCaret(newRange.cloneRange());
-    });
-  }, [chipIds, consumeMention, removeChip, restoreEditableCaret, syncText]);
 
   const handlePaste = useCallback((e: React.ClipboardEvent) => {
     e.preventDefault();
