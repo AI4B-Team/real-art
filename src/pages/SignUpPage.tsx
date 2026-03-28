@@ -55,8 +55,9 @@ const SignUpPage = () => {
   };
 
   return (
-    <PageShell>
-      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+    <>
+      <MinimalHeader />
+      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 pt-16">
         {/* Left — Photo Collage */}
         <div className="hidden lg:block relative bg-foreground overflow-hidden">
           <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">
