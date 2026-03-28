@@ -2811,7 +2811,7 @@ const VideoEditor = ({ video }: Props) => {
                               const vol = clip.volume ?? 100;
                               return (
                                 <div key={clip.id}
-                                  className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-grab active:cursor-grabbing hover:brightness-110 transition-all overflow-hidden group/clip ${track.locked ? "opacity-60 pointer-events-none" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1 z-10" : ""}`}
+                                  className={`absolute top-1.5 h-11 ${clip.color || "bg-blue-500"} rounded-lg cursor-grab active:cursor-grabbing hover:brightness-110 transition-all overflow-hidden group/clip ${track.locked ? "opacity-60 pointer-events-none" : ""} ${!track.visible ? "opacity-25 pointer-events-none" : ""} ${selectedClip === clip.id ? "ring-2 ring-accent ring-offset-1 z-10" : ""}`}
                                   style={{ left: clip.startTime * pixelsPerSecond, width: clipWidth }}
                                   onMouseDown={(e) => { if (e.button === 0) handleClipMouseDown(e, clip.id, track.id, "move"); }}
                                   onClick={(e) => { e.stopPropagation(); setSelectedClip(clip.id); }}
