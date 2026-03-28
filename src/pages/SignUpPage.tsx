@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Check, Download, DollarSign, Users, Eye, EyeOff } from "lucide-react";
-import PageShell from "@/components/PageShell";
+import MinimalHeader from "@/components/MinimalHeader";
 import LanguageSelector from "@/components/LanguageSelector";
 
 const photos = [
@@ -55,8 +55,9 @@ const SignUpPage = () => {
   };
 
   return (
-    <PageShell>
-      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2">
+    <>
+      <MinimalHeader />
+      <div className="min-h-screen grid grid-cols-1 lg:grid-cols-2 pt-16">
         {/* Left — Photo Collage */}
         <div className="hidden lg:block relative bg-foreground overflow-hidden">
           <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-1.5 opacity-40">
@@ -234,7 +235,7 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
-    </PageShell>
+    </>
   );
 };
 
