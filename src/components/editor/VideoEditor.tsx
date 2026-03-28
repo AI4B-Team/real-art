@@ -181,11 +181,14 @@ const VOICE_DATA = [
 ];
 
 const STORYBOARD_SCENES = [
-  { time: "00:03", narrator: "Jurin", desc: "Clara stands at a desolate, snow-covered border crossing.", thumb: "https://images.unsplash.com/photo-1477601263568-180e2c6d046e?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "As a sudden blizzard intensifies, she uses the snow as cover to slip past the checkpoint.", thumb: "https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "Her expression shifts from confusion to horror, realizing she has been betrayed.", thumb: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "The screen reflects in her eyes, showing a coded transmission.", thumb: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "Huddled behind cover, she pulls out a small device.", thumb: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=120" },
+  { time: "00:00", narrator: "Narrator", desc: "Cold open — black screen, white text fades in: 'I'm not real.' A digital face glitches into frame. Unsettling, immediate hook.", thumb: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=120" },
+  { time: "00:06", narrator: "Narrator", desc: "The AI avatar sits in a modern studio, speaking directly to camera. 'And yet I show up online every single day.' Soft overhead lighting, shallow depth of field.", thumb: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=120" },
+  { time: "00:14", narrator: "Narrator", desc: "Rapid montage — generated faces scrolling, follower counts rising, comment notifications stacking. 'I have followers who believe in me.'", thumb: "https://images.unsplash.com/photo-1563986768609-322da13575f2?w=120" },
+  { time: "00:20", narrator: "Narrator", desc: "Split screen: real vs AI face generation side by side. 'My face was generated in seconds. My voice? Cloned from a 30-second sample.'", thumb: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=120" },
+  { time: "00:31", narrator: "Narrator", desc: "Screen recording: scheduling dashboard, analytics, engagement metrics auto-updating. 'I post at the perfect time. I reply with the perfect tone.'", thumb: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=120" },
+  { time: "00:40", narrator: "Narrator", desc: "Close-up on the AI face, slow push in. Expression shifts subtly. 'And the scary part? You probably follow someone just like me.'", thumb: "https://images.unsplash.com/photo-1531746790095-e5995aca4d0a?w=120" },
+  { time: "00:46", narrator: "Narrator", desc: "Wide shot — grid of virtual creators filling the frame one by one. 'Welcome to the age of virtual creators.'", thumb: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=120" },
+  { time: "00:50", narrator: "Narrator", desc: "End card — avatar faces camera. 'The question is: does it matter if I'm real?' Freeze frame. Logo. Subscribe CTA.", thumb: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=120" },
 ];
 
 interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
