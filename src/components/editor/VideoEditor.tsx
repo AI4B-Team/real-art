@@ -2445,7 +2445,7 @@ const VideoEditor = ({ video }: Props) => {
             </div>
 
             {/* Center transport — absolutely centered to account for left panel offset */}
-            <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-1 shrink-0">
+            <div className="absolute flex items-center gap-1 shrink-0" style={{ left: `calc(50% - ${isLeftPanelCollapsed ? 0 : 210}px)`, transform: 'translateX(-50%)' }}>
               <button onClick={handleRecord}
                 className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-white text-sm font-medium transition-colors ${isRecording ? "bg-red-700 animate-pulse" : "bg-red-600 hover:bg-red-700"}`}>
                 <Circle className={`w-3 h-3 fill-current`} />{isRecording ? "Stop" : "Record"}
