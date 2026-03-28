@@ -69,8 +69,8 @@ export function createChipElement(chip: AssetChip, onRemoveCallback: (id: string
     chipSpan.appendChild(iconWrap);
   }
 
-  // Always show @ prefix in the chip label
-  const labelNode = document.createTextNode(`@${chip.label}`);
+  const labelNode = document.createTextNode(chip.label);
+
   chipSpan.appendChild(labelNode);
 
   const removeBtn = document.createElement("button");
