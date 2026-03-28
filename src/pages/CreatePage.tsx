@@ -1088,8 +1088,8 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 {!hasType && (
                   <Tooltip><TooltipTrigger asChild>
                     <button type="button" onClick={handleGenerate} disabled={!prompt.trim() || isEnhancing}
-                      className={`shrink-0 flex items-center justify-center w-11 h-11 rounded-2xl transition-colors ${prompt.trim() ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-destructive/20 text-destructive/40"}`}>
-                      {isEnhancing ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+                      className={`shrink-0 flex items-center justify-center w-8 h-8 rounded-lg transition-colors ${prompt.trim() ? "bg-destructive text-destructive-foreground hover:bg-destructive/90" : "bg-destructive/20 text-destructive/40"}`}>
+                      {isEnhancing ? <Loader2 size={15} className="animate-spin" /> : <Send size={15} />}
                     </button>
                   </TooltipTrigger><TooltipContent side="bottom">Create</TooltipContent></Tooltip>
                 )}
