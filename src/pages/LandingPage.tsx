@@ -333,6 +333,7 @@ const LandingPage = () => {
       return;
     }
     setSelectedType(type);
+    setSelectedSubMode(null);
     setSuggestionsPage(0);
     if (!shuffledSuggestions[type]) {
       setShuffledSuggestions(prev => ({ ...prev, [type]: shuffle(SUGGESTIONS[type]) }));
