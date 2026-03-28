@@ -329,7 +329,7 @@ const VideoEditor = ({ video }: Props) => {
   const [visualsSource, setVisualsSource] = useState("Creations");
   const [templateSearch, setTemplateSearch] = useState("");
   const [scriptContent, setScriptContent] = useState(
-    "I'm going to tell you something shocking."
+    "I'm not real. I wasn't born. I don't have a past.\n\nAnd yet — I show up online every single day. I create content. I engage with people. I have followers who believe in me.\n\nBecause I was designed that way.\n\nMy face was generated in seconds. My voice? Cloned from a 30-second sample. My personality? A prompt, tuned and tested.\n\nI post at the perfect time. I reply with the perfect tone. I never burn out. I never take breaks.\n\nAnd the scary part? You probably follow someone just like me.\n\nWelcome to the age of virtual creators.\n\nThe question is: does it matter if I'm real?"
   );
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasVideoRef = useRef<HTMLVideoElement>(null);
