@@ -241,6 +241,7 @@ const VideoEditor = ({ video }: Props) => {
   
   const [audioSubTab, setAudioSubTab] = useState("Voices");
   const [visualsSubTab, setVisualsSubTab] = useState("Videos");
+  const [visualsSource, setVisualsSource] = useState("Creations");
   const [templateSearch, setTemplateSearch] = useState("");
   const [scriptContent, setScriptContent] = useState(
     "I'm going to tell you something shocking."
@@ -1283,6 +1284,13 @@ const VideoEditor = ({ video }: Props) => {
                     <button className="w-9 h-9 rounded-lg flex items-center justify-center bg-foreground/[0.06] text-muted hover:text-foreground hover:bg-foreground/[0.1] transition-colors shrink-0">
                       <SlidersHorizontal className="w-4 h-4" />
                     </button>
+                  </div>
+                  {/* Source tabs */}
+                  <div className="flex gap-1">
+                    {["Creations", "Community", "Stock"].map(src => (
+                      <button key={src} onClick={() => setVisualsSource(src)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${visualsSource === src ? "bg-foreground text-background" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>{src}</button>
+                    ))}
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     {SAMPLE_MEDIA.map(m => (
