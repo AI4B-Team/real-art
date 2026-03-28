@@ -328,6 +328,7 @@ const LandingPage = () => {
   const handlePillClick = (type: ContentType) => {
     if (selectedType === type) {
       setSelectedType(null);
+      setSelectedSubMode(null);
       setSuggestionsPage(0);
       return;
     }
