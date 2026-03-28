@@ -1285,6 +1285,13 @@ const VideoEditor = ({ video }: Props) => {
                       <SlidersHorizontal className="w-4 h-4" />
                     </button>
                   </div>
+                  {/* Source tabs */}
+                  <div className="flex gap-1">
+                    {["Creations", "Community", "Stock"].map(src => (
+                      <button key={src} onClick={() => setVisualsSource(src)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${visualsSource === src ? "bg-foreground text-background" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>{src}</button>
+                    ))}
+                  </div>
                   <div className="grid grid-cols-3 gap-2">
                     {SAMPLE_MEDIA.map(m => (
                       <div key={m.id} className="group relative rounded-xl overflow-hidden cursor-pointer hover:ring-2 hover:ring-accent transition-all">
