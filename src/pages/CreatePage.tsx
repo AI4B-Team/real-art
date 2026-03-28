@@ -428,7 +428,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const pendingFocusRangeRef = useRef<Range | null>(null);
   const imgUploadRef = useRef<HTMLInputElement>(null);
   const isInternalEditRef = useRef(false);
-  
+  const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(textareaRef);
 
   // Helper to clear a frame and remove associated character/reference
   const clearFrame = (which: "start" | "end") => {
