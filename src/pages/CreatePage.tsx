@@ -54,6 +54,12 @@ import styleVideoCinematic from "@/assets/styles/video-cinematic.jpg";
 import styleVideoDocumentary from "@/assets/styles/video-documentary.jpg";
 import styleVideoAnimation from "@/assets/styles/video-animation.jpg";
 import styleVideoRealistic from "@/assets/styles/video-realistic.jpg";
+import styleMoodBold from "@/assets/styles/mood-bold.jpg";
+import styleMoodMinimal from "@/assets/styles/mood-minimal.jpg";
+import styleMoodNeon from "@/assets/styles/mood-neon.jpg";
+import styleMoodEarthy from "@/assets/styles/mood-earthy.jpg";
+import styleMoodMonochrome from "@/assets/styles/mood-monochrome.jpg";
+import styleMoodGradient from "@/assets/styles/mood-gradient.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
