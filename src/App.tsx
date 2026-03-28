@@ -147,6 +147,8 @@ const App = () => (
             <Route path="/transcribe/:id" element={<TranscriptDetailPage />} />
             <Route path="/editor" element={<EditorPage />} />
 
+            {/* Landing (handled above, no 404) */}
+            <Route path="/landing" element={null} />
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
