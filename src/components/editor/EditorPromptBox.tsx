@@ -90,11 +90,12 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   }, [onSend, onChatInputChange]);
 
   const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+    if (mention.active && e.key === "Escape") { e.preventDefault(); dismissMention(); return; }
+    if (e.key === "Enter" && !e.shiftKey && !mention.active) {
       e.preventDefault();
       handleSend();
     }
-  }, [handleSend]);
+  }, [handleSend, mention.active, dismissMention]);
 
   const handleEnhance = () => {
     if (!chatInput.trim()) return;
