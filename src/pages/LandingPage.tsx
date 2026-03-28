@@ -305,7 +305,7 @@ const LandingPage = () => {
         </div>
       </header>
 
-      <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-12 pt-24 pb-10">
+      <section className="flex flex-col items-center justify-center px-6 md:px-12 pt-20 pb-6">
         {/* Tagline */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
