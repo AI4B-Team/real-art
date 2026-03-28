@@ -275,15 +275,6 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
             className="min-h-[48px] text-sm text-foreground leading-[1.8] outline-none break-words [&:empty]:before:content-[attr(data-placeholder)] [&:empty]:before:text-muted [&:empty]:before:pointer-events-none"
             style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
           />
-          {mention.active && mention.anchorRect && (
-            <MentionDropdown
-              assets={PROMPT_SAMPLE_ASSETS}
-              query={mention.query}
-              position={mention.anchorRect}
-              chipIds={chipIds}
-              onSelect={addChipFromMention}
-            />
-          )}
         </div>
       </div>
 
