@@ -61,14 +61,24 @@ const SAMPLE_MEDIA = [
 ];
 
 const CAPTION_DATA = [
-  { time: "2.30s", text: "I'm not real." },
-  { time: "3.50s", text: "I wasn't born." },
-  { time: "4.70s", text: "I don't have a past." },
-  { time: "6.40s", text: "I don't even exist, and yet I show up online." },
-  { time: "9.60s", text: "I create content." },
-  { time: "11.20s", text: "I engage with people." },
-  { time: "13.80s", text: "I have followers who believe in me." },
-  { time: "16.50s", text: "And I'm changing the game." },
+  { time: "0.00s", text: "I'm not real." },
+  { time: "2.00s", text: "I wasn't born." },
+  { time: "4.00s", text: "I don't have a past." },
+  { time: "6.00s", text: "And yet — I show up online every single day." },
+  { time: "10.00s", text: "I create content." },
+  { time: "12.00s", text: "I engage with people." },
+  { time: "14.00s", text: "I have followers who believe in me." },
+  { time: "17.00s", text: "Because I was designed that way." },
+  { time: "20.00s", text: "My face was generated in seconds." },
+  { time: "23.00s", text: "My voice? Cloned from a 30-second sample." },
+  { time: "27.00s", text: "My personality? A prompt, tuned and tested." },
+  { time: "31.00s", text: "I post at the perfect time." },
+  { time: "34.00s", text: "I reply with the perfect tone." },
+  { time: "37.00s", text: "I never burn out. I never take breaks." },
+  { time: "40.00s", text: "And the scary part?" },
+  { time: "42.00s", text: "You probably follow someone just like me." },
+  { time: "46.00s", text: "Welcome to the age of virtual creators." },
+  { time: "50.00s", text: "The question is: does it matter if I'm real?" },
 ];
 
 const FILLER_WORDS = ["um", "uh", "like", "you know", "right", "so", "actually", "basically", "literally"];
