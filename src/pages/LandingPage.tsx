@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Image, Video, Music, Palette, Calendar, FileText, Code,
@@ -9,7 +9,7 @@ import {
   Bot, Globe, Package, BarChart2, Film, LayoutGrid, Lock,
   Target, PenTool, ShoppingCart, Rss, Clapperboard,
 } from "lucide-react";
-import PageShell from "@/components/PageShell";
+import { Logo } from "@/components/Logo";
 
 /* ─── Content type config (mirrors CreatePage) ──────────────── */
 
@@ -291,7 +291,20 @@ const LandingPage = () => {
   };
 
   return (
-    <PageShell>
+    <div className="min-h-screen bg-background">
+      {/* Minimal top nav */}
+      <header className="fixed top-0 inset-x-0 z-50 h-16 flex items-center justify-between px-6 md:px-10 bg-background/80 backdrop-blur-md border-b border-foreground/[0.06]">
+        <Logo to="/landing" />
+        <div className="flex items-center gap-3">
+          <Link to="/login" className="px-4 py-2 rounded-lg text-[0.84rem] font-semibold text-foreground hover:bg-foreground/[0.04] transition-colors">
+            Login
+          </Link>
+          <Link to="/signup" className="px-5 py-2 rounded-lg text-[0.84rem] font-semibold bg-accent text-primary-foreground hover:opacity-90 transition-opacity">
+            Start Free
+          </Link>
+        </div>
+      </header>
+
       <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-12 pt-24 pb-10">
         {/* Tagline */}
         <motion.p
@@ -444,7 +457,7 @@ const LandingPage = () => {
           )}
         </AnimatePresence>
       </section>
-    </PageShell>
+    </div>
   );
 };
 
