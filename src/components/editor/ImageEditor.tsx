@@ -1063,8 +1063,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                 {setting.type === "slider" && (
                   <>
                     <div className="flex items-center justify-between">
-                      <span className="text-sm text-background/80">{setting.label}</span>
-                      <span className="text-sm text-background/60 tabular-nums">{toolSettings[setting.key!] ?? setting.min}</span>
+                      <span className="text-sm text-foreground/80">{setting.label}</span>
+                      <span className="text-sm text-muted tabular-nums">{toolSettings[setting.key!] ?? setting.min}</span>
                     </div>
                     <input type="range" min={setting.min} max={setting.max} step={setting.step || 1}
                       value={toolSettings[setting.key!] ?? setting.min}
@@ -1074,14 +1074,14 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                         if (activeTool === "text" && selectedTextId && setting.key === "fontSize")
                           setTextElements(prev => prev.map(t => t.id === selectedTextId ? { ...t, fontSize: val } : t));
                       }}
-                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-background/20
+                      className="w-full h-1.5 rounded-full appearance-none cursor-pointer bg-foreground/[0.12]
                         [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 
-                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-background [&::-webkit-slider-thumb]:shadow-lg" />
+                        [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-foreground [&::-webkit-slider-thumb]:shadow-lg" />
                   </>
                 )}
                 {setting.type === "buttons" && (
                   <>
-                    <span className="text-sm text-background/80">{setting.label}</span>
+                    <span className="text-sm text-foreground/80">{setting.label}</span>
                     <div className="grid grid-cols-2 gap-2">
                       {setting.options?.map(opt => (
                         <button key={opt} onClick={() => {
@@ -1097,7 +1097,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                             setToolSettings(prev => ({ ...prev, [setting.key || setting.label.toLowerCase()]: opt }));
                           }
                         }}
-                          className={`px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${toolSettings[setting.key || setting.label.toLowerCase()] === opt ? "bg-accent text-white" : "bg-background/10 text-background/60 hover:bg-background/15 hover:text-background"}`}>
+                          className={`px-3 py-2.5 rounded-lg text-xs font-medium transition-all ${toolSettings[setting.key || setting.label.toLowerCase()] === opt ? "bg-accent text-white" : "bg-foreground/[0.06] text-muted hover:bg-foreground/[0.1] hover:text-foreground"}`}>
                           {opt}
                         </button>
                       ))}
