@@ -249,6 +249,8 @@ const LandingPage = () => {
   const [suggestionsPage, setSuggestionsPage] = useState(0);
   const [shuffledSuggestions, setShuffledSuggestions] = useState<Record<string, Suggestion[]>>({});
   const promptRef = useRef<HTMLTextAreaElement>(null);
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const typeRef = useRef<HTMLDivElement>(null);
 
   const activeBorderColor = selectedType
     ? CONTENT_TYPES.find(t => t.id === selectedType)?.promptBorder || "border-accent"
