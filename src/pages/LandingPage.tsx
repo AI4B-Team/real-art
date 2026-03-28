@@ -7,7 +7,7 @@ import {
   Camera, Play, MessageCircle, Move, User, BookOpen, Presentation,
   Headphones, AudioLines, Captions, Pencil, Layers, Zap,
   Bot, Globe, Package, BarChart2, Film, LayoutGrid, Lock,
-  Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash, SlidersHorizontal, Check,
+  Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash, SlidersHorizontal, Check, ChevronDown,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import MinimalHeader from "@/components/MinimalHeader";
@@ -34,7 +34,74 @@ const CONTENT_TYPES: {
   { id: "app",      label: "App",      icon: Code,     color: "text-rose-500",   bg: "bg-rose-50",    border: "border-rose-200",   promptBorder: "border-rose-400" },
 ];
 
+/* ─── Sub-modes per type (mirrors CreatePage) ────────────────── */
+
+const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof Image }[]> = {
+  image: [
+    { id: "generate", label: "Create", icon: Sparkles },
+    { id: "batch", label: "Batch", icon: Layers },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "swap", label: "Swap", icon: RefreshCw },
+    { id: "photoshoot", label: "Photoshoot", icon: Camera },
+  ],
+  video: [
+    { id: "animate", label: "Animate", icon: Play },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "lip-sync", label: "Lip-Sync", icon: MessageCircle },
+    { id: "motion-sync", label: "Motion-Sync", icon: Move },
+    { id: "avatar", label: "Avatar Video", icon: User },
+    { id: "ugc", label: "UGC", icon: Video },
+    { id: "recast", label: "Recast", icon: RefreshCw },
+    { id: "story", label: "Story", icon: BookOpen },
+    { id: "presentation", label: "Presentation", icon: Presentation },
+    { id: "podcast", label: "Podcast", icon: Mic },
+  ],
+  audio: [
+    { id: "voiceover", label: "Voiceover", icon: Mic },
+    { id: "clone", label: "Clone", icon: User },
+    { id: "revoice", label: "Revoice", icon: RefreshCw },
+    { id: "transcribe", label: "Transcribe", icon: Captions },
+    { id: "sound-effects", label: "Sound Effects", icon: AudioLines },
+    { id: "music", label: "Music", icon: Music },
+    { id: "audiobook", label: "AudioBook", icon: Headphones },
+  ],
+  design: [
+    { id: "logo", label: "Logo", icon: Sparkles },
+    { id: "poster", label: "Poster", icon: Presentation },
+    { id: "thumbnail", label: "Thumbnail", icon: Film },
+    { id: "flyer", label: "Flyer", icon: FileText },
+    { id: "business-card", label: "Business Card", icon: User },
+    { id: "brochure", label: "Brochure", icon: BookOpen },
+    { id: "infographic", label: "Infographic", icon: BarChart2 },
+  ],
+  content: [
+    { id: "social", label: "Social", icon: Globe },
+    { id: "newsletter", label: "Newsletter", icon: FileText },
+    { id: "article", label: "Article", icon: BookOpen },
+    { id: "blog", label: "Blog", icon: Pencil },
+    { id: "email", label: "Email", icon: FileText },
+    { id: "ad-copy", label: "Ad Copy", icon: Zap },
+  ],
+  document: [
+    { id: "ebook", label: "Ebook", icon: BookOpen },
+    { id: "whitepaper", label: "Whitepaper", icon: FileText },
+    { id: "report", label: "Report", icon: BarChart2 },
+    { id: "business-plan", label: "Business Plan", icon: Package },
+    { id: "handbook", label: "Handbook", icon: Layers },
+    { id: "proposal", label: "Proposal", icon: PenTool },
+    { id: "case-study", label: "Case Study", icon: Target },
+    { id: "cover-letter", label: "Cover Letter", icon: Pencil },
+  ],
+  app: [
+    { id: "web-app", label: "Web App", icon: Code },
+    { id: "ai-agent", label: "AI Agent", icon: Bot },
+    { id: "saas", label: "SaaS", icon: Package },
+    { id: "website", label: "Website", icon: LayoutGrid },
+  ],
+};
+
 /* ─── Suggestion data per pill (24 each) ─────────────────────── */
+
 
 interface Suggestion {
   icon: typeof Image;
@@ -250,7 +317,9 @@ const LandingPage = () => {
   const [shuffledSuggestions, setShuffledSuggestions] = useState<Record<string, Suggestion[]>>({});
   const promptRef = useRef<HTMLTextAreaElement>(null);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const [selectedSubMode, setSelectedSubMode] = useState<string | null>(null);
   const typeRef = useRef<HTMLDivElement>(null);
+  const subModeRef = useRef<HTMLDivElement>(null);
 
   const activeBorderColor = selectedType
     ? CONTENT_TYPES.find(t => t.id === selectedType)?.promptBorder || "border-accent"
@@ -259,10 +328,12 @@ const LandingPage = () => {
   const handlePillClick = (type: ContentType) => {
     if (selectedType === type) {
       setSelectedType(null);
+      setSelectedSubMode(null);
       setSuggestionsPage(0);
       return;
     }
     setSelectedType(type);
+    setSelectedSubMode(null);
     setSuggestionsPage(0);
     if (!shuffledSuggestions[type]) {
       setShuffledSuggestions(prev => ({ ...prev, [type]: shuffle(SUGGESTIONS[type]) }));
@@ -284,14 +355,16 @@ const LandingPage = () => {
     (suggestionsPage + 1) * ITEMS_PER_PAGE
   );
 
-  // Close type dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (typeRef.current && !typeRef.current.contains(e.target as Node)) setTypeDropdownOpen(false);
+      if (subModeRef.current && !subModeRef.current.contains(e.target as Node)) setSubModeOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+  const [subModeOpen, setSubModeOpen] = useState(false);
 
   const handleGenerate = () => {
     navigate("/signup");
@@ -390,27 +463,38 @@ const LandingPage = () => {
                   </span>
                 )}
 
-                {/* Type dropdown button */}
-                <div className="relative shrink-0" ref={typeRef}>
-                  <button
-                    onClick={() => setTypeDropdownOpen(v => !v)}
-                    className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.06] transition-colors"
-                    title="Type"
-                  >
-                    <SlidersHorizontal className="w-4 h-4 text-foreground" />
-                  </button>
-                  {typeDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-                      {CONTENT_TYPES.map(t => (
-                        <button key={t.id} onClick={() => { handlePillClick(t.id); setTypeDropdownOpen(false); }}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
-                          <t.icon size={16} className={t.color} />{t.label}
-                          {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
-                        </button>
-                      ))}
+                {/* Sub-mode / Type selector (only when a type is selected) */}
+                {selectedType && (() => {
+                  const typeCfg = CONTENT_TYPES.find(t => t.id === selectedType)!;
+                  const subModes = SUB_MODES[selectedType];
+                  const selectedSubObj = subModes.find(s => s.id === selectedSubMode);
+                  return (
+                    <div className="relative shrink-0" ref={subModeRef}>
+                      <button
+                        onClick={() => setSubModeOpen(v => !v)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all whitespace-nowrap shrink-0 ${
+                          selectedSubObj ? `${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
+                        }`}
+                      >
+                        {selectedSubObj ? (
+                          <><selectedSubObj.icon size={13} />{selectedSubObj.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedSubMode(null); setSubModeOpen(false); }} /></>
+                        ) : (
+                          <><SlidersHorizontal size={13} />Type<ChevronDown size={11} className="text-muted" /></>
+                        )}
+                      </button>
+                      {subModeOpen && (
+                        <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-1.5 max-h-[50vh] overflow-y-auto">
+                          {subModes.map(m => (
+                            <button key={m.id} onClick={() => { setSelectedSubMode(m.id); setSubModeOpen(false); }}
+                              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedSubMode === m.id ? `${typeCfg.bg} ${typeCfg.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                              <m.icon size={14} />{m.label}{selectedSubMode === m.id && <Check size={12} className="ml-auto" />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 {selectedType && (
                   <>
