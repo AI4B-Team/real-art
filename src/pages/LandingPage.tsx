@@ -355,14 +355,16 @@ const LandingPage = () => {
     (suggestionsPage + 1) * ITEMS_PER_PAGE
   );
 
-  // Close type dropdown on outside click
+  // Close dropdowns on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (typeRef.current && !typeRef.current.contains(e.target as Node)) setTypeDropdownOpen(false);
+      if (subModeRef.current && !subModeRef.current.contains(e.target as Node)) setSubModeOpen(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+  const [subModeOpen, setSubModeOpen] = useState(false);
 
   const handleGenerate = () => {
     navigate("/signup");
