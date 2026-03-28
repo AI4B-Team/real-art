@@ -9,7 +9,7 @@ interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
-const NO_SIDEBAR_ROUTES = ["/login", "/signup"];
+const NO_SIDEBAR_ROUTES = ["/login", "/signup", "/landing"];
 const COLLAPSED_SIDEBAR_PATTERNS = [/^\/image\//, /^\/explore$/, /^\/create$/, /^\/account/, /^\/ebook-creator/, /^\/transcribe/, /^\/editor/];
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
