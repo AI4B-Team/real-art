@@ -321,7 +321,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.08 }}
-          className="font-display text-[clamp(2.2rem,5.5vw,4.2rem)] font-black leading-[1.05] tracking-[-0.03em] text-foreground text-center mb-8"
+          className="font-display text-[clamp(2.2rem,5.5vw,4.2rem)] font-black leading-[1.05] tracking-[-0.03em] text-foreground text-center mb-5"
         >
           What Will You Create Today?
         </motion.h1>
