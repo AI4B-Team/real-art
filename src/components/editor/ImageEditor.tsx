@@ -3,7 +3,7 @@ import emptyImageCards from "@/assets/empty-image-cards.png";
 import {
   MousePointer2, Paintbrush, Eraser, PaintBucket, Type, Layers,
   ZoomIn, Play, SlidersHorizontal, Download, Save, Globe, ExternalLink,
-  Trash2, Upload, Scissors, Wand2, Plus, X, Check, ChevronDown, Image,
+  Trash2, Upload, Scissors, Wand2, Plus, Minus, X, Check, ChevronDown, Image,
   RotateCcw, RotateCw, Eye, EyeOff, Lock, Unlock, Search, Settings,
   FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
   Film, Send, ChevronLeft, Wrench, Palette, Heart, Zap,
