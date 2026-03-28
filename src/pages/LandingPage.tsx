@@ -463,27 +463,38 @@ const LandingPage = () => {
                   </span>
                 )}
 
-                {/* Type dropdown button */}
-                <div className="relative shrink-0" ref={typeRef}>
-                  <button
-                    onClick={() => setTypeDropdownOpen(v => !v)}
-                    className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.06] transition-colors"
-                    title="Type"
-                  >
-                    <SlidersHorizontal className="w-4 h-4 text-foreground" />
-                  </button>
-                  {typeDropdownOpen && (
-                    <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-                      {CONTENT_TYPES.map(t => (
-                        <button key={t.id} onClick={() => { handlePillClick(t.id); setTypeDropdownOpen(false); }}
-                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
-                          <t.icon size={16} className={t.color} />{t.label}
-                          {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
-                        </button>
-                      ))}
+                {/* Sub-mode / Type selector (only when a type is selected) */}
+                {selectedType && (() => {
+                  const typeCfg = CONTENT_TYPES.find(t => t.id === selectedType)!;
+                  const subModes = SUB_MODES[selectedType];
+                  const selectedSubObj = subModes.find(s => s.id === selectedSubMode);
+                  return (
+                    <div className="relative shrink-0" ref={subModeRef}>
+                      <button
+                        onClick={() => setSubModeOpen(v => !v)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border transition-all whitespace-nowrap shrink-0 ${
+                          selectedSubObj ? `${typeCfg.bg} ${typeCfg.border} ${typeCfg.color}` : "bg-foreground/[0.04] border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"
+                        }`}
+                      >
+                        {selectedSubObj ? (
+                          <><selectedSubObj.icon size={13} />{selectedSubObj.label}<X size={11} className="opacity-60" onClick={e => { e.stopPropagation(); setSelectedSubMode(null); setSubModeOpen(false); }} /></>
+                        ) : (
+                          <><SlidersHorizontal size={13} />Type<ChevronDown size={11} className="text-muted" /></>
+                        )}
+                      </button>
+                      {subModeOpen && (
+                        <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-1.5 max-h-[50vh] overflow-y-auto">
+                          {subModes.map(m => (
+                            <button key={m.id} onClick={() => { setSelectedSubMode(m.id); setSubModeOpen(false); }}
+                              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${selectedSubMode === m.id ? `${typeCfg.bg} ${typeCfg.color}` : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                              <m.icon size={14} />{m.label}{selectedSubMode === m.id && <Check size={12} className="ml-auto" />}
+                            </button>
+                          ))}
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 {selectedType && (
                   <>
