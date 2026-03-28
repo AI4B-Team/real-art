@@ -44,7 +44,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
   const imgUploadRef = useRef<HTMLInputElement>(null);
-  const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(editableRef);
+  
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
   const ContentIcon = currentType.icon;
