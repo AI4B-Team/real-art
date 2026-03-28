@@ -457,7 +457,7 @@ const LandingPage = () => {
           )}
         </AnimatePresence>
       </section>
-    </PageShell>
+    </div>
   );
 };
 
