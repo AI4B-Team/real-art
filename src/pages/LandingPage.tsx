@@ -7,7 +7,7 @@ import {
   Camera, Play, MessageCircle, Move, User, BookOpen, Presentation,
   Headphones, AudioLines, Captions, Pencil, Layers, Zap,
   Bot, Globe, Package, BarChart2, Film, LayoutGrid, Lock,
-  Target, PenTool, ShoppingCart, Rss, Clapperboard,
+  Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
@@ -370,15 +370,56 @@ const LandingPage = () => {
               className="w-full resize-none border-none outline-none bg-transparent text-foreground text-[0.95rem] font-light px-5 pt-5 pb-2 placeholder:text-foreground/30"
             />
             <div className="flex items-center justify-between px-4 pb-3">
-              <div className="flex items-center gap-1">
-                {selectedType && (
-                  <span className="flex items-center gap-1.5 text-[0.75rem] font-semibold text-muted bg-foreground/[0.04] px-2.5 py-1 rounded-md">
+              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+                {/* Type badge pill */}
+                {selectedType ? (() => {
+                  const tc = CONTENT_TYPES.find(t => t.id === selectedType)!;
+                  const TIcon = tc.icon;
+                  return (
+                    <button onClick={() => setSelectedType(null)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[0.8rem] font-semibold border whitespace-nowrap shrink-0 ${tc.bg} ${tc.border} ${tc.color}`}>
+                      <TIcon className="w-3.5 h-3.5" />{tc.label}
+                      <X className="w-2.5 h-2.5 opacity-60" />
+                    </button>
+                  );
+                })() : (
+                  <span className="flex items-center gap-1.5 text-[0.75rem] font-semibold text-muted bg-foreground/[0.04] px-2.5 py-1.5 rounded-xl whitespace-nowrap shrink-0">
                     <Sparkles className="w-3 h-3" /> Auto
                   </span>
                 )}
+
+                {selectedType && (
+                  <>
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
+                    {/* Model */}
+                    <button onClick={handleGenerate} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                      <Sparkles className="w-3 h-3" />Auto
+                    </button>
+                    {/* Style */}
+                    <button onClick={handleGenerate} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                      <Pencil className="w-3 h-3" />Style
+                    </button>
+                    {/* Character */}
+                    <button onClick={handleGenerate} className="p-1.5 rounded-lg shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                      <User className="w-3.5 h-3.5" />
+                    </button>
+                    {/* Reference */}
+                    <button onClick={handleGenerate} className="p-1.5 rounded-lg shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                      <Layers className="w-3.5 h-3.5" />
+                    </button>
+                    {/* Ratio */}
+                    <button onClick={handleGenerate} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                      <Copy className="w-3 h-3" />1:1
+                    </button>
+                    {/* Count */}
+                    <button onClick={handleGenerate} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground transition-colors">
+                      <Hash className="w-3 h-3" />1
+                    </button>
+                  </>
+                )}
               </div>
-              <div className="flex items-center gap-2">
-                <button className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:text-foreground transition-colors">
+              <div className="flex items-center gap-2 shrink-0 ml-2">
+                <button onClick={handleGenerate} className="w-8 h-8 rounded-lg flex items-center justify-center text-muted hover:text-foreground transition-colors">
                   <Mic className="w-4 h-4" />
                 </button>
                 <button
