@@ -1873,33 +1873,6 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                             ))}
                           </PopoverContent>
                         </Popover>
-                        <Popover open={designColorOpen} onOpenChange={setDesignColorOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designColorScheme !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Palette size={12} />{designColorScheme}<ChevronDown size={10} className="opacity-60" />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Color Scheme</TooltipContent></Tooltip>
-                          <PopoverContent className="w-52 p-1.5" align="start" sideOffset={6}>
-                            {[
-                              { id: "Auto", colors: [] },
-                              { id: "Monochrome", colors: ["#1a1a1a","#444","#888","#ccc"] },
-                              { id: "Warm", colors: ["#dc2626","#ea580c","#f59e0b","#fbbf24"] },
-                              { id: "Cool", colors: ["#2563eb","#0ea5e9","#06b6d4","#67e8f9"] },
-                              { id: "Earth", colors: ["#78350f","#92400e","#a16207","#65a30d"] },
-                              { id: "Vibrant", colors: ["#dc2626","#7c3aed","#2563eb","#059669"] },
-                              { id: "Pastel", colors: ["#fca5a5","#c4b5fd","#93c5fd","#86efac"] },
-                            ].map(c => (
-                              <button key={c.id} type="button" onClick={() => { setDesignColorScheme(c.id); setDesignColorOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designColorScheme === c.id ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                <span>{c.id}</span>
-                                {c.colors.length > 0 && (
-                                  <div className="flex gap-0.5">{c.colors.map((cl, i) => <div key={i} className="w-3.5 h-3.5 rounded-full border border-foreground/10" style={{ backgroundColor: cl }} />)}</div>
-                                )}
-                                {designColorScheme === c.id && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                         <Popover open={designIndustryOpen} onOpenChange={setDesignIndustryOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designIndustry ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
