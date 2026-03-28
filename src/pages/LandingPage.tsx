@@ -443,6 +443,7 @@ const LandingPage = () => {
                 <div className="flex items-center gap-1.5">
                   <button
                     onClick={handleRegenerate}
+                    title="More Ideas"
                     className="w-8 h-8 rounded-lg border border-foreground/[0.1] flex items-center justify-center text-muted hover:text-foreground hover:border-foreground/20 transition-colors"
                   >
                     <RefreshCw className="w-3.5 h-3.5" />
