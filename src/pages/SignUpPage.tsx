@@ -92,9 +92,6 @@ const SignUpPage = () => {
           <div className="w-full max-w-[420px]">
             {step === "email" && (
               <>
-                <div className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none mb-1">
-                  <span className="text-accent">Real</span>.Art
-                </div>
                 <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-[1.05] mt-6 mb-2">
                   Join Free Today
                 </h1>
