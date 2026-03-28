@@ -34,7 +34,74 @@ const CONTENT_TYPES: {
   { id: "app",      label: "App",      icon: Code,     color: "text-rose-500",   bg: "bg-rose-50",    border: "border-rose-200",   promptBorder: "border-rose-400" },
 ];
 
+/* ─── Sub-modes per type (mirrors CreatePage) ────────────────── */
+
+const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof Image }[]> = {
+  image: [
+    { id: "generate", label: "Create", icon: Sparkles },
+    { id: "batch", label: "Batch", icon: Layers },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "swap", label: "Swap", icon: RefreshCw },
+    { id: "photoshoot", label: "Photoshoot", icon: Camera },
+  ],
+  video: [
+    { id: "animate", label: "Animate", icon: Play },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "lip-sync", label: "Lip-Sync", icon: MessageCircle },
+    { id: "motion-sync", label: "Motion-Sync", icon: Move },
+    { id: "avatar", label: "Avatar Video", icon: User },
+    { id: "ugc", label: "UGC", icon: Video },
+    { id: "recast", label: "Recast", icon: RefreshCw },
+    { id: "story", label: "Story", icon: BookOpen },
+    { id: "presentation", label: "Presentation", icon: Presentation },
+    { id: "podcast", label: "Podcast", icon: Mic },
+  ],
+  audio: [
+    { id: "voiceover", label: "Voiceover", icon: Mic },
+    { id: "clone", label: "Clone", icon: User },
+    { id: "revoice", label: "Revoice", icon: RefreshCw },
+    { id: "transcribe", label: "Transcribe", icon: Captions },
+    { id: "sound-effects", label: "Sound Effects", icon: AudioLines },
+    { id: "music", label: "Music", icon: Music },
+    { id: "audiobook", label: "AudioBook", icon: Headphones },
+  ],
+  design: [
+    { id: "logo", label: "Logo", icon: Sparkles },
+    { id: "poster", label: "Poster", icon: Presentation },
+    { id: "thumbnail", label: "Thumbnail", icon: Film },
+    { id: "flyer", label: "Flyer", icon: FileText },
+    { id: "business-card", label: "Business Card", icon: User },
+    { id: "brochure", label: "Brochure", icon: BookOpen },
+    { id: "infographic", label: "Infographic", icon: BarChart2 },
+  ],
+  content: [
+    { id: "social", label: "Social", icon: Globe },
+    { id: "newsletter", label: "Newsletter", icon: FileText },
+    { id: "article", label: "Article", icon: BookOpen },
+    { id: "blog", label: "Blog", icon: Pencil },
+    { id: "email", label: "Email", icon: FileText },
+    { id: "ad-copy", label: "Ad Copy", icon: Zap },
+  ],
+  document: [
+    { id: "ebook", label: "Ebook", icon: BookOpen },
+    { id: "whitepaper", label: "Whitepaper", icon: FileText },
+    { id: "report", label: "Report", icon: BarChart2 },
+    { id: "business-plan", label: "Business Plan", icon: Package },
+    { id: "handbook", label: "Handbook", icon: Layers },
+    { id: "proposal", label: "Proposal", icon: PenTool },
+    { id: "case-study", label: "Case Study", icon: Target },
+    { id: "cover-letter", label: "Cover Letter", icon: Pencil },
+  ],
+  app: [
+    { id: "web-app", label: "Web App", icon: Code },
+    { id: "ai-agent", label: "AI Agent", icon: Bot },
+    { id: "saas", label: "SaaS", icon: Package },
+    { id: "website", label: "Website", icon: LayoutGrid },
+  ],
+};
+
 /* ─── Suggestion data per pill (24 each) ─────────────────────── */
+
 
 interface Suggestion {
   icon: typeof Image;
