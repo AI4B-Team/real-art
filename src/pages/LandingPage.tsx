@@ -305,13 +305,13 @@ const LandingPage = () => {
         </div>
       </header>
 
-      <section className="min-h-[80vh] flex flex-col items-center justify-center px-6 md:px-12 pt-24 pb-10">
+      <section className="flex flex-col items-center justify-center px-6 md:px-12 pt-20 pb-6">
         {/* Tagline */}
         <motion.p
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-[0.82rem] font-semibold tracking-[0.15em] uppercase text-muted mb-4"
+          className="text-[0.82rem] font-semibold tracking-[0.15em] uppercase text-muted mb-2"
         >
           Create Anything — Automate Everything
         </motion.p>
@@ -321,7 +321,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.08 }}
-          className="font-display text-[clamp(2.2rem,5.5vw,4.2rem)] font-black leading-[1.05] tracking-[-0.03em] text-foreground text-center mb-8"
+          className="font-display text-[clamp(2.2rem,5.5vw,4.2rem)] font-black leading-[1.05] tracking-[-0.03em] text-foreground text-center mb-5"
         >
           What Will You Create Today?
         </motion.h1>
@@ -331,7 +331,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.16 }}
-          className="flex flex-wrap items-center justify-center gap-2.5 mb-8"
+          className="flex flex-wrap items-center justify-center gap-2.5 mb-5"
         >
           {CONTENT_TYPES.map(({ id, label, icon: Icon, color, bg, border }) => {
             const isActive = selectedType === id;
