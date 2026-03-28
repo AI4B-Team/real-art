@@ -1012,7 +1012,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
 
       {/* Right Panel: Tool Settings */}
       {currentToolConfig && (
-        <div className="w-72 bg-foreground/[0.95] border-l border-foreground/[0.2] overflow-y-auto">
+        <div className="w-72 bg-card border-l border-foreground/[0.08] overflow-y-auto">
           <div className="p-5 space-y-5">
             <div className="flex items-center justify-between">
               <h3 className="text-sm font-bold text-background">{currentToolConfig.title}</h3>
