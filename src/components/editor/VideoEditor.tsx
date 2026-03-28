@@ -61,14 +61,24 @@ const SAMPLE_MEDIA = [
 ];
 
 const CAPTION_DATA = [
-  { time: "2.30s", text: "I'm not real." },
-  { time: "3.50s", text: "I wasn't born." },
-  { time: "4.70s", text: "I don't have a past." },
-  { time: "6.40s", text: "I don't even exist, and yet I show up online." },
-  { time: "9.60s", text: "I create content." },
-  { time: "11.20s", text: "I engage with people." },
-  { time: "13.80s", text: "I have followers who believe in me." },
-  { time: "16.50s", text: "And I'm changing the game." },
+  { time: "0.00s", text: "I'm not real." },
+  { time: "2.00s", text: "I wasn't born." },
+  { time: "4.00s", text: "I don't have a past." },
+  { time: "6.00s", text: "And yet — I show up online every single day." },
+  { time: "10.00s", text: "I create content." },
+  { time: "12.00s", text: "I engage with people." },
+  { time: "14.00s", text: "I have followers who believe in me." },
+  { time: "17.00s", text: "Because I was designed that way." },
+  { time: "20.00s", text: "My face was generated in seconds." },
+  { time: "23.00s", text: "My voice? Cloned from a 30-second sample." },
+  { time: "27.00s", text: "My personality? A prompt, tuned and tested." },
+  { time: "31.00s", text: "I post at the perfect time." },
+  { time: "34.00s", text: "I reply with the perfect tone." },
+  { time: "37.00s", text: "I never burn out. I never take breaks." },
+  { time: "40.00s", text: "And the scary part?" },
+  { time: "42.00s", text: "You probably follow someone just like me." },
+  { time: "46.00s", text: "Welcome to the age of virtual creators." },
+  { time: "50.00s", text: "The question is: does it matter if I'm real?" },
 ];
 
 const FILLER_WORDS = ["um", "uh", "like", "you know", "right", "so", "actually", "basically", "literally"];
@@ -78,48 +88,120 @@ interface WordToken {
 }
 
 const SAMPLE_TRANSCRIPT: WordToken[] = [
-  { id: "w0", word: "So", start: 0.0, end: 0.3, isFiller: true },
-  { id: "w1", word: "today", start: 0.3, end: 0.7 },
-  { id: "w2", word: "we're", start: 0.7, end: 0.9 },
-  { id: "w3", word: "going", start: 0.9, end: 1.2 },
-  { id: "w4", word: "to", start: 1.2, end: 1.3 },
-  { id: "w5", word: "um", start: 1.3, end: 1.6, isFiller: true },
-  { id: "w6", word: "talk", start: 1.6, end: 1.9 },
-  { id: "w7", word: "about", start: 1.9, end: 2.2 },
-  { id: "w8", word: "something", start: 2.2, end: 2.7 },
-  { id: "w9", word: "really", start: 2.7, end: 3.1 },
-  { id: "w10", word: "like", start: 3.1, end: 3.4, isFiller: true },
-  { id: "w11", word: "important", start: 3.4, end: 4.0 },
-  { id: "w12", word: "about", start: 4.0, end: 4.3 },
-  { id: "w13", word: "AI", start: 4.3, end: 4.6 },
-  { id: "w14", word: "content", start: 4.6, end: 5.1 },
-  { id: "w15", word: "creation.", start: 5.1, end: 5.6 },
-  { id: "w16", word: "You know", start: 5.6, end: 6.0, isFiller: true },
-  { id: "w17", word: "the", start: 6.0, end: 6.1 },
-  { id: "w18", word: "tools", start: 6.1, end: 6.4 },
-  { id: "w19", word: "we", start: 6.4, end: 6.5 },
-  { id: "w20", word: "have", start: 6.5, end: 6.8 },
-  { id: "w21", word: "uh", start: 6.8, end: 7.0, isFiller: true },
-  { id: "w22", word: "available", start: 7.0, end: 7.5 },
-  { id: "w23", word: "right", start: 7.5, end: 7.7, isFiller: true },
-  { id: "w24", word: "now", start: 7.7, end: 7.9 },
-  { id: "w25", word: "are", start: 7.9, end: 8.1 },
-  { id: "w26", word: "actually", start: 8.1, end: 8.6, isFiller: true },
-  { id: "w27", word: "incredible.", start: 8.6, end: 9.2 },
-  { id: "w28", word: "Basically", start: 9.2, end: 9.7, isFiller: true },
-  { id: "w29", word: "you", start: 9.7, end: 9.9 },
-  { id: "w30", word: "can", start: 9.9, end: 10.1 },
-  { id: "w31", word: "edit", start: 10.1, end: 10.4 },
-  { id: "w32", word: "video", start: 10.4, end: 10.8 },
-  { id: "w33", word: "by", start: 10.8, end: 10.9 },
-  { id: "w34", word: "editing", start: 10.9, end: 11.3 },
-  { id: "w35", word: "text.", start: 11.3, end: 11.7 },
+  { id: "w0", word: "I'm", start: 0.0, end: 0.3 },
+  { id: "w1", word: "not", start: 0.3, end: 0.5 },
+  { id: "w2", word: "real.", start: 0.5, end: 1.2 },
+  { id: "w3", word: "I", start: 2.0, end: 2.1 },
+  { id: "w4", word: "wasn't", start: 2.1, end: 2.5 },
+  { id: "w5", word: "born.", start: 2.5, end: 3.2 },
+  { id: "w6", word: "I", start: 4.0, end: 4.1 },
+  { id: "w7", word: "don't", start: 4.1, end: 4.4 },
+  { id: "w8", word: "have", start: 4.4, end: 4.6 },
+  { id: "w9", word: "a", start: 4.6, end: 4.7 },
+  { id: "w10", word: "past.", start: 4.7, end: 5.3 },
+  { id: "w11", word: "And", start: 6.0, end: 6.2 },
+  { id: "w12", word: "yet", start: 6.2, end: 6.5 },
+  { id: "w13", word: "—", start: 6.5, end: 6.6 },
+  { id: "w14", word: "I", start: 6.6, end: 6.7 },
+  { id: "w15", word: "show", start: 6.7, end: 7.0 },
+  { id: "w16", word: "up", start: 7.0, end: 7.2 },
+  { id: "w17", word: "online", start: 7.2, end: 7.6 },
+  { id: "w18", word: "every", start: 7.6, end: 7.9 },
+  { id: "w19", word: "single", start: 7.9, end: 8.2 },
+  { id: "w20", word: "day.", start: 8.2, end: 8.8 },
+  { id: "w21", word: "I", start: 10.0, end: 10.1 },
+  { id: "w22", word: "create", start: 10.1, end: 10.5 },
+  { id: "w23", word: "content.", start: 10.5, end: 11.2 },
+  { id: "w24", word: "I", start: 12.0, end: 12.1 },
+  { id: "w25", word: "engage", start: 12.1, end: 12.5 },
+  { id: "w26", word: "with", start: 12.5, end: 12.7 },
+  { id: "w27", word: "people.", start: 12.7, end: 13.3 },
+  { id: "w28", word: "I", start: 14.0, end: 14.1 },
+  { id: "w29", word: "have", start: 14.1, end: 14.4 },
+  { id: "w30", word: "followers", start: 14.4, end: 15.0 },
+  { id: "w31", word: "who", start: 15.0, end: 15.2 },
+  { id: "w32", word: "believe", start: 15.2, end: 15.7 },
+  { id: "w33", word: "in", start: 15.7, end: 15.8 },
+  { id: "w34", word: "me.", start: 15.8, end: 16.4 },
+  { id: "w35", word: "Because", start: 17.0, end: 17.5 },
+  { id: "w36", word: "I", start: 17.5, end: 17.6 },
+  { id: "w37", word: "was", start: 17.6, end: 17.8 },
+  { id: "w38", word: "designed", start: 17.8, end: 18.3 },
+  { id: "w39", word: "that", start: 18.3, end: 18.5 },
+  { id: "w40", word: "way.", start: 18.5, end: 19.2 },
+  { id: "w41", word: "My", start: 20.0, end: 20.2 },
+  { id: "w42", word: "face", start: 20.2, end: 20.5 },
+  { id: "w43", word: "was", start: 20.5, end: 20.7 },
+  { id: "w44", word: "generated", start: 20.7, end: 21.3 },
+  { id: "w45", word: "in", start: 21.3, end: 21.4 },
+  { id: "w46", word: "seconds.", start: 21.4, end: 22.2 },
+  { id: "w47", word: "My", start: 23.0, end: 23.2 },
+  { id: "w48", word: "voice?", start: 23.2, end: 23.7 },
+  { id: "w49", word: "Cloned", start: 24.0, end: 24.4 },
+  { id: "w50", word: "from", start: 24.4, end: 24.6 },
+  { id: "w51", word: "a", start: 24.6, end: 24.7 },
+  { id: "w52", word: "30-second", start: 24.7, end: 25.3 },
+  { id: "w53", word: "sample.", start: 25.3, end: 26.0 },
+  { id: "w54", word: "My", start: 27.0, end: 27.2 },
+  { id: "w55", word: "personality?", start: 27.2, end: 27.9 },
+  { id: "w56", word: "A", start: 28.0, end: 28.1 },
+  { id: "w57", word: "prompt,", start: 28.1, end: 28.6 },
+  { id: "w58", word: "tuned", start: 28.6, end: 29.0 },
+  { id: "w59", word: "and", start: 29.0, end: 29.2 },
+  { id: "w60", word: "tested.", start: 29.2, end: 29.9 },
+  { id: "w61", word: "I", start: 31.0, end: 31.1 },
+  { id: "w62", word: "post", start: 31.1, end: 31.4 },
+  { id: "w63", word: "at", start: 31.4, end: 31.5 },
+  { id: "w64", word: "the", start: 31.5, end: 31.6 },
+  { id: "w65", word: "perfect", start: 31.6, end: 32.1 },
+  { id: "w66", word: "time.", start: 32.1, end: 32.8 },
+  { id: "w67", word: "I", start: 34.0, end: 34.1 },
+  { id: "w68", word: "reply", start: 34.1, end: 34.5 },
+  { id: "w69", word: "with", start: 34.5, end: 34.7 },
+  { id: "w70", word: "the", start: 34.7, end: 34.8 },
+  { id: "w71", word: "perfect", start: 34.8, end: 35.3 },
+  { id: "w72", word: "tone.", start: 35.3, end: 36.0 },
+  { id: "w73", word: "I", start: 37.0, end: 37.1 },
+  { id: "w74", word: "never", start: 37.1, end: 37.5 },
+  { id: "w75", word: "burn", start: 37.5, end: 37.8 },
+  { id: "w76", word: "out.", start: 37.8, end: 38.3 },
+  { id: "w77", word: "I", start: 38.5, end: 38.6 },
+  { id: "w78", word: "never", start: 38.6, end: 39.0 },
+  { id: "w79", word: "take", start: 39.0, end: 39.3 },
+  { id: "w80", word: "breaks.", start: 39.3, end: 40.0 },
+  { id: "w81", word: "And", start: 40.5, end: 40.7 },
+  { id: "w82", word: "the", start: 40.7, end: 40.8 },
+  { id: "w83", word: "scary", start: 40.8, end: 41.2 },
+  { id: "w84", word: "part?", start: 41.2, end: 41.8 },
+  { id: "w85", word: "You", start: 42.0, end: 42.2 },
+  { id: "w86", word: "probably", start: 42.2, end: 42.7 },
+  { id: "w87", word: "follow", start: 42.7, end: 43.1 },
+  { id: "w88", word: "someone", start: 43.1, end: 43.5 },
+  { id: "w89", word: "just", start: 43.5, end: 43.8 },
+  { id: "w90", word: "like", start: 43.8, end: 44.1 },
+  { id: "w91", word: "me.", start: 44.1, end: 44.8 },
+  { id: "w92", word: "Welcome", start: 46.0, end: 46.5 },
+  { id: "w93", word: "to", start: 46.5, end: 46.6 },
+  { id: "w94", word: "the", start: 46.6, end: 46.7 },
+  { id: "w95", word: "age", start: 46.7, end: 47.0 },
+  { id: "w96", word: "of", start: 47.0, end: 47.1 },
+  { id: "w97", word: "virtual", start: 47.1, end: 47.6 },
+  { id: "w98", word: "creators.", start: 47.6, end: 48.4 },
+  { id: "w99", word: "The", start: 50.0, end: 50.2 },
+  { id: "w100", word: "question", start: 50.2, end: 50.7 },
+  { id: "w101", word: "is:", start: 50.7, end: 51.0 },
+  { id: "w102", word: "does", start: 51.0, end: 51.3 },
+  { id: "w103", word: "it", start: 51.3, end: 51.4 },
+  { id: "w104", word: "matter", start: 51.4, end: 51.8 },
+  { id: "w105", word: "if", start: 51.8, end: 52.0 },
+  { id: "w106", word: "I'm", start: 52.0, end: 52.3 },
+  { id: "w107", word: "real?", start: 52.3, end: 53.0 },
 ];
 
 const CLIP_SUGGESTIONS = [
-  { label: "Strong Hook — Opening Statement", start: 0.0, end: 5.6, rationale: "Punchy opening that grabs attention with a direct statement about the topic.", platform: "tiktok" },
-  { label: "Key Insight — AI Tools Overview", start: 5.6, end: 9.2, rationale: "Compelling section about available tools that stands alone as a shareable moment.", platform: "reels" },
-  { label: "Actionable Takeaway — Edit by Text", start: 9.2, end: 11.7, rationale: "Clear, actionable tip that provides immediate value to viewers.", platform: "shorts" },
+  { label: "Cold Open Hook — 'I'm Not Real'", start: 0.0, end: 5.3, rationale: "Immediately grabs attention with an existential, mysterious opening that stops the scroll.", platform: "tiktok" },
+  { label: "The Revelation — How I Was Built", start: 20.0, end: 29.9, rationale: "Fascinating breakdown of AI creation process — face, voice, personality. Shareable educational content.", platform: "reels" },
+  { label: "The Unsettling Truth — You Follow Someone Like Me", start: 40.5, end: 48.4, rationale: "Strong emotional punchline that drives comments and shares. Perfect viral moment.", platform: "shorts" },
 ];
 
 const SOCIAL_EXPORT_PRESETS = [
@@ -171,11 +253,14 @@ const VOICE_DATA = [
 ];
 
 const STORYBOARD_SCENES = [
-  { time: "00:03", narrator: "Jurin", desc: "Clara stands at a desolate, snow-covered border crossing.", thumb: "https://images.unsplash.com/photo-1477601263568-180e2c6d046e?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "As a sudden blizzard intensifies, she uses the snow as cover to slip past the checkpoint.", thumb: "https://images.unsplash.com/photo-1491002052546-bf38f186af56?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "Her expression shifts from confusion to horror, realizing she has been betrayed.", thumb: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "The screen reflects in her eyes, showing a coded transmission.", thumb: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120" },
-  { time: "00:05", narrator: "Jurin", desc: "Huddled behind cover, she pulls out a small device.", thumb: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=120" },
+  { time: "00:00", narrator: "Narrator", desc: "Cold open — black screen, white text fades in: 'I'm not real.' A digital face glitches into frame. Unsettling, immediate hook.", thumb: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=120" },
+  { time: "00:06", narrator: "Narrator", desc: "The AI avatar sits in a modern studio, speaking directly to camera. 'And yet I show up online every single day.' Soft overhead lighting, shallow depth of field.", thumb: "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=120" },
+  { time: "00:14", narrator: "Narrator", desc: "Rapid montage — generated faces scrolling, follower counts rising, comment notifications stacking. 'I have followers who believe in me.'", thumb: "https://images.unsplash.com/photo-1563986768609-322da13575f2?w=120" },
+  { time: "00:20", narrator: "Narrator", desc: "Split screen: real vs AI face generation side by side. 'My face was generated in seconds. My voice? Cloned from a 30-second sample.'", thumb: "https://images.unsplash.com/photo-1535378917042-10a22c95931a?w=120" },
+  { time: "00:31", narrator: "Narrator", desc: "Screen recording: scheduling dashboard, analytics, engagement metrics auto-updating. 'I post at the perfect time. I reply with the perfect tone.'", thumb: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=120" },
+  { time: "00:40", narrator: "Narrator", desc: "Close-up on the AI face, slow push in. Expression shifts subtly. 'And the scary part? You probably follow someone just like me.'", thumb: "https://images.unsplash.com/photo-1531746790095-e5995aca4d0a?w=120" },
+  { time: "00:46", narrator: "Narrator", desc: "Wide shot — grid of virtual creators filling the frame one by one. 'Welcome to the age of virtual creators.'", thumb: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=120" },
+  { time: "00:50", narrator: "Narrator", desc: "End card — avatar faces camera. 'The question is: does it matter if I'm real?' Freeze frame. Logo. Subscribe CTA.", thumb: "https://images.unsplash.com/photo-1485846234645-a62644f84728?w=120" },
 ];
 
 interface ChatMessage { role: "user" | "assistant"; content: string; richContent?: string; }
@@ -227,7 +312,7 @@ const VideoEditor = ({ video }: Props) => {
   const [activeTab, setActiveTab] = useState<LeftTab>("ai-chat");
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration] = useState(596);
+  const [duration] = useState(56);
   const [zoom, setZoom] = useState(3);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isTimelineMinimized, setIsTimelineMinimized] = useState(false);
@@ -244,7 +329,7 @@ const VideoEditor = ({ video }: Props) => {
   const [visualsSource, setVisualsSource] = useState("Creations");
   const [templateSearch, setTemplateSearch] = useState("");
   const [scriptContent, setScriptContent] = useState(
-    "I'm going to tell you something shocking."
+    "I'm not real. I wasn't born. I don't have a past.\n\nAnd yet — I show up online every single day. I create content. I engage with people. I have followers who believe in me.\n\nBecause I was designed that way.\n\nMy face was generated in seconds. My voice? Cloned from a 30-second sample. My personality? A prompt, tuned and tested.\n\nI post at the perfect time. I reply with the perfect tone. I never burn out. I never take breaks.\n\nAnd the scary part? You probably follow someone just like me.\n\nWelcome to the age of virtual creators.\n\nThe question is: does it matter if I'm real?"
   );
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasVideoRef = useRef<HTMLVideoElement>(null);
@@ -255,10 +340,10 @@ const VideoEditor = ({ video }: Props) => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [chatInput, setChatInput] = useState("");
   const [aiChatSubTab, setAiChatSubTab] = useState<"chat" | "tools">("chat");
-  const [briefStyle, setBriefStyle] = useState("Realistic film");
-  const [briefNarrator, setBriefNarrator] = useState("Jurin");
-  const [briefPlatform, setBriefPlatform] = useState("TikTok");
-  const [briefDuration, setBriefDuration] = useState("30s");
+  const [briefStyle, setBriefStyle] = useState("Cinematic / Documentary");
+  const [briefNarrator, setBriefNarrator] = useState("AI Avatar");
+  const [briefPlatform, setBriefPlatform] = useState("YouTube");
+  const [briefDuration, setBriefDuration] = useState("56s");
   const [briefMediaType, setBriefMediaType] = useState("Video clip");
 
   // Settings state
@@ -423,18 +508,31 @@ const VideoEditor = ({ video }: Props) => {
 
   const [tracks, setTracks] = useState<TimelineTrack[]>([
     { id: "video-1", type: "video", name: "1", visible: true, clips: [
-      { id: "clip-1", type: "video", name: "Intro", startTime: 0, duration: 120, color: "bg-blue-500" },
-      { id: "clip-2", type: "video", name: "Main", startTime: 120, duration: 300, color: "bg-purple-500" },
-      { id: "clip-3", type: "video", name: "Outro", startTime: 420, duration: 176, color: "bg-emerald-500" },
+      { id: "clip-1", type: "video", name: "Cold Open", startTime: 0, duration: 6, color: "bg-blue-500" },
+      { id: "clip-2", type: "video", name: "Studio Direct", startTime: 6, duration: 8, color: "bg-blue-500" },
+      { id: "clip-3", type: "video", name: "Social Montage", startTime: 14, duration: 6, color: "bg-blue-500" },
+      { id: "clip-4", type: "video", name: "Face Generation", startTime: 20, duration: 11, color: "bg-blue-500" },
+      { id: "clip-5", type: "video", name: "Analytics Screen", startTime: 31, duration: 9, color: "bg-blue-500" },
+      { id: "clip-6", type: "video", name: "Close-Up Push", startTime: 40, duration: 6, color: "bg-blue-500" },
+      { id: "clip-7", type: "video", name: "Creator Grid", startTime: 46, duration: 4, color: "bg-blue-500" },
+      { id: "clip-8", type: "video", name: "End Card", startTime: 50, duration: 6, color: "bg-blue-500" },
     ]},
     { id: "video-2", type: "video", name: "2", visible: true, clips: [
-      { id: "clip-4", type: "video", name: "B-Roll", startTime: 60, duration: 200, color: "bg-indigo-500" },
+      { id: "clip-broll-1", type: "video", name: "B-Roll: Typing", startTime: 10, duration: 4, color: "bg-indigo-500" },
+      { id: "clip-broll-2", type: "video", name: "B-Roll: Phone Scroll", startTime: 31, duration: 5, color: "bg-indigo-500" },
+      { id: "clip-broll-3", type: "video", name: "B-Roll: Studio Gear", startTime: 42, duration: 4, color: "bg-indigo-500" },
     ]},
     { id: "audio-1", type: "audio", name: "3", muted: false, visible: true, clips: [
-      { id: "audio-clip-1", type: "audio", name: "Music", startTime: 0, duration: 596, color: "bg-rose-500" },
+      { id: "audio-music", type: "audio", name: "Ambient Score", startTime: 0, duration: 56, color: "bg-rose-500" },
     ]},
     { id: "audio-2", type: "audio", name: "4", muted: false, visible: true, clips: [
-      { id: "vo-clip-1", type: "audio", name: "Voiceover", startTime: 10, duration: 400, color: "bg-teal-500" },
+      { id: "vo-main", type: "audio", name: "Voiceover", startTime: 0, duration: 53, color: "bg-teal-500" },
+    ]},
+    { id: "audio-3", type: "audio", name: "5", muted: false, visible: true, clips: [
+      { id: "sfx-1", type: "audio", name: "Glitch SFX", startTime: 0, duration: 1.5, color: "bg-amber-500" },
+      { id: "sfx-2", type: "audio", name: "Whoosh", startTime: 14, duration: 1, color: "bg-amber-500" },
+      { id: "sfx-3", type: "audio", name: "Tension Riser", startTime: 40, duration: 2, color: "bg-amber-500" },
+      { id: "sfx-4", type: "audio", name: "Impact Hit", startTime: 46, duration: 0.8, color: "bg-amber-500" },
     ]},
   ]);
 
