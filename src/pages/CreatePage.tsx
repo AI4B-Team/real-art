@@ -1006,7 +1006,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                 ref={textareaRef}
                 contentEditable
                 suppressContentEditableWarning
-                onInput={() => { isInternalEditRef.current = true; setPrompt(extractText()); checkForMention(); }}
+                onInput={() => { isInternalEditRef.current = true; setPrompt(extractText()); }}
                 onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) { e.preventDefault(); handleGenerate(); } }}
                 onFocus={() => setPromptFocused(true)}
                 onBlur={() => setPromptFocused(false)}
