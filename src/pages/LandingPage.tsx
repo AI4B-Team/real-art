@@ -445,7 +445,7 @@ const LandingPage = () => {
               className="w-full resize-none border-none outline-none bg-transparent text-foreground text-[0.95rem] font-light px-5 pt-5 pb-2 placeholder:text-foreground/30"
             />
             <div className="flex items-center justify-between px-4 pb-3">
-              <div className="flex items-center gap-1 overflow-x-auto scrollbar-hide">
+              <div className="flex items-center gap-1 overflow-visible flex-wrap">
                 {/* Type badge pill */}
                 {selectedType ? (() => {
                   const tc = CONTENT_TYPES.find(t => t.id === selectedType)!;
