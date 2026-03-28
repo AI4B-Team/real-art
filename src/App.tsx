@@ -78,12 +78,14 @@ const App = () => (
         <AppTabsProvider>
         <QuickViewProvider>
         <QuickViewPanel />
+        <Routes>
+          <Route path="/landing" element={<LandingPage />} />
+        </Routes>
         <AuthLayout>
           <Routes>
             {/* Home */}
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Index />} />
-            <Route path="/landing" element={<LandingPage />} />
 
             {/* Round 1 — Core browse */}
             <Route path="/image/:id" element={<ImagePage />} />

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Image, Video, Music, Palette, Calendar, FileText, Code,
@@ -9,7 +9,7 @@ import {
   Bot, Globe, Package, BarChart2, Film, LayoutGrid, Lock,
   Target, PenTool, ShoppingCart, Rss, Clapperboard,
 } from "lucide-react";
-import PageShell from "@/components/PageShell";
+import { Logo } from "@/components/Logo";
 
 /* ─── Content type config (mirrors CreatePage) ──────────────── */
 
