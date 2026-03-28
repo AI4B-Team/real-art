@@ -63,6 +63,7 @@ import { EbookProvider } from "./contexts/EbookContext";
 import TranscribePage from "./pages/TranscribePage";
 import TranscriptDetailPage from "./pages/TranscriptDetailPage";
 import EditorPage from "./pages/EditorPage";
+import LandingPage from "./pages/LandingPage";
 
 const queryClient = new QueryClient();
 
@@ -82,6 +83,7 @@ const App = () => (
             {/* Home */}
             <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<Index />} />
+            <Route path="/landing" element={<LandingPage />} />
 
             {/* Round 1 — Core browse */}
             <Route path="/image/:id" element={<ImagePage />} />
