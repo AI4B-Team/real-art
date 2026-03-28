@@ -1015,8 +1015,8 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
         <div className="w-72 bg-card border-l border-foreground/[0.08] overflow-y-auto">
           <div className="p-5 space-y-5">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold text-background">{currentToolConfig.title}</h3>
-              <button onClick={() => setActiveTool(null)} className="text-background/40 hover:text-background"><X className="w-4 h-4" /></button>
+              <h3 className="text-sm font-bold text-foreground">{currentToolConfig.title}</h3>
+              <button onClick={() => setActiveTool(null)} className="text-muted hover:text-foreground"><X className="w-4 h-4" /></button>
             </div>
 
             {/* Layers panel */}
