@@ -10,6 +10,7 @@ import {
   Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
+import MinimalHeader from "@/components/MinimalHeader";
 
 /* ─── Content type config (mirrors CreatePage) ──────────────── */
 
