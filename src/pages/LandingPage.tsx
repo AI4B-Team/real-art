@@ -311,7 +311,7 @@ const LandingPage = () => {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="text-[0.82rem] font-semibold tracking-[0.15em] uppercase text-muted mb-4"
+          className="text-[0.82rem] font-semibold tracking-[0.15em] uppercase text-muted mb-2"
         >
           Create Anything — Automate Everything
         </motion.p>
