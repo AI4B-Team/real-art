@@ -718,22 +718,41 @@ const VideoEditor = ({ video }: Props) => {
 
   const handleSplit = useCallback(() => {
     pushUndo();
+    let didSplit = false;
     setTracks(prev => prev.map(track => {
+      // If a clip is selected, only split the track containing that clip
+      if (selectedClip) {
+        const clipToSplit = track.clips.find(c => c.id === selectedClip && currentTime > c.startTime && currentTime < c.startTime + c.duration);
+        if (!clipToSplit) return track;
+        const splitPoint = currentTime - clipToSplit.startTime;
+        const leftClip: TimelineClip = { ...clipToSplit, duration: splitPoint };
+        const rightClip: TimelineClip = {
+          ...clipToSplit,
+          id: `clip-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+          name: `${clipToSplit.name} (2)`,
+          startTime: currentTime,
+          duration: clipToSplit.duration - splitPoint,
+        };
+        didSplit = true;
+        return { ...track, clips: track.clips.map(c => c.id === clipToSplit.id ? leftClip : c).concat(rightClip) };
+      }
+      // No clip selected — split all tracks at playhead
       const clipAtPlayhead = track.clips.find(c => currentTime > c.startTime && currentTime < c.startTime + c.duration);
       if (!clipAtPlayhead) return track;
       const splitPoint = currentTime - clipAtPlayhead.startTime;
       const leftClip: TimelineClip = { ...clipAtPlayhead, duration: splitPoint };
       const rightClip: TimelineClip = {
         ...clipAtPlayhead,
-        id: `clip-${Date.now()}-${Math.random()}`,
+        id: `clip-${Date.now()}-${Math.random().toString(36).slice(2)}`,
         name: `${clipAtPlayhead.name} (2)`,
         startTime: currentTime,
         duration: clipAtPlayhead.duration - splitPoint,
       };
+      didSplit = true;
       return { ...track, clips: track.clips.map(c => c.id === clipAtPlayhead.id ? leftClip : c).concat(rightClip) };
     }));
-    toast({ title: "Split", description: `Clip split at ${formatTime(currentTime)}` });
-  }, [currentTime, pushUndo]);
+    if (didSplit) toast({ title: "Split", description: `Clip split at ${formatTime(currentTime)}` });
+  }, [currentTime, pushUndo, selectedClip]);
 
   const handleAddMarker = useCallback(() => {
     if (markers.includes(currentTime)) {
@@ -2696,26 +2715,22 @@ const VideoEditor = ({ video }: Props) => {
                   <div className="flex-1 relative min-h-full"
                     ref={(el) => { (window as any).__timelineEl = el; }}
                     onMouseDown={(e) => {
-                      // Click on ruler area (top 24px) to seek
                       const rect = e.currentTarget.getBoundingClientRect();
-                      const y = e.clientY - rect.top;
-                      if (y <= 24) {
-                        const x = e.clientX - rect.left;
-                        const newTime = Math.max(0, Math.min(duration, x / pixelsPerSecond));
-                        setCurrentTime(newTime);
-                        setIsPlaying(false);
-                        // Start dragging
-                        const onMove = (ev: MouseEvent) => {
-                          const mx = ev.clientX - rect.left;
-                          setCurrentTime(Math.max(0, Math.min(duration, mx / pixelsPerSecond)));
-                        };
-                        const onUp = () => {
-                          window.removeEventListener("mousemove", onMove);
-                          window.removeEventListener("mouseup", onUp);
-                        };
-                        window.addEventListener("mousemove", onMove);
-                        window.addEventListener("mouseup", onUp);
-                      }
+                      const x = e.clientX - rect.left;
+                      const newTime = Math.max(0, Math.min(duration, x / pixelsPerSecond));
+                      setCurrentTime(newTime);
+                      setIsPlaying(false);
+                      // Start dragging
+                      const onMove = (ev: MouseEvent) => {
+                        const mx = ev.clientX - rect.left;
+                        setCurrentTime(Math.max(0, Math.min(duration, mx / pixelsPerSecond)));
+                      };
+                      const onUp = () => {
+                        window.removeEventListener("mousemove", onMove);
+                        window.removeEventListener("mouseup", onUp);
+                      };
+                      window.addEventListener("mousemove", onMove);
+                      window.addEventListener("mouseup", onUp);
                     }}
                   >
                     {/* Playhead - draggable */}
