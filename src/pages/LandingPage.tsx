@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -7,7 +7,7 @@ import {
   Camera, Play, MessageCircle, Move, User, BookOpen, Presentation,
   Headphones, AudioLines, Captions, Pencil, Layers, Zap,
   Bot, Globe, Package, BarChart2, Film, LayoutGrid, Lock,
-  Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash,
+  Target, PenTool, ShoppingCart, Rss, Clapperboard, X, Copy, Hash, SlidersHorizontal, Check,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import MinimalHeader from "@/components/MinimalHeader";
@@ -249,6 +249,8 @@ const LandingPage = () => {
   const [suggestionsPage, setSuggestionsPage] = useState(0);
   const [shuffledSuggestions, setShuffledSuggestions] = useState<Record<string, Suggestion[]>>({});
   const promptRef = useRef<HTMLTextAreaElement>(null);
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const typeRef = useRef<HTMLDivElement>(null);
 
   const activeBorderColor = selectedType
     ? CONTENT_TYPES.find(t => t.id === selectedType)?.promptBorder || "border-accent"
@@ -281,6 +283,15 @@ const LandingPage = () => {
     suggestionsPage * ITEMS_PER_PAGE,
     (suggestionsPage + 1) * ITEMS_PER_PAGE
   );
+
+  // Close type dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (typeRef.current && !typeRef.current.contains(e.target as Node)) setTypeDropdownOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   const handleGenerate = () => {
     navigate("/signup");
@@ -378,6 +389,28 @@ const LandingPage = () => {
                     <Sparkles className="w-3 h-3" /> Auto
                   </span>
                 )}
+
+                {/* Type dropdown button */}
+                <div className="relative shrink-0" ref={typeRef}>
+                  <button
+                    onClick={() => setTypeDropdownOpen(v => !v)}
+                    className="flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.06] transition-colors"
+                    title="Type"
+                  >
+                    <SlidersHorizontal className="w-4 h-4 text-foreground" />
+                  </button>
+                  {typeDropdownOpen && (
+                    <div className="absolute top-full left-0 mt-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+                      {CONTENT_TYPES.map(t => (
+                        <button key={t.id} onClick={() => { handlePillClick(t.id); setTypeDropdownOpen(false); }}
+                          className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedType === t.id ? "bg-foreground/[0.06]" : ""}`}>
+                          <t.icon size={16} className={t.color} />{t.label}
+                          {selectedType === t.id && <Check size={13} className="ml-auto text-accent" />}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
 
                 {selectedType && (
                   <>
