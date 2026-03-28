@@ -1106,7 +1106,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                 )}
                 {setting.type === "color" && (
                   <>
-                    <span className="text-sm text-background/80">{setting.label}</span>
+                    <span className="text-sm text-foreground/80">{setting.label}</span>
                     <div className="flex items-center gap-2">
                       <input type="color" value={toolSettings[setting.key!] || "#000000"}
                         onChange={e => {
@@ -1114,9 +1114,9 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                           if (activeTool === "text" && selectedTextId && setting.key === "textColor")
                             setTextElements(prev => prev.map(t => t.id === selectedTextId ? { ...t, color: e.target.value } : t));
                         }}
-                        className="w-8 h-8 rounded-lg border border-background/20 cursor-pointer bg-transparent p-0 overflow-hidden" />
+                        className="w-8 h-8 rounded-lg border border-foreground/[0.12] cursor-pointer bg-transparent p-0 overflow-hidden" />
                       <input type="text" value={toolSettings[setting.key!] || "#000000"} readOnly
-                        className="flex-1 bg-background/10 text-background/80 rounded-lg px-3 py-2 text-sm" />
+                        className="flex-1 bg-foreground/[0.04] text-foreground rounded-lg px-3 py-2 text-sm" />
                     </div>
                   </>
                 )}
