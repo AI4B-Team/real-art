@@ -3440,7 +3440,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
               onEndFrameChange={setEndFrame}
             />
           )}
-          {activePanel === "music" && showMusic && (
+          {activePanel === "music" && showMusic && musicStyle !== "Vocals" && (
             <MusicSamples
               onClose={() => setActivePanel(null)}
               selectedGenre={selectedGenre}
@@ -3449,6 +3449,34 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 setPrompt(prev => prev ? `${prev} — ${genre} style` : `Generate ${genre} music`);
               }}
             />
+          )}
+          {activePanel === "music" && showMusic && musicStyle === "Vocals" && (
+            <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-[0.85rem] font-bold">Lyrics</h3>
+                  {musicVoiceGender && (
+                    <span className="text-[0.7rem] text-muted bg-foreground/[0.06] px-2 py-0.5 rounded-md">{musicVoiceGender} Vocal</span>
+                  )}
+                </div>
+                <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+              <textarea
+                value={musicLyrics}
+                onChange={e => setMusicLyrics(e.target.value)}
+                placeholder="Write or paste your lyrics here... (e.g. verse, chorus, bridge)"
+                className="w-full h-48 px-4 py-3 rounded-xl border border-foreground/[0.1] bg-foreground/[0.02] text-[0.88rem] leading-relaxed resize-none focus:outline-none focus:border-accent transition-colors font-body"
+              />
+              <div className="flex items-center justify-between mt-3">
+                <button type="button" onClick={() => { setMusicLyrics("✨ Generating lyrics with AI..."); setTimeout(() => setMusicLyrics(""), 1500); }}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.8rem] font-semibold text-accent bg-accent/10 hover:bg-accent/15 transition-colors">
+                  <Wand2 size={14} />AI Writer
+                </button>
+                <span className="text-[0.7rem] text-muted">{musicLyrics.length} characters</span>
+              </div>
+            </div>
           )}
           {activePanel === "photoshoot" && showPhotoshoot && (
             <PhotoshootThemes
