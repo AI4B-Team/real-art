@@ -794,7 +794,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignPages(null);
     setDesignChartType(null);
     setDesignLayout("Vertical");
-    setDesignSize("A4");
+    setDesignSize(null);
     setDesignTextStyle("Bold");
     textareaRef.current?.focus();
   };
