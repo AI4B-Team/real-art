@@ -3697,31 +3697,29 @@ export default function CreatePage() {
 
             {/* Chat input */}
             <div className="px-4 pb-4 pt-2">
-              <div className="relative flex items-center gap-2">
+              <div className="relative flex items-center rounded-2xl border border-foreground/[0.12] bg-background focus-within:border-foreground/25 transition-colors">
                 <button
                   type="button"
                   onClick={() => appAttachmentRef.current?.click()}
-                  className="shrink-0 p-2.5 rounded-full border border-foreground/[0.12] text-muted hover:text-foreground hover:border-foreground/25 transition-colors"
+                  className="shrink-0 pl-3 pr-1 text-muted hover:text-foreground transition-colors"
                 >
-                  <Plus size={16} />
+                  <Plus size={18} />
                 </button>
-                <div className="relative flex-1">
-                  <input
-                    type="text"
-                    value={appBuilderInput}
-                    onChange={e => setAppBuilderInput(e.target.value)}
-                    onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAppFollowUp(); } }}
-                    placeholder="Ask me anything"
-                    className="w-full px-4 py-3.5 pr-12 rounded-2xl border border-foreground/[0.12] bg-background text-[0.84rem] outline-none focus:border-foreground/25 transition-colors placeholder:text-muted/50"
-                  />
-                  <button
-                    onClick={handleAppFollowUp}
-                    disabled={!appBuilderInput.trim()}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted hover:text-foreground transition-colors disabled:opacity-30"
-                  >
-                    <Mic size={16} />
-                  </button>
-                </div>
+                <input
+                  type="text"
+                  value={appBuilderInput}
+                  onChange={e => setAppBuilderInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAppFollowUp(); } }}
+                  placeholder="Ask me anything"
+                  className="flex-1 px-2 py-3.5 pr-12 bg-transparent text-[0.84rem] outline-none placeholder:text-muted/50"
+                />
+                <button
+                  onClick={handleAppFollowUp}
+                  disabled={!appBuilderInput.trim()}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted hover:text-foreground transition-colors disabled:opacity-30"
+                >
+                  <Mic size={16} />
+                </button>
               </div>
               <input ref={appAttachmentRef} type="file" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv" className="hidden" onChange={() => { toast({ title: "File attached" }); if (appAttachmentRef.current) appAttachmentRef.current.value = ""; }} />
             </div>
