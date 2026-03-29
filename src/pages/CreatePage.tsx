@@ -449,7 +449,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designLangOpen, setDesignLangOpen] = useState(false);
 
   // Presentation-specific states
-  const [presDeckStyle, setPresDeckStyle] = useState("Minimalist");
+  const [presDeckStyle, setPresDeckStyle] = useState<string | null>(null);
   const [presDeckStyleOpen, setPresDeckStyleOpen] = useState(false);
   const [presAudience, setPresAudience] = useState("Casual");
   const [presAudienceOpen, setPresAudienceOpen] = useState(false);
