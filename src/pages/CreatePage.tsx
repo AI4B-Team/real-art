@@ -416,6 +416,9 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [docTone, setDocTone] = useState<string | null>(null);
   const [docModel, setDocModel] = useState("Auto");
   const [docModelOpen, setDocModelOpen] = useState(false);
+  const [docStyle, setDocStyle] = useState<string | null>(null);
+  const [docGoal, setDocGoal] = useState("Engagement");
+  const [docFormat, setDocFormat] = useState("Informative");
   
   const [docLangOpen, setDocLangOpen] = useState(false);
   const [docLangSearch, setDocLangSearch] = useState("");
