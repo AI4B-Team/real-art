@@ -435,7 +435,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designFoldOpen, setDesignFoldOpen] = useState(false);
   const [designPages, setDesignPages] = useState<number | null>(null);
   const [designPagesOpen, setDesignPagesOpen] = useState(false);
-  const [designChartType, setDesignChartType] = useState("Mixed");
+  const [designChartType, setDesignChartType] = useState<string | null>(null);
   const [designChartOpen, setDesignChartOpen] = useState(false);
   const [designLayout, setDesignLayout] = useState("Vertical");
   const [designLayoutOpen, setDesignLayoutOpen] = useState(false);
@@ -792,7 +792,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignFinish("Matte");
     setDesignFoldType("Tri-Fold");
     setDesignPages(null);
-    setDesignChartType("Mixed");
+    setDesignChartType(null);
     setDesignLayout("Vertical");
     setDesignSize("A4");
     setDesignTextStyle("Bold");
@@ -1930,6 +1930,25 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
 
+                {/* Chart — infographic mode, after Style */}
+                {selectedType === "design" && selectedSubMode === "infographic" && (
+                  <Popover open={designChartOpen} onOpenChange={setDesignChartOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designChartType ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <BarChart2 size={12} />{designChartType || "Chart"}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Chart</TooltipContent></Tooltip>
+                    <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                      {["Mixed", "Bar Charts", "Pie Charts", "Line Graphs", "Icons Only", "Numbers Only"].map(c => (
+                        <button key={c} type="button" onClick={() => { setDesignChartType(c); setDesignChartOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designChartType === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {c}{designChartType === c && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
                 {/* Industry — design mode, after Style */}
                 {selectedType === "design" && selectedSubMode && (
                   <Popover open={designIndustryOpen} onOpenChange={setDesignIndustryOpen}>
@@ -2334,26 +2353,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       </>
                     )}
 
-                    {/* ── Infographic controls ── */}
-                    {selectedSubMode === "infographic" && (
-                      <>
-                        <Popover open={designChartOpen} onOpenChange={setDesignChartOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designChartType !== "Mixed" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <BarChart2 size={12} />{designChartType}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Chart Style</TooltipContent></Tooltip>
-                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
-                            {["Mixed", "Bar Charts", "Pie Charts", "Line Graphs", "Icons Only", "Numbers Only"].map(c => (
-                              <button key={c} type="button" onClick={() => { setDesignChartType(c); setDesignChartOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designChartType === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {c}{designChartType === c && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                      </>
-                    )}
+                    {/* ── Infographic controls (no chart here, moved after Style) ── */}
 
                     {/* ── Presentation controls ── */}
                     {selectedSubMode === "presentation" && (
