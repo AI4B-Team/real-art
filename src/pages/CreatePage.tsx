@@ -1166,8 +1166,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
           </div>
         </div>
 
-        <div className="px-4 overflow-x-auto overflow-y-visible no-scrollbar">
-          <div className={`w-max min-w-full rounded-2xl border-[1.5px] bg-background overflow-visible transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-lg" : "shadow-md"}`}>
+        <div className="w-[calc(100%-2rem)] max-w-[960px] mx-auto">
+          <div className={`w-full rounded-2xl border-[1.5px] bg-background overflow-hidden transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-lg" : "shadow-md"}`}>
 
           {/* Textarea row */}
           <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
