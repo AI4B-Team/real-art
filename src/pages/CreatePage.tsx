@@ -3617,7 +3617,12 @@ export default function CreatePage() {
                   }`}>
                     {msg.text}
                     {msg.role === "ai" && i === appConversation.length - 1 && appBuildingVersion > 0 && (
-                      <button className="mt-3 flex items-center gap-1.5 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
+                      <button
+                        onClick={() => {
+                          const previewEl = document.getElementById("app-builder-preview");
+                          if (previewEl) previewEl.scrollIntoView({ behavior: "smooth", block: "start" });
+                        }}
+                        className="mt-3 flex items-center gap-1.5 px-4 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.78rem] font-semibold hover:bg-accent transition-colors">
                         Version {appBuildingVersion} <ArrowRight size={12} />
                       </button>
                     )}
@@ -3698,7 +3703,7 @@ export default function CreatePage() {
                   </div>
                 </div>
               ) : appPreviewContent ? (
-                <div className="bg-background rounded-2xl border border-foreground/[0.08] shadow-lg overflow-hidden h-full">
+                <div id="app-builder-preview" className="bg-background rounded-2xl border border-foreground/[0.08] shadow-lg overflow-hidden h-full">
                   {/* Mock browser chrome */}
                   <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06] bg-foreground/[0.02]">
                     <div className="flex items-center gap-1.5">
