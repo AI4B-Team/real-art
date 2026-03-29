@@ -3798,7 +3798,7 @@ export default function CreatePage() {
                       <div className="p-5 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] space-y-3">
                         <input placeholder="Your Email" className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] outline-none" />
                         <textarea placeholder="Your Message" rows={3} className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] outline-none resize-none" />
-                        <button className="px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-semibold">Send Message</button>
+                        <button onClick={() => toast({ title: "Message sent!", description: "We'll get back to you soon." })} className="px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-semibold hover:bg-accent/90 transition-colors">Send Message</button>
                       </div>
                     </div>
                   </div>
