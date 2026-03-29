@@ -8,6 +8,7 @@ import {
   Mic, Lightbulb, Cpu, Link2, Rss, Headphones, ChevronDown,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import PageShell from "@/components/PageShell";
 import { toast } from "@/hooks/use-toast";
 
