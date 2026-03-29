@@ -442,6 +442,8 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
   const [presAudienceOpen, setPresAudienceOpen] = useState(false);
   const [presLength, setPresLength] = useState("Balanced");
   const [presLengthOpen, setPresLengthOpen] = useState(false);
+  const [presLanguage, setPresLanguage] = useState<string | null>(null);
+  const [presLangOpen, setPresLangOpen] = useState(false);
   const [appModel, setAppModel] = useState("Auto");
   const [appModelOpen, setAppModelOpen] = useState(false);
   const [appTheme, setAppTheme] = useState("Default");
