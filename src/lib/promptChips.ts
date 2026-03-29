@@ -25,9 +25,9 @@ export const PROMPT_SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; 
   {
     category: "Characters", type: "character",
     items: [
-      { id: "char-clara", label: "Clara", thumbnail: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
-      { id: "char-alex", label: "Alex", thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
-      { id: "char-maya", label: "Maya", thumbnail: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop" },
+      { id: "char-clara", label: "Clara", thumbnail: "https://i.pravatar.cc/40?img=5" },
+      { id: "char-alex", label: "Alex", thumbnail: "https://i.pravatar.cc/40?img=12" },
+      { id: "char-maya", label: "Maya", thumbnail: "https://i.pravatar.cc/40?img=32" },
     ],
   },
   {
