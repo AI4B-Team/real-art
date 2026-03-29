@@ -163,9 +163,9 @@ const EbookDesignSidebar = ({
 
   if (isCollapsed) {
     return (
-      <div className="w-10 border-l border-foreground/[0.04] bg-background flex flex-col items-center py-3">
-        <button onClick={() => setIsCollapsed(false)} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground">
-          <Layers className="w-4 h-4" />
+      <div className="w-8 border-r border-foreground/[0.04] bg-background flex flex-col items-center py-3">
+        <button onClick={() => setIsCollapsed(false)} className="p-1 rounded hover:bg-foreground/[0.05] text-muted-foreground" title="Open Design Panel">
+          <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
         </button>
       </div>
     );
@@ -187,8 +187,8 @@ const EbookDesignSidebar = ({
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04]">
         <span className="text-xs font-bold text-foreground uppercase tracking-wider">Design</span>
-        <button onClick={() => setIsCollapsed(true)} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
-          <X className="w-3.5 h-3.5" />
+        <button onClick={() => setIsCollapsed(true)} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" title="Close Panel">
+          <ChevronDown className="w-3.5 h-3.5 rotate-90" />
         </button>
       </div>
 
