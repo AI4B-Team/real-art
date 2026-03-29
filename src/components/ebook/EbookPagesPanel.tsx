@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import type { Page } from './EbookCanvasEditor';
+import { getElementsForPage } from './EbookCanvasEditor';
+import PageThumbnail from './PageThumbnail';
 
 interface EbookPagesPanelProps {
   pages: Page[];
@@ -16,9 +18,10 @@ interface EbookPagesPanelProps {
   onPageSelect: (id: string) => void;
   onPagesChange: (pages: Page[]) => void;
   onGridViewToggle?: () => void;
+  bookTitle?: string;
 }
 
-const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle }: EbookPagesPanelProps) => {
+const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '' }: EbookPagesPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -134,10 +137,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   } ${dragOverIndex === i ? 'border-accent/50' : ''}`}
                 >
                   {/* Thumbnail preview */}
-                  <div className="aspect-[3/4] bg-foreground/[0.03] flex items-center justify-center relative">
-                    <span className="text-[9px] font-bold text-muted-foreground">
-                      {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : i + 1}
-                    </span>
+                  <div className="aspect-[3/4] bg-foreground/[0.03] relative">
+                    <PageThumbnail elements={getElementsForPage(page, pages, bookTitle)} />
                     {page.locked && <Lock className="w-3 h-3 text-muted-foreground absolute top-1 right-1" />}
                   </div>
                   {/* Title */}
