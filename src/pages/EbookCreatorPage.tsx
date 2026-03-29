@@ -134,7 +134,7 @@ const EbookCreatorPage = () => {
                 <Link2 className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-all" />
               </div>
               <h3 className="text-base font-semibold text-foreground mb-2">Insert Link</h3>
-              <div className="w-full px-4 py-3 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-4">
+              <div className="w-full px-3 py-2.5 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-3">
                 <Link2 className="w-5 h-5 text-blue-500 shrink-0" />
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Paste Website Link</span>
               </div>
