@@ -388,23 +388,33 @@ const PageSettingsPanel = ({
           <SectionToggle id="border" title="Border" icon={Square} />
           {expandedSections.has('border') && (
             <div className="px-4 pb-4 space-y-3">
-              <div className="flex items-center gap-3">
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="rounded border-foreground/[0.15]" />
-                  <span className="text-xs text-foreground">Enable Border</span>
-                </label>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1.5 block">Type</label>
+                  <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15]">
+                    No Border <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                  </button>
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1.5 block">Style</label>
+                  <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15]">
+                    Solid <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                  </button>
+                </div>
               </div>
-              <div>
-                <label className="text-xs text-muted-foreground mb-1.5 block">Border Width</label>
-                <input type="range" min={0} max={10} defaultValue={1} className="w-full" />
-              </div>
-              <div>
-                <label className="text-xs text-muted-foreground mb-1.5 block">Border Color</label>
-                <div className="flex gap-1.5">
-                  {['hsl(0 0% 0%)', 'hsl(0 0% 50%)', 'hsl(0 0% 80%)', 'hsl(210 70% 55%)', 'hsl(0 70% 55%)'].map((c, i) => (
-                    <button key={i} className="w-6 h-6 rounded-full border border-foreground/[0.1]" style={{ backgroundColor: c }}
-                      onClick={() => toast.success('Border color applied')} />
-                  ))}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1.5 block">Size</label>
+                  <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15]">
+                    1px <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                  </button>
+                </div>
+                <div>
+                  <label className="text-xs text-muted-foreground mb-1.5 block">Color</label>
+                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-foreground/[0.08]">
+                    <div className="w-4 h-4 rounded border border-foreground/[0.1]" style={{ backgroundColor: '#e5e7eb' }} />
+                    <span className="text-xs text-foreground font-mono">#e5e7eb</span>
+                  </div>
                 </div>
               </div>
             </div>

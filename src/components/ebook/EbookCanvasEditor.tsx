@@ -8,6 +8,9 @@ import {
   ChevronUp, ChevronDown, RotateCcw,
   Plus, Check, X, SlidersHorizontal,
   GripVertical, MoreHorizontal, FileText, MessageSquare,
+  Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
+  Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
+  Sparkles, Replace,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -15,6 +18,10 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 // ─── Types ─────────────────────────────────────────
@@ -175,8 +182,11 @@ const EbookCanvasEditor = ({
   const [showPageSettings, setShowPageSettings] = useState(false);
   const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
+  const [showAIEditModal, setShowAIEditModal] = useState(false);
+  const [aiEditPrompt, setAIEditPrompt] = useState('');
   const canvasRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const replaceImageInputRef = useRef<HTMLInputElement>(null);
 
   const internalZoom = useState(100);
   const zoom = externalZoom ?? internalZoom[0];
@@ -382,6 +392,21 @@ const EbookCanvasEditor = ({
     addElement('image', { src: url, width: 40, height: 30 });
   };
 
+  const handleReplaceImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedElementId) return;
+    const url = URL.createObjectURL(file);
+    updateElement(selectedElementId, { src: url });
+    toast.success('Image replaced');
+  };
+
+  const handleAIEdit = () => {
+    if (!aiEditPrompt.trim()) return;
+    toast.success('AI edit applied: ' + aiEditPrompt);
+    setShowAIEditModal(false);
+    setAIEditPrompt('');
+  };
+
   // ─── Page Panel DnD ───────────────────────────
   const handlePageDragStart = (idx: number) => setDraggedPageIndex(idx);
   const handlePageDragOver = (e: React.DragEvent, idx: number) => { e.preventDefault(); setDragOverPageIndex(idx); };
@@ -415,9 +440,27 @@ const EbookCanvasEditor = ({
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el)}
-          onDoubleClick={() => imageInputRef.current?.click()}>
+          onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
+          {/* Floating action bar */}
+          {isSelected && (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] px-2 py-1.5 z-50"
+              onMouseDown={e => e.stopPropagation()}>
+              <button onClick={() => replaceImageInputRef.current?.click()}
+                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
+                <Replace className="w-3.5 h-3.5" />Replace
+              </button>
+              <button onClick={() => setShowAIEditModal(true)}
+                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
+                <Sparkles className="w-3.5 h-3.5 text-accent" />Edit
+              </button>
+              <button onClick={deleteElement}
+                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors">
+                <Trash2 className="w-3.5 h-3.5" />Delete
+              </button>
+            </div>
+          )}
         </div>
       );
     }
@@ -723,10 +766,53 @@ const EbookCanvasEditor = ({
                     </>
                   )}
                   {selectedElement.type === 'image' && (
-                    <button onClick={() => imageInputRef.current?.click()}
-                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-foreground/[0.05]">
-                      <ImageIcon className="w-3.5 h-3.5" />Replace Image
-                    </button>
+                    <>
+                      {/* Replace / Edit group */}
+                      <button onClick={() => replaceImageInputRef.current?.click()}
+                        className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
+                        <Replace className="w-3.5 h-3.5" />Replace
+                      </button>
+                      <button onClick={() => setShowAIEditModal(true)}
+                        className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
+                        <Sparkles className="w-3.5 h-3.5" />Edit
+                      </button>
+                      <div className="w-px h-5 bg-foreground/[0.08]" />
+                      {/* Image editing tools */}
+                      {[
+                        { icon: Crop, label: 'Crop' },
+                        { icon: RefreshCw, label: 'Flip' },
+                        { icon: Paintbrush, label: 'Effects' },
+                        { icon: SlidersVertical, label: 'Filters' },
+                        { icon: Droplets, label: 'Opacity' },
+                        { icon: SquareIcon, label: 'Border' },
+                        { icon: Link2, label: 'Link' },
+                        { icon: Layers, label: 'Layers' },
+                        { icon: Move, label: 'Position' },
+                      ].map(tool => (
+                        <Tooltip key={tool.label}>
+                          <TooltipTrigger asChild>
+                            <button onClick={() => toast.success(`${tool.label} tool`)}
+                              className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground">
+                              <tool.icon className="w-3.5 h-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>{tool.label}</TooltipContent>
+                        </Tooltip>
+                      ))}
+                      <div className="w-px h-5 bg-foreground/[0.08]" />
+                      <Tooltip><TooltipTrigger asChild>
+                        <input type="color" defaultValue="#e5e7eb"
+                          className="w-5 h-5 rounded border border-foreground/[0.1] cursor-pointer" />
+                      </TooltipTrigger><TooltipContent>Border Color</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Monitor className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Fit to Page</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                          <Lock className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger><TooltipContent>Lock</TooltipContent></Tooltip>
+                    </>
                   )}
                   <div className="ml-auto flex items-center gap-1">
                     <button onClick={() => updateElement(selectedElement.id, { rotation: ((selectedElement.rotation || 0) + 15) % 360 })}
@@ -803,8 +889,36 @@ const EbookCanvasEditor = ({
           )}
         </div>
 
-        {/* Hidden file input */}
+        {/* Hidden file inputs */}
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+        <input ref={replaceImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleReplaceImage} />
+
+        {/* AI Edit Modal */}
+        <Dialog open={showAIEditModal} onOpenChange={setShowAIEditModal}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-accent" />
+                Edit With AI
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-sm text-muted-foreground mb-3">Describe how you want to modify this image:</p>
+              <textarea
+                value={aiEditPrompt}
+                onChange={e => setAIEditPrompt(e.target.value)}
+                placeholder="e.g., Make the image brighter, add a warm filter, remove the background..."
+                className="w-full min-h-[100px] px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent resize-none"
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAIEditModal(false)}>Cancel</Button>
+              <Button onClick={handleAIEdit} disabled={!aiEditPrompt.trim()} className="bg-accent hover:bg-accent/90 text-white gap-2">
+                <Sparkles className="w-4 h-4" />Apply Edit
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
