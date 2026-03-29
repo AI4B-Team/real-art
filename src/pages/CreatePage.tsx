@@ -483,7 +483,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   // Music-specific states
   const [musicStyle, setMusicStyle] = useState<"Instrumental" | "Vocals" | null>(null);
   const [musicStyleOpen, setMusicStyleOpen] = useState(false);
-  const [musicVoiceGender, setMusicVoiceGender] = useState<"Male" | "Female" | null>(null);
+  const [musicVoiceGender, setMusicVoiceGender] = useState<"Male" | "Female" | "Both" | null>(null);
   const [musicLyrics, setMusicLyrics] = useState("");
   const [musicLyricsOpen, setMusicLyricsOpen] = useState(false);
   const [musicTitle, setMusicTitle] = useState("");
