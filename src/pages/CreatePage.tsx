@@ -1243,6 +1243,27 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
             </div>
           </div>
 
+          {/* Attachments preview */}
+          {attachments.length > 0 && (
+            <div className="flex items-center gap-2 px-4 pb-2 overflow-x-auto">
+              {attachments.map((att, i) => (
+                <div key={i} className="relative group shrink-0">
+                  {att.type === "image" ? (
+                    <img src={att.url} alt={att.name} className="w-14 h-14 rounded-lg object-cover border border-foreground/[0.08]" />
+                  ) : (
+                    <div className="w-14 h-14 rounded-lg border border-foreground/[0.08] bg-foreground/[0.03] flex flex-col items-center justify-center">
+                      <FileText size={16} className="text-muted" />
+                      <span className="text-[0.55rem] text-muted truncate max-w-[48px] mt-0.5">{att.name.split(".").pop()}</span>
+                    </div>
+                  )}
+                  <button onClick={() => setAttachments(prev => prev.filter((_, j) => j !== i))} className="absolute -top-1.5 -right-1.5 w-4 h-4 rounded-full bg-foreground text-primary-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <X size={10} />
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {/* Char count */}
           {prompt.length > 0 && (
             <div className="px-16 pb-1">
