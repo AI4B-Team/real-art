@@ -318,7 +318,7 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
 
-function PromptBox({ onGenerate }: { onGenerate: () => void }) {
+function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void }) {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedType, setSelectedType] = useState<ContentType | null>(() => {
