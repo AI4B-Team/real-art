@@ -1972,32 +1972,12 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
 
                 {/* Chart — infographic mode, after Industry */}
                 {selectedType === "design" && selectedSubMode === "infographic" && (
-                  <Popover open={designChartOpen} onOpenChange={setDesignChartOpen}>
-                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designChartType ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <BarChart2 size={12} />{designChartType || "Chart"}
-                      </button>
-                    </PopoverTrigger></TooltipTrigger><TooltipContent>Chart</TooltipContent></Tooltip>
-                    <PopoverContent className="w-[340px] p-3" align="start" sideOffset={6}>
-                      <div className="grid grid-cols-3 gap-2">
-                        {[
-                          { id: "Mixed", img: chartMixed },
-                          { id: "Bar Charts", img: chartBar },
-                          { id: "Pie Charts", img: chartPie },
-                          { id: "Line Graphs", img: chartLine },
-                          { id: "Icons Only", img: chartIcons },
-                          { id: "Numbers Only", img: chartNumbers },
-                        ].map(c => (
-                          <button key={c.id} type="button" onClick={() => { setDesignChartType(c.id); setDesignChartOpen(false); }}
-                            className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${designChartType === c.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
-                            <img src={c.img} alt={c.id} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
-                            <span className={`text-[0.68rem] font-medium leading-none ${designChartType === c.id ? "text-accent" : "text-foreground/70"}`}>{c.id}</span>
-                            {designChartType === c.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
-                          </button>
-                        ))}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("chart")}
+                      className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${activePanel === "chart" || designChartType ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <BarChart2 size={12} />{designChartType || "Chart"}
+                    </button>
+                  </TooltipTrigger><TooltipContent>Chart</TooltipContent></Tooltip>
                 )}
 
                 {selectedType === "audio" && selectedSubMode === "music" && (
