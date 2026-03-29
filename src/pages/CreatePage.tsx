@@ -174,6 +174,7 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
     { id: "ai-agent",  label: "AI Agent",  icon: Bot },
     { id: "saas",      label: "SaaS",      icon: Package },
     { id: "website",   label: "Website",   icon: LayoutGrid },
+    { id: "plan",      label: "Plan",      icon: FileText },
   ],
 };
 
