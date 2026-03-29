@@ -151,7 +151,7 @@ const PageSettingsPanel = ({
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="w-72 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
+      <div className="w-64 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/[0.04]">
           <div className="flex items-center gap-2">
