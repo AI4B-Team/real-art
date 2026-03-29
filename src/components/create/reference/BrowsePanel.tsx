@@ -263,10 +263,10 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
             </div>
           </div>
         </div>
-      )
+      )}
 
       {/* Browse content for non-upload tabs */}
-      {!isUpload && (
+      {isBrowse && (
         <>
           {/* Search */}
           <div className="relative mb-3">
