@@ -2658,7 +2658,35 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                   <div className="flex items-center gap-1.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
-                    {/* Language (icon only) — moved to beginning */}
+                    {/* Model (Auto) — moved before Language */}
+                    <Popover open={docModelOpen} onOpenChange={setDocModelOpen}>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docModel === "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Cpu size={12} />{docModel}<ChevronDown size={10} className="opacity-60" />
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
+                      <PopoverContent className="w-64 p-1.5" side="bottom" align="start" sideOffset={6}>
+                        {[
+                          { id: "Auto", desc: "Automatically selects the best model" },
+                          { id: "Gemini 3 Flash", desc: "Fast & balanced" },
+                          { id: "Gemini 2.5 Pro", desc: "Top-tier reasoning" },
+                          { id: "GPT-5", desc: "Powerful all-rounder" },
+                          { id: "GPT-5 Mini", desc: "Fast & efficient" },
+                          { id: "Claude Sonnet 4", desc: "Excellent writing" },
+                        ].map(m => (
+                          <button key={m.id} type="button" onClick={() => { setDocModel(m.id); setDocModelOpen(false); }}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors ${docModel === m.id ? "bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                            <div>
+                              <p className={`text-[0.84rem] font-semibold ${docModel === m.id ? "text-accent" : "text-foreground"}`}>{m.id}</p>
+                              <p className="text-[0.72rem] text-muted">{m.desc}</p>
+                            </div>
+                            {docModel === m.id && <Check size={14} className="text-accent shrink-0" />}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Language (icon only) */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2700,34 +2728,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             </button>
                           ))}
                         </div>
-                      </PopoverContent>
-                    </Popover>
-
-                    {/* Model (Auto) */}
-                    <Popover open={docModelOpen} onOpenChange={setDocModelOpen}>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docModel === "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Cpu size={12} />{docModel}<ChevronDown size={10} className="opacity-60" />
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
-                      <PopoverContent className="w-64 p-1.5" side="bottom" align="start" sideOffset={6}>
-                        {[
-                          { id: "Auto", desc: "Automatically selects the best model" },
-                          { id: "Gemini 3 Flash", desc: "Fast & balanced" },
-                          { id: "Gemini 2.5 Pro", desc: "Top-tier reasoning" },
-                          { id: "GPT-5", desc: "Powerful all-rounder" },
-                          { id: "GPT-5 Mini", desc: "Fast & efficient" },
-                          { id: "Claude Sonnet 4", desc: "Excellent writing" },
-                        ].map(m => (
-                          <button key={m.id} type="button" onClick={() => { setDocModel(m.id); setDocModelOpen(false); }}
-                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors ${docModel === m.id ? "bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
-                            <div>
-                              <p className={`text-[0.84rem] font-semibold ${docModel === m.id ? "text-accent" : "text-foreground"}`}>{m.id}</p>
-                              <p className="text-[0.72rem] text-muted">{m.desc}</p>
-                            </div>
-                            {docModel === m.id && <Check size={14} className="text-accent shrink-0" />}
-                          </button>
-                        ))}
                       </PopoverContent>
                     </Popover>
 
