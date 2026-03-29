@@ -3460,13 +3460,12 @@ export default function CreatePage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [appConversation, appIsThinking]);
 
-  const handleGenerate = ({ type, prompt, subMode }: { type: ContentType | null; prompt: string; subMode: string | null }) => {
+  const handleGenerate = async ({ type, prompt, subMode }: { type: ContentType | null; prompt: string; subMode: string | null }) => {
     if (type === "app") {
       setAppBuilderMode(true);
       setAppConversation([{ role: "user", text: prompt }]);
       setAppIsThinking(true);
       setAppBuildingVersion(1);
-      // Simulate AI response
       setTimeout(() => {
         const buildType = subMode === "website" ? "website" : subMode === "saas" ? "SaaS application" : subMode === "ai-agent" ? "AI agent" : "web application";
         setAppConversation(prev => [...prev, {
@@ -3477,7 +3476,45 @@ export default function CreatePage() {
         setAppPreviewContent(prompt);
       }, 3000);
     } else {
-      setGenerated(true);
+      // Save creation to database
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          // Get or create a default "My Creations" collection
+          let collectionId: string | null = null;
+          const { data: existingCols } = await supabase
+            .from("collections")
+            .select("id")
+            .eq("user_id", user.id)
+            .eq("name", "My Creations")
+            .limit(1);
+          if (existingCols && existingCols.length > 0) {
+            collectionId = existingCols[0].id;
+          } else {
+            const { data: newCol } = await supabase
+              .from("collections")
+              .insert({ user_id: user.id, name: "My Creations", is_public: false })
+              .select("id")
+              .single();
+            if (newCol) collectionId = newCol.id;
+          }
+
+          if (collectionId) {
+            const placeholderUrl = `https://picsum.photos/seed/${Date.now()}/800/800`;
+            const creationType = type || "image";
+            await supabase.from("collection_images").insert({
+              collection_id: collectionId,
+              user_id: user.id,
+              image_url: placeholderUrl,
+              title: prompt.slice(0, 100) || `${creationType} creation`,
+              image_prompt: prompt,
+            });
+          }
+        }
+      } catch (e) {
+        console.error("Failed to save creation:", e);
+      }
+      setGenerated(prev => !prev);
     }
   };
 
