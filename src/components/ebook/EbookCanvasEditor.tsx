@@ -428,7 +428,7 @@ const EbookCanvasEditor = ({
   };
 
   // ─── Render Element ───────────────────────────
-  const renderElement = (el: CanvasElement) => {
+  const renderElement = (el: CanvasElement, pageId?: string) => {
     const isSelected = selectedElementId === el.id;
     const isEditing = editingTextId === el.id;
     const style: React.CSSProperties = {
@@ -445,7 +445,7 @@ const EbookCanvasEditor = ({
     if (el.type === 'image') {
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
-          onMouseDown={e => handleElementMouseDown(e, el)}
+          onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
