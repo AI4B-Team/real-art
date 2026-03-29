@@ -416,6 +416,8 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
   const [designIndustryOpen, setDesignIndustryOpen] = useState(false);
   const [designOrientation, setDesignOrientation] = useState("Portrait");
   const [designOrientationOpen, setDesignOrientationOpen] = useState(false);
+  const [presRatio, setPresRatio] = useState("16:9");
+  const [presRatioOpen, setPresRatioOpen] = useState(false);
   const [designPlatform, setDesignPlatform] = useState("YouTube");
   const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
   const [designFinish, setDesignFinish] = useState("Matte");
