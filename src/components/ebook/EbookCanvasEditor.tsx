@@ -608,124 +608,120 @@ const EbookCanvasEditor = ({
           {isGridView ? (
             /* ─── GRID VIEW ─── */
             <div className="flex-1 overflow-auto p-6">
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+              <div className="flex flex-wrap gap-y-6 items-start">
                 {currentPages.map((page, pageIndex) => {
                   const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                   const isSelected = page.id === selectedPageId;
                   const pageTypeIcon = page.type === 'chapter-page' ? MessageSquare : FileText;
                   const PageIcon = pageTypeIcon;
                   return (
-                    <div key={page.id} className="flex flex-col items-center gap-1.5"
-                      draggable
-                      onDragStart={(e) => {
-                        setDraggedPageIndex(pageIndex);
-                        e.dataTransfer.effectAllowed = 'move';
-                        // Make drag image semi-transparent
-                        const target = e.currentTarget as HTMLElement;
-                        target.style.opacity = '0.5';
-                      }}
-                      onDragEnd={(e) => {
-                        const target = e.currentTarget as HTMLElement;
-                        target.style.opacity = '1';
-                        handlePageDragEnd();
-                      }}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        e.dataTransfer.dropEffect = 'move';
-                        if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) {
-                          setDragOverPageIndex(pageIndex);
-                        }
-                      }}
-                      onDragLeave={() => {
-                        if (dragOverPageIndex === pageIndex) setDragOverPageIndex(null);
-                      }}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) {
-                          const newPages = [...currentPages];
-                          const [moved] = newPages.splice(draggedPageIndex, 1);
-                          newPages.splice(pageIndex, 0, moved);
-                          setPages(newPages);
-                        }
-                        setDraggedPageIndex(null);
-                        setDragOverPageIndex(null);
-                      }}
-                    >
+                    <div key={page.id} className="flex items-stretch">
+                      {/* Insert button between pages */}
                       <div
-                        onClick={() => {
-                          onPageSelect(page.id);
-                          onGridViewToggle?.();
-                        }}
-                        className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
-                          isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
-                        } ${dragOverPageIndex === pageIndex ? 'ring-2 ring-accent/60 scale-105 shadow-xl' : ''} ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
+                        className="relative flex items-center justify-center w-5 shrink-0"
+                        onMouseEnter={() => setGridInsertHover(pageIndex)}
+                        onMouseLeave={() => setGridInsertHover(null)}
                       >
-                        {/* Mini render of page content */}
-                        <div className="w-full h-full relative" style={{ transform: 'scale(1)', transformOrigin: 'top left' }}>
-                          <div className="absolute inset-0" style={{ transform: `scale(${1})`, transformOrigin: 'top left', width: '100%', height: '100%' }}>
-                            {elems.map(el => {
-                              if (el.type === 'image') {
-                                return (
-                                  <div key={el.id} className="absolute overflow-hidden" style={{
-                                    left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
-                                  }}>
+                        <div className={`absolute inset-y-4 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-accent transition-all duration-200 ${gridInsertHover === pageIndex ? 'opacity-100' : 'opacity-0'}`} />
+                        <button
+                          onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex); }}
+                          className={`relative z-10 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center shadow-md transition-all duration-200 ${gridInsertHover === pageIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                      {/* Page thumbnail */}
+                      <div className="flex flex-col items-center gap-1.5 w-[140px]"
+                        draggable
+                        onDragStart={(e) => {
+                          setDraggedPageIndex(pageIndex);
+                          e.dataTransfer.effectAllowed = 'move';
+                          (e.currentTarget as HTMLElement).style.opacity = '0.5';
+                        }}
+                        onDragEnd={(e) => {
+                          (e.currentTarget as HTMLElement).style.opacity = '1';
+                          handlePageDragEnd();
+                        }}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = 'move';
+                          if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) setDragOverPageIndex(pageIndex);
+                        }}
+                        onDragLeave={() => { if (dragOverPageIndex === pageIndex) setDragOverPageIndex(null); }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) {
+                            const newPages = [...currentPages];
+                            const [moved] = newPages.splice(draggedPageIndex, 1);
+                            newPages.splice(pageIndex, 0, moved);
+                            setPages(newPages);
+                          }
+                          setDraggedPageIndex(null);
+                          setDragOverPageIndex(null);
+                        }}
+                      >
+                        <div
+                          onClick={() => { onPageSelect(page.id); onGridViewToggle?.(); }}
+                          className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+                            isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
+                          } ${dragOverPageIndex === pageIndex ? 'ring-2 ring-accent/60 scale-105 shadow-xl' : ''} ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
+                        >
+                          <div className="w-full h-full relative">
+                            <div className="absolute inset-0">
+                              {elems.map(el => {
+                                if (el.type === 'image') return (
+                                  <div key={el.id} className="absolute overflow-hidden" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%` }}>
                                     <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
                                   </div>
                                 );
-                              }
-                              if (el.type === 'shape') {
-                                return (
-                                  <div key={el.id} className="absolute" style={{
-                                    left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
-                                    backgroundColor: el.fill, borderRadius: el.shapeType === 'circle' ? '50%' : undefined,
-                                  }} />
+                                if (el.type === 'shape') return (
+                                  <div key={el.id} className="absolute" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, backgroundColor: el.fill, borderRadius: el.shapeType === 'circle' ? '50%' : undefined }} />
                                 );
-                              }
-                              if (el.type === 'text') {
-                                return (
-                                  <div key={el.id} className="absolute overflow-hidden" style={{
-                                    left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
-                                    fontSize: `${Math.max(4, (el.fontSize || 16) * 0.3)}px`,
-                                    fontFamily: el.fontFamily, color: el.textColor,
-                                    fontWeight: el.fontWeight || 'normal',
-                                    textAlign: el.textAlign || 'left',
-                                    lineHeight: 1.2,
-                                  }}>
+                                if (el.type === 'text') return (
+                                  <div key={el.id} className="absolute overflow-hidden" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, fontSize: `${Math.max(4, (el.fontSize || 16) * 0.3)}px`, fontFamily: el.fontFamily, color: el.textColor, fontWeight: el.fontWeight || 'normal', textAlign: el.textAlign || 'left', lineHeight: 1.2 }}>
                                     {el.content}
                                   </div>
                                 );
-                              }
-                              return null;
-                            })}
+                                return null;
+                              })}
+                            </div>
+                          </div>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button onClick={e => e.stopPropagation()} className="w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
-                        {/* Hover menu button */}
-                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                          <button
-                            onClick={e => { e.stopPropagation(); }}
-                            className="w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm"
-                          >
-                            <MoreHorizontal className="w-4 h-4" />
-                          </button>
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <PageIcon className="w-3 h-3" />
+                          <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>{pageIndex + 1}</span>
                         </div>
-                      </div>
-                      {/* Page number + icon */}
-                      <div className="flex items-center gap-1 text-muted-foreground">
-                        <PageIcon className="w-3 h-3" />
-                        <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>{pageIndex + 1}</span>
                       </div>
                     </div>
                   );
                 })}
-                {/* Add Page card */}
-                <div className="flex flex-col items-center gap-1.5">
-                  <button
-                    onClick={handleAddPage}
-                    className="w-full aspect-[3/4] rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
+                {/* Trailing insert + Add Page card */}
+                <div className="flex items-stretch">
+                  <div
+                    className="relative flex items-center justify-center w-5 shrink-0"
+                    onMouseEnter={() => setGridInsertHover(currentPages.length)}
+                    onMouseLeave={() => setGridInsertHover(null)}
                   >
-                    <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
-                    <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
-                  </button>
+                    <div className={`absolute inset-y-4 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-accent transition-all duration-200 ${gridInsertHover === currentPages.length ? 'opacity-100' : 'opacity-0'}`} />
+                    <button
+                      onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length); }}
+                      className={`relative z-10 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center shadow-md transition-all duration-200 ${gridInsertHover === currentPages.length ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                  <div className="flex flex-col items-center gap-1.5 w-[140px]">
+                    <button onClick={handleAddPage}
+                      className="w-full aspect-[3/4] rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group">
+                      <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
+                      <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
+                    </button>
+                  </div>
                 </div>
               </div>
               {/* Bottom actions */}
