@@ -67,6 +67,11 @@ import presGeometric from "@/assets/styles/pres-geometric.jpg";
 import presModular from "@/assets/styles/pres-modular.jpg";
 import presElegant from "@/assets/styles/pres-elegant.jpg";
 import presDigital from "@/assets/styles/pres-digital.jpg";
+import styleInfographicVertical from "@/assets/styles/infographic-vertical.jpg";
+import styleInfographicHorizontal from "@/assets/styles/infographic-horizontal.jpg";
+import styleInfographicTimeline from "@/assets/styles/infographic-timeline.jpg";
+import styleInfographicComparison from "@/assets/styles/infographic-comparison.jpg";
+import styleInfographicProcess from "@/assets/styles/infographic-process.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
