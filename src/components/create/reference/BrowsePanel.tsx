@@ -48,7 +48,7 @@ const CLOUD_SOURCES = [
   {
     id: "onedrive",
     label: "OneDrive",
-    logo: "https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/microsoftonedrive.svg",
+    logo: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230364B8' d='M14.5 15l4.88-4.11A6.45 6.45 0 0 0 14 6a6.5 6.5 0 0 0-5.27 2.7'/%3E%3Cpath fill='%230078D4' d='M8.73 8.7A4.97 4.97 0 0 0 5 7a5 5 0 0 0-4.5 7.2L5.47 15z'/%3E%3Cpath fill='%231490DF' d='M19.38 10.89A4.49 4.49 0 0 0 17 10.29a4.4 4.4 0 0 0-1.19.16L14.5 15l5.03.01A4.5 4.5 0 0 0 19.38 10.89z'/%3E%3Cpath fill='%2328A8EA' d='M5.47 15H14.5l-5.77-6.3A4.97 4.97 0 0 0 5 7a5.1 5.1 0 0 0-4.5 7.2L5.47 15z'/%3E%3Cpath fill='%230078D4' d='M.5 14.2A5 5 0 0 0 5 18h14.5a4.5 4.5 0 0 0 .03-3H5.47z'/%3E%3C/svg%3E",
   },
 ];
 
