@@ -37,7 +37,11 @@ const loadBrands = (): { brands: Brand[]; activeId: string } => {
   return { brands: [d], activeId: "default" };
 };
 const saveBrands = (data: { brands: Brand[]; activeId: string }) => {
-  try { localStorage.setItem("ra_brands", JSON.stringify(data)); } catch {}
+  try {
+    const json = JSON.stringify(data);
+    localStorage.setItem("ra_brands", json);
+    window.dispatchEvent(new StorageEvent("storage", { key: "ra_brands", newValue: json }));
+  } catch {}
 };
 
 type Community = {
@@ -108,6 +112,15 @@ const AppSidebar = () => {
   const brandBtnRef = useRef<HTMLButtonElement>(null);
   const [brandFlyoutPos, setBrandFlyoutPos] = useState({ top: 0, left: 0 });
   const activeBrand = brandData.brands.find(b => b.id === brandData.activeId) || brandData.brands[0];
+
+  // Sync brand state when changed from prompt box or other components
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === "ra_brands") setBrandData(loadBrands());
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
 
   const switchWorkspace = (id: string) => {
     const updated = { ...wsData, activeId: id };

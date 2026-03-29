@@ -348,6 +348,36 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedResolution, setSelectedResolution] = useState("1080p");
   const [resolutionOpen, setResolutionOpen] = useState(false);
   const [brandToggle, setBrandToggle] = useState(() => !!localStorage.getItem("ra_brand_complete"));
+  const [brandPickerOpen, setBrandPickerOpen] = useState(false);
+  const [brandSearch, setBrandSearch] = useState("");
+
+  // Load brands from localStorage (synced with sidebar)
+  const loadBrandsData = () => {
+    try {
+      const s = localStorage.getItem("ra_brands");
+      if (s) return JSON.parse(s) as { brands: { id: string; name: string }[]; activeId: string };
+    } catch {}
+    return { brands: [{ id: "default", name: "My Brand" }], activeId: "default" };
+  };
+  const [brandsData, setBrandsData] = useState(loadBrandsData);
+  const activeBrandProfile = brandsData.brands.find(b => b.id === brandsData.activeId) || brandsData.brands[0];
+
+  const switchBrandProfile = (id: string) => {
+    const updated = { ...brandsData, activeId: id };
+    setBrandsData(updated);
+    try { localStorage.setItem("ra_brands", JSON.stringify(updated)); } catch {}
+    // Dispatch storage event so sidebar picks up the change
+    window.dispatchEvent(new StorageEvent("storage", { key: "ra_brands", newValue: JSON.stringify(updated) }));
+    setBrandPickerOpen(false);
+    setBrandSearch("");
+  };
+
+  // Listen for sidebar brand changes
+  useEffect(() => {
+    const handler = () => setBrandsData(loadBrandsData());
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
   const [contentGoal, setContentGoal] = useState("Engagement");
   const [contentTone, setContentTone] = useState<string | null>(null);
   const [contentLanguage, setContentLanguage] = useState<string | null>(null);
@@ -2194,6 +2224,64 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         </div>
                       </div>
                     </TooltipTrigger><TooltipContent>Apply brand voice & style</TooltipContent></Tooltip>
+
+                    {/* Brand profile picker - shown when toggle is ON */}
+                    {brandToggle && (
+                      <Popover open={brandPickerOpen} onOpenChange={setBrandPickerOpen}>
+                        <PopoverTrigger asChild>
+                          <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent/10 hover:bg-accent/15 transition-colors text-[0.72rem] font-semibold text-accent whitespace-nowrap">
+                            <div className="w-4 h-4 rounded bg-accent/20 flex items-center justify-center">
+                              <Palette size={10} className="text-accent" />
+                            </div>
+                            <span className="max-w-[100px] truncate">{activeBrandProfile.name}</span>
+                            <ChevronDown size={11} className="text-accent/60" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-56 p-0" side="top" align="start">
+                          <div className="p-2 border-b border-foreground/[0.06]">
+                            <div className="relative">
+                              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
+                              <input
+                                value={brandSearch}
+                                onChange={e => setBrandSearch(e.target.value)}
+                                placeholder="Search Brand Kits"
+                                className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-foreground/[0.08] bg-background text-[0.78rem] outline-none focus:border-accent transition-colors"
+                              />
+                            </div>
+                          </div>
+                          <div className="p-1.5 max-h-[200px] overflow-y-auto">
+                            <p className="text-[0.68rem] font-semibold text-muted px-2 py-1">Select a Brand Kit</p>
+                            {brandsData.brands
+                              .filter(b => !brandSearch.trim() || b.name.toLowerCase().includes(brandSearch.toLowerCase()))
+                              .map(b => (
+                                <button
+                                  key={b.id}
+                                  onClick={() => switchBrandProfile(b.id)}
+                                  className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left transition-colors ${
+                                    b.id === brandsData.activeId ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"
+                                  }`}
+                                >
+                                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                                    b.id === brandsData.activeId ? "bg-accent/20" : "bg-foreground/[0.06]"
+                                  }`}>
+                                    <Palette size={13} className={b.id === brandsData.activeId ? "text-accent" : "text-muted"} />
+                                  </div>
+                                  <span className="text-[0.78rem] font-medium truncate">{b.name}</span>
+                                  {b.id === brandsData.activeId && <Check size={14} className="ml-auto text-accent shrink-0" />}
+                                </button>
+                              ))}
+                            {brandsData.brands.filter(b => !brandSearch.trim() || b.name.toLowerCase().includes(brandSearch.toLowerCase())).length === 0 && (
+                              <p className="text-[0.75rem] text-muted text-center py-3">No brand kits found</p>
+                            )}
+                          </div>
+                          <div className="p-1.5 border-t border-foreground/[0.06]">
+                            <a href="/brand" className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-foreground/[0.04] transition-colors text-[0.75rem] font-medium text-accent">
+                              <Plus size={13} /> New Brand Kit
+                            </a>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    )}
                   </div>
                 )}
 
