@@ -490,6 +490,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [musicTitleOpen, setMusicTitleOpen] = useState(false);
   const [musicVoiceOpen, setMusicVoiceOpen] = useState(false);
   const [musicRefOpen, setMusicRefOpen] = useState(false);
+  const [playingGenre, setPlayingGenre] = useState<string | null>(null);
+  const genreAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
