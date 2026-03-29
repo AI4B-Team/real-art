@@ -783,7 +783,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignIconStyle("Modern");
     setDesignIndustry(null);
     setDesignOrientation("Portrait");
-    setDesignPlatform("YouTube");
+    setDesignPlatform("");
     setDesignFinish("Matte");
     setDesignFoldType("Tri-Fold");
     setDesignPages(6);
