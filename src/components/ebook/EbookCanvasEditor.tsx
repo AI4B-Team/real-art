@@ -7,7 +7,7 @@ import {
   Trash2, Copy, Lock, Unlock,
   ChevronUp, ChevronDown, RotateCcw,
   Plus, Check, X, SlidersHorizontal,
-  GripVertical,
+  GripVertical, MoreHorizontal, FileText, MessageSquare,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
