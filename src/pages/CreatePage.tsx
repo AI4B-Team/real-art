@@ -2311,14 +2311,12 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           <Calendar size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Days</TooltipContent></Tooltip>
-                      <PopoverContent className="w-64 p-3" side="top" align="start">
-                        <p className="text-[0.78rem] font-semibold text-foreground mb-2.5">Select How Many Days Of Content To Generate</p>
-                        <div className="flex flex-wrap gap-1.5 mb-2.5">
-                          {["1 Day", "3 Days", "7 Days", "14 Days", "30 Days", "60 Days", "90 Days"].map(o => (
-                            <button key={o} onClick={() => { setContentFrequency(o); setCustomDays(""); }} className={`px-3 py-1.5 rounded-full text-[0.78rem] font-medium border transition-colors ${contentFrequency === o ? "bg-accent text-white border-accent" : "border-foreground/[0.12] text-foreground hover:border-foreground/25"}`}>{o}</button>
-                          ))}
-                        </div>
-                        <div>
+                      <PopoverContent className="w-56 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Frequency</p>
+                        {["1 Day", "3 Days", "7 Days", "14 Days", "30 Days", "60 Days", "90 Days"].map(o => (
+                          <button key={o} onClick={() => { setContentFrequency(o); setCustomDays(""); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                        <div className="px-2 py-1.5">
                           <p className={`text-[0.78rem] font-medium mb-1 ${contentFrequency.endsWith(" Days (Custom)") ? "text-accent font-semibold" : ""}`}>Custom Days</p>
                           <input
                             type="number"
@@ -2330,7 +2328,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                               if (e.target.value) setContentFrequency(`${e.target.value} Days (Custom)`);
                             }}
                             placeholder="Enter number of days"
-                            className="w-full px-2.5 py-1.5 rounded-lg border border-foreground/10 bg-background text-[0.78rem] outline-none focus:border-accent"
+                            className="w-full px-2 py-1.5 rounded-md border border-foreground/10 bg-background text-[0.78rem] outline-none focus:border-accent"
                           />
                         </div>
                       </PopoverContent>
