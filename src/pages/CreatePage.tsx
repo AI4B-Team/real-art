@@ -1766,9 +1766,9 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
                     className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle !== "Minimalist") ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    {selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedSubMode === "presentation" ? presDeckStyle : selectedStyle !== "None" ? selectedStyle : "Style"}
+                    {selectedType === "audio" ? <Music size={12} /> : selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedType === "audio" ? (selectedStyle !== "None" ? selectedStyle : "Genre") : selectedSubMode === "presentation" ? presDeckStyle : selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
-                </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                </TooltipTrigger><TooltipContent>{selectedType === "audio" ? "Genre" : "Style"}</TooltipContent></Tooltip>
 
                 {/* Character */}
                 <Tooltip><TooltipTrigger asChild>
@@ -2739,12 +2739,39 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "audio" ? "Genre" : selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
               </div>
-              {selectedType === "video" ? (
+              {selectedType === "audio" ? (
+                <div className="grid grid-cols-5 sm:grid-cols-5 gap-2">
+                  {[
+                    { id: "R&B", label: "R&B", photo: "photo-1493225457124-a3eb161ffa5f" },
+                    { id: "Pop", label: "Pop", photo: "photo-1514525253161-7a46d19cd819" },
+                    { id: "Jazz", label: "Jazz", photo: "photo-1511192336575-5a79af67a629" },
+                    { id: "Country", label: "Country", photo: "photo-1506157786151-b8491531f063" },
+                    { id: "Blues", label: "Blues", photo: "photo-1415201364774-f6f0bb35f28f" },
+                    { id: "Hip-Hop", label: "Hip-Hop", photo: "photo-1547355253-ff0740f6e8c1" },
+                    { id: "Electronic", label: "Electronic", photo: "photo-1571330735066-03aaa9429d89" },
+                    { id: "Classical", label: "Classical", photo: "photo-1507838153414-b4b713384a76" },
+                    { id: "Rock", label: "Rock", photo: "photo-1498038432885-c6f3f1b912ee" },
+                    { id: "Lo-Fi", label: "Lo-Fi", photo: "photo-1459749411175-04bf5292ceea" },
+                    { id: "Afrobeats", label: "Afrobeats", photo: "photo-1516450360452-9312f5e86fc7" },
+                    { id: "Reggae", label: "Reggae", photo: "photo-1508854710579-5cecc3a9ff17" },
+                    { id: "Latin", label: "Latin", photo: "photo-1504609813442-a8924e83f76e" },
+                    { id: "Soul", label: "Soul", photo: "photo-1493225457124-a3eb161ffa5f" },
+                    { id: "Ambient", label: "Ambient", photo: "photo-1470071459604-3b5ec3a7fe05" },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={`https://images.unsplash.com/${s.photo}?w=200&h=200&fit=crop&q=78`} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                    </button>
+                  ))}
+                </div>
+              ) : selectedType === "video" ? (
                 <div className="grid grid-cols-4 gap-2">
                   {[
                     { id: "Cinematic", label: "Cinematic", img: styleVideoCinematic },
