@@ -644,8 +644,8 @@ const NewEbookPage = () => {
                 isGridView={isGridView}
                 onGridViewToggle={() => setIsGridView(false)}
               />
-              {/* RIGHT: Pages Panel */}
-              <EbookPagesPanel
+              {/* RIGHT: Page Settings Panel */}
+              <PageSettingsPanel
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
                 onPageSelect={setSelectedPageId}
