@@ -425,7 +425,13 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [designTextStyle, setDesignTextStyle] = useState("Bold");
   const [designTextStyleOpen, setDesignTextStyleOpen] = useState(false);
 
-  // App-specific states
+  // Presentation-specific states
+  const [presDeckStyle, setPresDeckStyle] = useState("Minimalist");
+  const [presDeckStyleOpen, setPresDeckStyleOpen] = useState(false);
+  const [presAudience, setPresAudience] = useState("General");
+  const [presAudienceOpen, setPresAudienceOpen] = useState(false);
+  const [presLength, setPresLength] = useState("10 slides");
+  const [presLengthOpen, setPresLengthOpen] = useState(false);
   const [appModel, setAppModel] = useState("Auto");
   const [appModelOpen, setAppModelOpen] = useState(false);
   const [appTheme, setAppTheme] = useState("Default");
