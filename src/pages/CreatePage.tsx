@@ -2009,7 +2009,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       </div>
                     </PopoverContent>
                   </Popover>
-                ) : (
+                ) : selectedType !== "design" ? (
                   <Tooltip><TooltipTrigger asChild>
                     <button type="button" onClick={() => togglePanel("character")}
                       className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2017,7 +2017,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       {selectedCharacters.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{selectedCharacters.length}</span>}
                     </button>
                   </TooltipTrigger><TooltipContent>Character{selectedCharacters.length > 0 ? ` (${selectedCharacters.length})` : ""}</TooltipContent></Tooltip>
-                )}
+                ) : null}
                   </>
                 )}
                   </>
