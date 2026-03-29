@@ -2964,6 +2964,23 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     </button>
                   ))}
                 </div>
+              ) : selectedType === "design" && selectedSubMode === "infographic" ? (
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { id: "Vertical", label: "Vertical", img: styleInfographicVertical },
+                    { id: "Horizontal", label: "Horizontal", img: styleInfographicHorizontal },
+                    { id: "Timeline", label: "Timeline", img: styleInfographicTimeline },
+                    { id: "Comparison", label: "Comparison", img: styleInfographicComparison },
+                    { id: "Process", label: "Process", img: styleInfographicProcess },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setDesignLayout(s.id); setSelectedStyle(s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${designLayout === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${designLayout === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {designLayout === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                    </button>
+                  ))}
+                </div>
               ) : selectedType === "design" ? (
                 <div className="grid grid-cols-5 sm:grid-cols-7 gap-2">
                   {[
