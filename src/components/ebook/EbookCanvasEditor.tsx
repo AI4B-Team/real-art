@@ -173,7 +173,6 @@ const EbookCanvasEditor = ({
   const [undoStack, setUndoStack] = useState<Record<string, CanvasElement[]>[]>([]);
   const [redoStack, setRedoStack] = useState<Record<string, CanvasElement[]>[]>([]);
   const [showPageSettings, setShowPageSettings] = useState(false);
-  const [isGridView, setIsGridView] = useState(false);
   const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
