@@ -786,7 +786,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignPlatform("");
     setDesignFinish("Matte");
     setDesignFoldType("Tri-Fold");
-    setDesignPages(6);
+    setDesignPages(null);
     setDesignChartType("Mixed");
     setDesignLayout("Vertical");
     setDesignSize("A4");
