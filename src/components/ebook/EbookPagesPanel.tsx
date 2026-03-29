@@ -21,7 +21,7 @@ interface EbookPagesPanelProps {
   bookTitle?: string;
 }
 
-const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle }: EbookPagesPanelProps) => {
+const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '' }: EbookPagesPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
