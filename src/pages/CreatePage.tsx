@@ -1382,7 +1382,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 </button>
               )}
               {audioTranscript.length > 0 && (
-                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("audio"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-destructive/30 bg-destructive text-white text-[0.78rem] font-semibold transition-all hover:bg-destructive/90">
+                <button type="button" onClick={() => { togglePanel("source"); setActiveSourceTab("audio"); }} className="group flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-destructive/20 bg-destructive/10 text-destructive text-[0.78rem] font-semibold transition-all hover:bg-destructive/15">
                   <Mic size={12} />
                   Audio Transcript
                   <X size={11} className="opacity-60 group-hover:opacity-100" onClick={(e) => { e.stopPropagation(); setAudioTranscript(""); }} />
