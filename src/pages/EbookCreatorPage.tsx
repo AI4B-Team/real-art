@@ -5,7 +5,7 @@ import {
   Book, Plus, Upload, Search, Download, Edit, Trash2,
   Clock, FileText, Layers, X, Check, Sparkles, Filter,
   Grid, List, Calendar, Copy, MoreVertical, Palette,
-  Mic, Lightbulb, Cpu, Link2, Rss,
+  Mic, Lightbulb, Cpu, Link2, Rss, Headphones, ChevronDown,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import PageShell from "@/components/PageShell";
