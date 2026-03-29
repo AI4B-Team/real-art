@@ -270,7 +270,8 @@ const NewEbookPage = () => {
         <div className="flex items-center gap-1 mb-8 bg-foreground/[0.03] rounded-xl p-1 w-fit">
           {TABS.map((tab, i) => {
             const isActive = activeTab === tab.id;
-            const isCompleted = (tab.id === "idea" && (activeTab === "generate" || activeTab === "design")) || (tab.id === "generate" && activeTab === "design");
+            const tabIndex = TABS.findIndex(t => t.id === activeTab);
+            const isCompleted = (tab.id === "idea" && tabIndex > 0) || (tab.id === "generate" && tabIndex > 1);
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? "bg-background shadow-sm text-foreground" : isCompleted ? "text-accent" : "text-muted hover:text-foreground"}`}>
