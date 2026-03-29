@@ -793,7 +793,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignFoldType(null);
     setDesignPages(null);
     setDesignChartType(null);
-    setDesignLayout("Vertical");
+    setDesignLayout(null);
     setDesignSize(null);
     setDesignTextStyle("Bold");
     textareaRef.current?.focus();
