@@ -2253,15 +2253,30 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     </Popover>
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentFrequency !== "Daily" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentFrequency !== "7 Days" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Calendar size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Frequency</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Frequency</p>
-                        {["Daily", "Twice Daily", "3x/Week", "Weekly", "Bi-Weekly", "Monthly"].map(o => (
-                          <button key={o} onClick={() => setContentFrequency(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Days</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Select How Many Days Of Content To Generate</p>
+                        {["1 Day", "3 Days", "7 Days", "14 Days", "30 Days", "60 Days", "90 Days"].map(o => (
+                          <button key={o} onClick={() => { setContentFrequency(o); setCustomDays(""); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
+                        <div className="px-2 py-1.5">
+                          <p className={`text-[0.78rem] font-medium mb-1 ${contentFrequency.endsWith(" Days (Custom)") ? "text-accent font-semibold" : ""}`}>Custom Days</p>
+                          <input
+                            type="number"
+                            min={1}
+                            max={365}
+                            value={customDays}
+                            onChange={e => {
+                              setCustomDays(e.target.value);
+                              if (e.target.value) setContentFrequency(`${e.target.value} Days (Custom)`);
+                            }}
+                            placeholder="Enter number of days"
+                            className="w-full px-2 py-1.5 rounded-md border border-foreground/10 bg-background text-[0.78rem] outline-none focus:border-accent"
+                          />
+                        </div>
                       </PopoverContent>
                     </Popover>
                     <Popover>
