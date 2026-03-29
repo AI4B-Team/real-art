@@ -17,7 +17,7 @@ import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
 import EbookCanvasEditor from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
-import EbookPagesPanel from "@/components/ebook/EbookPagesPanel";
+import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 
 interface NewBookData {
   prompt: string;
@@ -644,8 +644,8 @@ const NewEbookPage = () => {
                 isGridView={isGridView}
                 onGridViewToggle={() => setIsGridView(false)}
               />
-              {/* RIGHT: Pages Panel */}
-              <EbookPagesPanel
+              {/* RIGHT: Page Settings Panel */}
+              <PageSettingsPanel
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
                 onPageSelect={setSelectedPageId}
