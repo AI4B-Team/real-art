@@ -1858,7 +1858,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         <>
                           <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Voice</p>
                           <div className="flex gap-2">
-                            {(["Male", "Female"] as const).map(g => (
+                            {(["Male", "Female", "Both"] as const).map(g => (
                               <button key={g} type="button" onClick={() => setMusicVoiceGender(musicVoiceGender === g ? null : g)}
                                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[0.82rem] font-medium border transition-all ${musicVoiceGender === g ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] hover:border-foreground/25 text-foreground"}`}>
                                 <User size={12} />{g}
