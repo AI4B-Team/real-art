@@ -15,7 +15,7 @@ import {
   Film, Package, BarChart2, ShoppingBag, Brush,
   Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
   Github, Smile, Rss, ShoppingCart,
-  Minus, Settings, Upload, ArrowLeftRight, Briefcase, GraduationCap,
+  Minus, Settings, Upload, ArrowLeftRight, Briefcase, GraduationCap, RotateCcw,
   Link as LinkChain,
 } from "lucide-react";
 
