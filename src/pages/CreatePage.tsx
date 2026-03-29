@@ -3706,6 +3706,67 @@ export default function CreatePage() {
                     <p className="text-[0.88rem] font-medium text-muted">Building your app…</p>
                   </div>
                 </div>
+              ) : appPreviewContent && appShowCode ? (
+                <div className="bg-[#1e1e2e] rounded-2xl border border-foreground/[0.08] shadow-lg overflow-hidden h-full flex flex-col">
+                  <div className="flex items-center gap-2 px-4 py-2.5 border-b border-white/[0.06] bg-white/[0.03]">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-400" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                      <div className="w-3 h-3 rounded-full bg-green-400" />
+                    </div>
+                    <span className="text-[0.72rem] text-white/40 ml-2">App.tsx</span>
+                  </div>
+                  <pre className="flex-1 overflow-auto p-5 text-[0.75rem] leading-relaxed font-mono text-white/80">
+                    <code>{`import React from "react";
+
+function App() {
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="flex items-center justify-between px-8 py-4">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-accent/20" />
+          <span className="font-bold">AppPreview</span>
+        </div>
+        <nav className="flex items-center gap-6 text-sm text-muted">
+          <a href="#how">How It Works</a>
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#contact">Contact</a>
+          <button className="px-3 py-1.5 rounded-lg bg-accent text-white text-sm font-semibold">
+            Get Started
+          </button>
+        </nav>
+      </header>
+
+      {/* Hero */}
+      <section className="px-8 pt-12 pb-8">
+        <span className="bg-accent/10 text-accent text-xs font-bold px-3 py-1 rounded-full uppercase">
+          Built with AI
+        </span>
+        <h1 className="text-4xl font-black mt-4 mb-4 max-w-lg">
+          Your App, Built in Seconds
+        </h1>
+        <p className="text-muted max-w-md mb-6">
+          ${appPreviewContent.slice(0, 120)}
+        </p>
+      </section>
+
+      {/* Features */}
+      <section id="features" className="grid grid-cols-3 gap-6 px-8 py-8">
+        {["Lightning Fast", "AI-Powered", "Fully Custom"].map(f => (
+          <div key={f} className="text-center p-6 rounded-2xl border">
+            <h3 className="font-bold">{f}</h3>
+          </div>
+        ))}
+      </section>
+    </div>
+  );
+}
+
+export default App;`}</code>
+                  </pre>
+                </div>
               ) : appPreviewContent ? (
                 <div id="app-builder-preview" className="bg-background rounded-2xl border border-foreground/[0.08] shadow-lg overflow-hidden h-full">
                   {/* Mock browser chrome */}
