@@ -3700,7 +3700,7 @@ export default function CreatePage() {
               <div className="relative flex items-center gap-2">
                 <button
                   type="button"
-                  onClick={() => attachmentRef.current?.click()}
+                  onClick={() => appAttachmentRef.current?.click()}
                   className="shrink-0 p-2.5 rounded-full border border-foreground/[0.12] text-muted hover:text-foreground hover:border-foreground/25 transition-colors"
                 >
                   <Plus size={16} />
