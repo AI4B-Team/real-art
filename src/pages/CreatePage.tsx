@@ -3679,7 +3679,7 @@ export default function CreatePage() {
                   onClick={() => setAppShowCode(!appShowCode)}
                   className={`flex items-center gap-2 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-colors ${appShowCode ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground"}`}
                 >
-                  Show code
+                  Show Code
                   <div className={`w-8 h-4.5 rounded-full transition-colors relative ${appShowCode ? "bg-foreground" : "bg-foreground/20"}`}>
                     <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-background shadow transition-transform ${appShowCode ? "left-[calc(100%-0.95rem)]" : "left-0.5"}`} />
                   </div>
