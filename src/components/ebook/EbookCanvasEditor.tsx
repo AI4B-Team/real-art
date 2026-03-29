@@ -449,7 +449,7 @@ const EbookCanvasEditor = ({
               onMouseDown={e => e.stopPropagation()}>
               <button onClick={() => replaceImageInputRef.current?.click()}
                 className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
-                <Replace className="w-3.5 h-3.5" />Replace
+                <ArrowRightLeft className="w-3.5 h-3.5" />Replace
               </button>
               <button onClick={() => setShowAIEditModal(true)}
                 className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
