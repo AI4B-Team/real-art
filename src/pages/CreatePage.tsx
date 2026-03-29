@@ -3398,6 +3398,64 @@ export default function CreatePage() {
   const [creations, setCreations] = useState<UserCreation[]>([]);
   const [loadingCreations, setLoadingCreations] = useState(true);
 
+  // App builder mode
+  const [appBuilderMode, setAppBuilderMode] = useState(false);
+  const [appConversation, setAppConversation] = useState<{ role: "user" | "ai"; text: string }[]>([]);
+  const [appBuilderInput, setAppBuilderInput] = useState("");
+  const [appBuildingVersion, setAppBuildingVersion] = useState(0);
+  const [appIsThinking, setAppIsThinking] = useState(false);
+  const [appShowCode, setAppShowCode] = useState(false);
+  const [appPreviewContent, setAppPreviewContent] = useState("");
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [appConversation, appIsThinking]);
+
+  const handleGenerate = ({ type, prompt, subMode }: { type: ContentType | null; prompt: string; subMode: string | null }) => {
+    if (type === "app") {
+      setAppBuilderMode(true);
+      setAppConversation([{ role: "user", text: prompt }]);
+      setAppIsThinking(true);
+      setAppBuildingVersion(1);
+      // Simulate AI response
+      setTimeout(() => {
+        const buildType = subMode === "website" ? "website" : subMode === "saas" ? "SaaS application" : subMode === "ai-agent" ? "AI agent" : "web application";
+        setAppConversation(prev => [...prev, {
+          role: "ai",
+          text: `I'll create a modern, professional ${buildType} with a strong visual identity and clear call-to-action flow.\n\nHere's your ${buildType} — a sleek, professional design with dark theme and accent colors. It includes a hero section, feature grid, and a fully working contact form.\n\nTry scrolling through and interacting with the preview! You can also customize the text, colors, and fonts through the chat.`
+        }]);
+        setAppIsThinking(false);
+        setAppPreviewContent(prompt);
+      }, 3000);
+    } else {
+      setGenerated(true);
+    }
+  };
+
+  const handleAppFollowUp = () => {
+    if (!appBuilderInput.trim()) return;
+    const msg = appBuilderInput.trim();
+    setAppBuilderInput("");
+    setAppConversation(prev => [...prev, { role: "user", text: msg }]);
+    setAppIsThinking(true);
+    setTimeout(() => {
+      setAppBuildingVersion(v => v + 1);
+      setAppConversation(prev => [...prev, {
+        role: "ai",
+        text: `Done! I've updated the design based on your feedback. The changes are now reflected in the preview.`
+      }]);
+      setAppIsThinking(false);
+    }, 2500);
+  };
+
+  const exitAppBuilder = () => {
+    setAppBuilderMode(false);
+    setAppConversation([]);
+    setAppPreviewContent("");
+    setAppBuildingVersion(0);
+  };
+
   // Fetch real user creations from DB
   useEffect(() => {
     let cancelled = false;
@@ -3441,11 +3499,197 @@ export default function CreatePage() {
     ? creations
     : creations.filter(c => c.type === mediaFilter);
 
+  // ── App Builder Mode ──
+  if (appBuilderMode) {
+    return (
+      <PageShell>
+        <div className="flex h-[calc(100vh-4rem)] overflow-hidden">
+          {/* Left Chat Panel */}
+          <div className="w-[440px] min-w-[360px] max-w-[500px] flex flex-col border-r border-foreground/[0.08] bg-background">
+            {/* Header */}
+            <div className="flex items-center gap-3 px-5 py-3.5 border-b border-foreground/[0.08]">
+              <button onClick={exitAppBuilder} className="flex items-center gap-1.5 text-muted hover:text-foreground transition-colors text-[0.82rem]">
+                <ArrowRight size={14} className="rotate-180" />
+              </button>
+              <h2 className="text-[0.88rem] font-bold truncate flex-1">
+                {appConversation[0]?.text.slice(0, 50)}{(appConversation[0]?.text.length || 0) > 50 ? "…" : ""}
+              </h2>
+              {appBuildingVersion > 0 && (
+                <span className="text-[0.72rem] font-medium text-muted bg-foreground/[0.05] px-2 py-0.5 rounded-md">
+                  Version {appBuildingVersion}
+                </span>
+              )}
+            </div>
+
+            {/* Chat messages */}
+            <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+              {appConversation.map((msg, i) => (
+                <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+                  <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-[0.84rem] leading-relaxed whitespace-pre-wrap ${
+                    msg.role === "user"
+                      ? "bg-foreground/[0.08] text-foreground rounded-br-md"
+                      : "text-foreground"
+                  }`}>
+                    {msg.text}
+                    {msg.role === "ai" && i === appConversation.length - 1 && appBuildingVersion > 0 && (
+                      <button className="mt-3 flex items-center gap-1.5 text-[0.78rem] font-semibold text-muted hover:text-foreground transition-colors">
+                        Version {appBuildingVersion} <ArrowRight size={12} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              {appIsThinking && (
+                <div className="flex justify-start">
+                  <div className="text-foreground text-[0.84rem]">
+                    <div className="flex items-center gap-2 text-muted">
+                      <Loader2 size={14} className="animate-spin" />
+                      <span>We're working on your code. Hang tight — it'll be ready soon.</span>
+                    </div>
+                    <div className="text-[0.78rem] text-muted/60 mt-1">Coding for you…</div>
+                  </div>
+                </div>
+              )}
+              <div ref={chatEndRef} />
+            </div>
+
+            {/* Chat input */}
+            <div className="px-4 pb-4 pt-2">
+              <div className="relative">
+                <input
+                  type="text"
+                  value={appBuilderInput}
+                  onChange={e => setAppBuilderInput(e.target.value)}
+                  onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAppFollowUp(); } }}
+                  placeholder="Ask me anything"
+                  className="w-full px-4 py-3.5 pr-12 rounded-2xl border border-foreground/[0.12] bg-background text-[0.84rem] outline-none focus:border-foreground/25 transition-colors placeholder:text-muted/50"
+                />
+                <button
+                  onClick={handleAppFollowUp}
+                  disabled={!appBuilderInput.trim()}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted hover:text-foreground transition-colors disabled:opacity-30"
+                >
+                  <Mic size={16} />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Preview Panel */}
+          <div className="flex-1 flex flex-col bg-muted/20 min-w-0">
+            {/* Preview toolbar */}
+            <div className="flex items-center justify-between px-5 py-2.5 border-b border-foreground/[0.08] bg-background">
+              <div className="flex items-center gap-3">
+                {appBuildingVersion > 0 && (
+                  <span className="text-[0.82rem] font-semibold text-foreground">Version {appBuildingVersion}</span>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setAppShowCode(!appShowCode)}
+                  className={`flex items-center gap-2 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-colors ${appShowCode ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground"}`}
+                >
+                  Show code
+                  <div className={`w-8 h-4.5 rounded-full transition-colors relative ${appShowCode ? "bg-foreground" : "bg-foreground/20"}`}>
+                    <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-background shadow transition-transform ${appShowCode ? "left-[calc(100%-0.95rem)]" : "left-0.5"}`} />
+                  </div>
+                </button>
+                <button className="flex items-center gap-1.5 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
+                  <Eye size={14} /> Use in a design
+                </button>
+                <button className="flex items-center gap-1.5 text-[0.84rem] font-bold px-4 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors">
+                  Publish
+                </button>
+              </div>
+            </div>
+
+            {/* Preview content */}
+            <div className="flex-1 overflow-auto p-6">
+              {appIsThinking && !appPreviewContent ? (
+                <div className="flex items-center justify-center h-full">
+                  <div className="text-center">
+                    <Loader2 size={32} className="animate-spin text-muted mx-auto mb-4" />
+                    <p className="text-[0.88rem] font-medium text-muted">Building your app…</p>
+                  </div>
+                </div>
+              ) : appPreviewContent ? (
+                <div className="bg-background rounded-2xl border border-foreground/[0.08] shadow-lg overflow-hidden h-full">
+                  {/* Mock browser chrome */}
+                  <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06] bg-foreground/[0.02]">
+                    <div className="flex items-center gap-1.5">
+                      <div className="w-3 h-3 rounded-full bg-red-400" />
+                      <div className="w-3 h-3 rounded-full bg-yellow-400" />
+                      <div className="w-3 h-3 rounded-full bg-green-400" />
+                    </div>
+                    <div className="flex-1 mx-8">
+                      <div className="bg-foreground/[0.05] rounded-lg px-3 py-1 text-[0.72rem] text-muted text-center">
+                        preview.lovable.app
+                      </div>
+                    </div>
+                    <X size={14} className="text-muted" />
+                  </div>
+                  {/* Mock website preview */}
+                  <div className="p-8 space-y-8 overflow-y-auto h-[calc(100%-42px)]">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-accent/20 flex items-center justify-center">
+                          <Code size={16} className="text-accent" />
+                        </div>
+                        <span className="text-[0.92rem] font-bold">AppPreview</span>
+                      </div>
+                      <div className="flex items-center gap-6 text-[0.78rem] text-muted">
+                        <span>How It Works</span>
+                        <span>Features</span>
+                        <span>Pricing</span>
+                        <span>Contact</span>
+                        <button className="px-3 py-1.5 rounded-lg bg-accent text-white text-[0.75rem] font-semibold">Get Started</button>
+                      </div>
+                    </div>
+                    <div className="pt-12 pb-8">
+                      <div className="bg-accent/10 text-accent text-[0.72rem] font-bold px-3 py-1 rounded-full inline-block mb-4 uppercase tracking-wider">
+                        Built with AI
+                      </div>
+                      <h1 className="text-[2.2rem] font-black tracking-tight leading-tight mb-4 max-w-lg">
+                        Your App, Built in Seconds
+                      </h1>
+                      <p className="text-[0.92rem] text-muted max-w-md leading-relaxed mb-6">
+                        {appPreviewContent.slice(0, 120)}{appPreviewContent.length > 120 ? "..." : ""}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <button className="px-6 py-3 rounded-xl bg-accent text-white font-bold text-[0.88rem] flex items-center gap-2">
+                          Get Started <ArrowRight size={16} />
+                        </button>
+                        <button className="px-6 py-3 rounded-xl border border-foreground/[0.15] font-semibold text-[0.88rem]">
+                          See How It Works
+                        </button>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-6 pt-8 border-t border-foreground/[0.06]">
+                      {["Lightning Fast", "AI-Powered", "Fully Custom"].map((f, i) => (
+                        <div key={f} className="text-center p-6 rounded-2xl bg-foreground/[0.02] border border-foreground/[0.06]">
+                          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mx-auto mb-3">
+                            {[Zap, Sparkles, Wand2][i] && (() => { const Icon = [Zap, Sparkles, Wand2][i]; return <Icon size={18} className="text-accent" />; })()}
+                          </div>
+                          <h3 className="text-[0.88rem] font-bold mb-1">{f}</h3>
+                          <p className="text-[0.75rem] text-muted">Optimized for the best experience possible.</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </PageShell>
+    );
+  }
+
   return (
     <PageShell>
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0 overflow-visible">
         <div className="mb-10">
-          <PromptBox onGenerate={() => setGenerated(true)} />
+          <PromptBox onGenerate={handleGenerate} />
         </div>
       </div>
 
