@@ -1436,10 +1436,10 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
 
           {/* ── Bottom toolbar ── */}
           {hasType && (
-            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-wrap">
-              {/* Child 1 — Wrapping pills */}
-              <div className="relative flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-nowrap overflow-x-auto no-scrollbar">
+              {/* Child 1 — Single row pills */}
+              <div className="relative flex-none">
+                <div className="flex items-center gap-1.5 flex-nowrap">
 
 
 
