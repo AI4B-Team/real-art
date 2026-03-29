@@ -2904,6 +2904,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 </button>
               </div>
             </div>
+          )}
           </div>
         </div>
 
