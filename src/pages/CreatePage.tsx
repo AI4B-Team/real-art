@@ -9,7 +9,7 @@ import {
   Play, MessageCircle, Move, User, BookOpen, Presentation, Clapperboard,
   Headphones, AudioLines, Captions,
   Copy, Hash, Clock, SlidersHorizontal,
-  LayoutGrid, Filter, Star, Download, Bookmark, Plus,
+  LayoutGrid, LayoutList, Filter, Star, Download, Bookmark, Plus,
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush,
@@ -2809,7 +2809,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docFormat !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <FileText size={14} />
+                          <LayoutList size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Format</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
