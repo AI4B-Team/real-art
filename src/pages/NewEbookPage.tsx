@@ -246,11 +246,11 @@ const NewEbookPage = () => {
 
   return (
     <PageShell>
-      <div className="max-w-7xl mx-auto px-6 py-6">
+      <div className={activeTab === "design" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-6"}>
         {/* Top bar */}
-        <div className="flex items-center justify-between mb-6">
+        <div className={`flex items-center justify-between ${activeTab === "design" ? "px-4 py-3" : "mb-6"}`}>
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/ebook-creator")} className="p-2 rounded-lg hover:bg-foreground/[0.05] transition-colors"><ArrowLeft size={20} className="text-foreground" /></button>
+            <button onClick={() => navigate("/ghost-ink")} className="p-2 rounded-lg hover:bg-foreground/[0.05] transition-colors"><ArrowLeft size={20} className="text-foreground" /></button>
             <h1 className="text-xl font-display font-bold text-foreground">
               {activeTab === "design" ? (bookData.selectedTitle || "Untitled Book") : "New eBook"}
             </h1>
@@ -266,10 +266,12 @@ const NewEbookPage = () => {
         </div>
 
         {/* Tab navigation */}
+        {activeTab !== "design" && (
         <div className="flex items-center gap-1 mb-8 bg-foreground/[0.03] rounded-xl p-1 w-fit">
           {TABS.map((tab, i) => {
             const isActive = activeTab === tab.id;
-            const isCompleted = (tab.id === "idea" && (activeTab === "generate" || activeTab === "design")) || (tab.id === "generate" && activeTab === "design");
+            const tabIndex = TABS.findIndex(t => t.id === activeTab);
+            const isCompleted = (tab.id === "idea" && tabIndex > 0) || (tab.id === "generate" && tabIndex > 1);
             return (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? "bg-background shadow-sm text-foreground" : isCompleted ? "text-accent" : "text-muted hover:text-foreground"}`}>
@@ -280,6 +282,7 @@ const NewEbookPage = () => {
             );
           })}
         </div>
+        )}
 
         {/* === IDEA TAB === */}
         {activeTab === "idea" && (
@@ -488,9 +491,9 @@ const NewEbookPage = () => {
 
         {/* === DESIGN TAB === */}
         {activeTab === "design" && (
-          <div className="relative -mx-6 -mb-6">
+          <div className="relative">
             {/* Canvas toolbar */}
-            <div className="flex items-center justify-between px-6 py-3 border-b border-foreground/[0.06] bg-background">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.04] bg-background">
               <div className="flex items-center gap-2">
                 <Tooltip><TooltipTrigger asChild><button className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={16} /></button></TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
                 <Tooltip><TooltipTrigger asChild><button className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={16} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
@@ -506,9 +509,9 @@ const NewEbookPage = () => {
             </div>
 
             {/* Canvas area */}
-            <div className="flex" style={{ height: "calc(100vh - 220px)" }}>
+            <div className="flex" style={{ height: "calc(100vh - 160px)" }}>
               {/* Pages sidebar */}
-              <div className="w-56 border-r border-foreground/[0.06] bg-card overflow-y-auto p-3">
+              <div className="w-56 border-r border-foreground/[0.04] bg-background overflow-y-auto p-3">
                 <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3 px-2">Pages</h3>
                 <div className="space-y-2">
                   {ebookPages.filter(p => p.type !== "chapter-page").map((page, i) => (
@@ -582,7 +585,7 @@ const NewEbookPage = () => {
               </div>
 
               {/* Design sidebar */}
-              <div className="w-72 border-l border-foreground/[0.06] bg-card overflow-y-auto p-4">
+              <div className="w-72 border-l border-foreground/[0.04] bg-background overflow-y-auto p-4">
                 <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">Design</h3>
                 
                 <div className="space-y-4">
