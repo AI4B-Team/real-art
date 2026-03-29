@@ -3831,11 +3831,11 @@ export default function CreatePage() {
                 <div className="p-4">
                   <h3 className="text-[0.92rem] font-bold mb-4">Filter By</h3>
 
-                  {/* Media type pills */}
-                  <div className="flex flex-wrap gap-1.5 mb-4">
+                  {/* Media type list */}
+                  <div className="space-y-0.5 mb-4">
                     {MEDIA_FILTERS.map(f => (
                       <button key={f.id} type="button" onClick={() => setMediaFilter(f.id)}
-                        className={`px-3 py-1 rounded-lg text-[0.75rem] font-medium border transition-colors ${mediaFilter === f.id ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground"}`}>
+                        className={`w-full text-left px-3 py-2 rounded-lg text-[0.82rem] font-medium transition-colors ${mediaFilter === f.id ? "bg-accent/10 text-accent" : "text-muted hover:bg-foreground/[0.04] hover:text-foreground"}`}>
                         {f.label}
                       </button>
                     ))}
