@@ -2517,10 +2517,19 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
                           <button key={o} onClick={() => { setContentTone(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
-                        <div className="h-px bg-foreground/[0.08] my-1" />
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Style</p>
+                      </PopoverContent>
+                    </Popover>
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentStyle !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <FileText size={14} />
+                          {contentStyle !== "Informative" && <span className="text-[0.75rem] font-medium pr-0.5">{contentStyle}</span>}
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Format</TooltipContent></Tooltip>
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Format</p>
                         {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
-                          <button key={o} onClick={() => { setContentStyle(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentStyle === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          <button key={o} onClick={() => setContentStyle(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentStyle === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
