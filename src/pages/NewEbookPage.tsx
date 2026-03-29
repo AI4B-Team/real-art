@@ -155,6 +155,7 @@ const NewEbookPage = () => {
   const [ebookPages, setEbookPages] = useState<UnifiedPage[]>(getDefaultPages);
   const [selectedPageId, setSelectedPageId] = useState<string | null>("1");
   const [zoom, setZoom] = useState(100);
+  const [isGridView, setIsGridView] = useState(false);
 
   useEffect(() => {
     const state = location.state as { book?: any; fromCreate?: boolean; prompt?: string } | null;
