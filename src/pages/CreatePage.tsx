@@ -3867,7 +3867,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
 
         {/* Social content panel — always visible on social page, below other panels */}
         {showSocial && (
-          <div className="mt-3 -mx-5 md:-mx-10">
+          <div className="mt-3" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw' }}>
             <SocialContentPanel onClose={() => { if (activePanel === "social") setActivePanel(null); }} frequency={contentFrequency} />
           </div>
         )}
