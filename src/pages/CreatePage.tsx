@@ -480,6 +480,17 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [voiceoverToneOpen, setVoiceoverToneOpen] = useState(false);
   const [voiceoverLangSearch, setVoiceoverLangSearch] = useState("");
 
+  // Music-specific states
+  const [musicStyle, setMusicStyle] = useState<"Instrumental" | "Vocals" | null>(null);
+  const [musicStyleOpen, setMusicStyleOpen] = useState(false);
+  const [musicVoiceGender, setMusicVoiceGender] = useState<"Male" | "Female" | null>(null);
+  const [musicLyrics, setMusicLyrics] = useState("");
+  const [musicLyricsOpen, setMusicLyricsOpen] = useState(false);
+  const [musicTitle, setMusicTitle] = useState("");
+  const [musicTitleOpen, setMusicTitleOpen] = useState(false);
+  const [musicVoiceOpen, setMusicVoiceOpen] = useState(false);
+  const [musicRefOpen, setMusicRefOpen] = useState(false);
+
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
@@ -1765,7 +1776,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 {/* Style, Character, Reference — hidden for ebook & voiceover mode */}
                 {!(selectedType === "audio" && selectedSubMode === "voiceover") && (
                   <>
-                {/* Style */}
+                {/* Genre (audio) / Style (other) */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
                     className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle !== "Minimalist") ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -1773,23 +1784,150 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                   </button>
                 </TooltipTrigger><TooltipContent>{selectedType === "audio" ? "Genre" : "Style"}</TooltipContent></Tooltip>
 
-                {/* Character */}
-                <Tooltip><TooltipTrigger asChild>
-                  <button type="button" onClick={() => togglePanel("character")}
-                    className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    <User size={14} />
-                    {selectedCharacters.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{selectedCharacters.length}</span>}
-                  </button>
-                </TooltipTrigger><TooltipContent>Character{selectedCharacters.length > 0 ? ` (${selectedCharacters.length})` : ""}</TooltipContent></Tooltip>
+                {/* Music Style — Instrumental/Vocals (audio music mode only) */}
+                {selectedType === "audio" && selectedSubMode === "music" && (
+                  <Popover open={musicStyleOpen} onOpenChange={setMusicStyleOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${musicStyle ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Headphones size={12} />{musicStyle || "Style"}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                    <PopoverContent className="w-72 p-3" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                      <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Style</p>
+                      <div className="flex gap-2 mb-3">
+                        {(["Instrumental", "Vocals"] as const).map(s => (
+                          <button key={s} type="button" onClick={() => setMusicStyle(musicStyle === s ? null : s)}
+                            className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[0.82rem] font-semibold border transition-all ${musicStyle === s ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] hover:border-foreground/25 text-foreground"}`}>
+                            {s === "Instrumental" ? <Music size={14} /> : <Mic size={14} />}{s}
+                          </button>
+                        ))}
+                      </div>
+                      {musicStyle === "Vocals" && (
+                        <>
+                          <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Voice</p>
+                          <div className="flex gap-2 mb-3">
+                            {(["Male", "Female"] as const).map(g => (
+                              <button key={g} type="button" onClick={() => setMusicVoiceGender(musicVoiceGender === g ? null : g)}
+                                className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[0.82rem] font-medium border transition-all ${musicVoiceGender === g ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] hover:border-foreground/25 text-foreground"}`}>
+                                <User size={12} />{g}
+                              </button>
+                            ))}
+                          </div>
+                          <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Lyrics</p>
+                          <textarea
+                            value={musicLyrics}
+                            onChange={e => setMusicLyrics(e.target.value)}
+                            placeholder="Write or paste your lyrics here..."
+                            className="w-full h-24 px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] resize-none focus:outline-none focus:border-accent transition-colors mb-2"
+                          />
+                          <button type="button" onClick={() => { setMusicLyrics("✨ Generating lyrics with AI..."); setTimeout(() => setMusicLyrics(""), 1500); }}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.75rem] font-semibold text-accent bg-accent/10 hover:bg-accent/15 transition-colors">
+                            <Wand2 size={12} />AI Writer
+                          </button>
+                        </>
+                      )}
+                    </PopoverContent>
+                  </Popover>
+                )}
 
-                {/* Reference */}
-                <Tooltip><TooltipTrigger asChild>
-                  <button type="button" onClick={() => togglePanel("reference")}
-                    className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    <Layers size={14} />
-                    {references.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{references.length}</span>}
-                  </button>
-                </TooltipTrigger><TooltipContent>Reference{references.length > 0 ? ` (${references.length})` : ""}</TooltipContent></Tooltip>
+                {/* Title — audio music mode only */}
+                {selectedType === "audio" && selectedSubMode === "music" && (
+                  <Popover open={musicTitleOpen} onOpenChange={setMusicTitleOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${musicTitle ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <PenTool size={12} />{musicTitle || "Title"}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Title</TooltipContent></Tooltip>
+                    <PopoverContent className="w-64 p-3" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                      <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Track Title</p>
+                      <input
+                        value={musicTitle}
+                        onChange={e => setMusicTitle(e.target.value)}
+                        placeholder="Enter track title..."
+                        className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] focus:outline-none focus:border-accent transition-colors"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Voice (audio) / Character (other) */}
+                {selectedType === "audio" && selectedSubMode === "music" ? (
+                  <Popover open={musicVoiceOpen} onOpenChange={setMusicVoiceOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${voiceoverVoice !== "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Mic size={12} />{voiceoverVoice !== "Auto" ? voiceoverVoice : "Voice"}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
+                    <PopoverContent className="w-64 p-0" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                      <p className="text-[0.78rem] text-muted px-4 pt-3 pb-2">Select a voice</p>
+                      <div className="max-h-[280px] overflow-y-auto px-2 pb-2">
+                        {[
+                          { name: "Rachel", gender: "Female" },
+                          { name: "Aria", gender: "Female" },
+                          { name: "Roger", gender: "Male" },
+                          { name: "Sarah", gender: "Female" },
+                          { name: "Charlie", gender: "Male" },
+                          { name: "George", gender: "Male" },
+                          { name: "Liam", gender: "Male" },
+                          { name: "Laura", gender: "Female" },
+                        ].map(v => (
+                          <button key={v.name} type="button" onClick={() => { setVoiceoverVoice(v.name); setMusicVoiceOpen(false); }}
+                            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[0.84rem] transition-colors ${voiceoverVoice === v.name ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                            <div className="w-8 h-8 rounded-full bg-foreground/[0.06] flex items-center justify-center shrink-0"><User size={14} className="text-muted" /></div>
+                            <div className="flex-1 text-left">
+                              <p className="font-medium text-[0.84rem]">{v.name}</p>
+                              <p className="text-[0.72rem] text-muted">{v.gender}</p>
+                            </div>
+                            <Play size={14} className="text-green-500 opacity-60 hover:opacity-100" />
+                          </button>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("character")}
+                      className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "character" || selectedCharacters.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <User size={14} />
+                      {selectedCharacters.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{selectedCharacters.length}</span>}
+                    </button>
+                  </TooltipTrigger><TooltipContent>Character{selectedCharacters.length > 0 ? ` (${selectedCharacters.length})` : ""}</TooltipContent></Tooltip>
+                )}
+
+                {/* Reference (audio icon + upload/record/remix for audio) / standard for other */}
+                {selectedType === "audio" && selectedSubMode === "music" ? (
+                  <Popover open={musicRefOpen} onOpenChange={setMusicRefOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <AudioLines size={14} />
+                        {references.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{references.length}</span>}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Reference{references.length > 0 ? ` (${references.length})` : ""}</TooltipContent></Tooltip>
+                    <PopoverContent className="w-56 p-2" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                      <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Audio Reference</p>
+                      <button type="button" onClick={() => { setMusicRefOpen(false); togglePanel("reference"); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[0.82rem] font-medium hover:bg-foreground/[0.04] text-foreground transition-colors">
+                        <Upload size={14} className="text-accent" />Upload Audio
+                      </button>
+                      <button type="button" onClick={() => { setMusicRefOpen(false); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[0.82rem] font-medium hover:bg-foreground/[0.04] text-foreground transition-colors">
+                        <Mic size={14} className="text-accent" />Record Audio
+                      </button>
+                      <button type="button" onClick={() => { setMusicRefOpen(false); }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-[0.82rem] font-medium hover:bg-foreground/[0.04] text-foreground transition-colors">
+                        <Repeat size={14} className="text-accent" />Remix Audio
+                      </button>
+                    </PopoverContent>
+                  </Popover>
+                ) : (
+                  <Tooltip><TooltipTrigger asChild>
+                    <button type="button" onClick={() => togglePanel("reference")}
+                      className={`toolbar-btn relative p-1.5 rounded-lg shrink-0 ${activePanel === "reference" || references.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                      <Layers size={14} />
+                      {references.length > 0 && <span className="absolute -top-0.5 -right-0.5 min-w-[14px] h-[14px] rounded-full bg-accent text-white text-[0.55rem] font-bold flex items-center justify-center">{references.length}</span>}
+                    </button>
+                  </TooltipTrigger><TooltipContent>Reference{references.length > 0 ? ` (${references.length})` : ""}</TooltipContent></Tooltip>
+                )}
                   </>
                 )}
                   </>
