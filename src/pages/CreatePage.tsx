@@ -685,6 +685,11 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
 
+  // Notify parent of mode changes
+  useEffect(() => {
+    onModeChange?.(selectedType, selectedSubMode);
+  }, [selectedType, selectedSubMode, onModeChange]);
+
   const typeCfg = selectedType ? CONTENT_TYPES.find(t => t.id === selectedType)! : null;
   const subModes = selectedType ? SUB_MODES[selectedType] : [];
   const selectedSubObj = subModes.find(s => s.id === selectedSubMode);
