@@ -247,25 +247,114 @@ const NewEbookPage = () => {
   return (
     <PageShell>
       <div className={activeTab === "design" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-6"}>
-        {/* Top bar */}
-        <div className={`flex items-center justify-between ${activeTab === "design" ? "px-4 py-3" : "mb-6"}`}>
-          <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/ghost-ink")} className="p-2 rounded-lg hover:bg-foreground/[0.05] transition-colors"><ArrowLeft size={20} className="text-foreground" /></button>
-            <h1 className="text-xl font-display font-bold text-foreground">
-              {activeTab === "design" ? (bookData.selectedTitle || "Untitled Book") : "New eBook"}
-            </h1>
-          </div>
-          <div className="flex items-center gap-2">
-            {activeTab === "design" && (
-              <>
-                <button className="px-3 py-1.5 rounded-lg text-xs font-medium bg-foreground/[0.04] text-muted hover:text-foreground transition-colors flex items-center gap-1.5"><Share2 size={14} />Share</button>
-                <button className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-accent text-white hover:bg-accent/90 transition-colors">Publish</button>
-              </>
-            )}
-          </div>
-        </div>
 
-        {/* Tab navigation */}
+        {/* === DESIGN TAB TOP BAR === */}
+        {activeTab === "design" && (
+          <div className="h-14 bg-foreground/[0.95] flex items-center px-4 gap-3 shrink-0">
+            {/* Left: Title + Editing badge + Auto-Saved */}
+            <div className="flex items-center gap-2.5 shrink-0">
+              <span className="text-base font-display font-bold text-background tracking-tight">eBOOK <span className="font-black">STUDIO</span></span>
+
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-1.5 bg-accent px-3 py-1.5 rounded-lg text-sm font-medium text-white hover:bg-accent/90 transition-colors">
+                    <Pencil className="w-3.5 h-3.5" />
+                    <span>Editing</span>
+                    <ChevronDown className="w-3 h-3 opacity-70" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-40 p-1.5" align="start" side="bottom">
+                  {["Editing", "Reviewing", "Presenting"].map(mode => (
+                    <button key={mode} className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                      {mode}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+
+              <div className="flex items-center gap-1.5 bg-emerald-500/20 px-2.5 py-1 rounded-lg">
+                <Cloud className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-xs font-medium text-emerald-400">Auto-Saved</span>
+              </div>
+            </div>
+
+            {/* Center: Step Tabs */}
+            <div className="flex-1 flex items-center justify-center">
+              <div className="flex items-center gap-6">
+                {TABS.map((tab) => {
+                  const isActive = activeTab === tab.id;
+                  const tabIndex = TABS.findIndex(t => t.id === activeTab);
+                  const isCompleted = (tab.id === "idea" && tabIndex > 0) || (tab.id === "generate" && tabIndex > 1);
+                  return (
+                    <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                      className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${isActive ? "text-background" : isCompleted ? "text-accent" : "text-background/40 hover:text-background/70"}`}>
+                      {isCompleted ? <Check size={14} className="text-accent" /> : <tab.icon className="w-4 h-4" />}
+                      {tab.label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Right: Collaborators + Actions */}
+            <div className="flex items-center gap-2.5 ml-auto shrink-0">
+              <div className="flex items-center -space-x-2">
+                {["photo-1494790108377-be9c29b29330", "photo-1507003211169-0a1dd7228f2d", "photo-1534528741775-53994a69daeb"].map((id, i) => (
+                  <img key={i} src={`https://images.unsplash.com/${id}?w=32&h=32&fit=crop`} alt="" className="w-7 h-7 rounded-full border-2 border-foreground object-cover" />
+                ))}
+              </div>
+              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
+                <UserPlus className="w-3.5 h-3.5" />Invite
+              </button>
+              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-accent/90 rounded-lg text-xs text-white font-semibold transition-colors">
+                <Sparkles className="w-3.5 h-3.5" />Create
+              </button>
+              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
+                <Share2 className="w-3.5 h-3.5" />Share
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* === DESIGN SUB-BAR: Back + Project Name + Canvas Tools === */}
+        {activeTab === "design" && (
+          <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.04] bg-background">
+            <div className="flex items-center gap-3">
+              <button onClick={() => navigate("/ghost-ink")} className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors">
+                <ArrowLeft size={16} />Back To Projects
+              </button>
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              <span className="text-sm text-muted-foreground">Project Name:</span>
+              <input
+                value={bookData.selectedTitle || "Untitled Book"}
+                onChange={e => setBookData(prev => ({ ...prev, selectedTitle: e.target.value }))}
+                className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-3 py-1.5 w-64 focus:outline-none focus:border-accent/40 transition-colors"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={15} /></button></TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={15} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
+              <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Search size={15} /></button></TooltipTrigger><TooltipContent>Find</TooltipContent></Tooltip>
+              <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
+              <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomOut size={15} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
+              <span className="text-xs text-muted font-medium w-10 text-center">{zoom}%</span>
+              <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.min(z + 10, 200))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomIn size={15} /></button></TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
+            </div>
+          </div>
+        )}
+
+        {/* Non-design top bar */}
+        {activeTab !== "design" && (
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <button onClick={() => navigate("/ghost-ink")} className="p-2 rounded-lg hover:bg-foreground/[0.05] transition-colors"><ArrowLeft size={20} className="text-foreground" /></button>
+              <h1 className="text-xl font-display font-bold text-foreground">New eBook</h1>
+            </div>
+          </div>
+        )}
+
+        {/* Tab navigation (non-design) */}
         {activeTab !== "design" && (
         <div className="flex items-center gap-1 mb-8 bg-foreground/[0.03] rounded-xl p-1 w-fit">
           {TABS.map((tab, i) => {
