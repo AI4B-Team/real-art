@@ -780,12 +780,12 @@ const EbookCanvasEditor = ({
                       {/* Image editing tools */}
                       {[
                         { icon: Crop, label: 'Crop' },
-                        { icon: RefreshCw, label: 'Flip' },
+                        { icon: RefreshCw, label: 'Resize' },
                         { icon: Paintbrush, label: 'Effects' },
                         { icon: SlidersVertical, label: 'Filters' },
-                        { icon: Droplets, label: 'Opacity' },
-                        { icon: SquareIcon, label: 'Border' },
-                        { icon: Link2, label: 'Link' },
+                        { icon: Droplets, label: 'Opacity (100%)' },
+                        { icon: SquareIcon, label: 'Mask' },
+                        { icon: Link2, label: 'Shadow' },
                         { icon: Layers, label: 'Layers' },
                         { icon: Move, label: 'Position' },
                       ].map(tool => (
