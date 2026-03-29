@@ -422,7 +422,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designOrientationOpen, setDesignOrientationOpen] = useState(false);
   const [presRatio, setPresRatio] = useState("16:9");
   const [presRatioOpen, setPresRatioOpen] = useState(false);
-  const [designPlatform, setDesignPlatform] = useState("YouTube");
+  const [designPlatform, setDesignPlatform] = useState("");
   const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
   const [designFinish, setDesignFinish] = useState("Matte");
   const [designFinishOpen, setDesignFinishOpen] = useState(false);
@@ -2245,8 +2245,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           return (
                             <Popover open={designPlatformOpen} onOpenChange={setDesignPlatformOpen}>
                               <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                                <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                                  {activeLogo}{designPlatform}
+                                <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designPlatform ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                                  {designPlatform ? <>{activeLogo}{designPlatform}</> : <><Globe size={12} />Platform</>}
                                 </button>
                               </PopoverTrigger></TooltipTrigger><TooltipContent>Platform</TooltipContent></Tooltip>
                               <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
