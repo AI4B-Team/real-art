@@ -25,16 +25,16 @@ export const PROMPT_SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; 
   {
     category: "Characters", type: "character",
     items: [
-      { id: "char-clara", label: "Clara", thumbnail: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=40&h=40&fit=crop" },
-      { id: "char-alex", label: "Alex", thumbnail: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop" },
-      { id: "char-maya", label: "Maya", thumbnail: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop" },
+      { id: "char-clara", label: "Clara", thumbnail: "https://i.pravatar.cc/40?img=5" },
+      { id: "char-alex", label: "Alex", thumbnail: "https://i.pravatar.cc/40?img=12" },
+      { id: "char-maya", label: "Maya", thumbnail: "https://i.pravatar.cc/40?img=32" },
     ],
   },
   {
     category: "Videos", type: "video",
     items: [
-      { id: "vid-1", label: "Video 1", thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=40&h=40&fit=crop" },
-      { id: "vid-2", label: "Video 2", thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=40&h=40&fit=crop" },
+      { id: "vid-1", label: "Video 1", thumbnail: "https://picsum.photos/seed/vid1/40/40" },
+      { id: "vid-2", label: "Video 2", thumbnail: "https://picsum.photos/seed/vid2/40/40" },
     ],
   },
   {
