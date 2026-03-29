@@ -3723,6 +3723,7 @@ export default function CreatePage() {
                   </button>
                 </div>
               </div>
+              <input ref={appAttachmentRef} type="file" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv" className="hidden" onChange={() => { toast({ title: "File attached" }); if (appAttachmentRef.current) appAttachmentRef.current.value = ""; }} />
             </div>
           </div>
 
