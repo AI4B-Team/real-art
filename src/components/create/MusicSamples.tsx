@@ -66,7 +66,7 @@ export default function MusicSamples({ onClose, selectedGenre, onGenreSelect, on
         </div>
       </div>
 
-      <div className="flex gap-2.5 overflow-x-auto pb-2 scrollbar-hide">
+      <div className="flex gap-2.5 overflow-x-auto pb-3 pt-1 px-1 -mx-1 scrollbar-hide">
         {GENRES.map(g => (
           <button
             key={g.id}
