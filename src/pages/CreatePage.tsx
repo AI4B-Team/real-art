@@ -2183,25 +2183,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     )}
 
                     {/* ── Logo controls ── */}
-                    {selectedSubMode === "logo" && (
-                      <>
-                        <Popover open={designIconStyleOpen} onOpenChange={setDesignIconStyleOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designIconStyle !== "Modern" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <PenTool size={12} />{designIconStyle}<ChevronDown size={10} className="opacity-60" />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Icon Style</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["Minimal", "Modern", "Bold", "Vintage", "Playful", "Geometric", "Hand-drawn"].map(s => (
-                              <button key={s} type="button" onClick={() => { setDesignIconStyle(s); setDesignIconStyleOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designIconStyle === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {s}{designIconStyle === s && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                      </>
-                    )}
 
                     {/* ── Poster controls ── */}
                     {selectedSubMode === "poster" && (
