@@ -3712,7 +3712,7 @@ export default function CreatePage() {
                         </button>
                       </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-6 pt-8 border-t border-foreground/[0.06]">
+                    <div id="app-features" className="grid grid-cols-3 gap-6 pt-8 border-t border-foreground/[0.06]">
                       {["Lightning Fast", "AI-Powered", "Fully Custom"].map((f, i) => (
                         <div key={f} className="text-center p-6 rounded-2xl bg-foreground/[0.02] border border-foreground/[0.06]">
                           <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center mx-auto mb-3">
@@ -3722,6 +3722,38 @@ export default function CreatePage() {
                           <p className="text-[0.75rem] text-muted">Optimized for the best experience possible.</p>
                         </div>
                       ))}
+                    </div>
+                    <div id="app-how-it-works" className="pt-8 border-t border-foreground/[0.06]">
+                      <h2 className="text-[1.4rem] font-black tracking-tight mb-4">How It Works</h2>
+                      <div className="grid grid-cols-3 gap-4">
+                        {["Describe Your Idea", "AI Builds It", "Launch Instantly"].map((step, i) => (
+                          <div key={step} className="p-4 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06]">
+                            <div className="w-7 h-7 rounded-lg bg-accent text-white flex items-center justify-center text-[0.75rem] font-bold mb-2">{i + 1}</div>
+                            <h4 className="text-[0.82rem] font-bold mb-1">{step}</h4>
+                            <p className="text-[0.72rem] text-muted">Quick, easy, and seamless from start to finish.</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div id="app-pricing" className="pt-8 border-t border-foreground/[0.06]">
+                      <h2 className="text-[1.4rem] font-black tracking-tight mb-4">Pricing</h2>
+                      <div className="grid grid-cols-3 gap-4">
+                        {[{ name: "Free", price: "$0" }, { name: "Pro", price: "$29" }, { name: "Enterprise", price: "Custom" }].map(plan => (
+                          <div key={plan.name} className={`p-5 rounded-xl border ${plan.name === "Pro" ? "border-accent bg-accent/5" : "border-foreground/[0.06] bg-foreground/[0.02]"}`}>
+                            <h4 className="text-[0.82rem] font-bold mb-1">{plan.name}</h4>
+                            <p className="text-[1.2rem] font-black mb-2">{plan.price}<span className="text-[0.72rem] text-muted font-normal">{plan.price !== "Custom" ? "/mo" : ""}</span></p>
+                            <button className={`w-full py-2 rounded-lg text-[0.75rem] font-semibold ${plan.name === "Pro" ? "bg-accent text-white" : "bg-foreground/[0.06]"}`}>Get Started</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div id="app-contact" className="pt-8 border-t border-foreground/[0.06]">
+                      <h2 className="text-[1.4rem] font-black tracking-tight mb-4">Contact</h2>
+                      <div className="p-5 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] space-y-3">
+                        <input placeholder="Your Email" className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] outline-none" />
+                        <textarea placeholder="Your Message" rows={3} className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] outline-none resize-none" />
+                        <button className="px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-semibold">Send Message</button>
+                      </div>
                     </div>
                   </div>
                 </div>
