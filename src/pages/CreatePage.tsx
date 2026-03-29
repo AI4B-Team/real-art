@@ -2144,21 +2144,6 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                     {/* ── Presentation controls ── */}
                     {selectedSubMode === "presentation" && (
                       <>
-                        <Popover open={presDeckStyleOpen} onOpenChange={setPresDeckStyleOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presDeckStyle !== "Minimalist" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Brush size={12} />{presDeckStyle}<ChevronDown size={10} className="opacity-60" />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["Minimalist", "Playful", "Organic", "Geometric", "Modular", "Elegant", "Digital"].map(s => (
-                              <button key={s} type="button" onClick={() => { setPresDeckStyle(s); setPresDeckStyleOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${presDeckStyle === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {s}{presDeckStyle === s && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presAudience !== "Casual" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
