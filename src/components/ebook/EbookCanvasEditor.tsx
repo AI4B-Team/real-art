@@ -10,7 +10,7 @@ import {
   GripVertical, MoreHorizontal, FileText, MessageSquare,
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
-  Sparkles, Replace,
+  Sparkles, ArrowRightLeft,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -449,7 +449,7 @@ const EbookCanvasEditor = ({
               onMouseDown={e => e.stopPropagation()}>
               <button onClick={() => replaceImageInputRef.current?.click()}
                 className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
-                <Replace className="w-3.5 h-3.5" />Replace
+                <ArrowRightLeft className="w-3.5 h-3.5" />Replace
               </button>
               <button onClick={() => setShowAIEditModal(true)}
                 className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
@@ -770,7 +770,7 @@ const EbookCanvasEditor = ({
                       {/* Replace / Edit group */}
                       <button onClick={() => replaceImageInputRef.current?.click()}
                         className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
-                        <Replace className="w-3.5 h-3.5" />Replace
+                        <ArrowRightLeft className="w-3.5 h-3.5" />Replace
                       </button>
                       <button onClick={() => setShowAIEditModal(true)}
                         className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
