@@ -15,8 +15,8 @@ interface BrowsePanelProps {
 
 const SOURCE_TABS: { id: SourceTab; label: string; icon: typeof LayoutGrid }[] = [
   { id: "upload", label: "Upload", icon: Upload },
+  { id: "import", label: "Import", icon: FolderOpen },
   { id: "creations", label: "Creations", icon: Sparkles },
-  
   { id: "stock", label: "Stock", icon: Globe },
   { id: "community", label: "Community", icon: Users },
   { id: "trending", label: "Trending", icon: TrendingUp },
