@@ -1,0 +1,678 @@
+import { useState, useRef, useCallback, useEffect } from 'react';
+import {
+  MousePointer2, Type, Square, Circle, Image as ImageIcon,
+  Minus, Hand, ChevronLeft, ChevronRight,
+  AlignLeft, AlignCenter, AlignRight, AlignJustify,
+  Bold, Italic, Underline,
+  Trash2, Copy, Lock, Unlock,
+  ChevronUp, ChevronDown, RotateCcw,
+  Plus, Check, X, SlidersHorizontal,
+  GripVertical,
+} from 'lucide-react';
+import {
+  Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
+} from '@/components/ui/tooltip';
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from '@/components/ui/select';
+import { toast } from 'sonner';
+
+// ─── Types ─────────────────────────────────────────
+export interface Page {
+  id: string;
+  title: string;
+  type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back';
+  thumbnail?: string;
+  locked?: boolean;
+}
+
+export interface CanvasElement {
+  id: string;
+  type: 'image' | 'shape' | 'text';
+  x: number; y: number; width: number; height: number;
+  content?: string; src?: string;
+  fill?: string; stroke?: string; strokeWidth?: number;
+  shapeType?: 'rectangle' | 'circle';
+  fontSize?: number; fontFamily?: string; textColor?: string;
+  textAlign?: 'left' | 'center' | 'right' | 'justify';
+  fontWeight?: 'normal' | 'bold'; fontStyle?: 'normal' | 'italic';
+  textDecoration?: 'none' | 'underline';
+  locked?: boolean; rotation?: number; zIndex?: number;
+  opacity?: number; borderRadius?: number;
+}
+
+interface EbookCanvasEditorProps {
+  pages: Page[];
+  selectedPageId: string | null;
+  onPageSelect: (id: string) => void;
+  onPagesChange?: (pages: Page[]) => void;
+  bookTitle: string;
+  showPagesPanel?: boolean;
+  zoom?: number;
+  onZoomChange?: (zoom: number) => void;
+}
+
+// ─── Constants ─────────────────────────────────────
+const TOOLS = [
+  { id: 'select', icon: MousePointer2, label: 'Select (V)' },
+  { id: 'hand', icon: Hand, label: 'Pan (H)' },
+  { id: 'text', icon: Type, label: 'Text (T)' },
+  { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
+  { id: 'circle', icon: Circle, label: 'Circle (O)' },
+  { id: 'line', icon: Minus, label: 'Line (L)' },
+  { id: 'image', icon: ImageIcon, label: 'Image (I)' },
+];
+
+const PAGE_ACTIONS = [
+  { id: 'add', icon: Plus, label: 'Add Page' },
+  { id: 'duplicate', icon: Copy, label: 'Duplicate Page' },
+  { id: 'lock', icon: Unlock, label: 'Toggle Lock' },
+  { id: 'delete', icon: Trash2, label: 'Delete Page' },
+  { id: 'moveUp', icon: ChevronUp, label: 'Move Page Up' },
+  { id: 'moveDown', icon: ChevronDown, label: 'Move Page Down' },
+  { id: 'settings', icon: SlidersHorizontal, label: 'Page Settings' },
+];
+
+const FONTS = ['Inter', 'Playfair Display', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Georgia', 'Merriweather'];
+const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64, 72];
+const COVER_IMAGE = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop';
+const STOCK_IMAGES = [
+  'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop',
+];
+
+// ─── Element Generators ────────────────────────────
+const createCoverElements = (title: string): CanvasElement[] => [
+  { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 100, src: COVER_IMAGE },
+  { id: 'title-box', type: 'shape', x: 5, y: 65, width: 60, height: 25, fill: 'rgba(255,255,255,0.95)', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: 'title-text', type: 'text', x: 8, y: 68, width: 54, height: 12, content: title || 'STRATEGIC\nINVESTMENT', fontSize: 28, fontFamily: 'Georgia', textColor: '#1a1a2e' },
+  { id: 'subtitle-text', type: 'text', x: 8, y: 82, width: 54, height: 6, content: 'A COMPREHENSIVE GUIDE', fontSize: 14, fontFamily: 'Georgia', textColor: '#0891b2' },
+];
+
+const createTocElements = (pages: Page[]): CanvasElement[] => {
+  const chapterPages = pages.filter(p => p.type === 'chapter');
+  return [
+    { id: 'toc-header', type: 'text', x: 10, y: 8, width: 80, height: 8, content: 'TABLE OF CONTENTS', fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e' },
+    { id: 'toc-line', type: 'shape', x: 10, y: 18, width: 20, height: 1, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
+    ...chapterPages.map((page, i) => ({
+      id: `toc-item${i}`, type: 'text' as const, x: 10, y: 25 + i * 7, width: 80, height: 5,
+      content: `${String(i + 1).padStart(2, '0')}. ${page.title} ${'·'.repeat(30)} ${pages.indexOf(page) + 1}`,
+      fontSize: 12, fontFamily: 'Georgia', textColor: '#374151',
+    })),
+  ];
+};
+
+const createChapterElements = (num: number, title: string): CanvasElement[] => [
+  { id: `ch${num}-bg`, type: 'shape', x: 0, y: 0, width: 100, height: 25, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
+  ...Array.from({ length: 3 }, (_, i) => ({
+    id: `ch${num}-img${i}`, type: 'image' as const, x: 52 + i * 16, y: 3, width: 14, height: 18,
+    src: STOCK_IMAGES[(num - 1 + i) % STOCK_IMAGES.length],
+  })),
+  { id: `ch${num}-num`, type: 'text', x: 10, y: 8, width: 30, height: 10, content: num.toString().padStart(2, '0'), fontSize: 48, fontFamily: 'Georgia', textColor: '#ffffff' },
+  { id: `ch${num}-title`, type: 'text', x: 10, y: 28, width: 80, height: 8, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e' },
+  { id: `ch${num}-body`, type: 'text', x: 10, y: 40, width: 80, height: 15, content: 'This section provides a comprehensive overview of our strategic approach, detailing key methodologies and expected outcomes for stakeholders.', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
+  { id: `ch${num}-body2`, type: 'text', x: 10, y: 58, width: 80, height: 20, content: 'Our research indicates significant growth potential in emerging markets. The data suggests a 15% increase in investor confidence over the past quarter.', fontSize: 10, fontFamily: 'Georgia', textColor: '#374151' },
+];
+
+const createChapterPageElements = (num: number, title: string): CanvasElement[] => [
+  { id: `cp${num}-bg`, type: 'image', x: 0, y: 0, width: 100, height: 100, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length] },
+  { id: `cp${num}-overlay`, type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: 'rgba(0,0,0,0.5)', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `cp${num}-label`, type: 'text', x: 10, y: 40, width: 80, height: 10, content: `CHAPTER ${num}`, fontSize: 18, fontFamily: 'Georgia', textColor: '#ffffff' },
+  { id: `cp${num}-title`, type: 'text', x: 10, y: 48, width: 80, height: 15, content: title, fontSize: 36, fontFamily: 'Georgia', textColor: '#ffffff' },
+];
+
+const createBackElements = (): CanvasElement[] => [
+  { id: 'back-bg', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: 'back-logo', type: 'text', x: 35, y: 40, width: 30, height: 10, content: 'REAL ART', fontSize: 28, fontFamily: 'Georgia', textColor: '#ffffff', textAlign: 'center' },
+  { id: 'back-tag', type: 'text', x: 25, y: 52, width: 50, height: 6, content: 'Creative Excellence', fontSize: 12, fontFamily: 'Georgia', textColor: '#94a3b8', textAlign: 'center' },
+];
+
+const getElementsForPage = (page: Page, allPages: Page[], bookTitle: string): CanvasElement[] => {
+  const chapterPages = allPages.filter(p => p.type === 'chapter');
+  const chapterPagePages = allPages.filter(p => p.type === 'chapter-page');
+  switch (page.type) {
+    case 'cover': return createCoverElements(bookTitle);
+    case 'toc': return createTocElements(allPages);
+    case 'chapter': {
+      const idx = chapterPages.indexOf(page);
+      return createChapterElements(idx + 1, page.title);
+    }
+    case 'chapter-page': {
+      const idx = chapterPagePages.indexOf(page);
+      return createChapterPageElements(idx + 1, page.title);
+    }
+    case 'back': return createBackElements();
+    default: return [];
+  }
+};
+
+// ─── Component ─────────────────────────────────────
+const EbookCanvasEditor = ({
+  pages, selectedPageId, onPageSelect, onPagesChange, bookTitle,
+  showPagesPanel = true, zoom: externalZoom, onZoomChange,
+}: EbookCanvasEditorProps) => {
+  const [internalPages, setInternalPages] = useState<Page[]>(pages);
+  const currentPages = onPagesChange ? pages : internalPages;
+  const setPages = (fn: Page[] | ((p: Page[]) => Page[])) => {
+    const result = typeof fn === 'function' ? fn(currentPages) : fn;
+    onPagesChange ? onPagesChange(result) : setInternalPages(result);
+  };
+
+  useEffect(() => { if (!onPagesChange) setInternalPages(pages); }, [pages, onPagesChange]);
+
+  const [activeTool, setActiveTool] = useState('select');
+  const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
+  const [editingTextId, setEditingTextId] = useState<string | null>(null);
+  const [pageElements, setPageElements] = useState<Record<string, CanvasElement[]>>({});
+  const [dragState, setDragState] = useState<{ id: string; startX: number; startY: number; elemX: number; elemY: number } | null>(null);
+  const [resizeState, setResizeState] = useState<{ id: string; handle: string; startX: number; startY: number; elemX: number; elemY: number; elemW: number; elemH: number } | null>(null);
+  const [undoStack, setUndoStack] = useState<Record<string, CanvasElement[]>[]>([]);
+  const [redoStack, setRedoStack] = useState<Record<string, CanvasElement[]>[]>([]);
+  const [showPageSettings, setShowPageSettings] = useState(false);
+  const [isGridView, setIsGridView] = useState(false);
+  const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
+  const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
+  const canvasRef = useRef<HTMLDivElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const internalZoom = useState(100);
+  const zoom = externalZoom ?? internalZoom[0];
+
+  const selectedPage = currentPages.find(p => p.id === selectedPageId) || currentPages[0];
+
+  // Init elements for current page
+  const currentElements = pageElements[selectedPage?.id || ''] ||
+    (selectedPage ? getElementsForPage(selectedPage, currentPages, bookTitle) : []);
+
+  const updateElements = useCallback((pageId: string, newElements: CanvasElement[]) => {
+    setUndoStack(prev => [...prev.slice(-20), { ...pageElements }]);
+    setRedoStack([]);
+    setPageElements(prev => ({ ...prev, [pageId]: newElements }));
+  }, [pageElements]);
+
+  const selectedElement = currentElements.find(e => e.id === selectedElementId);
+
+  // ─── Page Actions ─────────────────────────────
+  const handleAddPage = () => {
+    const idx = currentPages.findIndex(p => p.id === selectedPageId);
+    const newPage: Page = { id: crypto.randomUUID(), title: 'New Page', type: 'chapter', locked: false };
+    const newPages = [...currentPages];
+    newPages.splice(idx + 1, 0, newPage);
+    setPages(newPages);
+    onPageSelect(newPage.id);
+    toast.success('Page added');
+  };
+
+  const handleDuplicatePage = () => {
+    if (!selectedPage) return;
+    const idx = currentPages.findIndex(p => p.id === selectedPageId);
+    const dup: Page = { ...selectedPage, id: crypto.randomUUID(), title: `${selectedPage.title} (Copy)` };
+    const newPages = [...currentPages];
+    newPages.splice(idx + 1, 0, dup);
+    setPages(newPages);
+    // Copy elements too
+    setPageElements(prev => ({ ...prev, [dup.id]: [...(prev[selectedPage.id] || currentElements)] }));
+    onPageSelect(dup.id);
+    toast.success('Page duplicated');
+  };
+
+  const handleDeletePage = () => {
+    if (currentPages.length <= 1) return;
+    const idx = currentPages.findIndex(p => p.id === selectedPageId);
+    const newPages = currentPages.filter(p => p.id !== selectedPageId);
+    setPages(newPages);
+    onPageSelect(newPages[Math.min(idx, newPages.length - 1)].id);
+    toast.success('Page deleted');
+  };
+
+  const handleMovePage = (dir: 'up' | 'down') => {
+    const idx = currentPages.findIndex(p => p.id === selectedPageId);
+    const target = dir === 'up' ? idx - 1 : idx + 1;
+    if (target < 0 || target >= currentPages.length) return;
+    const newPages = [...currentPages];
+    [newPages[idx], newPages[target]] = [newPages[target], newPages[idx]];
+    setPages(newPages);
+  };
+
+  const handleToggleLock = () => {
+    if (!selectedPage) return;
+    setPages(currentPages.map(p => p.id === selectedPageId ? { ...p, locked: !p.locked } : p));
+  };
+
+  const handlePageAction = (actionId: string) => {
+    switch (actionId) {
+      case 'add': handleAddPage(); break;
+      case 'duplicate': handleDuplicatePage(); break;
+      case 'delete': handleDeletePage(); break;
+      case 'moveUp': handleMovePage('up'); break;
+      case 'moveDown': handleMovePage('down'); break;
+      case 'lock': handleToggleLock(); break;
+      case 'settings': setShowPageSettings(true); break;
+    }
+  };
+
+  // ─── Element Actions ──────────────────────────
+  const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
+    const newEl: CanvasElement = {
+      id: crypto.randomUUID(), type, x: 20, y: 20, width: 30, height: type === 'text' ? 10 : 20,
+      ...(type === 'text' ? { content: 'New Text', fontSize: 16, fontFamily: 'Inter', textColor: '#1a1a2e' } : {}),
+      ...(type === 'shape' ? { fill: '#3b82f6', stroke: '#1e40af', strokeWidth: 1, shapeType: 'rectangle' } : {}),
+      ...(type === 'image' ? { src: STOCK_IMAGES[0] } : {}),
+      ...extra,
+    };
+    const pageId = selectedPage?.id || '';
+    updateElements(pageId, [...currentElements, newEl]);
+    setSelectedElementId(newEl.id);
+    setActiveTool('select');
+  };
+
+  const deleteElement = () => {
+    if (!selectedElementId || !selectedPage) return;
+    updateElements(selectedPage.id, currentElements.filter(e => e.id !== selectedElementId));
+    setSelectedElementId(null);
+  };
+
+  const duplicateElement = () => {
+    if (!selectedElement || !selectedPage) return;
+    const dup = { ...selectedElement, id: crypto.randomUUID(), x: selectedElement.x + 3, y: selectedElement.y + 3 };
+    updateElements(selectedPage.id, [...currentElements, dup]);
+    setSelectedElementId(dup.id);
+  };
+
+  const updateElement = (id: string, updates: Partial<CanvasElement>) => {
+    if (!selectedPage) return;
+    updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e));
+  };
+
+  // ─── Canvas Click ─────────────────────────────
+  const handleCanvasClick = (e: React.MouseEvent) => {
+    if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
+      setSelectedElementId(null);
+      setEditingTextId(null);
+
+      if (activeTool === 'text') {
+        addElement('text');
+      } else if (activeTool === 'rectangle') {
+        addElement('shape', { shapeType: 'rectangle' });
+      } else if (activeTool === 'circle') {
+        addElement('shape', { shapeType: 'circle' });
+      } else if (activeTool === 'image') {
+        imageInputRef.current?.click();
+      }
+    }
+  };
+
+  // ─── Drag ─────────────────────────────────────
+  const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement) => {
+    if (el.locked || activeTool !== 'select') return;
+    e.stopPropagation();
+    setSelectedElementId(el.id);
+    setDragState({ id: el.id, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y });
+  };
+
+  const handleResizeMouseDown = (e: React.MouseEvent, el: CanvasElement, handle: string) => {
+    e.stopPropagation();
+    setResizeState({ id: el.id, handle, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y, elemW: el.width, elemH: el.height });
+  };
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!canvasRef.current) return;
+      const rect = canvasRef.current.getBoundingClientRect();
+      const scale = zoom / 100;
+
+      if (dragState) {
+        const dx = (e.clientX - dragState.startX) / rect.width * 100 / scale;
+        const dy = (e.clientY - dragState.startY) / rect.height * 100 / scale;
+        updateElement(dragState.id, {
+          x: Math.max(0, Math.min(95, dragState.elemX + dx)),
+          y: Math.max(0, Math.min(95, dragState.elemY + dy)),
+        });
+      }
+
+      if (resizeState) {
+        const dx = (e.clientX - resizeState.startX) / rect.width * 100 / scale;
+        const dy = (e.clientY - resizeState.startY) / rect.height * 100 / scale;
+        const h = resizeState.handle;
+        let newX = resizeState.elemX, newY = resizeState.elemY;
+        let newW = resizeState.elemW, newH = resizeState.elemH;
+
+        if (h.includes('e')) newW = Math.max(5, resizeState.elemW + dx);
+        if (h.includes('w')) { newW = Math.max(5, resizeState.elemW - dx); newX = resizeState.elemX + dx; }
+        if (h.includes('s')) newH = Math.max(3, resizeState.elemH + dy);
+        if (h.includes('n')) { newH = Math.max(3, resizeState.elemH - dy); newY = resizeState.elemY + dy; }
+
+        updateElement(resizeState.id, { x: newX, y: newY, width: newW, height: newH });
+      }
+    };
+
+    const handleMouseUp = () => {
+      setDragState(null);
+      setResizeState(null);
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+    return () => { window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseup', handleMouseUp); };
+  }, [dragState, resizeState, zoom]);
+
+  // ─── Keyboard Shortcuts ───────────────────────
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (editingTextId) return;
+      if (e.key === 'Delete' || e.key === 'Backspace') deleteElement();
+      if (e.key === 'v' || e.key === 'V') setActiveTool('select');
+      if (e.key === 't' || e.key === 'T') setActiveTool('text');
+      if (e.key === 'r' || e.key === 'R') setActiveTool('rectangle');
+      if (e.key === 'h' || e.key === 'H') setActiveTool('hand');
+      if (e.key === 'i' || e.key === 'I') setActiveTool('image');
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [editingTextId, selectedElementId]);
+
+  // ─── Image Upload ─────────────────────────────
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    addElement('image', { src: url, width: 40, height: 30 });
+  };
+
+  // ─── Page Panel DnD ───────────────────────────
+  const handlePageDragStart = (idx: number) => setDraggedPageIndex(idx);
+  const handlePageDragOver = (e: React.DragEvent, idx: number) => { e.preventDefault(); setDragOverPageIndex(idx); };
+  const handlePageDragEnd = () => {
+    if (draggedPageIndex !== null && dragOverPageIndex !== null && draggedPageIndex !== dragOverPageIndex) {
+      const newPages = [...currentPages];
+      const [moved] = newPages.splice(draggedPageIndex, 1);
+      newPages.splice(dragOverPageIndex, 0, moved);
+      setPages(newPages);
+    }
+    setDraggedPageIndex(null);
+    setDragOverPageIndex(null);
+  };
+
+  // ─── Render Element ───────────────────────────
+  const renderElement = (el: CanvasElement) => {
+    const isSelected = selectedElementId === el.id;
+    const isEditing = editingTextId === el.id;
+    const style: React.CSSProperties = {
+      position: 'absolute', left: `${el.x}%`, top: `${el.y}%`,
+      width: `${el.width}%`, height: `${el.height}%`,
+      opacity: el.opacity ?? 1, borderRadius: el.borderRadius,
+      transform: el.rotation ? `rotate(${el.rotation}deg)` : undefined,
+      cursor: activeTool === 'select' ? (el.locked ? 'not-allowed' : 'move') : 'crosshair',
+      zIndex: el.zIndex ?? 1,
+    };
+
+    const selectionBorder = isSelected ? 'ring-2 ring-accent ring-offset-1' : '';
+
+    if (el.type === 'image') {
+      return (
+        <div key={el.id} className={`${selectionBorder}`} style={style}
+          onMouseDown={e => handleElementMouseDown(e, el)}
+          onDoubleClick={() => imageInputRef.current?.click()}>
+          <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
+          {isSelected && renderResizeHandles(el)}
+        </div>
+      );
+    }
+
+    if (el.type === 'shape') {
+      return (
+        <div key={el.id} className={`${selectionBorder}`} style={{
+          ...style,
+          backgroundColor: el.fill || '#3b82f6',
+          border: el.stroke && el.stroke !== 'transparent' ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined,
+          borderRadius: el.shapeType === 'circle' ? '50%' : (el.borderRadius ?? 0),
+        }} onMouseDown={e => handleElementMouseDown(e, el)}>
+          {isSelected && renderResizeHandles(el)}
+        </div>
+      );
+    }
+
+    if (el.type === 'text') {
+      return (
+        <div key={el.id} className={`${selectionBorder}`} style={style}
+          onMouseDown={e => handleElementMouseDown(e, el)}
+          onDoubleClick={() => { setEditingTextId(el.id); setSelectedElementId(el.id); }}>
+          {isEditing ? (
+            <textarea
+              autoFocus
+              value={el.content || ''}
+              onChange={e => updateElement(el.id, { content: e.target.value })}
+              onBlur={() => setEditingTextId(null)}
+              onKeyDown={e => { if (e.key === 'Escape') setEditingTextId(null); }}
+              className="w-full h-full bg-transparent border-none outline-none resize-none p-1"
+              style={{
+                fontSize: `${(el.fontSize || 16) * zoom / 100 * 0.5}px`,
+                fontFamily: el.fontFamily, color: el.textColor,
+                textAlign: el.textAlign || 'left',
+                fontWeight: el.fontWeight || 'normal',
+                fontStyle: el.fontStyle || 'normal',
+                textDecoration: el.textDecoration || 'none',
+              }}
+            />
+          ) : (
+            <div className="w-full h-full overflow-hidden p-1 whitespace-pre-wrap" style={{
+              fontSize: `${(el.fontSize || 16) * zoom / 100 * 0.5}px`,
+              fontFamily: el.fontFamily, color: el.textColor,
+              textAlign: el.textAlign || 'left',
+              fontWeight: el.fontWeight || 'normal',
+              fontStyle: el.fontStyle || 'normal',
+              textDecoration: el.textDecoration || 'none',
+            }}>
+              {el.content}
+            </div>
+          )}
+          {isSelected && renderResizeHandles(el)}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const renderResizeHandles = (el: CanvasElement) => {
+    if (el.locked) return null;
+    const handles = ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'];
+    const positions: Record<string, React.CSSProperties> = {
+      nw: { top: -4, left: -4, cursor: 'nwse-resize' },
+      ne: { top: -4, right: -4, cursor: 'nesw-resize' },
+      sw: { bottom: -4, left: -4, cursor: 'nesw-resize' },
+      se: { bottom: -4, right: -4, cursor: 'nwse-resize' },
+      n: { top: -4, left: '50%', transform: 'translateX(-50%)', cursor: 'ns-resize' },
+      s: { bottom: -4, left: '50%', transform: 'translateX(-50%)', cursor: 'ns-resize' },
+      e: { top: '50%', right: -4, transform: 'translateY(-50%)', cursor: 'ew-resize' },
+      w: { top: '50%', left: -4, transform: 'translateY(-50%)', cursor: 'ew-resize' },
+    };
+    return handles.map(h => (
+      <div key={h} className="absolute w-2 h-2 bg-accent border border-white rounded-sm z-50"
+        style={positions[h]}
+        onMouseDown={e => handleResizeMouseDown(e, el, h)} />
+    ));
+  };
+
+  // ─── Render ───────────────────────────────────
+  return (
+    <TooltipProvider delayDuration={200}>
+      <div className="flex h-full">
+        {/* Left: Vertical Toolbar */}
+        <div className="w-11 bg-foreground/[0.95] flex flex-col items-center py-3 gap-1 shrink-0">
+          {TOOLS.map(tool => (
+            <Tooltip key={tool.id}>
+              <TooltipTrigger asChild>
+                <button onClick={() => setActiveTool(tool.id)}
+                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${activeTool === tool.id ? 'bg-accent text-white' : 'text-background/60 hover:text-background hover:bg-background/10'}`}>
+                  <tool.icon className="w-4 h-4" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">{tool.label}</TooltipContent>
+            </Tooltip>
+          ))}
+          <div className="w-6 h-px bg-background/20 my-1" />
+          {/* Page actions */}
+          {PAGE_ACTIONS.map(action => {
+            const Icon = action.id === 'lock' && selectedPage?.locked ? Lock : action.icon;
+            return (
+              <Tooltip key={action.id}>
+                <TooltipTrigger asChild>
+                  <button onClick={() => handlePageAction(action.id)}
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-background/60 hover:text-background hover:bg-background/10 transition-colors">
+                    <Icon className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="right">{action.label}</TooltipContent>
+              </Tooltip>
+            );
+          })}
+        </div>
+
+        {/* Pages Panel */}
+        {showPagesPanel && (
+          <div className="w-48 border-r border-foreground/[0.04] bg-background overflow-y-auto p-2.5">
+            <div className="flex items-center justify-between mb-2.5 px-1">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Pages ({currentPages.length})</span>
+              <button onClick={() => setIsGridView(!isGridView)}
+                className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
+                {isGridView ? <ChevronLeft className="w-3 h-3" /> : <GripVertical className="w-3 h-3" />}
+              </button>
+            </div>
+            <div className={isGridView ? 'grid grid-cols-2 gap-1.5' : 'space-y-1.5'}>
+              {currentPages.map((page, i) => (
+                <div key={page.id}
+                  draggable
+                  onDragStart={() => handlePageDragStart(i)}
+                  onDragOver={e => handlePageDragOver(e, i)}
+                  onDragEnd={handlePageDragEnd}
+                  onClick={() => onPageSelect(page.id)}
+                  className={`cursor-pointer rounded-lg p-2 transition-all border ${
+                    selectedPageId === page.id ? 'border-accent bg-accent/5' : 'border-transparent hover:bg-foreground/[0.03]'
+                  } ${dragOverPageIndex === i ? 'border-accent/50 bg-accent/10' : ''}`}>
+                  {/* Thumbnail */}
+                  <div className={`bg-foreground/[0.04] rounded overflow-hidden mb-1.5 ${isGridView ? 'aspect-[3/4]' : 'h-12'} flex items-center justify-center`}>
+                    <span className={`text-[9px] font-bold ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
+                      {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : i + 1}
+                    </span>
+                  </div>
+                  <p className="text-[10px] font-medium text-foreground truncate">{page.title}</p>
+                  {page.locked && <Lock className="w-2.5 h-2.5 text-muted-foreground" />}
+                </div>
+              ))}
+            </div>
+            <button onClick={handleAddPage}
+              className="w-full mt-2 flex items-center justify-center gap-1 py-2 border-2 border-dashed border-foreground/[0.08] rounded-lg text-[10px] text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
+              <Plus className="w-3 h-3" />Add Page
+            </button>
+          </div>
+        )}
+
+        {/* Canvas Area */}
+        <div className="flex-1 bg-foreground/[0.03] flex flex-col overflow-hidden">
+          {/* Text formatting bar (when text selected) */}
+          {selectedElement?.type === 'text' && (
+            <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
+              <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
+                <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
+              </Select>
+              <Select value={String(selectedElement.fontSize || 16)} onValueChange={v => updateElement(selectedElement.id, { fontSize: Number(v) })}>
+                <SelectTrigger className="w-16 h-7 text-xs"><SelectValue /></SelectTrigger>
+                <SelectContent>{FONT_SIZES.map(s => <SelectItem key={s} value={String(s)}>{s}</SelectItem>)}</SelectContent>
+              </Select>
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                <Bold className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
+                className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                <Italic className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
+                className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                <Underline className="w-3.5 h-3.5" />
+              </button>
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              {(['left', 'center', 'right', 'justify'] as const).map(align => {
+                const Icon = align === 'left' ? AlignLeft : align === 'center' ? AlignCenter : align === 'right' ? AlignRight : AlignJustify;
+                return (
+                  <button key={align} onClick={() => updateElement(selectedElement.id, { textAlign: align })}
+                    className={`p-1.5 rounded ${selectedElement.textAlign === align ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                    <Icon className="w-3.5 h-3.5" />
+                  </button>
+                );
+              })}
+              <div className="w-px h-5 bg-foreground/[0.08]" />
+              <input type="color" value={selectedElement.textColor || '#1a1a2e'}
+                onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
+                className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+              <div className="ml-auto flex items-center gap-1">
+                <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
+                <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+          )}
+
+          {/* Shape/Image formatting bar */}
+          {selectedElement && selectedElement.type !== 'text' && (
+            <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
+              {selectedElement.type === 'shape' && (
+                <>
+                  <span className="text-xs text-muted-foreground">Fill:</span>
+                  <input type="color" value={selectedElement.fill || '#3b82f6'}
+                    onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
+                    className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                  <span className="text-xs text-muted-foreground ml-2">Stroke:</span>
+                  <input type="color" value={selectedElement.stroke || '#1e40af'}
+                    onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
+                    className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                  <button onClick={() => updateElement(selectedElement.id, { shapeType: selectedElement.shapeType === 'circle' ? 'rectangle' : 'circle' })}
+                    className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                    {selectedElement.shapeType === 'circle' ? <Square className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                  </button>
+                </>
+              )}
+              {selectedElement.type === 'image' && (
+                <button onClick={() => imageInputRef.current?.click()}
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-foreground/[0.05]">
+                  <ImageIcon className="w-3.5 h-3.5" />Replace Image
+                </button>
+              )}
+              <div className="ml-auto flex items-center gap-1">
+                <button onClick={() => updateElement(selectedElement.id, { rotation: ((selectedElement.rotation || 0) + 15) % 360 })}
+                  className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+                <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
+                <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
+              </div>
+            </div>
+          )}
+
+          {/* Canvas */}
+          <div className="flex-1 overflow-auto flex items-center justify-center p-8">
+            <div ref={canvasRef} data-canvas="bg"
+              className="bg-white rounded-lg shadow-2xl border border-foreground/[0.06] relative overflow-hidden"
+              style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
+              onClick={handleCanvasClick}>
+              {/* Crosshair guides */}
+              <div className="absolute inset-0 pointer-events-none">
+                <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
+                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
+              </div>
+              {currentElements.map(renderElement)}
+            </div>
+          </div>
+        </div>
+
+        {/* Hidden file input */}
+        <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+      </div>
+    </TooltipProvider>
+  );
+};
+
+export default EbookCanvasEditor;
