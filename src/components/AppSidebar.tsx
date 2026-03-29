@@ -109,6 +109,15 @@ const AppSidebar = () => {
   const [brandFlyoutPos, setBrandFlyoutPos] = useState({ top: 0, left: 0 });
   const activeBrand = brandData.brands.find(b => b.id === brandData.activeId) || brandData.brands[0];
 
+  // Sync brand state when changed from prompt box or other components
+  useEffect(() => {
+    const handler = (e: StorageEvent) => {
+      if (e.key === "ra_brands") setBrandData(loadBrands());
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
+
   const switchWorkspace = (id: string) => {
     const updated = { ...wsData, activeId: id };
     setWsData(updated); saveWorkspaces(updated);
