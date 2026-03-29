@@ -3686,11 +3686,11 @@ export default function CreatePage() {
                         <span className="text-[0.92rem] font-bold">AppPreview</span>
                       </div>
                       <div className="flex items-center gap-6 text-[0.78rem] text-muted">
-                        <span>How It Works</span>
-                        <span>Features</span>
-                        <span>Pricing</span>
-                        <span>Contact</span>
-                        <button className="px-3 py-1.5 rounded-lg bg-accent text-white text-[0.75rem] font-semibold">Get Started</button>
+                        <button className="hover:text-foreground transition-colors" onClick={() => document.getElementById("app-how-it-works")?.scrollIntoView({ behavior: "smooth" })}>How It Works</button>
+                        <button className="hover:text-foreground transition-colors" onClick={() => document.getElementById("app-features")?.scrollIntoView({ behavior: "smooth" })}>Features</button>
+                        <button className="hover:text-foreground transition-colors" onClick={() => document.getElementById("app-pricing")?.scrollIntoView({ behavior: "smooth" })}>Pricing</button>
+                        <button className="hover:text-foreground transition-colors" onClick={() => document.getElementById("app-contact")?.scrollIntoView({ behavior: "smooth" })}>Contact</button>
+                        <button className="px-3 py-1.5 rounded-lg bg-accent text-white text-[0.75rem] font-semibold hover:bg-accent/90 transition-colors" onClick={() => document.getElementById("app-contact")?.scrollIntoView({ behavior: "smooth" })}>Get Started</button>
                       </div>
                     </div>
                     <div className="pt-12 pb-8">
