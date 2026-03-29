@@ -3703,7 +3703,7 @@ export default function CreatePage() {
                   </div>
                 </div>
               ) : appPreviewContent ? (
-                <div className="bg-background rounded-2xl border border-foreground/[0.08] shadow-lg overflow-hidden h-full">
+                <div id="app-builder-preview" className="bg-background rounded-2xl border border-foreground/[0.08] shadow-lg overflow-hidden h-full">
                   {/* Mock browser chrome */}
                   <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06] bg-foreground/[0.02]">
                     <div className="flex items-center gap-1.5">
