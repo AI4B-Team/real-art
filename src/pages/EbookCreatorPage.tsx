@@ -77,7 +77,7 @@ const EbookCreatorPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
           <button onClick={() => navigate("/ebook-creator/new?source=ai-generate")} className="group relative pt-6 px-6 pb-2 rounded-2xl border-2 border-dashed border-accent/40 bg-accent/5 hover:bg-accent/10 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-accent/10 group-hover:bg-accent/20 flex items-center justify-center mb-5 transition-all">
+              <div className="w-16 h-16 rounded-2xl bg-accent/10 group-hover:bg-accent/20 flex items-center justify-center mb-4 transition-all">
                 <Sparkles className="w-9 h-9 text-accent group-hover:scale-110 transition-all" />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">Start With AI</h3>
