@@ -23,7 +23,7 @@ export default function MentionDropdown({ assets, query, position, chipIds, onSe
 
   return (
     <div
-      className="absolute z-50 bg-popover border border-border rounded-xl shadow-lg p-1.5 min-w-[200px] max-h-64 overflow-y-auto"
+      className="fixed z-[999] bg-popover border border-border rounded-xl shadow-lg p-1.5 min-w-[200px] max-h-64 overflow-y-auto"
       style={{ top: position.top + 4, left: position.left }}
     >
       {filtered.map(cat => {
