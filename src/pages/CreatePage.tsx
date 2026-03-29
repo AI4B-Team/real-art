@@ -1946,7 +1946,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             <Languages size={14} />
                           </button>
                         </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                        <PopoverContent className="w-52 p-1.5" side="top" align="start">
+                        <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
                           <LanguageDropdownContent selected={designLanguage} onSelect={(lang) => { setDesignLanguage(designLanguage === lang ? null : lang); setDesignLangOpen(false); }} />
                         </PopoverContent>
                       </Popover>
@@ -2197,7 +2197,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                               <Languages size={14} />
                             </button>
                           </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                          <PopoverContent className="w-52 p-1.5" side="top" align="start">
+                          <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
                             <LanguageDropdownContent selected={presLanguage} onSelect={(lang) => { setPresLanguage(presLanguage === lang ? null : lang); setPresLangOpen(false); }} />
                           </PopoverContent>
                         </Popover>
@@ -2258,7 +2258,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
                           </button>
                         </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                        <PopoverContent className="w-52 p-1.5" side="top" align="start">
+                        <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
                           <LanguageDropdownContent selected={contentLanguage} onSelect={(lang) => { setContentLanguage(lang); setContentLangOpen(false); }} />
                         </PopoverContent>
                       </Popover>
@@ -2268,7 +2268,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           <Flag size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Goal</p>
                         {["Engagement", "Awareness", "Traffic", "Sales", "Education", "Community"].map(o => (
                           <button key={o} onClick={() => setContentGoal(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentGoal === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
@@ -2282,7 +2282,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           {contentTone && <span className="text-[0.75rem] font-medium pr-0.5">{contentTone}</span>}
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
                           <button key={o} onClick={() => { setContentTone(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
@@ -2323,7 +2323,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           <Clock size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Time</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Time</p>
                         {["6:00 AM", "9:00 AM", "12:00 PM", "3:00 PM", "6:00 PM", "9:00 PM"].map(o => (
                           <button key={o} onClick={() => setContentTime(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTime === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
@@ -2336,7 +2336,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           <PenTool size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Style</p>
                         {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
                           <button key={o} onClick={() => setContentStyle(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentStyle === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
@@ -2373,7 +2373,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             <ChevronDown size={11} className="text-accent/60" />
                           </button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-56 p-0" side="top" align="start">
+                        <PopoverContent className="w-56 p-0" side="bottom" align="start">
                           <div className="p-2 border-b border-foreground/[0.06]">
                             <div className="relative">
                               <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
