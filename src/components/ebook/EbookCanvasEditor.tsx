@@ -206,14 +206,18 @@ const EbookCanvasEditor = ({
   const selectedElement = currentElements.find(e => e.id === selectedElementId);
 
   // ─── Page Actions ─────────────────────────────
-  const handleAddPage = () => {
-    const idx = currentPages.findIndex(p => p.id === selectedPageId);
+  const insertPageAt = (index: number) => {
     const newPage: Page = { id: crypto.randomUUID(), title: 'New Page', type: 'chapter', locked: false };
     const newPages = [...currentPages];
-    newPages.splice(idx + 1, 0, newPage);
+    newPages.splice(index, 0, newPage);
     setPages(newPages);
     onPageSelect(newPage.id);
     toast.success('Page added');
+  };
+
+  const handleAddPage = () => {
+    const idx = currentPages.findIndex(p => p.id === selectedPageId);
+    insertPageAt(idx + 1);
   };
 
   const handleDuplicatePage = () => {
