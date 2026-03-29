@@ -652,18 +652,38 @@ const EbookCanvasEditor = ({
             </div>
           )}
 
-          {/* Canvas */}
+          {/* Canvas + Page Actions */}
           <div className="flex-1 overflow-auto flex items-center justify-center p-8">
-            <div ref={canvasRef} data-canvas="bg"
-              className="bg-white rounded-lg shadow-2xl border border-foreground/[0.06] relative overflow-hidden"
-              style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
-              onClick={handleCanvasClick}>
-              {/* Crosshair guides */}
-              <div className="absolute inset-0 pointer-events-none">
-                <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
-                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
+            <div className="relative flex items-start gap-2">
+              {/* Canvas */}
+              <div ref={canvasRef} data-canvas="bg"
+                className="bg-white rounded-lg shadow-2xl border border-foreground/[0.06] relative overflow-hidden"
+                style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
+                onClick={handleCanvasClick}>
+                {/* Crosshair guides */}
+                <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
+                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
+                </div>
+                {currentElements.map(renderElement)}
               </div>
-              {currentElements.map(renderElement)}
+              {/* Right-side page action buttons */}
+              <div className="flex flex-col gap-1 shrink-0">
+                {PAGE_ACTIONS.map(action => {
+                  const Icon = action.id === 'lock' && selectedPage?.locked ? Lock : action.icon;
+                  return (
+                    <Tooltip key={action.id}>
+                      <TooltipTrigger asChild>
+                        <button onClick={() => handlePageAction(action.id)}
+                          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                          <Icon className="w-4 h-4" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="right">{action.label}</TooltipContent>
+                    </Tooltip>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
