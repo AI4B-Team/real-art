@@ -181,9 +181,10 @@ function generateDummyPosts(month: number, year: number): DummyPost[] {
 
 interface SocialContentPanelProps {
   onClose: () => void;
+  frequency?: string;
 }
 
-export default function SocialContentPanel({ onClose }: SocialContentPanelProps) {
+export default function SocialContentPanel({ onClose, frequency = "7 Days" }: SocialContentPanelProps) {
   const [selectedPlatforms, setSelectedPlatforms] = useState<Set<string>>(new Set());
   const [activeView, setActiveView] = useState("calendar");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
