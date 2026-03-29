@@ -435,6 +435,10 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
   const [designTextStyle, setDesignTextStyle] = useState("Bold");
   const [designTextStyleOpen, setDesignTextStyleOpen] = useState(false);
 
+  // Design-wide language state
+  const [designLanguage, setDesignLanguage] = useState<string | null>(null);
+  const [designLangOpen, setDesignLangOpen] = useState(false);
+
   // Presentation-specific states
   const [presDeckStyle, setPresDeckStyle] = useState("Minimalist");
   const [presDeckStyleOpen, setPresDeckStyleOpen] = useState(false);
