@@ -149,6 +149,7 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
     { id: "business-card", label: "Business Card",icon: User },
     { id: "brochure",      label: "Brochure",     icon: BookOpen },
     { id: "infographic",   label: "Infographic",  icon: BarChart2 },
+    { id: "presentation", label: "Presentation", icon: Presentation },
   ],
   content: [
     { id: "social",      label: "Social",      icon: Globe },
