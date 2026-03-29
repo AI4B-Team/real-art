@@ -15,6 +15,7 @@ interface EbookPagesPanelProps {
   selectedPageId: string | null;
   onPageSelect: (id: string) => void;
   onPagesChange: (pages: Page[]) => void;
+  onGridViewToggle?: () => void;
 }
 
 const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange }: EbookPagesPanelProps) => {
