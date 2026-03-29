@@ -780,11 +780,16 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
 
   const handleGenerate = async () => {
     if (!prompt.trim()) { textareaRef.current?.focus(); return; }
+    const currentPrompt = prompt;
+    const currentType = selectedType;
+    const currentSubMode = selectedSubMode;
     setIsGenerating(true);
     await new Promise(r => setTimeout(r, 2000));
     setIsGenerating(false);
-    onGenerate();
-    toast({ title: "Generation complete!", description: "Your creation is ready below." });
+    onGenerate({ type: currentType, prompt: currentPrompt, subMode: currentSubMode });
+    if (currentType !== "app") {
+      toast({ title: "Generation complete!", description: "Your creation is ready below." });
+    }
   };
 
   const { isListening, isSupported, startListening, cancel: cancelSpeech, accept: acceptSpeech, currentTranscript } = useSpeech();
