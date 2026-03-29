@@ -1157,7 +1157,14 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
               />
               {mention.active && mention.anchorRect && (
                 <MentionDropdown
-                  assets={PROMPT_SAMPLE_ASSETS}
+                  assets={[
+                    ...PROMPT_SAMPLE_ASSETS,
+                    ...(references.length > 0 ? [{
+                      category: "References",
+                      type: "image" as const,
+                      items: references.map(r => ({ id: r.id, label: r.name, thumbnail: r.src })),
+                    }] : []),
+                  ]}
                   query={mention.query}
                   position={mention.anchorRect}
                   chipIds={chipIds}
