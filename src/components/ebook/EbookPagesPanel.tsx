@@ -137,10 +137,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   } ${dragOverIndex === i ? 'border-accent/50' : ''}`}
                 >
                   {/* Thumbnail preview */}
-                  <div className="aspect-[3/4] bg-foreground/[0.03] flex items-center justify-center relative">
-                    <span className="text-[9px] font-bold text-muted-foreground">
-                      {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : i + 1}
-                    </span>
+                  <div className="aspect-[3/4] bg-foreground/[0.03] relative">
+                    <PageThumbnail elements={getElementsForPage(page, pages, bookTitle)} />
                     {page.locked && <Lock className="w-3 h-3 text-muted-foreground absolute top-1 right-1" />}
                   </div>
                   {/* Title */}
