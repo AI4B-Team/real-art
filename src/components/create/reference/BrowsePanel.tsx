@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import {
   Search, LayoutGrid, Image as ImageIcon, Check,
-  Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles
+  Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles,
+  Link, ChevronRight, ArrowLeft, X
 } from "lucide-react";
+import { toast } from "sonner";
 import type { BrowseItem, MediaFilter, ReferenceImage, SourceTab } from "./types";
 import { DUMMY_CREATIONS, DUMMY_STOCK, DUMMY_COMMUNITY, DUMMY_COLLECTIONS, DUMMY_TRENDING } from "./data";
 
