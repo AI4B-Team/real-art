@@ -766,10 +766,53 @@ const EbookCanvasEditor = ({
                     </>
                   )}
                   {selectedElement.type === 'image' && (
-                    <button onClick={() => imageInputRef.current?.click()}
-                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-foreground/[0.05]">
-                      <ImageIcon className="w-3.5 h-3.5" />Replace Image
-                    </button>
+                    <>
+                      {/* Replace / Edit group */}
+                      <button onClick={() => replaceImageInputRef.current?.click()}
+                        className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
+                        <Replace className="w-3.5 h-3.5" />Replace
+                      </button>
+                      <button onClick={() => setShowAIEditModal(true)}
+                        className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
+                        <Sparkles className="w-3.5 h-3.5" />Edit
+                      </button>
+                      <div className="w-px h-5 bg-foreground/[0.08]" />
+                      {/* Image editing tools */}
+                      {[
+                        { icon: Crop, label: 'Crop' },
+                        { icon: RefreshCw, label: 'Flip' },
+                        { icon: Paintbrush, label: 'Effects' },
+                        { icon: SlidersVertical, label: 'Filters' },
+                        { icon: Droplets, label: 'Opacity' },
+                        { icon: SquareIcon, label: 'Border' },
+                        { icon: Link2, label: 'Link' },
+                        { icon: Layers, label: 'Layers' },
+                        { icon: Move, label: 'Position' },
+                      ].map(tool => (
+                        <Tooltip key={tool.label}>
+                          <TooltipTrigger asChild>
+                            <button onClick={() => toast.success(`${tool.label} tool`)}
+                              className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground">
+                              <tool.icon className="w-3.5 h-3.5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent>{tool.label}</TooltipContent>
+                        </Tooltip>
+                      ))}
+                      <div className="w-px h-5 bg-foreground/[0.08]" />
+                      <Tooltip><TooltipTrigger asChild>
+                        <input type="color" defaultValue="#e5e7eb"
+                          className="w-5 h-5 rounded border border-foreground/[0.1] cursor-pointer" />
+                      </TooltipTrigger><TooltipContent>Border Color</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Monitor className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Fit to Page</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                          <Lock className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger><TooltipContent>Lock</TooltipContent></Tooltip>
+                    </>
                   )}
                   <div className="ml-auto flex items-center gap-1">
                     <button onClick={() => updateElement(selectedElement.id, { rotation: ((selectedElement.rotation || 0) + 15) % 360 })}
