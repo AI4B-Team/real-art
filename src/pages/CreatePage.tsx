@@ -2303,7 +2303,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           <Calendar size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Days</TooltipContent></Tooltip>
-                      <PopoverContent className="w-56 p-1.5" side="top" align="start">
+                      <PopoverContent className="w-56 p-1.5" side="bottom" align="start">
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Frequency</p>
                         {["1 Day", "3 Days", "7 Days", "14 Days", "30 Days", "60 Days", "90 Days"].map(o => (
                           <button key={o} onClick={() => { setContentFrequency(o); setCustomDays(""); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
