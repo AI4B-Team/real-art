@@ -2898,7 +2898,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 <div className="grid grid-cols-5 sm:grid-cols-5 gap-2">
                   {AUDIO_GENRES.map(s => (
                     <button key={s.id} type="button"
-                      onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
+                      onClick={() => { const newVal = selectedStyle === s.id ? "None" : s.id; setSelectedStyle(newVal); setSelectedGenre(newVal === "None" ? null : s.id.toLowerCase()); setActivePanel(null); }}
                       onMouseEnter={() => {
                         if (genreAudioRef.current) { genreAudioRef.current.pause(); genreAudioRef.current.currentTime = 0; }
                         const audio = new Audio(s.preview);
