@@ -80,8 +80,8 @@ const EbookCreatorPage = () => {
               <div className="w-16 h-16 rounded-2xl bg-accent/10 group-hover:bg-accent/20 flex items-center justify-center mb-4 transition-all">
                 <Sparkles className="w-7 h-7 text-accent group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Start With AI</h3>
-              <p className="text-sm text-muted mb-4">Create From Scratch With AI</p>
+              <h3 className="text-base font-semibold text-foreground mb-1">Start With AI</h3>
+              <p className="text-xs text-muted mb-3">Create From Scratch With AI</p>
               <div className="flex items-center gap-2 text-xs text-muted">
                 <div className="flex flex-col items-center"><Lightbulb className="w-4 h-4 text-accent" /><span>Idea</span></div>
                 <span className="text-muted/40">→</span>
