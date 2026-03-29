@@ -407,6 +407,85 @@ const EbookDesignSidebar = ({
           })}
         </div>
       )}
+
+      {/* Video */}
+      <SectionHeader id="video" title="Video" icon={MonitorPlay} />
+      {expandedSections.has('video') && (
+        <div className="px-3 pb-3 space-y-2">
+          <button onClick={() => { onAddElement?.('video', {}); toast.success('Video placeholder added'); }}
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
+            <Upload className="w-3.5 h-3.5" />Upload Video
+          </button>
+          <button onClick={() => toast.success('Embed link coming soon')}
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
+            <ExternalLink className="w-3.5 h-3.5" />Embed Video URL
+          </button>
+        </div>
+      )}
+
+      {/* Audio */}
+      <SectionHeader id="audio" title="Audio" icon={AudioLines} />
+      {expandedSections.has('audio') && (
+        <div className="px-3 pb-3 space-y-2">
+          <button onClick={() => { onAddElement?.('audio', {}); toast.success('Audio placeholder added'); }}
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
+            <Upload className="w-3.5 h-3.5" />Upload Audio
+          </button>
+          <button onClick={() => toast.success('Record audio coming soon')}
+            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
+            <Music className="w-3.5 h-3.5" />Record Audio
+          </button>
+        </div>
+      )}
+
+      {/* Interactive */}
+      <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
+      {expandedSections.has('interactive') && (
+        <div className="px-3 pb-3 space-y-1.5">
+          {[
+            { id: 'button', label: 'Button', desc: 'Clickable CTA button' },
+            { id: 'link', label: 'Hyperlink', desc: 'External or internal link' },
+            { id: 'form', label: 'Form Field', desc: 'Input or text area' },
+            { id: 'quiz', label: 'Quiz', desc: 'Interactive quiz element' },
+          ].map(item => (
+            <button key={item.id} onClick={() => { onAddElement?.(item.id, {}); toast.success(`${item.label} added`); }}
+              className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
+              <span className="text-xs font-medium text-foreground">{item.label}</span>
+              <p className="text-[10px] text-muted-foreground">{item.desc}</p>
+            </button>
+          ))}
+        </div>
+      )}
+
+      {/* Mockups */}
+      <SectionHeader id="mockups" title="Mockups" icon={Layers3} />
+      {expandedSections.has('mockups') && (
+        <div className="px-3 pb-3">
+          <div className="grid grid-cols-2 gap-1.5">
+            {['Phone', 'Laptop', 'Tablet', 'Book'].map(m => (
+              <button key={m} onClick={() => { onAddElement?.('mockup', { type: m.toLowerCase() }); toast.success(`${m} mockup added`); }}
+                className="flex flex-col items-center gap-1 p-3 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
+                <Layers3 className="w-5 h-5 text-muted-foreground" />
+                <span className="text-[10px] text-muted-foreground">{m}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Translate */}
+      <SectionHeader id="translate" title="Translate" icon={Languages} />
+      {expandedSections.has('translate') && (
+        <div className="px-3 pb-3 space-y-2">
+          <p className="text-[10px] text-muted-foreground">Translate all text content to another language.</p>
+          {['Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic'].map(lang => (
+            <button key={lang} onClick={() => toast.success(`Translating to ${lang}...`)}
+              className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors text-xs text-foreground">
+              {lang}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
