@@ -2260,26 +2260,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
 
 
 
-                    {/* ── Business Card controls ── */}
-                    {selectedSubMode === "business-card" && (
-                      <>
-                        <Popover open={designFinishOpen} onOpenChange={setDesignFinishOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designFinish !== "Matte" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Eye size={12} />{designFinish}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Finish</TooltipContent></Tooltip>
-                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                            {["Matte", "Glossy", "Textured", "Spot UV"].map(f => (
-                              <button key={f} type="button" onClick={() => { setDesignFinish(f); setDesignFinishOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designFinish === f ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {f}{designFinish === f && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                      </>
-                    )}
+
+
 
                     {/* ── Brochure controls ── */}
                     {selectedSubMode === "brochure" && (
