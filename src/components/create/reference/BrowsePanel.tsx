@@ -77,6 +77,25 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
     handleFiles(e.dataTransfer.files);
   };
 
+  const handlePasteLink = () => {
+    const url = linkUrl.trim();
+    if (!url) return;
+    try {
+      new URL(url);
+      const name = url.split("/").pop() || "Linked image";
+      onAdd({ id: crypto.randomUUID(), src: url, name });
+      setLinkUrl("");
+      setImportView("none");
+      toast.success("Image added from link");
+    } catch {
+      toast.error("Please enter a valid URL");
+    }
+  };
+
+  const handleCloudSource = (label: string) => {
+    toast.info(`${label} integration coming soon`);
+  };
+
   // Browse tabs
   const isUpload = tab === "upload";
   const pool = !isUpload ? POOLS[tab as Exclude<SourceTab, "upload">] : [];
