@@ -512,22 +512,6 @@ const EbookCanvasEditor = ({
               <TooltipContent side="right">{tool.label}</TooltipContent>
             </Tooltip>
           ))}
-          <div className="w-6 h-px bg-background/20 my-1" />
-          {/* Page actions */}
-          {PAGE_ACTIONS.map(action => {
-            const Icon = action.id === 'lock' && selectedPage?.locked ? Lock : action.icon;
-            return (
-              <Tooltip key={action.id}>
-                <TooltipTrigger asChild>
-                  <button onClick={() => handlePageAction(action.id)}
-                    className="w-8 h-8 rounded-lg flex items-center justify-center text-background/60 hover:text-background hover:bg-background/10 transition-colors">
-                    <Icon className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="right">{action.label}</TooltipContent>
-              </Tooltip>
-            );
-          })}
         </div>
 
         {/* Pages Panel */}
