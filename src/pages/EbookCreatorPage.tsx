@@ -111,20 +111,20 @@ const EbookCreatorPage = () => {
               <div className="flex justify-center gap-2 items-center flex-wrap">
                 {[
                   { label: "PDF", color: "#E53935" },
-                  { label: "DOCX", color: "#1565C0" },
-                  { label: "TXT", color: "#546E7A" },
+                  { label: "DOCX", color: "#2B579A" },
+                  { label: "TXT", color: "#90A4AE" },
                 ].map(f => (
-                  <div key={f.label} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted/60 border border-foreground/[0.08]">
+                  <div key={f.label} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
                     <svg viewBox="0 0 24 28" className="w-4 h-5" fill="none">
-                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" fill={f.color} opacity="0.15"/>
-                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" stroke={f.color} strokeWidth="1.5" fill="none"/>
-                      <path d="M14 0v6a2 2 0 002 2h6" stroke={f.color} strokeWidth="1.5" fill="none"/>
+                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" fill={f.color} opacity="0.08"/>
+                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" stroke={f.color} strokeWidth="1.2" fill="none"/>
+                      <path d="M14 0v6a2 2 0 002 2h6" stroke={f.color} strokeWidth="1.2" fill="none"/>
                     </svg>
-                    <span className="text-[11px] font-bold text-muted-foreground">{f.label}</span>
+                    <span className="text-[11px] font-semibold text-muted-foreground">{f.label}</span>
                   </div>
                 ))}
-                <div className="flex items-center px-2.5 py-1.5 rounded-lg bg-muted/60 border border-foreground/[0.08]">
-                  <span className="text-[11px] font-bold text-muted-foreground">+ more</span>
+                <div className="flex items-center px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
+                  <span className="text-[11px] font-semibold text-muted-foreground">+ more</span>
                 </div>
               </div>
             </div>
@@ -162,7 +162,7 @@ const EbookCreatorPage = () => {
                 <div className="w-9 h-9 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                   <svg viewBox="0 0 24 24" className="w-5 h-5" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
                 </div>
-                <div className="w-9 h-9 rounded-full bg-muted/50 flex items-center justify-center text-xs font-semibold text-muted-foreground">+45</div>
+                <div className="w-9 h-9 rounded-full bg-foreground/[0.04] flex items-center justify-center text-xs font-semibold text-muted-foreground">+45</div>
               </div>
             </div>
           </button>
