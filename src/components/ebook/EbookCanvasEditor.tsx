@@ -8,6 +8,9 @@ import {
   ChevronUp, ChevronDown, RotateCcw,
   Plus, Check, X, SlidersHorizontal,
   GripVertical, MoreHorizontal, FileText, MessageSquare,
+  Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
+  Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
+  Sparkles, Replace,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -15,6 +18,10 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 
 // ─── Types ─────────────────────────────────────────
