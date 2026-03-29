@@ -3677,11 +3677,11 @@ export default function CreatePage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setAppShowCode(!appShowCode)}
-                  className={`flex items-center gap-2 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-colors ${appShowCode ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground"}`}
+                  className={`flex items-center gap-2.5 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg transition-colors ${appShowCode ? "bg-foreground/[0.08] text-foreground" : "text-muted hover:text-foreground"}`}
                 >
                   Show Code
-                  <div className={`w-8 h-4.5 rounded-full transition-colors relative ${appShowCode ? "bg-foreground" : "bg-foreground/20"}`}>
-                    <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-background shadow transition-transform ${appShowCode ? "left-[calc(100%-0.95rem)]" : "left-0.5"}`} />
+                  <div className={`w-9 h-5 rounded-full transition-colors relative flex-shrink-0 ${appShowCode ? "bg-accent" : "bg-foreground/25"}`}>
+                    <div className={`absolute top-[3px] w-3.5 h-3.5 rounded-full bg-white shadow-sm transition-transform ${appShowCode ? "left-[18px]" : "left-[3px]"}`} />
                   </div>
                 </button>
                 <button
