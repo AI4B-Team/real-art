@@ -2234,7 +2234,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 })()}
 
                 {/* Count — image, design */}
-                {selectedSubMode && (selectedType === "image" || (selectedType === "design" && selectedSubMode !== "presentation")) && (
+                {selectedSubMode && (selectedType === "image" || (selectedType === "design" && selectedSubMode !== "presentation" && selectedSubMode !== "brochure")) && (
                   <Popover open={numberOpen} onOpenChange={setNumberOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedNumber > 1 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
