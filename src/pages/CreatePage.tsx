@@ -3506,6 +3506,7 @@ export default function CreatePage() {
   const [appShowCode, setAppShowCode] = useState(false);
   const [appPreviewContent, setAppPreviewContent] = useState("");
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const appAttachmentRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
