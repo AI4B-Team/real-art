@@ -862,7 +862,7 @@ const EbookCanvasEditor = ({
               )}
 
               {/* Canvas - Scrollable all pages */}
-              <div className="flex-1 overflow-auto py-8 px-4">
+              <div className="flex-1 overflow-auto py-8 px-4 relative">
                 <div className="flex flex-col items-center gap-8">
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
@@ -899,26 +899,32 @@ const EbookCanvasEditor = ({
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
                         </div>
-                        {/* Right-side page action buttons (only on selected) */}
-                        <div className={`flex flex-col gap-1 shrink-0 sticky top-1/3 self-start transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                          {PAGE_ACTIONS.map(action => {
-                            const Icon = action.id === 'lock' && page.locked ? Lock : action.icon;
-                            return (
-                              <Tooltip key={action.id}>
-                                <TooltipTrigger asChild>
-                                  <button onClick={() => handlePageAction(action.id)}
-                                    className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
-                                    <Icon className="w-4 h-4" />
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent side="right">{action.label}</TooltipContent>
-                              </Tooltip>
-                            );
-                          })}
-                        </div>
                       </div>
                     );
                   })}
+                </div>
+
+                {/* Sticky page action buttons - always visible top-right */}
+                <div className="sticky bottom-0 top-0 pointer-events-none" style={{ height: 0 }}>
+                  <div className="absolute right-4 top-4 pointer-events-auto">
+                    <div className="flex flex-col gap-1 bg-background/80 backdrop-blur-sm rounded-xl p-1 border border-foreground/[0.06] shadow-sm">
+                      {PAGE_ACTIONS.map(action => {
+                        const selectedPage = currentPages.find(p => p.id === selectedPageId);
+                        const Icon = action.id === 'lock' && selectedPage?.locked ? Lock : action.icon;
+                        return (
+                          <Tooltip key={action.id}>
+                            <TooltipTrigger asChild>
+                              <button onClick={() => handlePageAction(action.id)}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                                <Icon className="w-4 h-4" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="left">{action.label}</TooltipContent>
+                          </Tooltip>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
               </div>
             </>
