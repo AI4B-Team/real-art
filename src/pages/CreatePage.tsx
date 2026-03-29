@@ -2234,7 +2234,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 })()}
 
                 {/* Count — image, design */}
-                {selectedSubMode && (selectedType === "image" || (selectedType === "design" && selectedSubMode !== "presentation")) && (
+                {selectedSubMode && (selectedType === "image" || (selectedType === "design" && selectedSubMode !== "presentation" && selectedSubMode !== "brochure")) && (
                   <Popover open={numberOpen} onOpenChange={setNumberOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedNumber > 1 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2307,6 +2307,21 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                               <button key={s} type="button" onClick={() => { setDesignSize(s); setDesignSizeOpen(false); }}
                                 className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designSize === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                                 {s}{designSize === s && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={numberOpen} onOpenChange={setNumberOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${selectedNumber > 1 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Hash size={12} />{selectedNumber > 1 ? selectedNumber : ""}
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Count</TooltipContent></Tooltip>
+                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
+                            {[1,2,3,4,5,6].map(n => (
+                              <button key={n} type="button" onClick={() => { setSelectedNumber(n); setNumberOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedNumber === n ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {n} {n === 1 ? "image" : "images"}{selectedNumber === n && <Check size={12} />}
                               </button>
                             ))}
                           </PopoverContent>
