@@ -75,7 +75,7 @@ const EbookCreatorPage = () => {
 
         {/* Source Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
-          <button onClick={() => navigate("/ebook-creator/new?source=ai-generate")} className="group relative pt-8 px-8 pb-2 rounded-2xl border-2 border-dashed border-accent/40 bg-accent/5 hover:bg-accent/10 transition-all min-h-[280px] flex flex-col">
+          <button onClick={() => navigate("/ebook-creator/new?source=ai-generate")} className="group relative pt-6 px-6 pb-2 rounded-2xl border-2 border-dashed border-accent/40 bg-accent/5 hover:bg-accent/10 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
               <div className="w-20 h-20 rounded-2xl bg-accent/10 group-hover:bg-accent/20 flex items-center justify-center mb-5 transition-all">
                 <Sparkles className="w-9 h-9 text-accent group-hover:scale-110 transition-all" />
