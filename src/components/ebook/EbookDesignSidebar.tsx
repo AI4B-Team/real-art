@@ -163,9 +163,9 @@ const EbookDesignSidebar = ({
 
   if (isCollapsed) {
     return (
-      <div className="w-10 border-l border-foreground/[0.04] bg-background flex flex-col items-center py-3">
-        <button onClick={() => setIsCollapsed(false)} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground">
-          <Layers className="w-4 h-4" />
+      <div className="w-8 border-r border-foreground/[0.04] bg-background flex flex-col items-center py-3">
+        <button onClick={() => setIsCollapsed(false)} className="p-1 rounded hover:bg-foreground/[0.05] text-muted-foreground" title="Open Design Panel">
+          <ChevronDown className="w-4 h-4 rotate-[-90deg]" />
         </button>
       </div>
     );
