@@ -809,6 +809,21 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const handleSubModeSelect = (modeId: string) => {
     setSelectedSubMode(modeId);
     setSubModeOpen(false);
+    // Reset all selection states to defaults
+    setSelectedStyle("None");
+    setSelectedModel("Auto");
+    setDesignColorScheme("Auto");
+    setDesignIndustry(null);
+    setDesignOrientation("Portrait");
+    setDesignPlatform("");
+    setDesignFinish("Matte");
+    setDesignFoldType(null);
+    setDesignPages(null);
+    setDesignChartType(null);
+    setDesignLayout(null);
+    setDesignSize(null);
+    setDesignTextStyle("Bold");
+    setSelectedNumber(1);
     // Auto-show relevant panel
     if (selectedType === "audio" && modeId === "music") { setActivePanel("music"); setSelectedModel("V4 (Basic)"); }
     else if (selectedType === "image" && modeId === "photoshoot") setActivePanel("photoshoot");
