@@ -1059,7 +1059,7 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
           </div>
         </div>
 
-        <div className={`w-full max-w-[960px] mx-auto rounded-2xl border-[1.5px] bg-background overflow-visible transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-lg" : "shadow-md"}`}>
+        <div className={`w-[calc(100%-2rem)] max-w-[960px] mx-auto rounded-2xl border-[1.5px] bg-background overflow-visible transition-all duration-300 ${borderCls} ${promptFocused ? "prompt-box-focus shadow-lg" : "shadow-md"}`}>
 
           {/* Textarea row */}
           <div className="flex items-start gap-3 px-4 pt-3 pb-2 min-h-[56px]">
@@ -1436,10 +1436,10 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
 
           {/* ── Bottom toolbar ── */}
           {hasType && (
-            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-wrap">
-              {/* Child 1 — Wrapping pills */}
-              <div className="relative flex-1 min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-nowrap overflow-x-auto no-scrollbar">
+              {/* Child 1 — Single row pills */}
+              <div className="relative flex-none">
+                <div className="flex items-center gap-1.5 flex-nowrap">
 
 
 
