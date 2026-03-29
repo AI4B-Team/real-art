@@ -2227,7 +2227,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
 
                     {/* ── Logo controls ── */}
-                    )}
 
                     {/* ── Thumbnail controls ── */}
                     {selectedSubMode === "thumbnail" && (
