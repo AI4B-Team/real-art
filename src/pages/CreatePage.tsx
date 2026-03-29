@@ -1154,15 +1154,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
               </div>
             )}
 
-            {/* Attachment + button */}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button type="button" onClick={() => attachmentRef.current?.click()} className="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.06] transition-colors mt-[3px]">
-                  <Plus size={18} className="text-muted hover:text-foreground" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="bottom">Attach</TooltipContent>
-            </Tooltip>
+            {/* Hidden file input for attachments */}
             <input
               ref={attachmentRef}
               type="file"
