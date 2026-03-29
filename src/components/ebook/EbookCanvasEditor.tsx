@@ -521,7 +521,7 @@ const EbookCanvasEditor = ({
           <div className="w-48 border-r border-foreground/[0.04] bg-background overflow-y-auto p-2.5">
             <div className="flex items-center justify-between mb-2.5 px-1">
               <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Pages ({currentPages.length})</span>
-              <button onClick={() => setIsGridView(!isGridView)}
+              <button onClick={onGridViewToggle}
                 className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
                 {isGridView ? <ChevronLeft className="w-3 h-3" /> : <GripVertical className="w-3 h-3" />}
               </button>
