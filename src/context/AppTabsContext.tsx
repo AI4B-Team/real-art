@@ -30,7 +30,7 @@ export const ALL_APPS: AppDef[] = [
   { id: "voiceovers",          label: "Voiceovers",          icon: Mic,           bgColor: "bg-cyan-500",    path: "/apps/voiceovers" },
   { id: "voice-cloner",        label: "Voice Cloner",        icon: Volume2,       bgColor: "bg-purple-500",  path: "/apps/voice-cloner" },
   { id: "transcribe",          label: "Transcribe",          icon: FileText,      bgColor: "bg-indigo-500",  path: "/transcribe" },
-  { id: "ghost-ink",           label: "Ghost Ink",           icon: BookOpen,      bgColor: "bg-amber-600",   path: "/ghost-ink" },
+  { id: "ghost-ink",           label: "Ebook Creator",       icon: BookOpen,      bgColor: "bg-amber-600",   path: "/ghost-ink" },
   { id: "background-remover",  label: "Background Remover",  icon: Image,         bgColor: "bg-rose-500",    path: "/apps/background-remover" },
   { id: "image-enhancer",      label: "Image Enhancer",      icon: ArrowUpCircle, bgColor: "bg-orange-500",  path: "/apps/image-enhancer" },
   { id: "noise-remover",       label: "Noise Remover",       icon: Eraser,        bgColor: "bg-slate-500",   path: "/apps/noise-remover" },

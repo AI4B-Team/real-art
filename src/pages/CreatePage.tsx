@@ -3990,7 +3990,7 @@ export default function CreatePage() {
   }, [appConversation, appIsThinking]);
 
   const handleGenerate = async ({ type, prompt, subMode }: { type: ContentType | null; prompt: string; subMode: string | null }) => {
-    // Ebook: redirect to Ghost Ink app with prompt data
+    // Ebook: redirect to Ebook Creator app with prompt data
     if (type === "document" && subMode === "ebook") {
       navigate("/ebook-creator/new?source=ai-generate", {
         state: {
