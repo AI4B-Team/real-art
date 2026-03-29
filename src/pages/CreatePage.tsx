@@ -2309,7 +2309,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             value={customDays}
                             onChange={e => {
                               setCustomDays(e.target.value);
-                              if (e.target.value) setContentFrequency(`${e.target.value} Days (Custom)`);
+                              if (e.target.value) setContentFrequency(`${e.target.value} Days`);
                             }}
                             placeholder="Enter number of days"
                             className="w-full px-2 py-1.5 rounded-md border border-foreground/10 bg-background text-[0.78rem] outline-none focus:border-accent"
