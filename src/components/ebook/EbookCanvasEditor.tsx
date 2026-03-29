@@ -321,9 +321,10 @@ const EbookCanvasEditor = ({
   };
 
   // ─── Drag ─────────────────────────────────────
-  const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement) => {
+  const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
     if (el.locked || activeTool !== 'select') return;
     e.stopPropagation();
+    if (pageId) onPageSelect(pageId);
     setSelectedElementId(el.id);
     setDragState({ id: el.id, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y });
   };
@@ -427,7 +428,7 @@ const EbookCanvasEditor = ({
   };
 
   // ─── Render Element ───────────────────────────
-  const renderElement = (el: CanvasElement) => {
+  const renderElement = (el: CanvasElement, pageId?: string) => {
     const isSelected = selectedElementId === el.id;
     const isEditing = editingTextId === el.id;
     const style: React.CSSProperties = {
@@ -444,7 +445,7 @@ const EbookCanvasEditor = ({
     if (el.type === 'image') {
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
-          onMouseDown={e => handleElementMouseDown(e, el)}
+          onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
@@ -477,7 +478,7 @@ const EbookCanvasEditor = ({
           backgroundColor: el.fill || '#3b82f6',
           border: el.stroke && el.stroke !== 'transparent' ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined,
           borderRadius: el.shapeType === 'circle' ? '50%' : (el.borderRadius ?? 0),
-        }} onMouseDown={e => handleElementMouseDown(e, el)}>
+        }} onMouseDown={e => handleElementMouseDown(e, el, pageId)}>
           {isSelected && renderResizeHandles(el)}
         </div>
       );
@@ -486,7 +487,7 @@ const EbookCanvasEditor = ({
     if (el.type === 'text') {
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
-          onMouseDown={e => handleElementMouseDown(e, el)}
+          onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onDoubleClick={() => { setEditingTextId(el.id); setSelectedElementId(el.id); }}>
           {isEditing ? (
             <textarea
@@ -894,7 +895,7 @@ const EbookCanvasEditor = ({
                               <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
                             </div>
                           )}
-                          {elems.map(el => renderElement(el))}
+                          {elems.map(el => renderElement(el, page.id))}
                           <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
