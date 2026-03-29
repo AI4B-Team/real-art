@@ -348,6 +348,36 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
   const [selectedResolution, setSelectedResolution] = useState("1080p");
   const [resolutionOpen, setResolutionOpen] = useState(false);
   const [brandToggle, setBrandToggle] = useState(() => !!localStorage.getItem("ra_brand_complete"));
+  const [brandPickerOpen, setBrandPickerOpen] = useState(false);
+  const [brandSearch, setBrandSearch] = useState("");
+
+  // Load brands from localStorage (synced with sidebar)
+  const loadBrandsData = () => {
+    try {
+      const s = localStorage.getItem("ra_brands");
+      if (s) return JSON.parse(s) as { brands: { id: string; name: string }[]; activeId: string };
+    } catch {}
+    return { brands: [{ id: "default", name: "My Brand" }], activeId: "default" };
+  };
+  const [brandsData, setBrandsData] = useState(loadBrandsData);
+  const activeBrandProfile = brandsData.brands.find(b => b.id === brandsData.activeId) || brandsData.brands[0];
+
+  const switchBrandProfile = (id: string) => {
+    const updated = { ...brandsData, activeId: id };
+    setBrandsData(updated);
+    try { localStorage.setItem("ra_brands", JSON.stringify(updated)); } catch {}
+    // Dispatch storage event so sidebar picks up the change
+    window.dispatchEvent(new StorageEvent("storage", { key: "ra_brands", newValue: JSON.stringify(updated) }));
+    setBrandPickerOpen(false);
+    setBrandSearch("");
+  };
+
+  // Listen for sidebar brand changes
+  useEffect(() => {
+    const handler = () => setBrandsData(loadBrandsData());
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, []);
   const [contentGoal, setContentGoal] = useState("Engagement");
   const [contentTone, setContentTone] = useState<string | null>(null);
   const [contentLanguage, setContentLanguage] = useState<string | null>(null);
