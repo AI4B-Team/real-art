@@ -2224,7 +2224,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 {/* Design sub-mode specific toolbar controls */}
                 {selectedType === "design" && selectedSubMode && (
                   <div className="flex items-center gap-0.5 shrink-0">
-                    <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
 
                     {/* ── Logo controls ── */}
 
