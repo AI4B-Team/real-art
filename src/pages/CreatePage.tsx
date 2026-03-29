@@ -1758,7 +1758,7 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
-                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle !== "Minimalist") ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                     {selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedSubMode === "presentation" ? presDeckStyle : selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
