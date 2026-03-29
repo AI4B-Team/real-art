@@ -2196,11 +2196,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                               <Languages size={14} />
                             </button>
                           </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                            <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                            {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                              <button key={o} onClick={() => { setPresLanguage(presLanguage === o ? null : o); setPresLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${presLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                            ))}
+                          <PopoverContent className="w-52 p-1.5" side="top" align="start">
+                            <LanguageDropdownContent selected={presLanguage} onSelect={(lang) => { setPresLanguage(presLanguage === lang ? null : lang); setPresLangOpen(false); }} />
                           </PopoverContent>
                         </Popover>
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
