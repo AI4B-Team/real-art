@@ -2250,7 +2250,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                                 </button>
                               </PopoverTrigger></TooltipTrigger><TooltipContent>Platform</TooltipContent></Tooltip>
                               <PopoverContent className="w-48 p-1.5" align="start" sideOffset={6}>
-                                {["YouTube", "Twitch", "Instagram", "TikTok", "X (Twitter)", "LinkedIn", "Facebook"].map(p => (
+                                {["YouTube", "Instagram", "TikTok", "Facebook", "X (Twitter)", "LinkedIn", "Twitch"].map(p => (
                                   <button key={p} type="button" onClick={() => { setDesignPlatform(p); setDesignPlatformOpen(false); }}
                                     className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designPlatform === p ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
                                     {platformLogos[p]}{p}{designPlatform === p && <Check size={12} className="ml-auto" />}
