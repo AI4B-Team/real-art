@@ -108,13 +108,19 @@ const EbookCreatorPage = () => {
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Drag & Drop Your File</span>
               </div>
               <div className="flex justify-center gap-1.5 items-center flex-wrap">
-                {["PDF", "DOCX", "TXT"].map(f => (
-                  <div key={f} className="flex items-center gap-1 px-1.5 py-1 rounded bg-muted/50 border border-foreground/[0.06]">
-                    <div className="w-4 h-4 rounded bg-muted flex items-center justify-center"><FileText className="w-2.5 h-2.5 text-muted-foreground" /></div>
-                    <span className="text-[10px] font-semibold text-muted-foreground">{f}</span>
+                {[
+                  { label: "PDF", color: "#E53935" },
+                  { label: "DOCX", color: "#1565C0" },
+                  { label: "TXT", color: "#546E7A" },
+                ].map(f => (
+                  <div key={f.label} className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/50 border border-foreground/[0.06]">
+                    <div className="w-4 h-5 rounded-[2px] flex items-center justify-center" style={{ backgroundColor: f.color }}>
+                      <span className="text-[5px] font-black text-white leading-none">{f.label}</span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-muted-foreground">{f.label}</span>
                   </div>
                 ))}
-                <div className="flex items-center gap-1 px-1.5 py-1 rounded bg-muted/50 border border-foreground/[0.06]">
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50 border border-foreground/[0.06]">
                   <span className="text-[10px] font-semibold text-muted-foreground">+ more</span>
                 </div>
               </div>
@@ -133,12 +139,15 @@ const EbookCreatorPage = () => {
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Paste Website Link</span>
               </div>
               <div className="flex flex-wrap justify-center gap-2">
-                {[{ name: "Blog", icon: Rss }, { name: "YouTube", icon: Sparkles }].map(p => (
-                  <div key={p.name} className="w-7 h-7 rounded-lg bg-muted/50 flex items-center justify-center">
-                    <p.icon className="w-4 h-4 text-muted-foreground" />
-                  </div>
-                ))}
-                <div className="w-7 h-7 rounded-lg bg-muted/50 flex items-center justify-center text-xs text-muted-foreground">+45</div>
+                {/* RSS / Blog */}
+                <div className="w-8 h-8 rounded-lg bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#F57C00"><circle cx="6.18" cy="17.82" r="2.18"/><path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56z"/><path d="M4 10.1v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/></svg>
+                </div>
+                {/* YouTube */}
+                <div className="w-8 h-8 rounded-lg bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                </div>
+                <div className="w-8 h-8 rounded-lg bg-muted/50 flex items-center justify-center text-xs font-medium text-muted-foreground">+45</div>
               </div>
             </div>
           </button>
