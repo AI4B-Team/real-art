@@ -4164,7 +4164,7 @@ export default function CreatePage() {
                   onChange={e => setAppBuilderInput(e.target.value)}
                   onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAppFollowUp(); } }}
                   placeholder="Ask me anything"
-                  className="flex-1 px-2 py-3.5 pr-12 bg-transparent text-[0.84rem] outline-none placeholder:text-muted/50"
+                  className="flex-1 px-2 py-3.5 bg-transparent text-[0.84rem] outline-none placeholder:text-muted/50"
                 />
                 <div className="flex items-center gap-1 pr-2 shrink-0">
                   <button
