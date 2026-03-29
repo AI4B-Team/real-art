@@ -1453,7 +1453,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
             </div>
           )}
 
-          {(selectedCharacters.length > 0 || references.length > 0) && (
+          {(selectedCharacters.length > 0 || references.length > 0 || selectedGenre) && (
             <div className="flex items-center gap-1.5 flex-wrap px-4 pb-2">
               {selectedCharacters.length > 0 && (
                 <button type="button" onClick={() => togglePanel("character")}
@@ -1498,6 +1498,17 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <span className="text-[0.78rem] font-semibold text-foreground leading-tight">{references.length} image{references.length !== 1 ? "s" : ""}</span>
                   </div>
                   <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setReferences([]); }} />
+                </button>
+              )}
+              {selectedGenre && (
+                <button type="button" onClick={() => togglePanel("music")}
+                  className={`group flex items-center gap-2 px-2.5 py-1.5 rounded-lg border transition-all ${activePanel === "music" ? "border-accent bg-accent/10" : "border-foreground/[0.1] bg-foreground/[0.03] hover:border-accent/30"}`}>
+                  <div className="w-7 h-7 rounded-lg bg-green-50 flex items-center justify-center"><Music size={14} className="text-green-600" /></div>
+                  <div className="text-left">
+                    <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Music</span>
+                    <span className="text-[0.78rem] font-semibold text-foreground leading-tight capitalize">{selectedGenre}</span>
+                  </div>
+                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedGenre(null); }} />
                 </button>
               )}
             </div>
