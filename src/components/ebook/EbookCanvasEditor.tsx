@@ -321,9 +321,10 @@ const EbookCanvasEditor = ({
   };
 
   // ─── Drag ─────────────────────────────────────
-  const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement) => {
+  const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
     if (el.locked || activeTool !== 'select') return;
     e.stopPropagation();
+    if (pageId) onPageSelect(pageId);
     setSelectedElementId(el.id);
     setDragState({ id: el.id, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y });
   };
