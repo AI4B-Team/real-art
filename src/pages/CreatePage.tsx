@@ -3004,6 +3004,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 )}
                 </div>
               </div>
+              </div>
+              </div>
 
               {/* Child 2 — Pinned action group: AI enhancer | divider | mic | send */}
               <div className="flex items-center shrink-0 ml-auto pl-4 border-l border-foreground/[0.1]">
