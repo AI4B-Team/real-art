@@ -2144,6 +2144,19 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                     {/* ── Presentation controls ── */}
                     {selectedSubMode === "presentation" && (
                       <>
+                        <Popover open={presLangOpen} onOpenChange={setPresLangOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${presLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Languages size={14} />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                            <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
+                            {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
+                              <button key={o} onClick={() => { setPresLanguage(presLanguage === o ? null : o); setPresLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${presLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presAudience !== "Casual" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2182,19 +2195,6 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                                 <span className="text-[0.82rem] font-medium">{l.id}</span>
                                 <span className={`text-[0.7rem] ${presLength === l.id ? "text-primary-foreground/70" : "text-muted"}`}>{l.desc}</span>
                               </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                        <Popover open={presLangOpen} onOpenChange={setPresLangOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${presLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Languages size={14} />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                            <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                            {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                              <button key={o} onClick={() => { setPresLanguage(presLanguage === o ? null : o); setPresLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${presLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                             ))}
                           </PopoverContent>
                         </Popover>
