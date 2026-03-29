@@ -107,7 +107,7 @@ import MentionDropdown from "@/components/MentionDropdown";
 type ContentType = "image" | "video" | "audio" | "design" | "content" | "document" | "app";
 type GalleryTab = "creations" | "collections" | "apps" | "templates" | "community";
 type MediaFilter = "all" | "image" | "video" | "audio" | "design";
-type PanelType = "reference" | "character" | "style" | "frames" | "music" | "photoshoot" | "social" | "github" | "advanced" | "source" | null;
+type PanelType = "reference" | "character" | "style" | "frames" | "music" | "photoshoot" | "social" | "github" | "advanced" | "source" | "chart" | null;
 
 /* ─── Content type config ────────────────────────────────────── */
 
