@@ -900,7 +900,7 @@ const EbookCanvasEditor = ({
                           </div>
                         </div>
                         {/* Right-side page action buttons (only on selected) */}
-                        <div className={`flex flex-col gap-1 shrink-0 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                        <div className={`flex flex-col gap-1 shrink-0 sticky top-1/3 self-start transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                           {PAGE_ACTIONS.map(action => {
                             const Icon = action.id === 'lock' && page.locked ? Lock : action.icon;
                             return (
