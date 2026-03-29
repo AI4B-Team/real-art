@@ -2779,7 +2779,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docStyle ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Pen size={14} />
+                          <Pencil size={14} />
                         </button>
                       </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
                       <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
