@@ -3962,6 +3962,7 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string }[] = [
 /* ─── Main Page ──────────────────────────────────────────────── */
 
 export default function CreatePage() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<GalleryTab>("creations");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
