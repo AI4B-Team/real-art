@@ -9,7 +9,7 @@ import {
   Play, MessageCircle, Move, User, BookOpen, Presentation, Clapperboard,
   Headphones, AudioLines, Captions,
   Copy, Hash, Clock, SlidersHorizontal,
-  LayoutGrid, Filter, Star, Download, Bookmark, Plus,
+  LayoutGrid, LayoutList, Filter, Star, Download, Bookmark, Plus,
   Bot, Globe, Heart, Users, Wand2, Lock,
   ArrowRight, ArrowUp, Search, Cpu,
   Film, Package, BarChart2, ShoppingBag, Brush,
