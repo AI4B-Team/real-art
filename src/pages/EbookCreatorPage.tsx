@@ -107,21 +107,23 @@ const EbookCreatorPage = () => {
                 <Upload className="w-5 h-5 text-muted shrink-0" />
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Drag & Drop Your File</span>
               </div>
-              <div className="flex justify-center gap-1.5 items-center flex-wrap">
+              <div className="flex justify-center gap-2 items-center flex-wrap">
                 {[
                   { label: "PDF", color: "#E53935" },
                   { label: "DOCX", color: "#1565C0" },
                   { label: "TXT", color: "#546E7A" },
                 ].map(f => (
-                  <div key={f.label} className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/50 border border-foreground/[0.06]">
-                    <div className="w-4 h-5 rounded-[2px] flex items-center justify-center" style={{ backgroundColor: f.color }}>
-                      <span className="text-[5px] font-black text-white leading-none">{f.label}</span>
-                    </div>
-                    <span className="text-[10px] font-semibold text-muted-foreground">{f.label}</span>
+                  <div key={f.label} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-muted/60 border border-foreground/[0.08]">
+                    <svg viewBox="0 0 24 28" className="w-4 h-5" fill="none">
+                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" fill={f.color} opacity="0.15"/>
+                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" stroke={f.color} strokeWidth="1.5" fill="none"/>
+                      <path d="M14 0v6a2 2 0 002 2h6" stroke={f.color} strokeWidth="1.5" fill="none"/>
+                    </svg>
+                    <span className="text-[11px] font-bold text-muted-foreground">{f.label}</span>
                   </div>
                 ))}
-                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50 border border-foreground/[0.06]">
-                  <span className="text-[10px] font-semibold text-muted-foreground">+ more</span>
+                <div className="flex items-center px-2.5 py-1.5 rounded-lg bg-muted/60 border border-foreground/[0.08]">
+                  <span className="text-[11px] font-bold text-muted-foreground">+ more</span>
                 </div>
               </div>
             </div>
