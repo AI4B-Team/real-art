@@ -493,6 +493,56 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [playingGenre, setPlayingGenre] = useState<string | null>(null);
   const genreAudioRef = useRef<HTMLAudioElement | null>(null);
 
+  // Voice recording states
+  const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+  const [voiceRecordingUrl, setVoiceRecordingUrl] = useState<string | null>(null);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const recordingChunksRef = useRef<Blob[]>([]);
+  const recordingTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startVoiceRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      recordingChunksRef.current = [];
+      setRecordingDuration(0);
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) recordingChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordingChunksRef.current, { type: "audio/webm" });
+        const url = URL.createObjectURL(blob);
+        setVoiceRecordingUrl(url);
+        setVoiceoverVoice("My Voice");
+        stream.getTracks().forEach(t => t.stop());
+        if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+      };
+
+      mediaRecorder.start();
+      setIsRecordingVoice(true);
+      recordingTimerRef.current = setInterval(() => setRecordingDuration(d => d + 1), 1000);
+    } catch {
+      toast({ title: "Microphone access denied", description: "Please allow microphone access to record your voice.", variant: "destructive" });
+    }
+  };
+
+  const stopVoiceRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecordingVoice(false);
+    if (recordingTimerRef.current) clearInterval(recordingTimerRef.current);
+  };
+
+  const clearVoiceRecording = () => {
+    if (voiceRecordingUrl) URL.revokeObjectURL(voiceRecordingUrl);
+    setVoiceRecordingUrl(null);
+    setRecordingDuration(0);
+    if (voiceoverVoice === "My Voice") setVoiceoverVoice("Auto");
+  };
+
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
