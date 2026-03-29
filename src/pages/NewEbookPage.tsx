@@ -424,7 +424,7 @@ const NewEbookPage = () => {
                 </div>
 
                 {/* Generate button */}
-                <button onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
+                <button id="ghost-ink-generate-btn" onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
                   className="w-full py-3.5 rounded-xl bg-accent text-white font-semibold text-sm hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                   {isGenerating ? <><Loader2 size={18} className="animate-spin" />Generating Ideas ({Math.round(generationProgress)}%)...</> : <><Sparkles size={18} />Generate Title Ideas</>}
                 </button>
