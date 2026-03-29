@@ -226,7 +226,7 @@ const EbookCreatorPage = () => {
                 ))}
               </PopoverContent>
             </Popover>
-            <div className="flex items-center gap-0.5 border border-foreground/[0.1] rounded-lg p-0.5">
+            <div className="flex items-center gap-0.5 rounded-lg p-0.5">
               <button onClick={() => setViewMode("list")} className={`p-1.5 rounded ${viewMode === "list" ? "bg-foreground/[0.08]" : ""}`}><List size={16} className="text-muted-foreground" /></button>
               <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-foreground/[0.08]" : ""}`}><Grid size={16} className="text-muted-foreground" /></button>
             </div>
