@@ -3684,10 +3684,14 @@ export default function CreatePage() {
                     <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-background shadow transition-transform ${appShowCode ? "left-[calc(100%-0.95rem)]" : "left-0.5"}`} />
                   </div>
                 </button>
-                <button className="flex items-center gap-1.5 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
-                  <Eye size={14} /> Use in a design
+                <button
+                  onClick={() => toast({ title: "Opening in design editor...", description: "Your app preview will be available as a design asset." })}
+                  className="flex items-center gap-1.5 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
+                  <Eye size={14} /> Use In A Design
                 </button>
-                <button className="flex items-center gap-1.5 text-[0.84rem] font-bold px-4 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors">
+                <button
+                  onClick={() => toast({ title: "Publishing your app!", description: "Your app is being deployed to a live URL." })}
+                  className="flex items-center gap-1.5 text-[0.84rem] font-bold px-4 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors">
                   Publish
                 </button>
               </div>
@@ -3746,10 +3750,10 @@ export default function CreatePage() {
                         {appPreviewContent.slice(0, 120)}{appPreviewContent.length > 120 ? "..." : ""}
                       </p>
                       <div className="flex items-center gap-3">
-                        <button className="px-6 py-3 rounded-xl bg-accent text-white font-bold text-[0.88rem] flex items-center gap-2">
+                        <button onClick={() => document.getElementById("app-contact")?.scrollIntoView({ behavior: "smooth" })} className="px-6 py-3 rounded-xl bg-accent text-white font-bold text-[0.88rem] flex items-center gap-2 hover:bg-accent/90 transition-colors">
                           Get Started <ArrowRight size={16} />
                         </button>
-                        <button className="px-6 py-3 rounded-xl border border-foreground/[0.15] font-semibold text-[0.88rem]">
+                        <button onClick={() => document.getElementById("app-how-it-works")?.scrollIntoView({ behavior: "smooth" })} className="px-6 py-3 rounded-xl border border-foreground/[0.15] font-semibold text-[0.88rem] hover:bg-foreground/[0.04] transition-colors">
                           See How It Works
                         </button>
                       </div>
@@ -3784,7 +3788,7 @@ export default function CreatePage() {
                           <div key={plan.name} className={`p-5 rounded-xl border ${plan.name === "Pro" ? "border-accent bg-accent/5" : "border-foreground/[0.06] bg-foreground/[0.02]"}`}>
                             <h4 className="text-[0.82rem] font-bold mb-1">{plan.name}</h4>
                             <p className="text-[1.2rem] font-black mb-2">{plan.price}<span className="text-[0.72rem] text-muted font-normal">{plan.price !== "Custom" ? "/mo" : ""}</span></p>
-                            <button className={`w-full py-2 rounded-lg text-[0.75rem] font-semibold ${plan.name === "Pro" ? "bg-accent text-white" : "bg-foreground/[0.06]"}`}>Get Started</button>
+                            <button onClick={() => toast({ title: `${plan.name} plan selected!` })} className={`w-full py-2 rounded-lg text-[0.75rem] font-semibold hover:opacity-90 transition-opacity ${plan.name === "Pro" ? "bg-accent text-white" : "bg-foreground/[0.06]"}`}>Get Started</button>
                           </div>
                         ))}
                       </div>
@@ -3794,7 +3798,7 @@ export default function CreatePage() {
                       <div className="p-5 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] space-y-3">
                         <input placeholder="Your Email" className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] outline-none" />
                         <textarea placeholder="Your Message" rows={3} className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] outline-none resize-none" />
-                        <button className="px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-semibold">Send Message</button>
+                        <button onClick={() => toast({ title: "Message sent!", description: "We'll get back to you soon." })} className="px-5 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-semibold hover:bg-accent/90 transition-colors">Send Message</button>
                       </div>
                     </div>
                   </div>
