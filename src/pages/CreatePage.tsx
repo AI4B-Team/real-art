@@ -2565,19 +2565,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         ))}
                       </PopoverContent>
                     </Popover>
-                    <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentStyle !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <PenTool size={14} />
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Style</p>
-                        {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
-                          <button key={o} onClick={() => setContentStyle(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentStyle === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
                     <Tooltip><TooltipTrigger asChild>
                       <div className="flex items-center gap-1.5 shrink-0 cursor-pointer" onClick={() => {
