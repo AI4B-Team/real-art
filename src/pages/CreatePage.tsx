@@ -3448,7 +3448,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
             <MusicSamples
               onClose={() => setActivePanel(null)}
               selectedGenre={selectedGenre}
-              onGenreSelect={setSelectedGenre}
+              onGenreSelect={(id) => { setSelectedGenre(id); setSelectedStyle(id ? id.charAt(0).toUpperCase() + id.slice(1) : "None"); }}
               onUseStyle={genre => {
                 setPrompt(prev => prev ? `${prev} — ${genre} style` : `Generate ${genre} music`);
               }}
