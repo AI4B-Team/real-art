@@ -3531,13 +3531,26 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
               {activeSourceTab === "audio" && (
                 <div className="rounded-xl border border-foreground/[0.08] bg-accent/[0.03] p-6 flex flex-col items-center justify-center min-h-[220px]">
                   {!isRecordingAudio && !audioTranscript && (
-                    <>
-                      <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mb-4">
-                        <Mic size={28} className="text-accent" />
-                      </div>
-                      <p className="text-[0.95rem] font-bold text-foreground mb-1">Record & Transcribe</p>
-                      <p className="text-[0.78rem] text-muted/60 mb-5">Speak your ideas — live transcription appears as you talk</p>
-                      <button type="button" onClick={() => {
+                    <div className="flex gap-4 w-full">
+                      {/* Upload Audio */}
+                      <label className="flex-1 rounded-xl border-2 border-dashed border-foreground/[0.1] hover:border-accent/40 bg-background p-6 flex flex-col items-center justify-center cursor-pointer transition-colors group">
+                        <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
+                          <Upload size={24} className="text-accent" />
+                        </div>
+                        <p className="text-[0.9rem] font-bold text-foreground mb-1">Upload Audio</p>
+                        <p className="text-[0.72rem] text-muted/60 text-center">MP3, WAV, M4A, or other audio files</p>
+                        <input type="file" accept="audio/*" className="hidden" onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            setAudioTranscript(`[Uploaded: ${file.name}]`);
+                            toast({ title: "Audio uploaded", description: file.name });
+                          }
+                          e.target.value = "";
+                        }} />
+                      </label>
+
+                      {/* Record Audio */}
+                      <div className="flex-1 rounded-xl border-2 border-dashed border-foreground/[0.1] hover:border-accent/40 bg-background p-6 flex flex-col items-center justify-center cursor-pointer transition-colors group" onClick={() => {
                         const SR = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
                         if (!SR) { toast({ title: "Not Supported", description: "Speech recognition is not supported in this browser." }); return; }
                         const r = new SR();
@@ -3553,10 +3566,14 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         audioRecogRef.current = r;
                         r.start();
                         setIsRecordingAudio(true);
-                      }} className="px-8 py-3 rounded-lg bg-accent text-white text-[0.85rem] font-bold hover:bg-accent/90 transition-colors shadow-md shadow-accent/20">
-                        <span className="flex items-center gap-2"><Mic size={16} /> Start Recording</span>
-                      </button>
-                    </>
+                      }}>
+                        <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
+                          <Mic size={24} className="text-accent" />
+                        </div>
+                        <p className="text-[0.9rem] font-bold text-foreground mb-1">Record Audio</p>
+                        <p className="text-[0.72rem] text-muted/60 text-center">Speak your ideas — live transcription appears</p>
+                      </div>
+                    </div>
                   )}
                   {isRecordingAudio && (
                     <div className="w-full flex flex-col items-center">
