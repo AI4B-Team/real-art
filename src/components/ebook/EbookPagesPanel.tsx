@@ -15,9 +15,10 @@ interface EbookPagesPanelProps {
   selectedPageId: string | null;
   onPageSelect: (id: string) => void;
   onPagesChange: (pages: Page[]) => void;
+  onGridViewToggle?: () => void;
 }
 
-const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange }: EbookPagesPanelProps) => {
+const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle }: EbookPagesPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
@@ -202,7 +203,7 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange }:
           </button>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] ml-1">
+              <button onClick={onGridViewToggle} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] ml-1">
                 <LayoutGrid className="w-3.5 h-3.5" />
               </button>
             </TooltipTrigger>
