@@ -3743,7 +3743,7 @@ export default function CreatePage() {
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
+      {!isSocialMode && <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-1">
             {TABS.map(tab => (
