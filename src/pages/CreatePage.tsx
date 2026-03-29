@@ -2337,21 +2337,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     {/* ── Infographic controls ── */}
                     {selectedSubMode === "infographic" && (
                       <>
-                        <Popover open={designLayoutOpen} onOpenChange={setDesignLayoutOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                              <LayoutGrid size={12} />{designLayout}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Layout</TooltipContent></Tooltip>
-                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
-                            {["Vertical", "Horizontal", "Timeline", "Comparison", "Process"].map(l => (
-                              <button key={l} type="button" onClick={() => { setDesignLayout(l); setDesignLayoutOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designLayout === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {l}{designLayout === l && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                         <Popover open={designChartOpen} onOpenChange={setDesignChartOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designChartType !== "Mixed" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
