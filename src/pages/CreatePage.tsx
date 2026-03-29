@@ -157,7 +157,7 @@ const SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof I
   design: [
     { id: "logo",          label: "Logo",         icon: Sparkles },
     { id: "poster",        label: "Poster",       icon: Presentation },
-    { id: "thumbnail",     label: "Thumbnail",    icon: Film },
+    { id: "thumbnail",     label: "Thumbnail",    icon: ImageIcon },
     { id: "flyer",         label: "Flyer",        icon: FileText },
     { id: "business-card", label: "Business Card",icon: User },
     { id: "brochure",      label: "Brochure",     icon: BookOpen },
