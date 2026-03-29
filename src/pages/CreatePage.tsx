@@ -1944,13 +1944,24 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         <BarChart2 size={12} />{designChartType || "Chart"}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Chart</TooltipContent></Tooltip>
-                    <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
-                      {["Mixed", "Bar Charts", "Pie Charts", "Line Graphs", "Icons Only", "Numbers Only"].map(c => (
-                        <button key={c} type="button" onClick={() => { setDesignChartType(c); setDesignChartOpen(false); }}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designChartType === c ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                          {c}{designChartType === c && <Check size={12} />}
-                        </button>
-                      ))}
+                    <PopoverContent className="w-[340px] p-3" align="start" sideOffset={6}>
+                      <div className="grid grid-cols-3 gap-2">
+                        {[
+                          { id: "Mixed", img: chartMixed },
+                          { id: "Bar Charts", img: chartBar },
+                          { id: "Pie Charts", img: chartPie },
+                          { id: "Line Graphs", img: chartLine },
+                          { id: "Icons Only", img: chartIcons },
+                          { id: "Numbers Only", img: chartNumbers },
+                        ].map(c => (
+                          <button key={c.id} type="button" onClick={() => { setDesignChartType(c.id); setDesignChartOpen(false); }}
+                            className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${designChartType === c.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                            <img src={c.img} alt={c.id} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                            <span className={`text-[0.68rem] font-medium leading-none ${designChartType === c.id ? "text-accent" : "text-foreground/70"}`}>{c.id}</span>
+                            {designChartType === c.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                          </button>
+                        ))}
+                      </div>
                     </PopoverContent>
                   </Popover>
                 )}
