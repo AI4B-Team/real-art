@@ -416,6 +416,9 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [docTone, setDocTone] = useState<string | null>(null);
   const [docModel, setDocModel] = useState("Auto");
   const [docModelOpen, setDocModelOpen] = useState(false);
+  const [docStyle, setDocStyle] = useState<string | null>(null);
+  const [docGoal, setDocGoal] = useState("Engagement");
+  const [docFormat, setDocFormat] = useState("Informative");
   
   const [docLangOpen, setDocLangOpen] = useState(false);
   const [docLangSearch, setDocLangSearch] = useState("");
@@ -2771,6 +2774,124 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         })}
                       </PopoverContent>
                     </Popover>
+
+                    {/* Style */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docStyle ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Pencil size={14} />
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Style</p>
+                        {["Narrative", "Descriptive", "Analytical", "Conversational", "Poetic", "Minimalist"].map(o => (
+                          <button key={o} onClick={() => setDocStyle(docStyle === o ? null : o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docStyle === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Goal */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${docGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Flag size={14} />
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Goal</p>
+                        {["Engagement", "Awareness", "Traffic", "Sales", "Education", "Community"].map(o => (
+                          <button key={o} onClick={() => setDocGoal(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docGoal === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Format */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docFormat !== "Informative" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <FileText size={14} />
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Format</TooltipContent></Tooltip>
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Format</p>
+                        {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
+                          <button key={o} onClick={() => setDocFormat(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docFormat === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Brand toggle + picker */}
+                    <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
+                    <Tooltip><TooltipTrigger asChild>
+                      <div className="flex items-center gap-1.5 shrink-0 cursor-pointer" onClick={() => {
+                        const hasBrand = !!localStorage.getItem("ra_brand_complete");
+                        if (!hasBrand && !brandToggle) {
+                          toast({ title: "No Brand Profile", description: "Set up your brand profile first to use this feature.", action: <a href="/brand" className="text-accent font-semibold text-[0.78rem] whitespace-nowrap hover:underline">Set Up Brand →</a> });
+                        } else {
+                          setBrandToggle(v => !v);
+                        }
+                      }}>
+                        <Palette size={13} className="text-muted" />
+                        <span className="text-[0.72rem] text-muted font-medium whitespace-nowrap">Brand</span>
+                        <div className={`w-8 h-[18px] rounded-full transition-colors relative ${brandToggle ? "bg-accent" : "bg-foreground/[0.15]"}`}>
+                          <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
+                        </div>
+                      </div>
+                    </TooltipTrigger><TooltipContent>Apply Brand</TooltipContent></Tooltip>
+
+                    {brandToggle && (
+                      <Popover open={brandPickerOpen} onOpenChange={setBrandPickerOpen}>
+                        <PopoverTrigger asChild>
+                          <button className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-accent/10 hover:bg-accent/15 transition-colors text-[0.72rem] font-semibold text-accent whitespace-nowrap">
+                            <div className="w-4 h-4 rounded bg-accent/20 flex items-center justify-center">
+                              <Palette size={10} className="text-accent" />
+                            </div>
+                            <span className="max-w-[100px] truncate">{activeBrandProfile.name}</span>
+                            <ChevronDown size={11} className="text-accent/60" />
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-56 p-0" side="bottom" align="start">
+                          <div className="p-2 border-b border-foreground/[0.06]">
+                            <div className="relative">
+                              <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
+                              <input
+                                value={brandSearch}
+                                onChange={e => setBrandSearch(e.target.value)}
+                                placeholder="Search Brand Kits"
+                                className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-foreground/[0.08] bg-background text-[0.78rem] outline-none focus:border-accent transition-colors"
+                              />
+                            </div>
+                          </div>
+                          <div className="p-1.5 max-h-[200px] overflow-y-auto">
+                            <p className="text-[0.68rem] font-semibold text-muted px-2 py-1">Select a Brand Kit</p>
+                            {brandsData.brands
+                              .filter(b => !brandSearch.trim() || b.name.toLowerCase().includes(brandSearch.toLowerCase()))
+                              .map(b => (
+                                <button
+                                  key={b.id}
+                                  onClick={() => switchBrandProfile(b.id)}
+                                  className={`w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left transition-colors ${
+                                    b.id === brandsData.activeId ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"
+                                  }`}
+                                >
+                                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
+                                    b.id === brandsData.activeId ? "bg-accent/20" : "bg-foreground/[0.06]"
+                                  }`}>
+                                    <Palette size={13} className={b.id === brandsData.activeId ? "text-accent" : "text-muted"} />
+                                  </div>
+                                  <span className="text-[0.78rem] font-medium truncate">{b.name}</span>
+                                  {b.id === brandsData.activeId && <Check size={14} className="ml-auto text-accent shrink-0" />}
+                                </button>
+                              ))}
+                          </div>
+                          <div className="p-1.5 border-t border-foreground/[0.06]">
+                            <a href="/brand" className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-foreground/[0.04] transition-colors text-[0.75rem] font-medium text-accent">
+                              <Plus size={13} /> New Brand Kit
+                            </a>
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    )}
                   </div>
                 )}
 
