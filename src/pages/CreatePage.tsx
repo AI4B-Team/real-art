@@ -1429,10 +1429,10 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
 
           {/* ── Bottom toolbar ── */}
           {hasType && (
-            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-nowrap">
-              {/* Child 1 — Scrollable pills (never wraps) */}
-              <div className="relative flex-1 min-w-0 overflow-hidden">
-                <div className="flex items-center gap-1.5 flex-nowrap overflow-x-auto overflow-y-hidden no-scrollbar">
+            <div className="border-t border-foreground/[0.06] px-4 py-2.5 flex items-center gap-0 flex-wrap">
+              {/* Child 1 — Wrapping pills */}
+              <div className="relative flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 flex-wrap">
 
                 {/* Asset Picker + */}
                 <Popover open={assetPickerOpen} onOpenChange={(open) => {
