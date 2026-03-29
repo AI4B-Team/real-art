@@ -3668,7 +3668,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           setAudioTranscript("");
                           toast({ title: "Added to prompt", description: "Transcription has been added to the prompt box." });
                         }} className="px-4 py-2 rounded-lg bg-accent text-white text-[0.82rem] font-bold hover:bg-accent/90 transition-colors">
-                          <span className="flex items-center gap-1.5"><ArrowUp size={13} /> Add to Prompt</span>
+                          <span className="flex items-center gap-1.5"><ArrowUp size={13} /> Add To Prompt</span>
                         </button>
                       </div>
                     </div>
