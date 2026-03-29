@@ -1953,14 +1953,36 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       <p className="text-[0.78rem] text-muted px-4 pt-3 pb-2">Select a voice</p>
                       {/* Record your own voice */}
                       <div className="px-2 pb-1">
-                        <button type="button" onClick={() => { setVoiceoverVoice("My Voice"); setMusicVoiceOpen(false); }}
-                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[0.84rem] transition-colors border border-dashed ${voiceoverVoice === "My Voice" ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] hover:bg-foreground/[0.04] text-foreground"}`}>
-                          <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center shrink-0"><Mic size={14} className="text-destructive" /></div>
-                          <div className="flex-1 text-left">
-                            <p className="font-medium text-[0.84rem]">Record Your Voice</p>
-                            <p className="text-[0.72rem] text-muted">Use your own voice</p>
+                        {isRecordingVoice ? (
+                          <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border border-dashed border-destructive bg-destructive/5">
+                            <div className="w-8 h-8 rounded-full bg-destructive/20 flex items-center justify-center shrink-0 animate-pulse"><Mic size={14} className="text-destructive" /></div>
+                            <div className="flex-1 text-left">
+                              <p className="font-medium text-[0.84rem] text-destructive">Recording… {Math.floor(recordingDuration / 60)}:{String(recordingDuration % 60).padStart(2, "0")}</p>
+                              <p className="text-[0.72rem] text-muted">Speak now</p>
+                            </div>
+                            <button type="button" onClick={stopVoiceRecording} className="px-3 py-1 rounded-md bg-destructive text-destructive-foreground text-[0.72rem] font-medium">Stop</button>
                           </div>
-                        </button>
+                        ) : voiceRecordingUrl ? (
+                          <div className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg border border-dashed border-accent bg-accent/5">
+                            <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0"><Mic size={14} className="text-accent" /></div>
+                            <div className="flex-1 text-left">
+                              <p className="font-medium text-[0.84rem]">My Voice</p>
+                              <p className="text-[0.72rem] text-muted">{Math.floor(recordingDuration / 60)}:{String(recordingDuration % 60).padStart(2, "0")} recorded</p>
+                            </div>
+                            <button type="button" onClick={() => { const a = new Audio(voiceRecordingUrl); a.play(); }} className="p-1.5 rounded-md hover:bg-foreground/[0.06]"><Play size={12} /></button>
+                            <button type="button" onClick={() => { clearVoiceRecording(); startVoiceRecording(); }} className="p-1.5 rounded-md hover:bg-foreground/[0.06] text-muted"><RotateCcw size={12} /></button>
+                            <button type="button" onClick={clearVoiceRecording} className="p-1.5 rounded-md hover:bg-foreground/[0.06] text-destructive"><X size={12} /></button>
+                          </div>
+                        ) : (
+                          <button type="button" onClick={startVoiceRecording}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[0.84rem] transition-colors border border-dashed border-foreground/[0.1] hover:bg-foreground/[0.04] text-foreground">
+                            <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center shrink-0"><Mic size={14} className="text-destructive" /></div>
+                            <div className="flex-1 text-left">
+                              <p className="font-medium text-[0.84rem]">Record Your Voice</p>
+                              <p className="text-[0.72rem] text-muted">Use your own voice</p>
+                            </div>
+                          </button>
+                        )}
                       </div>
                       <div className="h-px bg-foreground/[0.06] mx-4 my-1" />
                       <div className="max-h-[280px] overflow-y-auto px-2 pb-2">
