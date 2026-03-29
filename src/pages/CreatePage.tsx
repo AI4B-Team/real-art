@@ -2517,6 +2517,11 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
                           <button key={o} onClick={() => { setContentTone(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
+                        <div className="h-px bg-foreground/[0.08] my-1" />
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Style</p>
+                        {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
+                          <button key={o} onClick={() => { setContentStyle(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentStyle === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
                       </PopoverContent>
                     </Popover>
                     <Popover>
