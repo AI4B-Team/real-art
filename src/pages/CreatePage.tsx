@@ -490,6 +490,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [musicTitleOpen, setMusicTitleOpen] = useState(false);
   const [musicVoiceOpen, setMusicVoiceOpen] = useState(false);
   const [musicRefOpen, setMusicRefOpen] = useState(false);
+  const [playingGenre, setPlayingGenre] = useState<string | null>(null);
+  const genreAudioRef = useRef<HTMLAudioElement | null>(null);
 
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
@@ -2886,32 +2888,60 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 </button>
               </div>
               {selectedType === "audio" ? (
+                (() => {
+                  const AUDIO_GENRES = [
+                    { id: "R&B", label: "R&B", photo: "photo-1493225457124-a3eb161ffa5f", preview: "https://cdn.pixabay.com/audio/2024/11/29/audio_d50ea4fb9a.mp3" },
+                    { id: "Pop", label: "Pop", photo: "photo-1514525253161-7a46d19cd819", preview: "https://cdn.pixabay.com/audio/2024/09/10/audio_6e1cec32c4.mp3" },
+                    { id: "Jazz", label: "Jazz", photo: "photo-1511192336575-5a79af67a629", preview: "https://cdn.pixabay.com/audio/2024/09/03/audio_fabba56a05.mp3" },
+                    { id: "Country", label: "Country", photo: "photo-1506157786151-b8491531f063", preview: "https://cdn.pixabay.com/audio/2022/10/18/audio_14fbc71e1a.mp3" },
+                    { id: "Blues", label: "Blues", photo: "photo-1415201364774-f6f0bb35f28f", preview: "https://cdn.pixabay.com/audio/2024/04/15/audio_75b250a2e4.mp3" },
+                    { id: "Hip-Hop", label: "Hip-Hop", photo: "photo-1547355253-ff0740f6e8c1", preview: "https://cdn.pixabay.com/audio/2022/08/23/audio_d7c8e84e47.mp3" },
+                    { id: "Electronic", label: "Electronic", photo: "photo-1571330735066-03aaa9429d89", preview: "https://cdn.pixabay.com/audio/2024/07/19/audio_c2a6076944.mp3" },
+                    { id: "Classical", label: "Classical", photo: "photo-1507838153414-b4b713384a76", preview: "https://cdn.pixabay.com/audio/2024/02/14/audio_90fad4a4d1.mp3" },
+                    { id: "Rock", label: "Rock", photo: "photo-1498038432885-c6f3f1b912ee", preview: "https://cdn.pixabay.com/audio/2022/01/12/audio_79b079a462.mp3" },
+                    { id: "Lo-Fi", label: "Lo-Fi", photo: "photo-1459749411175-04bf5292ceea", preview: "https://cdn.pixabay.com/audio/2024/09/24/audio_24fdf8d00b.mp3" },
+                    { id: "Afrobeats", label: "Afrobeats", photo: "photo-1516450360452-9312f5e86fc7", preview: "https://cdn.pixabay.com/audio/2024/11/29/audio_d50ea4fb9a.mp3" },
+                    { id: "Reggae", label: "Reggae", photo: "photo-1508854710579-5cecc3a9ff17", preview: "https://cdn.pixabay.com/audio/2022/10/18/audio_14fbc71e1a.mp3" },
+                    { id: "Latin", label: "Latin", photo: "photo-1504609813442-a8924e83f76e", preview: "https://cdn.pixabay.com/audio/2024/09/10/audio_6e1cec32c4.mp3" },
+                    { id: "Soul", label: "Soul", photo: "photo-1493225457124-a3eb161ffa5f", preview: "https://cdn.pixabay.com/audio/2024/04/15/audio_75b250a2e4.mp3" },
+                    { id: "Ambient", label: "Ambient", photo: "photo-1470071459604-3b5ec3a7fe05", preview: "https://cdn.pixabay.com/audio/2024/09/24/audio_24fdf8d00b.mp3" },
+                  ];
+                  return (
                 <div className="grid grid-cols-5 sm:grid-cols-5 gap-2">
-                  {[
-                    { id: "R&B", label: "R&B", photo: "photo-1493225457124-a3eb161ffa5f" },
-                    { id: "Pop", label: "Pop", photo: "photo-1514525253161-7a46d19cd819" },
-                    { id: "Jazz", label: "Jazz", photo: "photo-1511192336575-5a79af67a629" },
-                    { id: "Country", label: "Country", photo: "photo-1506157786151-b8491531f063" },
-                    { id: "Blues", label: "Blues", photo: "photo-1415201364774-f6f0bb35f28f" },
-                    { id: "Hip-Hop", label: "Hip-Hop", photo: "photo-1547355253-ff0740f6e8c1" },
-                    { id: "Electronic", label: "Electronic", photo: "photo-1571330735066-03aaa9429d89" },
-                    { id: "Classical", label: "Classical", photo: "photo-1507838153414-b4b713384a76" },
-                    { id: "Rock", label: "Rock", photo: "photo-1498038432885-c6f3f1b912ee" },
-                    { id: "Lo-Fi", label: "Lo-Fi", photo: "photo-1459749411175-04bf5292ceea" },
-                    { id: "Afrobeats", label: "Afrobeats", photo: "photo-1516450360452-9312f5e86fc7" },
-                    { id: "Reggae", label: "Reggae", photo: "photo-1508854710579-5cecc3a9ff17" },
-                    { id: "Latin", label: "Latin", photo: "photo-1504609813442-a8924e83f76e" },
-                    { id: "Soul", label: "Soul", photo: "photo-1493225457124-a3eb161ffa5f" },
-                    { id: "Ambient", label: "Ambient", photo: "photo-1470071459604-3b5ec3a7fe05" },
-                  ].map(s => (
-                    <button key={s.id} type="button" onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
+                  {AUDIO_GENRES.map(s => (
+                    <button key={s.id} type="button"
+                      onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
+                      onMouseEnter={() => {
+                        if (genreAudioRef.current) { genreAudioRef.current.pause(); genreAudioRef.current.currentTime = 0; }
+                        const audio = new Audio(s.preview);
+                        audio.volume = 0.35;
+                        genreAudioRef.current = audio;
+                        setPlayingGenre(s.id);
+                        audio.play().catch(() => {});
+                        audio.onended = () => setPlayingGenre(null);
+                      }}
+                      onMouseLeave={() => {
+                        if (genreAudioRef.current) { genreAudioRef.current.pause(); genreAudioRef.current.currentTime = 0; }
+                        setPlayingGenre(null);
+                      }}
                       className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
-                      <img src={`https://images.unsplash.com/${s.photo}?w=200&h=200&fit=crop&q=78`} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <div className="relative w-full">
+                        <img src={`https://images.unsplash.com/${s.photo}?w=200&h=200&fit=crop&q=78`} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                        <div className={`absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-opacity ${playingGenre === s.id ? "opacity-100" : "opacity-0"}`}>
+                          <span className="flex items-center gap-[1px]">
+                            <span className="w-[2px] h-2 bg-white rounded-full animate-pulse" />
+                            <span className="w-[2px] h-3 bg-white rounded-full animate-pulse [animation-delay:150ms]" />
+                            <span className="w-[2px] h-1.5 bg-white rounded-full animate-pulse [animation-delay:300ms]" />
+                          </span>
+                        </div>
+                      </div>
                       <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
                       {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
                     </button>
                   ))}
                 </div>
+                  );
+                })()
               ) : selectedType === "video" ? (
                 <div className="grid grid-cols-4 gap-2">
                   {[
