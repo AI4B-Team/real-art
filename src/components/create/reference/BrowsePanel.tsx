@@ -98,7 +98,9 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
 
   // Browse tabs
   const isUpload = tab === "upload";
-  const pool = !isUpload ? POOLS[tab as Exclude<SourceTab, "upload">] : [];
+  const isImport = tab === "import";
+  const isBrowse = !isUpload && !isImport;
+  const pool = isBrowse ? POOLS[tab as Exclude<SourceTab, "upload" | "import">] : [];
   const filtered = pool
     .filter(i => mediaFilter === "all" || i.type === mediaFilter)
     .filter(i => !search || i.title.toLowerCase().includes(search.toLowerCase()));
