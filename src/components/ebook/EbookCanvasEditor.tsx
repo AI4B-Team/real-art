@@ -895,7 +895,7 @@ const EbookCanvasEditor = ({
                               <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
                             </div>
                           )}
-                          {elems.map(el => renderElement(el))}
+                          {elems.map(el => renderElement(el, page.id))}
                           <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
