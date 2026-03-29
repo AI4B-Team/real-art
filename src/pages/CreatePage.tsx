@@ -83,6 +83,7 @@ import FramePickerModal from "@/components/create/FramePickerModal";
 import MusicSamples from "@/components/create/MusicSamples";
 import PhotoshootThemes from "@/components/create/PhotoshootThemes";
 import SocialContentPanel from "@/components/create/SocialContentPanel";
+import LanguageDropdownContent from "@/components/LanguageDropdownContent";
 import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
@@ -1945,11 +1946,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             <Languages size={14} />
                           </button>
                         </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                        <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                          <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                          {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                            <button key={o} onClick={() => { setDesignLanguage(designLanguage === o ? null : o); setDesignLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${designLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                          ))}
+                        <PopoverContent className="w-52 p-1.5" side="top" align="start">
+                          <LanguageDropdownContent selected={designLanguage} onSelect={(lang) => { setDesignLanguage(designLanguage === lang ? null : lang); setDesignLangOpen(false); }} />
                         </PopoverContent>
                       </Popover>
                     )}
@@ -2199,11 +2197,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                               <Languages size={14} />
                             </button>
                           </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                            <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                            {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                              <button key={o} onClick={() => { setPresLanguage(presLanguage === o ? null : o); setPresLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${presLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                            ))}
+                          <PopoverContent className="w-52 p-1.5" side="top" align="start">
+                            <LanguageDropdownContent selected={presLanguage} onSelect={(lang) => { setPresLanguage(presLanguage === lang ? null : lang); setPresLangOpen(false); }} />
                           </PopoverContent>
                         </Popover>
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
@@ -2263,11 +2258,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
                           </button>
                         </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                        <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                          <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                          {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                            <button key={o} onClick={() => { setContentLanguage(o); setContentLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                          ))}
+                        <PopoverContent className="w-52 p-1.5" side="top" align="start">
+                          <LanguageDropdownContent selected={contentLanguage} onSelect={(lang) => { setContentLanguage(lang); setContentLangOpen(false); }} />
                         </PopoverContent>
                       </Popover>
                     <Popover>
