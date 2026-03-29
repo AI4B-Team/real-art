@@ -3637,7 +3637,12 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       </div>
                       <p className="text-[0.92rem] font-bold text-foreground mb-2">Transcription Complete</p>
                       <div className="w-full max-w-lg px-4 py-3 rounded-xl bg-background border border-foreground/[0.08] mb-4">
-                        <p className="text-[0.85rem] text-foreground leading-relaxed">{audioTranscript}</p>
+                        <textarea
+                          value={audioTranscript}
+                          onChange={e => setAudioTranscript(e.target.value)}
+                          className="w-full text-[0.85rem] text-foreground leading-relaxed bg-transparent border-none outline-none resize-none min-h-[60px]"
+                          rows={3}
+                        />
                       </div>
                       <div className="flex items-center gap-2">
                         <button type="button" onClick={() => setAudioTranscript("")} className="px-4 py-2 rounded-lg bg-foreground/[0.06] text-foreground text-[0.82rem] font-medium hover:bg-foreground/[0.1] transition-colors">Discard</button>
