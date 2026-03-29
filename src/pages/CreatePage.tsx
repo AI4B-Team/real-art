@@ -3788,7 +3788,7 @@ export default function CreatePage() {
                           <div key={plan.name} className={`p-5 rounded-xl border ${plan.name === "Pro" ? "border-accent bg-accent/5" : "border-foreground/[0.06] bg-foreground/[0.02]"}`}>
                             <h4 className="text-[0.82rem] font-bold mb-1">{plan.name}</h4>
                             <p className="text-[1.2rem] font-black mb-2">{plan.price}<span className="text-[0.72rem] text-muted font-normal">{plan.price !== "Custom" ? "/mo" : ""}</span></p>
-                            <button className={`w-full py-2 rounded-lg text-[0.75rem] font-semibold ${plan.name === "Pro" ? "bg-accent text-white" : "bg-foreground/[0.06]"}`}>Get Started</button>
+                            <button onClick={() => toast({ title: `${plan.name} plan selected!` })} className={`w-full py-2 rounded-lg text-[0.75rem] font-semibold hover:opacity-90 transition-opacity ${plan.name === "Pro" ? "bg-accent text-white" : "bg-foreground/[0.06]"}`}>Get Started</button>
                           </div>
                         ))}
                       </div>
