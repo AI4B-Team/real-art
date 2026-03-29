@@ -428,7 +428,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designFinishOpen, setDesignFinishOpen] = useState(false);
   const [designFoldType, setDesignFoldType] = useState("Tri-Fold");
   const [designFoldOpen, setDesignFoldOpen] = useState(false);
-  const [designPages, setDesignPages] = useState(6);
+  const [designPages, setDesignPages] = useState<number | null>(null);
   const [designPagesOpen, setDesignPagesOpen] = useState(false);
   const [designChartType, setDesignChartType] = useState("Mixed");
   const [designChartOpen, setDesignChartOpen] = useState(false);
@@ -786,7 +786,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignPlatform("");
     setDesignFinish("Matte");
     setDesignFoldType("Tri-Fold");
-    setDesignPages(6);
+    setDesignPages(null);
     setDesignChartType("Mixed");
     setDesignLayout("Vertical");
     setDesignSize("A4");
@@ -2283,8 +2283,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         </Popover>
                         <Popover open={designPagesOpen} onOpenChange={setDesignPagesOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-foreground/[0.04] text-muted hover:text-foreground">
-                              <Layers size={12} />{designPages}pg
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designPages ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <FileText size={12} />{designPages ? `${designPages}pg` : "Pages"}
                             </button>
                           </PopoverTrigger></TooltipTrigger><TooltipContent>Pages</TooltipContent></Tooltip>
                           <PopoverContent className="w-32 p-1.5" align="start" sideOffset={6}>
