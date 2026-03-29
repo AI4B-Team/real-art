@@ -4164,15 +4164,23 @@ export default function CreatePage() {
                   onChange={e => setAppBuilderInput(e.target.value)}
                   onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAppFollowUp(); } }}
                   placeholder="Ask me anything"
-                  className="flex-1 px-2 py-3.5 pr-12 bg-transparent text-[0.84rem] outline-none placeholder:text-muted/50"
+                  className="flex-1 px-2 py-3.5 bg-transparent text-[0.84rem] outline-none placeholder:text-muted/50"
                 />
-                <button
-                  onClick={handleAppFollowUp}
-                  disabled={!appBuilderInput.trim()}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-muted hover:text-foreground transition-colors disabled:opacity-30"
-                >
-                  <Mic size={16} />
-                </button>
+                <div className="flex items-center gap-1 pr-2 shrink-0">
+                  <button
+                    type="button"
+                    className="p-1.5 rounded-lg text-muted hover:text-foreground transition-colors"
+                  >
+                    <Mic size={16} />
+                  </button>
+                  <button
+                    onClick={handleAppFollowUp}
+                    disabled={!appBuilderInput.trim()}
+                    className="p-1.5 rounded-lg bg-accent text-accent-foreground hover:bg-accent/90 transition-colors disabled:opacity-30"
+                  >
+                    <Send size={16} />
+                  </button>
+                </div>
               </div>
               <input ref={appAttachmentRef} type="file" multiple accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv" className="hidden" onChange={() => { toast({ title: "File attached" }); if (appAttachmentRef.current) appAttachmentRef.current.value = ""; }} />
             </div>
