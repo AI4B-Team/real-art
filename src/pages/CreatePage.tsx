@@ -2570,7 +2570,7 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                             </button>
                           ))}
                           <button type="button" className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg text-[0.82rem] hover:bg-foreground/[0.04] text-muted transition-colors mt-1">
-                            <Plus size={13} /><span>Create new</span>
+                            <Plus size={13} /><span>Create New</span>
                             <SlidersHorizontal size={12} className="ml-auto" />
                           </button>
                         </div>
