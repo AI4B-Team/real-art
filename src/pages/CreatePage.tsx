@@ -1722,6 +1722,45 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                   </>
                 )}
 
+                {/* Language — after reference, for design/content/document modes */}
+                {selectedType === "design" && selectedSubMode && selectedSubMode !== "presentation" && (
+                  <Popover open={designLangOpen} onOpenChange={setDesignLangOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Languages size={14} />
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                    <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
+                      <LanguageDropdownContent selected={designLanguage} onSelect={(lang) => { setDesignLanguage(designLanguage === lang ? null : lang); setDesignLangOpen(false); }} />
+                    </PopoverContent>
+                  </Popover>
+                )}
+                {selectedType === "design" && selectedSubMode === "presentation" && (
+                  <Popover open={presLangOpen} onOpenChange={setPresLangOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${presLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Languages size={14} />
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                    <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
+                      <LanguageDropdownContent selected={presLanguage} onSelect={(lang) => { setPresLanguage(presLanguage === lang ? null : lang); setPresLangOpen(false); }} />
+                    </PopoverContent>
+                  </Popover>
+                )}
+                {selectedType === "content" && selectedSubMode && (
+                  <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Languages size={14} />
+                        {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                    <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
+                      <LanguageDropdownContent selected={contentLanguage} onSelect={(lang) => { setContentLanguage(lang); setContentLangOpen(false); }} />
+                    </PopoverContent>
+                  </Popover>
+                )}
+
                 {/* Scenes — story mode */}
                 {selectedType === "video" && selectedSubMode === "story" && (
                   <Popover>
