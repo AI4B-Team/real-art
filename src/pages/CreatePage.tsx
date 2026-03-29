@@ -1154,6 +1154,34 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
               </div>
             )}
 
+            {/* Attachment + button */}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button type="button" onClick={() => attachmentRef.current?.click()} className="shrink-0 flex items-center justify-center w-8 h-8 rounded-lg hover:bg-foreground/[0.06] transition-colors mt-[3px]">
+                  <Plus size={18} className="text-muted hover:text-foreground" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">Attach</TooltipContent>
+            </Tooltip>
+            <input
+              ref={attachmentRef}
+              type="file"
+              accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.txt,.csv"
+              multiple
+              className="hidden"
+              onChange={e => {
+                const files = Array.from(e.target.files || []);
+                const newAttachments = files.map(f => ({
+                  name: f.name,
+                  url: URL.createObjectURL(f),
+                  type: f.type.startsWith("image") ? "image" : f.type.startsWith("video") ? "video" : f.type.startsWith("audio") ? "audio" : "file",
+                }));
+                setAttachments(prev => [...prev, ...newAttachments]);
+                if (attachmentRef.current) attachmentRef.current.value = "";
+                toast({ title: `${files.length} file${files.length > 1 ? "s" : ""} attached` });
+              }}
+            />
+
             {/* Textarea + optional Recording overlay */}
             <div className="relative flex-1 min-h-[36px]">
               <div
