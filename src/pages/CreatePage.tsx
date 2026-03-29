@@ -326,7 +326,7 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
 
-function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void }) {
+function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void; onModeChange?: (type: ContentType | null, subMode: string | null) => void }) {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedType, setSelectedType] = useState<ContentType | null>(() => {
@@ -392,7 +392,8 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
   const [contentLanguage, setContentLanguage] = useState<string | null>(null);
   const [contentToneOpen, setContentToneOpen] = useState(false);
   const [contentLangOpen, setContentLangOpen] = useState(false);
-  const [contentFrequency, setContentFrequency] = useState("Daily");
+  const [contentFrequency, setContentFrequency] = useState("7 Days");
+  const [customDays, setCustomDays] = useState("");
   const [contentTime, setContentTime] = useState("9:00 AM");
   const [contentStyle, setContentStyle] = useState("Informative");
 
@@ -683,6 +684,11 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
     }
   }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
+
+  // Notify parent of mode changes
+  useEffect(() => {
+    onModeChange?.(selectedType, selectedSubMode);
+  }, [selectedType, selectedSubMode, onModeChange]);
 
   const typeCfg = selectedType ? CONTENT_TYPES.find(t => t.id === selectedType)! : null;
   const subModes = selectedType ? SUB_MODES[selectedType] : [];
@@ -2252,15 +2258,30 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                     </Popover>
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentFrequency !== "Daily" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentFrequency !== "7 Days" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
                           <Calendar size={14} />
                         </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Frequency</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Frequency</p>
-                        {["Daily", "Twice Daily", "3x/Week", "Weekly", "Bi-Weekly", "Monthly"].map(o => (
-                          <button key={o} onClick={() => setContentFrequency(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Days</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-1.5" side="top" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Select How Many Days Of Content To Generate</p>
+                        {["1 Day", "3 Days", "7 Days", "14 Days", "30 Days", "60 Days", "90 Days"].map(o => (
+                          <button key={o} onClick={() => { setContentFrequency(o); setCustomDays(""); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
+                        <div className="px-2 py-1.5">
+                          <p className={`text-[0.78rem] font-medium mb-1 ${contentFrequency.endsWith(" Days (Custom)") ? "text-accent font-semibold" : ""}`}>Custom Days</p>
+                          <input
+                            type="number"
+                            min={1}
+                            max={365}
+                            value={customDays}
+                            onChange={e => {
+                              setCustomDays(e.target.value);
+                              if (e.target.value) setContentFrequency(`${e.target.value} Days (Custom)`);
+                            }}
+                            placeholder="Enter number of days"
+                            className="w-full px-2 py-1.5 rounded-md border border-foreground/10 bg-background text-[0.78rem] outline-none focus:border-accent"
+                          />
+                        </div>
                       </PopoverContent>
                     </Popover>
                     <Popover>
@@ -3422,6 +3443,8 @@ export default function CreatePage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
   const [generated, setGenerated] = useState(false);
+  const [currentMode, setCurrentMode] = useState<{ type: ContentType | null; subMode: string | null }>({ type: null, subMode: null });
+  const isSocialMode = currentMode.type === "content" && currentMode.subMode === "social";
   const [creations, setCreations] = useState<UserCreation[]>([]);
   const [loadingCreations, setLoadingCreations] = useState(true);
 
@@ -3716,11 +3739,11 @@ export default function CreatePage() {
     <PageShell>
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0 overflow-visible">
         <div className="mb-10">
-          <PromptBox onGenerate={handleGenerate} />
+          <PromptBox onGenerate={handleGenerate} onModeChange={(type, subMode) => setCurrentMode({ type, subMode })} />
         </div>
       </div>
 
-      <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
+      {!isSocialMode && <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-1">
             {TABS.map(tab => (
@@ -3923,7 +3946,7 @@ export default function CreatePage() {
             </div>
           </div>
         )}
-      </div>
+      </div>}
     </PageShell>
   );
 }
