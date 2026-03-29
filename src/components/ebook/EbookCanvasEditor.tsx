@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import {
-  MousePointer2, Type, Square, Circle, Image as ImageIcon,
+  MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
   Minus, Hand, ChevronLeft, ChevronRight,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Bold, Italic, Underline,
