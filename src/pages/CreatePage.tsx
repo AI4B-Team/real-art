@@ -2260,21 +2260,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                             </Popover>
                           );
                         })()}
-                        <Popover open={designTextStyleOpen} onOpenChange={setDesignTextStyleOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designTextStyle !== "Bold" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Pencil size={12} />{designTextStyle}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Text Style</TooltipContent></Tooltip>
-                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
-                            {["Bold", "Clean", "Outlined", "3D", "Gradient", "Neon", "None"].map(t => (
-                              <button key={t} type="button" onClick={() => { setDesignTextStyle(t); setDesignTextStyleOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designTextStyle === t ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {t}{designTextStyle === t && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                       </>
                     )}
 
