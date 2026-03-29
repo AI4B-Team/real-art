@@ -2412,16 +2412,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     {/* ── Presentation controls ── */}
                     {selectedSubMode === "presentation" && (
                       <>
-                        <Popover open={presLangOpen} onOpenChange={setPresLangOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${presLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Languages size={14} />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                          <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
-                            <LanguageDropdownContent selected={presLanguage} onSelect={(lang) => { setPresLanguage(presLanguage === lang ? null : lang); setPresLangOpen(false); }} />
-                          </PopoverContent>
-                        </Popover>
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presAudience !== "Casual" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
