@@ -2878,6 +2878,33 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
 
         {/* ── Panels below prompt box ── */}
         <div className="max-w-[1100px] mx-auto">
+          {activePanel === "chart" && (
+            <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[0.85rem] font-bold">Chart Style</h3>
+                <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="grid grid-cols-6 gap-2">
+                {[
+                  { id: "Mixed", img: chartMixed },
+                  { id: "Bar Charts", img: chartBar },
+                  { id: "Pie Charts", img: chartPie },
+                  { id: "Line Graphs", img: chartLine },
+                  { id: "Icons Only", img: chartIcons },
+                  { id: "Numbers Only", img: chartNumbers },
+                ].map(c => (
+                  <button key={c.id} type="button" onClick={() => { setDesignChartType(c.id); setActivePanel(null); }}
+                    className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${designChartType === c.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                    <img src={c.img} alt={c.id} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                    <span className={`text-[0.68rem] font-medium leading-none ${designChartType === c.id ? "text-accent" : "text-foreground/70"}`}>{c.id}</span>
+                    {designChartType === c.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
