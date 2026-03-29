@@ -1,8 +1,10 @@
 import { useState, useRef } from "react";
 import {
   Search, LayoutGrid, Image as ImageIcon, Check,
-  Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles
+  Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles,
+  Link, ChevronRight, ArrowLeft, X
 } from "lucide-react";
+import { toast } from "sonner";
 import type { BrowseItem, MediaFilter, ReferenceImage, SourceTab } from "./types";
 import { DUMMY_CREATIONS, DUMMY_STOCK, DUMMY_COMMUNITY, DUMMY_COLLECTIONS, DUMMY_TRENDING } from "./data";
 
@@ -32,12 +34,32 @@ const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
   trending: DUMMY_TRENDING,
 };
 
+const CLOUD_SOURCES = [
+  {
+    id: "google-drive",
+    label: "Google Drive",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg",
+  },
+  {
+    id: "dropbox",
+    label: "Dropbox",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/7/78/Dropbox_Icon.svg",
+  },
+  {
+    id: "onedrive",
+    label: "OneDrive",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Microsoft_Office_OneDrive_%282019%E2%80%93present%29.svg",
+  },
+];
+
 export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
   const [tab, setTab] = useState<SourceTab>("upload");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [dragActive, setDragActive] = useState(false);
+  const [importView, setImportView] = useState<"none" | "menu" | "link">("none");
+  const [linkUrl, setLinkUrl] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const refIds = new Set(references.map(r => r.id));
@@ -53,6 +75,25 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
     e.preventDefault();
     setDragActive(false);
     handleFiles(e.dataTransfer.files);
+  };
+
+  const handlePasteLink = () => {
+    const url = linkUrl.trim();
+    if (!url) return;
+    try {
+      new URL(url);
+      const name = url.split("/").pop() || "Linked image";
+      onAdd({ id: crypto.randomUUID(), src: url, name });
+      setLinkUrl("");
+      setImportView("none");
+      toast.success("Image added from link");
+    } catch {
+      toast.error("Please enter a valid URL");
+    }
+  };
+
+  const handleCloudSource = (label: string) => {
+    toast.info(`${label} integration coming soon`);
   };
 
   // Browse tabs
@@ -125,57 +166,131 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
 
       {/* Upload tab content */}
       {isUpload && (
-        <div
-          className={`rounded-xl border-2 border-dashed transition-colors p-8 flex flex-col items-center justify-center min-h-[260px] ${
-            dragActive ? "border-accent bg-accent/5" : "border-foreground/[0.10] bg-foreground/[0.02]"
-          }`}
-          onDragOver={e => { e.preventDefault(); setDragActive(true); }}
-          onDragLeave={() => setDragActive(false)}
-          onDrop={handleDrop}
-        >
-          {/* Fanned card stack */}
-          <div className="relative w-[180px] h-[120px] mb-5">
-            {[
-              { img: "photo-1506744038136-46273834b3fb", rotate: -20, x: -75, z: 1 },
-              { img: "photo-1470071459604-3b5ec3a7fe05", rotate: -10, x: -35, z: 2 },
-              { img: "photo-1506794778202-cad84cf45f1d", rotate: 0, x: 10, z: 3 },
-              { img: "photo-1531746020798-e6953c6e8e04", rotate: 10, x: 55, z: 4 },
-              { img: "photo-1534528741775-53994a69daeb", rotate: 20, x: 95, z: 5 },
-            ].map((card, i) => (
-              <div
-                key={i}
-                className="absolute top-0 w-[80px] h-[110px] rounded-xl overflow-hidden shadow-lg border-[3px] border-background"
-                style={{
-                  transform: `translateX(${card.x}px) rotate(${card.rotate}deg)`,
-                  zIndex: card.z,
-                  left: "calc(50% - 40px)",
-                }}
-              >
-                <img
-                  src={`https://images.unsplash.com/${card.img}?w=200&h=280&fit=crop&q=75`}
-                  alt=""
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
+        <div className="space-y-3">
+          {/* Drag & drop zone */}
+          <div
+            className={`rounded-xl border-2 border-dashed transition-colors p-6 flex flex-col items-center justify-center min-h-[180px] ${
+              dragActive ? "border-accent bg-accent/5" : "border-foreground/[0.10] bg-foreground/[0.02]"
+            }`}
+            onDragOver={e => { e.preventDefault(); setDragActive(true); }}
+            onDragLeave={() => setDragActive(false)}
+            onDrop={handleDrop}
+          >
+            <div className="relative w-[140px] h-[90px] mb-4">
+              {[
+                { img: "photo-1506744038136-46273834b3fb", rotate: -20, x: -55, z: 1 },
+                { img: "photo-1470071459604-3b5ec3a7fe05", rotate: -10, x: -25, z: 2 },
+                { img: "photo-1506794778202-cad84cf45f1d", rotate: 0, x: 8, z: 3 },
+                { img: "photo-1531746020798-e6953c6e8e04", rotate: 10, x: 40, z: 4 },
+                { img: "photo-1534528741775-53994a69daeb", rotate: 20, x: 70, z: 5 },
+              ].map((card, i) => (
+                <div
+                  key={i}
+                  className="absolute top-0 w-[60px] h-[82px] rounded-lg overflow-hidden shadow-lg border-2 border-background"
+                  style={{
+                    transform: `translateX(${card.x}px) rotate(${card.rotate}deg)`,
+                    zIndex: card.z,
+                    left: "calc(50% - 30px)",
+                  }}
+                >
+                  <img
+                    src={`https://images.unsplash.com/${card.img}?w=200&h=280&fit=crop&q=75`}
+                    alt=""
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="text-[0.85rem] font-bold text-foreground mb-0.5">Drag & Drop Files Here</p>
+            <p className="text-[0.72rem] text-muted/60 mb-3">Images — up to 50MB each</p>
+            <button
+              onClick={() => fileRef.current?.click()}
+              className="px-5 py-2 rounded-lg bg-foreground text-primary-foreground text-[0.8rem] font-bold hover:bg-accent transition-colors"
+            >
+              Browse Files
+            </button>
+            <input
+              ref={fileRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={e => { handleFiles(e.target.files); if (e.target) e.target.value = ""; }}
+            />
           </div>
 
-          <p className="text-[0.92rem] font-bold text-foreground mb-1">Drag & Drop Files Here</p>
-          <p className="text-[0.75rem] text-muted/60 mb-4">Images — up to 50MB each</p>
-          <button
-            onClick={() => fileRef.current?.click()}
-            className="px-6 py-2.5 rounded-lg bg-foreground text-primary-foreground text-[0.82rem] font-bold hover:bg-accent transition-colors"
-          >
-            Browse Files
-          </button>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={e => { handleFiles(e.target.files); if (e.target) e.target.value = ""; }}
-          />
+          {/* Import section */}
+          {importView === "none" && (
+            <button
+              onClick={() => setImportView("menu")}
+              className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/15 hover:bg-foreground/[0.02] transition-all"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center">
+                  <FolderOpen size={15} className="text-muted" />
+                </div>
+                <span className="text-[0.82rem] font-semibold">Import</span>
+                <span className="text-[0.65rem] font-bold px-1.5 py-0.5 rounded-full bg-accent/15 text-accent">New</span>
+              </div>
+              <ChevronRight size={14} className="text-muted" />
+            </button>
+          )}
+
+          {importView === "menu" && (
+            <div className="rounded-xl border border-foreground/[0.08] overflow-hidden">
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06]">
+                <button onClick={() => setImportView("none")} className="p-1 rounded-md hover:bg-foreground/[0.06] transition-colors">
+                  <ArrowLeft size={14} className="text-muted" />
+                </button>
+                <span className="text-[0.82rem] font-bold">Import</span>
+              </div>
+              {CLOUD_SOURCES.map(cs => (
+                <button
+                  key={cs.id}
+                  onClick={() => handleCloudSource(cs.label)}
+                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-foreground/[0.03] transition-colors border-b border-foreground/[0.04] last:border-b-0"
+                >
+                  <img src={cs.logo} alt={cs.label} className="w-5 h-5 object-contain" />
+                  <span className="text-[0.82rem] font-medium">{cs.label}</span>
+                </button>
+              ))}
+              <button
+                onClick={() => setImportView("link")}
+                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-foreground/[0.03] transition-colors"
+              >
+                <Link size={16} className="text-muted" />
+                <span className="text-[0.82rem] font-medium text-muted">Paste an image link</span>
+              </button>
+            </div>
+          )}
+
+          {importView === "link" && (
+            <div className="rounded-xl border border-foreground/[0.08] p-4">
+              <div className="flex items-center gap-2 mb-3">
+                <button onClick={() => setImportView("menu")} className="p-1 rounded-md hover:bg-foreground/[0.06] transition-colors">
+                  <ArrowLeft size={14} className="text-muted" />
+                </button>
+                <span className="text-[0.82rem] font-bold">Paste Image Link</span>
+              </div>
+              <div className="flex gap-2">
+                <input
+                  value={linkUrl}
+                  onChange={e => setLinkUrl(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && handlePasteLink()}
+                  placeholder="https://example.com/image.jpg"
+                  className="flex-1 px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.8rem] outline-none focus:border-accent transition-colors"
+                  autoFocus
+                />
+                <button
+                  onClick={handlePasteLink}
+                  disabled={!linkUrl.trim()}
+                  className="px-4 py-2 rounded-lg bg-accent text-accent-foreground text-[0.8rem] font-bold hover:bg-accent/85 transition-colors disabled:opacity-40"
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
