@@ -440,9 +440,27 @@ const EbookCanvasEditor = ({
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el)}
-          onDoubleClick={() => imageInputRef.current?.click()}>
+          onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
+          {/* Floating action bar */}
+          {isSelected && (
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] px-2 py-1.5 z-50"
+              onMouseDown={e => e.stopPropagation()}>
+              <button onClick={() => replaceImageInputRef.current?.click()}
+                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
+                <Replace className="w-3.5 h-3.5" />Replace
+              </button>
+              <button onClick={() => setShowAIEditModal(true)}
+                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
+                <Sparkles className="w-3.5 h-3.5 text-accent" />Edit
+              </button>
+              <button onClick={deleteElement}
+                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors">
+                <Trash2 className="w-3.5 h-3.5" />Delete
+              </button>
+            </div>
+          )}
         </div>
       );
     }
