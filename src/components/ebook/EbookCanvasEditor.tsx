@@ -889,8 +889,36 @@ const EbookCanvasEditor = ({
           )}
         </div>
 
-        {/* Hidden file input */}
+        {/* Hidden file inputs */}
         <input ref={imageInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+        <input ref={replaceImageInputRef} type="file" accept="image/*" className="hidden" onChange={handleReplaceImage} />
+
+        {/* AI Edit Modal */}
+        <Dialog open={showAIEditModal} onOpenChange={setShowAIEditModal}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-accent" />
+                Edit With AI
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-4">
+              <p className="text-sm text-muted-foreground mb-3">Describe how you want to modify this image:</p>
+              <textarea
+                value={aiEditPrompt}
+                onChange={e => setAIEditPrompt(e.target.value)}
+                placeholder="e.g., Make the image brighter, add a warm filter, remove the background..."
+                className="w-full min-h-[100px] px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent resize-none"
+              />
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowAIEditModal(false)}>Cancel</Button>
+              <Button onClick={handleAIEdit} disabled={!aiEditPrompt.trim()} className="bg-accent hover:bg-accent/90 text-white gap-2">
+                <Sparkles className="w-4 h-4" />Apply Edit
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
     </TooltipProvider>
   );
