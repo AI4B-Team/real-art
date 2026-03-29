@@ -1832,20 +1832,20 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
                     className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle !== "Minimalist") ? (selectedType === "audio" ? "bg-destructive/10 text-destructive" : "bg-accent/10 text-accent") : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    {selectedType === "audio" ? <Music size={12} /> : selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedType === "audio" ? (selectedStyle !== "None" ? selectedStyle : "Genre") : selectedSubMode === "presentation" ? presDeckStyle : selectedStyle !== "None" ? selectedStyle : "Style"}
+                    {selectedType === "audio" ? <Music size={12} /> : selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedType === "audio" ? (selectedStyle !== "None" ? selectedStyle : "Style") : selectedSubMode === "presentation" ? presDeckStyle : selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
-                </TooltipTrigger><TooltipContent>{selectedType === "audio" ? "Genre" : "Style"}</TooltipContent></Tooltip>
+                </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
 
                 {/* Music Style — Instrumental/Vocals (audio music mode only) */}
                 {selectedType === "audio" && selectedSubMode === "music" && (
                   <Popover open={musicStyleOpen} onOpenChange={setMusicStyleOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${musicStyle ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <Headphones size={12} />{musicStyle || "Style"}
+                        <Headphones size={12} />{musicStyle || "Music"}
                       </button>
-                    </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Music</TooltipContent></Tooltip>
                     <PopoverContent className="w-64 p-3" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
-                      <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Style</p>
+                      <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Music</p>
                       <div className="flex gap-2 mb-3">
                         {(["Instrumental", "Vocals"] as const).map(s => (
                           <button key={s} type="button" onClick={() => { setMusicStyle(musicStyle === s ? null : s); if (s === "Vocals" && musicStyle !== "Vocals") { setMusicStyleOpen(false); setActivePanel("music"); } }}
@@ -2882,7 +2882,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[0.85rem] font-bold">{selectedType === "audio" ? "Genre" : selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "audio" ? "Style" : selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
