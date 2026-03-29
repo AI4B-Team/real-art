@@ -325,7 +325,7 @@ export default function SocialContentPanel({ onClose, frequency = "7 Days" }: So
         <div className="flex items-center justify-center gap-4 mt-2">
           <span className="text-[0.72rem] text-muted">
             {selectedPlatforms.size} platform{selectedPlatforms.size !== 1 ? "s" : ""} selected
-            {selectedPlatforms.size > 0 && ` · ${selectedPlatforms.size * 7} posts will be generated`}
+            {selectedPlatforms.size > 0 && ` · ${selectedPlatforms.size * (parseInt(frequency) || 7)} posts will be generated`}
           </span>
         </div>
         {showBrandPrompt && (
