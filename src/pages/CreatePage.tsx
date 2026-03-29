@@ -1888,6 +1888,23 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                   <div className="flex items-center gap-0.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
 
+                    {/* Language — all design sub-modes except presentation (which has its own) */}
+                    {selectedSubMode !== "presentation" && (
+                      <Popover open={designLangOpen} onOpenChange={setDesignLangOpen}>
+                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                          <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                            <Languages size={14} />
+                          </button>
+                        </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                        <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                          <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
+                          {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
+                            <button key={o} onClick={() => { setDesignLanguage(designLanguage === o ? null : o); setDesignLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${designLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
+                    )}
+
                     {/* ── Logo controls ── */}
                     {selectedSubMode === "logo" && (
                       <>
@@ -2127,6 +2144,19 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                     {/* ── Presentation controls ── */}
                     {selectedSubMode === "presentation" && (
                       <>
+                        <Popover open={presLangOpen} onOpenChange={setPresLangOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${presLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Languages size={14} />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                            <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
+                            {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
+                              <button key={o} onClick={() => { setPresLanguage(presLanguage === o ? null : o); setPresLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${presLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presAudience !== "Casual" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2168,37 +2198,7 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                             ))}
                           </PopoverContent>
                         </Popover>
-                        <Popover open={presLangOpen} onOpenChange={setPresLangOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${presLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Languages size={14} />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                            <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                            {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                              <button key={o} onClick={() => { setPresLanguage(presLanguage === o ? null : o); setPresLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${presLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                       </>
-                    )}
-
-                    {/* Language — all design sub-modes (except presentation which has its own) */}
-                    {selectedSubMode !== "presentation" && (
-                      <Popover open={designLangOpen} onOpenChange={setDesignLangOpen}>
-                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                          <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                            <Languages size={14} />
-                          </button>
-                        </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                        <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                          <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                          {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                            <button key={o} onClick={() => { setDesignLanguage(designLanguage === o ? null : o); setDesignLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${designLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                          ))}
-                        </PopoverContent>
-                      </Popover>
                     )}
                   </div>
                 )}
@@ -2207,6 +2207,22 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                 {selectedType === "content" && selectedSubMode && (
                   <div className="flex items-center gap-0.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
+                    {selectedSubMode !== "social" && (
+                      <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
+                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                          <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                            <Languages size={14} />
+                            {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
+                          </button>
+                        </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                        <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                          <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
+                          {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
+                            <button key={o} onClick={() => { setContentLanguage(o); setContentLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
+                    )}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2231,20 +2247,6 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
                           <button key={o} onClick={() => { setContentTone(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
-                    <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Languages size={14} />
-                          {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                        {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                          <button key={o} onClick={() => { setContentLanguage(o); setContentLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
@@ -2370,43 +2372,7 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                   <div className="flex items-center gap-1.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
 
-                    {/* Model (Auto) */}
-                    <Popover open={docModelOpen} onOpenChange={setDocModelOpen}>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docModel === "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Cpu size={12} />{docModel}<ChevronDown size={10} className="opacity-60" />
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
-                      <PopoverContent className="w-64 p-1.5" side="bottom" align="start" sideOffset={6}>
-                        {[
-                          { id: "Auto", desc: "Automatically selects the best model" },
-                          { id: "Gemini 3 Flash", desc: "Fast & balanced" },
-                          { id: "Gemini 2.5 Pro", desc: "Top-tier reasoning" },
-                          { id: "GPT-5", desc: "Powerful all-rounder" },
-                          { id: "GPT-5 Mini", desc: "Fast & efficient" },
-                          { id: "Claude Sonnet 4", desc: "Excellent writing" },
-                        ].map(m => (
-                          <button key={m.id} type="button" onClick={() => { setDocModel(m.id); setDocModelOpen(false); }}
-                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors ${docModel === m.id ? "bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
-                            <div>
-                              <p className={`text-[0.84rem] font-semibold ${docModel === m.id ? "text-accent" : "text-foreground"}`}>{m.id}</p>
-                              <p className="text-[0.72rem] text-muted">{m.desc}</p>
-                            </div>
-                            {docModel === m.id && <Check size={14} className="text-accent shrink-0" />}
-                          </button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
-
-                    {/* Source */}
-                    <Tooltip><TooltipTrigger asChild>
-                      <button type="button" onClick={() => togglePanel("source")}
-                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" || addedLinks.length > 0 || sourceFiles.length > 0 || pastedText.length > 0 || audioTranscript.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <LinkChain size={14} />
-                      </button>
-                    </TooltipTrigger><TooltipContent>Source{(addedLinks.length + sourceFiles.length) > 0 ? ` (${addedLinks.length + sourceFiles.length})` : ""}</TooltipContent></Tooltip>
-
-                    {/* Language (icon only) */}
+                    {/* Language (icon only) — moved to beginning */}
                     <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2450,6 +2416,42 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                         </div>
                       </PopoverContent>
                     </Popover>
+
+                    {/* Model (Auto) */}
+                    <Popover open={docModelOpen} onOpenChange={setDocModelOpen}>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${docModel === "Auto" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Cpu size={12} />{docModel}<ChevronDown size={10} className="opacity-60" />
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
+                      <PopoverContent className="w-64 p-1.5" side="bottom" align="start" sideOffset={6}>
+                        {[
+                          { id: "Auto", desc: "Automatically selects the best model" },
+                          { id: "Gemini 3 Flash", desc: "Fast & balanced" },
+                          { id: "Gemini 2.5 Pro", desc: "Top-tier reasoning" },
+                          { id: "GPT-5", desc: "Powerful all-rounder" },
+                          { id: "GPT-5 Mini", desc: "Fast & efficient" },
+                          { id: "Claude Sonnet 4", desc: "Excellent writing" },
+                        ].map(m => (
+                          <button key={m.id} type="button" onClick={() => { setDocModel(m.id); setDocModelOpen(false); }}
+                            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors ${docModel === m.id ? "bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                            <div>
+                              <p className={`text-[0.84rem] font-semibold ${docModel === m.id ? "text-accent" : "text-foreground"}`}>{m.id}</p>
+                              <p className="text-[0.72rem] text-muted">{m.desc}</p>
+                            </div>
+                            {docModel === m.id && <Check size={14} className="text-accent shrink-0" />}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Source */}
+                    <Tooltip><TooltipTrigger asChild>
+                      <button type="button" onClick={() => togglePanel("source")}
+                        className={`p-1.5 rounded-lg transition-colors shrink-0 ${activePanel === "source" || addedLinks.length > 0 || sourceFiles.length > 0 || pastedText.length > 0 || audioTranscript.length > 0 ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <LinkChain size={14} />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Source{(addedLinks.length + sourceFiles.length) > 0 ? ` (${addedLinks.length + sourceFiles.length})` : ""}</TooltipContent></Tooltip>
 
                     {/* Tone */}
                     <Popover>
