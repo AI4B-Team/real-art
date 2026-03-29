@@ -1057,7 +1057,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                 )}
                 {/* Main dropdown */}
                 <div className="bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] overflow-hidden max-h-[80vh] overflow-y-auto">
-                {true && (
+                {menuPanel === "main" && (
                   <div className="p-4">
                     {/* User header */}
                     <div className="flex items-center gap-3 mb-3">
