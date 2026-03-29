@@ -2223,7 +2223,7 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                           <div className={`absolute top-[2px] w-[14px] h-[14px] rounded-full bg-white transition-transform shadow-sm ${brandToggle ? "left-[16px]" : "left-[2px]"}`} />
                         </div>
                       </div>
-                    </TooltipTrigger><TooltipContent>Apply brand voice & style</TooltipContent></Tooltip>
+                    </TooltipTrigger><TooltipContent>Apply Brand</TooltipContent></Tooltip>
 
                     {/* Brand profile picker - shown when toggle is ON */}
                     {brandToggle && (
