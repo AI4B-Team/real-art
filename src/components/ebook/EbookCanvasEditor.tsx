@@ -182,8 +182,11 @@ const EbookCanvasEditor = ({
   const [showPageSettings, setShowPageSettings] = useState(false);
   const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
+  const [showAIEditModal, setShowAIEditModal] = useState(false);
+  const [aiEditPrompt, setAIEditPrompt] = useState('');
   const canvasRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
+  const replaceImageInputRef = useRef<HTMLInputElement>(null);
 
   const internalZoom = useState(100);
   const zoom = externalZoom ?? internalZoom[0];
