@@ -1594,13 +1594,16 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     </button>
                   </PopoverTrigger></TooltipTrigger><TooltipContent>Model</TooltipContent></Tooltip>
                   <PopoverContent className="w-56 p-1.5" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
-                    {(selectedType === "audio" && selectedSubMode === "voiceover"
+                    <p className="px-3 py-1.5 text-[0.72rem] font-semibold text-muted tracking-wide uppercase">Model Version</p>
+                    {(selectedType === "audio" && selectedSubMode === "music"
+                      ? ["V5 (Best)", "V4.5+ (Rich)", "V4.5 All", "V4.5 (Fast)", "V4 (Basic)"]
+                      : selectedType === "audio" && selectedSubMode === "voiceover"
                       ? ["Auto", "Eleven Turbo v2.5", "Eleven Multilingual v2"]
                       : ["Auto", "Sora Storyboard"]
                     ).map(m => (
                       <button key={m} type="button" onClick={() => { setSelectedModel(m); setModelOpen(false); }}
-                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedModel === m ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                        {m}{selectedModel === m && <Check size={12} />}
+                        className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${selectedModel === m ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                        {m}{selectedModel === m && <Check size={12} className="text-accent" />}
                       </button>
                     ))}
                   </PopoverContent>
