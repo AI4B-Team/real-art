@@ -581,21 +581,6 @@ const NewEbookPage = () => {
         {/* === DESIGN TAB === */}
         {activeTab === "design" && (
           <div className="relative">
-            {/* Canvas toolbar */}
-            <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.04] bg-background">
-              <div className="flex items-center gap-2">
-                <Tooltip><TooltipTrigger asChild><button className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={16} /></button></TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
-                <Tooltip><TooltipTrigger asChild><button className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={16} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
-                <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
-                <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomOut size={16} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
-                <span className="text-xs text-muted font-medium w-10 text-center">{zoom}%</span>
-                <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.min(z + 10, 200))} className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomIn size={16} /></button></TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
-              </div>
-              <div className="flex items-center gap-2 text-xs text-muted">
-                <Cloud size={14} />
-                <span>Auto-saved</span>
-              </div>
-            </div>
 
             {/* Canvas area */}
             <div className="flex" style={{ height: "calc(100vh - 160px)" }}>
