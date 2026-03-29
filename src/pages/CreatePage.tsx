@@ -67,6 +67,11 @@ import presGeometric from "@/assets/styles/pres-geometric.jpg";
 import presModular from "@/assets/styles/pres-modular.jpg";
 import presElegant from "@/assets/styles/pres-elegant.jpg";
 import presDigital from "@/assets/styles/pres-digital.jpg";
+import styleInfographicVertical from "@/assets/styles/infographic-vertical.jpg";
+import styleInfographicHorizontal from "@/assets/styles/infographic-horizontal.jpg";
+import styleInfographicTimeline from "@/assets/styles/infographic-timeline.jpg";
+import styleInfographicComparison from "@/assets/styles/infographic-comparison.jpg";
+import styleInfographicProcess from "@/assets/styles/infographic-process.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
@@ -1920,8 +1925,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 {/* Genre (audio) / Style (other) */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
-                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle !== "Minimalist") ? (selectedType === "audio" ? "bg-destructive/10 text-destructive" : "bg-accent/10 text-accent") : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    {selectedType === "audio" ? <Music size={12} /> : selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedType === "audio" ? (selectedStyle !== "None" ? selectedStyle : "Style") : selectedSubMode === "presentation" ? presDeckStyle : selectedStyle !== "None" ? selectedStyle : "Style"}
+                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle !== "Minimalist") || (selectedSubMode === "infographic" && designLayout !== "Vertical") ? (selectedType === "audio" ? "bg-destructive/10 text-destructive" : "bg-accent/10 text-accent") : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    {selectedType === "audio" ? <Music size={12} /> : selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedType === "audio" ? (selectedStyle !== "None" ? selectedStyle : "Style") : selectedSubMode === "presentation" ? presDeckStyle : selectedSubMode === "infographic" ? designLayout : selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
 
@@ -2332,21 +2337,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     {/* ── Infographic controls ── */}
                     {selectedSubMode === "infographic" && (
                       <>
-                        <Popover open={designLayoutOpen} onOpenChange={setDesignLayoutOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                              <LayoutGrid size={12} />{designLayout}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Layout</TooltipContent></Tooltip>
-                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
-                            {["Vertical", "Horizontal", "Timeline", "Comparison", "Process"].map(l => (
-                              <button key={l} type="button" onClick={() => { setDesignLayout(l); setDesignLayoutOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designLayout === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {l}{designLayout === l && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                         <Popover open={designChartOpen} onOpenChange={setDesignChartOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designChartType !== "Mixed" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2879,7 +2869,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[0.85rem] font-bold">{selectedType === "audio" ? "Style" : selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "audio" ? "Style" : selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "infographic" ? "Layout Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
@@ -2971,6 +2961,23 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
                       <span className={`text-[0.68rem] font-medium leading-none ${presDeckStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
                       {presDeckStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                    </button>
+                  ))}
+                </div>
+              ) : selectedType === "design" && selectedSubMode === "infographic" ? (
+                <div className="grid grid-cols-5 gap-2">
+                  {[
+                    { id: "Vertical", label: "Vertical", img: styleInfographicVertical },
+                    { id: "Horizontal", label: "Horizontal", img: styleInfographicHorizontal },
+                    { id: "Timeline", label: "Timeline", img: styleInfographicTimeline },
+                    { id: "Comparison", label: "Comparison", img: styleInfographicComparison },
+                    { id: "Process", label: "Process", img: styleInfographicProcess },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setDesignLayout(s.id); setSelectedStyle(s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${designLayout === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${designLayout === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {designLayout === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
                     </button>
                   ))}
                 </div>
