@@ -8,7 +8,7 @@ import {
   Briefcase, Coffee, GraduationCap, Heart, Shield, Flame, Search, ChevronDown,
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut,
-  Share2, Lock, Cloud, Copy, Cpu, Shuffle,
+  Share2, Lock, Cloud, Copy, Cpu, Shuffle, UserPlus, Download,
 } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
