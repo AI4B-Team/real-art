@@ -422,7 +422,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designOrientationOpen, setDesignOrientationOpen] = useState(false);
   const [presRatio, setPresRatio] = useState("16:9");
   const [presRatioOpen, setPresRatioOpen] = useState(false);
-  const [designPlatform, setDesignPlatform] = useState("YouTube");
+  const [designPlatform, setDesignPlatform] = useState("");
   const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
   const [designFinish, setDesignFinish] = useState("Matte");
   const [designFinishOpen, setDesignFinishOpen] = useState(false);
