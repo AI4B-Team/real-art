@@ -557,149 +557,250 @@ const EbookCanvasEditor = ({
 
         {/* Canvas Area */}
         <div className="flex-1 bg-foreground/[0.03] flex flex-col overflow-hidden">
-          {/* Text formatting bar (when text selected) */}
-          {selectedElement?.type === 'text' && (
-            <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
-              <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
-                <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
-              </Select>
-              <Select value={String(selectedElement.fontSize || 16)} onValueChange={v => updateElement(selectedElement.id, { fontSize: Number(v) })}>
-                <SelectTrigger className="w-16 h-7 text-xs"><SelectValue /></SelectTrigger>
-                <SelectContent>{FONT_SIZES.map(s => <SelectItem key={s} value={String(s)}>{s}</SelectItem>)}</SelectContent>
-              </Select>
-              <div className="w-px h-5 bg-foreground/[0.08]" />
-              <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
-                className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                <Bold className="w-3.5 h-3.5" />
-              </button>
-              <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
-                className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                <Italic className="w-3.5 h-3.5" />
-              </button>
-              <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
-                className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                <Underline className="w-3.5 h-3.5" />
-              </button>
-              <div className="w-px h-5 bg-foreground/[0.08]" />
-              {(['left', 'center', 'right', 'justify'] as const).map(align => {
-                const Icon = align === 'left' ? AlignLeft : align === 'center' ? AlignCenter : align === 'right' ? AlignRight : AlignJustify;
-                return (
-                  <button key={align} onClick={() => updateElement(selectedElement.id, { textAlign: align })}
-                    className={`p-1.5 rounded ${selectedElement.textAlign === align ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                    <Icon className="w-3.5 h-3.5" />
-                  </button>
-                );
-              })}
-              <div className="w-px h-5 bg-foreground/[0.08]" />
-              <input type="color" value={selectedElement.textColor || '#1a1a2e'}
-                onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
-                className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-              <div className="ml-auto flex items-center gap-1">
-                <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
-                <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
-              </div>
-            </div>
-          )}
-
-          {/* Shape/Image formatting bar */}
-          {selectedElement && selectedElement.type !== 'text' && (
-            <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
-              {selectedElement.type === 'shape' && (
-                <>
-                  <span className="text-xs text-muted-foreground">Fill:</span>
-                  <input type="color" value={selectedElement.fill || '#3b82f6'}
-                    onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
-                    className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-                  <span className="text-xs text-muted-foreground ml-2">Stroke:</span>
-                  <input type="color" value={selectedElement.stroke || '#1e40af'}
-                    onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
-                    className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-                  <button onClick={() => updateElement(selectedElement.id, { shapeType: selectedElement.shapeType === 'circle' ? 'rectangle' : 'circle' })}
-                    className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
-                    {selectedElement.shapeType === 'circle' ? <Square className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-                  </button>
-                </>
-              )}
-              {selectedElement.type === 'image' && (
-                <button onClick={() => imageInputRef.current?.click()}
-                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-foreground/[0.05]">
-                  <ImageIcon className="w-3.5 h-3.5" />Replace Image
-                </button>
-              )}
-              <div className="ml-auto flex items-center gap-1">
-                <button onClick={() => updateElement(selectedElement.id, { rotation: ((selectedElement.rotation || 0) + 15) % 360 })}
-                  className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
-                  <RotateCcw className="w-3.5 h-3.5" />
-                </button>
-                <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
-                <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
-              </div>
-            </div>
-          )}
-
-          {/* Canvas - Scrollable all pages */}
-          <div className="flex-1 overflow-auto py-8 px-4">
-            <div className="flex flex-col items-center gap-8">
-              {currentPages.map((page, pageIndex) => {
-                const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
-                const isSelected = page.id === selectedPageId;
-                return (
-                  <div key={page.id} className="flex items-start gap-2">
-                    {/* Page label */}
-                    <div className="w-8 shrink-0 pt-2">
-                      <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
-                        {pageIndex + 1}
-                      </p>
-                    </div>
-                    {/* Page canvas */}
-                    <div
-                      ref={isSelected ? canvasRef : undefined}
-                      data-canvas={isSelected ? 'bg' : undefined}
-                      onClick={(e) => {
-                        onPageSelect(page.id);
-                        if (isSelected) handleCanvasClick(e);
-                      }}
-                      className={`bg-white rounded-lg shadow-lg relative overflow-hidden cursor-pointer transition-shadow ${
-                        isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
-                      }`}
-                      style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
-                    >
-                      {/* Crosshair guides on selected */}
-                      {isSelected && (
-                        <div className="absolute inset-0 pointer-events-none">
-                          <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
-                          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
+          {isGridView ? (
+            /* ─── GRID VIEW ─── */
+            <div className="flex-1 overflow-auto p-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6">
+                {currentPages.map((page, pageIndex) => {
+                  const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+                  const isSelected = page.id === selectedPageId;
+                  const pageTypeIcon = page.type === 'chapter-page' ? MessageSquare : FileText;
+                  const PageIcon = pageTypeIcon;
+                  return (
+                    <div key={page.id} className="flex flex-col items-center gap-1.5">
+                      <div
+                        onClick={() => {
+                          onPageSelect(page.id);
+                          onGridViewToggle?.();
+                        }}
+                        className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all ${
+                          isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
+                        }`}
+                      >
+                        {/* Mini render of page content */}
+                        <div className="w-full h-full relative" style={{ transform: 'scale(1)', transformOrigin: 'top left' }}>
+                          <div className="absolute inset-0" style={{ transform: `scale(${1})`, transformOrigin: 'top left', width: '100%', height: '100%' }}>
+                            {elems.map(el => {
+                              if (el.type === 'image') {
+                                return (
+                                  <div key={el.id} className="absolute overflow-hidden" style={{
+                                    left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
+                                  }}>
+                                    <img src={el.src} alt="" className="w-full h-full object-cover" />
+                                  </div>
+                                );
+                              }
+                              if (el.type === 'shape') {
+                                return (
+                                  <div key={el.id} className="absolute" style={{
+                                    left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
+                                    backgroundColor: el.fill, borderRadius: el.shapeType === 'circle' ? '50%' : undefined,
+                                  }} />
+                                );
+                              }
+                              if (el.type === 'text') {
+                                return (
+                                  <div key={el.id} className="absolute overflow-hidden" style={{
+                                    left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
+                                    fontSize: `${Math.max(4, (el.fontSize || 16) * 0.3)}px`,
+                                    fontFamily: el.fontFamily, color: el.textColor,
+                                    fontWeight: el.fontWeight || 'normal',
+                                    textAlign: el.textAlign || 'left',
+                                    lineHeight: 1.2,
+                                  }}>
+                                    {el.content}
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })}
+                          </div>
                         </div>
-                      )}
-                      {elems.map(el => renderElement(el))}
-                      {/* Page number at bottom */}
-                      <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
-                        <span className="text-[10px] text-gray-400">{pageIndex + 1}</span>
+                        {/* Hover menu button */}
+                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={e => { e.stopPropagation(); }}
+                            className="w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm"
+                          >
+                            <MoreHorizontal className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </div>
+                      {/* Page number + icon */}
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <PageIcon className="w-3 h-3" />
+                        <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>{pageIndex + 1}</span>
                       </div>
                     </div>
-                    {/* Right-side page action buttons (only on selected) */}
-                    <div className={`flex flex-col gap-1 shrink-0 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                      {PAGE_ACTIONS.map(action => {
-                        const Icon = action.id === 'lock' && page.locked ? Lock : action.icon;
-                        return (
-                          <Tooltip key={action.id}>
-                            <TooltipTrigger asChild>
-                              <button onClick={() => handlePageAction(action.id)}
-                                className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
-                                <Icon className="w-4 h-4" />
-                              </button>
-                            </TooltipTrigger>
-                            <TooltipContent side="right">{action.label}</TooltipContent>
-                          </Tooltip>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+                {/* Add Page card */}
+                <div className="flex flex-col items-center gap-1.5">
+                  <button
+                    onClick={handleAddPage}
+                    className="w-full aspect-[3/4] rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
+                  >
+                    <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
+                    <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
+                  </button>
+                </div>
+              </div>
+              {/* Bottom actions */}
+              <div className="flex justify-end gap-3 mt-8 pb-4">
+                <button onClick={onGridViewToggle} className="px-6 py-2.5 rounded-lg border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
+                  Cancel
+                </button>
+                <button onClick={onGridViewToggle} className="px-6 py-2.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors">
+                  Confirm
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            /* ─── NORMAL VIEW ─── */
+            <>
+              {/* Text formatting bar (when text selected) */}
+              {selectedElement?.type === 'text' && (
+                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
+                  <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
+                    <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
+                  </Select>
+                  <Select value={String(selectedElement.fontSize || 16)} onValueChange={v => updateElement(selectedElement.id, { fontSize: Number(v) })}>
+                    <SelectTrigger className="w-16 h-7 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectContent>{FONT_SIZES.map(s => <SelectItem key={s} value={String(s)}>{s}</SelectItem>)}</SelectContent>
+                  </Select>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                    className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                    <Bold className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
+                    className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                    <Italic className="w-3.5 h-3.5" />
+                  </button>
+                  <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
+                    className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                    <Underline className="w-3.5 h-3.5" />
+                  </button>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  {(['left', 'center', 'right', 'justify'] as const).map(align => {
+                    const Icon = align === 'left' ? AlignLeft : align === 'center' ? AlignCenter : align === 'right' ? AlignRight : AlignJustify;
+                    return (
+                      <button key={align} onClick={() => updateElement(selectedElement.id, { textAlign: align })}
+                        className={`p-1.5 rounded ${selectedElement.textAlign === align ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Icon className="w-3.5 h-3.5" />
+                      </button>
+                    );
+                  })}
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  <input type="color" value={selectedElement.textColor || '#1a1a2e'}
+                    onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
+                    className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                  <div className="ml-auto flex items-center gap-1">
+                    <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
+                    <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
+                  </div>
+                </div>
+              )}
+
+              {/* Shape/Image formatting bar */}
+              {selectedElement && selectedElement.type !== 'text' && (
+                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
+                  {selectedElement.type === 'shape' && (
+                    <>
+                      <span className="text-xs text-muted-foreground">Fill:</span>
+                      <input type="color" value={selectedElement.fill || '#3b82f6'}
+                        onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
+                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                      <span className="text-xs text-muted-foreground ml-2">Stroke:</span>
+                      <input type="color" value={selectedElement.stroke || '#1e40af'}
+                        onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
+                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                      <button onClick={() => updateElement(selectedElement.id, { shapeType: selectedElement.shapeType === 'circle' ? 'rectangle' : 'circle' })}
+                        className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                        {selectedElement.shapeType === 'circle' ? <Square className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                      </button>
+                    </>
+                  )}
+                  {selectedElement.type === 'image' && (
+                    <button onClick={() => imageInputRef.current?.click()}
+                      className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 py-1 rounded hover:bg-foreground/[0.05]">
+                      <ImageIcon className="w-3.5 h-3.5" />Replace Image
+                    </button>
+                  )}
+                  <div className="ml-auto flex items-center gap-1">
+                    <button onClick={() => updateElement(selectedElement.id, { rotation: ((selectedElement.rotation || 0) + 15) % 360 })}
+                      className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                      <RotateCcw className="w-3.5 h-3.5" />
+                    </button>
+                    <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
+                    <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
+                  </div>
+                </div>
+              )}
+
+              {/* Canvas - Scrollable all pages */}
+              <div className="flex-1 overflow-auto py-8 px-4">
+                <div className="flex flex-col items-center gap-8">
+                  {currentPages.map((page, pageIndex) => {
+                    const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+                    const isSelected = page.id === selectedPageId;
+                    return (
+                      <div key={page.id} className="flex items-start gap-2">
+                        {/* Page label */}
+                        <div className="w-8 shrink-0 pt-2">
+                          <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
+                            {pageIndex + 1}
+                          </p>
+                        </div>
+                        {/* Page canvas */}
+                        <div
+                          ref={isSelected ? canvasRef : undefined}
+                          data-canvas={isSelected ? 'bg' : undefined}
+                          onClick={(e) => {
+                            onPageSelect(page.id);
+                            if (isSelected) handleCanvasClick(e);
+                          }}
+                          className={`bg-white rounded-lg shadow-lg relative overflow-hidden cursor-pointer transition-shadow ${
+                            isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
+                          }`}
+                          style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
+                        >
+                          {isSelected && (
+                            <div className="absolute inset-0 pointer-events-none">
+                              <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
+                              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
+                            </div>
+                          )}
+                          {elems.map(el => renderElement(el))}
+                          <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
+                            <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
+                          </div>
+                        </div>
+                        {/* Right-side page action buttons (only on selected) */}
+                        <div className={`flex flex-col gap-1 shrink-0 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                          {PAGE_ACTIONS.map(action => {
+                            const Icon = action.id === 'lock' && page.locked ? Lock : action.icon;
+                            return (
+                              <Tooltip key={action.id}>
+                                <TooltipTrigger asChild>
+                                  <button onClick={() => handlePageAction(action.id)}
+                                    className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                                    <Icon className="w-4 h-4" />
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent side="right">{action.label}</TooltipContent>
+                              </Tooltip>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Hidden file input */}
