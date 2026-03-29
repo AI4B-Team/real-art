@@ -8,6 +8,7 @@ import {
   Smile, Tag, StickyNote, ExternalLink, MapPin,
   GripVertical, Trash2, X, Check,
   LayoutGrid, LayoutTemplate, Presentation,
+  MonitorPlay, AudioLines, MousePointerClick, Layers3, Languages,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
