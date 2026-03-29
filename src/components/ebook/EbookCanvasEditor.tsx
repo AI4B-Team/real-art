@@ -610,15 +610,50 @@ const EbookCanvasEditor = ({
                   const pageTypeIcon = page.type === 'chapter-page' ? MessageSquare : FileText;
                   const PageIcon = pageTypeIcon;
                   return (
-                    <div key={page.id} className="flex flex-col items-center gap-1.5">
+                    <div key={page.id} className="flex flex-col items-center gap-1.5"
+                      draggable
+                      onDragStart={(e) => {
+                        setDraggedPageIndex(pageIndex);
+                        e.dataTransfer.effectAllowed = 'move';
+                        // Make drag image semi-transparent
+                        const target = e.currentTarget as HTMLElement;
+                        target.style.opacity = '0.5';
+                      }}
+                      onDragEnd={(e) => {
+                        const target = e.currentTarget as HTMLElement;
+                        target.style.opacity = '1';
+                        handlePageDragEnd();
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                        if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) {
+                          setDragOverPageIndex(pageIndex);
+                        }
+                      }}
+                      onDragLeave={() => {
+                        if (dragOverPageIndex === pageIndex) setDragOverPageIndex(null);
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) {
+                          const newPages = [...currentPages];
+                          const [moved] = newPages.splice(draggedPageIndex, 1);
+                          newPages.splice(pageIndex, 0, moved);
+                          setPages(newPages);
+                        }
+                        setDraggedPageIndex(null);
+                        setDragOverPageIndex(null);
+                      }}
+                    >
                       <div
                         onClick={() => {
                           onPageSelect(page.id);
                           onGridViewToggle?.();
                         }}
-                        className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all ${
+                        className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                           isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
-                        }`}
+                        } ${dragOverPageIndex === pageIndex ? 'ring-2 ring-accent/60 scale-105 shadow-xl' : ''} ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
                       >
                         {/* Mini render of page content */}
                         <div className="w-full h-full relative" style={{ transform: 'scale(1)', transformOrigin: 'top left' }}>
@@ -629,7 +664,7 @@ const EbookCanvasEditor = ({
                                   <div key={el.id} className="absolute overflow-hidden" style={{
                                     left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
                                   }}>
-                                    <img src={el.src} alt="" className="w-full h-full object-cover" />
+                                    <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
                                   </div>
                                 );
                               }
