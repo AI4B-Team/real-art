@@ -636,38 +636,66 @@ const EbookCanvasEditor = ({
             </div>
           )}
 
-          {/* Canvas + Page Actions */}
-          <div className="flex-1 overflow-auto flex items-center justify-center p-8">
-            <div className="relative flex items-start gap-2">
-              {/* Canvas */}
-              <div ref={canvasRef} data-canvas="bg"
-                className="bg-white rounded-lg shadow-2xl border border-foreground/[0.06] relative overflow-hidden"
-                style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
-                onClick={handleCanvasClick}>
-                {/* Crosshair guides */}
-                <div className="absolute inset-0 pointer-events-none">
-                  <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
-                  <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
-                </div>
-                {currentElements.map(renderElement)}
-              </div>
-              {/* Right-side page action buttons */}
-              <div className="flex flex-col gap-1 shrink-0">
-                {PAGE_ACTIONS.map(action => {
-                  const Icon = action.id === 'lock' && selectedPage?.locked ? Lock : action.icon;
-                  return (
-                    <Tooltip key={action.id}>
-                      <TooltipTrigger asChild>
-                        <button onClick={() => handlePageAction(action.id)}
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
-                          <Icon className="w-4 h-4" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent side="right">{action.label}</TooltipContent>
-                    </Tooltip>
-                  );
-                })}
-              </div>
+          {/* Canvas - Scrollable all pages */}
+          <div className="flex-1 overflow-auto py-8 px-4">
+            <div className="flex flex-col items-center gap-8">
+              {currentPages.map((page, pageIndex) => {
+                const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+                const isSelected = page.id === selectedPageId;
+                return (
+                  <div key={page.id} className="flex items-start gap-2">
+                    {/* Page label */}
+                    <div className="w-8 shrink-0 pt-2">
+                      <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
+                        {pageIndex + 1}
+                      </p>
+                    </div>
+                    {/* Page canvas */}
+                    <div
+                      ref={isSelected ? canvasRef : undefined}
+                      data-canvas={isSelected ? 'bg' : undefined}
+                      onClick={(e) => {
+                        onPageSelect(page.id);
+                        if (isSelected) handleCanvasClick(e);
+                      }}
+                      className={`bg-white rounded-lg shadow-lg relative overflow-hidden cursor-pointer transition-shadow ${
+                        isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
+                      }`}
+                      style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
+                    >
+                      {/* Crosshair guides on selected */}
+                      {isSelected && (
+                        <div className="absolute inset-0 pointer-events-none">
+                          <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
+                          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
+                        </div>
+                      )}
+                      {elems.map(el => renderElement(el))}
+                      {/* Page number at bottom */}
+                      <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
+                        <span className="text-[10px] text-gray-400">{pageIndex + 1}</span>
+                      </div>
+                    </div>
+                    {/* Right-side page action buttons (only on selected) */}
+                    <div className={`flex flex-col gap-1 shrink-0 transition-opacity ${isSelected ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+                      {PAGE_ACTIONS.map(action => {
+                        const Icon = action.id === 'lock' && page.locked ? Lock : action.icon;
+                        return (
+                          <Tooltip key={action.id}>
+                            <TooltipTrigger asChild>
+                              <button onClick={() => handlePageAction(action.id)}
+                                className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                                <Icon className="w-4 h-4" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="right">{action.label}</TooltipContent>
+                          </Tooltip>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
