@@ -392,7 +392,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [contentLanguage, setContentLanguage] = useState<string | null>(null);
   const [contentToneOpen, setContentToneOpen] = useState(false);
   const [contentLangOpen, setContentLangOpen] = useState(false);
-  const [contentFrequency, setContentFrequency] = useState("Daily");
+  const [contentFrequency, setContentFrequency] = useState("7 Days");
+  const [customDays, setCustomDays] = useState("");
   const [contentTime, setContentTime] = useState("9:00 AM");
   const [contentStyle, setContentStyle] = useState("Informative");
 
