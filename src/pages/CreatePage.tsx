@@ -2207,6 +2207,22 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                 {selectedType === "content" && selectedSubMode && (
                   <div className="flex items-center gap-0.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
+                    {selectedSubMode !== "social" && (
+                      <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
+                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                          <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                            <Languages size={14} />
+                            {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
+                          </button>
+                        </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
+                        <PopoverContent className="w-44 p-1.5" side="top" align="start">
+                          <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
+                          {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
+                            <button key={o} onClick={() => { setContentLanguage(o); setContentLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
+                    )}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                         <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${contentGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2231,20 +2247,6 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Tone</p>
                         {["Professional", "Casual", "Humorous", "Inspirational", "Educational", "Bold"].map(o => (
                           <button key={o} onClick={() => { setContentTone(o); setContentToneOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentTone === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
-                    <Popover open={contentLangOpen} onOpenChange={setContentLangOpen}>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${contentLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Languages size={14} />
-                          {contentLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{contentLanguage}</span>}
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                        {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                          <button key={o} onClick={() => { setContentLanguage(o); setContentLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
