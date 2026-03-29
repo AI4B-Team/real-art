@@ -214,50 +214,96 @@ const EbookDesignSidebar = ({
       <SectionHeader id="content" title="Content" icon={Layers} />
       {expandedSections.has('content') && (
         <div className="px-3 pb-3">
+          {/* Outline header */}
+          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
+            <div className="flex items-center gap-1.5 text-muted-foreground">
+              <GripVertical className="w-3 h-3" />
+              <span className="text-[10px] font-semibold uppercase tracking-wider">Outline</span>
+            </div>
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Page #</span>
+          </div>
           <div className="space-y-1">
-            {chapters.map((ch, i) => (
-              <div key={ch.id}
-                draggable
-                onDragStart={() => handleDragStart(i)}
-                onDragOver={e => handleDragOver(e, i)}
-                onDragEnd={handleDragEnd}
-                onClick={() => onChapterSelect(ch.id)}
-                className={`group flex items-center gap-2 px-2.5 py-2 rounded-lg transition-all cursor-pointer ${
-                  selectedChapterId === ch.id ? 'bg-accent/10 border border-accent/20' : 'hover:bg-foreground/[0.03] border border-transparent'
-                } ${dragOverIndex === i ? 'border-accent/50' : ''}`}>
-                <GripVertical className="w-3 h-3 text-muted-foreground opacity-0 group-hover:opacity-100 cursor-grab" />
-                <span className={`w-5 h-5 rounded flex items-center justify-center text-[9px] font-bold shrink-0 ${
-                  selectedChapterId === ch.id ? 'bg-accent text-white' : 'bg-foreground/[0.06] text-muted-foreground'
-                }`}>{i + 1}</span>
-                {editingChapterId === ch.id ? (
-                  <div className="flex-1 flex items-center gap-1">
-                    <Input value={editingValue} onChange={e => setEditingValue(e.target.value)}
-                      onKeyDown={e => { if (e.key === 'Enter') handleSaveEdit(); if (e.key === 'Escape') setEditingChapterId(null); }}
-                      className="h-6 text-xs flex-1" autoFocus />
-                    <button onClick={handleSaveEdit} className="p-0.5 rounded bg-accent text-white"><Check className="w-3 h-3" /></button>
-                    <button onClick={() => setEditingChapterId(null)} className="p-0.5 rounded bg-foreground/[0.1]"><X className="w-3 h-3" /></button>
-                  </div>
-                ) : (
-                  <>
-                    <span className="text-[11px] font-medium text-foreground truncate flex-1">{ch.title}</span>
-                    <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100">
-                      <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.05]">
-                        <Pencil className="w-3 h-3 text-muted-foreground" />
-                      </button>
-                      {onChapterDelete && (
-                        <button onClick={e => { e.stopPropagation(); onChapterDelete(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.05]">
-                          <Trash2 className="w-3 h-3 text-muted-foreground" />
-                        </button>
-                      )}
+            {chapters.map((ch, i) => {
+              const isSelected = selectedChapterId === ch.id;
+              const isSpecial = ['cover', 'table of contents', 'introduction', 'summary'].includes(ch.type || '');
+              return (
+                <div key={ch.id}
+                  draggable
+                  onDragStart={() => handleDragStart(i)}
+                  onDragOver={e => handleDragOver(e, i)}
+                  onDragEnd={handleDragEnd}
+                  onClick={() => onChapterSelect(ch.id)}
+                  className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition-all cursor-pointer ${
+                    isSelected ? 'bg-accent/[0.08] border border-accent/30' : 'hover:bg-foreground/[0.03] border border-transparent'
+                  } ${dragOverIndex === i ? 'border-accent/50' : ''}`}>
+                  {/* Drag handle - visible on selected/hover */}
+                  <GripVertical className={`w-3.5 h-3.5 text-muted-foreground shrink-0 cursor-grab ${isSelected ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`} />
+                  {/* Page number */}
+                  <span className={`text-xs font-semibold shrink-0 w-5 text-center ${
+                    isSelected ? 'text-accent' : 'text-muted-foreground'
+                  }`}>{i + 1}</span>
+                  {/* Title */}
+                  {editingChapterId === ch.id ? (
+                    <div className="flex-1 flex items-center gap-1">
+                      <Input value={editingValue} onChange={e => setEditingValue(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') handleSaveEdit(); if (e.key === 'Escape') setEditingChapterId(null); }}
+                        className="h-6 text-xs flex-1" autoFocus />
+                      <button onClick={handleSaveEdit} className="p-0.5 rounded bg-accent text-white"><Check className="w-3 h-3" /></button>
+                      <button onClick={() => setEditingChapterId(null)} className="p-0.5 rounded bg-foreground/[0.1]"><X className="w-3 h-3" /></button>
                     </div>
-                  </>
-                )}
-              </div>
-            ))}
+                  ) : (
+                    <>
+                      {isSpecial ? (
+                        <span className="text-xs font-medium text-foreground bg-foreground/[0.05] px-2 py-0.5 rounded truncate">{ch.title}</span>
+                      ) : (
+                        <span className="text-xs font-medium text-foreground truncate">{ch.title}</span>
+                      )}
+                      <div className="flex-1" />
+                      {/* Hover action buttons */}
+                      <div className={`flex items-center gap-0.5 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
+                        {onChapterReorder && (
+                          <>
+                            <Tooltip><TooltipTrigger asChild>
+                              <button onClick={e => { e.stopPropagation(); if (i > 0) onChapterReorder(i, i - 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                                <ChevronUp className="w-3.5 h-3.5 text-muted-foreground" />
+                              </button>
+                            </TooltipTrigger><TooltipContent side="top">Move Up</TooltipContent></Tooltip>
+                            <Tooltip><TooltipTrigger asChild>
+                              <button onClick={e => { e.stopPropagation(); if (i < chapters.length - 1) onChapterReorder(i, i + 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                                <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                              </button>
+                            </TooltipTrigger><TooltipContent side="top">Move Down</TooltipContent></Tooltip>
+                          </>
+                        )}
+                        <Tooltip><TooltipTrigger asChild>
+                          <button onClick={e => { e.stopPropagation(); onChapterAdd(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                            <Plus className="w-3.5 h-3.5 text-muted-foreground" />
+                          </button>
+                        </TooltipTrigger><TooltipContent side="top">Add Page After</TooltipContent></Tooltip>
+                        <Tooltip><TooltipTrigger asChild>
+                          <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                            <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
+                          </button>
+                        </TooltipTrigger><TooltipContent side="top">Edit Title</TooltipContent></Tooltip>
+                        {onChapterDelete && (
+                          <Tooltip><TooltipTrigger asChild>
+                            <button onClick={e => { e.stopPropagation(); onChapterDelete(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                              <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
+                            </button>
+                          </TooltipTrigger><TooltipContent side="top">Delete Page</TooltipContent></Tooltip>
+                        )}
+                      </div>
+                      {/* Page number on right */}
+                      <span className={`text-[10px] font-medium shrink-0 w-5 text-right ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>{i + 1}</span>
+                    </>
+                  )}
+                </div>
+              );
+            })}
           </div>
           <button onClick={() => onChapterAdd(chapters[chapters.length - 1]?.id || '')}
-            className="w-full mt-2 flex items-center justify-center gap-1 py-1.5 border border-dashed border-foreground/[0.1] rounded-lg text-[10px] text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
-            <Plus className="w-3 h-3" />Add Chapter
+            className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+            <Plus className="w-3.5 h-3.5" />Add Page
           </button>
         </div>
       )}
