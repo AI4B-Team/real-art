@@ -154,11 +154,23 @@ const NewEbookPage = () => {
   const [zoom, setZoom] = useState(100);
 
   useEffect(() => {
-    const state = location.state as { book?: any } | null;
+    const state = location.state as { book?: any; fromCreate?: boolean; prompt?: string } | null;
     if (state?.book) {
       setActiveTab("design");
       setContentTypeSelected(true);
       setBookData(prev => ({ ...prev, contentType: "ebook", selectedTitle: state.book.title || "", prompt: state.book.description || "" }));
+    }
+    // Coming from Create page with a prompt — pre-fill and auto-generate
+    if (state?.fromCreate && state?.prompt) {
+      setBookData(prev => ({ ...prev, prompt: state.prompt!, sourceType: "ai" }));
+      setContentTypeSelected(true);
+      // Clear state so refresh doesn't re-trigger
+      window.history.replaceState({}, document.title);
+      // Auto-trigger generation after a short delay
+      setTimeout(() => {
+        const fakeBtn = document.getElementById("ghost-ink-generate-btn");
+        if (fakeBtn) fakeBtn.click();
+      }, 500);
     }
   }, [location.state]);
 
@@ -412,7 +424,7 @@ const NewEbookPage = () => {
                 </div>
 
                 {/* Generate button */}
-                <button onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
+                <button id="ghost-ink-generate-btn" onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
                   className="w-full py-3.5 rounded-xl bg-accent text-white font-semibold text-sm hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
                   {isGenerating ? <><Loader2 size={18} className="animate-spin" />Generating Ideas ({Math.round(generationProgress)}%)...</> : <><Sparkles size={18} />Generate Title Ideas</>}
                 </button>

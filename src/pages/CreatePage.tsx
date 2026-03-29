@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import {
   Image, Video, Music, Palette, Calendar, FileText, Code,
   ChevronDown, ChevronUp, Send, Mic, MicOff, Sparkles, Shuffle,
@@ -3962,6 +3962,7 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string }[] = [
 /* ─── Main Page ──────────────────────────────────────────────── */
 
 export default function CreatePage() {
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<GalleryTab>("creations");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
@@ -3989,6 +3990,17 @@ export default function CreatePage() {
   }, [appConversation, appIsThinking]);
 
   const handleGenerate = async ({ type, prompt, subMode }: { type: ContentType | null; prompt: string; subMode: string | null }) => {
+    // Ebook: redirect to Ghost Ink app with prompt data
+    if (type === "document" && subMode === "ebook") {
+      navigate("/ebook-creator/new?source=ai-generate", {
+        state: {
+          fromCreate: true,
+          prompt,
+          language: currentMode.type === "document" ? undefined : undefined,
+        },
+      });
+      return;
+    }
     if (type === "app") {
       setAppBuilderMode(true);
       setAppConversation([{ role: "user", text: prompt }]);
