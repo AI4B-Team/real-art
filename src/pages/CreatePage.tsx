@@ -1891,7 +1891,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                   <Popover open={musicStyleOpen} onOpenChange={setMusicStyleOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${musicStyle ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <Headphones size={12} />{musicStyle || "Music"}
+                        <Headphones size={12} />Music
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Music</TooltipContent></Tooltip>
                     <PopoverContent className="w-64 p-3" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
