@@ -146,7 +146,7 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
           ))}
         </div>
 
-        {!isUpload && (
+        {isBrowse && (
           <div className="flex items-center gap-1 shrink-0">
             {MEDIA_FILTERS.map(f => (
               <button
