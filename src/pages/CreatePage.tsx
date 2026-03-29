@@ -2207,20 +2207,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                   <div className="flex items-center gap-0.5 shrink-0">
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
 
-                    {/* Language — all design sub-modes except presentation (which has its own) */}
-                    {selectedSubMode !== "presentation" && (
-                      <Popover open={designLangOpen} onOpenChange={setDesignLangOpen}>
-                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                          <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                            <Languages size={14} />
-                          </button>
-                        </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                        <PopoverContent className="w-52 p-1.5" side="bottom" align="start">
-                          <LanguageDropdownContent selected={designLanguage} onSelect={(lang) => { setDesignLanguage(designLanguage === lang ? null : lang); setDesignLangOpen(false); }} />
-                        </PopoverContent>
-                      </Popover>
-                    )}
-
                     {/* ── Logo controls ── */}
 
                     {/* ── Poster controls ── */}
