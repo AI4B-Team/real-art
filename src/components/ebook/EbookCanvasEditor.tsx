@@ -50,6 +50,8 @@ interface EbookCanvasEditorProps {
   showPagesPanel?: boolean;
   zoom?: number;
   onZoomChange?: (zoom: number) => void;
+  isGridView?: boolean;
+  onGridViewToggle?: () => void;
 }
 
 // ─── Constants ─────────────────────────────────────
