@@ -3338,10 +3338,10 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
               {/* Source type tabs */}
               <div className="flex items-center gap-1 mb-4 overflow-x-auto">
                 {[
-                  { id: "upload", label: "Upload File", icon: Upload },
-                  { id: "url", label: "Insert Link", icon: ChainLinkIcon as any },
-                  { id: "text", label: "Paste Text", icon: FileText },
-                  { id: "audio", label: "Record Audio", icon: Mic },
+                  { id: "upload", label: "Upload", icon: Upload },
+                  { id: "url", label: "Link", icon: ChainLinkIcon as any },
+                  { id: "text", label: "Text", icon: FileText },
+                  { id: "audio", label: "Audio", icon: Mic },
                   { id: "collections", label: "Collections", icon: FolderOpen },
                 ].map(t => (
                   <button key={t.id} type="button" onClick={() => setActiveSourceTab(t.id)}
