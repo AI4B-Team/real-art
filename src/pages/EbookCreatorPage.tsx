@@ -102,7 +102,7 @@ const EbookCreatorPage = () => {
               <div className="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/40 flex items-center justify-center mb-4 transition-all">
                 <Upload className="w-7 h-7 text-amber-600 group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Upload File</h3>
+              <h3 className="text-base font-semibold text-foreground mb-2">Upload File</h3>
               <div className="w-full px-4 py-3 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-4">
                 <Upload className="w-5 h-5 text-muted shrink-0" />
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Drag & Drop Your File</span>
