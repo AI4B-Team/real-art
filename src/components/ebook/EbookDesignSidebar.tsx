@@ -184,7 +184,7 @@ const EbookDesignSidebar = ({
   );
 
   return (
-    <div className="w-64 border-l border-foreground/[0.04] bg-background overflow-y-auto flex flex-col">
+    <div className="w-80 border-l border-foreground/[0.04] bg-background overflow-y-auto flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04]">
         <span className="text-xs font-bold text-foreground uppercase tracking-wider">Design</span>
