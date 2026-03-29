@@ -34,12 +34,32 @@ const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
   trending: DUMMY_TRENDING,
 };
 
+const CLOUD_SOURCES = [
+  {
+    id: "google-drive",
+    label: "Google Drive",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/1/12/Google_Drive_icon_%282020%29.svg",
+  },
+  {
+    id: "dropbox",
+    label: "Dropbox",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/7/78/Dropbox_Icon.svg",
+  },
+  {
+    id: "onedrive",
+    label: "OneDrive",
+    logo: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Microsoft_Office_OneDrive_%282019%E2%80%93present%29.svg",
+  },
+];
+
 export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
   const [tab, setTab] = useState<SourceTab>("upload");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [dragActive, setDragActive] = useState(false);
+  const [importView, setImportView] = useState<"none" | "menu" | "link">("none");
+  const [linkUrl, setLinkUrl] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const refIds = new Set(references.map(r => r.id));
