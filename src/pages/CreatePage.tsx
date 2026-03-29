@@ -339,6 +339,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
   const promptFileRef = useRef<HTMLInputElement>(null);
+  const attachmentRef = useRef<HTMLInputElement>(null);
+  const [attachments, setAttachments] = useState<{ name: string; url: string; type: string }[]>([]);
   const startFrameRef = useRef<HTMLInputElement>(null);
   const endFrameRef = useRef<HTMLInputElement>(null);
   const [promptFocused, setPromptFocused] = useState(false);
