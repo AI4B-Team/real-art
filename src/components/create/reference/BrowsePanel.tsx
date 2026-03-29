@@ -27,7 +27,7 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string; icon: typeof LayoutGrid }
   { id: "image", label: "Images", icon: ImageIcon },
 ];
 
-const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
+const POOLS: Record<Exclude<SourceTab, "upload" | "import">, BrowseItem[]> = {
   creations: DUMMY_CREATIONS,
   stock: DUMMY_STOCK,
   community: DUMMY_COMMUNITY,
