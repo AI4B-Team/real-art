@@ -480,6 +480,17 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [voiceoverToneOpen, setVoiceoverToneOpen] = useState(false);
   const [voiceoverLangSearch, setVoiceoverLangSearch] = useState("");
 
+  // Music-specific states
+  const [musicStyle, setMusicStyle] = useState<"Instrumental" | "Vocals" | null>(null);
+  const [musicStyleOpen, setMusicStyleOpen] = useState(false);
+  const [musicVoiceGender, setMusicVoiceGender] = useState<"Male" | "Female" | null>(null);
+  const [musicLyrics, setMusicLyrics] = useState("");
+  const [musicLyricsOpen, setMusicLyricsOpen] = useState(false);
+  const [musicTitle, setMusicTitle] = useState("");
+  const [musicTitleOpen, setMusicTitleOpen] = useState(false);
+  const [musicVoiceOpen, setMusicVoiceOpen] = useState(false);
+  const [musicRefOpen, setMusicRefOpen] = useState(false);
+
   // Panel states
   const [activePanel, setActivePanel] = useState<PanelType>(null);
   const [references, setReferences] = useState<{ id: string; src: string; name: string }[]>([]);
