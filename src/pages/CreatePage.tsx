@@ -2301,7 +2301,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           <button key={o} onClick={() => { setContentFrequency(o); setCustomDays(""); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${contentFrequency === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                         <div className="px-2 py-1.5">
-                          <p className={`text-[0.78rem] font-medium mb-1 ${contentFrequency.endsWith(" Days (Custom)") ? "text-accent font-semibold" : ""}`}>Custom Days</p>
+                          <p className={`text-[0.78rem] font-medium mb-1 ${customDays && contentFrequency === `${customDays} Days` ? "text-accent font-semibold" : ""}`}>Custom Days</p>
                           <input
                             type="number"
                             min={1}
