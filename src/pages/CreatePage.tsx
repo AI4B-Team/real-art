@@ -3689,11 +3689,28 @@ export default function CreatePage() {
                   className="flex items-center gap-1.5 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
                   <Eye size={14} /> Use In A Design
                 </button>
-                <button
-                  onClick={() => toast({ title: "Publishing your app!", description: "Your app is being deployed to a live URL." })}
-                  className="flex items-center gap-1.5 text-[0.84rem] font-bold px-4 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors">
-                  Publish
-                </button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 text-[0.84rem] font-bold px-4 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors">
+                      Publish <ChevronDown size={14} />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-52 p-1.5" align="end" side="bottom" sideOffset={6}>
+                    <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Publish Options</p>
+                    {[
+                      { label: "Deploy To Web", desc: "Live URL on lovable.app" },
+                      { label: "Custom Domain", desc: "Use your own domain" },
+                      { label: "Export Code", desc: "Download source files" },
+                      { label: "Share Preview", desc: "Shareable preview link" },
+                      { label: "Embed Widget", desc: "Embed on another site" },
+                    ].map(o => (
+                      <button key={o.label} onClick={() => toast({ title: o.label, description: o.desc })} className="w-full text-left px-2 py-2 rounded-lg text-[0.78rem] transition-colors hover:bg-foreground/[0.04]">
+                        <span className="font-medium">{o.label}</span>
+                        <span className="block text-[0.68rem] text-muted">{o.desc}</span>
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
               </div>
             </div>
 
