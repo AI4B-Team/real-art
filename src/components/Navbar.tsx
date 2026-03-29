@@ -996,7 +996,67 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
               <div className="w-8 h-8 rounded-full bg-accent/15 flex items-center justify-center text-[0.7rem] font-bold text-accent">{userInitials}</div>
             </button>
             {userMenuOpen && (
-              <div className="absolute top-[calc(100%+10px)] right-0 bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] animate-drop-in z-[400] overflow-hidden max-h-[80vh] overflow-y-auto">
+              <div className="absolute top-[calc(100%+10px)] right-0 flex items-start animate-drop-in z-[400]">
+                {/* Side panel for language/theme — appears to the left */}
+                {menuPanel !== "main" && (
+                  <div className="bg-card border border-foreground/[0.07] rounded-2xl min-w-[260px] shadow-[var(--shadow-card)] overflow-hidden max-h-[80vh] overflow-y-auto mr-2">
+                    {menuPanel === "language" && (
+                      <div className="p-3">
+                        <div className="flex items-center gap-2 px-1 py-2">
+                          <button onClick={() => { setMenuPanel("main"); setLangSearch(""); }} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
+                            <ChevronRight className="w-4 h-4 rotate-180" />
+                          </button>
+                          <span className="text-[0.88rem] font-semibold">Language</span>
+                        </div>
+                        <div className="px-1 pb-2">
+                          <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
+                            <Search className="w-3.5 h-3.5 text-muted shrink-0" />
+                            <input autoFocus value={langSearch} onChange={e => setLangSearch(e.target.value)} placeholder="Search languages..." className="flex-1 bg-transparent border-none outline-none text-[0.84rem] font-body placeholder:text-muted" />
+                            {langSearch && <button onClick={() => setLangSearch("")}><X className="w-3.5 h-3.5 text-muted" /></button>}
+                          </div>
+                        </div>
+                        <div className="max-h-[280px] overflow-y-auto">
+                          {filteredLangs.length === 0 ? (
+                            <div className="px-3 py-4 text-[0.82rem] text-muted text-center">No languages found</div>
+                          ) : filteredLangs.map(lang => (
+                            <button key={lang.code} onClick={() => { setActiveLang(lang.code); try { localStorage.setItem("ra_lang", lang.code); } catch {} setMenuPanel("main"); setLangSearch(""); }}
+                              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left transition-colors ${activeLang === lang.code ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
+                              <span className="text-base">{lang.flag}</span>
+                              <span className="text-[0.84rem]">{lang.label}</span>
+                              {activeLang === lang.code && <Check className="w-3.5 h-3.5 text-accent shrink-0 ml-auto" />}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    {menuPanel === "theme" && (
+                      <div className="p-3">
+                        <div className="flex items-center gap-2 px-1 py-2">
+                          <button onClick={() => setMenuPanel("main")} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
+                            <ChevronRight className="w-4 h-4 rotate-180" />
+                          </button>
+                          <span className="text-[0.88rem] font-semibold">Theme</span>
+                        </div>
+                        <div className="flex flex-col gap-1 px-1 pb-1">
+                          {([
+                            { key: "light" as const, icon: Sun, label: "Light" },
+                            { key: "dark" as const, icon: Moon, label: "Dark" },
+                            { key: "system" as const, icon: Monitor, label: "Split" },
+                          ]).map(opt => (
+                            <button key={opt.key} onClick={() => setTheme(opt.key)}
+                              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left transition-colors ${activeTheme === opt.key ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
+                              <opt.icon className="w-4 h-4 text-muted shrink-0" />
+                              <span className="text-[0.84rem]">{opt.label}</span>
+                              {activeTheme === opt.key && <Check className="w-3.5 h-3.5 text-accent shrink-0 ml-auto" />}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {/* Main dropdown */}
+                <div className="bg-card border border-foreground/[0.07] rounded-2xl min-w-[300px] shadow-[var(--shadow-card)] overflow-hidden max-h-[80vh] overflow-y-auto">
                 {menuPanel === "main" && (
                   <div className="p-4">
                     {/* User header */}
@@ -1089,61 +1149,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
                     </div>
                   </div>
                 )}
-
-                {menuPanel === "language" && (
-                  <div className="p-3">
-                    <div className="flex items-center gap-2 px-1 py-2">
-                      <button onClick={() => { setMenuPanel("main"); setLangSearch(""); }} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
-                        <ChevronRight className="w-4 h-4 rotate-180" />
-                      </button>
-                      <span className="text-[0.88rem] font-semibold">Language</span>
-                    </div>
-                    <div className="px-1 pb-2">
-                      <div className="flex items-center gap-2 bg-background border border-foreground/[0.1] rounded-lg px-3 h-9">
-                        <Search className="w-3.5 h-3.5 text-muted shrink-0" />
-                        <input autoFocus value={langSearch} onChange={e => setLangSearch(e.target.value)} placeholder="Search languages..." className="flex-1 bg-transparent border-none outline-none text-[0.84rem] font-body placeholder:text-muted" />
-                        {langSearch && <button onClick={() => setLangSearch("")}><X className="w-3.5 h-3.5 text-muted" /></button>}
-                      </div>
-                    </div>
-                    <div className="max-h-[280px] overflow-y-auto">
-                      {filteredLangs.length === 0 ? (
-                        <div className="px-3 py-4 text-[0.82rem] text-muted text-center">No languages found</div>
-                      ) : filteredLangs.map(lang => (
-                        <button key={lang.code} onClick={() => { setActiveLang(lang.code); try { localStorage.setItem("ra_lang", lang.code); } catch {} setMenuPanel("main"); setLangSearch(""); }}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left transition-colors ${activeLang === lang.code ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
-                          <span className="text-base">{lang.flag}</span>
-                          <span className="text-[0.84rem]">{lang.label}</span>
-                          {activeLang === lang.code && <Check className="w-3.5 h-3.5 text-accent shrink-0 ml-auto" />}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {menuPanel === "theme" && (
-                  <div className="p-3">
-                    <div className="flex items-center gap-2 px-1 py-2">
-                      <button onClick={() => setMenuPanel("main")} className="w-7 h-7 rounded-full flex items-center justify-center hover:bg-foreground/[0.07] transition-colors shrink-0">
-                        <ChevronRight className="w-4 h-4 rotate-180" />
-                      </button>
-                      <span className="text-[0.88rem] font-semibold">Theme</span>
-                    </div>
-                    <div className="flex flex-col gap-1 px-1 pb-1">
-                      {([
-                        { key: "light" as const, icon: Sun, label: "Light" },
-                        { key: "dark" as const, icon: Moon, label: "Dark" },
-                        { key: "system" as const, icon: Monitor, label: "Split" },
-                      ]).map(opt => (
-                        <button key={opt.key} onClick={() => setTheme(opt.key)}
-                          className={`flex items-center gap-3 px-3 py-2.5 rounded-xl w-full text-left transition-colors ${activeTheme === opt.key ? "bg-foreground/[0.06]" : "hover:bg-foreground/[0.04]"}`}>
-                          <opt.icon className="w-4 h-4 text-muted shrink-0" />
-                          <span className="text-[0.84rem]">{opt.label}</span>
-                          {activeTheme === opt.key && <Check className="w-3.5 h-3.5 text-accent shrink-0 ml-auto" />}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
+              </div>
               </div>
             )}
           </div>
