@@ -3684,10 +3684,14 @@ export default function CreatePage() {
                     <div className={`absolute top-0.5 w-3.5 h-3.5 rounded-full bg-background shadow transition-transform ${appShowCode ? "left-[calc(100%-0.95rem)]" : "left-0.5"}`} />
                   </div>
                 </button>
-                <button className="flex items-center gap-1.5 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
-                  <Eye size={14} /> Use in a design
+                <button
+                  onClick={() => toast({ title: "Opening in design editor...", description: "Your app preview will be available as a design asset." })}
+                  className="flex items-center gap-1.5 text-[0.78rem] font-medium px-3 py-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
+                  <Eye size={14} /> Use In A Design
                 </button>
-                <button className="flex items-center gap-1.5 text-[0.84rem] font-bold px-4 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors">
+                <button
+                  onClick={() => toast({ title: "Publishing your app!", description: "Your app is being deployed to a live URL." })}
+                  className="flex items-center gap-1.5 text-[0.84rem] font-bold px-4 py-2 rounded-xl bg-accent text-white hover:bg-accent/90 transition-colors">
                   Publish
                 </button>
               </div>
