@@ -5,9 +5,10 @@ import {
   Book, Plus, Upload, Search, Download, Edit, Trash2,
   Clock, FileText, Layers, X, Check, Sparkles, Filter,
   Grid, List, Calendar, Copy, MoreVertical, Palette,
-  Mic, Lightbulb, Cpu, Link2, Rss,
+  Mic, Lightbulb, Cpu, Link2, Rss, Headphones, ChevronDown,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import PageShell from "@/components/PageShell";
 import { toast } from "@/hooks/use-toast";
 
@@ -187,22 +188,48 @@ const EbookCreatorPage = () => {
           </button>
         </div>
 
-        {/* Search + Filter bar */}
-        <div className="flex items-center gap-3 mb-6">
-          <div className="relative flex-1 max-w-sm">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-            <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search ebooks..." className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-foreground/[0.1] bg-background text-sm focus:outline-none focus:border-accent transition-colors" />
+        {/* Projects bar */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Book size={18} className="text-foreground" />
+              <h2 className="text-lg font-bold text-foreground">Projects</h2>
+            </div>
+            <div className="flex items-center gap-1.5 ml-2">
+              {[
+                { key: "all", label: "eBooks", icon: Book, active: true },
+                { key: "audiobooks", label: "AudioBooks", icon: Headphones, active: false },
+              ].map(tab => (
+                <button key={tab.key} className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all ${tab.active ? "bg-accent text-white" : "border border-foreground/[0.12] text-muted-foreground hover:text-foreground"}`}>
+                  <tab.icon size={13} />{tab.label}
+                </button>
+              ))}
+              <span className="px-3 py-1.5 rounded-lg border border-foreground/[0.12] text-xs font-medium text-muted-foreground">{filteredEbooks.length} Books</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1 bg-foreground/[0.04] rounded-xl p-1">
-            {["all", "published", "draft", "generating"].map(s => (
-              <button key={s} onClick={() => setFilterStatus(s)} className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${filterStatus === s ? "bg-background shadow-sm text-foreground" : "text-muted hover:text-foreground"}`}>
-                {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}
-              </button>
-            ))}
-          </div>
-          <div className="flex items-center gap-1 border border-foreground/[0.1] rounded-lg p-0.5">
-            <button onClick={() => setViewMode("list")} className={`p-1.5 rounded ${viewMode === "list" ? "bg-foreground/[0.06]" : ""}`}><List size={16} className="text-muted" /></button>
-            <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-foreground/[0.06]" : ""}`}><Grid size={16} className="text-muted" /></button>
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-56">
+              <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+              <input type="text" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search eBooks" className="w-full pl-9 pr-3 py-2 rounded-xl border border-foreground/[0.1] bg-background text-sm focus:outline-none focus:border-accent transition-colors" />
+            </div>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-foreground/[0.1] text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  <Filter size={14} /> Filter <ChevronDown size={12} className="opacity-50" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-40 p-1.5" align="end" sideOffset={6}>
+                {["all", "published", "draft", "generating"].map(s => (
+                  <button key={s} onClick={() => setFilterStatus(s)} className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors ${filterStatus === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                    {s === "all" ? "All" : s.charAt(0).toUpperCase() + s.slice(1)}{filterStatus === s && <Check size={12} />}
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
+            <div className="flex items-center gap-0.5 border border-foreground/[0.1] rounded-lg p-0.5">
+              <button onClick={() => setViewMode("list")} className={`p-1.5 rounded ${viewMode === "list" ? "bg-foreground/[0.08]" : ""}`}><List size={16} className="text-muted-foreground" /></button>
+              <button onClick={() => setViewMode("grid")} className={`p-1.5 rounded ${viewMode === "grid" ? "bg-foreground/[0.08]" : ""}`}><Grid size={16} className="text-muted-foreground" /></button>
+            </div>
           </div>
         </div>
 
