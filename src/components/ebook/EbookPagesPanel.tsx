@@ -9,6 +9,8 @@ import {
 } from '@/components/ui/tooltip';
 import { toast } from 'sonner';
 import type { Page } from './EbookCanvasEditor';
+import { getElementsForPage } from './EbookCanvasEditor';
+import PageThumbnail from './PageThumbnail';
 
 interface EbookPagesPanelProps {
   pages: Page[];
@@ -16,6 +18,7 @@ interface EbookPagesPanelProps {
   onPageSelect: (id: string) => void;
   onPagesChange: (pages: Page[]) => void;
   onGridViewToggle?: () => void;
+  bookTitle?: string;
 }
 
 const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle }: EbookPagesPanelProps) => {
