@@ -99,8 +99,8 @@ const EbookCreatorPage = () => {
 
           <button onClick={() => fileInputRef.current?.click()} className="group relative p-6 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-amber-400/50 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/40 flex items-center justify-center mb-5 transition-all">
-                <Upload className="w-9 h-9 text-amber-600 group-hover:scale-110 transition-all" />
+              <div className="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/40 flex items-center justify-center mb-4 transition-all">
+                <Upload className="w-7 h-7 text-amber-600 group-hover:scale-110 transition-all" />
               </div>
               <h3 className="text-xl font-semibold text-foreground mb-2">Upload File</h3>
               <div className="w-full px-4 py-3 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-4">
