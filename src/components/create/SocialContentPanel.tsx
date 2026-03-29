@@ -282,7 +282,7 @@ export default function SocialContentPanel({ onClose, frequency = "7 Days" }: So
       {/* Platform selection */}
       <div className="p-4 border-b border-foreground/[0.06]">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[0.88rem] font-bold text-center flex-1">Choose Your Platforms To Generate 7 Days Of Content For Each One</h3>
+          <h3 className="text-[0.88rem] font-bold text-center flex-1">Choose Your Platforms To Generate {frequency} Of Content For Each One</h3>
           <button onClick={onClose} className="text-muted hover:text-foreground transition-colors shrink-0 ml-2"><X size={16} /></button>
         </div>
         <div className="flex items-center gap-2 justify-center flex-wrap">
