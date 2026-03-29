@@ -431,7 +431,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
   const [designFinish, setDesignFinish] = useState("Matte");
   const [designFinishOpen, setDesignFinishOpen] = useState(false);
-  const [designFoldType, setDesignFoldType] = useState("Tri-Fold");
+  const [designFoldType, setDesignFoldType] = useState<string | null>(null);
   const [designFoldOpen, setDesignFoldOpen] = useState(false);
   const [designPages, setDesignPages] = useState<number | null>(null);
   const [designPagesOpen, setDesignPagesOpen] = useState(false);
