@@ -764,7 +764,7 @@ const EbookCanvasEditor = ({
                           className={`bg-white rounded-lg shadow-lg relative overflow-hidden cursor-pointer transition-shadow ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
                           }`}
-                          style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px` }}
+                          style={{ width: `${480 * zoom / 100}px`, height: `${640 * zoom / 100}px` }}
                         >
                           {isSelected && (
                             <div className="absolute inset-0 pointer-events-none">
