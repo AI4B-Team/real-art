@@ -1925,8 +1925,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 {/* Genre (audio) / Style (other) */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
-                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle) || (selectedSubMode === "infographic" && designLayout !== "Vertical") ? (selectedType === "audio" ? "bg-destructive/10 text-destructive" : "bg-accent/10 text-accent") : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    {selectedType === "audio" ? <Music size={12} /> : selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedType === "audio" ? (selectedStyle !== "None" ? selectedStyle : "Style") : selectedSubMode === "presentation" ? (presDeckStyle || "Style") : selectedSubMode === "infographic" ? designLayout : selectedStyle !== "None" ? selectedStyle : "Style"}
+                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle) || (selectedSubMode === "infographic" && designLayout) ? (selectedType === "audio" ? "bg-destructive/10 text-destructive" : "bg-accent/10 text-accent") : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    {selectedType === "audio" ? <Music size={12} /> : selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedType === "audio" ? (selectedStyle !== "None" ? selectedStyle : "Style") : selectedSubMode === "presentation" ? (presDeckStyle || "Style") : selectedSubMode === "infographic" ? (designLayout || "Style") : selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
 
