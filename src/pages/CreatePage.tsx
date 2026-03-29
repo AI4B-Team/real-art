@@ -60,6 +60,13 @@ import styleMoodNeon from "@/assets/styles/mood-neon.jpg";
 import styleMoodEarthy from "@/assets/styles/mood-earthy.jpg";
 import styleMoodMonochrome from "@/assets/styles/mood-monochrome.jpg";
 import styleMoodGradient from "@/assets/styles/mood-gradient.jpg";
+import presMinimalist from "@/assets/styles/pres-minimalist.jpg";
+import presPlayful from "@/assets/styles/pres-playful.jpg";
+import presOrganic from "@/assets/styles/pres-organic.jpg";
+import presGeometric from "@/assets/styles/pres-geometric.jpg";
+import presModular from "@/assets/styles/pres-modular.jpg";
+import presElegant from "@/assets/styles/pres-elegant.jpg";
+import presDigital from "@/assets/styles/pres-digital.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
