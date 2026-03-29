@@ -37,7 +37,11 @@ const loadBrands = (): { brands: Brand[]; activeId: string } => {
   return { brands: [d], activeId: "default" };
 };
 const saveBrands = (data: { brands: Brand[]; activeId: string }) => {
-  try { localStorage.setItem("ra_brands", JSON.stringify(data)); } catch {}
+  try {
+    const json = JSON.stringify(data);
+    localStorage.setItem("ra_brands", json);
+    window.dispatchEvent(new StorageEvent("storage", { key: "ra_brands", newValue: json }));
+  } catch {}
 };
 
 type Community = {
