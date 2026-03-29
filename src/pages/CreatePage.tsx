@@ -2453,51 +2453,6 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                       </button>
                     </TooltipTrigger><TooltipContent>Source{(addedLinks.length + sourceFiles.length) > 0 ? ` (${addedLinks.length + sourceFiles.length})` : ""}</TooltipContent></Tooltip>
 
-                    {/* Language (icon only) */}
-                    <Popover open={docLangOpen} onOpenChange={(o) => { setDocLangOpen(o); if (!o) setDocLangSearch(""); }}>
-                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`flex items-center gap-1.5 p-1.5 rounded-lg transition-colors shrink-0 ${docLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Languages size={14} />
-                          {docLanguage && <span className="text-[0.75rem] font-medium pr-0.5">{docLanguage}</span>}
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                      <PopoverContent className="w-56 p-2" side="bottom" align="start" sideOffset={6}>
-                        <div className="relative mb-2">
-                          <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
-                          <input
-                            type="text"
-                            value={docLangSearch}
-                            onChange={e => setDocLangSearch(e.target.value)}
-                            placeholder="Search Languages..."
-                            className="w-full pl-8 pr-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] focus:outline-none focus:border-accent transition-colors"
-                          />
-                        </div>
-                        <div className="max-h-52 overflow-y-auto">
-                          {[
-                            { lang: "English", flag: "🇺🇸" },
-                            { lang: "Spanish", flag: "🇪🇸" },
-                            { lang: "French", flag: "🇫🇷" },
-                            { lang: "German", flag: "🇩🇪" },
-                            { lang: "Italian", flag: "🇮🇹" },
-                            { lang: "Portuguese", flag: "🇵🇹" },
-                            { lang: "Dutch", flag: "🇳🇱" },
-                            { lang: "Russian", flag: "🇷🇺" },
-                            { lang: "Chinese", flag: "🇨🇳" },
-                            { lang: "Japanese", flag: "🇯🇵" },
-                            { lang: "Korean", flag: "🇰🇷" },
-                            { lang: "Arabic", flag: "🇸🇦" },
-                            { lang: "Hindi", flag: "🇮🇳" },
-                          ].filter(o => o.lang.toLowerCase().includes(docLangSearch.toLowerCase())).map(o => (
-                            <button key={o.lang} onClick={() => { setDocLanguage(o.lang); setDocLangOpen(false); setDocLangSearch(""); }} className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-[0.84rem] transition-colors ${docLanguage === o.lang ? "bg-accent/8 text-foreground" : "hover:bg-foreground/[0.04] text-foreground/80"}`}>
-                              <span className="text-base">{o.flag}</span>
-                              <span className="flex-1 text-left">{o.lang}</span>
-                              {docLanguage === o.lang && <Check size={14} className="text-accent" />}
-                            </button>
-                          ))}
-                        </div>
-                      </PopoverContent>
-                    </Popover>
-
                     {/* Tone */}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
