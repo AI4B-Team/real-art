@@ -15,6 +15,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "@/hooks/use-toast";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
+import EbookCanvasEditor from "@/components/ebook/EbookCanvasEditor";
+import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 
 interface NewBookData {
   prompt: string;
