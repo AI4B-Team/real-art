@@ -582,7 +582,7 @@ const NewEbookPage = () => {
               </div>
 
               {/* Design sidebar */}
-              <div className="w-72 border-l border-foreground/[0.06] bg-card overflow-y-auto p-4">
+              <div className="w-72 border-l border-foreground/[0.04] bg-background overflow-y-auto p-4">
                 <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">Design</h3>
                 
                 <div className="space-y-4">
