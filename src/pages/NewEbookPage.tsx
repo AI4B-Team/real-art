@@ -246,9 +246,12 @@ const NewEbookPage = () => {
     toast({ title: "Idea generated!" });
   };
 
+  // For the design tab, we need a full-bleed layout that fills the viewport
+  const isDesign = activeTab === "design";
+
   return (
     <PageShell>
-      <div className={activeTab === "design" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-6"}>
+      <div className={isDesign ? "flex flex-col h-[calc(100vh-64px)] -mt-0 overflow-hidden" : "max-w-7xl mx-auto px-6 py-6"}>
 
         {/* === DESIGN TAB TOP BAR === */}
         {activeTab === "design" && (
@@ -582,8 +585,8 @@ const NewEbookPage = () => {
 
         {/* === DESIGN TAB === */}
         {activeTab === "design" && (
-          <div className="relative">
-            <div className="flex" style={{ height: "calc(100vh - 160px)" }}>
+          <div className="relative flex-1 min-h-0">
+            <div className="flex h-full">
               <EbookCanvasEditor
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
