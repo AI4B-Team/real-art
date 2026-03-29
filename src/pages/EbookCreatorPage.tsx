@@ -42,6 +42,7 @@ const EbookCreatorPage = () => {
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
   const [deleteConfirmBook, setDeleteConfirmBook] = useState<Ebook | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
 
   const filteredEbooks = ebooks.filter(book => {
     const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) || book.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -172,9 +173,16 @@ const EbookCreatorPage = () => {
               <div className="w-16 h-16 rounded-2xl bg-rose-100 dark:bg-rose-900/30 group-hover:bg-rose-200 dark:group-hover:bg-rose-800/40 flex items-center justify-center mb-4 transition-all">
                 <Mic className="w-7 h-7 text-rose-500 group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-base font-semibold text-foreground mb-1">Record Audio</h3>
-              <p className="text-sm text-muted">Click To Start Recording</p>
-              <div className="mt-4 flex items-center gap-2 text-xs text-muted">
+              <h3 className="text-base font-semibold text-foreground mb-3">Audio</h3>
+              <div className="flex gap-2 w-full mb-3">
+                <button onClick={e => { e.stopPropagation(); audioInputRef.current?.click(); }} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.12] bg-background text-xs font-medium text-muted-foreground hover:text-foreground hover:border-foreground/[0.2] transition-colors">
+                  <Upload className="w-3.5 h-3.5" />Upload
+                </button>
+                <button onClick={e => { e.stopPropagation(); navigate("/ebook-creator/new?source=voice"); }} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-foreground/[0.12] bg-background text-xs font-medium text-muted-foreground hover:text-foreground hover:border-foreground/[0.2] transition-colors">
+                  <Mic className="w-3.5 h-3.5" />Record
+                </button>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-muted">
                 <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
                 <span className="px-1.5 py-0.5 rounded bg-rose-500 text-white font-bold text-[10px] uppercase tracking-wide">Live</span>
                 Real-Time Transcription
@@ -186,6 +194,7 @@ const EbookCreatorPage = () => {
               </div>
             </div>
           </button>
+          <input ref={audioInputRef} type="file" className="hidden" accept=".mp3,.wav,.m4a,.ogg,.webm,.aac" onChange={() => { navigate("/ebook-creator/new?source=voice"); }} />
         </div>
 
         {/* Projects bar */}
