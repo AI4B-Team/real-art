@@ -2234,10 +2234,10 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           </PopoverTrigger></TooltipTrigger><TooltipContent>Pages</TooltipContent></Tooltip>
                           <PopoverContent className="w-56 p-1.5" align="start" sideOffset={6}>
                             {[
-                              { id: "Short and Sharp", desc: "1 to 5 pages" },
+                              { id: "Short & Sharp", desc: "1 to 5 pages" },
                               { id: "Balanced", desc: "5 to 15 pages" },
                               { id: "Comprehensive", desc: "15+ pages" },
-                              { id: "Decide for Me", desc: "We'll choose the best length" },
+                              { id: "Decide For Me", desc: "We'll choose the best length" },
                             ].map(l => (
                               <button key={l.id} type="button" onClick={() => { setPresLength(l.id); setPresLengthOpen(false); }}
                                 className={`w-full flex flex-col px-3 py-2.5 rounded-lg text-left transition-colors ${presLength === l.id ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
