@@ -157,7 +157,7 @@ const EbookCreatorPage = () => {
               <div className="w-16 h-16 rounded-2xl bg-rose-100 dark:bg-rose-900/30 group-hover:bg-rose-200 dark:group-hover:bg-rose-800/40 flex items-center justify-center mb-4 transition-all">
                 <Mic className="w-7 h-7 text-rose-500 group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Record Audio</h3>
+              <h3 className="text-base font-semibold text-foreground mb-1">Record Audio</h3>
               <p className="text-sm text-muted">Click To Start Recording</p>
               <div className="mt-4 flex items-center gap-2 text-xs text-muted">
                 <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
