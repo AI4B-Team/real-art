@@ -1951,7 +1951,26 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
 
-                {/* Chart — infographic mode, after Style */}
+                {/* Industry — design mode, after Style */}
+                {selectedType === "design" && selectedSubMode && (
+                  <Popover open={designIndustryOpen} onOpenChange={setDesignIndustryOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designIndustry ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Target size={12} />{designIndustry || "Industry"}<ChevronDown size={10} className="opacity-60" />
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Industry</TooltipContent></Tooltip>
+                    <PopoverContent className="w-48 p-1.5 max-h-[50vh] overflow-y-auto" align="start" sideOffset={6}>
+                      {["Tech", "Food & Drink", "Fashion", "Health", "Finance", "Education", "Real Estate", "Sports", "Music", "Photography", "Gaming", "Travel"].map(ind => (
+                        <button key={ind} type="button" onClick={() => { setDesignIndustry(ind); setDesignIndustryOpen(false); }}
+                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designIndustry === ind ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          {ind}{designIndustry === ind && <Check size={12} />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Chart — infographic mode, after Industry */}
                 {selectedType === "design" && selectedSubMode === "infographic" && (
                   <Popover open={designChartOpen} onOpenChange={setDesignChartOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
@@ -1977,25 +1996,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                           </button>
                         ))}
                       </div>
-                    </PopoverContent>
-                  </Popover>
-                )}
-
-                {/* Industry — design mode, after Style */}
-                {selectedType === "design" && selectedSubMode && (
-                  <Popover open={designIndustryOpen} onOpenChange={setDesignIndustryOpen}>
-                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designIndustry ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                        <Target size={12} />{designIndustry || "Industry"}<ChevronDown size={10} className="opacity-60" />
-                      </button>
-                    </PopoverTrigger></TooltipTrigger><TooltipContent>Industry</TooltipContent></Tooltip>
-                    <PopoverContent className="w-48 p-1.5 max-h-[50vh] overflow-y-auto" align="start" sideOffset={6}>
-                      {["Tech", "Food & Drink", "Fashion", "Health", "Finance", "Education", "Real Estate", "Sports", "Music", "Photography", "Gaming", "Travel"].map(ind => (
-                        <button key={ind} type="button" onClick={() => { setDesignIndustry(ind); setDesignIndustryOpen(false); }}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designIndustry === ind ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                          {ind}{designIndustry === ind && <Check size={12} />}
-                        </button>
-                      ))}
                     </PopoverContent>
                   </Popover>
                 )}
