@@ -416,6 +416,8 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
   const [designIndustryOpen, setDesignIndustryOpen] = useState(false);
   const [designOrientation, setDesignOrientation] = useState("Portrait");
   const [designOrientationOpen, setDesignOrientationOpen] = useState(false);
+  const [presRatio, setPresRatio] = useState("16:9");
+  const [presRatioOpen, setPresRatioOpen] = useState(false);
   const [designPlatform, setDesignPlatform] = useState("YouTube");
   const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
   const [designFinish, setDesignFinish] = useState("Matte");
@@ -1823,11 +1825,37 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                   </Popover>
                 )}
 
-                {/* Orientation — design only (replaces ratio) */}
-                {selectedSubMode && selectedType === "design" && (
+                {/* Ratio — presentation mode */}
+                {selectedSubMode && selectedType === "design" && selectedSubMode === "presentation" && (
+                  <Popover open={presRatioOpen} onOpenChange={setPresRatioOpen}>
+                    <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                      <button type="button" className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
+                        <Copy size={12} />{presRatio}
+                      </button>
+                    </PopoverTrigger></TooltipTrigger><TooltipContent>Ratio</TooltipContent></Tooltip>
+                    <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                      {[
+                        { r: "16:9", w: 16, h: 9 },
+                        { r: "4:3", w: 14, h: 10.5 },
+                      ].map(({ r, w, h }) => (
+                        <button key={r} type="button" onClick={() => { setPresRatio(r); setPresRatioOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${presRatio === r ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                          <span className="flex items-center justify-center w-5 h-5 shrink-0">
+                            <span className={`block rounded-[2px] border ${presRatio === r ? "border-primary-foreground/50" : "border-foreground/30"}`} style={{ width: w, height: h }} />
+                          </span>
+                          {r}
+                          {presRatio === r && <Check size={12} className="ml-auto" />}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                )}
+
+                {/* Orientation — design only, non-presentation */}
+                {selectedSubMode && selectedType === "design" && selectedSubMode !== "presentation" && (
                   <Popover open={designOrientationOpen} onOpenChange={setDesignOrientationOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designOrientation !== "Portrait" ? "bg-accent/10 text-accent" : "bg-accent/10 text-accent"}`}>
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent`}>
                         <ArrowLeftRight size={12} />{designOrientation}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Orientation</TooltipContent></Tooltip>
