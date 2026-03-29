@@ -17,6 +17,7 @@ import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
 import EbookCanvasEditor from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
+import EbookPagesPanel from "@/components/ebook/EbookPagesPanel";
 
 interface NewBookData {
   prompt: string;
@@ -587,15 +588,7 @@ const NewEbookPage = () => {
         {activeTab === "design" && (
           <div className="relative flex-1 min-h-0">
             <div className="flex h-full">
-              <EbookCanvasEditor
-                pages={ebookPages}
-                selectedPageId={selectedPageId}
-                onPageSelect={setSelectedPageId}
-                onPagesChange={setEbookPages}
-                bookTitle={bookData.selectedTitle}
-                zoom={zoom}
-                onZoomChange={setZoom}
-              />
+              {/* LEFT: Design Sidebar (Templates, Content outline) */}
               <EbookDesignSidebar
                 bookTitle={bookData.selectedTitle}
                 chapters={ebookPages.map(p => ({ id: p.id, title: p.title }))}
@@ -620,6 +613,24 @@ const NewEbookPage = () => {
                     return arr;
                   });
                 }}
+              />
+              {/* CENTER: Canvas Editor (no pages panel - it's on the right) */}
+              <EbookCanvasEditor
+                pages={ebookPages}
+                selectedPageId={selectedPageId}
+                onPageSelect={setSelectedPageId}
+                onPagesChange={setEbookPages}
+                bookTitle={bookData.selectedTitle}
+                showPagesPanel={false}
+                zoom={zoom}
+                onZoomChange={setZoom}
+              />
+              {/* RIGHT: Pages Panel */}
+              <EbookPagesPanel
+                pages={ebookPages}
+                selectedPageId={selectedPageId}
+                onPageSelect={setSelectedPageId}
+                onPagesChange={setEbookPages}
               />
             </div>
             <EbookGenerationOverlay isGenerating={isGeneratingBook} bookTitle={bookData.selectedTitle} onComplete={handleGenerationComplete} />
