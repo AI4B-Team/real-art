@@ -3750,10 +3750,10 @@ export default function CreatePage() {
                         {appPreviewContent.slice(0, 120)}{appPreviewContent.length > 120 ? "..." : ""}
                       </p>
                       <div className="flex items-center gap-3">
-                        <button className="px-6 py-3 rounded-xl bg-accent text-white font-bold text-[0.88rem] flex items-center gap-2">
+                        <button onClick={() => document.getElementById("app-contact")?.scrollIntoView({ behavior: "smooth" })} className="px-6 py-3 rounded-xl bg-accent text-white font-bold text-[0.88rem] flex items-center gap-2 hover:bg-accent/90 transition-colors">
                           Get Started <ArrowRight size={16} />
                         </button>
-                        <button className="px-6 py-3 rounded-xl border border-foreground/[0.15] font-semibold text-[0.88rem]">
+                        <button onClick={() => document.getElementById("app-how-it-works")?.scrollIntoView({ behavior: "smooth" })} className="px-6 py-3 rounded-xl border border-foreground/[0.15] font-semibold text-[0.88rem] hover:bg-foreground/[0.04] transition-colors">
                           See How It Works
                         </button>
                       </div>
