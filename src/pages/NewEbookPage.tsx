@@ -490,7 +490,7 @@ const NewEbookPage = () => {
         {activeTab === "design" && (
           <div className="relative">
             {/* Canvas toolbar */}
-            <div className="flex items-center justify-between px-6 py-3 border-b border-foreground/[0.06] bg-background">
+            <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.04] bg-background">
               <div className="flex items-center gap-2">
                 <Tooltip><TooltipTrigger asChild><button className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={16} /></button></TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
                 <Tooltip><TooltipTrigger asChild><button className="p-2 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={16} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
