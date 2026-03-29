@@ -2792,21 +2792,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       </PopoverContent>
                     </Popover>
 
-                    {/* Goal */}
-                    <Popover>
-                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${docGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                          <Flag size={14} />
-                        </button>
-                      </PopoverTrigger></TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
-                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
-                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Goal</p>
-                        {["Engagement", "Awareness", "Traffic", "Sales", "Education", "Community"].map(o => (
-                          <button key={o} onClick={() => setDocGoal(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docGoal === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
-
                     {/* Format */}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
@@ -2818,6 +2803,21 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Format</p>
                         {["Informative", "Storytelling", "List/Tips", "Behind-The-Scenes", "Tutorial", "Promotional"].map(o => (
                           <button key={o} onClick={() => setDocFormat(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docFormat === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+
+                    {/* Goal */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                        <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${docGoal !== "Engagement" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                          <Flag size={14} />
+                        </button>
+                      </PopoverTrigger></TooltipTrigger><TooltipContent>Goal</TooltipContent></Tooltip>
+                      <PopoverContent className="w-44 p-1.5" side="bottom" align="start">
+                        <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Goal</p>
+                        {["Engagement", "Awareness", "Traffic", "Sales", "Education", "Community"].map(o => (
+                          <button key={o} onClick={() => setDocGoal(o)} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${docGoal === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
                         ))}
                       </PopoverContent>
                     </Popover>
