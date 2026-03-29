@@ -784,8 +784,8 @@ const EbookCanvasEditor = ({
                         { icon: Paintbrush, label: 'Effects' },
                         { icon: SlidersVertical, label: 'Filters' },
                         { icon: Droplets, label: 'Opacity (100%)' },
-                        { icon: SquareIcon, label: 'Mask' },
-                        { icon: Link2, label: 'Shadow' },
+                        { icon: SquareIcon, label: 'Corner Radius' },
+                        { icon: Link2, label: 'Add Link' },
                         { icon: Layers, label: 'Layers' },
                         { icon: Move, label: 'Position' },
                       ].map(tool => (
