@@ -154,11 +154,23 @@ const NewEbookPage = () => {
   const [zoom, setZoom] = useState(100);
 
   useEffect(() => {
-    const state = location.state as { book?: any } | null;
+    const state = location.state as { book?: any; fromCreate?: boolean; prompt?: string } | null;
     if (state?.book) {
       setActiveTab("design");
       setContentTypeSelected(true);
       setBookData(prev => ({ ...prev, contentType: "ebook", selectedTitle: state.book.title || "", prompt: state.book.description || "" }));
+    }
+    // Coming from Create page with a prompt — pre-fill and auto-generate
+    if (state?.fromCreate && state?.prompt) {
+      setBookData(prev => ({ ...prev, prompt: state.prompt!, sourceType: "ai" }));
+      setContentTypeSelected(true);
+      // Clear state so refresh doesn't re-trigger
+      window.history.replaceState({}, document.title);
+      // Auto-trigger generation after a short delay
+      setTimeout(() => {
+        const fakeBtn = document.getElementById("ghost-ink-generate-btn");
+        if (fakeBtn) fakeBtn.click();
+      }, 500);
     }
   }, [location.state]);
 
