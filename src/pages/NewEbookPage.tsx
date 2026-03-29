@@ -269,10 +269,23 @@ const NewEbookPage = () => {
                     <ChevronDown className="w-3 h-3 opacity-70" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-40 p-1.5" align="start" side="bottom">
-                  {["Editing", "Reviewing", "Presenting"].map(mode => (
-                    <button key={mode} className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
-                      {mode}
+                <PopoverContent className="w-56 p-2" align="start" side="bottom">
+                  <p className="text-xs text-muted-foreground font-medium px-2 pb-2">Your Access Level</p>
+                  {[
+                    { mode: "Editing", desc: "Full Edit Access", icon: Pencil, color: "text-violet-500", dotColor: "bg-violet-500", active: true },
+                    { mode: "Viewing", desc: "Read Only", icon: Eye, color: "text-blue-500", dotColor: "bg-blue-500", active: false },
+                    { mode: "Commenting", desc: "Comments Only", icon: MessageSquare, color: "text-amber-500", dotColor: "bg-amber-500", active: false },
+                    { mode: "Admin", desc: "Full Admin Access", icon: Shield, color: "text-emerald-500", dotColor: "bg-emerald-500", active: false },
+                  ].map(item => (
+                    <button key={item.mode}
+                      className={`w-full flex items-center gap-3 px-2 py-2.5 rounded-lg text-left transition-colors ${item.active ? 'bg-foreground/[0.03]' : 'hover:bg-foreground/[0.04]'}`}>
+                      <span className={`w-2 h-2 rounded-full shrink-0 ${item.dotColor}`} />
+                      <item.icon className={`w-4 h-4 shrink-0 ${item.color}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-foreground">{item.mode}</p>
+                        <p className="text-xs text-muted-foreground">{item.desc}</p>
+                      </div>
+                      {item.active && <Check className={`w-4 h-4 shrink-0 ${item.color}`} />}
                     </button>
                   ))}
                 </PopoverContent>
