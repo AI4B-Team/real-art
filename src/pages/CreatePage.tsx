@@ -2200,23 +2200,6 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                         </Popover>
                       </>
                     )}
-
-                    {/* Language — all design sub-modes (except presentation which has its own) */}
-                    {selectedSubMode !== "presentation" && (
-                      <Popover open={designLangOpen} onOpenChange={setDesignLangOpen}>
-                        <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                          <button type="button" className={`p-1.5 rounded-lg transition-colors shrink-0 ${designLanguage ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                            <Languages size={14} />
-                          </button>
-                        </PopoverTrigger></TooltipTrigger><TooltipContent>Language</TooltipContent></Tooltip>
-                        <PopoverContent className="w-44 p-1.5" side="top" align="start">
-                          <p className="text-[0.7rem] font-semibold text-muted px-2 py-1">Language</p>
-                          {["English", "Spanish", "French", "German", "Portuguese", "Arabic", "Chinese", "Japanese", "Korean", "Hindi"].map(o => (
-                            <button key={o} onClick={() => { setDesignLanguage(designLanguage === o ? null : o); setDesignLangOpen(false); }} className={`w-full text-left px-2 py-1.5 rounded-md text-[0.78rem] transition-colors ${designLanguage === o ? "bg-accent/10 text-accent font-semibold" : "hover:bg-foreground/[0.04]"}`}>{o}</button>
-                          ))}
-                        </PopoverContent>
-                      </Popover>
-                    )}
                   </div>
                 )}
 
