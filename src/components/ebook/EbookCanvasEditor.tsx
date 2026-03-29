@@ -130,7 +130,7 @@ const createBackElements = (): CanvasElement[] => [
   { id: 'back-tag', type: 'text', x: 25, y: 52, width: 50, height: 6, content: 'Creative Excellence', fontSize: 12, fontFamily: 'Georgia', textColor: '#94a3b8', textAlign: 'center' },
 ];
 
-const getElementsForPage = (page: Page, allPages: Page[], bookTitle: string): CanvasElement[] => {
+export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: string): CanvasElement[] => {
   const chapterPages = allPages.filter(p => p.type === 'chapter');
   const chapterPagePages = allPages.filter(p => p.type === 'chapter-page');
   switch (page.type) {
