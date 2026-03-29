@@ -42,6 +42,7 @@ const EbookCreatorPage = () => {
   const [showDropdown, setShowDropdown] = useState<number | null>(null);
   const [deleteConfirmBook, setDeleteConfirmBook] = useState<Ebook | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const audioInputRef = useRef<HTMLInputElement>(null);
 
   const filteredEbooks = ebooks.filter(book => {
     const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) || book.description.toLowerCase().includes(searchQuery.toLowerCase());
