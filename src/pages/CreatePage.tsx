@@ -3443,6 +3443,8 @@ export default function CreatePage() {
   const [filterOpen, setFilterOpen] = useState(false);
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
   const [generated, setGenerated] = useState(false);
+  const [currentMode, setCurrentMode] = useState<{ type: ContentType | null; subMode: string | null }>({ type: null, subMode: null });
+  const isSocialMode = currentMode.type === "content" && currentMode.subMode === "social";
   const [creations, setCreations] = useState<UserCreation[]>([]);
   const [loadingCreations, setLoadingCreations] = useState(true);
 
