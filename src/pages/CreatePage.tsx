@@ -1434,66 +1434,8 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
               <div className="relative flex-1 min-w-0">
                 <div className="flex items-center gap-1.5 flex-wrap">
 
-                {/* Asset Picker + */}
-                <Popover open={assetPickerOpen} onOpenChange={(open) => {
-                  if (open) saveSelection();
-                  setAssetPickerOpen(open);
-                }}>
-                  <PopoverTrigger asChild>
-                    <button type="button" className="p-1.5 rounded-lg text-foreground hover:bg-foreground/[0.06] transition-colors shrink-0">
-                      <Plus className="w-5 h-5" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-64 p-0" align="start" sideOffset={8} onCloseAutoFocus={handleAssetPopoverCloseAutoFocus}>
-                    <div className="p-2 border-b border-foreground/[0.06]">
-                      <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
-                        <Hash className="w-3.5 h-3.5 text-muted" />
-                        <input value={assetSearch} onChange={e => setAssetSearch(e.target.value)}
-                          placeholder="Search assets..." className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted" autoFocus />
-                      </div>
-                    </div>
-                    <div className="max-h-64 overflow-y-auto p-1.5">
-                      {filteredAssets.map(cat => (
-                        <div key={cat.category}>
-                          <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
-                          {cat.items.map(item => {
-                            const isAdded = chipIds.has(item.id);
-                            const ChipIcon = PROMPT_CHIP_ICONS[cat.type];
-                            return (
-                              <button key={item.id} onMouseDown={e => e.preventDefault()} onClick={() => addChip(cat.type, item)} disabled={isAdded}
-                                className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
-                                {item.thumbnail ? (
-                                  <img src={item.thumbnail} alt="" className="w-7 h-7 rounded object-cover" />
-                                ) : (
-                                  <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
-                                    <ChipIcon className="w-3.5 h-3.5 text-muted" />
-                                  </span>
-                                )}
-                                <span className="font-medium">@{item.label}</span>
-                                {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
-                              </button>
-                            );
-                          })}
-                        </div>
-                      ))}
-                      {filteredAssets.length === 0 && <p className="text-center text-sm text-muted py-4">No assets found</p>}
-                      <div className="border-t border-foreground/[0.06] mt-1 pt-1">
-                        <button
-                          onMouseDown={e => e.preventDefault()}
-                          onClick={() => { setAssetPickerOpen(false); imgUploadRef.current?.click(); }}
-                          className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors"
-                        >
-                          <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
-                            <Upload className="w-3.5 h-3.5 text-muted" />
-                          </span>
-                          <span className="font-medium">Upload Image</span>
-                        </button>
-                      </div>
-                    </div>
-                  </PopoverContent>
-                </Popover>
 
-                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5 shrink-0" />
+
 
                 {/* Type badge — always visible, clickable to switch type */}
                 <Popover>
