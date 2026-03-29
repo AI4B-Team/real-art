@@ -2706,6 +2706,25 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                     </button>
                   ))}
                 </div>
+              ) : selectedType === "design" && selectedSubMode === "presentation" ? (
+                <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                  {[
+                    { id: "Minimalist", label: "Minimalist", img: presMinimalist },
+                    { id: "Playful", label: "Playful", img: presPlayful },
+                    { id: "Organic", label: "Organic", img: presOrganic },
+                    { id: "Geometric", label: "Geometric", img: presGeometric },
+                    { id: "Modular", label: "Modular", img: presModular },
+                    { id: "Elegant", label: "Elegant", img: presElegant },
+                    { id: "Digital", label: "Digital", img: presDigital },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setPresDeckStyle(s.id); setSelectedStyle(s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${presDeckStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${presDeckStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {presDeckStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                    </button>
+                  ))}
+                </div>
               ) : selectedType === "design" ? (
                 <div className="grid grid-cols-5 sm:grid-cols-7 gap-2">
                   {[
