@@ -437,7 +437,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designPagesOpen, setDesignPagesOpen] = useState(false);
   const [designChartType, setDesignChartType] = useState<string | null>(null);
   const [designChartOpen, setDesignChartOpen] = useState(false);
-  const [designLayout, setDesignLayout] = useState("Vertical");
+  const [designLayout, setDesignLayout] = useState<string | null>(null);
   const [designLayoutOpen, setDesignLayoutOpen] = useState(false);
   const [designSize, setDesignSize] = useState<string | null>(null);
   const [designSizeOpen, setDesignSizeOpen] = useState(false);
