@@ -15,6 +15,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "@/hooks/use-toast";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
+import EbookCanvasEditor from "@/components/ebook/EbookCanvasEditor";
+import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 
 interface NewBookData {
   prompt: string;
@@ -581,127 +583,42 @@ const NewEbookPage = () => {
         {/* === DESIGN TAB === */}
         {activeTab === "design" && (
           <div className="relative">
-
-            {/* Canvas area */}
             <div className="flex" style={{ height: "calc(100vh - 160px)" }}>
-              {/* Pages sidebar */}
-              <div className="w-56 border-r border-foreground/[0.04] bg-background overflow-y-auto p-3">
-                <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3 px-2">Pages</h3>
-                <div className="space-y-2">
-                  {ebookPages.filter(p => p.type !== "chapter-page").map((page, i) => (
-                    <button key={page.id} onClick={() => setSelectedPageId(page.id)}
-                      className={`w-full text-left p-2.5 rounded-xl transition-all ${selectedPageId === page.id ? "bg-accent/10 border border-accent/30" : "hover:bg-foreground/[0.04] border border-transparent"}`}>
-                      <div className="flex items-center gap-2.5">
-                        <span className={`w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold ${selectedPageId === page.id ? "bg-accent text-white" : "bg-foreground/[0.06] text-muted"}`}>{i + 1}</span>
-                        <span className={`text-xs font-medium truncate ${selectedPageId === page.id ? "text-accent" : "text-foreground"}`}>{page.title}</span>
-                      </div>
-                    </button>
-                  ))}
-                  <button className="w-full flex items-center justify-center gap-1.5 py-2.5 border-2 border-dashed border-foreground/[0.1] rounded-xl text-xs text-muted hover:border-accent/40 hover:text-accent transition-colors">
-                    <Plus size={14} />Add Page
-                  </button>
-                </div>
-              </div>
-
-              {/* Canvas preview */}
-              <div className="flex-1 bg-foreground/[0.03] flex items-center justify-center overflow-auto p-8">
-                <div className="bg-white rounded-lg shadow-2xl border border-foreground/[0.06]" style={{ width: `${340 * zoom / 100}px`, height: `${480 * zoom / 100}px`, transform: `scale(1)` }}>
-                  {/* Simulated page content */}
-                  {(() => {
-                    const page = ebookPages.find(p => p.id === selectedPageId) || ebookPages[0];
-                    if (page.type === "cover") {
-                      return (
-                        <div className="w-full h-full relative overflow-hidden rounded-lg">
-                          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop" alt="Cover" className="w-full h-full object-cover" />
-                          <div className="absolute bottom-0 left-0 right-0 bg-white/95 p-6">
-                            <p className="text-[10px] text-accent uppercase tracking-wider font-medium">A Comprehensive Guide</p>
-                            <h2 className="text-lg font-bold text-gray-900 mt-1 leading-tight">{bookData.selectedTitle || "Your eBook Title"}</h2>
-                          </div>
-                        </div>
-                      );
-                    }
-                    if (page.type === "toc") {
-                      return (
-                        <div className="w-full h-full p-8">
-                          <h2 className="text-lg font-bold text-gray-900 mb-1">Table of Contents</h2>
-                          <div className="w-16 h-0.5 bg-accent mb-6" />
-                          <div className="space-y-3">
-                            {chapterSequence.map((ch, i) => (
-                              <div key={ch.id} className="flex items-center text-xs text-gray-600">
-                                <span className="font-medium">{String(i + 1).padStart(2, "0")}. {ch.title}</span>
-                                <span className="flex-1 border-b border-dotted border-gray-300 mx-2" />
-                                <span className="text-gray-400">{i * 5 + 3}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    }
-                    if (page.type === "back") {
-                      return (
-                        <div className="w-full h-full bg-[#0d4f4f] flex flex-col items-center justify-center rounded-lg text-center p-8">
-                          <h2 className="text-xl font-bold text-white">REAL ART</h2>
-                          <p className="text-xs text-gray-300 mt-2">Creative Excellence</p>
-                        </div>
-                      );
-                    }
-                    return (
-                      <div className="w-full h-full p-8">
-                        <div className="w-full h-16 bg-[#0d4f4f] rounded-lg mb-4 flex items-center px-4">
-                          <span className="text-2xl font-bold text-white">{String(ebookPages.indexOf(page)).padStart(2, "0")}</span>
-                        </div>
-                        <h2 className="text-base font-bold text-gray-900 mb-3">{page.title}</h2>
-                        <p className="text-xs text-gray-500 leading-relaxed">This section provides a comprehensive overview of our strategic approach, detailing key methodologies and expected outcomes.</p>
-                      </div>
-                    );
-                  })()}
-                </div>
-              </div>
-
-              {/* Design sidebar */}
-              <div className="w-72 border-l border-foreground/[0.04] bg-background overflow-y-auto p-4">
-                <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-4">Design</h3>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-xs font-medium text-foreground mb-2 block">Templates</label>
-                    <div className="grid grid-cols-2 gap-2">
-                      {["Minimal", "Modern", "Classic", "Bold"].map(t => (
-                        <button key={t} className="p-3 rounded-xl border border-foreground/[0.08] hover:border-accent/40 transition-colors text-center">
-                          <div className="w-full h-16 bg-foreground/[0.04] rounded-lg mb-2" />
-                          <span className="text-xs font-medium text-foreground">{t}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-foreground mb-2 block">Elements</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {[{ label: "Text", icon: FileText }, { label: "Image", icon: Eye }, { label: "Shape", icon: Layers }].map(el => (
-                        <button key={el.label} className="p-3 rounded-xl border border-foreground/[0.08] hover:border-accent/40 transition-colors text-center">
-                          <el.icon size={20} className="mx-auto mb-1 text-muted" />
-                          <span className="text-[10px] font-medium text-muted">{el.label}</span>
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className="text-xs font-medium text-foreground mb-2 block">AI Tools</label>
-                    <button className="w-full flex items-center gap-2.5 px-4 py-3 rounded-xl border border-accent/20 bg-accent/5 hover:bg-accent/10 transition-colors">
-                      <Wand2 size={16} className="text-accent" />
-                      <div className="text-left">
-                        <p className="text-xs font-semibold text-accent">AI Rewrite</p>
-                        <p className="text-[10px] text-muted">Improve content with AI</p>
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              </div>
+              <EbookCanvasEditor
+                pages={ebookPages}
+                selectedPageId={selectedPageId}
+                onPageSelect={setSelectedPageId}
+                onPagesChange={setEbookPages}
+                bookTitle={bookData.selectedTitle}
+                zoom={zoom}
+                onZoomChange={setZoom}
+              />
+              <EbookDesignSidebar
+                bookTitle={bookData.selectedTitle}
+                chapters={ebookPages.map(p => ({ id: p.id, title: p.title }))}
+                selectedChapterId={selectedPageId}
+                onChapterSelect={setSelectedPageId}
+                onChapterAdd={() => {
+                  const newPage = { id: crypto.randomUUID(), title: "New Page", type: "chapter" as const };
+                  setEbookPages(prev => [...prev, newPage]);
+                  setSelectedPageId(newPage.id);
+                }}
+                onChapterTitleEdit={(id, title) => setEbookPages(prev => prev.map(p => p.id === id ? { ...p, title } : p))}
+                onChapterDelete={id => {
+                  if (ebookPages.length <= 1) return;
+                  setEbookPages(prev => prev.filter(p => p.id !== id));
+                  if (selectedPageId === id) setSelectedPageId(ebookPages[0]?.id || null);
+                }}
+                onChapterReorder={(from, to) => {
+                  setEbookPages(prev => {
+                    const arr = [...prev];
+                    const [moved] = arr.splice(from, 1);
+                    arr.splice(to, 0, moved);
+                    return arr;
+                  });
+                }}
+              />
             </div>
-
-            {/* Generation overlay */}
             <EbookGenerationOverlay isGenerating={isGeneratingBook} bookTitle={bookData.selectedTitle} onComplete={handleGenerationComplete} />
           </div>
         )}
