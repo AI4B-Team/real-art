@@ -1508,7 +1508,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Music</span>
                     <span className="text-[0.78rem] font-semibold text-foreground leading-tight capitalize">{selectedGenre}</span>
                   </div>
-                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedGenre(null); }} />
+                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedGenre(null); setSelectedStyle("None"); }} />
                 </button>
               )}
             </div>
@@ -2898,7 +2898,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 <div className="grid grid-cols-5 sm:grid-cols-5 gap-2">
                   {AUDIO_GENRES.map(s => (
                     <button key={s.id} type="button"
-                      onClick={() => { setSelectedStyle(prev => prev === s.id ? "None" : s.id); setActivePanel(null); }}
+                      onClick={() => { const newVal = selectedStyle === s.id ? "None" : s.id; setSelectedStyle(newVal); setSelectedGenre(newVal === "None" ? null : s.id.toLowerCase()); setActivePanel(null); }}
                       onMouseEnter={() => {
                         if (genreAudioRef.current) { genreAudioRef.current.pause(); genreAudioRef.current.currentTime = 0; }
                         const audio = new Audio(s.preview);
@@ -2912,7 +2912,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         if (genreAudioRef.current) { genreAudioRef.current.pause(); genreAudioRef.current.currentTime = 0; }
                         setPlayingGenre(null);
                       }}
-                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${selectedStyle === s.id ? "ring-2 ring-destructive bg-destructive/10" : "hover:bg-foreground/[0.04]"}`}>
                       <div className="relative w-full">
                         <img src={`https://images.unsplash.com/${s.photo}?w=200&h=200&fit=crop&q=78`} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
                         <div className={`absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white/30 backdrop-blur-sm flex items-center justify-center text-white transition-opacity ${playingGenre === s.id ? "opacity-100" : "opacity-0"}`}>
@@ -3448,7 +3448,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
             <MusicSamples
               onClose={() => setActivePanel(null)}
               selectedGenre={selectedGenre}
-              onGenreSelect={setSelectedGenre}
+              onGenreSelect={(id) => { setSelectedGenre(id); setSelectedStyle(id ? id.charAt(0).toUpperCase() + id.slice(1) : "None"); }}
               onUseStyle={genre => {
                 setPrompt(prev => prev ? `${prev} — ${genre} style` : `Generate ${genre} music`);
               }}
