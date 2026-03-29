@@ -15,8 +15,8 @@ interface BrowsePanelProps {
 
 const SOURCE_TABS: { id: SourceTab; label: string; icon: typeof LayoutGrid }[] = [
   { id: "upload", label: "Upload", icon: Upload },
+  { id: "import", label: "Import", icon: FolderOpen },
   { id: "creations", label: "Creations", icon: Sparkles },
-  
   { id: "stock", label: "Stock", icon: Globe },
   { id: "community", label: "Community", icon: Users },
   { id: "trending", label: "Trending", icon: TrendingUp },
@@ -27,7 +27,7 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string; icon: typeof LayoutGrid }
   { id: "image", label: "Images", icon: ImageIcon },
 ];
 
-const POOLS: Record<Exclude<SourceTab, "upload">, BrowseItem[]> = {
+const POOLS: Record<Exclude<SourceTab, "upload" | "import">, BrowseItem[]> = {
   creations: DUMMY_CREATIONS,
   stock: DUMMY_STOCK,
   community: DUMMY_COMMUNITY,
@@ -98,7 +98,9 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
 
   // Browse tabs
   const isUpload = tab === "upload";
-  const pool = !isUpload ? POOLS[tab as Exclude<SourceTab, "upload">] : [];
+  const isImport = tab === "import";
+  const isBrowse = !isUpload && !isImport;
+  const pool = isBrowse ? POOLS[tab as Exclude<SourceTab, "upload" | "import">] : [];
   const filtered = pool
     .filter(i => mediaFilter === "all" || i.type === mediaFilter)
     .filter(i => !search || i.title.toLowerCase().includes(search.toLowerCase()));
@@ -144,7 +146,7 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
           ))}
         </div>
 
-        {!isUpload && (
+        {isBrowse && (
           <div className="flex items-center gap-1 shrink-0">
             {MEDIA_FILTERS.map(f => (
               <button
@@ -219,83 +221,52 @@ export default function BrowsePanel({ references, onAdd }: BrowsePanelProps) {
             />
           </div>
 
-          {/* Import section */}
-          {importView === "none" && (
-            <button
-              onClick={() => setImportView("menu")}
-              className="w-full flex items-center justify-between px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/15 hover:bg-foreground/[0.02] transition-all"
-            >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-foreground/[0.04] flex items-center justify-center">
-                  <FolderOpen size={15} className="text-muted" />
-                </div>
-                <span className="text-[0.82rem] font-semibold">Import</span>
-                <span className="text-[0.65rem] font-bold px-1.5 py-0.5 rounded-full bg-accent/15 text-accent">New</span>
-              </div>
-              <ChevronRight size={14} className="text-muted" />
-            </button>
-          )}
+        </div>
+      )}
 
-          {importView === "menu" && (
-            <div className="rounded-xl border border-foreground/[0.08] overflow-hidden">
-              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-foreground/[0.06]">
-                <button onClick={() => setImportView("none")} className="p-1 rounded-md hover:bg-foreground/[0.06] transition-colors">
-                  <ArrowLeft size={14} className="text-muted" />
-                </button>
-                <span className="text-[0.82rem] font-bold">Import</span>
-              </div>
-              {CLOUD_SOURCES.map(cs => (
-                <button
-                  key={cs.id}
-                  onClick={() => handleCloudSource(cs.label)}
-                  className="w-full flex items-center gap-3 px-4 py-3 hover:bg-foreground/[0.03] transition-colors border-b border-foreground/[0.04] last:border-b-0"
-                >
-                  <img src={cs.logo} alt={cs.label} className="w-5 h-5 object-contain" />
-                  <span className="text-[0.82rem] font-medium">{cs.label}</span>
-                </button>
-              ))}
+      {/* Import tab content */}
+      {isImport && (
+        <div className="space-y-2">
+          {CLOUD_SOURCES.map(cs => (
+            <button
+              key={cs.id}
+              onClick={() => handleCloudSource(cs.label)}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/15 hover:bg-foreground/[0.02] transition-all"
+            >
+              <img src={cs.logo} alt={cs.label} className="w-5 h-5 object-contain" />
+              <span className="text-[0.82rem] font-semibold">{cs.label}</span>
+              <span className="text-[0.65rem] text-muted ml-auto">Coming soon</span>
+            </button>
+          ))}
+
+          {/* Paste link */}
+          <div className="rounded-xl border border-foreground/[0.08] p-4 mt-3">
+            <div className="flex items-center gap-2 mb-3">
+              <Link size={14} className="text-muted" />
+              <span className="text-[0.82rem] font-bold">Paste Image Link</span>
+            </div>
+            <div className="flex gap-2">
+              <input
+                value={linkUrl}
+                onChange={e => setLinkUrl(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && handlePasteLink()}
+                placeholder="https://example.com/image.jpg"
+                className="flex-1 px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.8rem] outline-none focus:border-accent transition-colors"
+              />
               <button
-                onClick={() => setImportView("link")}
-                className="w-full flex items-center gap-3 px-4 py-3 hover:bg-foreground/[0.03] transition-colors"
+                onClick={handlePasteLink}
+                disabled={!linkUrl.trim()}
+                className="px-4 py-2 rounded-lg bg-accent text-accent-foreground text-[0.8rem] font-bold hover:bg-accent/85 transition-colors disabled:opacity-40"
               >
-                <Link size={16} className="text-muted" />
-                <span className="text-[0.82rem] font-medium text-muted">Paste an image link</span>
+                Add
               </button>
             </div>
-          )}
-
-          {importView === "link" && (
-            <div className="rounded-xl border border-foreground/[0.08] p-4">
-              <div className="flex items-center gap-2 mb-3">
-                <button onClick={() => setImportView("menu")} className="p-1 rounded-md hover:bg-foreground/[0.06] transition-colors">
-                  <ArrowLeft size={14} className="text-muted" />
-                </button>
-                <span className="text-[0.82rem] font-bold">Paste Image Link</span>
-              </div>
-              <div className="flex gap-2">
-                <input
-                  value={linkUrl}
-                  onChange={e => setLinkUrl(e.target.value)}
-                  onKeyDown={e => e.key === "Enter" && handlePasteLink()}
-                  placeholder="https://example.com/image.jpg"
-                  className="flex-1 px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.8rem] outline-none focus:border-accent transition-colors"
-                  autoFocus
-                />
-                <button
-                  onClick={handlePasteLink}
-                  disabled={!linkUrl.trim()}
-                  className="px-4 py-2 rounded-lg bg-accent text-accent-foreground text-[0.8rem] font-bold hover:bg-accent/85 transition-colors disabled:opacity-40"
-                >
-                  Add
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       )}
 
       {/* Browse content for non-upload tabs */}
-      {!isUpload && (
+      {isBrowse && (
         <>
           {/* Search */}
           <div className="relative mb-3">
