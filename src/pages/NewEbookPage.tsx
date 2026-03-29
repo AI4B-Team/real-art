@@ -585,8 +585,8 @@ const NewEbookPage = () => {
 
         {/* === DESIGN TAB === */}
         {activeTab === "design" && (
-          <div className="relative">
-            <div className="flex" style={{ height: "calc(100vh - 160px)" }}>
+          <div className="relative flex-1 min-h-0">
+            <div className="flex h-full">
               <EbookCanvasEditor
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
