@@ -108,13 +108,19 @@ const EbookCreatorPage = () => {
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Drag & Drop Your File</span>
               </div>
               <div className="flex justify-center gap-1.5 items-center flex-wrap">
-                {["PDF", "DOCX", "TXT"].map(f => (
-                  <div key={f} className="flex items-center gap-1 px-1.5 py-1 rounded bg-muted/50 border border-foreground/[0.06]">
-                    <div className="w-4 h-4 rounded bg-muted flex items-center justify-center"><FileText className="w-2.5 h-2.5 text-muted-foreground" /></div>
-                    <span className="text-[10px] font-semibold text-muted-foreground">{f}</span>
+                {[
+                  { label: "PDF", color: "#E53935" },
+                  { label: "DOCX", color: "#1565C0" },
+                  { label: "TXT", color: "#546E7A" },
+                ].map(f => (
+                  <div key={f.label} className="flex items-center gap-1.5 px-2 py-1 rounded-md bg-muted/50 border border-foreground/[0.06]">
+                    <div className="w-4 h-5 rounded-[2px] flex items-center justify-center" style={{ backgroundColor: f.color }}>
+                      <span className="text-[5px] font-black text-white leading-none">{f.label}</span>
+                    </div>
+                    <span className="text-[10px] font-semibold text-muted-foreground">{f.label}</span>
                   </div>
                 ))}
-                <div className="flex items-center gap-1 px-1.5 py-1 rounded bg-muted/50 border border-foreground/[0.06]">
+                <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-muted/50 border border-foreground/[0.06]">
                   <span className="text-[10px] font-semibold text-muted-foreground">+ more</span>
                 </div>
               </div>
