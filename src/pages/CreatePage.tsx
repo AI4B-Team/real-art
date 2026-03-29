@@ -2211,8 +2211,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                 {selectedType === "design" && (selectedSubMode === "poster" || selectedSubMode === "flyer") && (
                   <Popover open={designSizeOpen} onOpenChange={setDesignSizeOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                      <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                        <Copy size={12} />{designSize}
+                      <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designSize ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                        <Copy size={12} />{designSize || "Size"}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Size</TooltipContent></Tooltip>
                     <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
