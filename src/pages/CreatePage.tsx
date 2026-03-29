@@ -2175,9 +2175,9 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presAudience !== "Casual" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Users size={12} />{presAudience}<ChevronDown size={10} className="opacity-60" />
+                              <SlidersHorizontal size={12} />{presAudience}<ChevronDown size={10} className="opacity-60" />
                             </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Audience</TooltipContent></Tooltip>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Tone</TooltipContent></Tooltip>
                           <PopoverContent className="w-64 p-1.5" align="start" sideOffset={6}>
                             {[
                               { id: "Casual", desc: "Informal and relaxed presentation style", Icon: MessageCircle },
