@@ -2195,15 +2195,15 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                         <Popover open={presLengthOpen} onOpenChange={setPresLengthOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presLength !== "Balanced" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Layers size={12} />{presLength}<ChevronDown size={10} className="opacity-60" />
+                              <FileText size={12} />{presLength}<ChevronDown size={10} className="opacity-60" />
                             </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Length</TooltipContent></Tooltip>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Pages</TooltipContent></Tooltip>
                           <PopoverContent className="w-56 p-1.5" align="start" sideOffset={6}>
                             {[
-                              { id: "Short and sharp", desc: "1 to 5 pages" },
+                              { id: "Short and Sharp", desc: "1 to 5 pages" },
                               { id: "Balanced", desc: "5 to 15 pages" },
                               { id: "Comprehensive", desc: "15+ pages" },
-                              { id: "Decide for me", desc: "We'll choose the best length" },
+                              { id: "Decide for Me", desc: "We'll choose the best length" },
                             ].map(l => (
                               <button key={l.id} type="button" onClick={() => { setPresLength(l.id); setPresLengthOpen(false); }}
                                 className={`w-full flex flex-col px-3 py-2.5 rounded-lg text-left transition-colors ${presLength === l.id ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
