@@ -790,7 +790,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignOrientation("Portrait");
     setDesignPlatform("");
     setDesignFinish("Matte");
-    setDesignFoldType("Tri-Fold");
+    setDesignFoldType(null);
     setDesignPages(null);
     setDesignChartType(null);
     setDesignLayout("Vertical");
