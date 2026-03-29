@@ -338,12 +338,13 @@ const NewEbookPage = () => {
 
         {/* === DESIGN SUB-BAR: Back + Project Name + Canvas Tools === */}
         {activeTab === "design" && (
-          <div className="flex items-center justify-between px-4 py-2 border-b border-foreground/[0.04] bg-background">
-            <div className="flex items-center gap-3">
+          <div className="flex items-center px-4 py-2 border-b border-foreground/[0.04] bg-background">
+            <div className="flex items-center gap-3 flex-1">
               <button onClick={() => navigate("/ghost-ink")} className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors">
                 <ArrowLeft size={16} />Back To Projects
               </button>
-              <div className="w-px h-5 bg-foreground/[0.08]" />
+            </div>
+            <div className="flex items-center gap-2 justify-center">
               <span className="text-sm text-muted-foreground">Project Name:</span>
               <input
                 value={bookData.selectedTitle || "Untitled Book"}
@@ -351,6 +352,7 @@ const NewEbookPage = () => {
                 className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-3 py-1.5 w-64 focus:outline-none focus:border-accent/40 transition-colors"
               />
             </div>
+            <div className="flex-1" />
             <div className="flex items-center gap-2">
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={15} /></button></TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={15} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
