@@ -1901,6 +1901,18 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Voice</TooltipContent></Tooltip>
                     <PopoverContent className="w-64 p-0" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                       <p className="text-[0.78rem] text-muted px-4 pt-3 pb-2">Select a voice</p>
+                      {/* Record your own voice */}
+                      <div className="px-2 pb-1">
+                        <button type="button" onClick={() => { setVoiceoverVoice("My Voice"); setMusicVoiceOpen(false); }}
+                          className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-[0.84rem] transition-colors border border-dashed ${voiceoverVoice === "My Voice" ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] hover:bg-foreground/[0.04] text-foreground"}`}>
+                          <div className="w-8 h-8 rounded-full bg-destructive/10 flex items-center justify-center shrink-0"><Mic size={14} className="text-destructive" /></div>
+                          <div className="flex-1 text-left">
+                            <p className="font-medium text-[0.84rem]">Record Your Voice</p>
+                            <p className="text-[0.72rem] text-muted">Use your own voice</p>
+                          </div>
+                        </button>
+                      </div>
+                      <div className="h-px bg-foreground/[0.06] mx-4 my-1" />
                       <div className="max-h-[280px] overflow-y-auto px-2 pb-2">
                         {[
                           { name: "Rachel", gender: "Female" },
@@ -1919,7 +1931,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                               <p className="font-medium text-[0.84rem]">{v.name}</p>
                               <p className="text-[0.72rem] text-muted">{v.gender}</p>
                             </div>
-                            <Play size={14} className="text-green-500 opacity-60 hover:opacity-100" />
+                            <Play size={14} className="text-accent opacity-60 hover:opacity-100" />
                           </button>
                         ))}
                       </div>
