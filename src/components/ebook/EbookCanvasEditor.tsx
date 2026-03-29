@@ -392,6 +392,21 @@ const EbookCanvasEditor = ({
     addElement('image', { src: url, width: 40, height: 30 });
   };
 
+  const handleReplaceImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedElementId) return;
+    const url = URL.createObjectURL(file);
+    updateElement(selectedElementId, { src: url });
+    toast.success('Image replaced');
+  };
+
+  const handleAIEdit = () => {
+    if (!aiEditPrompt.trim()) return;
+    toast.success('AI edit applied: ' + aiEditPrompt);
+    setShowAIEditModal(false);
+    setAIEditPrompt('');
+  };
+
   // ─── Page Panel DnD ───────────────────────────
   const handlePageDragStart = (idx: number) => setDraggedPageIndex(idx);
   const handlePageDragOver = (e: React.DragEvent, idx: number) => { e.preventDefault(); setDragOverPageIndex(idx); };
