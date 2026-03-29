@@ -2127,6 +2127,57 @@ function PromptBox({ onGenerate }: { onGenerate: () => void }) {
                         </Popover>
                       </>
                     )}
+
+                    {/* ── Presentation controls ── */}
+                    {selectedSubMode === "presentation" && (
+                      <>
+                        <Popover open={presDeckStyleOpen} onOpenChange={setPresDeckStyleOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presDeckStyle !== "Minimalist" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Brush size={12} />{presDeckStyle}<ChevronDown size={10} className="opacity-60" />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["Minimalist", "Playful", "Organic", "Geometric", "Modular", "Elegant", "Digital"].map(s => (
+                              <button key={s} type="button" onClick={() => { setPresDeckStyle(s); setPresDeckStyleOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${presDeckStyle === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {s}{presDeckStyle === s && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presAudience !== "General" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Users size={12} />{presAudience}<ChevronDown size={10} className="opacity-60" />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Audience</TooltipContent></Tooltip>
+                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
+                            {["General", "Investors", "Executives", "Students", "Clients", "Team"].map(a => (
+                              <button key={a} type="button" onClick={() => { setPresAudience(a); setPresAudienceOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${presAudience === a ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {a}{presAudience === a && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                        <Popover open={presLengthOpen} onOpenChange={setPresLengthOpen}>
+                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presLength !== "10 slides" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <Layers size={12} />{presLength}<ChevronDown size={10} className="opacity-60" />
+                            </button>
+                          </PopoverTrigger></TooltipTrigger><TooltipContent>Length</TooltipContent></Tooltip>
+                          <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
+                            {["5 slides", "10 slides", "15 slides", "20 slides", "30 slides"].map(l => (
+                              <button key={l} type="button" onClick={() => { setPresLength(l); setPresLengthOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${presLength === l ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
+                                {l}{presLength === l && <Check size={12} />}
+                              </button>
+                            ))}
+                          </PopoverContent>
+                        </Popover>
+                      </>
+                    )}
                   </div>
                 )}
 
