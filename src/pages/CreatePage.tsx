@@ -2882,7 +2882,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[0.85rem] font-bold">{selectedType === "audio" ? "Genre" : selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "audio" ? "Style" : selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
