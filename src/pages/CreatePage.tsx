@@ -2184,7 +2184,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
 
 
                 {/* Size — poster */}
-                {selectedType === "design" && selectedSubMode === "poster" && (
+                {selectedType === "design" && (selectedSubMode === "poster" || selectedSubMode === "flyer") && (
                   <Popover open={designSizeOpen} onOpenChange={setDesignSizeOpen}>
                     <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                       <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
@@ -2263,26 +2263,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       </>
                     )}
 
-                    {/* ── Flyer controls ── */}
-                    {selectedSubMode === "flyer" && (
-                      <>
-                        <Popover open={designSizeOpen} onOpenChange={setDesignSizeOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                              <Copy size={12} />{designSize}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Size</TooltipContent></Tooltip>
-                          <PopoverContent className="w-36 p-1.5" align="start" sideOffset={6}>
-                            {["A4", "A5", "Letter", "Half Letter", "DL"].map(s => (
-                              <button key={s} type="button" onClick={() => { setDesignSize(s); setDesignSizeOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designSize === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {s}{designSize === s && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                      </>
-                    )}
 
                     {/* ── Business Card controls ── */}
                     {selectedSubMode === "business-card" && (
