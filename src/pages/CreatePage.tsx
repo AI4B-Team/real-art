@@ -60,6 +60,13 @@ import styleMoodNeon from "@/assets/styles/mood-neon.jpg";
 import styleMoodEarthy from "@/assets/styles/mood-earthy.jpg";
 import styleMoodMonochrome from "@/assets/styles/mood-monochrome.jpg";
 import styleMoodGradient from "@/assets/styles/mood-gradient.jpg";
+import presMinimalist from "@/assets/styles/pres-minimalist.jpg";
+import presPlayful from "@/assets/styles/pres-playful.jpg";
+import presOrganic from "@/assets/styles/pres-organic.jpg";
+import presGeometric from "@/assets/styles/pres-geometric.jpg";
+import presModular from "@/assets/styles/pres-modular.jpg";
+import presElegant from "@/assets/styles/pres-elegant.jpg";
+import presDigital from "@/assets/styles/pres-digital.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
@@ -1751,8 +1758,8 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                 {/* Style */}
                 <Tooltip><TooltipTrigger asChild>
                   <button type="button" onClick={() => togglePanel("style")}
-                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                    {selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedStyle !== "None" ? selectedStyle : "Style"}
+                    className={`toolbar-btn flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium whitespace-nowrap shrink-0 ${activePanel === "style" || selectedStyle !== "None" || (selectedSubMode === "presentation" && presDeckStyle !== "Minimalist") ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                    {selectedType === "video" ? <Film size={12} /> : <Brush size={12} />}{selectedSubMode === "presentation" ? presDeckStyle : selectedStyle !== "None" ? selectedStyle : "Style"}
                   </button>
                 </TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
 
@@ -2137,21 +2144,6 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                     {/* ── Presentation controls ── */}
                     {selectedSubMode === "presentation" && (
                       <>
-                        <Popover open={presDeckStyleOpen} onOpenChange={setPresDeckStyleOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presDeckStyle !== "Minimalist" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
-                              <Brush size={12} />{presDeckStyle}<ChevronDown size={10} className="opacity-60" />
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["Minimalist", "Playful", "Organic", "Geometric", "Modular", "Elegant", "Digital"].map(s => (
-                              <button key={s} type="button" onClick={() => { setPresDeckStyle(s); setPresDeckStyleOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${presDeckStyle === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {s}{presDeckStyle === s && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
                         <Popover open={presAudienceOpen} onOpenChange={setPresAudienceOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
                             <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${presAudience !== "Casual" ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
@@ -2678,7 +2670,7 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
           {activePanel === "style" && (
             <div className="rounded-xl border border-foreground/[0.08] bg-background p-5 mt-3">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
+                <h3 className="text-[0.85rem] font-bold">{selectedType === "video" ? "Video Style" : selectedType === "design" && selectedSubMode === "presentation" ? "Presentation Style" : selectedType === "design" ? "Design Style" : "Art Style"}</h3>
                 <button onClick={() => setActivePanel(null)} className="text-muted hover:text-foreground transition-colors">
                   <X size={16} />
                 </button>
@@ -2696,6 +2688,25 @@ function PromptBox({ onGenerate }: { onGenerate: (info: { type: ContentType | nu
                       <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
                       <span className={`text-[0.68rem] font-medium leading-none ${selectedStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
                       {selectedStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
+                    </button>
+                  ))}
+                </div>
+              ) : selectedType === "design" && selectedSubMode === "presentation" ? (
+                <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                  {[
+                    { id: "Minimalist", label: "Minimalist", img: presMinimalist },
+                    { id: "Playful", label: "Playful", img: presPlayful },
+                    { id: "Organic", label: "Organic", img: presOrganic },
+                    { id: "Geometric", label: "Geometric", img: presGeometric },
+                    { id: "Modular", label: "Modular", img: presModular },
+                    { id: "Elegant", label: "Elegant", img: presElegant },
+                    { id: "Digital", label: "Digital", img: presDigital },
+                  ].map(s => (
+                    <button key={s.id} type="button" onClick={() => { setPresDeckStyle(s.id); setSelectedStyle(s.id); setActivePanel(null); }}
+                      className={`relative flex flex-col items-center gap-1.5 p-2 rounded-lg transition-all ${presDeckStyle === s.id ? "ring-2 ring-accent bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                      <img src={s.img} alt={s.label} className="w-full aspect-square rounded-lg object-cover" loading="lazy" />
+                      <span className={`text-[0.68rem] font-medium leading-none ${presDeckStyle === s.id ? "text-accent" : "text-foreground/70"}`}>{s.label}</span>
+                      {presDeckStyle === s.id && <div className="absolute top-2 right-2 w-4 h-4 rounded-full bg-accent flex items-center justify-center"><Check size={10} className="text-white" /></div>}
                     </button>
                   ))}
                 </div>
