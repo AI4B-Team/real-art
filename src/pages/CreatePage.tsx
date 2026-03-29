@@ -72,6 +72,12 @@ import styleInfographicHorizontal from "@/assets/styles/infographic-horizontal.j
 import styleInfographicTimeline from "@/assets/styles/infographic-timeline.jpg";
 import styleInfographicComparison from "@/assets/styles/infographic-comparison.jpg";
 import styleInfographicProcess from "@/assets/styles/infographic-process.jpg";
+import chartMixed from "@/assets/styles/chart-mixed.jpg";
+import chartBar from "@/assets/styles/chart-bar.jpg";
+import chartPie from "@/assets/styles/chart-pie.jpg";
+import chartLine from "@/assets/styles/chart-line.jpg";
+import chartIcons from "@/assets/styles/chart-icons.jpg";
+import chartNumbers from "@/assets/styles/chart-numbers.jpg";
 import {
   Popover, PopoverContent, PopoverTrigger,
 } from "@/components/ui/popover";
