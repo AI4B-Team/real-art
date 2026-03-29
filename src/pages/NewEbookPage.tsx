@@ -248,9 +248,9 @@ const NewEbookPage = () => {
     <PageShell>
       <div className={activeTab === "design" ? "px-0 py-0" : "max-w-7xl mx-auto px-6 py-6"}>
         {/* Top bar */}
-        <div className="flex items-center justify-between mb-6">
+        <div className={`flex items-center justify-between ${activeTab === "design" ? "px-4 py-3" : "mb-6"}`}>
           <div className="flex items-center gap-3">
-            <button onClick={() => navigate("/ebook-creator")} className="p-2 rounded-lg hover:bg-foreground/[0.05] transition-colors"><ArrowLeft size={20} className="text-foreground" /></button>
+            <button onClick={() => navigate("/ghost-ink")} className="p-2 rounded-lg hover:bg-foreground/[0.05] transition-colors"><ArrowLeft size={20} className="text-foreground" /></button>
             <h1 className="text-xl font-display font-bold text-foreground">
               {activeTab === "design" ? (bookData.selectedTitle || "Untitled Book") : "New eBook"}
             </h1>
@@ -266,6 +266,7 @@ const NewEbookPage = () => {
         </div>
 
         {/* Tab navigation */}
+        {activeTab !== "design" && (
         <div className="flex items-center gap-1 mb-8 bg-foreground/[0.03] rounded-xl p-1 w-fit">
           {TABS.map((tab, i) => {
             const isActive = activeTab === tab.id;
@@ -280,6 +281,7 @@ const NewEbookPage = () => {
             );
           })}
         </div>
+        )}
 
         {/* === IDEA TAB === */}
         {activeTab === "idea" && (
