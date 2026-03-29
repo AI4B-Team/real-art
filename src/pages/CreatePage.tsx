@@ -1805,11 +1805,11 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                         <Headphones size={12} />{musicStyle || "Style"}
                       </button>
                     </PopoverTrigger></TooltipTrigger><TooltipContent>Style</TooltipContent></Tooltip>
-                    <PopoverContent className="w-72 p-3" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
+                    <PopoverContent className="w-64 p-3" align="start" side="bottom" avoidCollisions={false} sideOffset={6}>
                       <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Style</p>
                       <div className="flex gap-2 mb-3">
                         {(["Instrumental", "Vocals"] as const).map(s => (
-                          <button key={s} type="button" onClick={() => setMusicStyle(musicStyle === s ? null : s)}
+                          <button key={s} type="button" onClick={() => { setMusicStyle(musicStyle === s ? null : s); if (s === "Vocals" && musicStyle !== "Vocals") { setMusicStyleOpen(false); setActivePanel("music"); } }}
                             className={`flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-[0.82rem] font-semibold border transition-all ${musicStyle === s ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] hover:border-foreground/25 text-foreground"}`}>
                             {s === "Instrumental" ? <Music size={14} /> : <Mic size={14} />}{s}
                           </button>
@@ -1818,7 +1818,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       {musicStyle === "Vocals" && (
                         <>
                           <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Voice</p>
-                          <div className="flex gap-2 mb-3">
+                          <div className="flex gap-2">
                             {(["Male", "Female"] as const).map(g => (
                               <button key={g} type="button" onClick={() => setMusicVoiceGender(musicVoiceGender === g ? null : g)}
                                 className={`flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-[0.82rem] font-medium border transition-all ${musicVoiceGender === g ? "bg-accent/10 border-accent text-accent" : "border-foreground/[0.1] hover:border-foreground/25 text-foreground"}`}>
@@ -1826,17 +1826,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                               </button>
                             ))}
                           </div>
-                          <p className="text-[0.72rem] font-semibold text-muted tracking-wide uppercase mb-2">Lyrics</p>
-                          <textarea
-                            value={musicLyrics}
-                            onChange={e => setMusicLyrics(e.target.value)}
-                            placeholder="Write or paste your lyrics here..."
-                            className="w-full h-24 px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-[0.82rem] resize-none focus:outline-none focus:border-accent transition-colors mb-2"
-                          />
-                          <button type="button" onClick={() => { setMusicLyrics("✨ Generating lyrics with AI..."); setTimeout(() => setMusicLyrics(""), 1500); }}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[0.75rem] font-semibold text-accent bg-accent/10 hover:bg-accent/15 transition-colors">
-                            <Wand2 size={12} />AI Writer
-                          </button>
                         </>
                       )}
                     </PopoverContent>
