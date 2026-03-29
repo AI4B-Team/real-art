@@ -1508,7 +1508,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <span className="text-[0.68rem] text-muted/60 font-medium block leading-none">Music</span>
                     <span className="text-[0.78rem] font-semibold text-foreground leading-tight capitalize">{selectedGenre}</span>
                   </div>
-                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedGenre(null); }} />
+                  <X size={12} className="text-muted/40 group-hover:text-foreground ml-1" onClick={e => { e.stopPropagation(); setSelectedGenre(null); setSelectedStyle("None"); }} />
                 </button>
               )}
             </div>
