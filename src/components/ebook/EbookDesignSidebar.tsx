@@ -36,7 +36,7 @@ interface EbookDesignSidebarProps {
   onAddElement?: (type: string, data?: any) => void;
 }
 
-type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements';
+type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
 
 const TEMPLATES = [
   { id: 'minimal', name: 'Minimal', color: '#f1f5f9' },
