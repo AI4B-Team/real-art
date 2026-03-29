@@ -508,7 +508,7 @@ const NewEbookPage = () => {
             {/* Canvas area */}
             <div className="flex" style={{ height: "calc(100vh - 160px)" }}>
               {/* Pages sidebar */}
-              <div className="w-56 border-r border-foreground/[0.06] bg-card overflow-y-auto p-3">
+              <div className="w-56 border-r border-foreground/[0.04] bg-background overflow-y-auto p-3">
                 <h3 className="text-xs font-semibold text-muted uppercase tracking-wider mb-3 px-2">Pages</h3>
                 <div className="space-y-2">
                   {ebookPages.filter(p => p.type !== "chapter-page").map((page, i) => (
