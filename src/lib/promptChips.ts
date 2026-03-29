@@ -33,8 +33,8 @@ export const PROMPT_SAMPLE_ASSETS: { category: string; type: AssetChip["type"]; 
   {
     category: "Videos", type: "video",
     items: [
-      { id: "vid-1", label: "Video 1", thumbnail: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=40&h=40&fit=crop" },
-      { id: "vid-2", label: "Video 2", thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=40&h=40&fit=crop" },
+      { id: "vid-1", label: "Video 1", thumbnail: "https://picsum.photos/seed/vid1/40/40" },
+      { id: "vid-2", label: "Video 2", thumbnail: "https://picsum.photos/seed/vid2/40/40" },
     ],
   },
   {
