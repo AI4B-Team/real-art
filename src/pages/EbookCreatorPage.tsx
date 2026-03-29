@@ -74,14 +74,14 @@ const EbookCreatorPage = () => {
         </div>
 
         {/* Source Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-          <button onClick={() => navigate("/ebook-creator/new?source=ai-generate")} className="group relative pt-8 px-8 pb-2 rounded-2xl border-2 border-dashed border-accent/40 bg-accent/5 hover:bg-accent/10 transition-all min-h-[280px] flex flex-col">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5 mb-10">
+          <button onClick={() => navigate("/ebook-creator/new?source=ai-generate")} className="group relative pt-6 px-6 pb-2 rounded-2xl border-2 border-dashed border-accent/40 bg-accent/5 hover:bg-accent/10 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-accent/10 group-hover:bg-accent/20 flex items-center justify-center mb-5 transition-all">
-                <Sparkles className="w-9 h-9 text-accent group-hover:scale-110 transition-all" />
+              <div className="w-16 h-16 rounded-2xl bg-accent/10 group-hover:bg-accent/20 flex items-center justify-center mb-4 transition-all">
+                <Sparkles className="w-7 h-7 text-accent group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Start With AI</h3>
-              <p className="text-sm text-muted mb-4">Create From Scratch With AI</p>
+              <h3 className="text-base font-semibold text-foreground mb-1">Start With AI</h3>
+              <p className="text-xs text-muted mb-3">Create From Scratch With AI</p>
               <div className="flex items-center gap-2 text-xs text-muted">
                 <div className="flex flex-col items-center"><Lightbulb className="w-4 h-4 text-accent" /><span>Idea</span></div>
                 <span className="text-muted/40">→</span>
@@ -97,13 +97,13 @@ const EbookCreatorPage = () => {
             </div>
           </button>
 
-          <button onClick={() => fileInputRef.current?.click()} className="group relative p-8 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-amber-400/50 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all min-h-[280px] flex flex-col">
+          <button onClick={() => fileInputRef.current?.click()} className="group relative p-6 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-amber-400/50 hover:bg-amber-50 dark:hover:bg-amber-950/20 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/40 flex items-center justify-center mb-5 transition-all">
-                <Upload className="w-9 h-9 text-amber-600 group-hover:scale-110 transition-all" />
+              <div className="w-16 h-16 rounded-2xl bg-amber-100 dark:bg-amber-900/30 group-hover:bg-amber-200 dark:group-hover:bg-amber-800/40 flex items-center justify-center mb-4 transition-all">
+                <Upload className="w-7 h-7 text-amber-600 group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Upload File</h3>
-              <div className="w-full px-4 py-3 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-4">
+              <h3 className="text-base font-semibold text-foreground mb-2">Upload File</h3>
+              <div className="w-full px-3 py-2.5 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-3">
                 <Upload className="w-5 h-5 text-muted shrink-0" />
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Drag & Drop Your File</span>
               </div>
@@ -128,13 +128,13 @@ const EbookCreatorPage = () => {
           </button>
           <input ref={fileInputRef} type="file" className="hidden" accept=".pdf,.docx,.txt,.doc,.epub" onChange={() => { navigate("/ebook-creator/new?source=upload"); }} />
 
-          <button onClick={() => navigate("/ebook-creator/new?source=url")} className="group relative p-8 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-blue-400/50 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all min-h-[280px] flex flex-col">
+          <button onClick={() => navigate("/ebook-creator/new?source=url")} className="group relative p-6 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-blue-400/50 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/40 flex items-center justify-center mb-5 transition-all">
-                <Link2 className="w-9 h-9 text-blue-500 group-hover:scale-110 transition-all" />
+              <div className="w-16 h-16 rounded-2xl bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-800/40 flex items-center justify-center mb-4 transition-all">
+                <Link2 className="w-7 h-7 text-blue-500 group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Insert Link</h3>
-              <div className="w-full px-4 py-3 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-4">
+              <h3 className="text-base font-semibold text-foreground mb-2">Insert Link</h3>
+              <div className="w-full px-3 py-2.5 rounded-xl border-2 border-foreground/[0.15] bg-background flex items-center gap-2 mb-3">
                 <Link2 className="w-5 h-5 text-blue-500 shrink-0" />
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Paste Website Link</span>
               </div>
@@ -152,12 +152,12 @@ const EbookCreatorPage = () => {
             </div>
           </button>
 
-          <button onClick={() => navigate("/ebook-creator/new?source=voice")} className="group relative p-8 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-rose-400/50 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all min-h-[280px] flex flex-col">
+          <button onClick={() => navigate("/ebook-creator/new?source=voice")} className="group relative p-6 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-rose-400/50 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
-              <div className="w-20 h-20 rounded-2xl bg-rose-100 dark:bg-rose-900/30 group-hover:bg-rose-200 dark:group-hover:bg-rose-800/40 flex items-center justify-center mb-5 transition-all">
-                <Mic className="w-9 h-9 text-rose-500 group-hover:scale-110 transition-all" />
+              <div className="w-16 h-16 rounded-2xl bg-rose-100 dark:bg-rose-900/30 group-hover:bg-rose-200 dark:group-hover:bg-rose-800/40 flex items-center justify-center mb-4 transition-all">
+                <Mic className="w-7 h-7 text-rose-500 group-hover:scale-110 transition-all" />
               </div>
-              <h3 className="text-xl font-semibold text-foreground mb-2">Record Audio</h3>
+              <h3 className="text-base font-semibold text-foreground mb-1">Record Audio</h3>
               <p className="text-sm text-muted">Click To Start Recording</p>
               <div className="mt-4 flex items-center gap-2 text-xs text-muted">
                 <div className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
