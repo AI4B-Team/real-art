@@ -4255,6 +4255,12 @@ export default function CreatePage() {
                     ))}
                   </PopoverContent>
                 </Popover>
+                <button
+                  onClick={exitAppBuilder}
+                  className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.06] transition-colors"
+                >
+                  <X size={16} />
+                </button>
               </div>
             </div>
 
