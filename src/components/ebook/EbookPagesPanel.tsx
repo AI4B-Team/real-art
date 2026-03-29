@@ -203,7 +203,7 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
           </button>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] ml-1">
+              <button onClick={onGridViewToggle} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05] ml-1">
                 <LayoutGrid className="w-3.5 h-3.5" />
               </button>
             </TooltipTrigger>
