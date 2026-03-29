@@ -431,7 +431,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
   const [designPlatformOpen, setDesignPlatformOpen] = useState(false);
   const [designFinish, setDesignFinish] = useState("Matte");
   const [designFinishOpen, setDesignFinishOpen] = useState(false);
-  const [designFoldType, setDesignFoldType] = useState("Tri-Fold");
+  const [designFoldType, setDesignFoldType] = useState<string | null>(null);
   const [designFoldOpen, setDesignFoldOpen] = useState(false);
   const [designPages, setDesignPages] = useState<number | null>(null);
   const [designPagesOpen, setDesignPagesOpen] = useState(false);
@@ -790,7 +790,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
     setDesignOrientation("Portrait");
     setDesignPlatform("");
     setDesignFinish("Matte");
-    setDesignFoldType("Tri-Fold");
+    setDesignFoldType(null);
     setDesignPages(null);
     setDesignChartType(null);
     setDesignLayout("Vertical");
@@ -2292,8 +2292,8 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                       <>
                         <Popover open={designFoldOpen} onOpenChange={setDesignFoldOpen}>
                           <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                              <BookOpen size={12} />{designFoldType}
+                            <button type="button" className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 ${designFoldType ? "bg-accent/10 text-accent" : "bg-foreground/[0.04] text-muted hover:text-foreground"}`}>
+                              <BookOpen size={12} />{designFoldType || "Fold"}
                             </button>
                           </PopoverTrigger></TooltipTrigger><TooltipContent>Fold Type</TooltipContent></Tooltip>
                           <PopoverContent className="w-40 p-1.5" align="start" sideOffset={6}>
