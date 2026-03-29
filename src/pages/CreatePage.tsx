@@ -2227,26 +2227,6 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <div className="w-px h-5 bg-foreground/[0.08] mx-1 shrink-0" />
 
                     {/* ── Logo controls ── */}
-
-                    {/* ── Poster controls ── */}
-                    {selectedSubMode === "poster" && (
-                      <>
-                        <Popover open={designSizeOpen} onOpenChange={setDesignSizeOpen}>
-                          <Tooltip><TooltipTrigger asChild><PopoverTrigger asChild>
-                            <button type="button" className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[0.75rem] font-medium transition-colors whitespace-nowrap shrink-0 bg-accent/10 text-accent">
-                              <Copy size={12} />{designSize}
-                            </button>
-                          </PopoverTrigger></TooltipTrigger><TooltipContent>Size</TooltipContent></Tooltip>
-                          <PopoverContent className="w-44 p-1.5" align="start" sideOffset={6}>
-                            {["A4", "A3", "A2", "Letter", "11x17", "24x36"].map(s => (
-                              <button key={s} type="button" onClick={() => { setDesignSize(s); setDesignSizeOpen(false); }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[0.82rem] transition-colors ${designSize === s ? "bg-foreground text-primary-foreground" : "hover:bg-foreground/[0.04] text-foreground"}`}>
-                                {s}{designSize === s && <Check size={12} />}
-                              </button>
-                            ))}
-                          </PopoverContent>
-                        </Popover>
-                      </>
                     )}
 
                     {/* ── Thumbnail controls ── */}
