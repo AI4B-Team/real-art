@@ -428,9 +428,6 @@ const NewEbookPage = () => {
             <div className="rounded-2xl border-2 border-accent/30 bg-background p-1 mb-6">
               <div className="flex items-start gap-2 px-3 py-3">
                 <button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><Shuffle size={18} /></button>
-                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-                  <Headphones className="w-4 h-4 text-accent" />
-                </div>
                 <textarea
                   value={bookData.prompt}
                   onChange={e => setBookData(prev => ({ ...prev, prompt: e.target.value }))}
