@@ -338,19 +338,21 @@ const NewEbookPage = () => {
 
         {/* === DESIGN SUB-BAR: Back + Project Name + Canvas Tools === */}
         {activeTab === "design" && (
-          <div className="flex items-center px-4 py-2 border-b border-foreground/[0.04] bg-background">
-            <div className="flex items-center gap-3 flex-1">
+          <div className="relative flex items-center px-4 py-2 border-b border-foreground/[0.04] bg-background">
+            <div className="flex items-center gap-3 shrink-0">
               <button onClick={() => navigate("/ghost-ink")} className="flex items-center gap-1.5 text-sm text-muted hover:text-foreground transition-colors">
                 <ArrowLeft size={16} />Back To Projects
               </button>
             </div>
-            <div className="flex items-center gap-2 justify-center">
-              <span className="text-sm text-muted-foreground">Project Name:</span>
-              <input
-                value={bookData.selectedTitle || "Untitled Book"}
-                onChange={e => setBookData(prev => ({ ...prev, selectedTitle: e.target.value }))}
-                className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-3 py-1.5 w-64 focus:outline-none focus:border-accent/40 transition-colors"
-              />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="flex items-center gap-2 pointer-events-auto">
+                <span className="text-sm text-muted-foreground">Project Name:</span>
+                <input
+                  value={bookData.selectedTitle || "Untitled Book"}
+                  onChange={e => setBookData(prev => ({ ...prev, selectedTitle: e.target.value }))}
+                  className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-3 py-1.5 w-64 focus:outline-none focus:border-accent/40 transition-colors"
+                />
+              </div>
             </div>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
