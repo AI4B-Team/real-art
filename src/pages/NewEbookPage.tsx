@@ -252,6 +252,25 @@ const NewEbookPage = () => {
     toast({ title: "Idea generated!" });
   };
 
+  const handleStartRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = recorder;
+      recorder.start();
+      setIsRecording(true);
+      recorder.onstop = () => { stream.getTracks().forEach(t => t.stop()); };
+    } catch { toast({ title: "Microphone access denied", variant: "destructive" }); }
+  };
+
+  const handleStopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
+    setShowRecordModal(false);
+    setBookData(prev => ({ ...prev, sourceType: "record" }));
+    toast({ title: "Recording saved! You can now generate your eBook." });
+  };
+
   // For the design tab, we need a full-bleed layout that fills the viewport
   const isDesign = activeTab === "design";
 
