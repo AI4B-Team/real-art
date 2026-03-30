@@ -643,8 +643,7 @@ const NewEbookPage = () => {
                   <input type="file" accept="audio/*" className="hidden" onChange={e => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      const url = URL.createObjectURL(file);
-                      setBookData(prev => ({ ...prev, sourceType: "audio" as any }));
+                      addSource("audio", file.name);
                       setShowRecordModal(false);
                       toast({ title: "Audio uploaded", description: file.name });
                     }
