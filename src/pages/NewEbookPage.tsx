@@ -559,8 +559,8 @@ const NewEbookPage = () => {
 
               {/* Insert Link */}
               <button onClick={() => { setBookData(prev => ({ ...prev, sourceType: "link" })); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-3 group-hover:bg-emerald-500/15 transition-colors">
-                  <Link2 className="w-6 h-6 text-emerald-500" />
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
+                  <Link2 className="w-6 h-6 text-accent" />
                 </div>
                 <span className="text-sm font-semibold text-foreground mb-2">Insert Link</span>
                 <div className="flex items-center gap-1.5">
