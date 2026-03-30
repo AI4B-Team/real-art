@@ -396,184 +396,248 @@ const NewEbookPage = () => {
         {activeTab !== "design" && (
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <button onClick={() => navigate("/ghost-ink")} className="p-2 rounded-lg hover:bg-foreground/[0.05] transition-colors"><ArrowLeft size={20} className="text-foreground" /></button>
-              <h1 className="text-xl font-display font-bold text-foreground">New eBook</h1>
+              <button onClick={() => navigate("/ghost-ink")} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"><ArrowLeft size={16} />Back To Projects</button>
             </div>
           </div>
         )}
 
-        {/* Tab navigation (non-design) */}
-        {activeTab !== "design" && (
-        <div className="flex items-center gap-1 mb-8 bg-foreground/[0.03] rounded-xl p-1 w-fit">
-          {TABS.map((tab, i) => {
-            const isActive = activeTab === tab.id;
-            const tabIndex = TABS.findIndex(t => t.id === activeTab);
-            const isCompleted = (tab.id === "idea" && tabIndex > 0) || (tab.id === "generate" && tabIndex > 1);
-            return (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? "bg-background shadow-sm text-foreground" : isCompleted ? "text-accent" : "text-muted hover:text-foreground"}`}>
-                {isCompleted ? <Check size={16} className="text-accent" /> : <tab.icon className="w-4 h-4" />}
-                {tab.label}
-                {i < TABS.length - 1 && <ChevronDown size={12} className="ml-1 rotate-[-90deg] text-muted/40" />}
-              </button>
-            );
-          })}
-        </div>
+        {/* Generation progress bar */}
+        {isGenerating && activeTab === "idea" && (
+          <div className="max-w-3xl mx-auto mb-6 p-4 rounded-xl border border-foreground/[0.08] bg-background">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-accent animate-pulse" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-foreground">Generating Title Ideas...</p>
+                <p className="text-xs text-muted-foreground">{Math.round(generationProgress)}% complete</p>
+              </div>
+            </div>
+            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+              <div className="h-full rounded-full bg-accent transition-all duration-300" style={{ width: `${generationProgress}%` }} />
+            </div>
+          </div>
         )}
 
         {/* === IDEA TAB === */}
         {activeTab === "idea" && (
           <div className="max-w-3xl mx-auto">
-            {/* Content type selector */}
-            {!contentTypeSelected && (
-              <div className="mb-8">
-                <h2 className="text-lg font-semibold text-foreground mb-4">What do you want to create?</h2>
-                <div className="grid grid-cols-3 gap-4">
-                  {CONTENT_TYPES.map(ct => (
-                    <button key={ct.id} onClick={() => { setBookData(prev => ({ ...prev, contentType: ct.id as any })); setContentTypeSelected(true); }}
-                      className={`p-6 rounded-2xl border-2 transition-all text-center ${bookData.contentType === ct.id ? "border-accent bg-accent/5" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
-                      <ct.icon className={`w-8 h-8 mx-auto mb-3 ${bookData.contentType === ct.id ? "text-accent" : "text-muted"}`} />
-                      <span className="font-semibold text-foreground">{ct.label}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
+            <h2 className="text-3xl font-display font-bold text-foreground text-center mb-8">What Would You Like To Create?</h2>
 
-            {contentTypeSelected && (
-              <>
-                {/* Source selector */}
-                <div className="mb-6">
-                  <label className="text-sm font-medium text-foreground mb-3 block">Source</label>
-                  <div className="flex gap-2">
+            {/* Prompt box */}
+            <div className="rounded-2xl border-2 border-accent/30 bg-background p-1 mb-6">
+              <div className="flex items-start gap-2 px-3 py-3">
+                <button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><Shuffle size={18} /></button>
+                <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
+                  <Headphones className="w-4 h-4 text-accent" />
+                </div>
+                <textarea
+                  value={bookData.prompt}
+                  onChange={e => setBookData(prev => ({ ...prev, prompt: e.target.value }))}
+                  placeholder="What is your topic or niche? (e.g., digital marketing for small business)"
+                  className="flex-1 min-h-[60px] bg-transparent text-foreground placeholder:text-muted-foreground/50 focus:outline-none resize-none text-sm"
+                />
+              </div>
+
+              {/* Toolbar chips */}
+              <div className="flex items-center gap-2 px-3 pb-3 flex-wrap">
+                {/* Source */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-medium hover:bg-accent/15 transition-colors">
+                      <Mic size={13} />Source: {SOURCE_OPTIONS.find(s => s.id === bookData.sourceType)?.label}
+                      <ChevronDown size={11} />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-44 p-1.5" align="start">
                     {SOURCE_OPTIONS.map(s => (
                       <button key={s.id} onClick={() => setBookData(prev => ({ ...prev, sourceType: s.id as any }))}
-                        className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${bookData.sourceType === s.id ? "bg-accent/10 text-accent border border-accent/30" : "bg-foreground/[0.04] text-muted hover:text-foreground border border-transparent"}`}>
-                        <s.icon size={16} />{s.label}
+                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${bookData.sourceType === s.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                        <s.icon size={14} />{s.label}{bookData.sourceType === s.id && <Check size={12} className="ml-auto" />}
                       </button>
                     ))}
-                  </div>
-                </div>
+                  </PopoverContent>
+                </Popover>
 
-                {/* Prompt */}
-                <div className="mb-6">
-                  <div className="flex items-center justify-between mb-3">
-                    <label className="text-sm font-medium text-foreground">Describe your topic or niche</label>
-                    <button onClick={handleAutoPrompt} disabled={isEnhancingPrompt} className="flex items-center gap-1.5 text-xs text-accent hover:text-accent/80 font-medium">
-                      {isEnhancingPrompt ? <Loader2 size={12} className="animate-spin" /> : <Shuffle size={12} />}Auto Prompt
+                {/* Type */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                      <Cpu size={13} />Type
                     </button>
-                  </div>
-                  <div className="relative">
-                    <textarea value={bookData.prompt} onChange={e => setBookData(prev => ({ ...prev, prompt: e.target.value }))} placeholder="e.g., How to build a profitable online business in 2026..."
-                      className="w-full min-h-[120px] px-4 py-3 rounded-xl border border-foreground/[0.1] bg-background text-foreground placeholder:text-muted/50 focus:outline-none focus:border-accent transition-colors resize-none text-sm" />
-                  </div>
-                </div>
-
-                {/* Settings row */}
-                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                  {/* Language */}
-                  <Popover open={languageOpen} onOpenChange={o => { setLanguageOpen(o); if (!o) setLanguageSearch(""); }}>
-                    <PopoverTrigger asChild>
-                      <button className="flex items-center justify-between px-4 py-3 rounded-xl border border-foreground/[0.1] bg-background text-sm hover:border-foreground/[0.2] transition-colors">
-                        <div className="flex items-center gap-2">
-                          <Globe size={16} className="text-muted" />
-                          <span>{currentLanguage?.flag} {currentLanguage?.name}</span>
-                        </div>
-                        <ChevronDown size={14} className="text-muted" />
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-1.5" align="start">
+                    {CONTENT_TYPES.map(ct => (
+                      <button key={ct.id} onClick={() => setBookData(prev => ({ ...prev, contentType: ct.id as any }))}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${bookData.contentType === ct.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                        <ct.icon size={14} />{ct.label}{bookData.contentType === ct.id && <Check size={12} className="ml-auto" />}
                       </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-56 p-2" align="start">
-                      <div className="relative mb-2">
-                        <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted" />
-                        <input type="text" value={languageSearch} onChange={e => setLanguageSearch(e.target.value)} placeholder="Search..." className="w-full pl-8 pr-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-xs focus:outline-none" />
-                      </div>
-                      <div className="max-h-52 overflow-y-auto">
-                        {LANGUAGES.filter(l => l.name.toLowerCase().includes(languageSearch.toLowerCase())).map(l => (
-                          <button key={l.code} onClick={() => { setBookData(prev => ({ ...prev, language: l.code })); setLanguageOpen(false); }}
-                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${bookData.language === l.code ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                            <span>{l.flag}</span>{l.name}{bookData.language === l.code && <Check size={14} className="ml-auto text-accent" />}
-                          </button>
-                        ))}
-                      </div>
-                    </PopoverContent>
-                  </Popover>
+                    ))}
+                  </PopoverContent>
+                </Popover>
 
-                  {/* Tone */}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button className="flex items-center justify-between px-4 py-3 rounded-xl border border-foreground/[0.1] bg-background text-sm hover:border-foreground/[0.2] transition-colors">
-                        <div className="flex items-center gap-2">
-                          <MessageSquare size={16} className="text-muted" />
-                          <span>{currentTone?.name}</span>
-                        </div>
-                        <ChevronDown size={14} className="text-muted" />
+                {/* Model */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                      <Cpu size={13} />{AI_MODELS.find(m => m.id === bookData.model)?.name}
+                      <ChevronDown size={11} />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-1.5" align="start">
+                    {AI_MODELS.map(m => (
+                      <button key={m.id} onClick={() => setBookData(prev => ({ ...prev, model: m.id }))}
+                        className={`w-full flex items-start gap-2 px-3 py-2.5 rounded-lg text-left transition-colors ${bookData.model === m.id ? "bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
+                        <div><p className={`text-sm font-semibold ${bookData.model === m.id ? "text-accent" : "text-foreground"}`}>{m.name}</p><p className="text-xs text-muted-foreground">{m.description}</p></div>
+                        {bookData.model === m.id && <Check size={14} className="text-accent shrink-0 mt-0.5" />}
                       </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-48 p-1.5" align="start">
-                      {TONES.map(t => (
-                        <button key={t.id} onClick={() => setBookData(prev => ({ ...prev, tone: t.id }))}
-                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${bookData.tone === t.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                          <t.icon size={14} />{t.name}{bookData.tone === t.id && <Check size={12} className="ml-auto" />}
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                {/* Language */}
+                <Popover open={languageOpen} onOpenChange={o => { setLanguageOpen(o); if (!o) setLanguageSearch(""); }}>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                      <span>{currentLanguage?.flag}</span>{currentLanguage?.name}
+                      <ChevronDown size={11} />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-2" align="start">
+                    <div className="relative mb-2">
+                      <Search size={14} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                      <input type="text" value={languageSearch} onChange={e => setLanguageSearch(e.target.value)} placeholder="Search Languages" className="w-full pl-8 pr-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-xs focus:outline-none" />
+                    </div>
+                    <div className="max-h-52 overflow-y-auto">
+                      {LANGUAGES.filter(l => l.name.toLowerCase().includes(languageSearch.toLowerCase())).map(l => (
+                        <button key={l.code} onClick={() => { setBookData(prev => ({ ...prev, language: l.code })); setLanguageOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${bookData.language === l.code ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                          <span>{l.flag}</span>{l.name}{bookData.language === l.code && <Check size={14} className="ml-auto text-accent" />}
                         </button>
                       ))}
-                    </PopoverContent>
-                  </Popover>
+                    </div>
+                  </PopoverContent>
+                </Popover>
 
-                  {/* Chapters */}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button className="flex items-center justify-between px-4 py-3 rounded-xl border border-foreground/[0.1] bg-background text-sm hover:border-foreground/[0.2] transition-colors">
-                        <div className="flex items-center gap-2">
-                          <Layers size={16} className="text-muted" />
-                          <span>{bookData.chapters} Chapters</span>
-                        </div>
-                        <ChevronDown size={14} className="text-muted" />
+                {/* Tone */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                      <MessageSquare size={13} />Tone: {currentTone?.name}
+                      <ChevronDown size={11} />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-1.5" align="start">
+                    {TONES.map(t => (
+                      <button key={t.id} onClick={() => setBookData(prev => ({ ...prev, tone: t.id }))}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${bookData.tone === t.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
+                        <t.icon size={14} />{t.name}{bookData.tone === t.id && <Check size={12} className="ml-auto" />}
                       </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-36 p-1.5" align="start">
-                      {[4, 6, 8, 10, 12, 15, 20].map(n => (
-                        <button key={n} onClick={() => setBookData(prev => ({ ...prev, chapters: n }))}
-                          className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${bookData.chapters === n ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                          {n} chapters{bookData.chapters === n && <Check size={12} />}
-                        </button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
+                    ))}
+                  </PopoverContent>
+                </Popover>
 
-                  {/* Model */}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <button className="flex items-center justify-between px-4 py-3 rounded-xl border border-foreground/[0.1] bg-background text-sm hover:border-foreground/[0.2] transition-colors">
-                        <div className="flex items-center gap-2">
-                          <Cpu size={16} className="text-muted" />
-                          <span>{AI_MODELS.find(m => m.id === bookData.model)?.name}</span>
-                        </div>
-                        <ChevronDown size={14} className="text-muted" />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-64 p-1.5" align="start">
-                      {AI_MODELS.map(m => (
-                        <button key={m.id} onClick={() => setBookData(prev => ({ ...prev, model: m.id }))}
-                          className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-left transition-colors ${bookData.model === m.id ? "bg-accent/10" : "hover:bg-foreground/[0.04]"}`}>
-                          <div><p className={`text-sm font-semibold ${bookData.model === m.id ? "text-accent" : "text-foreground"}`}>{m.name}</p><p className="text-xs text-muted">{m.description}</p></div>
-                          {bookData.model === m.id && <Check size={14} className="text-accent shrink-0" />}
-                        </button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                </div>
-
-                {/* Generate button */}
+                <div className="flex-1" />
+                {/* Send button */}
                 <button id="ghost-ink-generate-btn" onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
-                  className="w-full py-3.5 rounded-xl bg-accent text-white font-semibold text-sm hover:bg-accent/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2">
-                  {isGenerating ? <><Loader2 size={18} className="animate-spin" />Generating Ideas ({Math.round(generationProgress)}%)...</> : <><Sparkles size={18} />Generate Title Ideas</>}
+                  className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center hover:bg-accent/90 transition-colors disabled:opacity-50 shrink-0">
+                  <Send size={16} />
                 </button>
-              </>
-            )}
+              </div>
+            </div>
+
+            {/* Source cards */}
+            <div className="grid grid-cols-3 gap-4">
+              {/* Upload File */}
+              <button className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
+                  <Upload className="w-6 h-6 text-accent" />
+                </div>
+                <span className="text-sm font-semibold text-foreground mb-2">Upload File</span>
+                <div className="flex items-center gap-1.5">
+                  {/* PDF icon */}
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="18" height="20" rx="2" fill="#E53E3E" /><text x="12" y="15" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold">PDF</text></svg>
+                    <span className="text-[10px] font-semibold text-muted-foreground">PDF</span>
+                  </div>
+                  {/* DOCX icon */}
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="18" height="20" rx="2" fill="#2B6CB0" /><text x="12" y="15" textAnchor="middle" fill="white" fontSize="6" fontWeight="bold">DOC</text></svg>
+                    <span className="text-[10px] font-semibold text-muted-foreground">DOCX</span>
+                  </div>
+                  {/* + more */}
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
+                    <span className="text-[10px] font-semibold text-muted-foreground">+</span>
+                  </div>
+                </div>
+              </button>
+
+              {/* Insert Link */}
+              <button className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+                <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-3 group-hover:bg-emerald-500/15 transition-colors">
+                  <Link2 className="w-6 h-6 text-emerald-500" />
+                </div>
+                <span className="text-sm font-semibold text-foreground mb-2">Insert Link</span>
+                <div className="flex items-center gap-1.5">
+                  {/* YouTube */}
+                  <svg width="16" height="16" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31.5 31.5 0 000 12a31.5 31.5 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31.5 31.5 0 0024 12a31.5 31.5 0 00-.5-5.8z" fill="#FF0000"/><path d="M9.75 15.02l6.27-3.02-6.27-3.02v6.04z" fill="#FFF"/></svg>
+                  {/* TikTok */}
+                  <svg width="14" height="14" viewBox="0 0 24 24"><path d="M19.3 6.7A4.5 4.5 0 0116 5.1V2h-3v14a3 3 0 11-2-2.8V10a6 6 0 105 5.9V10a7.5 7.5 0 003.3.8V8a4.5 4.5 0 01-1-.3z" fill="currentColor"/></svg>
+                  {/* Instagram */}
+                  <svg width="14" height="14" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" fill="url(#ig)" /><circle cx="12" cy="12" r="4" stroke="white" strokeWidth="1.5" fill="none" /><circle cx="17.5" cy="6.5" r="1.2" fill="white" /><defs><linearGradient id="ig" x1="0" y1="24" x2="24" y2="0"><stop stopColor="#FD5" /><stop offset=".5" stopColor="#FF543E" /><stop offset="1" stopColor="#C837AB" /></linearGradient></defs></svg>
+                  <span className="text-[10px] font-semibold text-muted-foreground">+45</span>
+                </div>
+              </button>
+
+              {/* Record Audio */}
+              <button onClick={() => setShowRecordModal(true)} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/15 transition-colors">
+                  <Mic className="w-6 h-6 text-amber-500" />
+                </div>
+                <span className="text-sm font-semibold text-foreground mb-2">Record Audio</span>
+                <div className="flex items-center gap-1.5">
+                  <span className="flex items-center gap-1 text-[10px] font-bold text-destructive"><span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />LIVE</span>
+                </div>
+              </button>
+            </div>
           </div>
         )}
 
-        {/* === GENERATE TAB === */}
+        {/* Record Audio Dialog */}
+        <Dialog open={showRecordModal} onOpenChange={o => { setShowRecordModal(o); if (!o && isRecording) handleStopRecording(); }}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Record Audio</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col items-center py-6">
+              <div className={`w-24 h-24 rounded-full flex items-center justify-center mb-6 transition-all ${isRecording ? "bg-destructive/15 animate-pulse" : "bg-destructive/10"}`}>
+                <Mic className="w-10 h-10 text-destructive" />
+              </div>
+              {isRecording && (
+                <>
+                  <div className="flex items-center gap-[3px] mb-2 h-8">
+                    {Array.from({ length: 20 }).map((_, i) => (
+                      <div key={i} className="w-[3px] rounded-full bg-destructive/60" style={{
+                        height: `${8 + Math.random() * 20}px`,
+                        animation: `audio-wave 0.4s ease-in-out ${i * 0.02}s infinite alternate`
+                      }} />
+                    ))}
+                  </div>
+                  <p className="text-sm text-muted-foreground mb-4">Recording...</p>
+                </>
+              )}
+              <button
+                onClick={isRecording ? handleStopRecording : handleStartRecording}
+                className={`w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
+                  isRecording ? "bg-emerald-500 hover:bg-emerald-500/90 text-white" : "bg-destructive hover:bg-destructive/90 text-white"
+                }`}
+              >
+                {isRecording ? <><Check size={16} />Stop &amp; Use Recording</> : <><Mic size={16} />Start Recording</>}
+              </button>
+            </div>
+          </DialogContent>
+        </Dialog>
+        <style>{`@keyframes audio-wave { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1.3); } }`}</style>
         {activeTab === "generate" && (
           <div className="max-w-3xl mx-auto">
             <h2 className="text-lg font-semibold text-foreground mb-2">Select a title for your eBook</h2>
