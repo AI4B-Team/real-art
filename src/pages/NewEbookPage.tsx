@@ -571,14 +571,20 @@ const NewEbookPage = () => {
                 </div>
               </button>
 
-              {/* Record Audio */}
+              {/* Audio */}
               <button onClick={() => { setShowRecordModal(true); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
                 <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/15 transition-colors">
                   <Mic className="w-6 h-6 text-amber-500" />
                 </div>
-                <span className="text-sm font-semibold text-foreground mb-2">Record Audio</span>
+                <span className="text-sm font-semibold text-foreground mb-2">Audio</span>
                 <div className="flex items-center gap-1.5">
-                  <span className="flex items-center gap-1 text-[10px] font-bold text-destructive"><span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />LIVE</span>
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
+                    <Upload className="w-2.5 h-2.5 text-muted-foreground" />
+                    <span className="text-[10px] font-semibold text-muted-foreground">Upload</span>
+                  </div>
+                  <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
+                    <span className="flex items-center gap-1 text-[10px] font-bold text-destructive"><span className="w-1.5 h-1.5 rounded-full bg-destructive animate-pulse" />Record</span>
+                  </div>
                 </div>
               </button>
             </div>
