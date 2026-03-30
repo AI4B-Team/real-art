@@ -280,7 +280,7 @@ const NewEbookPage = () => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
     setShowRecordModal(false);
-    setBookData(prev => ({ ...prev, sourceType: "record" }));
+    addSource("audio", "Voice Recording");
     toast({ title: "Recording saved! You can now generate your eBook." });
   };
 
