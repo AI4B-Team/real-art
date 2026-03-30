@@ -10,6 +10,7 @@ import {
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut,
   Share2, Lock, Cloud, Copy, Cpu, Shuffle, UserPlus, Download,
 } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
