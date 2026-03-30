@@ -684,6 +684,42 @@ const NewEbookPage = () => {
           </DialogContent>
         </Dialog>
         <style>{`@keyframes audio-wave { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1.3); } }`}</style>
+
+        {/* Hidden file input for Upload File card */}
+        <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.epub,.md" multiple className="hidden" onChange={e => {
+          const files = e.target.files;
+          if (files) {
+            Array.from(files).forEach(f => addSource("file", f.name));
+            toast({ title: `${files.length} file${files.length > 1 ? "s" : ""} attached` });
+          }
+          if (e.target) e.target.value = "";
+        }} />
+
+        {/* Link input dialog */}
+        <Dialog open={showLinkInput} onOpenChange={setShowLinkInput}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Insert Link</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-3 py-2">
+              <p className="text-xs text-muted-foreground">Paste a URL to use as a source (YouTube, article, website, etc.)</p>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Link2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input value={linkInputValue} onChange={e => setLinkInputValue(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter" && linkInputValue.trim()) { addSource("link", linkInputValue.trim()); setLinkInputValue(""); setShowLinkInput(false); toast({ title: "Link attached" }); } }}
+                    placeholder="https://..."
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent transition-colors" />
+                </div>
+                <button onClick={() => { if (linkInputValue.trim()) { addSource("link", linkInputValue.trim()); setLinkInputValue(""); setShowLinkInput(false); toast({ title: "Link attached" }); } }}
+                  disabled={!linkInputValue.trim()}
+                  className="px-4 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
+                  Add
+                </button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
         {activeTab === "generate" && (
           <div className="max-w-3xl mx-auto">
             <h2 className="text-lg font-semibold text-foreground mb-2">Select a title for your eBook</h2>
