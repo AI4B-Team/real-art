@@ -120,6 +120,9 @@ const NewEbookPage = () => {
   const [chapterSequence, setChapterSequence] = useState<ChapterData[]>([]);
   const [bookDescription, setBookDescription] = useState("");
   const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false);
+  const [showRecordModal, setShowRecordModal] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
 
   const [bookData, setBookData] = useState<NewBookData>({
     prompt: "",
