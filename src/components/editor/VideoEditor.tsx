@@ -945,6 +945,27 @@ const VideoEditor = ({ video }: Props) => {
     ));
   }, [scenes, tracks]);
 
+  const addSampleToTimeline = useCallback((sample: typeof SAMPLE_MEDIA[0]) => {
+    pushUndo();
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    const lastScene = scenes[scenes.length - 1];
+    const newStartTime = lastScene ? lastScene.startTime + lastScene.duration : 0;
+    const durations = [4, 5, 6, 7, 8];
+    const dur = durations[Math.floor(Math.random() * durations.length)];
+    const colors = ["bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-amber-500", "bg-rose-500", "bg-cyan-500"];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const newClip: TimelineClip = {
+      id: `clip-${Date.now()}-${sample.id}`, type: "video", name: sample.name,
+      startTime: newStartTime, duration: dur, color,
+      thumbnail: sample.thumbnail, mediaType: "video",
+    };
+    setTracks(prev => prev.map(t =>
+      t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+    ));
+    toast({ title: `"${sample.name}" added to timeline` });
+  }, [scenes, tracks, pushUndo]);
+
   const deleteScene = useCallback((clipId: string) => {
     pushUndo();
     const clip = scenes.find(s => s.id === clipId);
@@ -1392,11 +1413,11 @@ const VideoEditor = ({ video }: Props) => {
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     {SAMPLE_MEDIA.map(m => (
-                      <div key={m.id} className="group relative rounded-xl overflow-hidden cursor-pointer hover:ring-2 hover:ring-accent transition-all">
+                      <div key={m.id} onClick={() => addSampleToTimeline(m)} className="group relative rounded-xl overflow-hidden cursor-pointer hover:ring-2 hover:ring-accent transition-all">
                         <img src={m.thumbnail} alt={m.name} className="w-full aspect-video object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-2">
                           <span className="text-[10px] text-white font-medium">{m.name}</span>
-                          <button className="absolute bottom-2 right-2 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                          <button className="absolute bottom-2 right-2 w-6 h-6 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center transition-colors">
                             <Plus className="w-3 h-3 text-white" />
                           </button>
                         </div>
