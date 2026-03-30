@@ -257,7 +257,7 @@ const NewEbookPage = () => {
 
         {/* === DESIGN TAB TOP BAR === */}
         {activeTab === "design" && (
-          <div className="h-14 bg-foreground/[0.95] flex items-center px-4 gap-3 shrink-0">
+          <div className="relative h-14 bg-foreground/[0.95] flex items-center px-4 gap-3 shrink-0">
             {/* Left: Title + Editing badge + Auto-Saved */}
             <div className="flex items-center gap-2.5 shrink-0">
               <span className="text-base font-display font-bold text-background tracking-tight">eBOOK <span className="font-black">STUDIO</span></span>
