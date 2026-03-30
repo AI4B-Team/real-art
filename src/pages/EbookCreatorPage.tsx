@@ -203,31 +203,33 @@ const EbookCreatorPage = () => {
                 <span className="px-1.5 py-0.5 rounded bg-rose-500 text-white font-bold text-[10px] uppercase tracking-wide">Live</span>
                 Real-Time Transcription
               </div>
+              <style>{`
+                @keyframes audio-wave {
+                  0%, 100% { transform: scaleY(0.4); }
+                  50% { transform: scaleY(1.2); }
+                }
+              `}</style>
               <div className="mt-3 flex items-center justify-center gap-[2px] h-5">
-                {[...Array(28)].map((_, i) => {
-                  const baseH = Math.sin((i / 28) * Math.PI * 3) * 6 + 8;
-                  return (
-                    <div
-                      key={i}
-                      className="w-[2px] bg-rose-400/60 rounded-full transition-all duration-300 group-hover:bg-rose-500"
-                      style={{
-                        height: `${baseH}px`,
-                        animation: 'none',
-                      }}
-                    >
-                      <style>{`
-                        .group:hover [data-wave="${i}"] {
-                          animation: wave-${i} 0.6s ease-in-out infinite alternate;
-                        }
-                        @keyframes wave-${i} {
-                          0% { height: ${baseH * 0.4}px; }
-                          100% { height: ${Math.min(baseH * 1.6, 20)}px; }
-                        }
-                      `}</style>
-                      <div data-wave={i} className="w-full bg-inherit rounded-full" style={{ height: `${baseH}px`, animationDelay: `${i * 0.04}s` }} />
-                    </div>
-                  );
-                })}
+                {[...Array(28)].map((_, i) => (
+                  <div
+                    key={i}
+                    className="w-[2px] bg-rose-400/60 rounded-full transition-colors duration-300 group-hover:bg-rose-500 origin-center"
+                    style={{
+                      height: `${Math.sin((i / 28) * Math.PI * 3) * 6 + 8}px`,
+                      animation: 'none',
+                      transition: 'transform 0.3s',
+                    }}
+                    ref={el => {
+                      if (!el) return;
+                      const parent = el.closest('.group');
+                      if (!parent) return;
+                      const onEnter = () => { el.style.animation = `audio-wave 0.5s ease-in-out ${i * 0.03}s infinite alternate`; };
+                      const onLeave = () => { el.style.animation = 'none'; };
+                      parent.addEventListener('mouseenter', onEnter);
+                      parent.addEventListener('mouseleave', onLeave);
+                    }}
+                  />
+                ))}
               </div>
             </div>
           </button>
