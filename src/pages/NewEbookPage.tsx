@@ -123,7 +123,19 @@ const NewEbookPage = () => {
   const [showRecordModal, setShowRecordModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showSourceCards, setShowSourceCards] = useState(false);
+  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [linkInputValue, setLinkInputValue] = useState("");
+  const [attachedSources, setAttachedSources] = useState<{ id: string; type: "file" | "link" | "audio"; label: string }[]>([]);
+
+  const addSource = useCallback((type: "file" | "link" | "audio", label: string) => {
+    setAttachedSources(prev => [...prev, { id: `src-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, type, label }]);
+  }, []);
+
+  const removeSource = useCallback((id: string) => {
+    setAttachedSources(prev => prev.filter(s => s.id !== id));
+  }, []);
 
   const [bookData, setBookData] = useState<NewBookData>({
     prompt: "",
@@ -268,7 +280,7 @@ const NewEbookPage = () => {
     mediaRecorderRef.current?.stop();
     setIsRecording(false);
     setShowRecordModal(false);
-    setBookData(prev => ({ ...prev, sourceType: "record" }));
+    addSource("audio", "Voice Recording");
     toast({ title: "Recording saved! You can now generate your eBook." });
   };
 
@@ -429,12 +441,32 @@ const NewEbookPage = () => {
             <div className="rounded-2xl border-2 border-accent/30 bg-background p-1 mb-6">
               <div className="flex items-start gap-2 px-3 py-3">
                 <button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><Shuffle size={18} /></button>
-                <textarea
-                  value={bookData.prompt}
-                  onChange={e => setBookData(prev => ({ ...prev, prompt: e.target.value }))}
-                  placeholder="What is your topic or niche? (e.g., digital marketing for small business)"
-                  className="flex-1 min-h-[60px] bg-transparent text-foreground placeholder:text-muted-foreground/50 focus:outline-none resize-none text-sm"
-                />
+                <div className="flex-1 min-w-0">
+                  {/* Attached source pills */}
+                  {attachedSources.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {attachedSources.map(src => (
+                        <span key={src.id} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${
+                          src.type === "file" ? "bg-accent/10 text-accent" :
+                          src.type === "link" ? "bg-accent/10 text-accent" :
+                          "bg-destructive/10 text-destructive"
+                        }`}>
+                          {src.type === "file" && <Upload size={11} />}
+                          {src.type === "link" && <Link2 size={11} />}
+                          {src.type === "audio" && <Mic size={11} />}
+                          {src.label}
+                          <button onClick={() => removeSource(src.id)} className="ml-0.5 hover:opacity-70"><X size={10} /></button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <textarea
+                    value={bookData.prompt}
+                    onChange={e => setBookData(prev => ({ ...prev, prompt: e.target.value }))}
+                    placeholder="What is your topic or niche? (e.g., digital marketing for small business)"
+                    className="w-full min-h-[60px] bg-transparent text-foreground placeholder:text-muted-foreground/50 focus:outline-none resize-none text-sm"
+                  />
+                </div>
               </div>
 
               {/* Toolbar chips */}
@@ -537,7 +569,7 @@ const NewEbookPage = () => {
             {showSourceCards && (
             <div className="grid grid-cols-3 gap-4">
               {/* Upload File */}
-              <button onClick={() => { setBookData(prev => ({ ...prev, sourceType: "upload" })); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+              <button onClick={() => { fileInputRef.current?.click(); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
                   <Upload className="w-6 h-6 text-accent" />
                 </div>
@@ -558,7 +590,7 @@ const NewEbookPage = () => {
               </button>
 
               {/* Insert Link */}
-              <button onClick={() => { setBookData(prev => ({ ...prev, sourceType: "link" })); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+              <button onClick={() => { setShowLinkInput(true); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
                   <Link2 className="w-6 h-6 text-accent" />
                 </div>
@@ -611,8 +643,7 @@ const NewEbookPage = () => {
                   <input type="file" accept="audio/*" className="hidden" onChange={e => {
                     const file = e.target.files?.[0];
                     if (file) {
-                      const url = URL.createObjectURL(file);
-                      setBookData(prev => ({ ...prev, sourceType: "audio" as any }));
+                      addSource("audio", file.name);
                       setShowRecordModal(false);
                       toast({ title: "Audio uploaded", description: file.name });
                     }
@@ -653,6 +684,42 @@ const NewEbookPage = () => {
           </DialogContent>
         </Dialog>
         <style>{`@keyframes audio-wave { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1.3); } }`}</style>
+
+        {/* Hidden file input for Upload File card */}
+        <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.epub,.md" multiple className="hidden" onChange={e => {
+          const files = e.target.files;
+          if (files) {
+            Array.from(files).forEach(f => addSource("file", f.name));
+            toast({ title: `${files.length} file${files.length > 1 ? "s" : ""} attached` });
+          }
+          if (e.target) e.target.value = "";
+        }} />
+
+        {/* Link input dialog */}
+        <Dialog open={showLinkInput} onOpenChange={setShowLinkInput}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle>Insert Link</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-3 py-2">
+              <p className="text-xs text-muted-foreground">Paste a URL to use as a source (YouTube, article, website, etc.)</p>
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Link2 size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                  <input value={linkInputValue} onChange={e => setLinkInputValue(e.target.value)}
+                    onKeyDown={e => { if (e.key === "Enter" && linkInputValue.trim()) { addSource("link", linkInputValue.trim()); setLinkInputValue(""); setShowLinkInput(false); toast({ title: "Link attached" }); } }}
+                    placeholder="https://..."
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent transition-colors" />
+                </div>
+                <button onClick={() => { if (linkInputValue.trim()) { addSource("link", linkInputValue.trim()); setLinkInputValue(""); setShowLinkInput(false); toast({ title: "Link attached" }); } }}
+                  disabled={!linkInputValue.trim()}
+                  className="px-4 py-2.5 rounded-lg bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
+                  Add
+                </button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
         {activeTab === "generate" && (
           <div className="max-w-3xl mx-auto">
             <h2 className="text-lg font-semibold text-foreground mb-2">Select a title for your eBook</h2>
