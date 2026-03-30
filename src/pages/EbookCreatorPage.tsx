@@ -109,21 +109,37 @@ const EbookCreatorPage = () => {
                 <Upload className="w-5 h-5 text-muted shrink-0" />
                 <span className="text-sm text-muted whitespace-nowrap flex-1 text-center">Drag & Drop Your File</span>
               </div>
-              <div className="flex justify-center gap-2 items-center flex-wrap">
-                {[
-                  { label: "PDF", color: "#E53935" },
-                  { label: "DOCX", color: "#2B579A" },
-                  { label: "TXT", color: "#90A4AE" },
-                ].map(f => (
-                  <div key={f.label} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
-                    <svg viewBox="0 0 24 28" className="w-4 h-5" fill="none">
-                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" fill={f.color} opacity="0.08"/>
-                      <path d="M2 2a2 2 0 012-2h10l8 8v18a2 2 0 01-2 2H4a2 2 0 01-2-2V2z" stroke={f.color} strokeWidth="1.2" fill="none"/>
-                      <path d="M14 0v6a2 2 0 002 2h6" stroke={f.color} strokeWidth="1.2" fill="none"/>
-                    </svg>
-                    <span className="text-[11px] font-semibold text-muted-foreground">{f.label}</span>
-                  </div>
-                ))}
+              <div className="flex justify-center gap-2 items-center flex-nowrap">
+                {/* PDF icon */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="none">
+                    <path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="#E53935" opacity="0.12"/>
+                    <path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="#E53935" strokeWidth="1.5" fill="none"/>
+                    <path d="M14 2v6h6" stroke="#E53935" strokeWidth="1.5" fill="none"/>
+                    <text x="12" y="18" textAnchor="middle" fill="#E53935" fontSize="5.5" fontWeight="700" fontFamily="Arial,sans-serif">PDF</text>
+                  </svg>
+                  <span className="text-[11px] font-semibold text-muted-foreground">PDF</span>
+                </div>
+                {/* DOCX icon – Microsoft Word blue */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="none">
+                    <path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="#2B579A" opacity="0.12"/>
+                    <path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="#2B579A" strokeWidth="1.5" fill="none"/>
+                    <path d="M14 2v6h6" stroke="#2B579A" strokeWidth="1.5" fill="none"/>
+                    <text x="12" y="18" textAnchor="middle" fill="#2B579A" fontSize="4.5" fontWeight="700" fontFamily="Arial,sans-serif">DOC</text>
+                  </svg>
+                  <span className="text-[11px] font-semibold text-muted-foreground">DOCX</span>
+                </div>
+                {/* TXT icon */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="none">
+                    <path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="#607D8B" opacity="0.12"/>
+                    <path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" stroke="#607D8B" strokeWidth="1.5" fill="none"/>
+                    <path d="M14 2v6h6" stroke="#607D8B" strokeWidth="1.5" fill="none"/>
+                    <path d="M8 14h8M8 17h5" stroke="#607D8B" strokeWidth="1.2" strokeLinecap="round"/>
+                  </svg>
+                  <span className="text-[11px] font-semibold text-muted-foreground">TXT</span>
+                </div>
                 <div className="flex items-center px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
                   <span className="text-[11px] font-semibold text-muted-foreground">+ more</span>
                 </div>
