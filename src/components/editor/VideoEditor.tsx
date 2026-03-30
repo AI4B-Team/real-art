@@ -945,6 +945,27 @@ const VideoEditor = ({ video }: Props) => {
     ));
   }, [scenes, tracks]);
 
+  const addSampleToTimeline = useCallback((sample: typeof SAMPLE_MEDIA[0]) => {
+    pushUndo();
+    const videoTrack = tracks.find(t => t.type === "video" || t.id.includes("video"));
+    if (!videoTrack) return;
+    const lastScene = scenes[scenes.length - 1];
+    const newStartTime = lastScene ? lastScene.startTime + lastScene.duration : 0;
+    const durations = [4, 5, 6, 7, 8];
+    const dur = durations[Math.floor(Math.random() * durations.length)];
+    const colors = ["bg-blue-500", "bg-emerald-500", "bg-purple-500", "bg-amber-500", "bg-rose-500", "bg-cyan-500"];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    const newClip: TimelineClip = {
+      id: `clip-${Date.now()}-${sample.id}`, type: "video", name: sample.name,
+      startTime: newStartTime, duration: dur, color,
+      thumbnail: sample.thumbnail, mediaType: "video",
+    };
+    setTracks(prev => prev.map(t =>
+      t.id === videoTrack.id ? { ...t, clips: [...t.clips, newClip] } : t
+    ));
+    toast({ title: `"${sample.name}" added to timeline` });
+  }, [scenes, tracks, pushUndo]);
+
   const deleteScene = useCallback((clipId: string) => {
     pushUndo();
     const clip = scenes.find(s => s.id === clipId);
