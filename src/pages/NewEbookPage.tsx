@@ -299,8 +299,8 @@ const NewEbookPage = () => {
             </div>
 
             {/* Center: Step Tabs */}
-            <div className="flex-1 flex items-center justify-center">
-              <div className="flex items-center gap-6">
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <div className="flex items-center gap-6 pointer-events-auto">
                 {TABS.map((tab) => {
                   const isActive = activeTab === tab.id;
                   const tabIndex = TABS.findIndex(t => t.id === activeTab);
