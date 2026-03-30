@@ -1413,11 +1413,11 @@ const VideoEditor = ({ video }: Props) => {
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     {SAMPLE_MEDIA.map(m => (
-                      <div key={m.id} className="group relative rounded-xl overflow-hidden cursor-pointer hover:ring-2 hover:ring-accent transition-all">
+                      <div key={m.id} onClick={() => addSampleToTimeline(m)} className="group relative rounded-xl overflow-hidden cursor-pointer hover:ring-2 hover:ring-accent transition-all">
                         <img src={m.thumbnail} alt={m.name} className="w-full aspect-video object-cover" />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-2">
                           <span className="text-[10px] text-white font-medium">{m.name}</span>
-                          <button className="absolute bottom-2 right-2 w-6 h-6 bg-white/20 rounded-full flex items-center justify-center">
+                          <button className="absolute bottom-2 right-2 w-6 h-6 bg-white/20 hover:bg-white/40 rounded-full flex items-center justify-center transition-colors">
                             <Plus className="w-3 h-3 text-white" />
                           </button>
                         </div>
