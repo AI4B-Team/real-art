@@ -440,22 +440,11 @@ const NewEbookPage = () => {
               {/* Toolbar chips */}
               <div className="flex items-center gap-2 px-3 pb-3 flex-wrap">
                 {/* Source */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-xs font-medium hover:bg-accent/15 transition-colors">
-                      <Mic size={13} />Source: {SOURCE_OPTIONS.find(s => s.id === bookData.sourceType)?.label}
-                      <ChevronDown size={11} />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-44 p-1.5" align="start">
-                    {SOURCE_OPTIONS.map(s => (
-                      <button key={s.id} onClick={() => setBookData(prev => ({ ...prev, sourceType: s.id as any }))}
-                        className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors ${bookData.sourceType === s.id ? "bg-accent/10 text-accent" : "hover:bg-foreground/[0.04]"}`}>
-                        <s.icon size={14} />{s.label}{bookData.sourceType === s.id && <Check size={12} className="ml-auto" />}
-                      </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
+                <button onClick={() => setShowSourceCards(prev => !prev)}
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${showSourceCards ? "bg-accent text-white" : "bg-accent/10 text-accent hover:bg-accent/15"}`}>
+                  <Mic size={13} />Source: {SOURCE_OPTIONS.find(s => s.id === bookData.sourceType)?.label}
+                  <ChevronDown size={11} className={`transition-transform ${showSourceCards ? "rotate-180" : ""}`} />
+                </button>
 
                 {/* Type */}
                 <Popover>
