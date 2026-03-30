@@ -441,12 +441,32 @@ const NewEbookPage = () => {
             <div className="rounded-2xl border-2 border-accent/30 bg-background p-1 mb-6">
               <div className="flex items-start gap-2 px-3 py-3">
                 <button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><Shuffle size={18} /></button>
-                <textarea
-                  value={bookData.prompt}
-                  onChange={e => setBookData(prev => ({ ...prev, prompt: e.target.value }))}
-                  placeholder="What is your topic or niche? (e.g., digital marketing for small business)"
-                  className="flex-1 min-h-[60px] bg-transparent text-foreground placeholder:text-muted-foreground/50 focus:outline-none resize-none text-sm"
-                />
+                <div className="flex-1 min-w-0">
+                  {/* Attached source pills */}
+                  {attachedSources.length > 0 && (
+                    <div className="flex flex-wrap gap-1.5 mb-2">
+                      {attachedSources.map(src => (
+                        <span key={src.id} className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium ${
+                          src.type === "file" ? "bg-accent/10 text-accent" :
+                          src.type === "link" ? "bg-accent/10 text-accent" :
+                          "bg-destructive/10 text-destructive"
+                        }`}>
+                          {src.type === "file" && <Upload size={11} />}
+                          {src.type === "link" && <Link2 size={11} />}
+                          {src.type === "audio" && <Mic size={11} />}
+                          {src.label}
+                          <button onClick={() => removeSource(src.id)} className="ml-0.5 hover:opacity-70"><X size={10} /></button>
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  <textarea
+                    value={bookData.prompt}
+                    onChange={e => setBookData(prev => ({ ...prev, prompt: e.target.value }))}
+                    placeholder="What is your topic or niche? (e.g., digital marketing for small business)"
+                    className="w-full min-h-[60px] bg-transparent text-foreground placeholder:text-muted-foreground/50 focus:outline-none resize-none text-sm"
+                  />
+                </div>
               </div>
 
               {/* Toolbar chips */}
