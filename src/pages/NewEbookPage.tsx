@@ -123,6 +123,7 @@ const NewEbookPage = () => {
   const [showRecordModal, setShowRecordModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const [showSourceCards, setShowSourceCards] = useState(false);
 
   const [bookData, setBookData] = useState<NewBookData>({
     prompt: "",
