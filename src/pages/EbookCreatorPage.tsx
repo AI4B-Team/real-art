@@ -204,9 +204,30 @@ const EbookCreatorPage = () => {
                 Real-Time Transcription
               </div>
               <div className="mt-3 flex items-center justify-center gap-[2px] h-5">
-                {[...Array(28)].map((_, i) => (
-                  <div key={i} className="w-[2px] bg-rose-400/60 rounded-full group-hover:bg-rose-500 transition-colors group-hover:animate-pulse" style={{ height: `${Math.sin((i / 28) * Math.PI * 3) * 6 + 8}px`, animationDelay: `${i * 0.05}s` }} />
-                ))}
+                {[...Array(28)].map((_, i) => {
+                  const baseH = Math.sin((i / 28) * Math.PI * 3) * 6 + 8;
+                  return (
+                    <div
+                      key={i}
+                      className="w-[2px] bg-rose-400/60 rounded-full transition-all duration-300 group-hover:bg-rose-500"
+                      style={{
+                        height: `${baseH}px`,
+                        animation: 'none',
+                      }}
+                    >
+                      <style>{`
+                        .group:hover [data-wave="${i}"] {
+                          animation: wave-${i} 0.6s ease-in-out infinite alternate;
+                        }
+                        @keyframes wave-${i} {
+                          0% { height: ${baseH * 0.4}px; }
+                          100% { height: ${Math.min(baseH * 1.6, 20)}px; }
+                        }
+                      `}</style>
+                      <div data-wave={i} className="w-full bg-inherit rounded-full" style={{ height: `${baseH}px`, animationDelay: `${i * 0.04}s` }} />
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </button>
