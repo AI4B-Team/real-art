@@ -549,7 +549,7 @@ const EbookCanvasEditor = ({
   // ─── Render ───────────────────────────────────
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="flex h-full">
+      <div className="flex h-full flex-1 min-w-0">
         {/* Left: Vertical Toolbar */}
         <div className="w-11 bg-foreground/[0.95] flex flex-col items-center py-3 gap-1 shrink-0">
           {TOOLS.map(tool => (
