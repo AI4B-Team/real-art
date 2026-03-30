@@ -184,7 +184,7 @@ const EbookCreatorPage = () => {
             </div>
           </button>
 
-          <button onClick={() => navigate("/ebook-creator/new?source=voice")} className="group relative p-6 rounded-2xl border-2 border-dashed border-foreground/[0.15] bg-foreground/[0.02] hover:border-rose-400/50 hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all flex flex-col">
+          <button onClick={() => navigate("/ebook-creator/new?source=voice")} className="group relative p-6 rounded-2xl bg-foreground/[0.02] hover:bg-rose-50 dark:hover:bg-rose-950/20 transition-all flex flex-col">
             <div className="flex flex-col items-center text-center flex-1">
               <div className="w-16 h-16 rounded-2xl bg-rose-100 dark:bg-rose-900/30 group-hover:bg-rose-200 dark:group-hover:bg-rose-800/40 flex items-center justify-center mb-4 transition-all">
                 <Mic className="w-7 h-7 text-rose-500 group-hover:scale-110 transition-all" />
