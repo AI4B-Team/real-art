@@ -569,7 +569,7 @@ const NewEbookPage = () => {
             {showSourceCards && (
             <div className="grid grid-cols-3 gap-4">
               {/* Upload File */}
-              <button onClick={() => { setBookData(prev => ({ ...prev, sourceType: "upload" })); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+              <button onClick={() => { fileInputRef.current?.click(); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
                   <Upload className="w-6 h-6 text-accent" />
                 </div>
