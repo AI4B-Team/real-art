@@ -533,26 +533,24 @@ const NewEbookPage = () => {
               </div>
             </div>
 
-            {/* Source cards */}
+            {/* Source cards — shown when Source button is toggled */}
+            {showSourceCards && (
             <div className="grid grid-cols-3 gap-4">
               {/* Upload File */}
-              <button className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+              <button onClick={() => { setBookData(prev => ({ ...prev, sourceType: "upload" })); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
                 <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mb-3 group-hover:bg-accent/15 transition-colors">
                   <Upload className="w-6 h-6 text-accent" />
                 </div>
                 <span className="text-sm font-semibold text-foreground mb-2">Upload File</span>
                 <div className="flex items-center gap-1.5">
-                  {/* PDF icon */}
                   <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="18" height="20" rx="2" fill="#E53E3E" /><text x="12" y="15" textAnchor="middle" fill="white" fontSize="7" fontWeight="bold">PDF</text></svg>
                     <span className="text-[10px] font-semibold text-muted-foreground">PDF</span>
                   </div>
-                  {/* DOCX icon */}
                   <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><rect x="3" y="2" width="18" height="20" rx="2" fill="#2B6CB0" /><text x="12" y="15" textAnchor="middle" fill="white" fontSize="6" fontWeight="bold">DOC</text></svg>
                     <span className="text-[10px] font-semibold text-muted-foreground">DOCX</span>
                   </div>
-                  {/* + more */}
                   <div className="flex items-center gap-1 px-2 py-1 rounded-md bg-foreground/[0.04]">
                     <span className="text-[10px] font-semibold text-muted-foreground">+</span>
                   </div>
@@ -560,24 +558,21 @@ const NewEbookPage = () => {
               </button>
 
               {/* Insert Link */}
-              <button className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+              <button onClick={() => { setBookData(prev => ({ ...prev, sourceType: "link" })); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
                 <div className="w-14 h-14 rounded-2xl bg-emerald-500/10 flex items-center justify-center mb-3 group-hover:bg-emerald-500/15 transition-colors">
                   <Link2 className="w-6 h-6 text-emerald-500" />
                 </div>
                 <span className="text-sm font-semibold text-foreground mb-2">Insert Link</span>
                 <div className="flex items-center gap-1.5">
-                  {/* YouTube */}
                   <svg width="16" height="16" viewBox="0 0 24 24"><path d="M23.5 6.2a3 3 0 00-2.1-2.1C19.5 3.5 12 3.5 12 3.5s-7.5 0-9.4.6A3 3 0 00.5 6.2 31.5 31.5 0 000 12a31.5 31.5 0 00.5 5.8 3 3 0 002.1 2.1c1.9.6 9.4.6 9.4.6s7.5 0 9.4-.6a3 3 0 002.1-2.1A31.5 31.5 0 0024 12a31.5 31.5 0 00-.5-5.8z" fill="#FF0000"/><path d="M9.75 15.02l6.27-3.02-6.27-3.02v6.04z" fill="#FFF"/></svg>
-                  {/* TikTok */}
                   <svg width="14" height="14" viewBox="0 0 24 24"><path d="M19.3 6.7A4.5 4.5 0 0116 5.1V2h-3v14a3 3 0 11-2-2.8V10a6 6 0 105 5.9V10a7.5 7.5 0 003.3.8V8a4.5 4.5 0 01-1-.3z" fill="currentColor"/></svg>
-                  {/* Instagram */}
                   <svg width="14" height="14" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" fill="url(#ig)" /><circle cx="12" cy="12" r="4" stroke="white" strokeWidth="1.5" fill="none" /><circle cx="17.5" cy="6.5" r="1.2" fill="white" /><defs><linearGradient id="ig" x1="0" y1="24" x2="24" y2="0"><stop stopColor="#FD5" /><stop offset=".5" stopColor="#FF543E" /><stop offset="1" stopColor="#C837AB" /></linearGradient></defs></svg>
                   <span className="text-[10px] font-semibold text-muted-foreground">+45</span>
                 </div>
               </button>
 
               {/* Record Audio */}
-              <button onClick={() => setShowRecordModal(true)} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
+              <button onClick={() => { setShowRecordModal(true); setShowSourceCards(false); }} className="group flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] hover:border-foreground/[0.2] bg-background transition-all">
                 <div className="w-14 h-14 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-3 group-hover:bg-amber-500/15 transition-colors">
                   <Mic className="w-6 h-6 text-amber-500" />
                 </div>
@@ -587,6 +582,7 @@ const NewEbookPage = () => {
                 </div>
               </button>
             </div>
+            )}
           </div>
         )}
 
