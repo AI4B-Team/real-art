@@ -141,7 +141,11 @@ const EbookCreatorPage = () => {
                   <span className="text-[11px] font-semibold text-muted-foreground">TXT</span>
                 </div>
                 <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
-                  <span className="text-[11px] font-semibold text-muted-foreground">+ more</span>
+                  <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0" fill="none">
+                    <path d="M6 2h8l6 6v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4a2 2 0 012-2z" fill="currentColor" opacity="0.08"/>
+                    <path d="M12 10v6M9 13h6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+                  </svg>
+                  <span className="text-[11px] font-semibold text-muted-foreground">more</span>
                 </div>
               </div>
             </div>
