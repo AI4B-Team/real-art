@@ -140,7 +140,7 @@ const EbookCreatorPage = () => {
                   </svg>
                   <span className="text-[11px] font-semibold text-muted-foreground">TXT</span>
                 </div>
-                <div className="flex items-center px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04] border border-foreground/[0.06]">
                   <span className="text-[11px] font-semibold text-muted-foreground">+ more</span>
                 </div>
               </div>
