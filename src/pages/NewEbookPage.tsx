@@ -123,7 +123,19 @@ const NewEbookPage = () => {
   const [showRecordModal, setShowRecordModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [showSourceCards, setShowSourceCards] = useState(false);
+  const [showLinkInput, setShowLinkInput] = useState(false);
+  const [linkInputValue, setLinkInputValue] = useState("");
+  const [attachedSources, setAttachedSources] = useState<{ id: string; type: "file" | "link" | "audio"; label: string }[]>([]);
+
+  const addSource = useCallback((type: "file" | "link" | "audio", label: string) => {
+    setAttachedSources(prev => [...prev, { id: `src-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, type, label }]);
+  }, []);
+
+  const removeSource = useCallback((id: string) => {
+    setAttachedSources(prev => prev.filter(s => s.id !== id));
+  }, []);
 
   const [bookData, setBookData] = useState<NewBookData>({
     prompt: "",
