@@ -38,6 +38,9 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const [contentType, setContentType] = useState<ContentType>(editorType);
   const [isContentTypeOpen, setIsContentTypeOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [typeSelected, setTypeSelected] = useState(false);
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const typeRef = useRef<HTMLDivElement>(null);
   const [chipIds, setChipIds] = useState<Set<string>>(new Set());
   const [uploadedImgCount, setUploadedImgCount] = useState(0);
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
