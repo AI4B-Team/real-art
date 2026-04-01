@@ -372,28 +372,23 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
       {/* Bottom toolbar */}
       <div className="flex items-center px-3 pb-2.5 gap-1 min-w-0">
         {/* Type button with dropdown */}
-        <div className="relative shrink-0" ref={typeRef}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button onClick={() => setTypeDropdownOpen(v => !v)}
-                className={`flex items-center justify-center w-9 h-9 rounded-lg transition-colors shrink-0 ${typeSelected ? "text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
-                <SlidersHorizontal className="w-[17px] h-[17px]" />
+        <Popover open={typeDropdownOpen} onOpenChange={setTypeDropdownOpen}>
+          <PopoverTrigger asChild>
+            <button
+              className={`flex items-center justify-center w-9 h-9 rounded-lg transition-colors shrink-0 ${typeSelected ? "text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+              <SlidersHorizontal className="w-[17px] h-[17px]" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent side="top" align="start" sideOffset={8} className="w-52 p-0 py-2 rounded-2xl">
+            {EDITOR_SUB_MODES[contentType].map(s => (
+              <button key={s.id} onClick={() => { setSelectedSubMode(s.id); setTypeSelected(true); setTypeDropdownOpen(false); }}
+                className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedSubMode === s.id ? "bg-foreground/[0.06]" : ""}`}>
+                <s.icon size={16} />{s.label}
+                {selectedSubMode === s.id && <Check size={13} className="ml-auto text-accent" />}
               </button>
-            </TooltipTrigger>
-            <TooltipContent side="bottom">Type</TooltipContent>
-          </Tooltip>
-          {typeDropdownOpen && (
-            <div className="absolute bottom-full left-0 mb-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-              {EDITOR_SUB_MODES[contentType].map(s => (
-                <button key={s.id} onClick={() => { setSelectedSubMode(s.id); setTypeSelected(true); setTypeDropdownOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedSubMode === s.id ? "bg-foreground/[0.06]" : ""}`}>
-                  <s.icon size={16} />{s.label}
-                  {selectedSubMode === s.id && <Check size={13} className="ml-auto text-accent" />}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+            ))}
+          </PopoverContent>
+        </Popover>
 
         {/* Other toolbar buttons — only visible after type is selected */}
         {typeSelected && (
