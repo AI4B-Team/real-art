@@ -3,6 +3,9 @@ import {
   Video, Image, AudioLines, Hash,
   Sparkles, Send, ChevronDown, Shuffle,
   Loader2, Zap, Check, Plus, Upload, SlidersHorizontal,
+  Layers, Pencil, RefreshCw, Camera,
+  Play, MessageCircle, Move, User, BookOpen, Presentation,
+  Mic, Captions, Music, Headphones,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -28,6 +31,37 @@ const CONTENT_TYPES: { id: ContentType; icon: typeof Video; label: string; color
   { id: "audio", icon: AudioLines, label: "Audio", color: "text-emerald-600", bgColor: "bg-emerald-500/15" },
 ];
 
+const EDITOR_SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof Video }[]> = {
+  image: [
+    { id: "generate", label: "Create", icon: Sparkles },
+    { id: "batch", label: "Batch", icon: Layers },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "swap", label: "Swap", icon: RefreshCw },
+    { id: "photoshoot", label: "Photoshoot", icon: Camera },
+  ],
+  video: [
+    { id: "animate", label: "Animate", icon: Play },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "lip-sync", label: "Lip-Sync", icon: MessageCircle },
+    { id: "motion-sync", label: "Motion-Sync", icon: Move },
+    { id: "avatar", label: "Avatar Video", icon: User },
+    { id: "ugc", label: "UGC", icon: Video },
+    { id: "recast", label: "Recast", icon: RefreshCw },
+    { id: "story", label: "Story", icon: BookOpen },
+    { id: "presentation", label: "Presentation", icon: Presentation },
+    { id: "podcast", label: "Podcast", icon: Mic },
+  ],
+  audio: [
+    { id: "voiceover", label: "Voiceover", icon: Mic },
+    { id: "clone", label: "Clone", icon: User },
+    { id: "revoice", label: "Revoice", icon: RefreshCw },
+    { id: "transcribe", label: "Transcribe", icon: Captions },
+    { id: "sound-effects", label: "Sound Effects", icon: AudioLines },
+    { id: "music", label: "Music", icon: Music },
+    { id: "audiobook", label: "AudioBook", icon: Headphones },
+  ],
+};
+
 const PLACEHOLDERS: Record<ContentType, string> = {
   video: "Describe the video you want to create...",
   image: "Describe the image you want to create...",
@@ -40,6 +74,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [typeSelected, setTypeSelected] = useState(false);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const [selectedSubMode, setSelectedSubMode] = useState<string | null>(null);
   const typeRef = useRef<HTMLDivElement>(null);
   const [chipIds, setChipIds] = useState<Set<string>>(new Set());
   const [uploadedImgCount, setUploadedImgCount] = useState(0);
@@ -341,21 +376,19 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           <Tooltip>
             <TooltipTrigger asChild>
               <button onClick={() => setTypeDropdownOpen(v => !v)}
-                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm transition-colors shrink-0 ${typeSelected ? "text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
-                <SlidersHorizontal className="w-4 h-4" />
-                <span className="text-xs font-medium">Type</span>
-                <ChevronDown className="w-3 h-3 opacity-60" />
+                className={`flex items-center justify-center w-9 h-9 rounded-lg transition-colors shrink-0 ${typeSelected ? "text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                <SlidersHorizontal className="w-[17px] h-[17px]" />
               </button>
             </TooltipTrigger>
-            <TooltipContent>Select content type</TooltipContent>
+            <TooltipContent side="bottom">Type</TooltipContent>
           </Tooltip>
           {typeDropdownOpen && (
             <div className="absolute bottom-full left-0 mb-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-              {CONTENT_TYPES.map(t => (
-                <button key={t.id} onClick={() => { setContentType(t.id); setTypeSelected(true); setTypeDropdownOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${contentType === t.id && typeSelected ? "bg-foreground/[0.06]" : ""}`}>
-                  <t.icon size={16} className={t.color} />{t.label}
-                  {contentType === t.id && typeSelected && <Check size={13} className="ml-auto text-accent" />}
+              {EDITOR_SUB_MODES[contentType].map(s => (
+                <button key={s.id} onClick={() => { setSelectedSubMode(s.id); setTypeSelected(true); setTypeDropdownOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedSubMode === s.id ? "bg-foreground/[0.06]" : ""}`}>
+                  <s.icon size={16} />{s.label}
+                  {selectedSubMode === s.id && <Check size={13} className="ml-auto text-accent" />}
                 </button>
               ))}
             </div>
