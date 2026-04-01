@@ -31,6 +31,37 @@ const CONTENT_TYPES: { id: ContentType; icon: typeof Video; label: string; color
   { id: "audio", icon: AudioLines, label: "Audio", color: "text-emerald-600", bgColor: "bg-emerald-500/15" },
 ];
 
+const EDITOR_SUB_MODES: Record<ContentType, { id: string; label: string; icon: typeof Video }[]> = {
+  image: [
+    { id: "generate", label: "Create", icon: Sparkles },
+    { id: "batch", label: "Batch", icon: Layers },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "swap", label: "Swap", icon: RefreshCw },
+    { id: "photoshoot", label: "Photoshoot", icon: Camera },
+  ],
+  video: [
+    { id: "animate", label: "Animate", icon: Play },
+    { id: "draw", label: "Draw", icon: Pencil },
+    { id: "lip-sync", label: "Lip-Sync", icon: MessageCircle },
+    { id: "motion-sync", label: "Motion-Sync", icon: Move },
+    { id: "avatar", label: "Avatar Video", icon: User },
+    { id: "ugc", label: "UGC", icon: Video },
+    { id: "recast", label: "Recast", icon: RefreshCw },
+    { id: "story", label: "Story", icon: BookOpen },
+    { id: "presentation", label: "Presentation", icon: Presentation },
+    { id: "podcast", label: "Podcast", icon: Mic },
+  ],
+  audio: [
+    { id: "voiceover", label: "Voiceover", icon: Mic },
+    { id: "clone", label: "Clone", icon: User },
+    { id: "revoice", label: "Revoice", icon: RefreshCw },
+    { id: "transcribe", label: "Transcribe", icon: Captions },
+    { id: "sound-effects", label: "Sound Effects", icon: AudioLines },
+    { id: "music", label: "Music", icon: Music },
+    { id: "audiobook", label: "AudioBook", icon: Headphones },
+  ],
+};
+
 const PLACEHOLDERS: Record<ContentType, string> = {
   video: "Describe the video you want to create...",
   image: "Describe the image you want to create...",
