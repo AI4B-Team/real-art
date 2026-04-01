@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import {
   Video, Image, AudioLines, Hash,
   Sparkles, Send, ChevronDown, Shuffle,
-  Loader2, Zap, Check, Plus, Upload,
+  Loader2, Zap, Check, Plus, Upload, SlidersHorizontal,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -38,6 +38,9 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const [contentType, setContentType] = useState<ContentType>(editorType);
   const [isContentTypeOpen, setIsContentTypeOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [typeSelected, setTypeSelected] = useState(false);
+  const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
+  const typeRef = useRef<HTMLDivElement>(null);
   const [chipIds, setChipIds] = useState<Set<string>>(new Set());
   const [uploadedImgCount, setUploadedImgCount] = useState(0);
   const [assetPickerOpen, setAssetPickerOpen] = useState(false);
@@ -333,91 +336,122 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
 
       {/* Bottom toolbar */}
       <div className="flex items-center px-3 pb-2.5 gap-1 min-w-0">
-        <Popover open={assetPickerOpen} onOpenChange={(open) => {
-          if (open) saveSelection();
-          setAssetPickerOpen(open);
-        }}>
-          <PopoverTrigger asChild>
-            <button className="p-1.5 rounded-lg text-foreground hover:bg-foreground/[0.06] transition-colors shrink-0">
-              <Plus className="w-5 h-5" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-64 p-0" align="start" sideOffset={8} onCloseAutoFocus={handleAssetPopoverCloseAutoFocus}>
-            <div className="p-2 border-b border-foreground/[0.06]">
-              <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
-                <Hash className="w-3.5 h-3.5 text-muted" />
-                <input value={assetSearch} onChange={e => setAssetSearch(e.target.value)}
-                  placeholder="Search assets..." className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted" autoFocus />
-              </div>
-            </div>
-            <div className="max-h-64 overflow-y-auto p-1.5">
-              {filteredAssets.map(cat => (
-                <div key={cat.category}>
-                  <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
-                  {cat.items.map(item => {
-                    const isAdded = chipIds.has(item.id);
-                    const Icon = PROMPT_CHIP_ICONS[cat.type];
-                    return (
-                      <button key={item.id} onMouseDown={(e) => e.preventDefault()} onClick={() => addChip(cat.type, item)} disabled={isAdded}
-                        className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
-                        {item.thumbnail ? (
-                          <img src={item.thumbnail} alt="" className="w-7 h-7 rounded object-cover" />
-                        ) : (
-                          <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
-                            <Icon className="w-3.5 h-3.5 text-muted" />
-                          </span>
-                        )}
-                        <span className="font-medium">@{item.label}</span>
-                        {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
-              {filteredAssets.length === 0 && <p className="text-center text-sm text-muted py-4">No assets found</p>}
-              <div className="border-t border-foreground/[0.06] mt-1 pt-1">
-                <button
-                  onMouseDown={e => e.preventDefault()}
-                  onClick={() => { setAssetPickerOpen(false); imgUploadRef.current?.click(); }}
-                  className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors"
-                >
-                  <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
-                    <Upload className="w-3.5 h-3.5 text-muted" />
-                  </span>
-                  <span className="font-medium">Upload Image</span>
+        {/* Type button with dropdown */}
+        <div className="relative shrink-0" ref={typeRef}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button onClick={() => setTypeDropdownOpen(v => !v)}
+                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm transition-colors shrink-0 ${typeSelected ? "text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                <SlidersHorizontal className="w-4 h-4" />
+                <span className="text-xs font-medium">Type</span>
+                <ChevronDown className="w-3 h-3 opacity-60" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>Select content type</TooltipContent>
+          </Tooltip>
+          {typeDropdownOpen && (
+            <div className="absolute bottom-full left-0 mb-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
+              {CONTENT_TYPES.map(t => (
+                <button key={t.id} onClick={() => { setContentType(t.id); setTypeSelected(true); setTypeDropdownOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${contentType === t.id && typeSelected ? "bg-foreground/[0.06]" : ""}`}>
+                  <t.icon size={16} className={t.color} />{t.label}
+                  {contentType === t.id && typeSelected && <Check size={13} className="ml-auto text-accent" />}
                 </button>
-              </div>
+              ))}
             </div>
-          </PopoverContent>
-        </Popover>
+          )}
+        </div>
 
-        <div className="w-px h-5 bg-foreground/[0.1] mx-0.5 shrink-0" />
+        {/* Other toolbar buttons — only visible after type is selected */}
+        {typeSelected && (
+          <>
+            <div className="w-px h-5 bg-foreground/[0.1] mx-0.5 shrink-0" />
 
-        <Popover>
-          <PopoverTrigger asChild>
-            <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm text-muted hover:text-foreground transition-colors hover:bg-foreground/[0.04] shrink-0">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-xs font-medium">AI agent</span>
-              <ChevronDown className="w-3 h-3 opacity-60" />
-            </button>
-          </PopoverTrigger>
-          <PopoverContent className="w-52 p-1.5" align="start">
-            <p className="px-3 py-1.5 text-xs font-medium text-muted">Enhance Prompt</p>
-            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { if (editableRef.current) { editableRef.current.appendChild(document.createTextNode(" — quick enhancement")); syncText(); } setIsEnhancing(false); }, 800); }}
-              className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
-              <Zap className="w-3.5 h-3.5 text-amber-500" /> Fast Enhance
-            </button>
-            <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { if (editableRef.current) { editableRef.current.appendChild(document.createTextNode(" — cinematic, detailed, high quality")); syncText(); } setIsEnhancing(false); }, 1500); }}
-              className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Deep Enhance
-            </button>
-            <div className="border-t border-foreground/[0.06] my-1" />
-            <p className="px-3 py-1.5 text-xs font-medium text-muted">Agent Mode</p>
-            {["Auto", "Creative", "Precise", "Balanced"].map(m => (
-              <button key={m} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04]">{m}</button>
-            ))}
-          </PopoverContent>
-        </Popover>
+            <Popover open={assetPickerOpen} onOpenChange={(open) => {
+              if (open) saveSelection();
+              setAssetPickerOpen(open);
+            }}>
+              <PopoverTrigger asChild>
+                <button className="p-1.5 rounded-lg text-muted hover:text-foreground hover:bg-foreground/[0.06] transition-colors shrink-0">
+                  <Plus className="w-4 h-4" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-64 p-0" align="start" sideOffset={8} onCloseAutoFocus={handleAssetPopoverCloseAutoFocus}>
+                <div className="p-2 border-b border-foreground/[0.06]">
+                  <div className="flex items-center gap-2 px-2.5 py-1.5 rounded-lg bg-foreground/[0.04]">
+                    <Hash className="w-3.5 h-3.5 text-muted" />
+                    <input value={assetSearch} onChange={e => setAssetSearch(e.target.value)}
+                      placeholder="Search assets..." className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted" autoFocus />
+                  </div>
+                </div>
+                <div className="max-h-64 overflow-y-auto p-1.5">
+                  {filteredAssets.map(cat => (
+                    <div key={cat.category}>
+                      <p className="px-2.5 py-1.5 text-[10px] font-semibold text-muted uppercase tracking-wider">{cat.category}</p>
+                      {cat.items.map(item => {
+                        const isAdded = chipIds.has(item.id);
+                        const Icon = PROMPT_CHIP_ICONS[cat.type];
+                        return (
+                          <button key={item.id} onMouseDown={(e) => e.preventDefault()} onClick={() => addChip(cat.type, item)} disabled={isAdded}
+                            className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm transition-colors ${isAdded ? "opacity-40 cursor-not-allowed" : "hover:bg-foreground/[0.04]"}`}>
+                            {item.thumbnail ? (
+                              <img src={item.thumbnail} alt="" className="w-7 h-7 rounded object-cover" />
+                            ) : (
+                              <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
+                                <Icon className="w-3.5 h-3.5 text-muted" />
+                              </span>
+                            )}
+                            <span className="font-medium">@{item.label}</span>
+                            {isAdded && <Check className="w-3.5 h-3.5 text-accent ml-auto" />}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ))}
+                  {filteredAssets.length === 0 && <p className="text-center text-sm text-muted py-4">No assets found</p>}
+                  <div className="border-t border-foreground/[0.06] mt-1 pt-1">
+                    <button
+                      onMouseDown={e => e.preventDefault()}
+                      onClick={() => { setAssetPickerOpen(false); imgUploadRef.current?.click(); }}
+                      className="w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors"
+                    >
+                      <span className="w-7 h-7 rounded bg-foreground/[0.06] flex items-center justify-center">
+                        <Upload className="w-3.5 h-3.5 text-muted" />
+                      </span>
+                      <span className="font-medium">Upload Image</span>
+                    </button>
+                  </div>
+                </div>
+              </PopoverContent>
+            </Popover>
+
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm text-muted hover:text-foreground transition-colors hover:bg-foreground/[0.04] shrink-0">
+                  <Sparkles className="w-4 h-4" />
+                  <span className="text-xs font-medium">AI agent</span>
+                  <ChevronDown className="w-3 h-3 opacity-60" />
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-52 p-1.5" align="start">
+                <p className="px-3 py-1.5 text-xs font-medium text-muted">Enhance Prompt</p>
+                <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { if (editableRef.current) { editableRef.current.appendChild(document.createTextNode(" — quick enhancement")); syncText(); } setIsEnhancing(false); }, 800); }}
+                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
+                  <Zap className="w-3.5 h-3.5 text-amber-500" /> Fast Enhance
+                </button>
+                <button onClick={() => { if (!chatInput.trim()) return; setIsEnhancing(true); setTimeout(() => { if (editableRef.current) { editableRef.current.appendChild(document.createTextNode(" — cinematic, detailed, high quality")); syncText(); } setIsEnhancing(false); }, 1500); }}
+                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-2">
+                  <Sparkles className="w-3.5 h-3.5 text-purple-500" /> Deep Enhance
+                </button>
+                <div className="border-t border-foreground/[0.06] my-1" />
+                <p className="px-3 py-1.5 text-xs font-medium text-muted">Agent Mode</p>
+                {["Auto", "Creative", "Precise", "Balanced"].map(m => (
+                  <button key={m} className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04]">{m}</button>
+                ))}
+              </PopoverContent>
+            </Popover>
+          </>
+        )}
 
         <div className="flex-1 min-w-0" />
 
