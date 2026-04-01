@@ -3,6 +3,9 @@ import {
   Video, Image, AudioLines, Hash,
   Sparkles, Send, ChevronDown, Shuffle,
   Loader2, Zap, Check, Plus, Upload, SlidersHorizontal,
+  Layers, Pencil, RefreshCw, Camera,
+  Play, MessageCircle, Move, User, BookOpen, Presentation,
+  Mic, Captions, Music, Headphones,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
