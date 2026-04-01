@@ -376,21 +376,19 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           <Tooltip>
             <TooltipTrigger asChild>
               <button onClick={() => setTypeDropdownOpen(v => !v)}
-                className={`flex items-center gap-1.5 px-2 py-1.5 rounded-lg text-sm transition-colors shrink-0 ${typeSelected ? "text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
-                <SlidersHorizontal className="w-4 h-4" />
-                <span className="text-xs font-medium">Type</span>
-                <ChevronDown className="w-3 h-3 opacity-60" />
+                className={`flex items-center justify-center w-9 h-9 rounded-lg transition-colors shrink-0 ${typeSelected ? "text-accent" : "text-muted hover:text-foreground hover:bg-foreground/[0.04]"}`}>
+                <SlidersHorizontal className="w-[17px] h-[17px]" />
               </button>
             </TooltipTrigger>
-            <TooltipContent>Select content type</TooltipContent>
+            <TooltipContent side="bottom">Type</TooltipContent>
           </Tooltip>
           {typeDropdownOpen && (
             <div className="absolute bottom-full left-0 mb-2 w-52 bg-background border border-foreground/[0.1] rounded-2xl shadow-xl z-[200] py-2 overflow-hidden">
-              {CONTENT_TYPES.map(t => (
-                <button key={t.id} onClick={() => { setContentType(t.id); setTypeSelected(true); setTypeDropdownOpen(false); }}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${contentType === t.id && typeSelected ? "bg-foreground/[0.06]" : ""}`}>
-                  <t.icon size={16} className={t.color} />{t.label}
-                  {contentType === t.id && typeSelected && <Check size={13} className="ml-auto text-accent" />}
+              {EDITOR_SUB_MODES[contentType].map(s => (
+                <button key={s.id} onClick={() => { setSelectedSubMode(s.id); setTypeSelected(true); setTypeDropdownOpen(false); }}
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-[0.88rem] font-medium text-foreground hover:bg-foreground/[0.04] transition-colors ${selectedSubMode === s.id ? "bg-foreground/[0.06]" : ""}`}>
+                  <s.icon size={16} />{s.label}
+                  {selectedSubMode === s.id && <Check size={13} className="ml-auto text-accent" />}
                 </button>
               ))}
             </div>
