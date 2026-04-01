@@ -2,7 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import {
   Video, Image, AudioLines, Hash,
   Sparkles, Send, ChevronDown, Shuffle,
-  Loader2, Zap, Check, Plus, Upload,
+  Loader2, Zap, Check, Plus, Upload, SlidersHorizontal,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
