@@ -4598,27 +4598,31 @@ export default App;`}</code>
                 <Loader2 className="w-7 h-7 text-muted animate-spin mx-auto mb-3" />
                 <p className="text-[0.84rem] text-muted">Loading your creations…</p>
               </div>
-            ) : filteredCreations.length === 0 && creations.length === 0 ? (
-              <div className="text-center py-24">
-                <div className="w-20 h-20 rounded-3xl bg-accent/10 flex items-center justify-center mx-auto mb-6">
-                  <Sparkles className="w-10 h-10 text-accent" />
-                </div>
-                <h3 className="font-display font-black text-[1.6rem] tracking-[-0.02em] mb-3">Your canvas is empty</h3>
-                <p className="text-[0.92rem] text-muted max-w-md mx-auto mb-6 leading-relaxed">
-                  Use the prompt box above to generate your first image, video, or design — or explore community creations for inspiration.
-                </p>
-              </div>
-            ) : filteredCreations.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="w-14 h-14 rounded-2xl bg-accent/10 flex items-center justify-center mx-auto mb-4"><Sparkles className="w-7 h-7 text-accent" /></div>
-                <h3 className="font-display font-black text-[1.1rem] mb-2">No {mediaFilter} creations yet</h3>
-                <p className="text-[0.84rem] text-muted">Use the prompt box above to generate your first {mediaFilter}.</p>
-              </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {filteredCreations.map((item, i) => <CreationCard key={item.id} item={item} idx={i} />)}
+                {(filteredCreations.length > 0 ? filteredCreations : []).map((item, i) => <CreationCard key={item.id} item={item} idx={i} />)}
+                {SAMPLE_CREATIONS.map((s, i) => (
+                  <Link key={s.id} to={`/image/${i}`} className="group relative rounded-2xl overflow-hidden block no-underline">
+                    <img src={`https://images.unsplash.com/${s.photo}?w=400&h=400&fit=crop&q=80`} alt={s.title} className="w-full aspect-square object-cover" />
+                    <ImageCardOverlay index={i} photo={s.photo} title={s.title} />
+                  </Link>
+                ))}
               </div>
             )}
+          </div>
+        )}
+
+        {/* FAVORITES */}
+        {activeTab === "favorites" && (
+          <div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {SAMPLE_FAVORITES.map((s, i) => (
+                <Link key={s.id} to={`/image/${i + 100}`} className="group relative rounded-2xl overflow-hidden block no-underline">
+                  <img src={`https://images.unsplash.com/${s.photo}?w=400&h=400&fit=crop&q=80`} alt={s.title} className="w-full aspect-square object-cover" />
+                  <ImageCardOverlay index={i + 100} photo={s.photo} title={s.title} />
+                </Link>
+              ))}
+            </div>
           </div>
         )}
 
@@ -4630,10 +4634,10 @@ export default App;`}</code>
               <Link to="/explore" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">Explore All <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {DUMMY_COMMUNITY.map((item, i) => (
-                <Link key={item.id} to={`/image/${i}`} className="group relative rounded-2xl overflow-hidden block no-underline">
-                  <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.prompt} className="w-full aspect-square object-cover" />
-                  <ImageCardOverlay index={i} photo={item.photo} title={item.prompt.slice(0, 30)} />
+              {SAMPLE_COMMUNITY.map((s, i) => (
+                <Link key={s.id} to={`/image/${i + 200}`} className="group relative rounded-2xl overflow-hidden block no-underline">
+                  <img src={`https://images.unsplash.com/${s.photo}?w=400&h=400&fit=crop&q=80`} alt={s.title} className="w-full aspect-square object-cover" />
+                  <ImageCardOverlay index={i + 200} photo={s.photo} title={s.title} />
                 </Link>
               ))}
             </div>
@@ -4652,15 +4656,15 @@ export default App;`}</code>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {DUMMY_TEMPLATES.map((t, i) => (
+              {SAMPLE_TEMPLATES.map((t, i) => (
                 <div key={t.id} className="group cursor-pointer">
-                  <Link to={`/image/${i + 20}`} className="relative rounded-2xl overflow-hidden mb-2.5 block no-underline">
-                    <img src={`https://images.unsplash.com/${t.photo}?w=400&h=300&fit=crop&q=80`} alt={t.name} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                  <Link to={`/image/${i + 300}`} className="relative rounded-2xl overflow-hidden mb-2.5 block no-underline">
+                    <img src={`https://images.unsplash.com/${t.photo}?w=400&h=300&fit=crop&q=80`} alt={t.title} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform duration-300" />
                     <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md z-10">{t.category}</div>
-                    <ImageCardOverlay index={i + 20} photo={t.photo} title={t.name} />
+                    <ImageCardOverlay index={i + 300} photo={t.photo} title={t.title} />
                   </Link>
                   <div className="flex items-center justify-between px-0.5">
-                    <h3 className="text-[0.84rem] font-semibold">{t.name}</h3>
+                    <h3 className="text-[0.84rem] font-semibold">{t.title}</h3>
                     <span className="text-[0.7rem] text-muted">{t.uses} uses</span>
                   </div>
                 </div>
@@ -4677,10 +4681,10 @@ export default App;`}</code>
               <Link to="/collections" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">View All <ArrowRight size={12} /></Link>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {DUMMY_COMMUNITY.slice(0, 6).map((item, i) => (
-                <Link key={`col-${item.id}`} to={`/image/${i + 30}`} className="group relative rounded-2xl overflow-hidden block no-underline">
-                  <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.prompt} className="w-full aspect-square object-cover" />
-                  <ImageCardOverlay index={i + 30} photo={item.photo} title={item.prompt.slice(0, 30)} />
+              {SAMPLE_COLLECTIONS.map((s, i) => (
+                <Link key={s.id} to={`/image/${i + 400}`} className="group relative rounded-2xl overflow-hidden block no-underline">
+                  <img src={`https://images.unsplash.com/${s.photo}?w=400&h=400&fit=crop&q=80`} alt={s.title} className="w-full aspect-square object-cover" />
+                  <ImageCardOverlay index={i + 400} photo={s.photo} title={s.title} />
                 </Link>
               ))}
             </div>
