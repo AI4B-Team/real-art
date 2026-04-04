@@ -3905,39 +3905,17 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
 
 /* ─── Gallery card ───────────────────────────────────────────── */
 
-function CreationCard({ item }: { item: UserCreation }) {
-  const [liked, setLiked] = useState(item.liked);
-  const [saved, setSaved] = useState(false);
-  const { toast } = useToast();
-
-  const typeColors: Record<string, string> = {
-    image: "bg-blue-500/80",
-    video: "bg-red-500/80",
-    audio: "bg-green-500/80",
-    design: "bg-orange-500/80",
-  };
+function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
+  const cardIndex = idx ?? (parseInt(item.id, 10) || 0);
+  const photo = item.image_url.includes("unsplash.com")
+    ? item.image_url.replace(/https:\/\/images\.unsplash\.com\//, "").split("?")[0]
+    : undefined;
 
   return (
-    <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03]">
+    <Link to={`/image/${cardIndex}`} className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03] block no-underline">
       <img src={item.image_url} alt={item.title || "Creation"} className="w-full aspect-square object-cover" />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-200" />
-      <div className={`absolute top-2 left-2 text-white text-[0.62rem] font-bold px-2 py-0.5 rounded-md ${typeColors[item.type] || "bg-black/50"} backdrop-blur-sm`}>{item.type.toUpperCase()}</div>
-      <button onClick={() => setLiked(v => !v)} className={`absolute top-2 right-2 w-7 h-7 rounded-full flex items-center justify-center transition-all ${liked ? "bg-accent text-white scale-110" : "bg-black/30 text-white opacity-0 group-hover:opacity-100"}`}>
-        <Star size={12} className={liked ? "fill-current" : ""} />
-      </button>
-      <div className="absolute bottom-2 left-2 right-2 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-        <div className="flex-1 min-w-0">
-          <p className="text-[0.7rem] text-white font-medium truncate">{item.title || "Untitled"}</p>
-        </div>
-        <button onClick={() => { setSaved(v => !v); toast({ title: saved ? "Removed from collection" : "Saved to collection!" }); }}
-          className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
-          <Bookmark size={11} className={saved ? "fill-current" : ""} />
-        </button>
-        <a href={item.image_url} download className="w-7 h-7 rounded-lg bg-white/20 backdrop-blur-sm flex items-center justify-center hover:bg-white/35 text-white transition-colors">
-          <Download size={11} />
-        </a>
-      </div>
-    </div>
+      <ImageCardOverlay index={cardIndex} photo={photo} title={item.title || "Untitled"} />
+    </Link>
   );
 }
 
@@ -4636,7 +4614,7 @@ export default App;`}</code>
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {filteredCreations.map(item => <CreationCard key={item.id} item={item} />)}
+                {filteredCreations.map((item, i) => <CreationCard key={item.id} item={item} idx={i} />)}
               </div>
             )}
           </div>
@@ -4672,20 +4650,36 @@ export default App;`}</code>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {DUMMY_TEMPLATES.map(t => (
+              {DUMMY_TEMPLATES.map((t, i) => (
                 <div key={t.id} className="group cursor-pointer">
-                  <div className="relative rounded-2xl overflow-hidden mb-2.5">
+                  <Link to={`/image/${i + 20}`} className="relative rounded-2xl overflow-hidden mb-2.5 block no-underline">
                     <img src={`https://images.unsplash.com/${t.photo}?w=400&h=300&fit=crop&q=80`} alt={t.name} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <button onClick={() => toast({ title: `"${t.name}" template loaded!` })} className="flex items-center gap-1.5 bg-white text-foreground text-[0.78rem] font-bold px-4 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform"><Zap size={13} /> Use Template</button>
-                    </div>
-                    <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md">{t.category}</div>
-                  </div>
+                    <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md z-10">{t.category}</div>
+                    <ImageCardOverlay index={i + 20} photo={t.photo} title={t.name} />
+                  </Link>
                   <div className="flex items-center justify-between px-0.5">
                     <h3 className="text-[0.84rem] font-semibold">{t.name}</h3>
                     <span className="text-[0.7rem] text-muted">{t.uses} uses</span>
                   </div>
                 </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* COLLECTIONS */}
+        {activeTab === "collections" && (
+          <div>
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Your Collections</h2>
+              <Link to="/collections" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">View All <ArrowRight size={12} /></Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {DUMMY_COMMUNITY.slice(0, 6).map((item, i) => (
+                <Link key={`col-${item.id}`} to={`/image/${i + 30}`} className="group relative rounded-2xl overflow-hidden block no-underline">
+                  <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.prompt} className="w-full aspect-square object-cover" />
+                  <ImageCardOverlay index={i + 30} photo={item.photo} title={item.prompt.slice(0, 30)} />
+                </Link>
               ))}
             </div>
           </div>
