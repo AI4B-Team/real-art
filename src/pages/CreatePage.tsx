@@ -3906,7 +3906,7 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
 /* ─── Gallery card ───────────────────────────────────────────── */
 
 function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
-  const cardIndex = idx ?? parseInt(item.id, 10) || 0;
+  const cardIndex = idx ?? (parseInt(item.id, 10) || 0);
   const photo = item.image_url.includes("unsplash.com")
     ? item.image_url.replace(/https:\/\/images\.unsplash\.com\//, "").split("?")[0]
     : undefined;
