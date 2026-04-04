@@ -4650,15 +4650,13 @@ export default App;`}</code>
               </div>
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-              {DUMMY_TEMPLATES.map(t => (
+              {DUMMY_TEMPLATES.map((t, i) => (
                 <div key={t.id} className="group cursor-pointer">
-                  <div className="relative rounded-2xl overflow-hidden mb-2.5">
+                  <Link to={`/image/${i + 20}`} className="relative rounded-2xl overflow-hidden mb-2.5 block no-underline">
                     <img src={`https://images.unsplash.com/${t.photo}?w=400&h=300&fit=crop&q=80`} alt={t.name} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform duration-300" />
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100">
-                      <button onClick={() => toast({ title: `"${t.name}" template loaded!` })} className="flex items-center gap-1.5 bg-white text-foreground text-[0.78rem] font-bold px-4 py-2 rounded-xl shadow-lg hover:scale-105 transition-transform"><Zap size={13} /> Use Template</button>
-                    </div>
-                    <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md">{t.category}</div>
-                  </div>
+                    <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md z-10">{t.category}</div>
+                    <ImageCardOverlay index={i + 20} photo={t.photo} title={t.name} />
+                  </Link>
                   <div className="flex items-center justify-between px-0.5">
                     <h3 className="text-[0.84rem] font-semibold">{t.name}</h3>
                     <span className="text-[0.7rem] text-muted">{t.uses} uses</span>
