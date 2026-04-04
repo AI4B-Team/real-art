@@ -4495,7 +4495,7 @@ export default App;`}</code>
                         <p className="text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Created by</p>
                       </div>
                       {[
-                        { id: "all", label: "All Team Members", avatar: null },
+                        { id: "all", label: "All Members", avatar: null },
                         { id: "dolmar", label: "Dolmar Cross", avatar: "DC" },
                         { id: "javier", label: "Javier Pons", avatar: "JP" },
                         { id: "jaypee", label: "Jaypee Vestidas", avatar: "JV" },
