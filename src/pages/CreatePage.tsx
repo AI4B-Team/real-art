@@ -3965,6 +3965,9 @@ export default function CreatePage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<GalleryTab>("creations");
+  const [creationsDropdownOpen, setCreationsDropdownOpen] = useState(false);
+  const [creationsAssetFilter, setCreationsAssetFilter] = useState<"creations" | "uploads">("creations");
+  const [creationsCreatorFilter, setCreationsCreatorFilter] = useState<string>("all");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [filterOpen, setFilterOpen] = useState(false);
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
