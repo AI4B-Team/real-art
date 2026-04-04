@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import {
   Search, LayoutGrid, Image as ImageIcon, Check,
   Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles,
-  Link, ChevronRight, ArrowLeft, X
+  Link, ChevronRight, ArrowLeft, X, Heart
 } from "lucide-react";
 import { toast } from "sonner";
 import type { BrowseItem, MediaFilter, ReferenceImage, SourceTab } from "./types";
@@ -14,7 +14,8 @@ interface BrowsePanelProps {
 }
 
 const SOURCE_TABS: { id: SourceTab; label: string; icon: typeof LayoutGrid }[] = [
-  { id: "upload", label: "Upload", icon: Upload },
+  { id: "upload", label: "Uploads", icon: Upload },
+  { id: "favorites", label: "Favorites", icon: Heart },
   { id: "import", label: "Import", icon: FolderOpen },
   { id: "creations", label: "Creations", icon: Sparkles },
   { id: "stock", label: "Stock", icon: Globe },
@@ -28,6 +29,7 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string; icon: typeof LayoutGrid }
 ];
 
 const POOLS: Record<Exclude<SourceTab, "upload" | "import">, BrowseItem[]> = {
+  favorites: [],
   creations: DUMMY_CREATIONS,
   stock: DUMMY_STOCK,
   community: DUMMY_COMMUNITY,
