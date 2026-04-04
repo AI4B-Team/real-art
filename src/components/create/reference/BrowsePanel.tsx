@@ -29,6 +29,7 @@ const MEDIA_FILTERS: { id: MediaFilter; label: string; icon: typeof LayoutGrid }
 ];
 
 const POOLS: Record<Exclude<SourceTab, "upload" | "import">, BrowseItem[]> = {
+  favorites: [],
   creations: DUMMY_CREATIONS,
   stock: DUMMY_STOCK,
   community: DUMMY_COMMUNITY,
