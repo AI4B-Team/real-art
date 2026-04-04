@@ -14,7 +14,7 @@ const BARE_ROUTES = ["/landing", "/login", "/signup"];
 const COLLAPSED_SIDEBAR_PATTERNS = [/^\/image\//, /^\/explore$/, /^\/create$/, /^\/account/, /^\/ebook-creator/, /^\/ghost-ink/, /^\/transcribe/, /^\/editor/];
 
 const AuthLayout = ({ children }: AuthLayoutProps) => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [userOverride, setUserOverride] = useState(false);
   const { isOpen: quickViewOpen } = useQuickView();
