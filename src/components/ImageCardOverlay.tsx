@@ -2,10 +2,12 @@ import { useState } from "react";
 import {
   Download, RefreshCw, Video, Pencil,
   Bookmark, Maximize2, Heart, Check, Plus,
+  ChevronDown, ArrowUpCircle, Copy,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
 import { suggestCollection, addItemToCollection } from "@/lib/collectionStore";
 
@@ -74,12 +76,21 @@ interface ImageCardOverlayProps {
   title?: string;
 }
 
+const USE_OPTIONS = [
+  { id: "animate",   label: "Animate",   icon: Video },
+  { id: "edit",      label: "Edit",      icon: Pencil },
+  { id: "recreate",  label: "Recreate",  icon: RefreshCw },
+  { id: "upscale",   label: "Upscale",   icon: ArrowUpCircle },
+  { id: "variation", label: "Variation",  icon: Copy },
+];
+
 const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: titleProp }: ImageCardOverlayProps) => {
   const [boardModalOpen, setBoardModalOpen] = useState(false);
   const [liked, setLiked] = useState(() => {
     try { return localStorage.getItem(`ra_liked_${index}`) === "1"; } catch { return false; }
   });
   const [quickSaved, setQuickSaved] = useState(false);
+  const [useOpen, setUseOpen] = useState(false);
   const navigate = useNavigate();
 
   const cr = creators[index % creators.length];
@@ -109,6 +120,28 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
       setQuickSaved(true);
       setTimeout(() => setQuickSaved(false), 2000);
     } catch { setBoardModalOpen(true); }
+  };
+
+  const handleUseAction = (actionId: string, e: React.MouseEvent) => {
+    e.stopPropagation(); e.preventDefault();
+    setUseOpen(false);
+    switch (actionId) {
+      case "animate":
+        navigate(`/image/${index}#prompts`);
+        break;
+      case "edit":
+        navigate("/editor", { state: { imageUrl: `https://images.unsplash.com/${photo}?w=1600&q=90`, editorTab: "image" } });
+        break;
+      case "recreate":
+        navigate(`/create?prompt=${encodeURIComponent(prompt)}&type=image`);
+        break;
+      case "upscale":
+        navigate(`/image/${index}?action=upscale`);
+        break;
+      case "variation":
+        navigate(`/create?prompt=${encodeURIComponent(prompt)}&type=image&variation=true`);
+        break;
+    }
   };
 
   return (
@@ -189,7 +222,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
             </Tooltip>
           </div>
 
-          {/* BOTTOM ROW — creator left, actions right */}
+          {/* BOTTOM ROW — creator left, Use button right */}
           <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-end justify-between gap-2">
             <Link
               to={`/creator/${cr.id}`}
@@ -206,34 +239,28 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
             </Link>
 
             <div className="flex gap-1.5 shrink-0">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button onClick={e => { e.stopPropagation(); e.preventDefault(); navigate(`/create?prompt=${encodeURIComponent(prompt)}&type=image`); }} className={iconBtn}>
-                    <RefreshCw className="w-3.5 h-3.5" />
+              <Popover open={useOpen} onOpenChange={setUseOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    onClick={e => { e.stopPropagation(); e.preventDefault(); }}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-black/30 backdrop-blur-md text-primary-foreground hover:bg-black/50 transition-all text-[0.72rem] font-semibold border border-primary-foreground/10"
+                  >
+                    Use <ChevronDown className="w-3 h-3" />
                   </button>
-                </TooltipTrigger>
-                <TooltipContent side="top" className="text-xs"><p>Recreate</p></TooltipContent>
-              </Tooltip>
-              {!isVideo && (
-                <>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button onClick={e => { e.stopPropagation(); e.preventDefault(); navigate(`/image/${index}#prompts`); }} className={iconBtn}>
-                        <Video className="w-3.5 h-3.5" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="text-xs"><p>Animate</p></TooltipContent>
-                  </Tooltip>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button onClick={e => { e.stopPropagation(); e.preventDefault(); navigate("/editor", { state: { imageUrl: `https://images.unsplash.com/${photo}?w=1600&q=90`, editorTab: "image" } }); }} className={iconBtn}>
-                        <Pencil className="w-3.5 h-3.5" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent side="top" className="text-xs"><p>Edit</p></TooltipContent>
-                  </Tooltip>
-                </>
-              )}
+                </PopoverTrigger>
+                <PopoverContent className="w-40 p-1" align="end" side="top" sideOffset={6}>
+                  {USE_OPTIONS.map(opt => (
+                    <button
+                      key={opt.id}
+                      onClick={e => handleUseAction(opt.id, e)}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[0.8rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
+                    >
+                      <opt.icon className="w-3.5 h-3.5 text-muted" />
+                      {opt.label}
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         </TooltipProvider>
