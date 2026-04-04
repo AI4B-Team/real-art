@@ -3965,6 +3965,9 @@ export default function CreatePage() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<GalleryTab>("creations");
+  const [creationsDropdownOpen, setCreationsDropdownOpen] = useState(false);
+  const [creationsAssetFilter, setCreationsAssetFilter] = useState<"creations" | "uploads">("creations");
+  const [creationsCreatorFilter, setCreationsCreatorFilter] = useState<string>("all");
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [filterOpen, setFilterOpen] = useState(false);
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
@@ -4462,12 +4465,63 @@ export default App;`}</code>
       {!isSocialMode && <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-1">
-            {TABS.map(tab => (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
-                <tab.icon size={13} />{tab.label}
-              </button>
-            ))}
+            {TABS.map(tab => {
+              if (tab.id === "creations") {
+                return (
+                  <Popover key={tab.id} open={creationsDropdownOpen} onOpenChange={setCreationsDropdownOpen}>
+                    <PopoverTrigger asChild>
+                      <button
+                        onClick={() => { setActiveTab("creations"); }}
+                        className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                        <tab.icon size={13} />{tab.label}
+                        <ChevronDown size={12} className={`opacity-50 transition-transform ${creationsDropdownOpen ? "rotate-180" : ""}`} />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[200px] p-0 py-2" align="start" side="bottom" sideOffset={6}>
+                      <div className="px-3 pt-1 pb-1.5">
+                        <p className="text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Assets</p>
+                      </div>
+                      {[
+                        { id: "creations" as const, label: "Creations", icon: Sparkles },
+                        { id: "uploads" as const, label: "Uploads", icon: Upload },
+                      ].map(item => (
+                        <button key={item.id} onClick={() => { setCreationsAssetFilter(item.id); setActiveTab("creations"); setCreationsDropdownOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-[0.82rem] font-medium transition-colors ${creationsAssetFilter === item.id && creationsCreatorFilter === "all" ? "bg-accent/10 text-accent" : "text-foreground hover:bg-foreground/[0.04]"}`}>
+                          <item.icon size={14} className="opacity-60" />{item.label}
+                        </button>
+                      ))}
+                      <div className="h-px bg-foreground/[0.06] my-1.5" />
+                      <div className="px-3 pt-1 pb-1.5">
+                        <p className="text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Created by</p>
+                      </div>
+                      {[
+                        { id: "all", label: "All Team Members", avatar: null },
+                        { id: "dolmar", label: "Dolmar Cross", avatar: "DC" },
+                        { id: "javier", label: "Javier Pons", avatar: "JP" },
+                        { id: "jaypee", label: "Jaypee Vestidas", avatar: "JV" },
+                        { id: "digital", label: "Digital Babes", avatar: "DB" },
+                      ].map(member => (
+                        <button key={member.id} onClick={() => { setCreationsCreatorFilter(member.id); setActiveTab("creations"); setCreationsDropdownOpen(false); }}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 text-[0.82rem] font-medium transition-colors ${creationsCreatorFilter === member.id ? "bg-accent/10 text-accent" : "text-foreground hover:bg-foreground/[0.04]"}`}>
+                          {member.avatar ? (
+                            <div className="w-5 h-5 rounded-full bg-foreground/[0.08] flex items-center justify-center text-[0.55rem] font-bold shrink-0">{member.avatar}</div>
+                          ) : (
+                            <Users size={14} className="opacity-60 shrink-0" />
+                          )}
+                          {member.label}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+                );
+              }
+              return (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                  <tab.icon size={13} />{tab.label}
+                </button>
+              );
+            })}
           </div>
           {(activeTab === "creations" || activeTab === "community" || activeTab === "collections" || activeTab === "templates" || activeTab === "apps") && (
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
