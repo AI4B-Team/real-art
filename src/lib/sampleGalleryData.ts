@@ -25,7 +25,9 @@ const UNSPLASH_PHOTOS = [
   "photo-1501862700950-18382cd41497", "photo-1542831371-29b0f74f9713",
   "photo-1555949963-ff9fe0c870eb", "photo-1523821741446-edb2b68bb7a0",
   "photo-1520962880247-cfaf541c8724", "photo-1494548162494-384bba4ab999",
-  "photo-1533158326339-7f3cd68c0178", "photo-1505765050516-f72dcac9c60e",
+  "photo-1500462918059-b1a0cb512f1d", "photo-1444464666168-49d633b86797",
+  "photo-1414609245224-afa02bfb3fda", "photo-1506744038136-46273834b3fb",
+  "photo-1472214103451-9374bd1c798e", "photo-1490730141103-6cac27aaab94",
 ];
 
 const TITLES = [
@@ -42,6 +44,7 @@ const TITLES = [
   "Steel Bloom", "Prism Shift", "Shadow Play", "Ink Drop",
   "Fractal Bloom", "Echo Chamber", "Dusk Rider", "Solar Flare",
   "Iron Moss", "Tide Pool",
+  "Velvet Dusk", "Sky Nomad", "Ember Glow", "Still Water",
 ];
 
 const CREATORS = [
@@ -74,8 +77,8 @@ function makeSamples(count: number, idPrefix: string, indexOffset: number) {
   }));
 }
 
-export const SAMPLE_CREATIONS = makeSamples(50, "cr-", 0);
-export const SAMPLE_FAVORITES = makeSamples(50, "fv-", 7);
-export const SAMPLE_COLLECTIONS = makeSamples(50, "cl-", 13);
-export const SAMPLE_COMMUNITY = makeSamples(50, "cm-", 19);
-export const SAMPLE_TEMPLATES = makeSamples(50, "tp-", 31);
+export const SAMPLE_CREATIONS = makeSamples(54, "cr-", 0);
+export const SAMPLE_FAVORITES = makeSamples(54, "fv-", 7);
+export const SAMPLE_COLLECTIONS = makeSamples(54, "cl-", 13);
+export const SAMPLE_COMMUNITY = makeSamples(54, "cm-", 19);
+export const SAMPLE_TEMPLATES = makeSamples(54, "tp-", 31);
