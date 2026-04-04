@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import {
   Search, LayoutGrid, Image as ImageIcon, Check,
   Upload, FolderOpen, TrendingUp, Users, Globe, Sparkles,
-  Link, ChevronRight, ArrowLeft, X
+  Link, ChevronRight, ArrowLeft, X, Heart
 } from "lucide-react";
 import { toast } from "sonner";
 import type { BrowseItem, MediaFilter, ReferenceImage, SourceTab } from "./types";
