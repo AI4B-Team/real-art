@@ -4462,57 +4462,12 @@ export default App;`}</code>
       {!isSocialMode && <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-1">
-            {TABS.map(tab => {
-              if (tab.id === "collections") {
-                return (
-                  <Popover key={tab.id}>
-                    <PopoverTrigger asChild>
-                      <button
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
-                        <tab.icon size={13} />{tab.label}
-                        <ChevronDown size={12} className="ml-0.5 opacity-60" />
-                      </button>
-                    </PopoverTrigger>
-                    <PopoverContent side="bottom" align="start" sideOffset={6} className="w-52 p-0 py-2 rounded-2xl">
-                      <p className="px-3.5 pt-2 pb-1.5 text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Assets</p>
-                      <button onClick={() => setActiveTab("creations")}
-                        className="w-full flex items-center gap-2.5 px-3.5 py-2 text-[0.84rem] font-medium hover:bg-foreground/[0.04] transition-colors">
-                        <Sparkles size={15} className="text-muted" /> Creations
-                      </button>
-                      <button onClick={() => setActiveTab("collections")}
-                        className="w-full flex items-center gap-2.5 px-3.5 py-2 text-[0.84rem] font-medium hover:bg-foreground/[0.04] transition-colors">
-                        <Upload size={15} className="text-muted" /> Uploads
-                      </button>
-                      <div className="h-px bg-foreground/[0.06] my-1.5 mx-3" />
-                      <p className="px-3.5 pt-1 pb-1.5 text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Created by</p>
-                      {[
-                        { name: "All Team Members", avatar: null },
-                        { name: "Dolmar Cross", avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=40&h=40&fit=crop&crop=face" },
-                        { name: "Javier Pons", avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face" },
-                        { name: "Jaypee Vestidas", avatar: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=40&h=40&fit=crop&crop=face" },
-                        { name: "Digital Babes", avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=40&h=40&fit=crop&crop=face" },
-                      ].map(member => (
-                        <button key={member.name}
-                          className="w-full flex items-center gap-2.5 px-3.5 py-2 text-[0.84rem] font-medium hover:bg-foreground/[0.04] transition-colors">
-                          {member.avatar ? (
-                            <img src={member.avatar} alt="" className="w-5 h-5 rounded-full object-cover" />
-                          ) : (
-                            <Users size={15} className="text-muted" />
-                          )}
-                          {member.name}
-                        </button>
-                      ))}
-                    </PopoverContent>
-                  </Popover>
-                );
-              }
-              return (
-                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
-                  <tab.icon size={13} />{tab.label}
-                </button>
-              );
-            })}
+            {TABS.map(tab => (
+              <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                <tab.icon size={13} />{tab.label}
+              </button>
+            ))}
           </div>
           {(activeTab === "creations" || activeTab === "community" || activeTab === "collections" || activeTab === "templates" || activeTab === "apps") && (
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
