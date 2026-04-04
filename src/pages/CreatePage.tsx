@@ -4667,6 +4667,24 @@ export default App;`}</code>
           </div>
         )}
 
+        {/* COLLECTIONS */}
+        {activeTab === "collections" && (
+          <div>
+            <div className="flex items-center justify-between mb-5">
+              <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Your Collections</h2>
+              <Link to="/collections" className="flex items-center gap-1 text-[0.78rem] font-medium text-muted hover:text-foreground transition-colors no-underline">View All <ArrowRight size={12} /></Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+              {DUMMY_COMMUNITY.slice(0, 6).map((item, i) => (
+                <Link key={`col-${item.id}`} to={`/image/${i + 30}`} className="group relative rounded-2xl overflow-hidden block no-underline">
+                  <img src={`https://images.unsplash.com/${item.photo}?w=400&h=400&fit=crop&q=80`} alt={item.prompt} className="w-full aspect-square object-cover" />
+                  <ImageCardOverlay index={i + 30} photo={item.photo} title={item.prompt.slice(0, 30)} />
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* APPS */}
         {activeTab === "apps" && (
           <div>
