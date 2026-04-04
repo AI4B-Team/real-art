@@ -4448,15 +4448,20 @@ export default App;`}</code>
             {TABS.map(tab => {
               if (tab.id === "creations") {
                 return (
-                  <Popover key={tab.id} open={creationsDropdownOpen} onOpenChange={setCreationsDropdownOpen}>
-                    <PopoverTrigger asChild>
-                      <button
-                        onClick={() => { setActiveTab("creations"); }}
-                        className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
-                        <tab.icon size={13} />{tab.label}
-                        <ChevronDown size={12} className={`opacity-50 transition-transform ${creationsDropdownOpen ? "rotate-180" : ""}`} />
-                      </button>
-                    </PopoverTrigger>
+                  <div key={tab.id} className="relative flex items-center">
+                    <button
+                      onClick={() => { setActiveTab("creations"); setCreationsDropdownOpen(false); }}
+                      className={`flex items-center gap-1.5 pl-4 pr-1.5 py-2 rounded-l-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-r-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                      <tab.icon size={13} />{tab.label}
+                    </button>
+                    <Popover open={creationsDropdownOpen} onOpenChange={setCreationsDropdownOpen}>
+                      <PopoverTrigger asChild>
+                        <button
+                          onClick={e => { e.stopPropagation(); }}
+                          className={`flex items-center px-1.5 py-2 rounded-r-lg text-[0.82rem] transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-l-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                          <ChevronDown size={12} className={`opacity-50 transition-transform ${creationsDropdownOpen ? "rotate-180" : ""}`} />
+                        </button>
+                      </PopoverTrigger>
                     <PopoverContent className="w-[200px] p-0 py-2" align="start" side="bottom" sideOffset={6}>
                       <div className="px-3 pt-1 pb-1.5">
                         <p className="text-[0.68rem] font-semibold text-muted uppercase tracking-wider">Assets</p>
@@ -4492,7 +4497,8 @@ export default App;`}</code>
                         </button>
                       ))}
                     </PopoverContent>
-                  </Popover>
+                    </Popover>
+                  </div>
                 );
               }
               return (
