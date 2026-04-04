@@ -4443,22 +4443,22 @@ export default App;`}</code>
       </div>
 
       {!isSocialMode && <div className="max-w-[1440px] mx-auto px-4 md:px-5 pb-20">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-1">
+        <div className="mb-6 grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+          <div className="flex min-w-0 flex-wrap items-center gap-1">
             {TABS.map(tab => {
               if (tab.id === "creations") {
                 return (
-                  <div key={tab.id} className="relative flex items-center">
+                  <div key={tab.id} className="relative flex shrink-0 items-center">
                     <button
                       onClick={() => { setActiveTab("creations"); setCreationsDropdownOpen(false); }}
-                      className={`flex items-center gap-1.5 pl-4 pr-1.5 py-2 rounded-l-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-r-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap pl-4 pr-1.5 py-2 rounded-l-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-r-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
                       <tab.icon size={13} />{tab.label}
                     </button>
                     <Popover open={creationsDropdownOpen} onOpenChange={setCreationsDropdownOpen}>
                       <PopoverTrigger asChild>
                         <button
                           onClick={e => { e.stopPropagation(); }}
-                          className={`flex items-center px-1.5 py-2 rounded-r-lg text-[0.82rem] transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-l-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                          className={`flex shrink-0 items-center whitespace-nowrap px-1.5 py-2 rounded-r-lg text-[0.82rem] transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-l-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
                           <ChevronDown size={12} className={`opacity-50 transition-transform ${creationsDropdownOpen ? "rotate-180" : ""}`} />
                         </button>
                       </PopoverTrigger>
@@ -4503,13 +4503,13 @@ export default App;`}</code>
               }
               return (
                 <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                  className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap px-4 py-2 rounded-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
                   <tab.icon size={13} />{tab.label}
                 </button>
               );
             })}
            </div>
-          <div className="flex items-center gap-2">
+          <div className="flex shrink-0 flex-wrap items-center gap-2 lg:justify-self-end">
            {(activeTab === "creations" || activeTab === "favorites" || activeTab === "community" || activeTab === "collections" || activeTab === "templates" || activeTab === "apps") && (
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
               <PopoverTrigger asChild>
