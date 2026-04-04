@@ -243,9 +243,9 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
                 <PopoverTrigger asChild>
                   <button
                     onClick={e => { e.stopPropagation(); e.preventDefault(); }}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-black/30 backdrop-blur-md text-primary-foreground hover:bg-black/50 transition-all text-[0.72rem] font-semibold border border-primary-foreground/10"
+                    className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-white/90 hover:bg-white text-foreground transition-all text-[0.78rem] font-bold shadow-sm backdrop-blur-sm"
                   >
-                    Use <ChevronDown className="w-3 h-3" />
+                    Use <ChevronDown className="w-3 h-3 opacity-60" />
                   </button>
                 </PopoverTrigger>
                 <PopoverContent className="w-40 p-1" align="end" side="top" sideOffset={6}>
