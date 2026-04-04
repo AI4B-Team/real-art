@@ -122,7 +122,7 @@ export default function AppTabs() {
               <Plus size={16} strokeWidth={2.5} />
             </button>
           </TooltipTrigger>
-          <TooltipContent>Explore Apps</TooltipContent>
+          <TooltipContent side="bottom">Explore Apps</TooltipContent>
         </Tooltip>
 
         {dropOpen && (
