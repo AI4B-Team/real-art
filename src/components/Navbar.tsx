@@ -169,7 +169,7 @@ const Navbar = ({ hideLogo = false, sidebarOffset }: { hideLogo?: boolean; sideb
   };
 
   const [isLoggedIn, setIsLoggedIn] = useState(() => {
-    try { return localStorage.getItem("ra_auth") === "1"; } catch { return false; }
+    try { return localStorage.getItem("ra_auth") !== "0"; } catch { return true; }
   });
   const [userDisplay, setUserDisplay] = useState(() => {
     try { return (localStorage.getItem("ra_display") || "AI.Verse").toLowerCase(); } catch { return "aiverse"; }
