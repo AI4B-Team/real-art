@@ -4522,8 +4522,9 @@ export default App;`}</code>
                 </button>
               );
             })}
-          </div>
-          {(activeTab === "creations" || activeTab === "community" || activeTab === "collections" || activeTab === "templates" || activeTab === "apps") && (
+           </div>
+          <div className="flex items-center gap-2">
+           {(activeTab === "creations" || activeTab === "community" || activeTab === "collections" || activeTab === "templates" || activeTab === "apps") && (
             <Popover open={filterOpen} onOpenChange={setFilterOpen}>
               <PopoverTrigger asChild>
                 <button type="button" className={`flex items-center gap-2 px-3.5 py-2 rounded-xl border text-[0.82rem] font-medium transition-colors ${hasActiveFilters ? "border-accent bg-accent/5 text-accent" : "border-foreground/[0.1] text-muted hover:text-foreground hover:border-foreground/25"}`}>
@@ -4602,7 +4603,11 @@ export default App;`}</code>
                 </div>
               </PopoverContent>
             </Popover>
-          )}
+           )}
+           <Link to="/blog" className="flex items-center gap-2 px-3.5 py-2 rounded-xl border border-foreground/[0.1] text-[0.82rem] font-medium text-muted hover:text-foreground hover:border-foreground/25 transition-colors no-underline">
+             <BookOpen size={14} />Tutorials
+           </Link>
+          </div>
         </div>
 
         {activeTab === "creations" && (
