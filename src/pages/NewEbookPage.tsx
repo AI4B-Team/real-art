@@ -828,7 +828,8 @@ const NewEbookPage = () => {
                 isGridView={isGridView}
                 onGridViewToggle={() => setIsGridView(false)}
               />
-              {/* RIGHT: Page Settings Panel */}
+              {/* RIGHT: Page Settings Panel (hidden in grid view) */}
+              {!isGridView && (
               <PageSettingsPanel
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
@@ -837,6 +838,7 @@ const NewEbookPage = () => {
                 onGridViewToggle={() => setIsGridView(true)}
                 bookTitle={bookData.selectedTitle}
               />
+              )}
             </div>
             <EbookGenerationOverlay isGenerating={isGeneratingBook} bookTitle={bookData.selectedTitle} onComplete={handleGenerationComplete} />
           </div>
