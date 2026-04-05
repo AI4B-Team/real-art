@@ -632,7 +632,6 @@ const EbookDesignSidebar = ({
       <div className="flex items-center px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
         <span className="text-xs font-bold text-foreground uppercase tracking-wider">Design</span>
       </div>
-      </div>
 
       {/* Templates */}
       <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
