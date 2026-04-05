@@ -698,7 +698,7 @@ const NewEbookPage = () => {
         {activeTab !== "design" && (
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <button onClick={() => navigate("/ebook-creator")} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"><ArrowLeft size={16} />Back To Projects</button>
+              <button onClick={() => { sessionStorage.removeItem("ebook-last-url"); navigate("/ebook-creator"); }} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer"><ArrowLeft size={16} />Back To Projects</button>
             </div>
           </div>
         )}
