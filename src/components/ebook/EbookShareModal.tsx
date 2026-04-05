@@ -2,7 +2,9 @@ import { useState } from "react";
 import {
   Globe, ChevronDown, Link2, Lock, Copy, Code, LinkIcon, Monitor,
   Calendar, MoreHorizontal, FileText, Image as ImageIcon, X,
-  Facebook, Linkedin, Check,
+  Facebook, Linkedin, Check, Mail, MessageCircle, Send,
+  Bookmark, Printer, QrCode, Rss, Share2, ArrowLeft,
+  Instagram, Youtube, Clock,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
@@ -19,20 +21,34 @@ const DOWNLOAD_FORMATS = [
   { id: "epub", label: "EPUB", ext: ".epub", icon: FileText, color: "text-purple-500" },
 ];
 
-const SOCIAL_PLATFORMS = [
-  { id: "schedule", label: "Schedule", icon: Calendar, color: "" },
+const SOCIAL_PLATFORMS_MAIN = [
   { id: "facebook", label: "Facebook", icon: Facebook, color: "text-blue-600" },
   { id: "linkedin", label: "Linkedin", icon: Linkedin, color: "text-blue-700" },
   { id: "x", label: "X", icon: () => <span className="font-bold text-sm">𝕏</span>, color: "" },
-  { id: "more", label: "See All", icon: MoreHorizontal, color: "" },
 ];
 
-const MORE_OPTIONS = [
+const SOCIAL_PLATFORMS_ALL = [
+  { id: "instagram", label: "Instagram", icon: Instagram, color: "text-pink-500" },
+  { id: "youtube", label: "YouTube", icon: Youtube, color: "text-red-600" },
+  { id: "email", label: "Email", icon: Mail, color: "text-muted-foreground" },
+  { id: "whatsapp", label: "WhatsApp", icon: MessageCircle, color: "text-green-600" },
+  { id: "telegram", label: "Telegram", icon: Send, color: "text-blue-500" },
+  { id: "pinterest", label: "Pinterest", icon: Bookmark, color: "text-red-500" },
+  { id: "reddit", label: "Reddit", icon: Share2, color: "text-orange-500" },
+  { id: "rss", label: "RSS", icon: Rss, color: "text-orange-400" },
+];
+
+const MORE_OPTIONS_MAIN = [
   { id: "copy", label: "Copy", icon: Copy },
   { id: "embed", label: "Embed", icon: Code },
   { id: "template", label: "Template Link", icon: LinkIcon },
   { id: "present", label: "Present", icon: Monitor },
-  { id: "more", label: "See All", icon: MoreHorizontal },
+];
+
+const MORE_OPTIONS_ALL = [
+  { id: "print", label: "Print", icon: Printer },
+  { id: "qrcode", label: "QR Code", icon: QrCode },
+  { id: "bookmark", label: "Bookmark", icon: Bookmark },
 ];
 
 interface EbookShareModalProps {
@@ -48,6 +64,12 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
   const [password, setPassword] = useState("");
   const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
   const [linkCopied, setLinkCopied] = useState(false);
+  const [showAllSocial, setShowAllSocial] = useState(false);
+  const [showAllMore, setShowAllMore] = useState(false);
+  const [showSchedule, setShowSchedule] = useState(false);
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduleTime, setScheduleTime] = useState("");
+  const [schedulePlatforms, setSchedulePlatforms] = useState<Set<string>>(new Set());
 
   const handleCopyLink = () => {
     const shareUrl = `${window.location.origin}/shared/ebook/${btoa(Date.now().toString()).slice(0, 12)}`;
@@ -72,38 +94,139 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
   };
 
   const handleSocialShare = (platformId: string) => {
-    const platform = SOCIAL_PLATFORMS.find(p => p.id === platformId);
-    if (platformId === "schedule") {
-      toast({ title: "Schedule publishing", description: "Coming soon!" });
-    } else if (platformId === "more") {
-      toast({ title: "More platforms coming soon!" });
+    const shareUrl = encodeURIComponent(`${window.location.origin}/shared/ebook`);
+    const title = encodeURIComponent(projectName || "Check out my eBook!");
+    let url = "";
+    if (platformId === "facebook") url = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+    else if (platformId === "linkedin") url = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`;
+    else if (platformId === "x") url = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${title}`;
+    else if (platformId === "whatsapp") url = `https://wa.me/?text=${title}%20${shareUrl}`;
+    else if (platformId === "telegram") url = `https://t.me/share/url?url=${shareUrl}&text=${title}`;
+    else if (platformId === "pinterest") url = `https://pinterest.com/pin/create/button/?url=${shareUrl}&description=${title}`;
+    else if (platformId === "reddit") url = `https://www.reddit.com/submit?url=${shareUrl}&title=${title}`;
+    else if (platformId === "email") url = `mailto:?subject=${title}&body=${shareUrl}`;
+
+    if (url) {
+      if (platformId === "email") window.location.href = url;
+      else window.open(url, "_blank", "width=600,height=400");
+      toast({ title: `Opening ${platformId}...` });
     } else {
-      toast({ title: `Sharing to ${platform?.label}...`, description: "Opening sharing dialog" });
-      // Construct share URLs
-      const shareUrl = encodeURIComponent(`${window.location.origin}/shared/ebook`);
-      const title = encodeURIComponent(projectName || "Check out my eBook!");
-      let url = "";
-      if (platformId === "facebook") url = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
-      else if (platformId === "linkedin") url = `https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`;
-      else if (platformId === "x") url = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${title}`;
-      if (url) window.open(url, "_blank", "width=600,height=400");
+      toast({ title: `${platformId} sharing`, description: "Coming soon!" });
     }
   };
 
   const handleMoreOption = (optionId: string) => {
-    const opt = MORE_OPTIONS.find(o => o.id === optionId);
     if (optionId === "copy") {
       handleCopyLink();
     } else if (optionId === "embed") {
       const embedCode = `<iframe src="${window.location.origin}/embed/ebook/${Date.now()}" width="100%" height="600" frameborder="0"></iframe>`;
       navigator.clipboard.writeText(embedCode);
       toast({ title: "Embed code copied!", description: "Paste this into your website" });
-    } else if (optionId === "present") {
-      toast({ title: "Presentation mode", description: "Coming soon!" });
+    } else if (optionId === "print") {
+      window.print();
+    } else if (optionId === "qrcode") {
+      toast({ title: "QR Code generated!", description: "Coming soon!" });
     } else {
-      toast({ title: `${opt?.label}`, description: "Coming soon!" });
+      toast({ title: `${optionId}`, description: "Coming soon!" });
     }
   };
+
+  const toggleSchedulePlatform = (id: string) => {
+    setSchedulePlatforms(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  };
+
+  const handleScheduleConfirm = () => {
+    if (!scheduleDate || !scheduleTime || schedulePlatforms.size === 0) {
+      toast({ title: "Please select a date, time, and at least one platform" });
+      return;
+    }
+    const names = [...schedulePlatforms].join(", ");
+    toast({ title: "Publishing scheduled!", description: `${scheduleDate} at ${scheduleTime} on ${names}` });
+    setShowSchedule(false);
+    setScheduleDate("");
+    setScheduleTime("");
+    setSchedulePlatforms(new Set());
+  };
+
+  const socialCircleClass = (id: string) =>
+    id === "facebook" ? "bg-blue-600 text-white" :
+    id === "linkedin" ? "bg-blue-700 text-white" :
+    id === "instagram" ? "bg-gradient-to-br from-purple-500 via-pink-500 to-orange-400 text-white" :
+    id === "youtube" ? "bg-red-600 text-white" :
+    id === "whatsapp" ? "bg-green-600 text-white" :
+    id === "telegram" ? "bg-blue-500 text-white" :
+    id === "pinterest" ? "bg-red-500 text-white" :
+    "bg-foreground/[0.06]";
+
+  const SocialButton = ({ platform }: { platform: { id: string; label: string; icon: any; color: string } }) => (
+    <button onClick={() => handleSocialShare(platform.id)}
+      className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${socialCircleClass(platform.id)}`}>
+        <platform.icon className="w-4 h-4" />
+      </div>
+      <span className="text-[11px] font-medium">{platform.label}</span>
+    </button>
+  );
+
+  // Schedule sub-view
+  if (showSchedule) {
+    const allPlatforms = [...SOCIAL_PLATFORMS_MAIN, ...SOCIAL_PLATFORMS_ALL];
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-2xl p-0 gap-0 rounded-2xl overflow-hidden">
+          <DialogHeader className="p-5 pb-0">
+            <div className="flex items-center gap-2">
+              <button onClick={() => setShowSchedule(false)} className="p-1 rounded-lg hover:bg-foreground/[0.05]">
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <DialogTitle className="text-lg font-bold">Schedule Publishing</DialogTitle>
+            </div>
+          </DialogHeader>
+          <div className="p-5 space-y-5">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Date</label>
+                <input type="date" value={scheduleDate} onChange={e => setScheduleDate(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] text-sm outline-none focus:border-accent" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground mb-1.5 block">Time</label>
+                <input type="time" value={scheduleTime} onChange={e => setScheduleTime(e.target.value)}
+                  className="w-full px-3 py-2.5 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] text-sm outline-none focus:border-accent" />
+              </div>
+            </div>
+
+            <div>
+              <p className="text-sm font-bold mb-3">Select Platforms</p>
+              <div className="grid grid-cols-5 gap-2">
+                {allPlatforms.map(p => (
+                  <button key={p.id} onClick={() => toggleSchedulePlatform(p.id)}
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all ${
+                      schedulePlatforms.has(p.id) ? "border-accent bg-accent/5 ring-1 ring-accent" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                    }`}>
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center ${socialCircleClass(p.id)}`}>
+                      <p.icon className="w-4 h-4" />
+                    </div>
+                    <span className="text-[11px] font-medium">{p.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button onClick={handleScheduleConfirm}
+              className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+              <Clock className="w-4 h-4" />
+              Schedule
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -199,36 +322,77 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
           <div>
             <p className="text-sm font-bold mb-3">Publish To Social Media</p>
             <div className="grid grid-cols-5 gap-2">
-              {SOCIAL_PLATFORMS.map(platform => (
-                <button key={platform.id} onClick={() => handleSocialShare(platform.id)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                    platform.id === "facebook" ? "bg-blue-600 text-white" :
-                    platform.id === "linkedin" ? "bg-blue-700 text-white" :
-                    "bg-foreground/[0.06]"
-                  }`}>
-                    <platform.icon className={`w-4 h-4 ${
-                      platform.id === "facebook" || platform.id === "linkedin" ? "text-white" : ""
-                    }`} />
-                  </div>
-                  <span className="text-[11px] font-medium">{platform.label}</span>
-                </button>
+              <button onClick={() => setShowSchedule(true)}
+                className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+                <div className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/[0.06]">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <span className="text-[11px] font-medium">Schedule</span>
+              </button>
+              {SOCIAL_PLATFORMS_MAIN.map(p => (
+                <SocialButton key={p.id} platform={p} />
               ))}
+              {!showAllSocial && (
+                <button onClick={() => setShowAllSocial(true)}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/[0.06]">
+                    <MoreHorizontal className="w-4 h-4" />
+                  </div>
+                  <span className="text-[11px] font-medium">See All</span>
+                </button>
+              )}
             </div>
+            {showAllSocial && (
+              <div className="grid grid-cols-5 gap-2 mt-2">
+                {SOCIAL_PLATFORMS_ALL.map(p => (
+                  <SocialButton key={p.id} platform={p} />
+                ))}
+                <button onClick={() => setShowAllSocial(false)}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/[0.06]">
+                    <X className="w-4 h-4" />
+                  </div>
+                  <span className="text-[11px] font-medium">Collapse</span>
+                </button>
+              </div>
+            )}
           </div>
 
           {/* More Options */}
           <div>
             <p className="text-sm font-bold mb-3">More</p>
             <div className="grid grid-cols-5 gap-2">
-              {MORE_OPTIONS.map(option => (
+              {MORE_OPTIONS_MAIN.map(option => (
                 <button key={option.id} onClick={() => handleMoreOption(option.id)}
                   className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
                   <option.icon className="w-5 h-5 text-muted-foreground" />
                   <span className="text-[11px] font-medium">{option.label}</span>
                 </button>
               ))}
+              {!showAllMore && (
+                <button onClick={() => setShowAllMore(true)}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+                  <MoreHorizontal className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-[11px] font-medium">See All</span>
+                </button>
+              )}
             </div>
+            {showAllMore && (
+              <div className="grid grid-cols-5 gap-2 mt-2">
+                {MORE_OPTIONS_ALL.map(option => (
+                  <button key={option.id} onClick={() => handleMoreOption(option.id)}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+                    <option.icon className="w-5 h-5 text-muted-foreground" />
+                    <span className="text-[11px] font-medium">{option.label}</span>
+                  </button>
+                ))}
+                <button onClick={() => setShowAllMore(false)}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+                  <X className="w-5 h-5 text-muted-foreground" />
+                  <span className="text-[11px] font-medium">Collapse</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </DialogContent>
