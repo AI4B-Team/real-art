@@ -205,6 +205,119 @@ const TranslatePanel = ({ onTranslate }: { onTranslate?: (scope: 'page' | 'selec
   );
 };
 
+const MOCKUP_CATEGORIES = [
+  {
+    name: 'eBook Covers',
+    items: [
+      { id: 'ebook-hardcover', label: 'Hardcover' },
+      { id: 'ebook-softcover', label: 'Softcover' },
+      { id: 'ebook-3d-spread', label: '3D Spread' },
+    ],
+  },
+  {
+    name: 'Magazines',
+    items: [
+      { id: 'mag-cover', label: 'Cover' },
+      { id: 'mag-open', label: 'Open Spread' },
+      { id: 'mag-stack', label: 'Stack' },
+    ],
+  },
+  {
+    name: 'Reports',
+    items: [
+      { id: 'report-cover', label: 'Cover' },
+      { id: 'report-pages', label: 'Pages' },
+      { id: 'report-stack', label: 'Stack' },
+    ],
+  },
+  {
+    name: 'Social Media',
+    items: [
+      { id: 'social-phone', label: 'Phone' },
+      { id: 'social-tablet', label: 'Tablet' },
+      { id: 'social-laptop', label: 'Laptop' },
+    ],
+  },
+  {
+    name: 'Advertisements',
+    items: [
+      { id: 'ad-billboard', label: 'Billboard' },
+      { id: 'ad-poster', label: 'Poster' },
+      { id: 'ad-banner', label: 'Banner' },
+    ],
+  },
+];
+
+const MockupsPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any) => void }) => {
+  const [tab, setTab] = useState<'mockups' | 'scenes'>('mockups');
+  const [search, setSearch] = useState('');
+
+  const filtered = MOCKUP_CATEGORIES.filter(cat =>
+    !search || cat.name.toLowerCase().includes(search.toLowerCase()) || cat.items.some(i => i.label.toLowerCase().includes(search.toLowerCase()))
+  );
+
+  return (
+    <div className="px-3 pb-3 space-y-3">
+      {/* Tabs */}
+      <div className="flex gap-1.5">
+        {(['mockups', 'scenes'] as const).map(t => (
+          <button key={t} onClick={() => setTab(t)}
+            className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${tab === t ? 'bg-accent text-white' : 'bg-foreground/[0.06] text-muted-foreground hover:text-foreground'}`}>
+            {t === 'mockups' ? 'Mockups' : 'Scenes'}
+          </button>
+        ))}
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search..."
+          className="w-full pl-8 pr-3 py-2 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs focus:outline-none focus:border-accent/40 transition-colors" />
+      </div>
+
+      {tab === 'mockups' ? (
+        <div className="space-y-5">
+          {filtered.map(cat => (
+            <div key={cat.name}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-foreground">{cat.name}</span>
+                <button className="text-[10px] font-semibold text-accent hover:text-accent/80 transition-colors">View all</button>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {cat.items.map(item => (
+                  <button key={item.id} onClick={() => { onAddElement?.('mockup', { type: item.id }); toast.success(`${item.label} mockup added`); }}
+                    className="aspect-[3/4] rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] hover:border-accent/40 hover:bg-foreground/[0.06] transition-all flex items-center justify-center group">
+                    <Layers3 className="w-5 h-5 text-muted-foreground/40 group-hover:text-accent/60 transition-colors" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="space-y-5">
+          {[{ name: 'Studio', items: ['White', 'Dark', 'Gradient'] }, { name: 'Lifestyle', items: ['Desk', 'Café', 'Outdoor'] }].map(cat => (
+            <div key={cat.name}>
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-xs font-bold text-foreground">{cat.name}</span>
+                <button className="text-[10px] font-semibold text-accent hover:text-accent/80 transition-colors">View all</button>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {cat.items.map(item => (
+                  <button key={item} onClick={() => { onAddElement?.('mockup', { type: 'scene', scene: item.toLowerCase() }); toast.success(`${item} scene added`); }}
+                    className="aspect-[3/4] rounded-lg bg-foreground/[0.04] border border-foreground/[0.06] hover:border-accent/40 hover:bg-foreground/[0.06] transition-all flex items-center justify-center group">
+                    <Layers3 className="w-5 h-5 text-muted-foreground/40 group-hover:text-accent/60 transition-colors" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
   onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate,
@@ -671,17 +784,7 @@ const EbookDesignSidebar = ({
       {/* Mockups */}
       <SectionHeader id="mockups" title="Mockups" icon={Layers3} />
       {expandedSections.has('mockups') && (
-        <div className="px-3 pb-3">
-          <div className="grid grid-cols-2 gap-1.5">
-            {['Phone', 'Laptop', 'Tablet', 'Book'].map(m => (
-              <button key={m} onClick={() => { onAddElement?.('mockup', { type: m.toLowerCase() }); toast.success(`${m} mockup added`); }}
-                className="flex flex-col items-center gap-1 p-3 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
-                <Layers3 className="w-5 h-5 text-muted-foreground" />
-                <span className="text-[10px] text-muted-foreground">{m}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <MockupsPanel onAddElement={onAddElement} />
       )}
 
       {/* Translate */}
