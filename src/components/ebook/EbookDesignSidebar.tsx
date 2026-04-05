@@ -196,9 +196,12 @@ const TranslatePanel = ({ onTranslate }: { onTranslate?: (scope: 'page' | 'selec
           </button>
         ))}
       </div>
-      <button disabled={!selectedLang}
-        onClick={() => { if (selectedLang && onTranslate) onTranslate(scope, LANGUAGES.find(l => l.code === selectedLang)!.name); }}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
+      <button
+        onClick={() => {
+          if (!selectedLang) { toast.error('Please select a language first'); return; }
+          if (onTranslate) onTranslate(scope, LANGUAGES.find(l => l.code === selectedLang)!.name);
+        }}
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors cursor-pointer">
         <Sparkles className="w-3.5 h-3.5" />Translate
       </button>
     </div>
