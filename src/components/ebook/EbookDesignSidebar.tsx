@@ -124,20 +124,22 @@ const EbookDesignSidebar = ({
 
   // Respond to external openSection prop
   useEffect(() => {
-    if (openSection && !expandedSections.has(openSection)) {
-      setExpandedSections(prev => {
-        const next = new Set(prev);
-        next.add(openSection);
-        return next;
-      });
+    if (openSection) {
+      setExpandedSections(new Set<SectionId>([openSection]));
       if (isCollapsed) setIsCollapsed(false);
     }
   }, [openSection]);
 
   const toggleSection = (id: SectionId) => {
     setExpandedSections(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (prev.has(id)) {
+        // Close if already open
+        const next = new Set<SectionId>();
+        onSectionChange?.(next as Set<string>);
+        return next;
+      }
+      // Open only this one, close all others
+      const next = new Set<SectionId>([id]);
       onSectionChange?.(next as Set<string>);
       return next;
     });
