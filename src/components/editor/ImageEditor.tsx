@@ -8,7 +8,7 @@ import {
   FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
   Film, Send, ChevronLeft, Wrench, Palette, Heart, Zap,
   MessageSquare, RefreshCw, Loader2, Shuffle, X as XIcon,
-  Hash, Copy, Box, Link, Clock, Hand, Square, ArrowUpRight, PenTool,
+  Hash, Copy, Box, Link, Clock, Hand, Square, ArrowUpRight, PenTool, Maximize, ZoomOut,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
@@ -87,6 +87,9 @@ const CANVAS_TOOLS = [
   { id: "upscale", icon: ZoomIn, tooltip: "Upscale" },
   { id: "animate", icon: Play, tooltip: "Animate" },
   { id: "opacity", icon: SlidersHorizontal, tooltip: "Opacity" },
+  { id: "zoom-in", icon: ZoomIn, tooltip: "Zoom In" },
+  { id: "zoom-out", icon: ZoomOut, tooltip: "Zoom Out" },
+  { id: "fit-screen", icon: Maximize, tooltip: "Fit to Screen" },
   { id: "save", icon: Save, tooltip: "Save" },
   { id: "download", icon: Download, tooltip: "Download" },
   { id: "delete", icon: Trash2, tooltip: "Delete" },
@@ -390,6 +393,13 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
       setActiveCreationId(newCreation.id);
       setHasChanges(false);
       toast({ title: "Saved to creations" });
+    } else if (toolId === "zoom-in") {
+      onZoomChange(Math.min(200, zoomLevel + 15));
+    } else if (toolId === "zoom-out") {
+      onZoomChange(Math.max(25, zoomLevel - 15));
+    } else if (toolId === "fit-screen") {
+      onZoomChange(100);
+      setImagePosition({ x: 0, y: 0 });
     } else if (toolId === "select") {
       setActiveTool(activeTool === "select" ? null : "select");
       if (selectedImage) setIsImageSelected(true);
