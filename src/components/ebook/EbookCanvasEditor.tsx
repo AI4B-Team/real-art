@@ -184,6 +184,7 @@ const EbookCanvasEditor = ({
   const [pageElements, setPageElements] = useState<Record<string, CanvasElement[]>>({});
   const [dragState, setDragState] = useState<{ id: string; startX: number; startY: number; elemX: number; elemY: number } | null>(null);
   const [resizeState, setResizeState] = useState<{ id: string; handle: string; startX: number; startY: number; elemX: number; elemY: number; elemW: number; elemH: number } | null>(null);
+  const [rotateState, setRotateState] = useState<{ id: string; centerX: number; centerY: number; startAngle: number; elemRotation: number } | null>(null);
   const [undoStack, setUndoStack] = useState<Record<string, CanvasElement[]>[]>([]);
   const [redoStack, setRedoStack] = useState<Record<string, CanvasElement[]>[]>([]);
   const [showPageSettings, setShowPageSettings] = useState(false);
@@ -607,17 +608,32 @@ const EbookCanvasEditor = ({
 
         updateElement(resizeState.id, { x: newX, y: newY, width: newW, height: newH });
       }
+
+      if (rotateState) {
+        const angle = Math.atan2(
+          e.clientY - rotateState.centerY,
+          e.clientX - rotateState.centerX
+        ) * (180 / Math.PI);
+        let rotation = rotateState.elemRotation + (angle - rotateState.startAngle);
+        // Snap to 0/90/180/270 when within 5°
+        for (const snap of [0, 90, 180, 270, 360]) {
+          if (Math.abs(rotation - snap) < 5) { rotation = snap % 360; break; }
+          if (Math.abs(rotation + 360 - snap) < 5) { rotation = snap % 360; break; }
+        }
+        updateElement(rotateState.id, { rotation: ((rotation % 360) + 360) % 360 });
+      }
     };
 
     const handleMouseUp = () => {
       setDragState(null);
       setResizeState(null);
+      setRotateState(null);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
     return () => { window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseup', handleMouseUp); };
-  }, [dragState, resizeState, zoom]);
+  }, [dragState, resizeState, rotateState, zoom]);
 
   // ─── Keyboard Shortcuts ───────────────────────
   useEffect(() => {
@@ -844,6 +860,29 @@ const EbookCanvasEditor = ({
             style={positions[h]}
             onMouseDown={e => handleResizeMouseDown(e, el, h)} />
         ))}
+        {/* Rotation handle — line + circle above top-center */}
+        {!el.locked && (
+          <div className="absolute z-50" style={{ top: -30, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              className="w-4 h-4 rounded-full bg-accent border-2 border-background shadow-md cursor-grab active:cursor-grabbing flex items-center justify-center"
+              onMouseDown={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!canvasRef.current) return;
+                const parent = (e.target as HTMLElement).closest('[style*="position"]')?.parentElement;
+                if (!parent) return;
+                const parentRect = parent.getBoundingClientRect();
+                const centerX = parentRect.left + parentRect.width / 2;
+                const centerY = parentRect.top + parentRect.height / 2;
+                const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+                setRotateState({ id: el.id, centerX, centerY, startAngle, elemRotation: el.rotation || 0 });
+              }}
+            >
+              <RotateCcw className="w-2.5 h-2.5 text-background" />
+            </div>
+            <div className="w-px h-3 bg-accent" />
+          </div>
+        )}
       </>
     );
   };
