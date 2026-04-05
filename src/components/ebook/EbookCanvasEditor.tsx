@@ -25,6 +25,7 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
 import AITextEditMenu, { type AIEditAction } from '@/components/ebook/AITextEditMenu';
 import { supabase } from '@/integrations/supabase/client';
@@ -2451,9 +2452,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         <Type className="w-4 h-4" />
                       </button>
                     </TooltipTrigger><TooltipContent>Add Text (T)</TooltipContent></Tooltip>
+                    {/* Opacity */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Droplets className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Opacity</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <div className="flex flex-col gap-2">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium text-foreground">Opacity</span>
+                            <span className="text-xs text-muted-foreground">{Math.round((selectedElement.opacity ?? 1) * 100)}%</span>
+                          </div>
+                          <Slider
+                            value={[(selectedElement.opacity ?? 1) * 100]}
+                            onValueChange={([v]) => updateElement(selectedElement.id, { opacity: v / 100 })}
+                            min={0} max={100} step={1}
+                            className="w-full"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     {[
                       { icon: Crop, label: 'Crop' },
-                      { icon: Droplets, label: 'Opacity' },
                       { icon: Maximize2, label: 'Resize' },
                       { icon: SlidersVertical, label: 'Filter' },
                       { icon: CircleDot, label: 'Mask' },
