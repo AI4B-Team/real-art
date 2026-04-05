@@ -70,16 +70,16 @@ const TONES = [
 ];
 
 const TITLE_BADGES: { label: string; icon: React.ComponentType<any>; color: string }[] = [
-  { label: "Professional", icon: Briefcase, color: "text-blue-600 bg-blue-50" },
-  { label: "Advanced", icon: Gem, color: "text-emerald-600 bg-emerald-50" },
-  { label: "Bold & Tactical", icon: Flame, color: "text-orange-600 bg-orange-50" },
-  { label: "Practical", icon: Target, color: "text-green-600 bg-green-50" },
-  { label: "Beginner-Friendly", icon: Heart, color: "text-pink-600 bg-pink-50" },
-  { label: "Advanced", icon: Gem, color: "text-emerald-600 bg-emerald-50" },
-  { label: "Creative / Strategy", icon: Sparkles, color: "text-violet-600 bg-violet-50" },
-  { label: "Transformation", icon: Rocket, color: "text-amber-600 bg-amber-50" },
-  { label: "Reference", icon: BookOpenCheck, color: "text-slate-600 bg-slate-50" },
-  { label: "Beginner-Friendly", icon: Heart, color: "text-pink-600 bg-pink-50" },
+  { label: "Professional", icon: Briefcase, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Advanced", icon: Gem, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Bold & Tactical", icon: Flame, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Practical", icon: Target, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Beginner-Friendly", icon: Heart, color: "text-foreground/70 bg-blue-50" },
+  { label: "Advanced", icon: Gem, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Creative / Strategy", icon: Sparkles, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Transformation", icon: Rocket, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Reference", icon: BookOpenCheck, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Beginner-Friendly", icon: Heart, color: "text-foreground/70 bg-blue-50" },
 ];
 
 const AI_MODELS = [
