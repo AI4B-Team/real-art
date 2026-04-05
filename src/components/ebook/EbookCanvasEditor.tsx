@@ -1136,7 +1136,7 @@ const EbookCanvasEditor = ({
                     };
                     const PageIcon = getPageTypeIcon();
                     return (
-                      <div key={page.id} className="flex items-stretch">
+                      <div key={page.id} className="flex items-start">
                         {/* Insert zone with drop indicator */}
                         <div
                           className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out ${
