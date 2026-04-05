@@ -1359,7 +1359,7 @@ const EbookCanvasEditor = ({
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     return (
-                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="flex items-start gap-2">
+                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="relative flex items-start gap-2">
                         {/* Page label */}
                         <div className="w-8 shrink-0 pt-2">
                           <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
@@ -1391,8 +1391,8 @@ const EbookCanvasEditor = ({
                           </div>
                         </div>
                         {/* Page action buttons - shown for selected page */}
-                        <div className={`shrink-0 transition-all duration-300 ease-out ${
-                          isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2 pointer-events-none'
+                        <div className={`absolute -right-12 top-1/2 -translate-y-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                          isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-3 pointer-events-none'
                         }`}>
                           <div className="flex flex-col gap-1 bg-background/80 backdrop-blur-sm rounded-xl p-1 border border-foreground/[0.06] shadow-sm">
                             {PAGE_ACTIONS.map(action => {
