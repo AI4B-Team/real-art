@@ -87,8 +87,32 @@ const PageSettingsPanel = ({
   const updateSelectedPage = useCallback((patch: Partial<Page>) => {
     if (!selectedPageId) return;
     if (applyTo === 'all') {
-      onPagesChange(pages.map(p => ({ ...p, ...patch })));
+      const lockedPages = pages.filter(p => p.locked);
+      if (lockedPages.length > 0) {
+        const lockedNumbers = lockedPages.map(p => pages.indexOf(p) + 1).join(', ');
+        onPagesChange(pages.map(p => p.locked ? p : { ...p, ...patch }));
+        toast(
+          `${lockedPages.length} locked page${lockedPages.length > 1 ? 's' : ''} skipped (Page ${lockedNumbers})`,
+          {
+            description: 'Unlock to apply changes to all pages.',
+            action: {
+              label: 'Unlock All',
+              onClick: () => {
+                onPagesChange(pages.map(p => ({ ...p, locked: false, ...patch })));
+                toast.success('All pages unlocked and updated');
+              },
+            },
+          }
+        );
+      } else {
+        onPagesChange(pages.map(p => ({ ...p, ...patch })));
+      }
     } else {
+      const currentPage = pages.find(p => p.id === selectedPageId);
+      if (currentPage?.locked) {
+        toast.error('This page is locked. Unlock it to make changes.');
+        return;
+      }
       updatePage(selectedPageId, patch);
     }
   }, [selectedPageId, applyTo, pages, onPagesChange, updatePage]);
