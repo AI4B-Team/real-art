@@ -1098,6 +1098,7 @@ const NewEbookPage = () => {
                 onFindReplaceModeChange={setFindReplaceMode}
                 onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
+                onReplaceStateChange={setIsReplacingImage}
                 pageWidth={pageWidth}
                 pageHeight={pageHeight}
                 accessMode={accessMode}
