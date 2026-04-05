@@ -63,6 +63,7 @@ interface EbookCanvasEditorProps {
   onGridViewToggle?: () => void;
   findReplaceMode?: 'find' | 'find-replace' | null;
   onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
+  onPageSettingsToggle?: () => void;
 }
 
 // ─── Constants ─────────────────────────────────────
@@ -166,6 +167,7 @@ const EbookCanvasEditor = ({
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
+  onPageSettingsToggle,
 }: EbookCanvasEditorProps) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
@@ -462,7 +464,7 @@ const EbookCanvasEditor = ({
       case 'moveUp': handleMovePage('up'); break;
       case 'moveDown': handleMovePage('down'); break;
       case 'lock': handleToggleLock(); break;
-      case 'settings': setShowPageSettings(true); break;
+      case 'settings': onPageSettingsToggle?.(); break;
     }
   };
 
