@@ -35,6 +35,13 @@ export interface Page {
   type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back';
   thumbnail?: string;
   locked?: boolean;
+  bgColor?: string;
+  bgPattern?: string;
+  bgImage?: string;
+  pageBorderType?: 'none' | 'solid' | 'dashed' | 'dotted';
+  pageBorderWidth?: number;
+  pageBorderColor?: string;
+  layout?: string;
 }
 
 export interface CanvasElement {
