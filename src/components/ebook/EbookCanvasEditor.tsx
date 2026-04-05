@@ -63,6 +63,7 @@ interface EbookCanvasEditorProps {
   onGridViewToggle?: () => void;
   findReplaceMode?: 'find' | 'find-replace' | null;
   onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
+  onPageSettingsToggle?: () => void;
 }
 
 // ─── Constants ─────────────────────────────────────
