@@ -959,7 +959,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               <div className="relative" style={{
                 transform: `scale(${zoomLevel / 100}) translate(${imagePosition.x / (zoomLevel / 100)}px, ${imagePosition.y / (zoomLevel / 100)}px)`,
                 transformOrigin: "center center",
-                cursor: activeTool === "select" && isImageSelected ? (isDragging ? "grabbing" : "move") : "pointer",
+                cursor: activeTool === "hand" ? (isDragging ? "grabbing" : "grab") : activeTool === "select" && isImageSelected ? (isDragging ? "grabbing" : "move") : ["arrow","rectangle"].includes(activeTool||"") ? "crosshair" : "pointer",
               }}>
                 {/* Floating tools above image */}
                 {isImageSelected && (
