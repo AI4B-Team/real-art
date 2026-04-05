@@ -50,6 +50,7 @@ export interface CanvasElement {
   textDecoration?: 'none' | 'underline' | 'line-through';
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
+  isPlaceholder?: boolean;
 }
 
 interface EbookCanvasEditorProps {
