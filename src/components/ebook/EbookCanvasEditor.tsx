@@ -256,6 +256,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
   const [showAIEditModal, setShowAIEditModal] = useState(false);
+  const [replaceModalElementId, setReplaceModalElementId] = useState<string | null>(null);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
