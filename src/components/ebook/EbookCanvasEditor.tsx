@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
   Minus, Hand, ChevronLeft, ChevronRight, Search,
