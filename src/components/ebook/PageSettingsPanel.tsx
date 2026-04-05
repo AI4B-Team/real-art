@@ -286,7 +286,7 @@ const PageSettingsPanel = ({
           {/* Size */}
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
-            <div className="px-4 pb-4 space-y-3">
+            <div className="px-4 pt-2 pb-4 space-y-3">
               <div>
                 <label className="text-xs text-muted-foreground mb-1.5 block">Resize By Format</label>
                 <Popover>
