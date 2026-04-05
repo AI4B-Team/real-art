@@ -10,6 +10,7 @@ import {
   LayoutGrid, LayoutTemplate, Presentation,
   MonitorPlay, AudioLines, MousePointerClick, Layers3, Languages,
   Shuffle, SlidersHorizontal, Play, Users, Library,
+  Brain, Award, BookOpen, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
@@ -437,6 +438,85 @@ const AudioPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any
           <p className="text-[10px] text-muted-foreground">No {tab} audio yet</p>
         </div>
       )}
+    </div>
+  );
+};
+
+const INTERACTIVE_TYPES = [
+  { id: 'flashcards', label: 'Flashcards', desc: 'Study cards', icon: Brain, color: '#F59E0B' },
+  { id: 'quiz', label: 'Quizzes', desc: 'Test knowledge', icon: CheckSquare, color: '#8B5CF6' },
+  { id: 'course', label: 'Courses', desc: 'Structured lessons', icon: BookOpen, color: '#3B82F6' },
+  { id: 'certificate', label: 'Certificates', desc: 'Completion awards', icon: Award, color: '#10B981' },
+];
+
+const QUICK_ADD_ELEMENTS = [
+  { id: 'progress-tracker', label: 'Progress Tracker', desc: 'Show learning progress', icon: TrendingUp, color: '#14B8A6' },
+  { id: 'knowledge-check', label: 'Knowledge Check', desc: 'Quick comprehension test', icon: HelpCircle, color: '#F43F5E' },
+  { id: 'interactive-exercise', label: 'Interactive Exercise', desc: 'Hands-on practice', icon: Zap, color: '#A855F7' },
+  { id: 'sorting-activity', label: 'Sorting Activity', desc: 'Drag & drop categorization', icon: Shuffle, color: '#F97316' },
+  { id: 'matching', label: 'Matching', desc: 'Connect related items', icon: GitBranch, color: '#6366F1' },
+  { id: 'checklist', label: 'Checklist', desc: 'Step-by-step tasks', icon: ListChecks, color: '#0EA5E9' },
+];
+
+const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any) => void }) => {
+  return (
+    <div className="px-3 pb-3 space-y-4">
+      <p className="text-[10px] text-muted-foreground">Add interactive learning elements to your eBook</p>
+
+      {/* Main interactive types grid */}
+      <div className="grid grid-cols-2 gap-2">
+        {INTERACTIVE_TYPES.map(item => (
+          <button key={item.id} onClick={() => { onAddElement?.(item.id, {}); toast.success(`${item.label} added`); }}
+            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-foreground/[0.08] hover:border-accent/30 hover:shadow-sm transition-all group">
+            <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
+              style={{ backgroundColor: `${item.color}15` }}>
+              <item.icon className="w-5 h-5" style={{ color: item.color }} />
+            </div>
+            <div className="text-center">
+              <span className="text-xs font-semibold text-foreground block">{item.label}</span>
+              <span className="text-[10px] text-muted-foreground">{item.desc}</span>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Quick Add Elements */}
+      <div>
+        <p className="text-xs font-bold text-foreground mb-2">Quick Add Elements</p>
+        <div className="space-y-1.5">
+          {QUICK_ADD_ELEMENTS.map(item => (
+            <button key={item.id} onClick={() => { onAddElement?.(item.id, {}); toast.success(`${item.label} added`); }}
+              className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.06] hover:border-foreground/[0.12] hover:shadow-sm transition-all group">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                style={{ backgroundColor: `${item.color}15` }}>
+                <item.icon className="w-4 h-4" style={{ color: item.color }} />
+              </div>
+              <div className="flex-1 min-w-0 text-left">
+                <span className="text-xs font-medium text-foreground block">{item.label}</span>
+                <span className="text-[10px] text-muted-foreground">{item.desc}</span>
+              </div>
+              <Plus className="w-4 h-4 text-muted-foreground/40 group-hover:text-accent transition-colors shrink-0" />
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* AI Generate section */}
+      <div className="rounded-xl border border-accent/20 bg-accent/[0.03] p-3 space-y-2.5">
+        <div className="flex items-center gap-2">
+          <Sparkles className="w-4 h-4 text-accent" />
+          <span className="text-xs font-semibold text-accent">AI Generate</span>
+        </div>
+        <p className="text-[10px] text-muted-foreground">Automatically generate learning content from your eBook text</p>
+        <button onClick={() => { onAddElement?.('ai-flashcards', {}); toast.success('Generating flashcards...'); }}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-accent/20 bg-background hover:bg-accent/[0.05] text-xs font-semibold text-accent transition-colors">
+          <Brain className="w-3.5 h-3.5" />Generate Flashcards
+        </button>
+        <button onClick={() => { onAddElement?.('ai-quiz', {}); toast.success('Generating quiz...'); }}
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-accent/20 bg-background hover:bg-accent/[0.05] text-xs font-semibold text-accent transition-colors">
+          <CheckSquare className="w-3.5 h-3.5" />Generate Quiz
+        </button>
+      </div>
     </div>
   );
 };
@@ -870,20 +950,7 @@ const EbookDesignSidebar = ({
       {/* Interactive */}
       <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
       {expandedSections.has('interactive') && (
-        <div className="px-3 pb-3 space-y-1.5">
-          {[
-            { id: 'button', label: 'Button', desc: 'Clickable CTA button' },
-            { id: 'link', label: 'Hyperlink', desc: 'External or internal link' },
-            { id: 'form', label: 'Form Field', desc: 'Input or text area' },
-            { id: 'quiz', label: 'Quiz', desc: 'Interactive quiz element' },
-          ].map(item => (
-            <button key={item.id} onClick={() => { onAddElement?.(item.id, {}); toast.success(`${item.label} added`); }}
-              className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
-              <span className="text-xs font-medium text-foreground">{item.label}</span>
-              <p className="text-[10px] text-muted-foreground">{item.desc}</p>
-            </button>
-          ))}
-        </div>
+        <InteractivePanel onAddElement={onAddElement} />
       )}
 
       {/* Mockups */}
