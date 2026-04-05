@@ -783,7 +783,7 @@ const EbookDesignSidebar = ({
       {/* Images */}
       <SectionHeader id="image" title="Image" icon={ImageIcon} />
       {expandedSections.has('image') && (
-        <div className="px-3 pb-3 space-y-2.5">
+        <div className="px-3 pb-3 pt-2 space-y-2.5">
           {/* Tabs */}
           <div className="flex items-center gap-3 text-xs border-b border-foreground/[0.06] pb-1.5">
             {([
