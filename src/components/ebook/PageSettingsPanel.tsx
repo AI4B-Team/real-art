@@ -188,10 +188,10 @@ const PageSettingsPanel = ({
     <TooltipProvider delayDuration={200}>
       <div className="w-64 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 border-b border-foreground/[0.04]">
+        <div className="flex items-center justify-between px-4 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
           <div className="flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm font-bold text-foreground">Page Settings</span>
+            <span className="text-xs font-bold text-foreground uppercase tracking-wider">Page Settings</span>
           </div>
           <button onClick={() => setIsCollapsed(true)} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
             <X className="w-3.5 h-3.5" />
