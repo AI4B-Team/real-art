@@ -104,6 +104,18 @@ const STOCK_IMAGES = [
   'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=300&h=200&fit=crop',
   'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop',
   'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=200&fit=crop',
+];
+
+const COMMUNITY_IMAGES = [
+  'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=300&h=200&fit=crop',
 ];
 
 const EbookDesignSidebar = ({
@@ -115,6 +127,7 @@ const EbookDesignSidebar = ({
   const [editingChapterId, setEditingChapterId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState('');
   const [imageSearch, setImageSearch] = useState('');
+  const [imageTab, setImageTab] = useState<'stock' | 'creations' | 'community' | 'uploads'>('stock');
   const [imagePrompt, setImagePrompt] = useState('');
   const [elementSearch, setElementSearch] = useState('');
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
@@ -327,39 +340,80 @@ const EbookDesignSidebar = ({
       )}
 
       {/* Images */}
-      <SectionHeader id="image" title="Images" icon={ImageIcon} />
+      <SectionHeader id="image" title="Image" icon={ImageIcon} />
       {expandedSections.has('image') && (
         <div className="px-3 pb-3 space-y-2.5">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <input type="text" value={imageSearch} onChange={e => setImageSearch(e.target.value)}
-              placeholder="Search stock images..." className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
-          </div>
-          {/* AI Generate */}
-          <div className="flex gap-1.5">
-            <input type="text" value={imagePrompt} onChange={e => setImagePrompt(e.target.value)}
-              placeholder="Generate with AI..." className="flex-1 px-2.5 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
-            <button onClick={() => { setIsGeneratingImage(true); setTimeout(() => { setIsGeneratingImage(false); toast.success('Image generated'); }, 2000); }}
-              disabled={!imagePrompt.trim() || isGeneratingImage}
-              className="px-2 py-1.5 rounded-lg bg-accent text-white text-xs disabled:opacity-50">
-              {isGeneratingImage ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
-            </button>
-          </div>
-          {/* Upload */}
-          <button onClick={() => fileInputRef.current?.click()}
-            className="w-full flex items-center justify-center gap-1.5 py-2 border border-dashed border-foreground/[0.08] rounded-lg text-[10px] text-muted-foreground hover:border-accent/40 hover:text-accent">
-            <Upload className="w-3 h-3" />Upload Image
-          </button>
-          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-          {/* Stock grid */}
-          <div className="grid grid-cols-2 gap-1.5">
-            {STOCK_IMAGES.map((src, i) => (
-              <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
-                className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors">
-                <img src={src} alt="" className="w-full h-20 object-cover" />
+          {/* Tabs */}
+          <div className="flex items-center gap-3 text-xs border-b border-foreground/[0.06] pb-1.5">
+            {([
+              { id: 'stock' as const, icon: ImageIcon, label: 'Stock' },
+              { id: 'creations' as const, icon: Sparkles, label: 'Creations' },
+              { id: 'community' as const, icon: Layers, label: 'Community' },
+              { id: 'uploads' as const, icon: Upload, label: 'Uploads' },
+            ]).map(tab => (
+              <button key={tab.id} onClick={() => setImageTab(tab.id)}
+                className={`flex items-center gap-1 pb-1 transition-colors ${imageTab === tab.id ? 'text-accent font-medium border-b-2 border-accent' : 'text-muted-foreground hover:text-foreground'}`}>
+                <tab.icon className="w-3 h-3" />{tab.label}
               </button>
             ))}
           </div>
+
+          {/* Search */}
+          <div className="relative">
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+            <input type="text" value={imageSearch} onChange={e => setImageSearch(e.target.value)}
+              placeholder="Press [Enter] To Search" className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
+          </div>
+
+          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+
+          {/* Stock tab */}
+          {imageTab === 'stock' && (
+            <div className="grid grid-cols-3 gap-1.5">
+              {STOCK_IMAGES.map((src, i) => (
+                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                  className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Creations tab */}
+          {imageTab === 'creations' && (
+            <div className="flex flex-col items-center justify-center py-8 text-center">
+              <Sparkles className="w-8 h-8 text-muted-foreground/40 mb-2" />
+              <p className="text-xs text-muted-foreground">Your AI-generated images will appear here</p>
+            </div>
+          )}
+
+          {/* Community tab */}
+          {imageTab === 'community' && (
+            <div className="grid grid-cols-3 gap-1.5">
+              {COMMUNITY_IMAGES.map((src, i) => (
+                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                  className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Uploads tab */}
+          {imageTab === 'uploads' && (
+            <div className="space-y-3">
+              <button onClick={() => fileInputRef.current?.click()}
+                className="w-full flex items-center justify-center gap-1.5 py-6 border-2 border-dashed border-foreground/[0.1] rounded-lg text-sm text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
+                <Upload className="w-4 h-4" />Upload Image
+              </button>
+              <p className="text-[10px] text-muted-foreground text-center">Your uploaded images will appear here</p>
+            </div>
+          )}
+
+          {/* Load More — for stock & community */}
+          {(imageTab === 'stock' || imageTab === 'community') && (
+            <button className="w-full text-center text-xs text-accent hover:underline py-1">Load More</button>
+          )}
         </div>
       )}
 
