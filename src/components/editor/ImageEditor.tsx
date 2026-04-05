@@ -393,6 +393,13 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
       setActiveCreationId(newCreation.id);
       setHasChanges(false);
       toast({ title: "Saved to creations" });
+    } else if (toolId === "zoom-in") {
+      onZoomChange(Math.min(200, zoomLevel + 15));
+    } else if (toolId === "zoom-out") {
+      onZoomChange(Math.max(25, zoomLevel - 15));
+    } else if (toolId === "fit-screen") {
+      onZoomChange(100);
+      setImagePosition({ x: 0, y: 0 });
     } else if (toolId === "select") {
       setActiveTool(activeTool === "select" ? null : "select");
       if (selectedImage) setIsImageSelected(true);
