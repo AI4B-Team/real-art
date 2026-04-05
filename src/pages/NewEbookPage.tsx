@@ -135,6 +135,10 @@ const NewEbookPage = () => {
   const [isGeneratingBook, setIsGeneratingBook] = useState(false);
   const [chapterSequence, setChapterSequence] = useState<ChapterData[]>([]);
   const [bookDescription, setBookDescription] = useState("");
+  const [generateStep, setGenerateStep] = useState<"titles" | "chapters">("titles");
+  const [editingTitleIndex, setEditingTitleIndex] = useState<number | null>(null);
+  const [customTitle, setCustomTitle] = useState("");
+  const [showCustomTitle, setShowCustomTitle] = useState(false);
   const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false);
   const [showRecordModal, setShowRecordModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
