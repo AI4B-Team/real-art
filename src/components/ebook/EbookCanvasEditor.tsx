@@ -11,7 +11,7 @@ import {
   GripVertical, MoreHorizontal, FileText, MessageSquare,
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
-  Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
+  Sparkles, EyeOff, Download, Files, CircleDot, Eclipse, Eye,
   BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid,
 } from 'lucide-react';
 import {
@@ -66,6 +66,8 @@ export interface CanvasElement {
   interactiveData?: Record<string, any>;
 }
 
+export type AccessMode = 'editing' | 'viewing' | 'commenting' | 'admin';
+
 interface EbookCanvasEditorProps {
   pages: Page[];
   selectedPageId: string | null;
@@ -83,6 +85,7 @@ interface EbookCanvasEditorProps {
   onOpenImageSection?: () => void;
   pageWidth?: number;
   pageHeight?: number;
+  accessMode?: AccessMode;
 }
 
 // ─── Constants ─────────────────────────────────────
@@ -201,6 +204,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   findReplaceMode, onFindReplaceModeChange,
   onPageSettingsToggle, onOpenImageSection,
   pageWidth: pw = 480, pageHeight: ph = 640,
+  accessMode = 'editing',
 }, ref) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
@@ -266,6 +270,42 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const scrollSelectedRef = useRef(false); // true when page was selected via scroll observer
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const findInputRef = useRef<HTMLInputElement>(null);
+
+  // Access mode helpers
+  const canEdit = accessMode === 'editing' || accessMode === 'admin';
+  const canComment = accessMode === 'commenting' || accessMode === 'editing' || accessMode === 'admin';
+  const isViewOnly = accessMode === 'viewing';
+
+  // Page comments state (for commenting mode)
+  interface PageComment {
+    id: string;
+    pageId: string;
+    x: number; y: number;
+    text: string;
+    author: string;
+    timestamp: string;
+    resolved: boolean;
+  }
+  const [pageComments, setPageComments] = useState<PageComment[]>([]);
+  const [commentDraft, setCommentDraft] = useState<{ pageId: string; x: number; y: number } | null>(null);
+  const [commentText, setCommentText] = useState('');
+  const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
+
+  const addPageComment = () => {
+    if (!commentDraft || !commentText.trim()) return;
+    setPageComments(prev => [...prev, {
+      id: `cmt-${Date.now()}`,
+      pageId: commentDraft.pageId,
+      x: commentDraft.x, y: commentDraft.y,
+      text: commentText.trim(),
+      author: 'You',
+      timestamp: 'Just now',
+      resolved: false,
+    }]);
+    setCommentText('');
+    setCommentDraft(null);
+    toast.success('Comment added');
+  };
 
   // Find & Replace state
   const [findQuery, setFindQuery] = useState('');
@@ -738,6 +778,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   // ─── Drag ─────────────────────────────────────
   const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
+    if (!canEdit) return;
     if (el.locked || activeTool !== 'select') return;
     // On Mac, Ctrl+click triggers onMouseDown before onContextMenu — skip drag to let context menu work
     if (e.ctrlKey || e.button === 2) return;
@@ -1847,8 +1888,22 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           ) : (
             /* ─── NORMAL VIEW ─── */
             <>
-              {/* Unified toolbar — only visible when element is selected */}
-              {selectedElement && (
+              {/* Commenting mode banner */}
+              {accessMode === 'commenting' && (
+                <div className="h-9 border-b border-accent/20 bg-accent/5 flex items-center justify-center gap-2 px-3 shrink-0">
+                  <MessageSquare className="w-3.5 h-3.5 text-accent" />
+                  <span className="text-xs font-medium text-accent">Commenting Mode — Click anywhere on the page to leave a comment</span>
+                  <span className="text-[10px] text-accent/60 ml-2">{pageComments.length} comment{pageComments.length !== 1 ? 's' : ''}</span>
+                </div>
+              )}
+              {isViewOnly && (
+                <div className="h-9 border-b border-blue-500/20 bg-blue-500/5 flex items-center justify-center gap-2 px-3 shrink-0">
+                  <Eye className="w-3.5 h-3.5 text-blue-500" />
+                  <span className="text-xs font-medium text-blue-500">View Only — You can browse but not edit this book</span>
+                </div>
+              )}
+              {/* Unified toolbar — only visible when element is selected and user can edit */}
+              {selectedElement && canEdit && (
 <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" onMouseDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
                 <div className="flex items-center gap-1">
                 {/* Select & Add Image — hidden for text elements */}
@@ -2291,7 +2346,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           data-canvas={isSelected ? 'bg' : undefined}
                           onClick={(e) => {
                             onPageSelect(page.id);
-                            if (isSelected) handleCanvasClick(e);
+                            if (isSelected && canEdit) handleCanvasClick(e);
+                            // Commenting mode: place a comment pin
+                            if (accessMode === 'commenting' && isSelected) {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = ((e.clientX - rect.left) / rect.width) * 100;
+                              const y = ((e.clientY - rect.top) / rect.height) * 100;
+                              setCommentDraft({ pageId: page.id, x, y });
+                              setActiveCommentId(null);
+                            }
                           }}
                           className={`rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
@@ -2316,12 +2379,69 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             )}
                           </div>
                           {elems.map(el => renderElement(el, page.id))}
+
+                          {/* Comment pins */}
+                          {canComment && pageComments.filter(c => c.pageId === page.id).map((c, ci) => (
+                            <div key={c.id}
+                              className="absolute z-[60] pointer-events-auto cursor-pointer group"
+                              style={{ left: `${c.x}%`, top: `${c.y}%`, transform: 'translate(-50%, -100%)' }}
+                              onClick={e => { e.stopPropagation(); setActiveCommentId(activeCommentId === c.id ? null : c.id); }}>
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shadow-md transition-transform ${
+                                c.resolved ? 'bg-muted text-muted-foreground' : 'bg-accent text-white'
+                              } ${activeCommentId === c.id ? 'scale-125' : 'group-hover:scale-110'}`}>
+                                {ci + 1}
+                              </div>
+                              {activeCommentId === c.id && (
+                                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3 z-[70]"
+                                  onClick={e => e.stopPropagation()}>
+                                  <div className="flex items-center gap-2 mb-1.5">
+                                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center text-[8px] font-bold text-accent">{c.author.charAt(0)}</div>
+                                    <span className="text-xs font-semibold text-foreground">{c.author}</span>
+                                    <span className="text-[10px] text-muted-foreground ml-auto">{c.timestamp}</span>
+                                  </div>
+                                  <p className="text-xs text-foreground/80 mb-2">{c.text}</p>
+                                  <div className="flex gap-1.5">
+                                    <button onClick={() => setPageComments(prev => prev.map(pc => pc.id === c.id ? { ...pc, resolved: !pc.resolved } : pc))}
+                                      className="text-[10px] text-accent hover:underline">{c.resolved ? 'Reopen' : 'Resolve'}</button>
+                                    <button onClick={() => { setPageComments(prev => prev.filter(pc => pc.id !== c.id)); setActiveCommentId(null); }}
+                                      className="text-[10px] text-destructive hover:underline ml-auto">Delete</button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+
+                          {/* Comment draft input */}
+                          {commentDraft && commentDraft.pageId === page.id && (
+                            <div className="absolute z-[70] pointer-events-auto"
+                              style={{ left: `${commentDraft.x}%`, top: `${commentDraft.y}%`, transform: 'translate(-50%, -100%)' }}
+                              onClick={e => e.stopPropagation()}>
+                              <div className="w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center text-[9px] font-bold shadow-md animate-pulse mb-1 mx-auto">+</div>
+                              <div className="w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3">
+                                <textarea
+                                  value={commentText}
+                                  onChange={e => setCommentText(e.target.value)}
+                                  placeholder="Add your comment..."
+                                  className="w-full text-xs bg-transparent border border-foreground/[0.08] rounded-lg p-2 outline-none focus:border-accent/40 resize-none h-16"
+                                  autoFocus
+                                />
+                                <div className="flex gap-1.5 mt-2">
+                                  <button onClick={addPageComment}
+                                    className="flex-1 py-1.5 rounded-lg bg-accent text-white text-[10px] font-semibold hover:bg-accent/90 disabled:opacity-40"
+                                    disabled={!commentText.trim()}>Post</button>
+                                  <button onClick={() => { setCommentDraft(null); setCommentText(''); }}
+                                    className="px-3 py-1.5 rounded-lg border border-foreground/[0.08] text-[10px] font-medium hover:bg-foreground/[0.04]">Cancel</button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
                           <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none" style={{ zIndex: 0 }}>
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
                         </div>
-                        {/* Page action buttons - shown for selected page */}
-                        <div className={`absolute -right-12 top-1/2 -translate-y-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                        {/* Page action buttons - shown for selected page in edit modes */}
+                        {canEdit && <div className={`absolute -right-12 top-1/2 -translate-y-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                           isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-3 pointer-events-none'
                         }`}>
                           <div className="flex flex-col gap-1 bg-background/80 backdrop-blur-sm rounded-xl p-1 border border-foreground/[0.06] shadow-sm">
@@ -2372,7 +2492,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               );
                             })}
                           </div>
-                        </div>
+                        </div>}
                       </div>
                     );
                   })}
