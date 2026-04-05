@@ -369,6 +369,17 @@ const EbookCanvasEditor = ({
     return () => container.removeEventListener('scroll', handleScroll);
   }, [isGridView, selectedPageId, onPageSelect]);
 
+  // Scroll to selected page when it changes (e.g. from panel navigation)
+  const prevSelectedRef = useRef<string | null>(null);
+  useEffect(() => {
+    if (!selectedPageId || selectedPageId === prevSelectedRef.current) return;
+    prevSelectedRef.current = selectedPageId;
+    const el = pageRefs.current[selectedPageId];
+    if (el && !isScrollingRef.current) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [selectedPageId]);
+
   const internalZoom = useState(100);
   const zoom = externalZoom ?? internalZoom[0];
 
