@@ -203,6 +203,7 @@ export interface EbookCanvasEditorHandle {
   updateTextContent: (updates: { pageId: string; elementId: string; content: string }[]) => void;
   isReplacingImage: () => boolean;
   replaceImage: (src: string) => void;
+  setPageContent: (pageId: string, content: string) => void;
 }
 
 // ─── Component ─────────────────────────────────────
