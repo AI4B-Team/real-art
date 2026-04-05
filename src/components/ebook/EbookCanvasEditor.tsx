@@ -871,6 +871,7 @@ const EbookCanvasEditor = ({
               fontWeight: el.fontWeight || 'normal',
               fontStyle: el.fontStyle || 'normal',
               textDecoration: el.textDecoration || 'none',
+              backgroundColor: el.highlightColor || 'transparent',
             }}>
               {el.content}
             </div>
