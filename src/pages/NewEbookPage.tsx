@@ -173,7 +173,7 @@ const NewEbookPage = () => {
 
   // Canvas design state
   type PageType = "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank";
-  interface UnifiedPage { id: string; title: string; type: PageType; }
+  interface UnifiedPage { id: string; title: string; type: PageType; locked?: boolean; }
 
   const getDefaultPages = (): UnifiedPage[] => [
     { id: "1", title: "Cover", type: "cover" },
