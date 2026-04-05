@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import AITextEditMenu, { type AIEditAction } from '@/components/ebook/AITextEditMenu';
 import { supabase } from '@/integrations/supabase/client';
+import { WORKSPACE_MEMBERS } from '@/lib/workspaceMembers';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
@@ -318,6 +319,66 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [commentText, setCommentText] = useState('');
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const [showAllComments, setShowAllComments] = useState(false);
+  const [showMentionDropdown, setShowMentionDropdown] = useState(false);
+  const [mentionFilter, setMentionFilter] = useState('');
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const commentTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const filteredMembers = WORKSPACE_MEMBERS.filter(m =>
+    m.name.toLowerCase().includes(mentionFilter.toLowerCase())
+  );
+
+  const handleCommentTextChange = (value: string) => {
+    setCommentText(value);
+    const textarea = commentTextareaRef.current;
+    if (!textarea) return;
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = value.slice(0, cursorPos);
+    const atMatch = textBeforeCursor.match(/@(\w*)$/);
+    if (atMatch) {
+      setShowMentionDropdown(true);
+      setMentionFilter(atMatch[1]);
+      setMentionIndex(0);
+    } else {
+      setShowMentionDropdown(false);
+    }
+  };
+
+  const insertMention = (memberName: string) => {
+    const textarea = commentTextareaRef.current;
+    if (!textarea) return;
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = commentText.slice(0, cursorPos);
+    const atMatch = textBeforeCursor.match(/@(\w*)$/);
+    if (atMatch) {
+      const before = textBeforeCursor.slice(0, atMatch.index);
+      const after = commentText.slice(cursorPos);
+      setCommentText(`${before}@${memberName} ${after}`);
+    }
+    setShowMentionDropdown(false);
+    textarea.focus();
+  };
+
+  const handleCommentKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (showMentionDropdown && filteredMembers.length > 0) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setMentionIndex(i => Math.min(filteredMembers.length - 1, i + 1)); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setMentionIndex(i => Math.max(0, i - 1)); return; }
+      if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); insertMention(filteredMembers[mentionIndex].name); return; }
+      if (e.key === 'Escape') { e.preventDefault(); setShowMentionDropdown(false); return; }
+    }
+    if (e.key === 'Enter' && !e.shiftKey && !showMentionDropdown) { e.preventDefault(); addPageComment(); }
+  };
+
+  const renderCommentText = (text: string) => {
+    const parts = text.split(/(@\w[\w\s]*?)(?=\s|$|@)/g);
+    return parts.map((part, i) => {
+      const member = WORKSPACE_MEMBERS.find(m => part === `@${m.name}`);
+      if (member) {
+        return <span key={i} className="font-semibold text-accent">{part}</span>;
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
 
   const resolveAllComments = () => {
     setPageComments(prev => prev.map(c => ({ ...c, resolved: true })));
@@ -2083,7 +2144,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     {pageComments.map((c, i) => {
                       const page = currentPages.find(p => p.id === c.pageId);
                       return (
-                        <div key={c.id} className={`px-4 py-2.5 flex items-start gap-3 text-xs ${c.resolved ? 'opacity-50' : ''}`}>
+                        <div key={c.id} className={`px-4 py-2.5 flex items-start gap-3 text-xs cursor-pointer hover:bg-foreground/[0.03] transition-colors ${c.resolved ? 'opacity-50' : ''}`}
+                          onClick={() => {
+                            const pageIdx = currentPages.findIndex(p => p.id === c.pageId);
+                            if (pageIdx >= 0) {
+                              onPageSelect(c.pageId);
+                              const pageEl = pageRefs.current[c.pageId];
+                              if (pageEl) pageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              setActiveCommentId(c.id);
+                            }
+                          }}>
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 mt-0.5 ${c.resolved ? 'bg-muted text-muted-foreground' : 'bg-accent text-white'}`}>{i + 1}</div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
@@ -2091,7 +2161,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               <span className="text-muted-foreground">on {page?.title || 'Page'}</span>
                               <span className="text-muted-foreground ml-auto">{c.timestamp}</span>
                             </div>
-                            <p className="text-foreground/80 leading-relaxed">{c.text}</p>
+                            <p className="text-foreground/80 leading-relaxed">{renderCommentText(c.text)}</p>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
                             <button onClick={() => setPageComments(prev => prev.map(pc => pc.id === c.id ? { ...pc, resolved: !pc.resolved } : pc))}
@@ -2625,7 +2695,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     <span className="text-xs font-semibold text-foreground">{c.author}</span>
                                     <span className="text-[10px] text-muted-foreground ml-auto">{c.timestamp}</span>
                                   </div>
-                                  <p className="text-xs text-foreground/80 mb-2">{c.text}</p>
+                                  <p className="text-xs text-foreground/80 mb-2">{renderCommentText(c.text)}</p>
                                   <div className="flex gap-1.5">
                                     <button onClick={() => setPageComments(prev => prev.map(pc => pc.id === c.id ? { ...pc, resolved: !pc.resolved } : pc))}
                                       className="text-[10px] text-accent hover:underline">{c.resolved ? 'Reopen' : 'Resolve'}</button>
@@ -2643,19 +2713,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               style={{ left: `${commentDraft.x}%`, top: `${commentDraft.y}%`, transform: 'translate(-50%, -100%)' }}
                               onClick={e => e.stopPropagation()}>
                               <div className="w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center text-[9px] font-bold shadow-md animate-pulse mb-1 mx-auto">+</div>
-                              <div className="w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3">
+                              <div className="w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3 relative">
                                 <textarea
+                                  ref={commentTextareaRef}
                                   value={commentText}
-                                  onChange={e => setCommentText(e.target.value)}
-                                  placeholder="Add your comment..."
+                                  onChange={e => handleCommentTextChange(e.target.value)}
+                                  onKeyDown={handleCommentKeyDown}
+                                  placeholder="Add your comment... (use @ to mention)"
                                   className="w-full text-xs bg-transparent border border-foreground/[0.08] rounded-lg p-2 outline-none focus:border-accent/40 resize-none h-16"
                                   autoFocus
                                 />
+                                {showMentionDropdown && filteredMembers.length > 0 && (
+                                  <div className="absolute left-3 right-3 bottom-[calc(100%-4px)] bg-background border border-foreground/[0.1] rounded-lg shadow-lg z-10 max-h-32 overflow-y-auto">
+                                    {filteredMembers.map((m, mi) => (
+                                      <button key={m.id} onClick={() => insertMention(m.name)}
+                                        className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-xs transition-colors ${mi === mentionIndex ? 'bg-accent/10 text-accent' : 'hover:bg-foreground/[0.04] text-foreground'}`}>
+                                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: m.color }}>{m.initials}</div>
+                                        <span className="font-medium">{m.name}</span>
+                                        <span className="text-muted-foreground ml-auto">{m.role}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
                                 <div className="flex gap-1.5 mt-2">
                                   <button onClick={addPageComment}
                                     className="flex-1 py-1.5 rounded-lg bg-accent text-white text-[10px] font-semibold hover:bg-accent/90 disabled:opacity-40"
                                     disabled={!commentText.trim()}>Post</button>
-                                  <button onClick={() => { setCommentDraft(null); setCommentText(''); }}
+                                  <button onClick={() => { setCommentDraft(null); setCommentText(''); setShowMentionDropdown(false); }}
                                     className="px-3 py-1.5 rounded-lg border border-foreground/[0.08] text-[10px] font-medium hover:bg-foreground/[0.04]">Cancel</button>
                                 </div>
                               </div>
