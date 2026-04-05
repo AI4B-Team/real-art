@@ -194,7 +194,7 @@ export default function AppTabs() {
                         <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Recently Used</span>
                       </div>
                       <div className="grid grid-cols-3 gap-1">
-                        {recentApps.slice(0, 3).map(a => renderGridApp(a))}
+                        {recentApps.slice(0, 3).map(a => renderGridApp(a, true))}
                       </div>
                     </div>
                   )}
