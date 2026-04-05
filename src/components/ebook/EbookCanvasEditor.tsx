@@ -778,6 +778,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   // ─── Drag ─────────────────────────────────────
   const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
+    if (!canEdit) return;
     if (el.locked || activeTool !== 'select') return;
     // On Mac, Ctrl+click triggers onMouseDown before onContextMenu — skip drag to let context menu work
     if (e.ctrlKey || e.button === 2) return;
