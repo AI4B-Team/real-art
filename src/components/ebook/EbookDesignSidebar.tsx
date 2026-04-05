@@ -456,9 +456,18 @@ const QUICK_ADD_ELEMENTS = [
   { id: 'sorting-activity', label: 'Sorting Activity', desc: 'Drag & drop categorization', icon: Shuffle, color: '#F97316' },
   { id: 'matching', label: 'Matching', desc: 'Connect related items', icon: GitBranch, color: '#6366F1' },
   { id: 'checklist', label: 'Checklist', desc: 'Step-by-step tasks', icon: ListChecks, color: '#0EA5E9' },
+  { id: 'fill-in-blank', label: 'Fill in the Blank', desc: 'Complete the sentence', icon: Type, color: '#EC4899' },
+  { id: 'timeline', label: 'Timeline', desc: 'Chronological events', icon: ArrowDown, color: '#06B6D4' },
+  { id: 'rating-scale', label: 'Rating Scale', desc: 'Self-assessment scale', icon: Star, color: '#EAB308' },
+  { id: 'accordion', label: 'Accordion', desc: 'Expandable sections', icon: Layers, color: '#64748B' },
 ];
 
 const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any) => void }) => {
+  const addInteractive = (subType: string) => {
+    onAddElement?.('interactive', { interactiveType: subType });
+    toast.success(`${subType.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase())} added`);
+  };
+
   return (
     <div className="px-3 pb-3 space-y-4">
       <p className="text-[10px] text-muted-foreground">Add interactive learning elements to your eBook</p>
@@ -466,7 +475,7 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
       {/* Main interactive types grid */}
       <div className="grid grid-cols-2 gap-2">
         {INTERACTIVE_TYPES.map(item => (
-          <button key={item.id} onClick={() => { onAddElement?.(item.id, {}); toast.success(`${item.label} added`); }}
+          <button key={item.id} onClick={() => addInteractive(item.id)}
             className="flex flex-col items-center gap-2 p-4 rounded-xl border border-foreground/[0.08] hover:border-accent/30 hover:shadow-sm transition-all group">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
               style={{ backgroundColor: `${item.color}15` }}>
@@ -485,7 +494,7 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
         <p className="text-xs font-bold text-foreground mb-2">Quick Add Elements</p>
         <div className="space-y-1.5">
           {QUICK_ADD_ELEMENTS.map(item => (
-            <button key={item.id} onClick={() => { onAddElement?.(item.id, {}); toast.success(`${item.label} added`); }}
+            <button key={item.id} onClick={() => addInteractive(item.id)}
               className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.06] hover:border-foreground/[0.12] hover:shadow-sm transition-all group">
               <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
                 style={{ backgroundColor: `${item.color}15` }}>
@@ -508,11 +517,11 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
           <span className="text-xs font-semibold text-accent">AI Generate</span>
         </div>
         <p className="text-[10px] text-muted-foreground">Automatically generate learning content from your eBook text</p>
-        <button onClick={() => { onAddElement?.('ai-flashcards', {}); toast.success('Generating flashcards...'); }}
+        <button onClick={() => addInteractive('flashcards')}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-accent/20 bg-background hover:bg-accent/[0.05] text-xs font-semibold text-accent transition-colors">
           <Brain className="w-3.5 h-3.5" />Generate Flashcards
         </button>
-        <button onClick={() => { onAddElement?.('ai-quiz', {}); toast.success('Generating quiz...'); }}
+        <button onClick={() => addInteractive('quiz')}
           className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg border border-accent/20 bg-background hover:bg-accent/[0.05] text-xs font-semibold text-accent transition-colors">
           <CheckSquare className="w-3.5 h-3.5" />Generate Quiz
         </button>
