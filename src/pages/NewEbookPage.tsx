@@ -880,6 +880,7 @@ const NewEbookPage = () => {
 
               {/* CENTER: Canvas Editor */}
               <EbookCanvasEditor
+                ref={canvasRef}
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
                 onPageSelect={setSelectedPageId}
