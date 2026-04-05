@@ -186,6 +186,8 @@ const PAGE_TYPE_OPTIONS: { type: Page['type']; label: string; description: strin
 
 export interface EbookCanvasEditorHandle {
   addElement: (type: string, extra?: any) => void;
+  getTextElements: (scope: 'page' | 'book') => { pageId: string; elementId: string; content: string }[];
+  updateTextContent: (updates: { pageId: string; elementId: string; content: string }[]) => void;
 }
 
 // ─── Component ─────────────────────────────────────
