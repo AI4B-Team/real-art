@@ -1420,26 +1420,31 @@ const EbookCanvasEditor = ({
                       </Tooltip>
                     ))}
                     {/* Shapes — after Shadow */}
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className={`p-1.5 rounded transition-colors flex items-center gap-0.5 ${['rectangle','circle','line'].includes(activeTool) ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                          <Square className="w-4 h-4" />
-                          <ChevronDown className="w-2.5 h-2.5 opacity-60" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-44 p-1.5" align="end">
-                        {[
-                          { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
-                          { id: 'circle', icon: Circle, label: 'Circle (O)' },
-                          { id: 'line', icon: Minus, label: 'Line (L)' },
-                        ].map(shape => (
-                          <button key={shape.id} onClick={() => setActiveTool(shape.id)}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeTool === shape.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
-                            <shape.icon className="w-4 h-4" />{shape.label}
-                          </button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
+                    <Tooltip>
+                      <Popover>
+                        <TooltipTrigger asChild>
+                          <PopoverTrigger asChild>
+                            <button className={`p-1.5 rounded transition-colors flex items-center gap-0.5 ${['rectangle','circle','line'].includes(activeTool) ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                              <Square className="w-4 h-4" />
+                              <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                            </button>
+                          </PopoverTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>Shapes</TooltipContent>
+                        <PopoverContent className="w-44 p-1.5" align="end">
+                          {[
+                            { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
+                            { id: 'circle', icon: Circle, label: 'Circle (O)' },
+                            { id: 'line', icon: Minus, label: 'Line (L)' },
+                          ].map(shape => (
+                            <button key={shape.id} onClick={() => setActiveTool(shape.id)}
+                              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeTool === shape.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                              <shape.icon className="w-4 h-4" />{shape.label}
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
+                    </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button onClick={() => toast.success('Corner Radius tool')}
