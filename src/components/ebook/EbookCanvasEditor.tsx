@@ -235,13 +235,32 @@ const EbookCanvasEditor = ({
     toast.success('Page duplicated');
   };
 
-  const handleDeletePage = () => {
+  const handleDeletePage = (pageId?: string) => {
+    const targetId = pageId || selectedPageId;
     if (currentPages.length <= 1) return;
-    const idx = currentPages.findIndex(p => p.id === selectedPageId);
-    const newPages = currentPages.filter(p => p.id !== selectedPageId);
+    const page = currentPages.find(p => p.id === targetId);
+    if (page?.type === 'cover' || page?.type === 'back') {
+      toast.error('Cannot delete cover or back cover pages');
+      return;
+    }
+    const idx = currentPages.findIndex(p => p.id === targetId);
+    const newPages = currentPages.filter(p => p.id !== targetId);
     setPages(newPages);
     onPageSelect(newPages[Math.min(idx, newPages.length - 1)].id);
     toast.success('Page deleted');
+  };
+
+  const handleDuplicatePageById = (pageId: string) => {
+    const page = currentPages.find(p => p.id === pageId);
+    if (!page) return;
+    const idx = currentPages.findIndex(p => p.id === pageId);
+    const dup: Page = { ...page, id: crypto.randomUUID(), title: `${page.title} (Copy)` };
+    const newPages = [...currentPages];
+    newPages.splice(idx + 1, 0, dup);
+    setPages(newPages);
+    setPageElements(prev => ({ ...prev, [dup.id]: [...(prev[pageId] || getElementsForPage(page, currentPages, bookTitle))] }));
+    onPageSelect(dup.id);
+    toast.success('Page duplicated');
   };
 
   const handleMovePage = (dir: 'up' | 'down') => {
