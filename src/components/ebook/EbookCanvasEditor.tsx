@@ -1266,21 +1266,23 @@ const EbookCanvasEditor = ({
               {selectedElement && (
 <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" onMouseDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
                 <div className="flex items-center gap-1">
-                {/* Select */}
-                <Tooltip><TooltipTrigger asChild>
-                  <button onClick={() => { setActiveTool('select'); setSelectedElementId(null); }}
-                    className={`p-1.5 rounded transition-colors ${activeTool === 'select' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                    <MousePointer2 className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger><TooltipContent>Select (V)</TooltipContent></Tooltip>
-
-                {/* Add Image — right after Select */}
-                <Tooltip><TooltipTrigger asChild>
-                  <button onClick={() => { setActiveTool('image'); imageInputRef.current?.click(); }}
-                    className={`p-1.5 rounded transition-colors ${activeTool === 'image' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                    <ImageIcon className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger><TooltipContent>Add Image (I)</TooltipContent></Tooltip>
+                {/* Select & Add Image — hidden for text elements */}
+                {selectedElement?.type !== 'text' && (
+                  <>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => { setActiveTool('select'); setSelectedElementId(null); }}
+                        className={`p-1.5 rounded transition-colors ${activeTool === 'select' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                        <MousePointer2 className="w-4 h-4" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Select (V)</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => { setActiveTool('image'); imageInputRef.current?.click(); }}
+                        className={`p-1.5 rounded transition-colors ${activeTool === 'image' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                        <ImageIcon className="w-4 h-4" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Add Image (I)</TooltipContent></Tooltip>
+                  </>
+                )}
 
                 {/* ── Context: Text formatting ── */}
                 {selectedElement?.type === 'text' && (
