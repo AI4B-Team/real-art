@@ -1028,7 +1028,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       <ImagePlus className="w-3.5 h-3.5" />Replace
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-2 z-[70]" side="top" align="center"
+                  <PopoverContent className="w-auto p-2 z-[10050]" side="top" align="center"
                     onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Select Replacement</p>
                     <div className="flex gap-1.5 mb-2">
@@ -1041,7 +1041,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       ))}
                     </div>
                     <button onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
-                      className="w-full text-xs py-1.5 rounded bg-accent text-white hover:bg-accent/90 flex items-center justify-center gap-1.5">
+                      className="w-full text-xs py-1.5 rounded bg-accent text-accent-foreground hover:bg-accent/90 flex items-center justify-center gap-1.5">
                       <Upload className="w-3 h-3" />Upload
                     </button>
                   </PopoverContent>
@@ -1052,7 +1052,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       <LayoutGrid className="w-3.5 h-3.5" />Position
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-44 p-2 z-[70]" side="top" align="center"
+                  <PopoverContent className="w-44 p-2 z-[10050]" side="top" align="center"
                     onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Quick Position</p>
                     <div className="grid grid-cols-2 gap-1">
