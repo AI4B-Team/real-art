@@ -198,6 +198,106 @@ const EbookCanvasEditor = ({
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const findInputRef = useRef<HTMLInputElement>(null);
+
+  // Find & Replace state
+  const [findQuery, setFindQuery] = useState('');
+  const [replaceQuery, setReplaceQuery] = useState('');
+  const [findMatches, setFindMatches] = useState<{ pageId: string; elementId: string; indices: number[] }[]>([]);
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+
+  // Compute matches when query changes
+  useEffect(() => {
+    if (!findQuery.trim() || !findReplaceMode) {
+      setFindMatches([]);
+      setCurrentMatchIndex(0);
+      return;
+    }
+    const q = findQuery.toLowerCase();
+    const matches: { pageId: string; elementId: string; indices: number[] }[] = [];
+    currentPages.forEach(page => {
+      const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      elems.forEach(el => {
+        if (el.type === 'text' && el.content) {
+          const content = el.content.toLowerCase();
+          const idxs: number[] = [];
+          let pos = 0;
+          while ((pos = content.indexOf(q, pos)) !== -1) {
+            idxs.push(pos);
+            pos += q.length;
+          }
+          if (idxs.length > 0) matches.push({ pageId: page.id, elementId: el.id, indices: idxs });
+        }
+      });
+    });
+    setFindMatches(matches);
+    setCurrentMatchIndex(0);
+  }, [findQuery, findReplaceMode, pageElements, currentPages, bookTitle]);
+
+  // Navigate to match
+  useEffect(() => {
+    if (findMatches.length === 0 || !findReplaceMode) return;
+    const match = findMatches[currentMatchIndex];
+    if (match) {
+      onPageSelect(match.pageId);
+      setSelectedElementId(match.elementId);
+      // Scroll to the page
+      const pageEl = pageRefs.current[match.pageId];
+      if (pageEl) pageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [currentMatchIndex, findMatches, findReplaceMode]);
+
+  // Focus find input when panel opens
+  useEffect(() => {
+    if (findReplaceMode) setTimeout(() => findInputRef.current?.focus(), 100);
+  }, [findReplaceMode]);
+
+  const handleFindNext = () => {
+    if (findMatches.length === 0) return;
+    setCurrentMatchIndex(prev => (prev + 1) % findMatches.length);
+  };
+
+  const handleFindPrev = () => {
+    if (findMatches.length === 0) return;
+    setCurrentMatchIndex(prev => (prev - 1 + findMatches.length) % findMatches.length);
+  };
+
+  const handleReplaceCurrent = () => {
+    if (findMatches.length === 0 || !findQuery.trim()) return;
+    const match = findMatches[currentMatchIndex];
+    if (!match) return;
+    const elems = pageElements[match.pageId] || getElementsForPage(currentPages.find(p => p.id === match.pageId)!, currentPages, bookTitle);
+    const el = elems.find(e => e.id === match.elementId);
+    if (!el || !el.content) return;
+    const newContent = el.content.substring(0, match.indices[0]) + replaceQuery + el.content.substring(match.indices[0] + findQuery.length);
+    const newElems = elems.map(e => e.id === match.elementId ? { ...e, content: newContent } : e);
+    setPageElements(prev => ({ ...prev, [match.pageId]: newElems }));
+    toast.success('Replaced');
+  };
+
+  const handleReplaceAll = () => {
+    if (findMatches.length === 0 || !findQuery.trim()) return;
+    let count = 0;
+    const newPageElements = { ...pageElements };
+    currentPages.forEach(page => {
+      const elems = newPageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      let changed = false;
+      const updated = elems.map(el => {
+        if (el.type === 'text' && el.content && el.content.toLowerCase().includes(findQuery.toLowerCase())) {
+          const regex = new RegExp(findQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+          const matches = el.content.match(regex);
+          if (matches) count += matches.length;
+          changed = true;
+          return { ...el, content: el.content.replace(regex, replaceQuery) };
+        }
+        return el;
+      });
+      if (changed) newPageElements[page.id] = updated;
+    });
+    setPageElements(newPageElements);
+    toast.success(`Replaced ${count} occurrence${count !== 1 ? 's' : ''}`);
+    setFindQuery('');
+  };
 
   // Auto-select page based on scroll position (IntersectionObserver)
   useEffect(() => {
