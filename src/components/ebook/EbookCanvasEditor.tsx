@@ -709,7 +709,7 @@ const EbookCanvasEditor = ({
     const file = e.target.files?.[0];
     if (!file || !selectedElementId) return;
     const url = URL.createObjectURL(file);
-    updateElement(selectedElementId, { src: url });
+    updateElement(selectedElementId, { src: url, isPlaceholder: false });
     toast.success('Image replaced');
   };
 
