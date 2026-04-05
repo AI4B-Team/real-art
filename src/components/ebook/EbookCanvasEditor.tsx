@@ -632,8 +632,8 @@ const EbookCanvasEditor = ({
     if (!pageId) return;
     e.preventDefault();
     e.stopPropagation();
-    const elems = pageElements[pageId] || [];
-    const canvasRect = canvasRef.current?.getBoundingClientRect();
+    const page = currentPages.find(p => p.id === pageId);
+    const elems = pageElements[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
     if (!canvasRect) return;
     // Find all elements whose bounding box contains the click point
     const pageEl = pageRefs.current[pageId];
