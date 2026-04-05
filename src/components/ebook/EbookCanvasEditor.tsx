@@ -51,6 +51,7 @@ export interface CanvasElement {
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
   isPlaceholder?: boolean;
+  highlightColor?: string;
 }
 
 interface EbookCanvasEditorProps {
