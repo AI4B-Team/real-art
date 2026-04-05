@@ -1604,6 +1604,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   const renderSelectedImageActions = (el: CanvasElement, pageId: string) => {
     if (el.type !== 'image' || !el.src || selectedElementId !== el.id || selectedPageId !== pageId) return null;
+    // Hide the action bar when replace overlay is showing
+    if (replaceModalElementId === el.id) return null;
 
     const isSmall = el.width < 25 || el.height < 25;
     const isFullPage = el.width >= 90 && el.height >= 90;
