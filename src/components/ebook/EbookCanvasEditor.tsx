@@ -602,6 +602,7 @@ const EbookCanvasEditor = ({
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onDoubleClick={() => { setEditingTextId(el.id); setSelectedElementId(el.id); }}>
+          <TypeBadge />
           {isEditing ? (
             <textarea
               autoFocus
