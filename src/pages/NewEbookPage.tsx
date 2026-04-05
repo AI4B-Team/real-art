@@ -466,19 +466,23 @@ const NewEbookPage = () => {
                 </PopoverContent>
               </Popover>
 
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button onClick={() => { setLastSaved(new Date()); toast({ title: "Project saved!" }); }}
-                    className="flex items-center gap-1.5 bg-emerald-500/20 px-2.5 py-1 rounded-lg hover:bg-emerald-500/30 transition-colors">
-                    <Cloud className="w-3.5 h-3.5 text-emerald-400" />
-                    <span className="text-xs font-medium text-emerald-400">Auto-Saved</span>
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs text-center leading-relaxed">
-                  <p className="font-semibold">Save Project</p>
-                  <p className="text-muted-foreground">Click To Save (Last Saved: {lastSaved.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })} // {lastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })})</p>
-                </TooltipContent>
-              </Tooltip>
+              <div className="relative group">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={() => { setLastSaved(new Date()); toast({ title: "Project saved!" }); }}
+                      className="flex items-center gap-1.5 bg-emerald-500/20 px-2.5 py-1 rounded-lg hover:bg-emerald-500/30 transition-colors">
+                      <Cloud className="w-3.5 h-3.5 text-emerald-400" />
+                      <span className="text-xs font-medium text-emerald-400">Auto-Saved</span>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent side="top" className="text-xs z-[9999]">
+                    Save Project
+                  </TooltipContent>
+                </Tooltip>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 px-3 py-1.5 rounded-md bg-popover text-popover-foreground text-xs shadow-md border border-border whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-[9999]">
+                  Click To Save (Last Saved: {lastSaved.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })} // {lastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })})
+                </div>
+              </div>
             </div>
 
             {/* Center: Step Tabs */}
