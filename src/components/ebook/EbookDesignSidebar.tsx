@@ -318,6 +318,126 @@ const MockupsPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: a
   );
 };
 
+const STOCK_VIDEOS = [
+  { thumb: 'photo-1557804506-669a67965ba0', title: 'Business Meeting', duration: '0:15' },
+  { thumb: 'photo-1552664730-d307ca884978', title: 'Team Collaboration', duration: '0:24' },
+  { thumb: 'photo-1460925895917-afdab827c52f', title: 'Data Analytics', duration: '0:12' },
+  { thumb: 'photo-1522071820081-009f0129c71c', title: 'Creative Workshop', duration: '0:17' },
+  { thumb: 'photo-1507003211169-0a1dd7228f2d', title: 'Professional Portrait', duration: '0:11' },
+  { thumb: 'photo-1553877522-43269d4ea984', title: 'Tech Office', duration: '0:11' },
+];
+
+const STOCK_AUDIO = [
+  { title: 'Upbeat Corporate', duration: '2:30' },
+  { title: 'Calm Ambient', duration: '3:15' },
+  { title: 'Inspiring Piano', duration: '2:45' },
+  { title: 'Tech Innovation', duration: '2:00' },
+  { title: 'Soft Background', duration: '4:00' },
+  { title: 'Energetic Beat', duration: '1:45' },
+];
+
+type MediaTab = 'stock' | 'creations' | 'community' | 'uploads';
+
+const MediaTabs = ({ active, onChange }: { active: MediaTab; onChange: (t: MediaTab) => void }) => (
+  <div className="flex items-center gap-0.5 border-b border-foreground/[0.06] mb-2">
+    {([
+      { id: 'stock' as const, label: 'Stock', icon: Library },
+      { id: 'creations' as const, label: 'Creations', icon: Sparkles },
+      { id: 'community' as const, label: 'Community', icon: Users },
+      { id: 'uploads' as const, label: 'Uploads', icon: Upload },
+    ]).map(tab => (
+      <button key={tab.id} onClick={() => onChange(tab.id)}
+        className={`flex items-center gap-1 px-2 py-2 text-[10px] font-medium transition-colors border-b-2 ${active === tab.id ? 'border-accent text-accent' : 'border-transparent text-muted-foreground hover:text-foreground'}`}>
+        <tab.icon className="w-3 h-3" />{tab.label}
+      </button>
+    ))}
+  </div>
+);
+
+const VideoPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any) => void }) => {
+  const [tab, setTab] = useState<MediaTab>('stock');
+  const [search, setSearch] = useState('');
+
+  const filtered = STOCK_VIDEOS.filter(v => !search || v.title.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="px-3 pb-3">
+      <MediaTabs active={tab} onChange={setTab} />
+      <div className="relative mb-2">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Press [Enter] To Search"
+          className="w-full pl-8 pr-3 py-2 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs focus:outline-none focus:border-accent/40 transition-colors" />
+      </div>
+      {tab === 'stock' ? (
+        <div className="grid grid-cols-2 gap-1.5">
+          {filtered.map((v, i) => (
+            <button key={i} onClick={() => { onAddElement?.('video', { src: v.thumb }); toast.success(`${v.title} added`); }}
+              className="relative rounded-lg overflow-hidden group aspect-video">
+              <img src={`https://images.unsplash.com/${v.thumb}?w=300&h=200&fit=crop&q=80`} alt={v.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-foreground/40 flex items-center justify-center backdrop-blur-sm">
+                  <Play className="w-3.5 h-3.5 text-white fill-white ml-0.5" />
+                </div>
+              </div>
+              <span className="absolute bottom-1 right-1.5 text-[9px] text-white bg-foreground/60 px-1 py-0.5 rounded backdrop-blur-sm">{v.duration}</span>
+            </button>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <Upload className="w-6 h-6 text-muted-foreground/40 mb-2" />
+          <p className="text-[10px] text-muted-foreground">No {tab} videos yet</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+const AudioPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any) => void }) => {
+  const [tab, setTab] = useState<MediaTab>('stock');
+  const [search, setSearch] = useState('');
+  const [playingIdx, setPlayingIdx] = useState<number | null>(null);
+
+  const filtered = STOCK_AUDIO.filter(a => !search || a.title.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <div className="px-3 pb-3">
+      <MediaTabs active={tab} onChange={setTab} />
+      <div className="relative mb-2">
+        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+        <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Press [Enter] To Search"
+          className="w-full pl-8 pr-3 py-2 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs focus:outline-none focus:border-accent/40 transition-colors" />
+      </div>
+      {tab === 'stock' ? (
+        <div className="space-y-1.5">
+          {filtered.map((a, i) => (
+            <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors group">
+              <button onClick={() => setPlayingIdx(playingIdx === i ? null : i)}
+                className="w-10 h-10 rounded-full bg-accent/80 hover:bg-accent flex items-center justify-center shrink-0 transition-colors">
+                <Play className={`w-4 h-4 text-white fill-white ${playingIdx === i ? '' : 'ml-0.5'}`} />
+              </button>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-foreground truncate">{a.title}</p>
+                <p className="text-[10px] text-muted-foreground">{a.duration}</p>
+              </div>
+              <button onClick={() => { onAddElement?.('audio', { title: a.title }); toast.success(`${a.title} added`); }}
+                className="w-6 h-6 rounded-full flex items-center justify-center text-muted-foreground hover:text-accent hover:bg-accent/10 transition-colors opacity-0 group-hover:opacity-100">
+                <Plus className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <Upload className="w-6 h-6 text-muted-foreground/40 mb-2" />
+          <p className="text-[10px] text-muted-foreground">No {tab} audio yet</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
   onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate,
