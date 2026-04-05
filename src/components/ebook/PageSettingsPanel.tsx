@@ -374,7 +374,7 @@ const PageSettingsPanel = ({
           {/* Style */}
           <SectionToggle id="style" title="Style" icon={LayoutGridIcon} />
           {expandedSections.has('style') && (
-            <div className="px-4 pb-4">
+            <div className="px-4 pt-2 pb-4">
               <div className="grid grid-cols-2 gap-2">
                 {STYLE_LAYOUTS.map(layout => (
                   <button key={layout.id} onClick={() => { updateSelectedPage({ layout: layout.id }); toast.success(`${layout.name} applied`); }}
