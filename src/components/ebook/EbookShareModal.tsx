@@ -104,7 +104,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md p-0 gap-0 rounded-2xl overflow-hidden">
+      <DialogContent className="sm:max-w-lg p-0 gap-0 rounded-2xl overflow-hidden">
         <DialogHeader className="p-5 pb-0">
           <DialogTitle className="text-lg font-bold">Share</DialogTitle>
         </DialogHeader>
