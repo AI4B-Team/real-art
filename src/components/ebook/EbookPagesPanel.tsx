@@ -61,6 +61,12 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
   const handlePageAction = (action: string, pageId: string) => {
     const idx = pages.findIndex(p => p.id === pageId);
     if (idx === -1) return;
+    const page = pages[idx];
+    const isCoverOrBack = page.type === 'cover' || page.type === 'back';
+    if (isCoverOrBack && (action === 'moveUp' || action === 'moveDown' || action === 'delete')) {
+      toast.error('Cover and back cover pages cannot be moved or deleted');
+      return;
+    }
     switch (action) {
       case 'duplicate': {
         const dup = { ...pages[idx], id: crypto.randomUUID(), title: pages[idx].title + ' (copy)' };
