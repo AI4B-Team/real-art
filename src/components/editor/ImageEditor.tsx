@@ -73,8 +73,12 @@ const TOOL_CONFIGS: Record<string, { title: string; settings: { type: string; la
 
 const CANVAS_TOOLS = [
   { id: "select", icon: MousePointer2, tooltip: "Select" },
+  { id: "hand", icon: Hand, tooltip: "Hand (Pan)" },
   { id: "brush", icon: Paintbrush, tooltip: "Brush" },
   { id: "eraser", icon: Eraser, tooltip: "Eraser" },
+  { id: "inpaint", icon: PenTool, tooltip: "Inpaint" },
+  { id: "arrow", icon: ArrowUpRight, tooltip: "Arrow" },
+  { id: "rectangle", icon: Square, tooltip: "Rectangle" },
   { id: "removebg", icon: Scissors, tooltip: "Remove Background" },
   { id: "fill", icon: PaintBucket, tooltip: "Fill" },
   { id: "text", icon: Type, tooltip: "Text" },
