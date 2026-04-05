@@ -927,7 +927,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         default: return 'Element';
       }
     };
-    const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : 'bg-blue-500';
+    const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : el.type === 'interactive' ? 'bg-purple-500' : 'bg-blue-500';
     const TypeBadge = () => isSelected ? (
       <div className={`absolute -top-6 left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-30 whitespace-nowrap`}>
         {getTypeLabel()}
