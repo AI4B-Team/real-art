@@ -108,7 +108,7 @@ const STOCK_IMAGES = [
 
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
-  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange,
+  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
