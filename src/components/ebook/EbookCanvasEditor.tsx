@@ -1173,10 +1173,26 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 </div>
               ))}
             </div>
-            <button onClick={handleAddPage}
-              className="w-full mt-2 flex items-center justify-center gap-1 py-2 border-2 border-dashed border-foreground/[0.08] rounded-lg text-[10px] text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
-              <Plus className="w-3 h-3" />Add Page
-            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="w-full mt-2 flex items-center justify-center gap-1 py-2 border-2 border-dashed border-foreground/[0.08] rounded-lg text-[10px] text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
+                  <Plus className="w-3 h-3" />Add Page
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-2" side="right" align="start">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                {PAGE_TYPE_OPTIONS.map(opt => (
+                  <button key={opt.type} onClick={() => handleAddPage(opt.type)}
+                    className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                    <span className="text-base">{opt.icon}</span>
+                    <div>
+                      <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                      <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
           </div>
         )}
 
