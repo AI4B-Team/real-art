@@ -11,7 +11,7 @@ import {
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
   Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
-  BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter,
+  BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -924,6 +924,32 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       className="w-full text-xs py-1.5 rounded bg-accent text-white hover:bg-accent/90 flex items-center justify-center gap-1.5">
                       <Upload className="w-3 h-3" />Upload
                     </button>
+                  </PopoverContent>
+                </Popover>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                      <LayoutGrid className="w-3.5 h-3.5" />Position
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-44 p-2" side="top" align="center">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Quick Position</p>
+                    <div className="grid grid-cols-2 gap-1">
+                      {[
+                        { label: 'Full Page', x: 0, y: 0, w: 100, h: 100, icon: '⬜' },
+                        { label: 'Top Half', x: 0, y: 0, w: 100, h: 50, icon: '⬆' },
+                        { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50, icon: '⬇' },
+                        { label: 'Middle Band', x: 0, y: 25, w: 100, h: 50, icon: '↔' },
+                        { label: 'Top Strip', x: 0, y: 0, w: 100, h: 30, icon: '▔' },
+                        { label: 'Bottom Strip', x: 0, y: 70, w: 100, h: 30, icon: '▁' },
+                      ].map(preset => (
+                        <button key={preset.label}
+                          onClick={() => { updateElement(el.id, { x: preset.x, y: preset.y, width: preset.w, height: preset.h }); toast.success(`Positioned: ${preset.label}`); }}
+                          className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] rounded hover:bg-foreground/[0.05] transition-colors text-foreground">
+                          <span className="text-xs">{preset.icon}</span>{preset.label}
+                        </button>
+                      ))}
+                    </div>
                   </PopoverContent>
                 </Popover>
                 <Tooltip>
