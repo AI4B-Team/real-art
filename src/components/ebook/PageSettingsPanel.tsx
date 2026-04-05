@@ -443,7 +443,14 @@ const PageSettingsPanel = ({
                     <ImageIcon className="w-5 h-5" />
                     <span className="text-[10px]">Click To Upload Image</span>
                   </button>
-                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={() => toast.success('Background image set')} />
+                  <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={e => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const url = URL.createObjectURL(file);
+                      updateSelectedPage({ bgImage: url });
+                      toast.success('Background image set');
+                    }
+                  }} />
                 </div>
               )}
             </div>
