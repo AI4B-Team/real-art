@@ -2713,19 +2713,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               style={{ left: `${commentDraft.x}%`, top: `${commentDraft.y}%`, transform: 'translate(-50%, -100%)' }}
                               onClick={e => e.stopPropagation()}>
                               <div className="w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center text-[9px] font-bold shadow-md animate-pulse mb-1 mx-auto">+</div>
-                              <div className="w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3">
+                              <div className="w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3 relative">
                                 <textarea
+                                  ref={commentTextareaRef}
                                   value={commentText}
-                                  onChange={e => setCommentText(e.target.value)}
-                                  placeholder="Add your comment..."
+                                  onChange={e => handleCommentTextChange(e.target.value)}
+                                  onKeyDown={handleCommentKeyDown}
+                                  placeholder="Add your comment... (use @ to mention)"
                                   className="w-full text-xs bg-transparent border border-foreground/[0.08] rounded-lg p-2 outline-none focus:border-accent/40 resize-none h-16"
                                   autoFocus
                                 />
+                                {showMentionDropdown && filteredMembers.length > 0 && (
+                                  <div className="absolute left-3 right-3 bottom-[calc(100%-4px)] bg-background border border-foreground/[0.1] rounded-lg shadow-lg z-10 max-h-32 overflow-y-auto">
+                                    {filteredMembers.map((m, mi) => (
+                                      <button key={m.id} onClick={() => insertMention(m.name)}
+                                        className={`w-full flex items-center gap-2 px-2.5 py-1.5 text-left text-xs transition-colors ${mi === mentionIndex ? 'bg-accent/10 text-accent' : 'hover:bg-foreground/[0.04] text-foreground'}`}>
+                                        <div className="w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold text-white" style={{ backgroundColor: m.color }}>{m.initials}</div>
+                                        <span className="font-medium">{m.name}</span>
+                                        <span className="text-muted-foreground ml-auto">{m.role}</span>
+                                      </button>
+                                    ))}
+                                  </div>
+                                )}
                                 <div className="flex gap-1.5 mt-2">
                                   <button onClick={addPageComment}
                                     className="flex-1 py-1.5 rounded-lg bg-accent text-white text-[10px] font-semibold hover:bg-accent/90 disabled:opacity-40"
                                     disabled={!commentText.trim()}>Post</button>
-                                  <button onClick={() => { setCommentDraft(null); setCommentText(''); }}
+                                  <button onClick={() => { setCommentDraft(null); setCommentText(''); setShowMentionDropdown(false); }}
                                     className="px-3 py-1.5 rounded-lg border border-foreground/[0.08] text-[10px] font-medium hover:bg-foreground/[0.04]">Cancel</button>
                                 </div>
                               </div>
