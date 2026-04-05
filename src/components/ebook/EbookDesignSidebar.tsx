@@ -23,7 +23,7 @@ import AITextEditMenu, { type AIEditAction } from './AITextEditMenu';
 interface Chapter {
   id: string;
   title: string;
-  type?: 'cover' | 'table of contents' | 'introduction' | 'summary' | null;
+  type?: 'cover' | 'back' | 'table of contents' | 'introduction' | 'summary' | null;
 }
 
 interface EbookDesignSidebarProps {
