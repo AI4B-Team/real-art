@@ -474,8 +474,9 @@ const NewEbookPage = () => {
                     <span className="text-xs font-medium text-emerald-400">Auto-Saved</span>
                   </button>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">
-                  Click To Save (Last Saved: {lastSaved.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })} // {lastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })})
+                <TooltipContent side="bottom" className="text-xs text-center leading-relaxed">
+                  <p className="font-semibold">Save Project</p>
+                  <p className="text-muted-foreground">Click To Save (Last Saved: {lastSaved.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })} // {lastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })})</p>
                 </TooltipContent>
               </Tooltip>
             </div>
