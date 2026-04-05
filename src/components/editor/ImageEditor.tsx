@@ -998,6 +998,32 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                       onMouseMove={handleBrushMove} onMouseUp={handleBrushEnd} onMouseLeave={handleBrushEnd}
                       onClick={(e) => { if (activeTool === "text") handleCanvasTextClick(e); }} />
                   )}
+                  {/* Shape annotations (arrows + rectangles) */}
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: "visible" }}>
+                    {[...shapes, ...(drawingShape ? [drawingShape] : [])].map(shape => {
+                      if (shape.type === "rectangle") {
+                        const x = Math.min(shape.x1, shape.x2);
+                        const y = Math.min(shape.y1, shape.y2);
+                        const w = Math.abs(shape.x2 - shape.x1);
+                        const h = Math.abs(shape.y2 - shape.y1);
+                        return <rect key={shape.id} x={x} y={y} width={w} height={h} stroke={shape.color} strokeWidth={shape.strokeWidth} fill={shape.filled ? shape.color + "33" : "none"} />;
+                      }
+                      if (shape.type === "arrow") {
+                        const markerId = `arrowhead-${shape.id}`;
+                        return (
+                          <g key={shape.id}>
+                            <defs>
+                              <marker id={markerId} markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill={shape.color} />
+                              </marker>
+                            </defs>
+                            <line x1={shape.x1} y1={shape.y1} x2={shape.x2} y2={shape.y2} stroke={shape.color} strokeWidth={shape.strokeWidth} markerEnd={`url(#${markerId})`} />
+                          </g>
+                        );
+                      }
+                      return null;
+                    })}
+                  </svg>
                   {/* Text elements */}
                   {layers.find(l => l.id === "text-layer")?.visible && (
                     <div className="absolute inset-0" style={{ pointerEvents: "none", opacity: (layers.find(l => l.id === "text-layer")?.opacity ?? 100) / 100 }}>
