@@ -211,7 +211,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
-  onPageSettingsToggle, onOpenImageSection,
+  onPageSettingsToggle, onOpenImageSection, onReplaceStateChange,
   pageWidth: pw = 480, pageHeight: ph = 640,
   accessMode = 'editing',
 }, ref) => {
