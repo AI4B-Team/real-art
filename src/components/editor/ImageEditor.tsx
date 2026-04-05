@@ -8,7 +8,7 @@ import {
   FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
   Film, Send, ChevronLeft, Wrench, Palette, Heart, Zap,
   MessageSquare, RefreshCw, Loader2, Shuffle, X as XIcon,
-  Hash, Copy, Box, Link, Clock,
+  Hash, Copy, Box, Link, Clock, Hand, Square, ArrowUpRight, PenTool,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
@@ -27,6 +27,7 @@ interface TextElement {
 
 const TOOL_CONFIGS: Record<string, { title: string; settings: { type: string; label: string; key?: string; min?: number; max?: number; step?: number; options?: string[] }[] }> = {
   select: { title: "Selection", settings: [{ type: "buttons", label: "Mode", options: ["Rectangle", "Ellipse", "Freeform", "Magic"] }] },
+  hand: { title: "Hand (Pan)", settings: [] },
   brush: { title: "Brush", settings: [
     { type: "slider", label: "Size", key: "brushSize", min: 1, max: 500 },
     { type: "slider", label: "Hardness", key: "hardness", min: 0, max: 100 },
@@ -37,7 +38,20 @@ const TOOL_CONFIGS: Record<string, { title: string; settings: { type: string; la
     { type: "slider", label: "Size", key: "eraserSize", min: 1, max: 500 },
     { type: "slider", label: "Opacity", key: "eraserOpacity", min: 0, max: 100 },
   ]},
+  inpaint: { title: "Inpaint", settings: [
+    { type: "slider", label: "Brush Size", key: "inpaintSize", min: 5, max: 200 },
+    { type: "slider", label: "Strength", key: "inpaintStrength", min: 0, max: 100 },
+  ]},
   fill: { title: "Fill", settings: [{ type: "color", label: "Fill Color", key: "fillColor" }, { type: "slider", label: "Tolerance", key: "tolerance", min: 0, max: 255 }] },
+  arrow: { title: "Arrow", settings: [
+    { type: "slider", label: "Stroke Width", key: "arrowStroke", min: 1, max: 20 },
+    { type: "color", label: "Color", key: "arrowColor" },
+  ]},
+  rectangle: { title: "Rectangle", settings: [
+    { type: "slider", label: "Stroke Width", key: "rectStroke", min: 1, max: 20 },
+    { type: "color", label: "Color", key: "rectColor" },
+    { type: "buttons", label: "Fill", options: ["Outline", "Filled"] },
+  ]},
   text: { title: "Text", settings: [
     { type: "slider", label: "Font Size", key: "fontSize", min: 8, max: 200 },
     { type: "color", label: "Text Color", key: "textColor" },
@@ -59,8 +73,12 @@ const TOOL_CONFIGS: Record<string, { title: string; settings: { type: string; la
 
 const CANVAS_TOOLS = [
   { id: "select", icon: MousePointer2, tooltip: "Select" },
+  { id: "hand", icon: Hand, tooltip: "Hand (Pan)" },
   { id: "brush", icon: Paintbrush, tooltip: "Brush" },
   { id: "eraser", icon: Eraser, tooltip: "Eraser" },
+  { id: "inpaint", icon: PenTool, tooltip: "Inpaint" },
+  { id: "arrow", icon: ArrowUpRight, tooltip: "Arrow" },
+  { id: "rectangle", icon: Square, tooltip: "Rectangle" },
   { id: "removebg", icon: Scissors, tooltip: "Remove Background" },
   { id: "fill", icon: PaintBucket, tooltip: "Fill" },
   { id: "text", icon: Type, tooltip: "Text" },
@@ -185,8 +203,17 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [toolSettings, setToolSettings] = useState<Record<string, any>>({
     fontSize: 24, brushSize: 20, brushColor: "#000000", hardness: 100, opacity: 100,
     tolerance: 32, aiStrength: 75, imageOpacity: 100, quality: 90, eraserSize: 20, eraserOpacity: 100,
-    fillColor: "#000000", textColor: "#000000",
+    fillColor: "#000000", textColor: "#000000", inpaintSize: 40, inpaintStrength: 75,
+    arrowStroke: 3, arrowColor: "#ff0000", rectStroke: 3, rectColor: "#ff0000",
   });
+
+  // Shape annotations (arrows + rectangles)
+  interface ShapeAnnotation {
+    id: string; type: "arrow" | "rectangle"; x1: number; y1: number; x2: number; y2: number;
+    color: string; strokeWidth: number; filled?: boolean;
+  }
+  const [shapes, setShapes] = useState<ShapeAnnotation[]>([]);
+  const [drawingShape, setDrawingShape] = useState<ShapeAnnotation | null>(null);
 
   // Creations strip
   const [creations, setCreations] = useState(() => {
@@ -301,17 +328,52 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
     ctx.globalCompositeOperation = "source-over";
   }, [brushStrokes, selectedImage, isDrawing]);
 
-  // Image drag
+  // Image drag (hand tool or select tool)
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (selectedImage && activeTool === "select" && isImageSelected) {
+    if (selectedImage && (activeTool === "hand" || (activeTool === "select" && isImageSelected))) {
       e.preventDefault(); setIsDragging(true);
       setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y });
     }
   };
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isDragging && selectedImage) setImagePosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+    // Shape drawing preview
+    if (drawingShape && (activeTool === "arrow" || activeTool === "rectangle")) {
+      const canvas = drawingCanvasRef.current;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      setDrawingShape(prev => prev ? { ...prev, x2: e.clientX - rect.left, y2: e.clientY - rect.top } : null);
+    }
   };
-  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (drawingShape && (activeTool === "arrow" || activeTool === "rectangle")) {
+      const dx = Math.abs(drawingShape.x2 - drawingShape.x1);
+      const dy = Math.abs(drawingShape.y2 - drawingShape.y1);
+      if (dx > 5 || dy > 5) {
+        setShapes(prev => [...prev, drawingShape]);
+        setHasChanges(true);
+      }
+      setDrawingShape(null);
+    }
+  };
+
+  // Shape start on canvas
+  const handleShapeStart = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (activeTool !== "arrow" && activeTool !== "rectangle") return;
+    const canvas = drawingCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const shape: ShapeAnnotation = {
+      id: `shape-${Date.now()}`, type: activeTool as "arrow" | "rectangle",
+      x1: x, y1: y, x2: x, y2: y,
+      color: activeTool === "arrow" ? toolSettings.arrowColor : toolSettings.rectColor,
+      strokeWidth: activeTool === "arrow" ? toolSettings.arrowStroke : toolSettings.rectStroke,
+    };
+    setDrawingShape(shape);
+  };
 
   const handleToolClick = (toolId: string) => {
     if (toolId === "delete") {
@@ -876,17 +938,20 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
       {/* Center: Canvas */}
       <div className="flex-1 flex flex-col overflow-hidden">
         <div ref={canvasRef} className={`flex-1 bg-foreground/[0.03] relative overflow-hidden ${!selectedImage ? "flex items-center justify-center" : ""}`}
-          style={{ cursor: selectedImage ? (isDragging ? "grabbing" : "grab") : "default" }}
-          onClick={(e) => { if (e.target === e.currentTarget && activeTool !== "select") { setActiveTool(null); } }}
+          style={{ cursor: selectedImage ? (activeTool === "hand" ? (isDragging ? "grabbing" : "grab") : isDragging ? "grabbing" : "default") : "default" }}
+          onClick={(e) => { if (e.target === e.currentTarget && activeTool !== "select" && activeTool !== "hand") { setActiveTool(null); } }}
           onMouseDown={handleMouseDown} onMouseMove={handleMouseMove} onMouseUp={handleMouseUp} onMouseLeave={handleMouseUp}>
 
           {/* Undo/Clear on canvas */}
           <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-            <button onClick={() => setBrushStrokes(prev => prev.slice(0, -1))}
+            <button onClick={() => {
+              if (shapes.length > 0) setShapes(prev => prev.slice(0, -1));
+              else setBrushStrokes(prev => prev.slice(0, -1));
+            }}
               className="flex items-center gap-2 px-4 py-2.5 bg-card border border-foreground/[0.08] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.04] transition-colors shadow-sm">
               <RotateCcw className="w-4 h-4" />Undo
             </button>
-            <button onClick={() => { setBrushStrokes([]); if (drawingCanvasRef.current) drawingCanvasRef.current.getContext("2d")?.clearRect(0, 0, drawingCanvasRef.current.width, drawingCanvasRef.current.height); }}
+            <button onClick={() => { setBrushStrokes([]); setShapes([]); if (drawingCanvasRef.current) drawingCanvasRef.current.getContext("2d")?.clearRect(0, 0, drawingCanvasRef.current.width, drawingCanvasRef.current.height); }}
               className="flex items-center gap-2 px-4 py-2.5 bg-card border border-foreground/[0.08] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.04] transition-colors shadow-sm">
               <RotateCw className="w-4 h-4" />Clear
             </button>
@@ -897,7 +962,7 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
               <div className="relative" style={{
                 transform: `scale(${zoomLevel / 100}) translate(${imagePosition.x / (zoomLevel / 100)}px, ${imagePosition.y / (zoomLevel / 100)}px)`,
                 transformOrigin: "center center",
-                cursor: activeTool === "select" && isImageSelected ? (isDragging ? "grabbing" : "move") : "pointer",
+                cursor: activeTool === "hand" ? (isDragging ? "grabbing" : "grab") : activeTool === "select" && isImageSelected ? (isDragging ? "grabbing" : "move") : ["arrow","rectangle"].includes(activeTool||"") ? "crosshair" : "pointer",
               }}>
                 {/* Floating tools above image */}
                 {isImageSelected && (
@@ -928,13 +993,40 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                   {layers.find(l => l.id === "drawing-layer")?.visible && (
                     <canvas ref={drawingCanvasRef} className="absolute inset-0 w-full h-full"
                       style={{
-                        cursor: ["brush", "eraser", "fill", "text"].includes(activeTool || "") ? "crosshair" : "inherit",
-                        pointerEvents: ["brush", "eraser", "fill", "text"].includes(activeTool || "") ? "auto" : "none",
+                        cursor: ["brush", "eraser", "fill", "text", "inpaint", "arrow", "rectangle"].includes(activeTool || "") ? "crosshair" : "inherit",
+                        pointerEvents: ["brush", "eraser", "fill", "text", "inpaint", "arrow", "rectangle"].includes(activeTool || "") ? "auto" : "none",
                         opacity: (layers.find(l => l.id === "drawing-layer")?.opacity ?? 100) / 100,
                       }}
-                      onMouseDown={handleBrushStart} onMouseMove={handleBrushMove} onMouseUp={handleBrushEnd} onMouseLeave={handleBrushEnd}
+                      onMouseDown={(e) => { handleBrushStart(e); handleShapeStart(e); }}
+                      onMouseMove={handleBrushMove} onMouseUp={handleBrushEnd} onMouseLeave={handleBrushEnd}
                       onClick={(e) => { if (activeTool === "text") handleCanvasTextClick(e); }} />
                   )}
+                  {/* Shape annotations (arrows + rectangles) */}
+                  <svg className="absolute inset-0 w-full h-full pointer-events-none" style={{ overflow: "visible" }}>
+                    {[...shapes, ...(drawingShape ? [drawingShape] : [])].map(shape => {
+                      if (shape.type === "rectangle") {
+                        const x = Math.min(shape.x1, shape.x2);
+                        const y = Math.min(shape.y1, shape.y2);
+                        const w = Math.abs(shape.x2 - shape.x1);
+                        const h = Math.abs(shape.y2 - shape.y1);
+                        return <rect key={shape.id} x={x} y={y} width={w} height={h} stroke={shape.color} strokeWidth={shape.strokeWidth} fill={shape.filled ? shape.color + "33" : "none"} />;
+                      }
+                      if (shape.type === "arrow") {
+                        const markerId = `arrowhead-${shape.id}`;
+                        return (
+                          <g key={shape.id}>
+                            <defs>
+                              <marker id={markerId} markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill={shape.color} />
+                              </marker>
+                            </defs>
+                            <line x1={shape.x1} y1={shape.y1} x2={shape.x2} y2={shape.y2} stroke={shape.color} strokeWidth={shape.strokeWidth} markerEnd={`url(#${markerId})`} />
+                          </g>
+                        );
+                      }
+                      return null;
+                    })}
+                  </svg>
                   {/* Text elements */}
                   {layers.find(l => l.id === "text-layer")?.visible && (
                     <div className="absolute inset-0" style={{ pointerEvents: "none", opacity: (layers.find(l => l.id === "text-layer")?.opacity ?? 100) / 100 }}>
