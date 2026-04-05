@@ -451,7 +451,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
 
             <button onClick={handlePrint}
               className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-              <Printer className="w-4 h-4" /> Send to Printer
+              <Printer className="w-4 h-4" /> Send To Printer
             </button>
           </div>
         </DialogContent>
