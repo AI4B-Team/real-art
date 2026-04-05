@@ -78,7 +78,7 @@ const EbookCreatorPage = () => {
             <h1 className="text-3xl font-display font-bold text-foreground">Ebook Creator</h1>
             <p className="text-muted text-sm mt-1">AI ghostwriting for ebooks, audiobooks & presentations</p>
           </div>
-          <button onClick={() => navigate("/ebook-creator/new")} className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-semibold text-sm hover:bg-accent/90 transition-colors">
+          <button onClick={() => { sessionStorage.removeItem("ebook-last-url"); navigate("/ebook-creator/new"); }} className="flex items-center gap-2 px-5 py-2.5 bg-accent text-white rounded-lg font-semibold text-sm hover:bg-accent/90 transition-colors">
             <Plus size={16} />New eBook
           </button>
         </div>
