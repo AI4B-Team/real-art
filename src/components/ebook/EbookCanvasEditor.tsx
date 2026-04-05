@@ -319,6 +319,66 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [commentText, setCommentText] = useState('');
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
   const [showAllComments, setShowAllComments] = useState(false);
+  const [showMentionDropdown, setShowMentionDropdown] = useState(false);
+  const [mentionFilter, setMentionFilter] = useState('');
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const commentTextareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const filteredMembers = WORKSPACE_MEMBERS.filter(m =>
+    m.name.toLowerCase().includes(mentionFilter.toLowerCase())
+  );
+
+  const handleCommentTextChange = (value: string) => {
+    setCommentText(value);
+    const textarea = commentTextareaRef.current;
+    if (!textarea) return;
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = value.slice(0, cursorPos);
+    const atMatch = textBeforeCursor.match(/@(\w*)$/);
+    if (atMatch) {
+      setShowMentionDropdown(true);
+      setMentionFilter(atMatch[1]);
+      setMentionIndex(0);
+    } else {
+      setShowMentionDropdown(false);
+    }
+  };
+
+  const insertMention = (memberName: string) => {
+    const textarea = commentTextareaRef.current;
+    if (!textarea) return;
+    const cursorPos = textarea.selectionStart;
+    const textBeforeCursor = commentText.slice(0, cursorPos);
+    const atMatch = textBeforeCursor.match(/@(\w*)$/);
+    if (atMatch) {
+      const before = textBeforeCursor.slice(0, atMatch.index);
+      const after = commentText.slice(cursorPos);
+      setCommentText(`${before}@${memberName} ${after}`);
+    }
+    setShowMentionDropdown(false);
+    textarea.focus();
+  };
+
+  const handleCommentKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (showMentionDropdown && filteredMembers.length > 0) {
+      if (e.key === 'ArrowDown') { e.preventDefault(); setMentionIndex(i => Math.min(filteredMembers.length - 1, i + 1)); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setMentionIndex(i => Math.max(0, i - 1)); return; }
+      if (e.key === 'Enter' || e.key === 'Tab') { e.preventDefault(); insertMention(filteredMembers[mentionIndex].name); return; }
+      if (e.key === 'Escape') { e.preventDefault(); setShowMentionDropdown(false); return; }
+    }
+    if (e.key === 'Enter' && !e.shiftKey && !showMentionDropdown) { e.preventDefault(); addPageComment(); }
+  };
+
+  const renderCommentText = (text: string) => {
+    const parts = text.split(/(@\w[\w\s]*?)(?=\s|$|@)/g);
+    return parts.map((part, i) => {
+      const member = WORKSPACE_MEMBERS.find(m => part === `@${m.name}`);
+      if (member) {
+        return <span key={i} className="font-semibold text-accent">{part}</span>;
+      }
+      return <span key={i}>{part}</span>;
+    });
+  };
 
   const resolveAllComments = () => {
     setPageComments(prev => prev.map(c => ({ ...c, resolved: true })));
