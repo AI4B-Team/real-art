@@ -782,6 +782,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         addElement('shape', { shapeType: 'rectangle' });
       } else if (activeTool === 'circle') {
         addElement('shape', { shapeType: 'circle' });
+      } else if (activeTool === 'line') {
+        addElement('shape', { shapeType: 'rectangle', height: 1, fill: '#1a1a2e', stroke: 'transparent' });
       } else if (activeTool === 'image') {
         imageInputRef.current?.click();
       }
@@ -932,6 +934,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       if (e.key === 'v' || e.key === 'V') setActiveTool('select');
       if (e.key === 't' || e.key === 'T') setActiveTool('text');
       if (e.key === 'r' || e.key === 'R') setActiveTool('rectangle');
+      if (e.key === 'o' || e.key === 'O') setActiveTool('circle');
+      if (e.key === 'l' || e.key === 'L') setActiveTool('line');
       if (e.key === 'h' || e.key === 'H') setActiveTool('hand');
       if (e.key === 'i' || e.key === 'I') setActiveTool('image');
     };
