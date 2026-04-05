@@ -997,7 +997,7 @@ const NewEbookPage = () => {
                   if (scope === 'page' || scope === 'selected') {
                     const currentPage = ebookPages.find(p => p.id === selectedPageId);
                     if (currentPage?.locked) {
-                      toast.error('This page is locked. Unlock it to make changes.');
+                      sonnerToast.error('This page is locked. Unlock it to make changes.');
                       return;
                     }
                   }
