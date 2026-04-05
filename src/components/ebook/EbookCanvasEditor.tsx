@@ -200,6 +200,8 @@ export interface EbookCanvasEditorHandle {
   addElement: (type: string, extra?: any) => void;
   getTextElements: (scope: 'page' | 'book') => { pageId: string; elementId: string; content: string }[];
   updateTextContent: (updates: { pageId: string; elementId: string; content: string }[]) => void;
+  isReplacingImage: () => boolean;
+  replaceImage: (src: string) => void;
 }
 
 // ─── Component ─────────────────────────────────────
