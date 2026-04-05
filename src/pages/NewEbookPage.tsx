@@ -1080,6 +1080,7 @@ const NewEbookPage = () => {
                   )}
                 </div>
               ));
+              })()}
             </div>
 
             {/* TITLE SELECTION PAGE */}
