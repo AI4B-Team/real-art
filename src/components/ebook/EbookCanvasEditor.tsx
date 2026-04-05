@@ -1095,6 +1095,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
+          onClick={() => { if (isPageLocked) return; if (isSelected && !isEditing) { setEditingTextId(el.id); } }}
           onDoubleClick={() => { if (isPageLocked) return; setEditingTextId(el.id); setSelectedElementId(el.id); }}>
           <TypeBadge />
           {isEditing ? (
