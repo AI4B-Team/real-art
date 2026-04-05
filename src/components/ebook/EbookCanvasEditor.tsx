@@ -1253,6 +1253,77 @@ const EbookCanvasEditor = ({
                 )}
               </div>
 
+              {/* ── Find & Replace Panel ── */}
+              {findReplaceMode && (
+                <div className="absolute top-12 right-4 z-50 bg-background border border-foreground/[0.1] rounded-xl shadow-2xl w-80 overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                  <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.06] bg-foreground/[0.02]">
+                    <span className="text-sm font-semibold text-foreground">
+                      {findReplaceMode === 'find-replace' ? 'Find & Replace' : 'Find'}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {findMatches.length > 0 && (
+                        <span className="text-xs text-muted-foreground mr-1">
+                          {currentMatchIndex + 1} of {findMatches.length}
+                        </span>
+                      )}
+                      <button onClick={() => onFindReplaceModeChange?.(null)}
+                        className="p-1 rounded hover:bg-foreground/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-3 flex flex-col gap-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+                        <input
+                          ref={findInputRef}
+                          value={findQuery}
+                          onChange={e => setFindQuery(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') handleFindNext(); if (e.key === 'Escape') onFindReplaceModeChange?.(null); }}
+                          placeholder="Find text..."
+                          className="w-full pl-8 pr-3 py-2 text-sm bg-foreground/[0.04] rounded-lg border border-foreground/[0.08] focus:outline-none focus:border-accent/40 transition-colors"
+                        />
+                      </div>
+                      <button onClick={handleFindPrev} disabled={findMatches.length === 0}
+                        className="p-1.5 rounded-lg hover:bg-foreground/[0.06] text-muted-foreground disabled:opacity-30 transition-colors">
+                        <ChevronUp className="w-4 h-4" />
+                      </button>
+                      <button onClick={handleFindNext} disabled={findMatches.length === 0}
+                        className="p-1.5 rounded-lg hover:bg-foreground/[0.06] text-muted-foreground disabled:opacity-30 transition-colors">
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {findReplaceMode === 'find-replace' && (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <input
+                            value={replaceQuery}
+                            onChange={e => setReplaceQuery(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') handleReplaceCurrent(); if (e.key === 'Escape') onFindReplaceModeChange?.(null); }}
+                            placeholder="Replace with..."
+                            className="flex-1 px-3 py-2 text-sm bg-foreground/[0.04] rounded-lg border border-foreground/[0.08] focus:outline-none focus:border-accent/40 transition-colors"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button onClick={handleReplaceCurrent} disabled={findMatches.length === 0}
+                            className="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-foreground/[0.1] hover:bg-foreground/[0.04] disabled:opacity-30 transition-colors">
+                            Replace
+                          </button>
+                          <button onClick={handleReplaceAll} disabled={findMatches.length === 0}
+                            className="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-accent text-white hover:bg-accent/90 disabled:opacity-30 transition-colors">
+                            Replace All
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {findQuery.trim() && findMatches.length === 0 && (
+                      <p className="text-xs text-muted-foreground text-center py-1">No matches found</p>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Canvas - Scrollable all pages */}
               <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative">
                 <div className="flex flex-col items-center gap-8">
