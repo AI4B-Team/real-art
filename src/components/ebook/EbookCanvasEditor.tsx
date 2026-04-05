@@ -1352,6 +1352,44 @@ const EbookCanvasEditor = ({
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => toast.success('Layers')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Layers className="w-3.5 h-3.5" /></button>
                     </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
+                    {/* Border controls */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <SquareIcon className="w-3.5 h-3.5" style={{ borderStyle: selectedElement.borderStyle || 'solid', borderWidth: 1.5, borderColor: 'currentColor', borderRadius: 2, width: 14, height: 14 }} />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Border</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium text-foreground">Style</span>
+                            <select value={selectedElement.borderStyle || 'none'}
+                              onChange={e => updateElement(selectedElement.id, { borderStyle: e.target.value as CanvasElement['borderStyle'] })}
+                              className="text-xs bg-background border border-foreground/[0.1] rounded px-2 py-1">
+                              <option value="none">None</option>
+                              <option value="solid">Solid</option>
+                              <option value="dashed">Dashed</option>
+                              <option value="dotted">Dotted</option>
+                            </select>
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium text-foreground">Width</span>
+                            <input type="number" min={0} max={20} value={selectedElement.borderWidth || 1}
+                              onChange={e => updateElement(selectedElement.id, { borderWidth: Number(e.target.value) })}
+                              className="text-xs bg-background border border-foreground/[0.1] rounded px-2 py-1 w-16 text-center" />
+                          </div>
+                          <div className="flex items-center justify-between">
+                            <span className="text-xs font-medium text-foreground">Color</span>
+                            <input type="color" value={selectedElement.borderColor || '#000000'}
+                              onChange={e => updateElement(selectedElement.id, { borderColor: e.target.value })}
+                              className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                          </div>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
                     </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
