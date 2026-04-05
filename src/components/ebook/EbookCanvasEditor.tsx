@@ -1148,6 +1148,7 @@ const EbookCanvasEditor = ({
                             (gridInsertHover === pageIndex && draggedPageIndex === null) || (dragOverPageIndex === pageIndex && draggedPageIndex !== null)
                               ? 'w-14' : 'w-2'
                           }`}
+                          style={{ height: `${140 * ph / pw}px` }}
                           onMouseEnter={() => { if (draggedPageIndex === null) setGridInsertHover(pageIndex); }}
                           onMouseLeave={() => setGridInsertHover(null)}
                           onDragOver={(e) => {
