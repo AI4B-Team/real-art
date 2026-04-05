@@ -8,7 +8,7 @@ import {
 import { useAppTabs, ALL_APPS, type AppDef } from "@/context/AppTabsContext";
 import { useNavigate } from "react-router-dom";
 
-const FAVORITE_IDS = ["create"];
+const DEFAULT_FAVORITE_IDS = ["create"];
 const TRENDING_IDS = ["master-closer", "editor", "sessions", "ai-influencer", "ai-story", "viral-shorts"];
 
 export default function AppTabs() {
@@ -19,6 +19,18 @@ export default function AppTabs() {
 
   const [dropOpen, setDropOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(() => {
+    const stored = localStorage.getItem("app-favorites");
+    return stored ? JSON.parse(stored) : DEFAULT_FAVORITE_IDS;
+  });
+
+  const toggleFavorite = (appId: string) => {
+    setFavoriteIds(prev => {
+      const next = prev.includes(appId) ? prev.filter(id => id !== appId) : [...prev, appId];
+      localStorage.setItem("app-favorites", JSON.stringify(next));
+      return next;
+    });
+  };
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -46,23 +58,35 @@ export default function AppTabs() {
   };
 
   // Dropdown data
-  const favoriteApps = ALL_APPS.filter(a => FAVORITE_IDS.includes(a.id));
+  const favoriteApps = ALL_APPS.filter(a => favoriteIds.includes(a.id));
   const trendingApps = ALL_APPS.filter(a => TRENDING_IDS.includes(a.id));
-  const recentApps = ALL_APPS.filter(a => recentIds.includes(a.id) && !FAVORITE_IDS.includes(a.id));
+  const recentApps = ALL_APPS.filter(a => recentIds.includes(a.id) && !favoriteIds.includes(a.id));
   const filtered = search ? ALL_APPS.filter(a => a.label.toLowerCase().includes(search.toLowerCase())) : null;
 
   const tabApps = openTabs.map(id => ALL_APPS.find(a => a.id === id)).filter(Boolean) as AppDef[];
 
-  const renderGridApp = (app: AppDef) => {
+  const renderGridApp = (app: AppDef, showFavStar = false) => {
     const Icon = app.icon;
+    const isFav = favoriteIds.includes(app.id);
     return (
-      <button key={app.id} onClick={() => handleOpenApp(app)}
-        className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors group">
-        <div className={`w-11 h-11 ${app.bgColor} rounded-xl flex items-center justify-center`}>
-          <Icon size={20} className="text-white" />
-        </div>
-        <span className="text-[0.72rem] font-medium text-foreground/70 text-center leading-tight">{app.label}</span>
-      </button>
+      <div key={app.id} className="relative group/app">
+        <button onClick={() => handleOpenApp(app)}
+          className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors w-full">
+          <div className={`w-11 h-11 ${app.bgColor} rounded-xl flex items-center justify-center`}>
+            <Icon size={20} className="text-white" />
+          </div>
+          <span className="text-[0.72rem] font-medium text-foreground/70 text-center leading-tight">{app.label}</span>
+        </button>
+        {showFavStar && (
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleFavorite(app.id); }}
+            className="absolute top-1 right-1 p-0.5 rounded-md transition-opacity opacity-0 group-hover/app:opacity-100 data-[fav=true]:opacity-100"
+            data-fav={isFav}
+          >
+            <Star size={13} className={isFav ? "fill-amber-500 text-amber-500" : "text-muted-foreground/40 hover:text-amber-400"} />
+          </button>
+        )}
+      </div>
     );
   };
 
@@ -145,7 +169,7 @@ export default function AppTabs() {
                     Results ({filtered.length})
                   </span>
                   <div className="grid grid-cols-3 gap-1 mt-2">
-                    {filtered.map(a => renderGridApp(a))}
+                    {filtered.map(a => renderGridApp(a, true))}
                   </div>
                   {filtered.length === 0 && <p className="text-sm text-muted-foreground py-4 text-center">No apps found</p>}
                 </div>
@@ -158,7 +182,7 @@ export default function AppTabs() {
                       <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Favorites</span>
                     </div>
                     <div className="grid grid-cols-3 gap-1">
-                      {favoriteApps.map(a => renderGridApp(a))}
+                      {favoriteApps.map(a => renderGridApp(a, true))}
                     </div>
                   </div>
 
@@ -170,7 +194,7 @@ export default function AppTabs() {
                         <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Recently Used</span>
                       </div>
                       <div className="grid grid-cols-3 gap-1">
-                        {recentApps.slice(0, 3).map(a => renderGridApp(a))}
+                        {recentApps.slice(0, 3).map(a => renderGridApp(a, true))}
                       </div>
                     </div>
                   )}
@@ -179,7 +203,7 @@ export default function AppTabs() {
                   <div>
                     <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Trending</span>
                     <div className="grid grid-cols-3 gap-1 mt-2">
-                      {trendingApps.map(a => renderGridApp(a))}
+                      {trendingApps.map(a => renderGridApp(a, true))}
                     </div>
                   </div>
                 </>
