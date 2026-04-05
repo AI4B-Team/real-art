@@ -9,6 +9,7 @@ import {
   GripVertical, Trash2, X, Check,
   LayoutGrid, LayoutTemplate, Presentation,
   MonitorPlay, AudioLines, MousePointerClick, Layers3, Languages,
+  Shuffle, SlidersHorizontal,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
@@ -398,28 +399,23 @@ const EbookDesignSidebar = ({
                 <Sparkles className="w-4 h-4 text-accent" />Generate Image
               </div>
               {/* Prompt box */}
-              <div className="border border-accent/30 rounded-xl p-2.5 space-y-2 bg-accent/[0.02]">
+              <div className="border border-accent/30 rounded-xl p-3 space-y-2.5 bg-accent/[0.02]">
                 <div className="flex items-start gap-2">
-                  <ImageIcon className="w-4 h-4 text-accent mt-0.5 shrink-0" />
+                  <button className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 hover:bg-accent/20 transition-colors" title="Image-To-Prompt">
+                    <ImageIcon className="w-4 h-4 text-accent" />
+                  </button>
                   <textarea value={imagePrompt} onChange={e => setImagePrompt(e.target.value)}
-                    placeholder="Describe what you want to create..."
+                    placeholder="Describe the image you want to create..."
                     rows={2}
                     className="flex-1 text-xs bg-transparent resize-none focus:outline-none placeholder:text-muted-foreground" />
                 </div>
-                <div className="flex items-center justify-between">
-                  <button className="p-1 text-muted-foreground hover:text-foreground transition-colors">
-                    <LayoutGrid className="w-4 h-4" />
+                <div className="flex items-center gap-1.5">
+                  <button className="w-8 h-8 rounded-lg bg-foreground/[0.05] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.08] transition-colors" title="Auto Prompt">
+                    <Shuffle className="w-4 h-4" />
                   </button>
-                  <div className="flex items-center gap-1.5">
-                    <button className="p-1 text-muted-foreground hover:text-foreground transition-colors">
-                      <Sparkles className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => { setIsGeneratingImage(true); setTimeout(() => { setIsGeneratingImage(false); toast.success('Image generated'); }, 2000); }}
-                      disabled={!imagePrompt.trim() || isGeneratingImage}
-                      className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center disabled:opacity-50 hover:bg-accent/90 transition-colors">
-                      {isGeneratingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-                    </button>
-                  </div>
+                  <button className="w-8 h-8 rounded-lg bg-foreground/[0.05] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.08] transition-colors" title="Tools">
+                    <SlidersHorizontal className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
               {/* Creations grid */}
