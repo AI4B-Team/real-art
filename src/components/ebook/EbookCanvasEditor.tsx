@@ -10,7 +10,8 @@ import {
   GripVertical, MoreHorizontal, FileText, MessageSquare,
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
-  Sparkles, EyeOff, Download, Files,
+  Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
+  BoxSelect, Maximize2,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
