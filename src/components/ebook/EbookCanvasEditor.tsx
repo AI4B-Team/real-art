@@ -389,6 +389,11 @@ const EbookCanvasEditor = ({
   useEffect(() => {
     if (!selectedPageId || selectedPageId === prevSelectedRef.current) return;
     prevSelectedRef.current = selectedPageId;
+    // Don't auto-scroll if the page was selected by the scroll observer
+    if (scrollSelectedRef.current) {
+      scrollSelectedRef.current = false;
+      return;
+    }
     // Reset scrolling guard so programmatic navigation always works
     isScrollingRef.current = false;
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
