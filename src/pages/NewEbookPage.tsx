@@ -491,7 +491,7 @@ const NewEbookPage = () => {
             <div className="flex items-center gap-2.5 ml-auto shrink-0">
               {(() => {
                 const avatars = ["photo-1494790108377-be9c29b29330", "photo-1507003211169-0a1dd7228f2d", "photo-1534528741775-53994a69daeb", "photo-1438761681033-6461ffad8d80", "photo-1472099645785-5658abf4ff4e"];
-                const maxShow = 3;
+                const maxShow = 2;
                 const extra = avatars.length - maxShow;
                 return (
                   <div className="flex items-center -space-x-2">
