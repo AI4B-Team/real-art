@@ -12,6 +12,8 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { useAtMention } from "@/hooks/useAtMention";
 import MentionDropdown from "@/components/MentionDropdown";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 type ContentType = "video" | "image" | "audio";
 
@@ -69,9 +71,11 @@ const PLACEHOLDERS: Record<ContentType, string> = {
 };
 
 export default function EditorPromptBox({ editorType, chatInput, onChatInputChange, onSend, isStreaming = false }: EditorPromptBoxProps) {
+  const { toast } = useToast();
   const [contentType, setContentType] = useState<ContentType>(editorType);
   const [isContentTypeOpen, setIsContentTypeOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
   const [typeSelected, setTypeSelected] = useState(false);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [selectedSubMode, setSelectedSubMode] = useState<string | null>(null);
@@ -84,6 +88,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
   const imgUploadRef = useRef<HTMLInputElement>(null);
+  const promptFileRef = useRef<HTMLInputElement>(null);
   const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(editableRef);
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
@@ -187,6 +192,36 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     syncText();
   }, [syncText]);
 
+  const handleExtractPrompt = async (file: File) => {
+    setIsExtractingPrompt(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const { data, error } = await supabase.functions.invoke("generate-prompts", {
+        body: { imageUrl: base64 },
+      });
+
+      if (error) throw error;
+
+      const extracted = contentType === "video" ? data.video_prompt : data.image_prompt;
+      if (extracted && editableRef.current) {
+        editableRef.current.textContent = extracted;
+        syncText();
+      }
+      toast({ title: "Prompt extracted!", description: "AI analyzed your image and generated a prompt." });
+    } catch (e: any) {
+      console.error("Extract prompt error:", e);
+      toast({ title: "Failed to extract prompt", description: e.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setIsExtractingPrompt(false);
+      if (promptFileRef.current) promptFileRef.current.value = "";
+    }
+  };
 
   const addChip = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
     if (chipIds.has(item.id)) return;
@@ -318,32 +353,38 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
         <div className="absolute top-3 left-3 flex flex-col gap-1.5 z-10">
           <Tooltip>
             <TooltipTrigger asChild>
-              <button onClick={() => setIsContentTypeOpen(!isContentTypeOpen)} className="p-1 transition hover:opacity-70">
-                <ContentIcon className={`w-5 h-5 ${currentType.color}`} />
+              <button
+                onClick={() => promptFileRef.current?.click()}
+                disabled={isExtractingPrompt}
+                className={`p-1.5 rounded-lg bg-foreground/[0.06] ${currentType.color} hover:bg-foreground/[0.1] transition-colors cursor-pointer`}
+              >
+                {isExtractingPrompt ? <Loader2 size={17} className="animate-spin" /> : <ContentIcon size={17} />}
               </button>
             </TooltipTrigger>
-            <TooltipContent>Tools</TooltipContent>
+            <TooltipContent side="right">
+              {contentType === "image" ? "Image-To-Prompt" : contentType === "video" ? "Video-To-Prompt" : "Audio"}
+            </TooltipContent>
           </Tooltip>
+          <input
+            ref={promptFileRef}
+            type="file"
+            accept={contentType === "video" ? "image/*,video/*" : "image/*"}
+            className="hidden"
+            onChange={e => {
+              const file = e.target.files?.[0];
+              if (file) handleExtractPrompt(file);
+            }}
+          />
           <Tooltip>
             <TooltipTrigger asChild>
-              <button onClick={handleEnhance} disabled={isEnhancing} className="p-1 transition hover:opacity-70 disabled:opacity-50">
-                {isEnhancing ? <Loader2 className="w-5 h-5 text-emerald-500 animate-spin" /> : <Shuffle className="w-5 h-5 text-emerald-500" />}
+              <button onClick={handleEnhance} disabled={isEnhancing} className="p-1.5 rounded-lg bg-foreground/[0.06] text-emerald-500 hover:bg-foreground/[0.1] transition-colors disabled:opacity-50">
+                {isEnhancing ? <Loader2 size={17} className="animate-spin" /> : <Shuffle size={17} />}
               </button>
             </TooltipTrigger>
-            <TooltipContent>Auto Prompt</TooltipContent>
+            <TooltipContent side="right">Auto Prompt</TooltipContent>
           </Tooltip>
         </div>
 
-        {isContentTypeOpen && (
-          <div className="absolute top-12 left-3 bg-foreground text-background rounded-xl shadow-lg p-2 z-50 min-w-[140px]">
-            {CONTENT_TYPES.map(t => (
-              <button key={t.id} onClick={() => { setContentType(t.id); setIsContentTypeOpen(false); }}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${contentType === t.id ? "text-background" : "text-background/60 hover:text-background"}`}>
-                <t.icon className="w-4 h-4" /> {t.label}
-              </button>
-            ))}
-          </div>
-        )}
 
         <div className="pl-12 pr-4 pt-3 pb-2 relative">
           <div
