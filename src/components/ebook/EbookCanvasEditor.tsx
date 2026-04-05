@@ -883,24 +883,42 @@ const EbookCanvasEditor = ({
           <TypeBadge />
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
-          {/* Floating action bar */}
-          {isSelected && (
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] px-2 py-1.5 z-50"
-              onMouseDown={e => e.stopPropagation()}>
-              <button onClick={() => { updateElement(el.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); }}
-                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
-                <ImagePlus className="w-3.5 h-3.5" />Replace
-              </button>
-              <button onClick={() => setShowAIEditModal(true)}
-                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
-                <Sparkles className="w-3.5 h-3.5 text-accent" />Edit
-              </button>
-              <button onClick={deleteElement}
-                className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-destructive hover:bg-destructive/10 transition-colors">
-                <Trash2 className="w-3.5 h-3.5" />Delete
-              </button>
-            </div>
-          )}
+          {/* Floating action bar — compact vertical for small images, horizontal with labels for large */}
+          {isSelected && (() => {
+            const isSmall = el.width < 25 || el.height < 25;
+            return (
+              <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isSmall ? 'flex flex-col gap-0.5 p-1' : 'flex items-center gap-1 px-2 py-1.5'} bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-50`}
+                onMouseDown={e => e.stopPropagation()}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={() => { updateElement(el.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); }}
+                      className={`flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors ${isSmall ? 'p-1.5' : 'px-2 py-1 text-xs'}`}>
+                      <ImagePlus className={isSmall ? 'w-4 h-4' : 'w-3.5 h-3.5'} />{!isSmall && 'Replace'}
+                    </button>
+                  </TooltipTrigger>
+                  {isSmall && <TooltipContent side="right">Replace</TooltipContent>}
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={() => setShowAIEditModal(true)}
+                      className={`flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors ${isSmall ? 'p-1.5' : 'px-2 py-1 text-xs'}`}>
+                      <Sparkles className={`${isSmall ? 'w-4 h-4' : 'w-3.5 h-3.5'} text-accent`} />{!isSmall && 'Edit'}
+                    </button>
+                  </TooltipTrigger>
+                  {isSmall && <TooltipContent side="right">Edit</TooltipContent>}
+                </Tooltip>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={deleteElement}
+                      className={`flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors ${isSmall ? 'p-1.5' : 'px-2 py-1 text-xs'}`}>
+                      <Trash2 className={isSmall ? 'w-4 h-4' : 'w-3.5 h-3.5'} />{!isSmall && 'Delete'}
+                    </button>
+                  </TooltipTrigger>
+                  {isSmall && <TooltipContent side="right">Delete</TooltipContent>}
+                </Tooltip>
+              </div>
+            );
+          })()}
         </div>
       );
     }
