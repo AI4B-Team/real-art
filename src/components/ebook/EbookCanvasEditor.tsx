@@ -1197,11 +1197,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   </div>
                 ))}
               </div>
-              <button
-                onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
-                className="px-4 py-2 bg-accent text-white text-xs font-medium rounded-lg hover:bg-accent/90 flex items-center gap-2 transition-colors">
-                <Upload className="w-3.5 h-3.5" />Upload Image
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
+                  className="px-4 py-2 bg-accent text-white text-xs font-medium rounded-lg hover:bg-accent/90 flex items-center gap-2 transition-colors">
+                  <Upload className="w-3.5 h-3.5" />Upload Image
+                </button>
+                <button
+                  onClick={e => { e.stopPropagation(); setReplaceModalElementId(null); }}
+                  className="px-4 py-2 bg-foreground/10 text-foreground text-xs font-medium rounded-lg hover:bg-foreground/15 flex items-center gap-2 transition-colors">
+                  <X className="w-3.5 h-3.5" />Cancel
+                </button>
+              </div>
             </div>
           )}
           {isSelected && renderResizeHandles(el)}
