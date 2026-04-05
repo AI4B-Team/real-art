@@ -20,6 +20,7 @@ import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
 import EbookCanvasEditor, { type EbookCanvasEditorHandle } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
+import EbookShareModal from "@/components/ebook/EbookShareModal";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 
 interface NewBookData {
@@ -141,6 +142,7 @@ const NewEbookPage = () => {
   const [showLinkInput, setShowLinkInput] = useState(false);
   const [linkInputValue, setLinkInputValue] = useState("");
   const [attachedSources, setAttachedSources] = useState<{ id: string; type: "file" | "link" | "audio"; label: string }[]>([]);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   const addSource = useCallback((type: "file" | "link" | "audio", label: string) => {
     setAttachedSources(prev => [...prev, { id: `src-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, type, label }]);
@@ -488,7 +490,7 @@ const NewEbookPage = () => {
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-accent/90 rounded-lg text-xs text-white font-semibold transition-colors">
                 <Sparkles className="w-3.5 h-3.5" />Create
               </button>
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
+              <button onClick={() => setShowShareModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <Share2 className="w-3.5 h-3.5" />Share
               </button>
             </div>
@@ -1067,6 +1069,7 @@ const NewEbookPage = () => {
           </div>
         )}
       </div>
+      <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
     </PageShell>
   );
 };
