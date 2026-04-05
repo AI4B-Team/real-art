@@ -186,7 +186,22 @@ const NewEbookPage = () => {
   const [isGridView, setIsGridView] = useState(false);
   const [findReplaceMode, setFindReplaceMode] = useState<'find' | 'find-replace' | null>(null);
 
+  // ⌘H / Ctrl+H shortcut for Find & Replace
   useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'h') {
+        e.preventDefault();
+        setFindReplaceMode(prev => prev === 'find-replace' ? null : 'find-replace');
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f' && activeTab === 'design') {
+        e.preventDefault();
+        setFindReplaceMode(prev => prev === 'find' ? null : 'find');
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [activeTab]);
+
     const state = location.state as { book?: any; fromCreate?: boolean; prompt?: string } | null;
     if (state?.book) {
       setActiveTab("design");
