@@ -232,23 +232,31 @@ const PageSettingsPanel = ({
           </div>
 
           {/* Page action buttons */}
-          {selectedPageId && (
+          {selectedPageId && (() => {
+            const isCoverOrBack = selectedPage?.type === 'cover' || selectedPage?.type === 'back';
+            return (
             <div className="flex items-center justify-center gap-1 px-4 py-2 border-b border-foreground/[0.04]">
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => handlePageAction('add', selectedPageId)} className="p-1.5 rounded hover:bg-foreground/[0.05] text-muted-foreground">
                   <Plus className="w-4 h-4" />
                 </button>
               </TooltipTrigger><TooltipContent>Add Page</TooltipContent></Tooltip>
+              {!isCoverOrBack && (
+              <>
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => handlePageAction('duplicate', selectedPageId)} className="p-1.5 rounded hover:bg-foreground/[0.05] text-muted-foreground">
                   <Copy className="w-4 h-4" />
                 </button>
               </TooltipTrigger><TooltipContent>Duplicate</TooltipContent></Tooltip>
+              </>
+              )}
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => handlePageAction('lock', selectedPageId)} className={`p-1.5 rounded hover:bg-foreground/[0.05] ${selectedPage?.locked ? 'text-destructive' : 'text-muted-foreground'}`}>
                   {selectedPage?.locked ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                 </button>
               </TooltipTrigger><TooltipContent>{selectedPage?.locked ? 'Unlock Page' : 'Lock Page'}</TooltipContent></Tooltip>
+              {!isCoverOrBack && (
+              <>
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => handlePageAction('delete', selectedPageId)} className="p-1.5 rounded hover:bg-foreground/[0.05] text-muted-foreground hover:text-destructive">
                   <Trash2 className="w-4 h-4" />
@@ -264,6 +272,8 @@ const PageSettingsPanel = ({
                   <ChevronDown className="w-4 h-4" />
                 </button>
               </TooltipTrigger><TooltipContent>Move Down</TooltipContent></Tooltip>
+              </>
+              )}
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={onGridViewToggle} className="p-1.5 rounded hover:bg-foreground/[0.05] text-muted-foreground">
                   <SlidersHorizontal className="w-4 h-4" />
