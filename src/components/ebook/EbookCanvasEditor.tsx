@@ -184,6 +184,7 @@ const EbookCanvasEditor = ({
   const [pageElements, setPageElements] = useState<Record<string, CanvasElement[]>>({});
   const [dragState, setDragState] = useState<{ id: string; startX: number; startY: number; elemX: number; elemY: number } | null>(null);
   const [resizeState, setResizeState] = useState<{ id: string; handle: string; startX: number; startY: number; elemX: number; elemY: number; elemW: number; elemH: number } | null>(null);
+  const [rotateState, setRotateState] = useState<{ id: string; centerX: number; centerY: number; startAngle: number; elemRotation: number } | null>(null);
   const [undoStack, setUndoStack] = useState<Record<string, CanvasElement[]>[]>([]);
   const [redoStack, setRedoStack] = useState<Record<string, CanvasElement[]>[]>([]);
   const [showPageSettings, setShowPageSettings] = useState(false);
