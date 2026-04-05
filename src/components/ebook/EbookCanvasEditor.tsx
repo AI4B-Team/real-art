@@ -11,7 +11,7 @@ import {
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
   Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
-  BoxSelect, Maximize2, ArrowUpDown, Upload,
+  BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -51,6 +51,7 @@ export interface CanvasElement {
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
   isPlaceholder?: boolean;
+  highlightColor?: string;
 }
 
 interface EbookCanvasEditorProps {
@@ -859,6 +860,7 @@ const EbookCanvasEditor = ({
                 fontWeight: el.fontWeight || 'normal',
                 fontStyle: el.fontStyle || 'normal',
                 textDecoration: el.textDecoration || 'none',
+                backgroundColor: el.highlightColor || 'transparent',
               }}
             />
           ) : (
@@ -869,6 +871,7 @@ const EbookCanvasEditor = ({
               fontWeight: el.fontWeight || 'normal',
               fontStyle: el.fontStyle || 'normal',
               textDecoration: el.textDecoration || 'none',
+              backgroundColor: el.highlightColor || 'transparent',
             }}>
               {el.content}
             </div>
@@ -1272,6 +1275,21 @@ const EbookCanvasEditor = ({
                         onClick={e => e.stopPropagation()}
                         className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer p-0" />
                     </TooltipTrigger><TooltipContent>Text Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <div className="relative">
+                        <input type="color" value={selectedElement.highlightColor || '#ffff00'}
+                          onChange={e => updateElement(selectedElement.id, { highlightColor: e.target.value })}
+                          onMouseDown={e => e.stopPropagation()}
+                          onClick={e => e.stopPropagation()}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+                        <div className={`w-7 h-7 rounded flex items-center justify-center cursor-pointer ${selectedElement.highlightColor ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                          <Highlighter className="w-3.5 h-3.5" />
+                        </div>
+                        {selectedElement.highlightColor && (
+                          <div className="absolute -bottom-0.5 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full" style={{ backgroundColor: selectedElement.highlightColor }} />
+                        )}
+                      </div>
+                    </TooltipTrigger><TooltipContent>Highlight Color</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => updateElement(selectedElement.id, { fontSize: selectedElement.fontSize === 28 ? 16 : 28, fontWeight: selectedElement.fontSize === 28 ? 'normal' : 'bold' })}
                         className={`w-7 h-7 rounded text-xs font-bold flex items-center justify-center ${selectedElement.fontSize && selectedElement.fontSize >= 28 ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
