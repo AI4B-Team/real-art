@@ -494,7 +494,7 @@ const PageSettingsPanel = ({
           {/* Border */}
           <SectionToggle id="border" title="Border" icon={Square} />
           {expandedSections.has('border') && (
-            <div className="px-4 pb-4 space-y-3">
+            <div className="px-4 pt-2 pb-4 space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-muted-foreground mb-1.5 block">Type</label>
