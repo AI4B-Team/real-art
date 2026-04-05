@@ -871,20 +871,7 @@ const EbookDesignSidebar = ({
       {/* Interactive */}
       <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
       {expandedSections.has('interactive') && (
-        <div className="px-3 pb-3 space-y-1.5">
-          {[
-            { id: 'button', label: 'Button', desc: 'Clickable CTA button' },
-            { id: 'link', label: 'Hyperlink', desc: 'External or internal link' },
-            { id: 'form', label: 'Form Field', desc: 'Input or text area' },
-            { id: 'quiz', label: 'Quiz', desc: 'Interactive quiz element' },
-          ].map(item => (
-            <button key={item.id} onClick={() => { onAddElement?.(item.id, {}); toast.success(`${item.label} added`); }}
-              className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
-              <span className="text-xs font-medium text-foreground">{item.label}</span>
-              <p className="text-[10px] text-muted-foreground">{item.desc}</p>
-            </button>
-          ))}
-        </div>
+        <InteractivePanel onAddElement={onAddElement} />
       )}
 
       {/* Mockups */}
