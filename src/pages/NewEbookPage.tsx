@@ -1099,11 +1099,11 @@ const NewEbookPage = () => {
                     return (
                       <button key={i} onClick={() => { if (!isEditing) setBookData(prev => ({ ...prev, selectedTitle: title })); }}
                         className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 group relative ${
-                          isSelected ? "border-accent bg-accent/[0.04] shadow-sm shadow-accent/10" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                          isSelected ? "border-accent bg-accent/[0.04] shadow-sm shadow-accent/10 animate-[titleSelect_0.25s_ease-out]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
                         }`}>
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold transition-all duration-200 ${
-                            isSelected ? "bg-accent text-white scale-110" : "bg-foreground/[0.08] text-foreground/60"
+                            isSelected ? "bg-accent text-white animate-[checkPop_0.35s_cubic-bezier(0.34,1.56,0.64,1)]" : "bg-foreground/[0.08] text-foreground/60"
                           }`}>
                             {isSelected ? <Check size={16} /> : i + 1}
                           </div>
