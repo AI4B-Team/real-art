@@ -1319,7 +1319,8 @@ const EbookCanvasEditor = ({
                     </div>
                     <div className="flex flex-col items-center gap-1.5 w-[140px]">
                       <button onClick={handleAddPage}
-                        className="w-full aspect-[3/4] rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group">
+                        className="w-full rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
+                        style={{ aspectRatio: `${pw}/${ph}` }}>
                         <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
                         <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
                       </button>
