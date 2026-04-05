@@ -69,7 +69,7 @@ const TONES = [
   { id: "inspirational", name: "Inspirational", icon: Flame },
 ];
 
-const TITLE_BADGES: { label: string; icon: React.ComponentType<{ size?: number }>; color: string }[] = [
+const TITLE_BADGES: { label: string; icon: React.ComponentType<any>; color: string }[] = [
   { label: "Professional", icon: Briefcase, color: "text-blue-600 bg-blue-50" },
   { label: "Advanced", icon: Gem, color: "text-emerald-600 bg-emerald-50" },
   { label: "Bold & Tactical", icon: Flame, color: "text-orange-600 bg-orange-50" },
