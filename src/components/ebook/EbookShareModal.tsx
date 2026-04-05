@@ -73,6 +73,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
   const [scheduleDate, setScheduleDate] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
   const [schedulePlatforms, setSchedulePlatforms] = useState<Set<string>>(new Set());
+  const [scheduleError, setScheduleError] = useState("");
 
   const handleCopyLink = () => {
     const shareUrl = `${window.location.origin}/shared/ebook/${btoa(Date.now().toString()).slice(0, 12)}`;
@@ -144,9 +145,10 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
 
   const handleScheduleConfirm = () => {
     if (!scheduleDate || !scheduleTime || schedulePlatforms.size === 0) {
-      toast({ title: "Please select a date, time, and at least one platform" });
+      setScheduleError("Please select a date, time, and at least one platform");
       return;
     }
+    setScheduleError("");
     const names = [...schedulePlatforms].join(", ");
     toast({ title: "Publishing scheduled!", description: `${scheduleDate} at ${scheduleTime} on ${names}` });
     setShowSchedule(false);
@@ -220,6 +222,9 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
               </div>
             </div>
 
+            {scheduleError && (
+              <p className="text-sm text-destructive text-center">{scheduleError}</p>
+            )}
             <button onClick={handleScheduleConfirm}
               className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <Clock className="w-4 h-4" />
