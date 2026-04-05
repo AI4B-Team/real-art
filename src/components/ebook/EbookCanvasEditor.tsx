@@ -492,8 +492,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const selectedElement = currentElements.find(e => e.id === selectedElementId);
 
   // ─── Page Actions ─────────────────────────────
-  const insertPageAt = (index: number) => {
-    const newPage: Page = { id: crypto.randomUUID(), title: 'New Page', type: 'chapter', locked: false };
+  const insertPageAt = (index: number, pageType: Page['type'] = 'chapter') => {
+    const titleMap: Record<string, string> = {
+      'chapter': 'Chapter Cover',
+      'chapter-page': 'Chapter Content',
+      'blank': 'Blank Page',
+    };
+    const newPage: Page = { id: crypto.randomUUID(), title: titleMap[pageType] || 'New Page', type: pageType, locked: false };
     const newPages = [...currentPages];
     newPages.splice(index, 0, newPage);
     setPages(newPages);
@@ -501,9 +506,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     toast.success('Page added');
   };
 
-  const handleAddPage = () => {
+  const handleAddPage = (pageType: Page['type'] = 'chapter') => {
     const idx = currentPages.findIndex(p => p.id === selectedPageId);
-    insertPageAt(idx + 1);
+    insertPageAt(idx + 1, pageType);
   };
 
   const handleDuplicatePage = () => {
