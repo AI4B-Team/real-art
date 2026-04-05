@@ -3,7 +3,7 @@ import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
   Minus, Hand, ChevronLeft, ChevronRight,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Bold, Italic, Underline,
+  Bold, Italic, Underline, Strikethrough,
   Trash2, Copy, Lock, Unlock,
   ChevronUp, ChevronDown, RotateCcw,
   Plus, Check, X, SlidersHorizontal,
@@ -11,7 +11,7 @@ import {
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
   Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
-  BoxSelect, Maximize2,
+  BoxSelect, Maximize2, ArrowUpDown,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
