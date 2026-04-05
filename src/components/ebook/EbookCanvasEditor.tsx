@@ -335,6 +335,7 @@ const EbookCanvasEditor = ({
         if (bestEntry) {
           const pageId = (bestEntry as IntersectionObserverEntry).target.getAttribute('data-page-id');
           if (pageId && pageId !== selectedPageId) {
+            scrollSelectedRef.current = true;
             onPageSelect(pageId);
           }
         }
