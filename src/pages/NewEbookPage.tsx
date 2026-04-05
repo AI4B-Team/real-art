@@ -1068,7 +1068,7 @@ const NewEbookPage = () => {
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 pageWidth={pageWidth}
                 pageHeight={pageHeight}
-              />
+                accessMode={accessMode}
 
               {/* Right panel collapse toggle */}
               {!isGridView && showPageSettings && (
