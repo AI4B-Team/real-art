@@ -1200,9 +1200,10 @@ const EbookCanvasEditor = ({
                         >
                           <div
                             onClick={() => { onPageSelect(page.id); onGridViewToggle?.(); }}
-                            className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+                            className={`group relative w-full bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                               isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
                             } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
+                            style={{ aspectRatio: `${pw}/${ph}` }}
                           >
                             <div className="w-full h-full relative">
                               <div className="absolute inset-0">
