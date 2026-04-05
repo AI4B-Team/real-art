@@ -873,10 +873,10 @@ const NewEbookPage = () => {
                   const textScope = scope === 'selected' ? 'page' : scope;
                   const elements = canvasRef.current?.getTextElements(textScope);
                   if (!elements || elements.length === 0) {
-                    toast.error('No text elements found to translate');
+                    toast({ title: 'No text elements found to translate', variant: 'destructive' });
                     return;
                   }
-                  toast.info(`Translating ${elements.length} text element${elements.length > 1 ? 's' : ''} to ${language}...`);
+                  toast({ title: `Translating ${elements.length} text element${elements.length > 1 ? 's' : ''} to ${language}...` });
                   try {
                     const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-text-edit`, {
                       method: 'POST',
@@ -887,23 +887,23 @@ const NewEbookPage = () => {
                         customInstruction: `Translate each text to ${language}. Return ONLY the translated texts as a JSON array of strings, in the same order. Keep formatting, line breaks, and special characters. Do not add explanations.`,
                       }),
                     });
-                    const data = await response.json();
-                    if (data.result) {
+                    const result = await response.json();
+                    if (result.result) {
                       try {
-                        const translated: string[] = JSON.parse(data.result);
+                        const translated: string[] = JSON.parse(result.result);
                         if (Array.isArray(translated) && translated.length === elements.length) {
                           const updates = elements.map((el, i) => ({ ...el, content: translated[i] }));
                           canvasRef.current?.updateTextContent(updates);
-                          toast.success(`Translated ${elements.length} element${elements.length > 1 ? 's' : ''} to ${language}`);
+                          toast({ title: `Translated ${elements.length} element${elements.length > 1 ? 's' : ''} to ${language}` });
                         } else {
-                          toast.error('Translation returned unexpected format');
+                          toast({ title: 'Translation returned unexpected format', variant: 'destructive' });
                         }
-                      } catch { toast.error('Failed to parse translation result'); }
+                      } catch { toast({ title: 'Failed to parse translation result', variant: 'destructive' }); }
                     } else {
-                      toast.error(data.error || 'Translation failed');
+                      toast({ title: result.error || 'Translation failed', variant: 'destructive' });
                     }
-                  } catch (err) {
-                    toast.error('Translation request failed');
+                  } catch {
+                    toast({ title: 'Translation request failed', variant: 'destructive' });
                   }
                 }}
               />
