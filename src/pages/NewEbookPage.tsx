@@ -865,6 +865,7 @@ const NewEbookPage = () => {
                 }}
                 onSectionChange={handleSidebarSectionChange}
                 openSection={sidebarOpenSection as any}
+                onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
               />
               )}
 
