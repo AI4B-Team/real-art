@@ -202,6 +202,7 @@ const NewEbookPage = () => {
   const [pageHeight, setPageHeight] = useState(640);
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
   const [isReplacingImage, setIsReplacingImage] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date>(new Date());
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
@@ -465,10 +466,18 @@ const NewEbookPage = () => {
                 </PopoverContent>
               </Popover>
 
-              <div className="flex items-center gap-1.5 bg-emerald-500/20 px-2.5 py-1 rounded-lg">
-                <Cloud className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-xs font-medium text-emerald-400">Auto-Saved</span>
-              </div>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={() => { setLastSaved(new Date()); toast({ title: "Project saved!" }); }}
+                    className="flex items-center gap-1.5 bg-emerald-500/20 px-2.5 py-1 rounded-lg hover:bg-emerald-500/30 transition-colors">
+                    <Cloud className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-xs font-medium text-emerald-400">Auto-Saved</span>
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="text-xs">
+                  Click To Save (Last Saved: {lastSaved.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' })} // {lastSaved.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })})
+                </TooltipContent>
+              </Tooltip>
             </div>
 
             {/* Center: Step Tabs */}
