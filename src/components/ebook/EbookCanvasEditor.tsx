@@ -614,7 +614,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   // ─── Element Actions ──────────────────────────
   const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
     const newEl: CanvasElement = {
-      id: crypto.randomUUID(), type, x: 20, y: 20, width: 30, height: type === 'text' ? 10 : 20,
+      id: crypto.randomUUID(), type, x: 20, y: 20,
+      width: type === 'interactive' ? 60 : 30,
+      height: type === 'text' ? 10 : (type === 'interactive' ? 30 : 20),
       ...(type === 'text' ? { content: 'New Text', fontSize: 16, fontFamily: 'Inter', textColor: '#1a1a2e' } : {}),
       ...(type === 'shape' ? { fill: '#3b82f6', stroke: '#1e40af', strokeWidth: 1, shapeType: 'rectangle' } : {}),
       ...(type === 'image' ? { src: STOCK_IMAGES[0] } : {}),
