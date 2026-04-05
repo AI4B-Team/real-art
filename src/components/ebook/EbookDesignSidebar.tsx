@@ -124,12 +124,8 @@ const EbookDesignSidebar = ({
 
   // Respond to external openSection prop
   useEffect(() => {
-    if (openSection && !expandedSections.has(openSection)) {
-      setExpandedSections(prev => {
-        const next = new Set(prev);
-        next.add(openSection);
-        return next;
-      });
+    if (openSection) {
+      setExpandedSections(new Set<SectionId>([openSection]));
       if (isCollapsed) setIsCollapsed(false);
     }
   }, [openSection]);
