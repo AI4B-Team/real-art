@@ -1800,10 +1800,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             onPageSelect(page.id);
                             if (isSelected) handleCanvasClick(e);
                           }}
-                          className={`bg-white rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
+                          className={`rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
                           }`}
-                          style={{ width: `${pw * zoom / 100}px`, height: `${ph * zoom / 100}px` }}
+                          style={{
+                            width: `${pw * zoom / 100}px`, height: `${ph * zoom / 100}px`,
+                            backgroundColor: page.bgColor || '#ffffff',
+                            backgroundImage: page.bgImage ? `url(${page.bgImage})` : undefined,
+                            backgroundSize: page.bgImage ? 'cover' : undefined,
+                            border: page.pageBorderType && page.pageBorderType !== 'none'
+                              ? `${page.pageBorderWidth || 1}px ${page.pageBorderType} ${page.pageBorderColor || '#e5e7eb'}`
+                              : isSelected ? '2px solid hsl(var(--accent))' : '1px solid hsl(var(--foreground) / 0.06)',
+                          }}
                         >
                           {/* Clip layer for page content */}
                           <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none" style={{ zIndex: 0 }}>
