@@ -271,6 +271,42 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const findInputRef = useRef<HTMLInputElement>(null);
 
+  // Access mode helpers
+  const canEdit = accessMode === 'editing' || accessMode === 'admin';
+  const canComment = accessMode === 'commenting' || accessMode === 'editing' || accessMode === 'admin';
+  const isViewOnly = accessMode === 'viewing';
+
+  // Page comments state (for commenting mode)
+  interface PageComment {
+    id: string;
+    pageId: string;
+    x: number; y: number;
+    text: string;
+    author: string;
+    timestamp: string;
+    resolved: boolean;
+  }
+  const [pageComments, setPageComments] = useState<PageComment[]>([]);
+  const [commentDraft, setCommentDraft] = useState<{ pageId: string; x: number; y: number } | null>(null);
+  const [commentText, setCommentText] = useState('');
+  const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
+
+  const addPageComment = () => {
+    if (!commentDraft || !commentText.trim()) return;
+    setPageComments(prev => [...prev, {
+      id: `cmt-${Date.now()}`,
+      pageId: commentDraft.pageId,
+      x: commentDraft.x, y: commentDraft.y,
+      text: commentText.trim(),
+      author: 'You',
+      timestamp: 'Just now',
+      resolved: false,
+    }]);
+    setCommentText('');
+    setCommentDraft(null);
+    toast.success('Comment added');
+  };
+
   // Find & Replace state
   const [findQuery, setFindQuery] = useState('');
   const [replaceQuery, setReplaceQuery] = useState('');
