@@ -682,8 +682,8 @@ const EbookDesignSidebar = ({
                     <div className="absolute -top-0.5 left-2 right-2 h-0.5 bg-accent rounded-full z-10" />
                   )}
                   <div
-                    draggable
-                    onDragStart={() => handleDragStart(i)}
+                    draggable={!isCoverOrBack}
+                    onDragStart={() => { if (!isCoverOrBack) handleDragStart(i); }}
                     onDragOver={e => handleDragOver(e, i)}
                     onDragEnd={handleDragEnd}
                     onDragLeave={() => { if (dragOverIndex === i) setDragOverIndex(null); }}
