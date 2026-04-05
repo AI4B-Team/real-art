@@ -139,7 +139,7 @@ const AITextEditMenu: React.FC<AITextEditMenuProps> = ({
           ))}
         </div>
         <div className="p-2 border-t border-foreground/[0.06] bg-foreground/[0.02]">
-          <p className="text-xs text-muted-foreground text-center">Powered by AI • Results may vary</p>
+          <p className="text-xs text-muted-foreground text-center">Powered By AI • Results May Vary</p>
         </div>
       </PopoverContent>
     </Popover>
