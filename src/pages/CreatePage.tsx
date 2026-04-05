@@ -3925,8 +3925,8 @@ function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
 const TABS: { id: GalleryTab; label: string; icon: typeof LayoutGrid }[] = [
   { id: "creations",   label: "Creations",   icon: Sparkles },
   { id: "favorites",   label: "Favorites",   icon: Heart },
-  { id: "community",   label: "Community",   icon: Users },
   { id: "collections", label: "Collections", icon: FolderOpen },
+  { id: "community",   label: "Community",   icon: Users },
   { id: "templates",   label: "Templates",   icon: LayoutGrid },
   { id: "apps",        label: "Apps",        icon: Package },
 ];
