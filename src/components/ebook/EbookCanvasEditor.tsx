@@ -173,15 +173,19 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
   }
 };
 
+export interface EbookCanvasEditorHandle {
+  addElement: (type: string, extra?: any) => void;
+}
+
 // ─── Component ─────────────────────────────────────
-const EbookCanvasEditor = ({
+const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorProps>(({
   pages, selectedPageId, onPageSelect, onPagesChange, bookTitle,
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
   onPageSettingsToggle, onOpenImageSection,
   pageWidth: pw = 480, pageHeight: ph = 640,
-}: EbookCanvasEditorProps) => {
+}, ref) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
   const setPages = (fn: Page[] | ((p: Page[]) => Page[])) => {
