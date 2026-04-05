@@ -818,7 +818,7 @@ const EbookCanvasEditor = ({
           {isSelected && (
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] px-2 py-1.5 z-50"
               onMouseDown={e => e.stopPropagation()}>
-              <button onClick={() => updateElement(el.id, { src: undefined, isPlaceholder: true })}
+              <button onClick={() => { updateElement(el.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); }}
                 className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
                 <ImagePlus className="w-3.5 h-3.5" />Replace
               </button>
