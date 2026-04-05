@@ -1151,9 +1151,8 @@ const EbookCanvasEditor = ({
               </div>
 
 
-                    <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
-                  </Select>
-                  {/* Font size with +/- */}
+
+
                   <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.max(8, (selectedElement.fontSize || 16) - 2) })}
                     className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Minus className="w-3 h-3" /></button>
                   <span className="text-xs font-medium w-7 text-center">{selectedElement.fontSize || 16}</span>
