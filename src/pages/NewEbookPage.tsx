@@ -1074,7 +1074,7 @@ const NewEbookPage = () => {
                     <span className={`text-xs font-medium ${step.active ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
                   </div>
                   {i < arr.length - 1 && (
-                    <div className={`w-16 h-0.5 mx-2 mt-[-18px] ${i === 0 || step.done ? "bg-emerald-500" : "bg-foreground/[0.08]"}`} />
+                    <div className={`w-16 h-0.5 mx-2 mt-[-18px] ${step.done ? "bg-emerald-500" : "bg-foreground/[0.08]"}`} />
                   )}
                 </div>
               ))}
