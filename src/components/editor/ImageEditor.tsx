@@ -84,7 +84,7 @@ const CANVAS_TOOLS = [
   { id: "text", icon: Type, tooltip: "Text" },
   { id: "magic", icon: Wand2, tooltip: "AI Magic" },
   { id: "layers", icon: Layers, tooltip: "Layers" },
-  { id: "upscale", icon: ZoomIn, tooltip: "Upscale" },
+  { id: "upscale", icon: Maximize, tooltip: "Upscale" },
   { id: "animate", icon: Play, tooltip: "Animate" },
   { id: "opacity", icon: SlidersHorizontal, tooltip: "Opacity" },
   { id: "save", icon: Save, tooltip: "Save" },
