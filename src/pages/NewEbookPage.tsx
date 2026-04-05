@@ -16,6 +16,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
 import EbookCanvasEditor, { type EbookCanvasEditorHandle } from "@/components/ebook/EbookCanvasEditor";
