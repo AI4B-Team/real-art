@@ -169,7 +169,7 @@ export default function AppTabs() {
                     Results ({filtered.length})
                   </span>
                   <div className="grid grid-cols-3 gap-1 mt-2">
-                    {filtered.map(a => renderGridApp(a))}
+                    {filtered.map(a => renderGridApp(a, true))}
                   </div>
                   {filtered.length === 0 && <p className="text-sm text-muted-foreground py-4 text-center">No apps found</p>}
                 </div>
