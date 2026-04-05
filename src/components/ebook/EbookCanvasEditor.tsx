@@ -88,6 +88,8 @@ interface EbookCanvasEditorProps {
   pageWidth?: number;
   pageHeight?: number;
   accessMode?: AccessMode;
+  initialPageElements?: Record<string, CanvasElement[]>;
+  onPageElementsChange?: (elements: Record<string, CanvasElement[]>) => void;
 }
 
 // ─── Constants ─────────────────────────────────────
@@ -216,6 +218,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   onPageSettingsToggle, onOpenImageSection, onReplaceStateChange,
   pageWidth: pw = 480, pageHeight: ph = 640,
   accessMode = 'editing',
+  initialPageElements, onPageElementsChange,
 }, ref) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
@@ -257,7 +260,14 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
-  const [pageElements, setPageElements] = useState<Record<string, CanvasElement[]>>({});
+  const [pageElements, setPageElementsRaw] = useState<Record<string, CanvasElement[]>>(initialPageElements || {});
+  const setPageElements: typeof setPageElementsRaw = useCallback((update) => {
+    setPageElementsRaw(prev => {
+      const next = typeof update === 'function' ? update(prev) : update;
+      onPageElementsChange?.(next);
+      return next;
+    });
+  }, [onPageElementsChange]);
   const [dragState, setDragState] = useState<{ id: string; startX: number; startY: number; elemX: number; elemY: number } | null>(null);
   const [resizeState, setResizeState] = useState<{ id: string; handle: string; startX: number; startY: number; elemX: number; elemY: number; elemW: number; elemH: number } | null>(null);
   const [rotateState, setRotateState] = useState<{ id: string; centerX: number; centerY: number; startAngle: number; elemRotation: number } | null>(null);
