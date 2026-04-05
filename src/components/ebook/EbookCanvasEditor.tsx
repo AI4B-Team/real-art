@@ -1279,6 +1279,7 @@ const EbookCanvasEditor = ({
                   </>
                 )}
               </div>
+              </div>
               )}
               {/* ── Find & Replace Panel ── */}
               {findReplaceMode && (
