@@ -9,6 +9,7 @@ import {
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut,
   Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download,
+  ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -188,6 +189,8 @@ const NewEbookPage = () => {
   const [showPageSettings, setShowPageSettings] = useState(true);
   const [manualPageSettings, setManualPageSettings] = useState(false);
   const [sidebarOpenSection, setSidebarOpenSection] = useState<string | null>(null);
+  const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
+  const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
@@ -832,7 +835,7 @@ const NewEbookPage = () => {
           <div className="relative flex-1 min-h-0">
             <div className="flex h-full">
               {/* LEFT: Design Sidebar (hidden in grid view) */}
-              {!isGridView && (
+              {!isGridView && !isLeftPanelCollapsed && (
               <EbookDesignSidebar
                 bookTitle={bookData.selectedTitle}
                 chapters={ebookPages.map(p => ({ id: p.id, title: p.title }))}
@@ -861,7 +864,17 @@ const NewEbookPage = () => {
                 openSection={sidebarOpenSection as any}
               />
               )}
-              {/* CENTER: Canvas Editor (no pages panel - it's on the right) */}
+
+              {/* Left panel collapse toggle */}
+              {!isGridView && (
+                <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
+                  className="absolute top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-accent rounded-r-lg flex items-center justify-center hover:bg-accent/90 transition-colors"
+                  style={{ left: isLeftPanelCollapsed ? 0 : 320 }}>
+                  <ChevronLeft className={`w-3 h-3 text-white transition-transform ${isLeftPanelCollapsed ? "rotate-180" : ""}`} />
+                </button>
+              )}
+
+              {/* CENTER: Canvas Editor */}
               <EbookCanvasEditor
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
@@ -878,8 +891,18 @@ const NewEbookPage = () => {
                 onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
               />
-              {/* RIGHT: Page Settings Panel (shown contextually) */}
+
+              {/* Right panel collapse toggle */}
               {!isGridView && showPageSettings && (
+                <button onClick={() => setIsRightPanelCollapsed(!isRightPanelCollapsed)}
+                  className="absolute top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-accent rounded-l-lg flex items-center justify-center hover:bg-accent/90 transition-colors"
+                  style={{ right: isRightPanelCollapsed ? 0 : 256 }}>
+                  <ChevronRight className={`w-3 h-3 text-white transition-transform ${isRightPanelCollapsed ? "rotate-180" : ""}`} />
+                </button>
+              )}
+
+              {/* RIGHT: Page Settings Panel */}
+              {!isGridView && showPageSettings && !isRightPanelCollapsed && (
               <PageSettingsPanel
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
