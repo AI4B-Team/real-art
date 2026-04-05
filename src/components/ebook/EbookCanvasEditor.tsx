@@ -1165,7 +1165,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {/* Thumbnail */}
                   <div className={`bg-foreground/[0.04] rounded overflow-hidden mb-1.5 ${isGridView ? 'aspect-[3/4]' : 'h-12'} flex items-center justify-center`}>
                     <span className={`text-[9px] font-bold ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
-                      {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : i + 1}
+                      {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : page.type === 'blank' ? '📃' : page.type === 'chapter-page' ? '📄' : '📖'}
                     </span>
                   </div>
                   <p className="text-[10px] font-medium text-foreground truncate">{page.title}</p>
