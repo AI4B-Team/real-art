@@ -1149,11 +1149,8 @@ const EbookCanvasEditor = ({
                   </>
                 )}
               </div>
-                  </button>
-                  <div className="w-px h-5 bg-foreground/[0.08]" />
-                  {/* Font family */}
-                  <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
-                    <SelectTrigger className="w-32 h-7 text-xs"><SelectValue /></SelectTrigger>
+
+
                     <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
                   </Select>
                   {/* Font size with +/- */}
