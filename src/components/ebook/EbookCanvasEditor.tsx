@@ -638,9 +638,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       case 'settings': onPageSettingsToggle?.(); break;
     }
   };
+  const isPageLocked = selectedPage?.locked === true;
 
   // ─── Element Actions ──────────────────────────
   const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
+    if (isPageLocked) { toast.error('This page is locked. Unlock it to make changes.'); return; }
     const newEl: CanvasElement = {
       id: crypto.randomUUID(), type, x: 20, y: 20,
       width: type === 'interactive' ? 60 : 30,
