@@ -70,6 +70,7 @@ interface EbookCanvasEditorProps {
   findReplaceMode?: 'find' | 'find-replace' | null;
   onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
   onPageSettingsToggle?: () => void;
+  onOpenImageSection?: () => void;
 }
 
 // ─── Constants ─────────────────────────────────────
@@ -176,7 +177,7 @@ const EbookCanvasEditor = ({
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
-  onPageSettingsToggle,
+  onPageSettingsToggle, onOpenImageSection,
 }: EbookCanvasEditorProps) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
@@ -723,11 +724,30 @@ const EbookCanvasEditor = ({
     toast.success('Image replaced');
   };
 
-  const handleAIEdit = () => {
-    if (!aiEditPrompt.trim()) return;
-    toast.success('AI edit applied: ' + aiEditPrompt);
+  const handleAIEdit = async () => {
+    if (!aiEditPrompt.trim() || !selectedElementId) return;
+    const el = (pageElements[selectedPage?.id || ''] || []).find(e => e.id === selectedElementId);
+    if (!el?.src) return;
+    setIsAIProcessing(true);
     setShowAIEditModal(false);
-    setAIEditPrompt('');
+    toast.success('AI is processing your edit: ' + aiEditPrompt);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
+        body: { action: 'style-transfer', imageUrl: el.src, prompt: aiEditPrompt },
+      });
+      if (error) throw error;
+      if (data?.imageUrl) {
+        updateElement(selectedElementId, { src: data.imageUrl });
+        toast.success('Image edited successfully');
+      } else {
+        throw new Error('No image returned');
+      }
+    } catch (err: any) {
+      toast.error('AI edit failed: ' + (err.message || 'Unknown error'));
+    } finally {
+      setIsAIProcessing(false);
+      setAIEditPrompt('');
+    }
   };
 
   // ─── Page Panel DnD ───────────────────────────
@@ -817,7 +837,7 @@ const EbookCanvasEditor = ({
           {isSelected && (
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] px-2 py-1.5 z-50"
               onMouseDown={e => e.stopPropagation()}>
-              <button onClick={() => updateElement(el.id, { src: undefined, isPlaceholder: true })}
+              <button onClick={() => { updateElement(el.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); }}
                 className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
                 <ImagePlus className="w-3.5 h-3.5" />Replace
               </button>
@@ -1458,7 +1478,7 @@ const EbookCanvasEditor = ({
                 {selectedElement?.type === 'image' && (
                   <>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => { if (selectedElement) updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); }}
+                      <button onClick={() => { if (selectedElement) { updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); } }}
                         className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
                         <ImagePlus className="w-3.5 h-3.5" />Replace
                       </button>

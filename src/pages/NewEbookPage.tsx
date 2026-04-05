@@ -187,6 +187,7 @@ const NewEbookPage = () => {
   const [findReplaceMode, setFindReplaceMode] = useState<'find' | 'find-replace' | null>(null);
   const [showPageSettings, setShowPageSettings] = useState(true);
   const [manualPageSettings, setManualPageSettings] = useState(false);
+  const [sidebarOpenSection, setSidebarOpenSection] = useState<string | null>(null);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
@@ -857,6 +858,7 @@ const NewEbookPage = () => {
                   });
                 }}
                 onSectionChange={handleSidebarSectionChange}
+                openSection={sidebarOpenSection as any}
               />
               )}
               {/* CENTER: Canvas Editor (no pages panel - it's on the right) */}
@@ -874,6 +876,7 @@ const NewEbookPage = () => {
                 findReplaceMode={findReplaceMode}
                 onFindReplaceModeChange={setFindReplaceMode}
                 onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
+                onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
               />
               {/* RIGHT: Page Settings Panel (shown contextually) */}
               {!isGridView && showPageSettings && (

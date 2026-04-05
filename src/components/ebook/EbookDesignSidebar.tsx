@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   ChevronDown, ChevronUp, Layers, FileText, Image as ImageIcon,
   Plus, Pencil, Search, Sparkles, Send, Upload, Loader2,
@@ -35,6 +35,7 @@ interface EbookDesignSidebarProps {
   onChapterReorder?: (fromIndex: number, toIndex: number) => void;
   onAddElement?: (type: string, data?: any) => void;
   onSectionChange?: (sections: Set<string>) => void;
+  openSection?: SectionId | null;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
@@ -107,7 +108,7 @@ const STOCK_IMAGES = [
 
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
-  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange,
+  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
@@ -120,6 +121,18 @@ const EbookDesignSidebar = ({
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Respond to external openSection prop
+  useEffect(() => {
+    if (openSection && !expandedSections.has(openSection)) {
+      setExpandedSections(prev => {
+        const next = new Set(prev);
+        next.add(openSection);
+        return next;
+      });
+      if (isCollapsed) setIsCollapsed(false);
+    }
+  }, [openSection]);
 
   const toggleSection = (id: SectionId) => {
     setExpandedSections(prev => {
