@@ -914,6 +914,9 @@ const NewEbookPage = () => {
                 onPagesChange={setEbookPages}
                 onGridViewToggle={() => setIsGridView(true)}
                 bookTitle={bookData.selectedTitle}
+                pageWidth={pageWidth}
+                pageHeight={pageHeight}
+                onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
               />
               )}
             </div>
