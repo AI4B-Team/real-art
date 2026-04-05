@@ -177,7 +177,7 @@ const EbookCanvasEditor = ({
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
-  onPageSettingsToggle,
+  onPageSettingsToggle, onOpenImageSection,
 }: EbookCanvasEditorProps) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
