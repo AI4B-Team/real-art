@@ -1138,10 +1138,10 @@ const EbookCanvasEditor = ({
                     };
                     const PageIcon = getPageTypeIcon();
                     return (
-                      <div key={page.id} className="flex items-stretch">
+                      <div key={page.id} className="flex items-start">
                         {/* Insert zone with drop indicator */}
                         <div
-                          className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out ${
+                          className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out h-[187px] ${
                             (gridInsertHover === pageIndex && draggedPageIndex === null) || (dragOverPageIndex === pageIndex && draggedPageIndex !== null)
                               ? 'w-14' : 'w-2'
                           }`}
@@ -1272,9 +1272,9 @@ const EbookCanvasEditor = ({
                     );
                   })}
                   {/* Trailing insert + Add Page card */}
-                  <div className="flex items-stretch">
+                  <div className="flex items-start">
                     <div
-                      className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out ${
+                      className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out h-[187px] ${
                         (gridInsertHover === currentPages.length && draggedPageIndex === null) || (dragOverPageIndex === currentPages.length && draggedPageIndex !== null)
                           ? 'w-14' : 'w-2'
                       }`}
