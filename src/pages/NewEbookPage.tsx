@@ -70,16 +70,16 @@ const TONES = [
 ];
 
 const TITLE_BADGES: { label: string; icon: React.ComponentType<any>; color: string }[] = [
-  { label: "Professional", icon: Briefcase, color: "text-blue-600 bg-blue-50" },
-  { label: "Advanced", icon: Gem, color: "text-emerald-600 bg-emerald-50" },
-  { label: "Bold & Tactical", icon: Flame, color: "text-orange-600 bg-orange-50" },
-  { label: "Practical", icon: Target, color: "text-green-600 bg-green-50" },
-  { label: "Beginner-Friendly", icon: Heart, color: "text-pink-600 bg-pink-50" },
-  { label: "Advanced", icon: Gem, color: "text-emerald-600 bg-emerald-50" },
-  { label: "Creative / Strategy", icon: Sparkles, color: "text-violet-600 bg-violet-50" },
-  { label: "Transformation", icon: Rocket, color: "text-amber-600 bg-amber-50" },
-  { label: "Reference", icon: BookOpenCheck, color: "text-slate-600 bg-slate-50" },
-  { label: "Beginner-Friendly", icon: Heart, color: "text-pink-600 bg-pink-50" },
+  { label: "Professional", icon: Briefcase, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Advanced", icon: Gem, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Bold & Tactical", icon: Flame, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Practical", icon: Target, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Beginner-Friendly", icon: Heart, color: "text-foreground/70 bg-blue-50" },
+  { label: "Advanced", icon: Gem, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Creative / Strategy", icon: Sparkles, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Transformation", icon: Rocket, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Reference", icon: BookOpenCheck, color: "text-foreground/70 bg-foreground/[0.05]" },
+  { label: "Beginner-Friendly", icon: Heart, color: "text-foreground/70 bg-blue-50" },
 ];
 
 const AI_MODELS = [
@@ -1074,7 +1074,7 @@ const NewEbookPage = () => {
                     <span className={`text-xs font-medium ${step.active ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
                   </div>
                   {i < arr.length - 1 && (
-                    <div className={`w-16 h-0.5 mx-2 mt-[-18px] ${i === 0 || step.done ? "bg-emerald-500" : "bg-foreground/[0.08]"}`} />
+                    <div className={`w-16 h-0.5 mx-2 mt-[-18px] ${step.done ? "bg-emerald-500" : "bg-foreground/[0.08]"}`} />
                   )}
                 </div>
               ))}
@@ -1083,7 +1083,7 @@ const NewEbookPage = () => {
             {/* TITLE SELECTION PAGE */}
             {generateStep === "titles" && (
               <div>
-                <h2 className="text-2xl font-bold text-foreground text-center mb-2">Choose A Title</h2>
+                <h2 className="text-2xl font-bold text-foreground text-center mb-2">Pick Your Winning Title</h2>
                 <p className="text-sm text-muted-foreground text-center mb-8">Select A Title Or Tweak One To Match Your Voice. You Can Change It Anytime.</p>
 
                 <div className="space-y-3 mb-6">
@@ -1095,12 +1095,12 @@ const NewEbookPage = () => {
 
                     return (
                       <button key={i} onClick={() => { if (!isEditing) setBookData(prev => ({ ...prev, selectedTitle: title })); }}
-                        className={`w-full text-left p-4 rounded-xl border-2 transition-all group relative ${
-                          isSelected ? "border-accent bg-accent/5" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                        className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 group relative ${
+                          isSelected ? "border-accent bg-accent/[0.04] shadow-sm shadow-accent/10" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
                         }`}>
                         <div className="flex items-center gap-3">
-                          <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold ${
-                            isSelected ? "bg-accent text-white" : "bg-emerald-500 text-white"
+                          <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold transition-all duration-200 ${
+                            isSelected ? "bg-accent text-white scale-110" : "bg-foreground/[0.08] text-foreground/60"
                           }`}>
                             {isSelected ? <Check size={16} /> : i + 1}
                           </div>
@@ -1127,8 +1127,8 @@ const NewEbookPage = () => {
                                 <badge.icon size={10} />{badge.label}
                               </span>
                               {isRecommended && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold text-amber-600 bg-amber-50">
-                                  <Star size={10} />Recommended For You
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold text-amber-700 bg-amber-50 ring-1 ring-amber-200/60">
+                                  <Star size={10} className="fill-amber-400 text-amber-400" />Recommended For You
                                 </span>
                               )}
                             </div>
