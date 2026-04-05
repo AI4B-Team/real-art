@@ -918,7 +918,7 @@ const EbookDesignSidebar = ({
       {/* Elements */}
       <SectionHeader id="elements" title="Elements" icon={LayoutGrid} />
       {expandedSections.has('elements') && (
-        <div className="px-3 pb-3 space-y-3">
+        <div className="px-3 pb-3 pt-2 space-y-3">
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <input type="text" value={elementSearch} onChange={e => setElementSearch(e.target.value)}
