@@ -34,6 +34,7 @@ interface EbookDesignSidebarProps {
   onChapterDelete?: (id: string) => void;
   onChapterReorder?: (fromIndex: number, toIndex: number) => void;
   onAddElement?: (type: string, data?: any) => void;
+  onSectionChange?: (sections: Set<string>) => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
