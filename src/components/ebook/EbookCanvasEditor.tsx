@@ -287,6 +287,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elements: CanvasElement[]; pageId: string } | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
+  const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Record<string, HTMLDivElement | null>>({});
