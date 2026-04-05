@@ -340,6 +340,9 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
               {SOCIAL_PLATFORMS_MAIN.map(p => (
                 <SocialButton key={p.id} platform={p} />
               ))}
+              {showAllSocial && SOCIAL_PLATFORMS_EXPANDED.map(p => (
+                <SocialButton key={p.id} platform={p} />
+              ))}
               {!showAllSocial && (
                 <button onClick={() => setShowAllSocial(true)}
                   className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
