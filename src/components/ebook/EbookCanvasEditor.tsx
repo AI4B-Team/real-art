@@ -1452,16 +1452,17 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   const renderElementControls = (el: CanvasElement) => {
     const nearTop = el.y < 40;
+    const nearBottom = (el.y + el.height) > 600;
+    const posClass = nearTop
+      ? 'top-2 left-1/2 -translate-x-1/2'
+      : nearBottom
+        ? '-top-10 left-1/2 -translate-x-1/2'
+        : '-top-10 left-1/2 -translate-x-1/2';
     const isSmall = el.width < 180 || el.height < 120;
     const btnSize = isSmall ? 'w-5 h-5' : 'w-7 h-7';
     const iconSize = isSmall ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5';
-    // When near top, place controls below the element to avoid overlapping the rotation handle
-    const posStyle: React.CSSProperties = nearTop
-      ? { bottom: -40, left: '50%', transform: 'translateX(-50%)' }
-      : { top: -40, left: '50%', transform: 'translateX(-50%)' };
     return (
-      <div className="absolute flex items-center gap-2 z-50"
-        style={posStyle}
+      <div className={`absolute ${posClass} flex items-center gap-0.5 z-50`}
         onMouseDown={e => e.stopPropagation()}>
         {[
           { icon: Move, label: 'Move', action: () => {}, cursor: 'grab' },
