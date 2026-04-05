@@ -735,31 +735,13 @@ const EbookDesignSidebar = ({
       {/* Video */}
       <SectionHeader id="video" title="Video" icon={MonitorPlay} />
       {expandedSections.has('video') && (
-        <div className="px-3 pb-3 space-y-2">
-          <button onClick={() => { onAddElement?.('video', {}); toast.success('Video placeholder added'); }}
-            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
-            <Upload className="w-3.5 h-3.5" />Upload Video
-          </button>
-          <button onClick={() => toast.success('Embed link coming soon')}
-            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
-            <ExternalLink className="w-3.5 h-3.5" />Embed Video URL
-          </button>
-        </div>
+        <VideoPanel onAddElement={onAddElement} />
       )}
 
       {/* Audio */}
       <SectionHeader id="audio" title="Audio" icon={AudioLines} />
       {expandedSections.has('audio') && (
-        <div className="px-3 pb-3 space-y-2">
-          <button onClick={() => { onAddElement?.('audio', {}); toast.success('Audio placeholder added'); }}
-            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
-            <Upload className="w-3.5 h-3.5" />Upload Audio
-          </button>
-          <button onClick={() => toast.success('Record audio coming soon')}
-            className="w-full flex items-center justify-center gap-1.5 py-2.5 border border-dashed border-foreground/[0.08] rounded-lg text-xs text-muted-foreground hover:border-accent/40 hover:text-accent">
-            <Music className="w-3.5 h-3.5" />Record Audio
-          </button>
-        </div>
+        <AudioPanel onAddElement={onAddElement} />
       )}
 
       {/* Interactive */}
