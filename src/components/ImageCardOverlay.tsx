@@ -251,7 +251,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
                     Use <ChevronDown className="w-3 h-3 opacity-60" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-40 p-1" align="end" side="top" sideOffset={6}>
+                <DropdownMenuContent className="w-40 p-1" align="end" side="bottom" sideOffset={6}>
                   {USE_OPTIONS.map(opt => (
                     <DropdownMenuItem
                       key={opt.id}
