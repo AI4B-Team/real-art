@@ -669,7 +669,8 @@ const EbookDesignSidebar = ({
           <div className="space-y-0.5">
             {chapters.map((ch, i) => {
               const isSelected = selectedChapterId === ch.id;
-              const isSpecial = ['cover', 'table of contents', 'introduction', 'summary'].includes(ch.type || '');
+              const isSpecial = ['cover', 'back', 'table of contents', 'introduction', 'summary'].includes(ch.type || '');
+              const isCoverOrBack = ch.type === 'cover' || ch.type === 'back';
               const isDragged = draggedIndex === i;
               const isDropTarget = dragOverIndex === i && draggedIndex !== null && draggedIndex !== i;
               const dropAbove = isDropTarget && draggedIndex !== null && draggedIndex > i;
