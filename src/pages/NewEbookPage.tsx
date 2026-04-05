@@ -873,9 +873,36 @@ const NewEbookPage = () => {
                   const textScope = scope === 'selected' ? 'page' : scope;
                   const elements = canvasRef.current?.getTextElements(textScope);
                   if (!elements || elements.length === 0) {
-                    toast({ title: 'No text elements found to translate', variant: 'destructive' });
+                    toast({ title: 'No text elements found', variant: 'destructive' });
                     return;
                   }
+
+                  // Detect language mode
+                  if (language === '__detect__') {
+                    toast({ title: 'Detecting current language...' });
+                    try {
+                      const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-text-edit`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+                        body: JSON.stringify({
+                          action: 'custom',
+                          texts: [elements[0].content],
+                          customInstruction: 'Detect the language of this text. Return ONLY a JSON array with one string: the language name in English (e.g. ["English"]). No explanations.',
+                        }),
+                      });
+                      const result = await response.json();
+                      if (result.result) {
+                        try {
+                          const detected = JSON.parse(result.result);
+                          toast({ title: `Detected language: ${Array.isArray(detected) ? detected[0] : detected}` });
+                        } catch { toast({ title: `Detected: ${result.result}` }); }
+                      } else {
+                        toast({ title: result.error || 'Detection failed', variant: 'destructive' });
+                      }
+                    } catch { toast({ title: 'Detection request failed', variant: 'destructive' }); }
+                    return;
+                  }
+
                   toast({ title: `Translating ${elements.length} text element${elements.length > 1 ? 's' : ''} to ${language}...` });
                   try {
                     const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-text-edit`, {
