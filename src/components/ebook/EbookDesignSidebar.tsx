@@ -343,10 +343,10 @@ const STOCK_AUDIO = [
 
 type MediaTab = 'stock' | 'creations' | 'community' | 'uploads';
 
-const MediaTabs = ({ active, onChange }: { active: MediaTab; onChange: (t: MediaTab) => void }) => (
+const MediaTabs = ({ active, onChange, stockIcon }: { active: MediaTab; onChange: (t: MediaTab) => void; stockIcon?: React.ComponentType<any> }) => (
   <div className="flex items-center gap-0.5 border-b border-foreground/[0.06] mt-2 mb-2">
     {([
-      { id: 'stock' as const, label: 'Stock', icon: Library },
+      { id: 'stock' as const, label: 'Stock', icon: stockIcon || Library },
       { id: 'creations' as const, label: 'Creations', icon: Sparkles },
       { id: 'community' as const, label: 'Community', icon: Users },
       { id: 'uploads' as const, label: 'Uploads', icon: Upload },
