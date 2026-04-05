@@ -83,6 +83,7 @@ interface EbookCanvasEditorProps {
   onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
   onPageSettingsToggle?: () => void;
   onOpenImageSection?: () => void;
+  onReplaceStateChange?: (isReplacing: boolean) => void;
   pageWidth?: number;
   pageHeight?: number;
   accessMode?: AccessMode;
