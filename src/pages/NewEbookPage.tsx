@@ -479,11 +479,23 @@ const NewEbookPage = () => {
 
             {/* Right: Collaborators + Actions */}
             <div className="flex items-center gap-2.5 ml-auto shrink-0">
-              <div className="flex items-center -space-x-2">
-                {["photo-1494790108377-be9c29b29330", "photo-1507003211169-0a1dd7228f2d", "photo-1534528741775-53994a69daeb"].map((id, i) => (
-                  <img key={i} src={`https://images.unsplash.com/${id}?w=32&h=32&fit=crop`} alt="" className="w-7 h-7 rounded-full border-2 border-foreground object-cover" />
-                ))}
-              </div>
+              {(() => {
+                const avatars = ["photo-1494790108377-be9c29b29330", "photo-1507003211169-0a1dd7228f2d", "photo-1534528741775-53994a69daeb", "photo-1438761681033-6461ffad8d80", "photo-1472099645785-5658abf4ff4e"];
+                const maxShow = 3;
+                const extra = avatars.length - maxShow;
+                return (
+                  <div className="flex items-center -space-x-2">
+                    {avatars.slice(0, maxShow).map((id, i) => (
+                      <img key={i} src={`https://images.unsplash.com/${id}?w=32&h=32&fit=crop`} alt="" className="w-7 h-7 rounded-full border-2 border-foreground object-cover" />
+                    ))}
+                    {extra > 0 && (
+                      <div className="w-7 h-7 rounded-full border-2 border-foreground bg-accent flex items-center justify-center">
+                        <span className="text-[10px] font-bold text-white">+{extra}</span>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <UserPlus className="w-3.5 h-3.5" />Invite
               </button>
