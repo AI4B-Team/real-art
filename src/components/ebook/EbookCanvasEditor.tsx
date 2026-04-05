@@ -1263,11 +1263,15 @@ const EbookCanvasEditor = ({
                       <SelectTrigger className="w-32 h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
                     </Select>
-                    <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.max(8, (selectedElement.fontSize || 16) - 2) })}
-                      className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Minus className="w-3 h-3" /></button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.max(8, (selectedElement.fontSize || 16) - 2) })}
+                        className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Minus className="w-3 h-3" /></button>
+                    </TooltipTrigger><TooltipContent>Decrease Font Size</TooltipContent></Tooltip>
                     <span className="text-xs font-medium w-7 text-center">{selectedElement.fontSize || 16}</span>
-                    <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.min(96, (selectedElement.fontSize || 16) + 2) })}
-                      className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Plus className="w-3 h-3" /></button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.min(96, (selectedElement.fontSize || 16) + 2) })}
+                        className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Plus className="w-3 h-3" /></button>
+                    </TooltipTrigger><TooltipContent>Increase Font Size</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <div className="relative w-7 h-7 flex items-center justify-center cursor-pointer">
                         <input type="color" value={selectedElement.textColor || '#1a1a2e'}
@@ -1300,29 +1304,40 @@ const EbookCanvasEditor = ({
                         H
                       </button>
                     </TooltipTrigger><TooltipContent>Heading</TooltipContent></Tooltip>
-                    <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
-                      className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Bold className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
-                      className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Italic className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
-                      className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Underline className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' })}
-                      className={`p-1.5 rounded ${selectedElement.textDecoration === 'line-through' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Strikethrough className="w-3.5 h-3.5" />
-                    </button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                        className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Bold className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Bold</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
+                        className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Italic className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Italic</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
+                        className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Underline className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Underline</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' })}
+                        className={`p-1.5 rounded ${selectedElement.textDecoration === 'line-through' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Strikethrough className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Strikethrough</TooltipContent></Tooltip>
                     {(['left', 'center', 'right', 'justify'] as const).map(align => {
                       const Icon = align === 'left' ? AlignLeft : align === 'center' ? AlignCenter : align === 'right' ? AlignRight : AlignJustify;
+                      const label = align === 'left' ? 'Align Left' : align === 'center' ? 'Align Center' : align === 'right' ? 'Align Right' : 'Justify';
                       return (
-                        <button key={align} onClick={() => updateElement(selectedElement.id, { textAlign: align })}
-                          className={`p-1.5 rounded ${selectedElement.textAlign === align ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                          <Icon className="w-3.5 h-3.5" />
-                        </button>
+                        <Tooltip key={align}><TooltipTrigger asChild>
+                          <button onClick={() => updateElement(selectedElement.id, { textAlign: align })}
+                            className={`p-1.5 rounded ${selectedElement.textAlign === align ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                            <Icon className="w-3.5 h-3.5" />
+                          </button>
+                        </TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip>
                       );
                     })}
                     <Tooltip><TooltipTrigger asChild>
@@ -1355,18 +1370,28 @@ const EbookCanvasEditor = ({
                 {/* ── Context: Shape formatting ── */}
                 {selectedElement?.type === 'shape' && (
                   <>
-                    <span className="text-xs text-muted-foreground">Fill:</span>
-                    <input type="color" value={selectedElement.fill || '#3b82f6'}
-                      onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
-                      className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-                    <span className="text-xs text-muted-foreground ml-1">Stroke:</span>
-                    <input type="color" value={selectedElement.stroke || '#1e40af'}
-                      onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
-                      className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-                    <button onClick={() => updateElement(selectedElement.id, { shapeType: selectedElement.shapeType === 'circle' ? 'rectangle' : 'circle' })}
-                      className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
-                      {selectedElement.shapeType === 'circle' ? <Square className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-                    </button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <span className="text-xs text-muted-foreground">Fill:</span>
+                    </TooltipTrigger><TooltipContent>Fill Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <input type="color" value={selectedElement.fill || '#3b82f6'}
+                        onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
+                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                    </TooltipTrigger><TooltipContent>Fill Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <span className="text-xs text-muted-foreground ml-1">Stroke:</span>
+                    </TooltipTrigger><TooltipContent>Stroke Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <input type="color" value={selectedElement.stroke || '#1e40af'}
+                        onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
+                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                    </TooltipTrigger><TooltipContent>Stroke Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { shapeType: selectedElement.shapeType === 'circle' ? 'rectangle' : 'circle' })}
+                        className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                        {selectedElement.shapeType === 'circle' ? <Square className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                      </button>
+                    </TooltipTrigger><TooltipContent>Toggle Shape</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
                     </TooltipTrigger><TooltipContent>Duplicate</TooltipContent></Tooltip>
@@ -1379,14 +1404,18 @@ const EbookCanvasEditor = ({
                 {/* ── Context: Image formatting ── */}
                 {selectedElement?.type === 'image' && (
                   <>
-                    <button onClick={() => { if (selectedElement) updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); }}
-                      className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
-                      <ImagePlus className="w-3.5 h-3.5" />Replace
-                    </button>
-                    <button onClick={() => setShowAIEditModal(true)}
-                      className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
-                      <Sparkles className="w-3.5 h-3.5" />Edit
-                    </button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => { if (selectedElement) updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); }}
+                        className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
+                        <ImagePlus className="w-3.5 h-3.5" />Replace
+                      </button>
+                    </TooltipTrigger><TooltipContent>Replace Image</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => setShowAIEditModal(true)}
+                        className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
+                        <Sparkles className="w-3.5 h-3.5" />Edit
+                      </button>
+                    </TooltipTrigger><TooltipContent>Edit with AI</TooltipContent></Tooltip>
                     {/* Text — after Edit */}
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => setActiveTool('text')}
@@ -1413,26 +1442,31 @@ const EbookCanvasEditor = ({
                       </Tooltip>
                     ))}
                     {/* Shapes — after Shadow */}
-                    <Popover>
-                      <PopoverTrigger asChild>
-                        <button className={`p-1.5 rounded transition-colors flex items-center gap-0.5 ${['rectangle','circle','line'].includes(activeTool) ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                          <Square className="w-4 h-4" />
-                          <ChevronDown className="w-2.5 h-2.5 opacity-60" />
-                        </button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-44 p-1.5" align="end">
-                        {[
-                          { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
-                          { id: 'circle', icon: Circle, label: 'Circle (O)' },
-                          { id: 'line', icon: Minus, label: 'Line (L)' },
-                        ].map(shape => (
-                          <button key={shape.id} onClick={() => setActiveTool(shape.id)}
-                            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeTool === shape.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
-                            <shape.icon className="w-4 h-4" />{shape.label}
-                          </button>
-                        ))}
-                      </PopoverContent>
-                    </Popover>
+                    <Tooltip>
+                      <Popover>
+                        <TooltipTrigger asChild>
+                          <PopoverTrigger asChild>
+                            <button className={`p-1.5 rounded transition-colors flex items-center gap-0.5 ${['rectangle','circle','line'].includes(activeTool) ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                              <Square className="w-4 h-4" />
+                              <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                            </button>
+                          </PopoverTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>Shapes</TooltipContent>
+                        <PopoverContent className="w-44 p-1.5" align="end">
+                          {[
+                            { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
+                            { id: 'circle', icon: Circle, label: 'Circle (O)' },
+                            { id: 'line', icon: Minus, label: 'Line (L)' },
+                          ].map(shape => (
+                            <button key={shape.id} onClick={() => setActiveTool(shape.id)}
+                              className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeTool === shape.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                              <shape.icon className="w-4 h-4" />{shape.label}
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
+                    </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button onClick={() => toast.success('Corner Radius tool')}
