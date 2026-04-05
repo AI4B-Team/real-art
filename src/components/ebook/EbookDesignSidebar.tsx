@@ -639,7 +639,7 @@ const EbookDesignSidebar = ({
       {/* Templates */}
       <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
       {expandedSections.has('templates') && (
-        <div className="px-3 pb-3">
+        <div className="px-3 pb-3 pt-2">
           <div className="grid grid-cols-3 gap-1.5">
             {TEMPLATES.map(t => (
               <button key={t.id} onClick={() => toast.success(`${t.name} template applied`)}
