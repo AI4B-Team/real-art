@@ -137,15 +137,12 @@ const createTocElements = (pages: Page[]): CanvasElement[] => {
 };
 
 const createChapterElements = (num: number, title: string): CanvasElement[] => [
-  { id: `ch${num}-bg`, type: 'shape', x: 0, y: 0, width: 100, height: 25, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
-  ...Array.from({ length: 3 }, (_, i) => ({
-    id: `ch${num}-img${i}`, type: 'image' as const, x: 52 + i * 16, y: 3, width: 14, height: 18,
-    src: STOCK_IMAGES[(num - 1 + i) % STOCK_IMAGES.length],
-  })),
-  { id: `ch${num}-num`, type: 'text', x: 10, y: 8, width: 30, height: 10, content: num.toString().padStart(2, '0'), fontSize: 48, fontFamily: 'Georgia', textColor: '#ffffff' },
-  { id: `ch${num}-title`, type: 'text', x: 10, y: 28, width: 80, height: 8, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e' },
-  { id: `ch${num}-body`, type: 'text', x: 10, y: 40, width: 80, height: 15, content: 'This section provides a comprehensive overview of our strategic approach, detailing key methodologies and expected outcomes for stakeholders.', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
-  { id: `ch${num}-body2`, type: 'text', x: 10, y: 58, width: 80, height: 20, content: 'Our research indicates significant growth potential in emerging markets. The data suggests a 15% increase in investor confidence over the past quarter.', fontSize: 10, fontFamily: 'Georgia', textColor: '#374151' },
+  { id: `ch${num}-bg`, type: 'shape', x: 0, y: 0, width: 100, height: 30, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `ch${num}-img`, type: 'image', x: 0, y: 0, width: 100, height: 30, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length] },
+  { id: `ch${num}-num`, type: 'text', x: 10, y: 8, width: 30, height: 10, content: num.toString().padStart(2, '0'), fontSize: 48, fontFamily: 'Georgia', textColor: '#ffffff', zIndex: 2 },
+  { id: `ch${num}-title`, type: 'text', x: 10, y: 33, width: 80, height: 8, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e' },
+  { id: `ch${num}-body`, type: 'text', x: 10, y: 44, width: 80, height: 15, content: 'This section provides a comprehensive overview of our strategic approach, detailing key methodologies and expected outcomes for stakeholders.', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
+  { id: `ch${num}-body2`, type: 'text', x: 10, y: 62, width: 80, height: 20, content: 'Our research indicates significant growth potential in emerging markets. The data suggests a 15% increase in investor confidence over the past quarter.', fontSize: 10, fontFamily: 'Georgia', textColor: '#374151' },
 ];
 
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => [
