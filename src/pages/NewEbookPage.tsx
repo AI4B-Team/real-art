@@ -1058,12 +1058,14 @@ const NewEbookPage = () => {
           <div className="max-w-3xl mx-auto">
             {/* Step Progress Bar */}
             <div className="flex items-center justify-center gap-0 mb-10">
-              {[
-                { key: "source", label: "Source Material", done: true },
-                { key: "titles", label: "Book Title", active: generateStep === "titles" },
-                { key: "chapters", label: "Book Outline", active: generateStep === "chapters" },
-                { key: "drafts", label: "Chapter Drafts", done: false },
-              ].map((step, i, arr) => (
+              {(() => {
+                const steps = [
+                  { key: "source", label: "Source Material", done: true, active: false },
+                  { key: "titles", label: "Book Title", done: generateStep === "chapters", active: generateStep === "titles" },
+                  { key: "chapters", label: "Book Outline", done: false, active: generateStep === "chapters" },
+                  { key: "drafts", label: "Chapter Drafts", done: false, active: false },
+                ];
+                return steps.map((step, i) => (
                 <div key={step.key} className="flex items-center">
                   <div className="flex flex-col items-center">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-1.5 transition-all ${
@@ -1071,13 +1073,14 @@ const NewEbookPage = () => {
                     }`}>
                       {step.done ? <Check size={18} /> : i + 1}
                     </div>
-                    <span className={`text-xs font-medium ${step.active ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
+                    <span className={`text-xs font-medium ${step.done ? "text-emerald-600" : step.active ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
                   </div>
-                  {i < arr.length - 1 && (
+                  {i < steps.length - 1 && (
                     <div className={`w-16 h-0.5 mx-2 mt-[-18px] ${step.done ? "bg-emerald-500" : "bg-foreground/[0.08]"}`} />
                   )}
                 </div>
-              ))}
+              ));
+              })()}
             </div>
 
             {/* TITLE SELECTION PAGE */}
