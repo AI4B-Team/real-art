@@ -1028,6 +1028,9 @@ const EbookCanvasEditor = ({
                           </div>
                         </div>
                       </div>
+                    );
+                  })}
+                </div>
               </div>
             </>
           )}
