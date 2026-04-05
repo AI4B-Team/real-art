@@ -11,7 +11,7 @@ import {
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
   Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
-  BoxSelect, Maximize2, ArrowUpDown,
+  BoxSelect, Maximize2, ArrowUpDown, Upload,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -50,6 +50,7 @@ export interface CanvasElement {
   textDecoration?: 'none' | 'underline' | 'line-through';
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
+  isPlaceholder?: boolean;
 }
 
 interface EbookCanvasEditorProps {
@@ -96,6 +97,9 @@ const STOCK_IMAGES = [
   'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&auto=format&fit=crop',
 ];
 
 // ─── Element Generators ────────────────────────────
@@ -705,7 +709,7 @@ const EbookCanvasEditor = ({
     const file = e.target.files?.[0];
     if (!file || !selectedElementId) return;
     const url = URL.createObjectURL(file);
-    updateElement(selectedElementId, { src: url });
+    updateElement(selectedElementId, { src: url, isPlaceholder: false });
     toast.success('Image replaced');
   };
 
@@ -763,6 +767,34 @@ const EbookCanvasEditor = ({
     ) : null;
 
     if (el.type === 'image') {
+      // Placeholder state — show recommended images + upload
+      if (el.isPlaceholder || !el.src) {
+        return (
+          <div key={el.id} className={`${selectionBorder}`} style={style}
+            onMouseDown={e => handleElementMouseDown(e, el, pageId)}>
+            <TypeBadge />
+            <div className="w-full h-full bg-muted/50 border-2 border-dashed border-foreground/20 flex flex-col items-center justify-center p-4 rounded-lg">
+              <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
+              <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
+                {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
+                  <button key={idx}
+                    onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
+                    className="w-20 h-20 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                    <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
+                className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 flex items-center gap-2 transition-colors">
+                <Upload className="w-4 h-4" />Upload Image
+              </button>
+            </div>
+            {isSelected && renderResizeHandles(el)}
+          </div>
+        );
+      }
+
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
@@ -774,7 +806,7 @@ const EbookCanvasEditor = ({
           {isSelected && (
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] px-2 py-1.5 z-50"
               onMouseDown={e => e.stopPropagation()}>
-              <button onClick={() => replaceImageInputRef.current?.click()}
+              <button onClick={() => updateElement(el.id, { src: undefined, isPlaceholder: true })}
                 className="flex items-center gap-1.5 px-2 py-1 rounded text-xs text-foreground hover:bg-foreground/[0.05] transition-colors">
                 <ImagePlus className="w-3.5 h-3.5" />Replace
               </button>
@@ -1325,7 +1357,7 @@ const EbookCanvasEditor = ({
                 {/* ── Context: Image formatting ── */}
                 {selectedElement?.type === 'image' && (
                   <>
-                    <button onClick={() => replaceImageInputRef.current?.click()}
+                    <button onClick={() => { if (selectedElement) updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); }}
                       className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
                       <ImagePlus className="w-3.5 h-3.5" />Replace
                     </button>
