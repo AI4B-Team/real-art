@@ -27,6 +27,7 @@ interface TextElement {
 
 const TOOL_CONFIGS: Record<string, { title: string; settings: { type: string; label: string; key?: string; min?: number; max?: number; step?: number; options?: string[] }[] }> = {
   select: { title: "Selection", settings: [{ type: "buttons", label: "Mode", options: ["Rectangle", "Ellipse", "Freeform", "Magic"] }] },
+  hand: { title: "Hand (Pan)", settings: [] },
   brush: { title: "Brush", settings: [
     { type: "slider", label: "Size", key: "brushSize", min: 1, max: 500 },
     { type: "slider", label: "Hardness", key: "hardness", min: 0, max: 100 },
@@ -37,7 +38,20 @@ const TOOL_CONFIGS: Record<string, { title: string; settings: { type: string; la
     { type: "slider", label: "Size", key: "eraserSize", min: 1, max: 500 },
     { type: "slider", label: "Opacity", key: "eraserOpacity", min: 0, max: 100 },
   ]},
+  inpaint: { title: "Inpaint", settings: [
+    { type: "slider", label: "Brush Size", key: "inpaintSize", min: 5, max: 200 },
+    { type: "slider", label: "Strength", key: "inpaintStrength", min: 0, max: 100 },
+  ]},
   fill: { title: "Fill", settings: [{ type: "color", label: "Fill Color", key: "fillColor" }, { type: "slider", label: "Tolerance", key: "tolerance", min: 0, max: 255 }] },
+  arrow: { title: "Arrow", settings: [
+    { type: "slider", label: "Stroke Width", key: "arrowStroke", min: 1, max: 20 },
+    { type: "color", label: "Color", key: "arrowColor" },
+  ]},
+  rectangle: { title: "Rectangle", settings: [
+    { type: "slider", label: "Stroke Width", key: "rectStroke", min: 1, max: 20 },
+    { type: "color", label: "Color", key: "rectColor" },
+    { type: "buttons", label: "Fill", options: ["Outline", "Filled"] },
+  ]},
   text: { title: "Text", settings: [
     { type: "slider", label: "Font Size", key: "fontSize", min: 8, max: 200 },
     { type: "color", label: "Text Color", key: "textColor" },
