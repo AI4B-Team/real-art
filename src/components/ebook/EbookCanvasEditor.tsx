@@ -908,8 +908,27 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   // ─── Keyboard Shortcuts ───────────────────────
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
+      // Skip shortcuts when typing in inputs, textareas, or contentEditable
+      const tag = (e.target as HTMLElement)?.tagName;
+      const isEditable = (e.target as HTMLElement)?.isContentEditable;
+      const isInput = tag === 'INPUT' || tag === 'TEXTAREA' || isEditable;
       if (editingTextId) return;
-      if (e.key === 'Delete' || e.key === 'Backspace') deleteElement();
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (isInput) return;
+        e.preventDefault();
+        deleteElement();
+      }
+      if (e.key === 'Enter' && selectedElementId && !isInput) {
+        const el = currentElements.find(el => el.id === selectedElementId);
+        if (el?.type === 'text') {
+          e.preventDefault();
+          setEditingTextId(el.id);
+        }
+      }
+      if (e.key === 'Escape') {
+        setSelectedElementId(null);
+      }
+      if (isInput) return;
       if (e.key === 'v' || e.key === 'V') setActiveTool('select');
       if (e.key === 't' || e.key === 'T') setActiveTool('text');
       if (e.key === 'r' || e.key === 'R') setActiveTool('rectangle');
@@ -918,7 +937,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     };
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [editingTextId, selectedElementId]);
+  }, [editingTextId, selectedElementId, currentElements]);
 
   // ─── Image Upload ─────────────────────────────
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
