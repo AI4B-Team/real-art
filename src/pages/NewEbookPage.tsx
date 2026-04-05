@@ -255,48 +255,120 @@ const NewEbookPage = () => {
     if (!bookData.prompt.trim()) { toast({ title: "Please describe your topic", variant: "destructive" }); return; }
     setIsGenerating(true);
     setGenerationProgress(0);
-    const topic = toTitleCase(bookData.prompt.trim());
+
+    // Animate progress bar while waiting
     const interval = setInterval(() => {
-      setGenerationProgress(prev => {
-        if (prev >= 100) {
-          clearInterval(interval);
-          setIsGenerating(false);
-          setTitleSuggestions([
-            `The Complete Guide to ${topic}`,
-            `Mastering ${topic}: The Definitive Framework`,
-            `${topic} Unleashed: The Bold Playbook`,
-            `The ${topic} Blueprint`,
-            `${topic} Made Simple: A Beginner's Guide`,
-            `Advanced ${topic} Techniques`,
-            `The Art of ${topic}: A Creative Strategy`,
-            `${topic}: From Zero to Hero`,
-            `The Ultimate ${topic} Reference Handbook`,
-            `${topic} 101: Getting Started`,
-          ]);
-          setChapterSequence([
-            { id: "ch-1", title: "Introduction", description: `An introduction to ${topic}.`, topics: ["Overview", "Why This Matters"], includeImages: true, pageCount: 5 },
-            { id: "ch-2", title: "Understanding the Basics", description: `Foundational concepts of ${topic}.`, topics: ["Key Concepts", "Core Principles"], includeImages: true, pageCount: 8 },
-            { id: "ch-3", title: "Getting Started", description: `A practical guide to ${topic}.`, topics: ["Setting Up", "First Steps"], includeImages: true, pageCount: 10 },
-            { id: "ch-4", title: "Strategies and Techniques", description: `Proven strategies for ${topic}.`, topics: ["Best Practices", "Expert Tips"], includeImages: true, pageCount: 12 },
-            { id: "ch-5", title: "Common Challenges", description: `Overcoming obstacles in ${topic}.`, topics: ["Problem Solving", "Troubleshooting"], includeImages: true, pageCount: 8 },
-            { id: "ch-6", title: "Advanced Techniques", description: `Advanced knowledge about ${topic}.`, topics: ["Advanced Strategies", "Optimization"], includeImages: true, pageCount: 10 },
-            { id: "ch-7", title: "Case Studies", description: `Real-world examples of ${topic}.`, topics: ["Success Stories", "Lessons Learned"], includeImages: true, pageCount: 8 },
-            { id: "ch-8", title: "Conclusion", description: `Summary and next steps for ${topic}.`, topics: ["Key Takeaways", "Action Plan"], includeImages: true, pageCount: 5 },
-          ]);
-          setBookDescription(`A comprehensive guide to ${topic}.`);
-          setActiveTab("generate");
-          toast({ title: "Title ideas generated!" });
-          return 100;
-        }
-        return Math.min(prev + Math.random() * 20, 100);
+      setGenerationProgress(prev => Math.min(prev + Math.random() * 8, 90));
+    }, 600);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-ebook', {
+        body: {
+          action: 'generate-outline',
+          prompt: bookData.prompt.trim(),
+          model: bookData.model,
+          language: bookData.language,
+          tone: bookData.tone,
+          chapters: bookData.chapters,
+          wordsPerChapter: bookData.wordsPerChapter,
+        },
       });
-    }, 400);
+
+      clearInterval(interval);
+
+      if (error) throw new Error(error.message || 'Generation failed');
+      if (data?.error) throw new Error(data.error);
+
+      const result = data.result;
+      setTitleSuggestions(result.titles || []);
+      setBookDescription(result.description || '');
+      setChapterSequence(
+        (result.chapters || []).map((ch: any, i: number) => ({
+          id: `ch-${i + 1}`,
+          title: ch.title,
+          description: ch.description,
+          topics: ch.topics || [],
+          includeImages: true,
+          pageCount: ch.pageCount || 8,
+        }))
+      );
+      setGenerationProgress(100);
+      setActiveTab("generate");
+      toast({ title: "AI-powered outline generated!" });
+    } catch (e: any) {
+      clearInterval(interval);
+      console.error('Generate outline error:', e);
+      toast({ title: e.message || "Generation failed", variant: "destructive" });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
-  const handleGenerateBook = () => {
+  const handleGenerateBook = async () => {
     if (!bookData.selectedTitle) { toast({ title: "Please select a title first", variant: "destructive" }); return; }
     setActiveTab("design");
     setIsGeneratingBook(true);
+
+    // Generate full book content with AI
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-ebook', {
+        body: {
+          action: 'generate-full-book',
+          prompt: bookData.prompt.trim(),
+          title: bookData.selectedTitle,
+          model: bookData.model,
+          language: bookData.language,
+          tone: bookData.tone,
+          chapters: bookData.chapters,
+          wordsPerChapter: bookData.wordsPerChapter,
+        },
+      });
+
+      if (error) throw new Error(error.message);
+      if (data?.error) throw new Error(data.error);
+
+      const result = data.result;
+      if (result?.chapters) {
+        // Build pages from AI-generated content
+        const newPages: { id: string; title: string; type: PageType }[] = [
+          { id: "1", title: bookData.selectedTitle, type: "cover" },
+          { id: "2", title: "Table of Contents", type: "toc" },
+        ];
+        let pageId = 3;
+        for (const chapter of result.chapters) {
+          newPages.push({ id: String(pageId++), title: chapter.title, type: "chapter" });
+          for (const page of chapter.pages || []) {
+            newPages.push({ id: String(pageId++), title: page.title || "Content Page", type: "chapter-page" });
+          }
+        }
+        newPages.push({ id: String(pageId), title: "Back Cover", type: "back" });
+        setEbookPages(newPages);
+
+        // Add text content to chapter pages via canvas
+        setTimeout(() => {
+          let idx = 0;
+          for (const chapter of result.chapters) {
+            for (const page of chapter.pages || []) {
+              const matchingPage = newPages.find(p => p.title === (page.title || "Content Page") && p.type === "chapter-page");
+              if (matchingPage && canvasRef.current) {
+                canvasRef.current.addElement('text', {
+                  content: page.content,
+                  x: 8, y: 8, width: 84, height: 84,
+                  fontSize: 14, fontFamily: 'Inter', textColor: '#1a1a2e',
+                });
+              }
+              idx++;
+            }
+          }
+        }, 500);
+      }
+      toast({ title: "Your AI-written book is ready!" });
+    } catch (e: any) {
+      console.error('Generate book error:', e);
+      toast({ title: e.message || "Book generation failed. The outline is still available.", variant: "destructive" });
+    } finally {
+      setIsGeneratingBook(false);
+    }
   };
 
   const handleGenerationComplete = useCallback(() => {
