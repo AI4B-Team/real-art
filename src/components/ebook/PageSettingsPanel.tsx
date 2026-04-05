@@ -280,7 +280,8 @@ const PageSettingsPanel = ({
                 </button>
               </TooltipTrigger><TooltipContent>Grid View</TooltipContent></Tooltip>
             </div>
-          )}
+            );
+          })()}
 
           {/* Size */}
           <SectionToggle id="size" title="Size" icon={Maximize2} />
