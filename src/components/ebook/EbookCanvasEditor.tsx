@@ -1270,7 +1270,7 @@ const EbookCanvasEditor = ({
                     );
                   })}
                   {/* Trailing insert + Add Page card */}
-                  <div className="flex items-stretch">
+                  <div className="flex items-start">
                     <div
                       className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out ${
                         (gridInsertHover === currentPages.length && draggedPageIndex === null) || (dragOverPageIndex === currentPages.length && draggedPageIndex !== null)
