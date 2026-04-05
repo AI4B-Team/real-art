@@ -1083,7 +1083,7 @@ const NewEbookPage = () => {
             {/* TITLE SELECTION PAGE */}
             {generateStep === "titles" && (
               <div>
-                <h2 className="text-2xl font-bold text-foreground text-center mb-2">Choose A Title</h2>
+                <h2 className="text-2xl font-bold text-foreground text-center mb-2">Pick Your Winning Title</h2>
                 <p className="text-sm text-muted-foreground text-center mb-8">Select A Title Or Tweak One To Match Your Voice. You Can Change It Anytime.</p>
 
                 <div className="space-y-3 mb-6">
