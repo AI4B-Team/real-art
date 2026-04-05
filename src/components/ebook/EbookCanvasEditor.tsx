@@ -1189,7 +1189,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <TypeBadge />
-          <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
+          <img src={el.src} alt="" className={`w-full h-full ${el.objectFit === 'contain' ? 'object-contain' : el.objectFit === 'fill' ? 'object-fill' : 'object-cover'}`} draggable={false}
+            style={{
+              filter: [
+                el.brightness !== undefined && el.brightness !== 100 ? `brightness(${el.brightness}%)` : '',
+                el.contrast !== undefined && el.contrast !== 100 ? `contrast(${el.contrast}%)` : '',
+                el.saturate !== undefined && el.saturate !== 100 ? `saturate(${el.saturate}%)` : '',
+                el.blur ? `blur(${el.blur}px)` : '',
+                el.grayscale ? `grayscale(${el.grayscale}%)` : '',
+                el.sepia ? `sepia(${el.sepia}%)` : '',
+              ].filter(Boolean).join(' ') || undefined,
+              boxShadow: el.shadowBlur || el.shadowX || el.shadowY ? `${el.shadowX || 0}px ${el.shadowY || 0}px ${el.shadowBlur || 0}px ${el.shadowColor || 'rgba(0,0,0,0.5)'}` : undefined,
+            }}
+          />
           {/* Inline replace overlay — renders inside the image bounds */}
           {isSelected && replaceModalElementId === el.id && (
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-[10]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
