@@ -191,10 +191,10 @@ export default function AppTabs() {
                     <div>
                       <div className="flex items-center gap-1.5 mb-2">
                         <Clock size={13} className="text-muted-foreground/50" />
-                        <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Recently Used</span>
+                        <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Recent</span>
                       </div>
                       <div className="grid grid-cols-3 gap-1">
-                        {recentApps.slice(0, 3).map(a => renderGridApp(a, true))}
+                        {recentApps.slice(0, 6).map(a => renderGridApp(a, true))}
                       </div>
                     </div>
                   )}
@@ -203,7 +203,7 @@ export default function AppTabs() {
                   <div>
                     <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Trending</span>
                     <div className="grid grid-cols-3 gap-1 mt-2">
-                      {trendingApps.map(a => renderGridApp(a, true))}
+                      {trendingApps.slice(0, 3).map(a => renderGridApp(a, true))}
                     </div>
                   </div>
                 </>
