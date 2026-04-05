@@ -2641,7 +2641,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
               {/* Canvas - Scrollable all pages */}
               <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); } }}>
-                <div className="flex flex-col items-center gap-8">
+                <div className="flex flex-col items-center gap-8" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); } }}>
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
