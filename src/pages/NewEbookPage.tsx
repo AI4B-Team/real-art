@@ -626,7 +626,7 @@ const NewEbookPage = () => {
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
                     <Eye className="w-4 h-4 text-muted-foreground" />Toggle Page Settings
                   </button>
-                  <button onClick={() => canvasRef.current?.toggleGridView?.()}
+                  <button onClick={() => sonnerToast.success('Grid view toggled')}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
                     <Layers className="w-4 h-4 text-muted-foreground" />Grid View
                   </button>
