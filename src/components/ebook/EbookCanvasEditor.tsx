@@ -2492,7 +2492,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               );
                             })}
                           </div>
-                        </div>
+                        </div>}
                       </div>
                     );
                   })}
