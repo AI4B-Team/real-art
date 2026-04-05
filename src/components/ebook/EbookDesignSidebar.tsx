@@ -367,12 +367,14 @@ const EbookDesignSidebar = ({
             ))}
           </div>
 
-          {/* Search */}
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-            <input type="text" value={imageSearch} onChange={e => setImageSearch(e.target.value)}
-              placeholder="Press [Enter] To Search" className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
-          </div>
+          {/* Search — hidden on uploads & creations tabs */}
+          {(imageTab === 'stock' || imageTab === 'community') && (
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <input type="text" value={imageSearch} onChange={e => setImageSearch(e.target.value)}
+                placeholder="Press [Enter] To Search" className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
+            </div>
+          )}
 
           <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
 
@@ -390,9 +392,45 @@ const EbookDesignSidebar = ({
 
           {/* Creations tab */}
           {imageTab === 'creations' && (
-            <div className="flex flex-col items-center justify-center py-8 text-center">
-              <Sparkles className="w-8 h-8 text-muted-foreground/40 mb-2" />
-              <p className="text-xs text-muted-foreground">Your AI-generated images will appear here</p>
+            <div className="space-y-3">
+              {/* Generate Image header */}
+              <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                <Sparkles className="w-4 h-4 text-accent" />Generate Image
+              </div>
+              {/* Prompt box */}
+              <div className="border border-accent/30 rounded-xl p-2.5 space-y-2 bg-accent/[0.02]">
+                <div className="flex items-start gap-2">
+                  <ImageIcon className="w-4 h-4 text-accent mt-0.5 shrink-0" />
+                  <textarea value={imagePrompt} onChange={e => setImagePrompt(e.target.value)}
+                    placeholder="Describe what you want to create..."
+                    rows={2}
+                    className="flex-1 text-xs bg-transparent resize-none focus:outline-none placeholder:text-muted-foreground" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <button className="p-1 text-muted-foreground hover:text-foreground transition-colors">
+                    <LayoutGrid className="w-4 h-4" />
+                  </button>
+                  <div className="flex items-center gap-1.5">
+                    <button className="p-1 text-muted-foreground hover:text-foreground transition-colors">
+                      <Sparkles className="w-4 h-4" />
+                    </button>
+                    <button onClick={() => { setIsGeneratingImage(true); setTimeout(() => { setIsGeneratingImage(false); toast.success('Image generated'); }, 2000); }}
+                      disabled={!imagePrompt.trim() || isGeneratingImage}
+                      className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center disabled:opacity-50 hover:bg-accent/90 transition-colors">
+                      {isGeneratingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+              {/* Creations grid */}
+              <div className="grid grid-cols-3 gap-1.5">
+                {CREATION_IMAGES.map((src, i) => (
+                  <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                    className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
+                    <img src={src} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
             </div>
           )}
 
@@ -410,12 +448,16 @@ const EbookDesignSidebar = ({
 
           {/* Uploads tab */}
           {imageTab === 'uploads' && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <button onClick={() => fileInputRef.current?.click()}
-                className="w-full flex items-center justify-center gap-1.5 py-6 border-2 border-dashed border-foreground/[0.1] rounded-lg text-sm text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
-                <Upload className="w-4 h-4" />Upload Image
+                className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-foreground/[0.12] rounded-lg text-sm text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
+                <Upload className="w-4 h-4" />Upload Images
               </button>
-              <p className="text-[10px] text-muted-foreground text-center">Your uploaded images will appear here</p>
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <Upload className="w-10 h-10 text-muted-foreground/30 mb-3" />
+                <p className="text-sm text-muted-foreground">No uploaded images</p>
+                <p className="text-xs text-muted-foreground/60">Upload your own images</p>
+              </div>
             </div>
           )}
 
