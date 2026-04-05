@@ -249,13 +249,13 @@ const PageSettingsPanel = ({
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1 flex-1">
                     <span className="text-xs text-muted-foreground">W</span>
-                    <input type="number" value={pageWidth} onChange={e => setPageWidth(Number(e.target.value))}
+                    <input type="number" value={externalWidth} onChange={e => onDimensionsChange?.(Number(e.target.value), externalHeight)}
                       className="w-full px-2 py-1.5 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs text-foreground focus:outline-none focus:border-accent/40" />
                   </div>
                   <span className="text-muted-foreground text-xs">⟷</span>
                   <div className="flex items-center gap-1 flex-1">
                     <span className="text-xs text-muted-foreground">H</span>
-                    <input type="number" value={pageHeight} onChange={e => setPageHeight(Number(e.target.value))}
+                    <input type="number" value={externalHeight} onChange={e => onDimensionsChange?.(externalWidth, Number(e.target.value))}
                       className="w-full px-2 py-1.5 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs text-foreground focus:outline-none focus:border-accent/40" />
                   </div>
                 </div>
