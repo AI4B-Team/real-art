@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Globe, ChevronDown, Link2, Lock, Copy, Code, LinkIcon, Monitor,
   Calendar, MoreHorizontal, FileText, Image as ImageIcon, X,
   Facebook, Linkedin, Check, Mail, MessageCircle, Send,
   Bookmark, Printer, QrCode, Rss, Share2, ArrowLeft,
-  Instagram, Youtube, Clock,
+  Instagram, Youtube, Clock, History, Pencil, Trash2, ExternalLink,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
@@ -57,6 +57,30 @@ interface EbookShareModalProps {
   projectName?: string;
 }
 
+interface ShareHistoryEntry {
+  id: string;
+  type: 'scheduled' | 'shared' | 'downloaded' | 'link-copied';
+  platforms?: string[];
+  format?: string;
+  date: string;
+  time?: string;
+  scheduledFor?: string; // ISO date for scheduled items
+  status: 'pending' | 'sent' | 'completed' | 'cancelled';
+  createdAt: string;
+}
+
+const HISTORY_KEY = 'ebook-share-history';
+
+const loadHistory = (): ShareHistoryEntry[] => {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  } catch { return []; }
+};
+
+const saveHistory = (entries: ShareHistoryEntry[]) => {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(entries));
+};
+
 export default function EbookShareModal({ open, onOpenChange, projectName }: EbookShareModalProps) {
   const [permission, setPermission] = useState<Permission>("View");
   const [permDropdownOpen, setPermDropdownOpen] = useState(false);
@@ -71,6 +95,24 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
   const [scheduleTime, setScheduleTime] = useState("");
   const [schedulePlatforms, setSchedulePlatforms] = useState<Set<string>>(new Set());
   const [scheduleError, setScheduleError] = useState("");
+  const [shareHistory, setShareHistory] = useState<ShareHistoryEntry[]>(loadHistory);
+  const [showHistory, setShowHistory] = useState(false);
+  const [editingEntry, setEditingEntry] = useState<ShareHistoryEntry | null>(null);
+
+  useEffect(() => { saveHistory(shareHistory); }, [shareHistory]);
+
+  const addHistoryEntry = (entry: Omit<ShareHistoryEntry, 'id' | 'createdAt'>) => {
+    const newEntry: ShareHistoryEntry = { ...entry, id: crypto.randomUUID(), createdAt: new Date().toISOString() };
+    setShareHistory(prev => [newEntry, ...prev]);
+  };
+
+  const removeHistoryEntry = (id: string) => {
+    setShareHistory(prev => prev.filter(e => e.id !== id));
+  };
+
+  const updateHistoryEntry = (id: string, updates: Partial<ShareHistoryEntry>) => {
+    setShareHistory(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
+  };
 
   const handleCopyLink = () => {
     const shareUrl = `${window.location.origin}/shared/ebook/${btoa(Date.now().toString()).slice(0, 12)}`;
@@ -78,6 +120,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
     setLinkCopied(true);
     toast({ title: "Link copied to clipboard!" });
     setTimeout(() => setLinkCopied(false), 2000);
+    addHistoryEntry({ type: 'link-copied', date: new Date().toLocaleDateString(), status: 'completed' });
   };
 
   const handleSelectFormat = (formatId: string) => {
@@ -91,6 +134,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
     setTimeout(() => {
       setSelectedFormat(null);
       toast({ title: `${fmt?.label} downloaded successfully!` });
+      addHistoryEntry({ type: 'downloaded', format: fmt?.label || selectedFormat!, date: new Date().toLocaleDateString(), status: 'completed' });
     }, 1500);
   };
 
@@ -111,6 +155,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
       if (platformId === "email") window.location.href = url;
       else window.open(url, "_blank", "width=600,height=400");
       toast({ title: `Opening ${platformId}...` });
+      addHistoryEntry({ type: 'shared', platforms: [platformId], date: new Date().toLocaleDateString(), status: 'sent' });
     } else {
       toast({ title: `${platformId} sharing`, description: "Coming soon!" });
     }
@@ -148,6 +193,14 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
     setScheduleError("");
     const names = [...schedulePlatforms].join(", ");
     toast({ title: "Publishing scheduled!", description: `${scheduleDate} at ${scheduleTime} on ${names}` });
+    addHistoryEntry({
+      type: 'scheduled',
+      platforms: [...schedulePlatforms],
+      date: new Date().toLocaleDateString(),
+      time: scheduleTime,
+      scheduledFor: `${scheduleDate}T${scheduleTime}`,
+      status: 'pending',
+    });
     setShowSchedule(false);
     setScheduleDate("");
     setScheduleTime("");
@@ -174,9 +227,45 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
     </button>
   );
 
+  // Pre-populate schedule fields when editing
+  useEffect(() => {
+    if (editingEntry && showSchedule) {
+      if (editingEntry.scheduledFor) {
+        const [d, t] = editingEntry.scheduledFor.split('T');
+        setScheduleDate(d || '');
+        setScheduleTime(t || '');
+      }
+      setSchedulePlatforms(new Set(editingEntry.platforms || []));
+    }
+  }, [editingEntry, showSchedule]);
+
   // Schedule sub-view
   if (showSchedule) {
     const allPlatforms = [...SOCIAL_PLATFORMS_MAIN, ...SOCIAL_PLATFORMS_ALL];
+    const handleScheduleOrUpdate = () => {
+      if (!scheduleDate || !scheduleTime || schedulePlatforms.size === 0) {
+        setScheduleError("Please select a date, time, and at least one platform");
+        return;
+      }
+      setScheduleError("");
+      const names = [...schedulePlatforms].join(", ");
+      if (editingEntry) {
+        updateHistoryEntry(editingEntry.id, {
+          platforms: [...schedulePlatforms],
+          scheduledFor: `${scheduleDate}T${scheduleTime}`,
+          time: scheduleTime,
+          date: new Date().toLocaleDateString(),
+        });
+        toast({ title: "Schedule updated!", description: `${scheduleDate} at ${scheduleTime} on ${names}` });
+        setEditingEntry(null);
+        setShowSchedule(false);
+        setScheduleDate("");
+        setScheduleTime("");
+        setSchedulePlatforms(new Set());
+      } else {
+        handleScheduleConfirm();
+      }
+    };
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-2xl p-0 gap-0 rounded-2xl overflow-hidden">
@@ -222,11 +311,128 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
             {scheduleError && (
               <p className="text-sm text-destructive text-center">{scheduleError}</p>
             )}
-            <button onClick={handleScheduleConfirm}
+            <button onClick={handleScheduleOrUpdate}
               className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <Clock className="w-4 h-4" />
-              Schedule
+              {editingEntry ? 'Update Schedule' : 'Schedule'}
             </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
+
+  // History sub-view
+  if (showHistory) {
+    const getStatusBadge = (status: ShareHistoryEntry['status']) => {
+      switch (status) {
+        case 'pending': return 'bg-amber-100 text-amber-700';
+        case 'sent': return 'bg-blue-100 text-blue-700';
+        case 'completed': return 'bg-emerald-100 text-emerald-700';
+        case 'cancelled': return 'bg-foreground/[0.06] text-muted-foreground line-through';
+      }
+    };
+    const getTypeLabel = (entry: ShareHistoryEntry) => {
+      switch (entry.type) {
+        case 'scheduled': return `Scheduled → ${(entry.platforms || []).join(', ')}`;
+        case 'shared': return `Shared → ${(entry.platforms || []).join(', ')}`;
+        case 'downloaded': return `Downloaded ${entry.format || ''}`;
+        case 'link-copied': return 'Link Copied';
+      }
+    };
+    const pendingEntries = shareHistory.filter(e => e.status === 'pending');
+    const pastEntries = shareHistory.filter(e => e.status !== 'pending');
+
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-xl p-0 gap-0 rounded-2xl overflow-hidden max-h-[85vh] flex flex-col">
+          <DialogHeader className="p-5 pb-0 shrink-0">
+            <div className="flex items-center gap-2">
+              <button onClick={() => setShowHistory(false)} className="p-1 rounded-lg hover:bg-foreground/[0.05]">
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                <History className="w-5 h-5" /> Share History
+              </DialogTitle>
+            </div>
+          </DialogHeader>
+          <div className="p-5 space-y-5 overflow-y-auto flex-1">
+            {shareHistory.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">
+                <History className="w-10 h-10 mx-auto mb-3 opacity-30" />
+                <p className="text-sm font-medium">No share history yet</p>
+                <p className="text-xs mt-1">Your scheduled and shared items will appear here</p>
+              </div>
+            ) : (
+              <>
+                {pendingEntries.length > 0 && (
+                  <div>
+                    <p className="text-sm font-bold mb-2 flex items-center gap-2">
+                      <Clock className="w-3.5 h-3.5 text-amber-500" /> Pending
+                      <span className="ml-1 px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-semibold">{pendingEntries.length}</span>
+                    </p>
+                    <div className="space-y-2">
+                      {pendingEntries.map(entry => (
+                        <div key={entry.id} className="flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01]">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{getTypeLabel(entry)}</p>
+                            <p className="text-[11px] text-muted-foreground">
+                              {entry.scheduledFor ? new Date(entry.scheduledFor).toLocaleString() : entry.date}
+                            </p>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${getStatusBadge(entry.status)}`}>
+                            {entry.status}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => {
+                                setEditingEntry(entry);
+                                setShowHistory(false);
+                                setShowSchedule(true);
+                              }}
+                              className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              <Pencil className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => updateHistoryEntry(entry.id, { status: 'cancelled' })}
+                              className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {pastEntries.length > 0 && (
+                  <div>
+                    <p className="text-sm font-bold mb-2">History</p>
+                    <div className="space-y-2">
+                      {pastEntries.map(entry => (
+                        <div key={entry.id} className="flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01]">
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{getTypeLabel(entry)}</p>
+                            <p className="text-[11px] text-muted-foreground">{entry.date}</p>
+                          </div>
+                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${getStatusBadge(entry.status)}`}>
+                            {entry.status}
+                          </span>
+                          <button
+                            onClick={() => removeHistoryEntry(entry.id)}
+                            className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </DialogContent>
       </Dialog>
@@ -347,6 +553,19 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
                 </button>
               )}
             </div>
+            {/* Pending schedules summary */}
+            {shareHistory.filter(e => e.status === 'pending').length > 0 && (
+              <button
+                onClick={() => setShowHistory(true)}
+                className="mt-2 w-full flex items-center justify-between px-3 py-2 rounded-xl border border-amber-200 bg-amber-50 hover:bg-amber-100 transition-colors text-sm"
+              >
+                <span className="flex items-center gap-2 text-amber-700">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span className="font-medium">{shareHistory.filter(e => e.status === 'pending').length} scheduled</span>
+                </span>
+                <span className="text-[11px] text-amber-600 font-medium">View All →</span>
+              </button>
+            )}
             {showAllSocial && (
               <div className="grid grid-cols-5 gap-2 mt-2">
                 {SOCIAL_PLATFORMS_ALL.map(p => (
@@ -365,7 +584,13 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
 
           {/* More Options */}
           <div>
-            <p className="text-sm font-bold mb-3">More</p>
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-sm font-bold">More</p>
+              <button onClick={() => setShowHistory(true)}
+                className="flex items-center gap-1.5 text-[11px] text-muted-foreground hover:text-foreground font-medium transition-colors">
+                <History className="w-3.5 h-3.5" /> Share History
+              </button>
+            </div>
             <div className="grid grid-cols-5 gap-2">
               {MORE_OPTIONS_MAIN.map(option => (
                 <button key={option.id} onClick={() => handleMoreOption(option.id)}
