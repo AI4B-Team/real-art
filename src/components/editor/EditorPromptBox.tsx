@@ -385,16 +385,6 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
           </Tooltip>
         </div>
 
-        {isContentTypeOpen && (
-          <div className="absolute top-12 left-3 bg-foreground text-background rounded-xl shadow-lg p-2 z-50 min-w-[140px]">
-            {CONTENT_TYPES.map(t => (
-              <button key={t.id} onClick={() => { setContentType(t.id); setIsContentTypeOpen(false); }}
-                className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${contentType === t.id ? "text-background" : "text-background/60 hover:text-background"}`}>
-                <t.icon className="w-4 h-4" /> {t.label}
-              </button>
-            ))}
-          </div>
-        )}
 
         <div className="pl-12 pr-4 pt-3 pb-2 relative">
           <div
