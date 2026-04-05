@@ -417,8 +417,8 @@ const EbookCanvasEditor = ({
     const computeFit = () => {
       const cw = container.clientWidth - 80; // padding + page label
       const ch = container.clientHeight - 64; // vertical padding
-      const scaleW = cw / 480;
-      const scaleH = ch / 640;
+      const scaleW = cw / pw;
+      const scaleH = ch / ph;
       setFitScale(Math.min(scaleW, scaleH, 1.5));
     };
     computeFit();
