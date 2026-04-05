@@ -3028,7 +3028,7 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
                   </TooltipTrigger><TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent></Tooltip>
                 )}
                 <Tooltip><TooltipTrigger asChild>
-                  <button type="button" onClick={() => onSaveTemplate?.()}
+                  <button type="button" onClick={() => onSaveTemplate?.({ contentType: selectedType, subMode: selectedSubMode, model: selectedModel, style: selectedStyle, ratio: selectedRatio, prompt, number: selectedNumber, duration: selectedDuration, resolution: selectedResolution, references })}
                     className="p-1.5 rounded-lg bg-foreground/[0.04] hover:bg-foreground/[0.08] transition-colors mr-2">
                     <Bookmark size={15} className="!text-black dark:!text-white" />
                   </button>
