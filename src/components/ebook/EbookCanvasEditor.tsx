@@ -645,7 +645,7 @@ const EbookCanvasEditor = ({
       clickXPct >= other.x && clickXPct <= other.x + other.width &&
       clickYPct >= other.y && clickYPct <= other.y + other.height
     ).sort((a, b) => (b.zIndex ?? 1) - (a.zIndex ?? 1));
-    if (overlapping.length > 1) {
+    if (overlapping.length >= 1) {
       setContextMenu({ x: e.clientX, y: e.clientY, elements: overlapping, pageId });
     }
   };
