@@ -915,14 +915,12 @@ const EbookCanvasEditor = ({
                       {/* Image editing tools */}
                       {[
                         { icon: Crop, label: 'Crop' },
-                        { icon: RefreshCw, label: 'Resize' },
-                        { icon: Paintbrush, label: 'Effects' },
-                        { icon: SlidersVertical, label: 'Filters' },
                         { icon: Droplets, label: 'Opacity (100%)' },
+                        { icon: Maximize2, label: 'Resize' },
+                        { icon: SlidersVertical, label: 'Filter' },
+                        { icon: CircleDot, label: 'Mask' },
+                        { icon: Eclipse, label: 'Shadow' },
                         { icon: SquareIcon, label: 'Corner Radius' },
-                        { icon: Link2, label: 'Add Link' },
-                        { icon: Layers, label: 'Layers' },
-                        { icon: Move, label: 'Position' },
                       ].map(tool => (
                         <Tooltip key={tool.label}>
                           <TooltipTrigger asChild>
@@ -936,17 +934,40 @@ const EbookCanvasEditor = ({
                       ))}
                       <div className="w-px h-5 bg-foreground/[0.08]" />
                       <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => toast.success('Add Link')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Link2 className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => toast.success('Layers')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Layers className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
+                      <div className="w-px h-5 bg-foreground/[0.08]" />
+                      {/* Border Color */}
+                      <Tooltip><TooltipTrigger asChild>
                         <input type="color" defaultValue="#e5e7eb"
                           className="w-5 h-5 rounded border border-foreground/[0.1] cursor-pointer" />
                       </TooltipTrigger><TooltipContent>Border Color</TooltipContent></Tooltip>
+                      {/* Border Style */}
                       <Tooltip><TooltipTrigger asChild>
-                        <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Monitor className="w-3.5 h-3.5" /></button>
-                      </TooltipTrigger><TooltipContent>Fit to Page</TooltipContent></Tooltip>
+                        <button onClick={() => toast.success('Border Style')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><BoxSelect className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Border Style</TooltipContent></Tooltip>
+                      {/* Border Width */}
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={() => toast.success('Border Width')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Maximize2 className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Border Width</TooltipContent></Tooltip>
+                      <div className="w-px h-5 bg-foreground/[0.08]" />
                       <Tooltip><TooltipTrigger asChild>
                         <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
                           <Lock className="w-3.5 h-3.5" />
                         </button>
                       </TooltipTrigger><TooltipContent>Lock</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Duplicate</TooltipContent></Tooltip>
+                      <Tooltip><TooltipTrigger asChild>
+                        <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
+                      </TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>
                     </>
                   )}
                   <div className="ml-auto flex items-center gap-1">
