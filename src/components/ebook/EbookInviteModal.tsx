@@ -4,7 +4,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { toast } from "@/hooks/use-toast";
 import { WORKSPACE_MEMBERS, type WorkspaceMember } from "@/lib/workspaceMembers";
 
-const ROLE_OPTIONS = ["Editor", "Viewer", "Comment Only"] as const;
+const ROLE_OPTIONS = ["Editor", "Viewer", "Comment"] as const;
 type InviteRole = typeof ROLE_OPTIONS[number];
 
 interface Invitee {
