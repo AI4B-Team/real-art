@@ -603,6 +603,7 @@ const EbookCanvasEditor = ({
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
+    setContextMenu(null);
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
       setEditingTextId(null);
