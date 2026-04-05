@@ -202,6 +202,7 @@ const NewEbookPage = () => {
     return () => window.removeEventListener('keydown', handler);
   }, [activeTab]);
 
+  useEffect(() => {
     const state = location.state as { book?: any; fromCreate?: boolean; prompt?: string } | null;
     if (state?.book) {
       setActiveTab("design");
