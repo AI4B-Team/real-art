@@ -981,13 +981,13 @@ const NewEbookPage = () => {
                     const lockedPages = ebookPages.filter(p => p.locked);
                     if (lockedPages.length > 0) {
                       const lockedNumbers = lockedPages.map(p => ebookPages.indexOf(p) + 1).join(', ');
-                      toast(`${lockedPages.length} locked page${lockedPages.length > 1 ? 's' : ''} will be skipped (Page ${lockedNumbers})`, {
+                      sonnerToast(`${lockedPages.length} locked page${lockedPages.length > 1 ? 's' : ''} will be skipped (Page ${lockedNumbers})`, {
                         description: 'Unlock to include all pages in translation.',
                         action: {
                           label: 'Unlock All',
                           onClick: () => {
                             setEbookPages(prev => prev.map(p => ({ ...p, locked: false })));
-                            toast.success('All pages unlocked. Please run the translation again.');
+                            sonnerToast.success('All pages unlocked. Please run the translation again.');
                           },
                         },
                       });
