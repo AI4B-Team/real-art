@@ -1982,25 +1982,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       </button>
                     </TooltipTrigger><TooltipContent>Heading</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('bold'); } else { updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' }); } }}
                         className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Bold className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger><TooltipContent>Bold</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('italic'); } else { updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' }); } }}
                         className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Italic className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger><TooltipContent>Italic</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('underline'); } else { updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' }); } }}
                         className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Underline className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger><TooltipContent>Underline</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('strikeThrough'); } else { updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' }); } }}
                         className={`p-1.5 rounded ${selectedElement.textDecoration === 'line-through' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Strikethrough className="w-3.5 h-3.5" />
                       </button>
