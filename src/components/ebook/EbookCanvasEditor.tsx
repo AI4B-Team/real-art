@@ -2370,6 +2370,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           </div>
                           {elems.map(el => renderElement(el, page.id))}
 
+                          {/* Locked page overlay */}
+                          {page.locked && (
+                            <div className="absolute inset-0 z-[80] flex items-center justify-center bg-foreground/[0.03] pointer-events-auto cursor-not-allowed rounded-lg">
+                              <div className="flex items-center gap-1.5 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm border border-foreground/[0.08]">
+                                <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                                <span className="text-xs font-medium text-muted-foreground">Page Locked</span>
+                              </div>
+                            </div>
+                          )}
+
                           {/* Comment pins */}
                           {canComment && pageComments.filter(c => c.pageId === page.id).map((c, ci) => (
                             <div key={c.id}
