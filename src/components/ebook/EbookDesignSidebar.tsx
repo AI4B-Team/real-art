@@ -23,7 +23,7 @@ import AITextEditMenu, { type AIEditAction } from './AITextEditMenu';
 interface Chapter {
   id: string;
   title: string;
-  type?: 'cover' | 'table of contents' | 'introduction' | 'summary' | null;
+  type?: 'cover' | 'back' | 'table of contents' | 'introduction' | 'summary' | null;
 }
 
 interface EbookDesignSidebarProps {
@@ -669,7 +669,8 @@ const EbookDesignSidebar = ({
           <div className="space-y-0.5">
             {chapters.map((ch, i) => {
               const isSelected = selectedChapterId === ch.id;
-              const isSpecial = ['cover', 'table of contents', 'introduction', 'summary'].includes(ch.type || '');
+              const isSpecial = ['cover', 'back', 'table of contents', 'introduction', 'summary'].includes(ch.type || '');
+              const isCoverOrBack = ch.type === 'cover' || ch.type === 'back';
               const isDragged = draggedIndex === i;
               const isDropTarget = dragOverIndex === i && draggedIndex !== null && draggedIndex !== i;
               const dropAbove = isDropTarget && draggedIndex !== null && draggedIndex > i;
@@ -681,8 +682,8 @@ const EbookDesignSidebar = ({
                     <div className="absolute -top-0.5 left-2 right-2 h-0.5 bg-accent rounded-full z-10" />
                   )}
                   <div
-                    draggable
-                    onDragStart={() => handleDragStart(i)}
+                    draggable={!isCoverOrBack}
+                    onDragStart={() => { if (!isCoverOrBack) handleDragStart(i); }}
                     onDragOver={e => handleDragOver(e, i)}
                     onDragEnd={handleDragEnd}
                     onDragLeave={() => { if (dragOverIndex === i) setDragOverIndex(null); }}
@@ -692,7 +693,7 @@ const EbookDesignSidebar = ({
                       isSelected ? 'bg-accent/[0.08] border border-accent/30' : 'hover:bg-foreground/[0.03] border border-transparent'
                     } ${isDropTarget ? 'bg-accent/[0.06]' : ''}`}>
                   {/* Drag handle - visible on selected/hover */}
-                  <GripVertical className={`w-3.5 h-3.5 text-muted-foreground shrink-0 cursor-grab ${isSelected ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`} />
+                  <GripVertical className={`w-3.5 h-3.5 text-muted-foreground shrink-0 ${isCoverOrBack ? 'opacity-20 cursor-default' : `cursor-grab ${isSelected ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`}`} />
                   {/* Page number */}
                   <span className={`text-xs font-semibold shrink-0 w-5 text-center ${
                     isSelected ? 'text-accent' : 'text-muted-foreground'
@@ -720,6 +721,7 @@ const EbookDesignSidebar = ({
                         )}
                       </div>
                       {/* Hover action buttons */}
+                      {!isCoverOrBack && (
                       <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[132px] group-hover:opacity-100 group-hover:ml-1 group-hover:pointer-events-auto transition-[max-width,opacity,margin] duration-200">
                         {onChapterReorder && (
                           <>
@@ -753,6 +755,7 @@ const EbookDesignSidebar = ({
                           </TooltipTrigger><TooltipContent side="top">Delete Page</TooltipContent></Tooltip>
                         )}
                       </div>
+                      )}
                       {/* Page number on right */}
                       <span className={`text-[10px] font-medium shrink-0 w-5 text-right ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>{i + 1}</span>
                     </>

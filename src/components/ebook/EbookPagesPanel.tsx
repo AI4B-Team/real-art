@@ -61,6 +61,12 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
   const handlePageAction = (action: string, pageId: string) => {
     const idx = pages.findIndex(p => p.id === pageId);
     if (idx === -1) return;
+    const page = pages[idx];
+    const isCoverOrBack = page.type === 'cover' || page.type === 'back';
+    if (isCoverOrBack && (action === 'moveUp' || action === 'moveDown' || action === 'delete')) {
+      toast.error('Cover and back cover pages cannot be moved or deleted');
+      return;
+    }
     switch (action) {
       case 'duplicate': {
         const dup = { ...pages[idx], id: crypto.randomUUID(), title: pages[idx].title + ' (copy)' };
@@ -127,8 +133,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   {i + 1}
                 </span>
                 <div
-                  draggable
-                  onDragStart={() => handleDragStart(i)}
+                  draggable={page.type !== 'cover' && page.type !== 'back'}
+                  onDragStart={() => { if (page.type !== 'cover' && page.type !== 'back') handleDragStart(i); }}
                   onDragOver={e => handleDragOver(e, i)}
                   onDragEnd={handleDragEnd}
                   onClick={() => onPageSelect(page.id)}
@@ -145,7 +151,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   <p className="text-[10px] font-medium text-foreground truncate px-1.5 py-1 bg-background">{page.title}</p>
                 </div>
 
-                {/* Hover action buttons */}
+                {/* Hover action buttons — hidden for cover/back */}
+                {page.type !== 'cover' && page.type !== 'back' && (
                 <div className="flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -180,6 +187,7 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                     <TooltipContent side="left">Delete</TooltipContent>
                   </Tooltip>
                 </div>
+                )}
               </div>
             </div>
           ))}
