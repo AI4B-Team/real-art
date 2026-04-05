@@ -203,7 +203,7 @@ export default function AppTabs() {
                   <div>
                     <span className="text-[0.7rem] font-semibold text-muted-foreground/60 uppercase tracking-wider">Trending</span>
                     <div className="grid grid-cols-3 gap-1 mt-2">
-                      {trendingApps.map(a => renderGridApp(a))}
+                      {trendingApps.map(a => renderGridApp(a, true))}
                     </div>
                   </div>
                 </>
