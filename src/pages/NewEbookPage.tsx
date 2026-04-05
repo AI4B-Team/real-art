@@ -407,7 +407,7 @@ const NewEbookPage = () => {
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={15} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Search size={15} /></button></TooltipTrigger><TooltipContent>Find</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Shuffle size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ArrowRightLeft size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomOut size={15} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
               <span className="text-xs text-muted font-medium w-10 text-center">{zoom}%</span>
