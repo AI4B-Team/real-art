@@ -1400,16 +1400,18 @@ const EbookCanvasEditor = ({
                           <div className="flex flex-col gap-1 bg-background/80 backdrop-blur-sm rounded-xl p-1 border border-foreground/[0.06] shadow-sm">
                             {PAGE_ACTIONS.map(action => {
                               const currentSelectedPage = currentPages.find(p => p.id === selectedPageId);
-                              const Icon = action.id === 'lock' && currentSelectedPage?.locked ? Lock : action.icon;
+                              const isLocked = action.id === 'lock' && currentSelectedPage?.locked;
+                              const Icon = isLocked ? Lock : action.icon;
+                              const label = isLocked ? 'Unlock Page' : action.label;
                               return (
                                 <Tooltip key={action.id}>
                                   <TooltipTrigger asChild>
                                     <button onClick={() => handlePageAction(action.id)}
-                                      className="w-8 h-8 rounded-lg flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.06] transition-colors">
+                                      className={`w-8 h-8 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] transition-colors ${isLocked ? 'text-destructive hover:text-destructive' : 'text-muted-foreground hover:text-foreground'}`}>
                                       <Icon className="w-4 h-4" />
                                     </button>
                                   </TooltipTrigger>
-                                  <TooltipContent side="right">{action.label}</TooltipContent>
+                                  <TooltipContent side="right">{label}</TooltipContent>
                                 </Tooltip>
                               );
                             })}
