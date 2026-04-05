@@ -202,6 +202,7 @@ const NewEbookPage = () => {
   const [pageHeight, setPageHeight] = useState(640);
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
   const [isReplacingImage, setIsReplacingImage] = useState(false);
+  const [lastSaved, setLastSaved] = useState<Date>(new Date());
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
