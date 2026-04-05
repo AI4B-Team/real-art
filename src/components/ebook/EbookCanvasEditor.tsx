@@ -2494,24 +2494,164 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </div>
                       </PopoverContent>
                     </Popover>
-                    {[
-                      { icon: Crop, label: 'Crop' },
-                      { icon: Maximize2, label: 'Resize' },
-                      { icon: SlidersVertical, label: 'Filter' },
-                      { icon: CircleDot, label: 'Mask' },
-                      { icon: Eclipse, label: 'Shadow' },
-                    ].map(tool => (
-                      <Tooltip key={tool.label}>
-                        <TooltipTrigger asChild>
-                          <button onClick={() => toast.success(`${tool.label} tool`)}
-                            className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground">
-                            <tool.icon className="w-3.5 h-3.5" />
+                    {/* Crop / Resize */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Crop className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent>{tool.label}</TooltipContent>
-                      </Tooltip>
-                    ))}
-                    {/* Shapes — after Shadow */}
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Crop & Fit</TooltipContent></Tooltip>
+                      <PopoverContent className="w-48 p-2" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Object Fit</p>
+                        {(['cover', 'contain', 'fill'] as const).map(fit => (
+                          <button key={fit} onClick={() => updateElement(selectedElement.id, { objectFit: fit })}
+                            className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors capitalize ${(selectedElement.objectFit || 'cover') === fit ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                            {fit}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+                    {/* Resize */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Maximize2 className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Resize & Position</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Size & Position</p>
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          {[
+                            { label: 'X', key: 'x' as const },
+                            { label: 'Y', key: 'y' as const },
+                            { label: 'W', key: 'width' as const },
+                            { label: 'H', key: 'height' as const },
+                          ].map(({ label, key }) => (
+                            <div key={key} className="flex items-center gap-1">
+                              <span className="text-[10px] text-muted-foreground w-3">{label}</span>
+                              <input type="number" value={Math.round(selectedElement[key])}
+                                onChange={e => updateElement(selectedElement.id, { [key]: Number(e.target.value) })}
+                                className="flex-1 px-2 py-1 rounded border border-foreground/[0.1] bg-foreground/[0.02] text-xs w-full" />
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-1">Values are in % of page</p>
+                        <div className="border-t border-foreground/[0.06] mt-2 pt-2">
+                          <p className="text-xs font-medium mb-1.5">Quick Presets</p>
+                          {[
+                            { label: 'Full Page', x: 0, y: 0, width: 100, height: 100 },
+                            { label: 'Top Half', x: 0, y: 0, width: 100, height: 50 },
+                            { label: 'Bottom Half', x: 0, y: 50, width: 100, height: 50 },
+                            { label: 'Center Band', x: 0, y: 25, width: 100, height: 50 },
+                          ].map(p => (
+                            <button key={p.label} onClick={() => updateElement(selectedElement.id, { x: p.x, y: p.y, width: p.width, height: p.height })}
+                              className="w-full text-left px-2 py-1 text-xs rounded hover:bg-foreground/[0.04] transition-colors">{p.label}</button>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    {/* Filter */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <SlidersVertical className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Filter</TooltipContent></Tooltip>
+                      <PopoverContent className="w-64 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-3">Image Adjustments</p>
+                        {[
+                          { label: 'Brightness', key: 'brightness' as const, min: 0, max: 200, def: 100 },
+                          { label: 'Contrast', key: 'contrast' as const, min: 0, max: 200, def: 100 },
+                          { label: 'Saturation', key: 'saturate' as const, min: 0, max: 200, def: 100 },
+                          { label: 'Blur', key: 'blur' as const, min: 0, max: 20, def: 0 },
+                          { label: 'Grayscale', key: 'grayscale' as const, min: 0, max: 100, def: 0 },
+                          { label: 'Sepia', key: 'sepia' as const, min: 0, max: 100, def: 0 },
+                        ].map(f => (
+                          <div key={f.key} className="flex items-center gap-2 mb-2">
+                            <span className="text-[10px] text-muted-foreground w-16 shrink-0">{f.label}</span>
+                            <Slider
+                              value={[selectedElement[f.key] ?? f.def]}
+                              onValueChange={([v]) => updateElement(selectedElement.id, { [f.key]: v })}
+                              min={f.min} max={f.max} step={1} className="flex-1"
+                            />
+                            <span className="text-[10px] text-muted-foreground w-8 text-right">{selectedElement[f.key] ?? f.def}</span>
+                          </div>
+                        ))}
+                        <button onClick={() => updateElement(selectedElement.id, { brightness: 100, contrast: 100, saturate: 100, blur: 0, grayscale: 0, sepia: 0 })}
+                          className="mt-1 text-xs text-accent hover:underline">Reset All</button>
+                      </PopoverContent>
+                    </Popover>
+                    {/* Mask / Clip Shape */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <CircleDot className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Mask Shape</TooltipContent></Tooltip>
+                      <PopoverContent className="w-48 p-2" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Clip Shape</p>
+                        {[
+                          { label: 'None (Rectangle)', radius: 0 },
+                          { label: 'Rounded', radius: 12 },
+                          { label: 'More Rounded', radius: 24 },
+                          { label: 'Circle', radius: 9999 },
+                        ].map(m => (
+                          <button key={m.label} onClick={() => updateElement(selectedElement.id, { borderRadius: m.radius })}
+                            className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors ${(selectedElement.borderRadius || 0) === m.radius ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                            {m.label}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+                    {/* Shadow */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Eclipse className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Shadow</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-3">Drop Shadow</p>
+                        {[
+                          { label: 'X Offset', key: 'shadowX' as const, min: -50, max: 50, def: 0 },
+                          { label: 'Y Offset', key: 'shadowY' as const, min: -50, max: 50, def: 0 },
+                          { label: 'Blur', key: 'shadowBlur' as const, min: 0, max: 50, def: 0 },
+                        ].map(s => (
+                          <div key={s.key} className="flex items-center gap-2 mb-2">
+                            <span className="text-[10px] text-muted-foreground w-14 shrink-0">{s.label}</span>
+                            <Slider
+                              value={[selectedElement[s.key] ?? s.def]}
+                              onValueChange={([v]) => updateElement(selectedElement.id, { [s.key]: v })}
+                              min={s.min} max={s.max} step={1} className="flex-1"
+                            />
+                            <span className="text-[10px] text-muted-foreground w-6 text-right">{selectedElement[s.key] ?? s.def}</span>
+                          </div>
+                        ))}
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-[10px] text-muted-foreground">Color</span>
+                          <input type="color" value={selectedElement.shadowColor || '#000000'}
+                            onChange={e => updateElement(selectedElement.id, { shadowColor: e.target.value })}
+                            className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                        </div>
+                        <button onClick={() => updateElement(selectedElement.id, { shadowX: 0, shadowY: 0, shadowBlur: 0, shadowColor: '#000000' })}
+                          className="mt-2 text-xs text-accent hover:underline">Remove Shadow</button>
+                      </PopoverContent>
+                    </Popover>
                     <Tooltip>
                       <Popover>
                         <TooltipTrigger asChild>
