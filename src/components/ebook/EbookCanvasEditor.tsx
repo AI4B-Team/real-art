@@ -963,6 +963,8 @@ const EbookCanvasEditor = ({
                 const centerX = parentRect.left + parentRect.width / 2;
                 const centerY = parentRect.top + parentRect.height / 2;
                 const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+                setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+                setRedoStack([]);
                 setRotateState({ id: el.id, centerX, centerY, startAngle, elemRotation: el.rotation || 0 });
               }}
             >
