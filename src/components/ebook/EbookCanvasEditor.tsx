@@ -277,6 +277,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const scrollSelectedRef = useRef(false); // true when page was selected via scroll observer
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const findInputRef = useRef<HTMLInputElement>(null);
+  const editableTextRef = useRef<HTMLDivElement>(null);
+
+  // Helper: apply execCommand to selected text inside contentEditable
+  const applyRichTextCommand = (command: string, value?: string) => {
+    if (!editableTextRef.current) return;
+    editableTextRef.current.focus();
+    document.execCommand(command, false, value);
+    // sync content back
+    if (editingTextId) {
+      updateElement(editingTextId, { content: editableTextRef.current.innerHTML });
+    }
+  };
 
   // Access mode helpers
   const canEdit = accessMode === 'editing' || accessMode === 'admin';
@@ -1099,13 +1111,21 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           onDoubleClick={() => { if (isPageLocked) return; setEditingTextId(el.id); setSelectedElementId(el.id); }}>
           <TypeBadge />
           {isEditing ? (
-            <textarea
-              autoFocus
-              value={el.content || ''}
-              onChange={e => updateElement(el.id, { content: e.target.value })}
-              onBlur={() => setEditingTextId(null)}
-              onKeyDown={e => { if (e.key === 'Escape') setEditingTextId(null); }}
-              className="w-full h-full bg-transparent border-none outline-none resize-none p-1"
+            <div
+              ref={editableTextRef}
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={() => {
+                if (editableTextRef.current) {
+                  updateElement(el.id, { content: editableTextRef.current.innerHTML });
+                }
+                setEditingTextId(null);
+              }}
+              onKeyDown={e => { if (e.key === 'Escape') { if (editableTextRef.current) updateElement(el.id, { content: editableTextRef.current.innerHTML }); setEditingTextId(null); } }}
+              onMouseDown={e => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
+              dangerouslySetInnerHTML={{ __html: el.content || '' }}
+              className="w-full h-full overflow-auto p-1 whitespace-pre-wrap outline-none cursor-text"
               style={{
                 fontSize: `${(el.fontSize || 16) * zoom / 100 * 0.5}px`,
                 fontFamily: el.fontFamily, color: el.textColor,
@@ -1126,7 +1146,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               textDecoration: el.textDecoration || 'none',
               backgroundColor: el.highlightColor || 'transparent',
             }}>
-              {el.content}
+              <span dangerouslySetInnerHTML={{ __html: el.content || '' }} />
             </div>
           )}
           {isSelected && renderResizeHandles(el)}
@@ -1884,7 +1904,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               )}
               {/* Unified toolbar — only visible when element is selected and user can edit */}
               {selectedElement && canEdit && (
-<div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" onMouseDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
+<div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" onMouseDown={e => { e.stopPropagation(); if (editingTextId) e.preventDefault(); }} onClick={e => e.stopPropagation()}>
                 <div className="flex items-center gap-1">
                 {/* Select & Add Image — hidden for text elements */}
                 {selectedElement?.type !== 'text' && (
@@ -1932,7 +1952,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     <Tooltip><TooltipTrigger asChild>
                       <div className="relative w-7 h-7 flex items-center justify-center cursor-pointer">
                         <input type="color" value={selectedElement.textColor || '#1a1a2e'}
-                          onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
+                          onChange={e => { if (editingTextId) { applyRichTextCommand('foreColor', e.target.value); } else { updateElement(selectedElement.id, { textColor: e.target.value }); } }}
                           onMouseDown={e => e.stopPropagation()}
                           onClick={e => e.stopPropagation()}
                           className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
@@ -1943,7 +1963,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     <Tooltip><TooltipTrigger asChild>
                       <div className="relative">
                         <input type="color" value={selectedElement.highlightColor || '#ffff00'}
-                          onChange={e => updateElement(selectedElement.id, { highlightColor: e.target.value })}
+                          onChange={e => { if (editingTextId) { applyRichTextCommand('hiliteColor', e.target.value); } else { updateElement(selectedElement.id, { highlightColor: e.target.value }); } }}
                           onMouseDown={e => e.stopPropagation()}
                           onClick={e => e.stopPropagation()}
                           className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
@@ -1962,25 +1982,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       </button>
                     </TooltipTrigger><TooltipContent>Heading</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('bold'); } else { updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' }); } }}
                         className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Bold className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger><TooltipContent>Bold</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('italic'); } else { updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' }); } }}
                         className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Italic className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger><TooltipContent>Italic</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('underline'); } else { updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' }); } }}
                         className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Underline className="w-3.5 h-3.5" />
                       </button>
                     </TooltipTrigger><TooltipContent>Underline</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' })}
+                      <button onMouseDown={e => e.preventDefault()} onClick={() => { if (editingTextId) { applyRichTextCommand('strikeThrough'); } else { updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' }); } }}
                         className={`p-1.5 rounded ${selectedElement.textDecoration === 'line-through' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         <Strikethrough className="w-3.5 h-3.5" />
                       </button>
