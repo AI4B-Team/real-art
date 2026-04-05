@@ -227,23 +227,45 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
     </button>
   );
 
+  // Pre-populate schedule fields when editing
+  useEffect(() => {
+    if (editingEntry && showSchedule) {
+      if (editingEntry.scheduledFor) {
+        const [d, t] = editingEntry.scheduledFor.split('T');
+        setScheduleDate(d || '');
+        setScheduleTime(t || '');
+      }
+      setSchedulePlatforms(new Set(editingEntry.platforms || []));
+    }
+  }, [editingEntry, showSchedule]);
+
   // Schedule sub-view
   if (showSchedule) {
-    // Also handle editing an existing entry
     const allPlatforms = [...SOCIAL_PLATFORMS_MAIN, ...SOCIAL_PLATFORMS_ALL];
-
-    // If editing, pre-populate
-    useEffect(() => {
-      if (editingEntry && showSchedule) {
-        if (editingEntry.scheduledFor) {
-          const [d, t] = editingEntry.scheduledFor.split('T');
-          setScheduleDate(d || '');
-          setScheduleTime(t || '');
-        }
-        setSchedulePlatforms(new Set(editingEntry.platforms || []));
+    const handleScheduleOrUpdate = () => {
+      if (!scheduleDate || !scheduleTime || schedulePlatforms.size === 0) {
+        setScheduleError("Please select a date, time, and at least one platform");
+        return;
       }
-    }, [editingEntry, showSchedule]);
-
+      setScheduleError("");
+      const names = [...schedulePlatforms].join(", ");
+      if (editingEntry) {
+        updateHistoryEntry(editingEntry.id, {
+          platforms: [...schedulePlatforms],
+          scheduledFor: `${scheduleDate}T${scheduleTime}`,
+          time: scheduleTime,
+          date: new Date().toLocaleDateString(),
+        });
+        toast({ title: "Schedule updated!", description: `${scheduleDate} at ${scheduleTime} on ${names}` });
+        setEditingEntry(null);
+        setShowSchedule(false);
+        setScheduleDate("");
+        setScheduleTime("");
+        setSchedulePlatforms(new Set());
+      } else {
+        handleScheduleConfirm();
+      }
+    };
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="sm:max-w-2xl p-0 gap-0 rounded-2xl overflow-hidden">
@@ -289,32 +311,8 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
             {scheduleError && (
               <p className="text-sm text-destructive text-center">{scheduleError}</p>
             )}
-            <button onClick={handleScheduleConfirm}
-              className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-              onClick={() => {
-                if (!scheduleDate || !scheduleTime || schedulePlatforms.size === 0) {
-                  setScheduleError("Please select a date, time, and at least one platform");
-                  return;
-                }
-                setScheduleError("");
-                const names = [...schedulePlatforms].join(", ");
-                if (editingEntry) {
-                  updateHistoryEntry(editingEntry.id, {
-                    platforms: [...schedulePlatforms],
-                    scheduledFor: `${scheduleDate}T${scheduleTime}`,
-                    time: scheduleTime,
-                    date: new Date().toLocaleDateString(),
-                  });
-                  toast({ title: "Schedule updated!", description: `${scheduleDate} at ${scheduleTime} on ${names}` });
-                  setEditingEntry(null);
-                  setShowSchedule(false);
-                  setScheduleDate("");
-                  setScheduleTime("");
-                  setSchedulePlatforms(new Set());
-                } else {
-                  handleScheduleConfirm();
-                }
-              }}>
+            <button onClick={handleScheduleOrUpdate}
+              className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <Clock className="w-4 h-4" />
               {editingEntry ? 'Update Schedule' : 'Schedule'}
             </button>
