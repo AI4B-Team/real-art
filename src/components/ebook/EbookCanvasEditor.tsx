@@ -745,6 +745,7 @@ const EbookCanvasEditor = ({
       position: 'absolute', left: `${el.x}%`, top: `${el.y}%`,
       width: `${el.width}%`, height: `${el.height}%`,
       opacity: el.opacity ?? 1, borderRadius: el.borderRadius,
+      border: el.borderStyle && el.borderStyle !== 'none' ? `${el.borderWidth || 1}px ${el.borderStyle} ${el.borderColor || '#000000'}` : undefined,
       transform: el.rotation ? `rotate(${el.rotation}deg)` : undefined,
       cursor: activeTool === 'select' ? (el.locked ? 'not-allowed' : 'move') : 'crosshair',
       zIndex: el.zIndex ?? 1,
