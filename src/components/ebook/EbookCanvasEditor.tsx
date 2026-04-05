@@ -922,27 +922,56 @@ const EbookCanvasEditor = ({
           ) : (
             /* ─── NORMAL VIEW ─── */
             <>
-              {/* Default toolbar (when no element selected) */}
-              {!selectedElement && (
-                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 gap-1 shrink-0">
-                  {TOOLS.map(tool => (
-                    <Tooltip key={tool.id}>
-                      <TooltipTrigger asChild>
-                        <button onClick={() => {
-                          setActiveTool(tool.id);
-                          if (tool.id === 'image') imageInputRef.current?.click();
-                        }}
-                          className={`p-1.5 rounded transition-colors ${activeTool === tool.id ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                          <tool.icon className="w-4 h-4" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>{tool.label}</TooltipContent>
-                    </Tooltip>
-                  ))}
-                </div>
-              )}
+              {/* Unified toolbar — always visible */}
+              <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-1.5 shrink-0">
+                {/* ── Left: 4 Creation Tool Buttons ── */}
+                <Tooltip><TooltipTrigger asChild>
+                  <button onClick={() => { setActiveTool('select'); setSelectedElementId(null); }}
+                    className={`p-1.5 rounded transition-colors ${activeTool === 'select' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                    <MousePointer2 className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger><TooltipContent>Select (V)</TooltipContent></Tooltip>
 
-              {/* Text formatting bar (when text selected) */}
+                <Tooltip><TooltipTrigger asChild>
+                  <button onClick={() => setActiveTool('text')}
+                    className={`p-1.5 rounded transition-colors ${activeTool === 'text' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                    <Type className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger><TooltipContent>Text (T)</TooltipContent></Tooltip>
+
+                {/* Shapes dropdown */}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className={`p-1.5 rounded transition-colors flex items-center gap-0.5 ${['rectangle','circle','line'].includes(activeTool) ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                      <Square className="w-4 h-4" />
+                      <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-36 p-1.5" align="start">
+                    {[
+                      { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
+                      { id: 'circle', icon: Circle, label: 'Circle (O)' },
+                      { id: 'line', icon: Minus, label: 'Line (L)' },
+                    ].map(shape => (
+                      <button key={shape.id} onClick={() => setActiveTool(shape.id)}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeTool === shape.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                        <shape.icon className="w-4 h-4" />{shape.label}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
+
+                <Tooltip><TooltipTrigger asChild>
+                  <button onClick={() => { setActiveTool('image'); imageInputRef.current?.click(); }}
+                    className={`p-1.5 rounded transition-colors ${activeTool === 'image' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                    <ImageIcon className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger><TooltipContent>Image (I)</TooltipContent></Tooltip>
+
+                {/* ── Separator between tools and context toolbar ── */}
+                {selectedElement && <div className="w-px h-5 bg-foreground/[0.08] mx-1" />}
+
+                {/* ── Context: Text formatting ── */}
               {selectedElement?.type === 'text' && (
                 <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-1.5 shrink-0">
                   {/* AI button */}
