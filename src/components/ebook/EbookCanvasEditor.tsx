@@ -1709,33 +1709,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           </Tooltip>
         </div>
 
-        {isReplacing && (
-          <div
-            className="absolute z-[125] flex max-w-[calc(100%-24px)] items-center gap-2 rounded-xl border border-foreground/[0.1] bg-background/95 px-3 py-2.5 shadow-xl backdrop-blur-sm pointer-events-auto"
-            style={suggestionsStyle}
-            onClick={e => e.stopPropagation()}
-            onMouseDown={e => e.stopPropagation()}
-            onPointerDown={e => e.stopPropagation()}
-          >
-            <Sparkles className="w-3.5 h-3.5 shrink-0 text-accent" />
-            <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">Suggested:</span>
-            {suggestions.map((imgSrc, idx) => (
-              <button
-                key={idx}
-                onClick={e => {
-                  e.stopPropagation();
-                  updateElement(el.id, { src: imgSrc, isPlaceholder: false });
-                  toast.success('Image replaced');
-                  setReplaceModalElementId(null);
-                }}
-                className="h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 border-transparent transition-all hover:scale-105 hover:border-accent hover:shadow-md"
-              >
-                <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="h-full w-full object-cover" draggable={false} />
-              </button>
-            ))}
-            <span className="whitespace-nowrap text-[10px] text-muted-foreground">or pick from panel →</span>
-          </div>
-        )}
       </>
     );
   };
