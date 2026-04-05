@@ -423,9 +423,11 @@ const EbookCanvasEditor = ({
   const currentElements = pageElements[selectedPage?.id || ''] ||
     (selectedPage ? getElementsForPage(selectedPage, currentPages, bookTitle) : []);
 
-  const updateElements = useCallback((pageId: string, newElements: CanvasElement[]) => {
-    setUndoStack(prev => [...prev.slice(-20), { ...pageElements }]);
-    setRedoStack([]);
+  const updateElements = useCallback((pageId: string, newElements: CanvasElement[], skipUndo = false) => {
+    if (!skipUndo) {
+      setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+      setRedoStack([]);
+    }
     setPageElements(prev => ({ ...prev, [pageId]: newElements }));
   }, [pageElements]);
 
@@ -572,9 +574,9 @@ const EbookCanvasEditor = ({
     setSelectedElementId(dup.id);
   };
 
-  const updateElement = (id: string, updates: Partial<CanvasElement>) => {
+  const updateElement = (id: string, updates: Partial<CanvasElement>, skipUndo = false) => {
     if (!selectedPage) return;
-    updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e));
+    updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e), skipUndo);
   };
 
   const handleAITextEdit = async (action: AIEditAction, params?: { tone?: string; prompt?: string }) => {
@@ -621,11 +623,17 @@ const EbookCanvasEditor = ({
     e.stopPropagation();
     if (pageId) onPageSelect(pageId);
     setSelectedElementId(el.id);
+    // Push undo snapshot once before drag begins
+    setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+    setRedoStack([]);
     setDragState({ id: el.id, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y });
   };
 
   const handleResizeMouseDown = (e: React.MouseEvent, el: CanvasElement, handle: string) => {
     e.stopPropagation();
+    // Push undo snapshot once before resize begins
+    setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+    setRedoStack([]);
     setResizeState({ id: el.id, handle, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y, elemW: el.width, elemH: el.height });
   };
 
@@ -641,7 +649,7 @@ const EbookCanvasEditor = ({
         updateElement(dragState.id, {
           x: Math.max(0, Math.min(95, dragState.elemX + dx)),
           y: Math.max(0, Math.min(95, dragState.elemY + dy)),
-        });
+        }, true);
       }
 
       if (resizeState) {
@@ -656,7 +664,7 @@ const EbookCanvasEditor = ({
         if (h.includes('s')) newH = Math.max(3, resizeState.elemH + dy);
         if (h.includes('n')) { newH = Math.max(3, resizeState.elemH - dy); newY = resizeState.elemY + dy; }
 
-        updateElement(resizeState.id, { x: newX, y: newY, width: newW, height: newH });
+        updateElement(resizeState.id, { x: newX, y: newY, width: newW, height: newH }, true);
       }
 
       if (rotateState) {
@@ -665,12 +673,11 @@ const EbookCanvasEditor = ({
           e.clientX - rotateState.centerX
         ) * (180 / Math.PI);
         let rotation = rotateState.elemRotation + (angle - rotateState.startAngle);
-        // Snap to 0/90/180/270 when within 5°
         for (const snap of [0, 90, 180, 270, 360]) {
           if (Math.abs(rotation - snap) < 5) { rotation = snap % 360; break; }
           if (Math.abs(rotation + 360 - snap) < 5) { rotation = snap % 360; break; }
         }
-        updateElement(rotateState.id, { rotation: ((rotation % 360) + 360) % 360 });
+        updateElement(rotateState.id, { rotation: ((rotation % 360) + 360) % 360 }, true);
       }
     };
 
@@ -956,6 +963,8 @@ const EbookCanvasEditor = ({
                 const centerX = parentRect.left + parentRect.width / 2;
                 const centerY = parentRect.top + parentRect.height / 2;
                 const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+                setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+                setRedoStack([]);
                 setRotateState({ id: el.id, centerX, centerY, startAngle, elemRotation: el.rotation || 0 });
               }}
             >
