@@ -958,8 +958,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     };
     const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : el.type === 'interactive' ? 'bg-purple-500' : 'bg-blue-500';
     const TypeBadge = () => isSelected ? (
-      <div className={`absolute left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-[60] whitespace-nowrap pointer-events-none`}
-        style={{ top: el.y < 40 ? '-6px' : '-42px' }}>
+      <div className={`absolute -top-6 left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-30 whitespace-nowrap`}>
         {getTypeLabel()}
       </div>
     ) : null;
@@ -1456,7 +1455,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const nearBottom = (el.y + el.height) > 600;
     const posClass = nearTop
       ? 'top-2 left-1/2 -translate-x-1/2'
-      : '-bottom-10 left-1/2 -translate-x-1/2';
+      : nearBottom
+        ? '-top-10 left-1/2 -translate-x-1/2'
+        : '-top-10 left-1/2 -translate-x-1/2';
     const isSmall = el.width < 180 || el.height < 120;
     const btnSize = isSmall ? 'w-5 h-5' : 'w-7 h-7';
     const iconSize = isSmall ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5';
