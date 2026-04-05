@@ -157,7 +157,7 @@ export default function EbookInviteModal({ open, onOpenChange }: EbookInviteModa
                 {inviteRole} <ChevronDown className="w-3.5 h-3.5" />
               </button>
               {roleDropdownOpen && (
-                <div className="absolute right-0 top-full mt-1 bg-background border border-foreground/[0.1] rounded-lg shadow-lg z-50 py-1 min-w-[130px]">
+                <div className="absolute right-0 bottom-full mb-1 bg-background border border-foreground/[0.1] rounded-lg shadow-lg z-[999] py-1 min-w-[130px]">
                   {ROLE_OPTIONS.map(r => (
                     <button key={r} onClick={() => { setInviteRole(r); setRoleDropdownOpen(false); }}
                       className={`w-full text-left px-3 py-2 text-sm transition-colors ${inviteRole === r ? "bg-accent/10 text-accent font-medium" : "hover:bg-foreground/[0.04]"}`}>
