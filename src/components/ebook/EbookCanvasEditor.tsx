@@ -2254,25 +2254,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </PopoverContent>
                       </Popover>
                     </Tooltip>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button onClick={() => toast.success('Corner Radius tool')}
-                          className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground">
-                          <BoxSelect className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Corner Radius</TooltipContent>
-                    </Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Add Link')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Link2 className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Layers')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Layers className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
-                    {/* Border controls */}
+                    {/* Border controls — right after Shapes */}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild>
                         <PopoverTrigger asChild>
@@ -2310,6 +2292,24 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </div>
                       </PopoverContent>
                     </Popover>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button onClick={() => toast.success('Corner Radius tool')}
+                          className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground">
+                          <BoxSelect className="w-3.5 h-3.5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>Corner Radius</TooltipContent>
+                    </Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => toast.success('Add Link')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Link2 className="w-3.5 h-3.5" /></button>
+                    </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => toast.success('Layers')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Layers className="w-3.5 h-3.5" /></button>
+                    </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
+                    </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })}
                         className={`p-1.5 rounded ${selectedElement.locked ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
