@@ -154,7 +154,7 @@ const TranslatePanel = ({ onTranslate }: { onTranslate?: (scope: 'page' | 'selec
   const selectedLabel = LANGUAGES.find(l => l.code === selectedLang);
 
   return (
-    <div className="px-3 pb-3 space-y-3">
+    <div className="px-3 pb-3 pt-2 space-y-3">
       <p className="text-xs font-semibold text-foreground">Translate To</p>
       <div className="relative">
         <button onClick={() => setIsOpen(!isOpen)}
