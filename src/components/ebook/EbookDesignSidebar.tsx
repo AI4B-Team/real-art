@@ -708,14 +708,19 @@ const EbookDesignSidebar = ({
                     </div>
                   ) : (
                     <>
-                      {isSpecial ? (
-                        <span className="text-xs font-medium text-foreground bg-foreground/[0.05] px-2 py-0.5 rounded min-w-0 overflow-hidden text-ellipsis whitespace-nowrap max-w-full group-hover:max-w-[90px] transition-all duration-200">{ch.title}</span>
-                      ) : (
-                        <span className="text-xs font-medium text-foreground min-w-0 overflow-hidden text-ellipsis whitespace-nowrap max-w-full group-hover:max-w-[90px] transition-all duration-200">{ch.title}</span>
-                      )}
-                      <div className="flex-1 shrink" />
+                      <div className="flex-1 min-w-0">
+                        {isSpecial ? (
+                          <span className="block text-xs font-medium text-foreground bg-foreground/[0.05] px-2 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis">
+                            {ch.title}
+                          </span>
+                        ) : (
+                          <span className="block text-xs font-medium text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
+                            {ch.title}
+                          </span>
+                        )}
+                      </div>
                       {/* Hover action buttons */}
-                      <div className={`flex items-center gap-0.5 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
+                      <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[132px] group-hover:opacity-100 group-hover:ml-1 group-hover:pointer-events-auto transition-[max-width,opacity,margin] duration-200">
                         {onChapterReorder && (
                           <>
                             <Tooltip><TooltipTrigger asChild>
