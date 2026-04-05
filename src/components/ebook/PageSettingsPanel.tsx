@@ -1,12 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import {
   X, ChevronDown, ChevronUp, ChevronLeft, Plus, Copy, Lock, Trash2,
   Maximize2, LayoutGrid as LayoutGridIcon, Palette, Square, SlidersHorizontal,
-  Upload, ImageIcon, ChevronsLeft, ChevronsRight, ChevronRight,
+  Upload, ImageIcon, ChevronsLeft, ChevronsRight, ChevronRight, Unlock,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
 import type { Page } from './EbookCanvasEditor';
 import { getElementsForPage } from './EbookCanvasEditor';
