@@ -186,14 +186,20 @@ const NewEbookPage = () => {
   const [isGridView, setIsGridView] = useState(false);
   const [findReplaceMode, setFindReplaceMode] = useState<'find' | 'find-replace' | null>(null);
   const [showPageSettings, setShowPageSettings] = useState(true);
+  const [manualPageSettings, setManualPageSettings] = useState(false);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
 
   const handleSidebarSectionChange = useCallback((sections: Set<string>) => {
     const shouldShow = Array.from(sections).some(s => PAGE_SETTINGS_SECTIONS.has(s));
-    setShowPageSettings(shouldShow);
-  }, []);
+    if (shouldShow) {
+      setManualPageSettings(false);
+    }
+    if (!manualPageSettings) {
+      setShowPageSettings(shouldShow);
+    }
+  }, [manualPageSettings]);
 
   // ⌘H / Ctrl+H shortcut for Find & Replace
   useEffect(() => {
@@ -856,7 +862,7 @@ const NewEbookPage = () => {
                 onGridViewToggle={() => setIsGridView(false)}
                 findReplaceMode={findReplaceMode}
                 onFindReplaceModeChange={setFindReplaceMode}
-                onPageSettingsToggle={() => setShowPageSettings(true)}
+                onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
               />
               {/* RIGHT: Page Settings Panel (shown contextually) */}
               {!isGridView && showPageSettings && (
