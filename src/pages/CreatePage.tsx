@@ -341,7 +341,7 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
 
-function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void; onModeChange?: (type: ContentType | null, subMode: string | null) => void; onSaveTemplate?: () => void }) {
+function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void; onModeChange?: (type: ContentType | null, subMode: string | null) => void; onSaveTemplate?: (defaults: { contentType: string | null; subMode: string | null; model: string; style: string; ratio: string; prompt: string; number: number; duration: string; resolution: string; references: { src: string }[] }) => void }) {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedType, setSelectedType] = useState<ContentType | null>(() => {
