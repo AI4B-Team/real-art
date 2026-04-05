@@ -2083,7 +2083,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     {pageComments.map((c, i) => {
                       const page = currentPages.find(p => p.id === c.pageId);
                       return (
-                        <div key={c.id} className={`px-4 py-2.5 flex items-start gap-3 text-xs ${c.resolved ? 'opacity-50' : ''}`}>
+                        <div key={c.id} className={`px-4 py-2.5 flex items-start gap-3 text-xs cursor-pointer hover:bg-foreground/[0.03] transition-colors ${c.resolved ? 'opacity-50' : ''}`}
+                          onClick={() => {
+                            const pageIdx = currentPages.findIndex(p => p.id === c.pageId);
+                            if (pageIdx >= 0) {
+                              onPageSelect(c.pageId);
+                              const pageEl = pageRefs.current[c.pageId];
+                              if (pageEl) pageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                              setActiveCommentId(c.id);
+                            }
+                          }}>
                           <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 mt-0.5 ${c.resolved ? 'bg-muted text-muted-foreground' : 'bg-accent text-white'}`}>{i + 1}</div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
@@ -2091,7 +2100,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               <span className="text-muted-foreground">on {page?.title || 'Page'}</span>
                               <span className="text-muted-foreground ml-auto">{c.timestamp}</span>
                             </div>
-                            <p className="text-foreground/80 leading-relaxed">{c.text}</p>
+                            <p className="text-foreground/80 leading-relaxed">{renderCommentText(c.text)}</p>
                           </div>
                           <div className="flex items-center gap-1.5 shrink-0">
                             <button onClick={() => setPageComments(prev => prev.map(pc => pc.id === c.id ? { ...pc, resolved: !pc.resolved } : pc))}
