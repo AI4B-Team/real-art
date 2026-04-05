@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
-  Minus, Hand, ChevronLeft, ChevronRight,
+  Minus, Hand, ChevronLeft, ChevronRight, Search,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Bold, Italic, Underline, Strikethrough,
   Trash2, Copy, Lock, Unlock,
@@ -61,6 +61,8 @@ interface EbookCanvasEditorProps {
   onZoomChange?: (zoom: number) => void;
   isGridView?: boolean;
   onGridViewToggle?: () => void;
+  findReplaceMode?: 'find' | 'find-replace' | null;
+  onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
 }
 
 // ─── Constants ─────────────────────────────────────
@@ -163,6 +165,7 @@ const EbookCanvasEditor = ({
   pages, selectedPageId, onPageSelect, onPagesChange, bookTitle,
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
+  findReplaceMode, onFindReplaceModeChange,
 }: EbookCanvasEditorProps) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
@@ -195,6 +198,106 @@ const EbookCanvasEditor = ({
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
   const isScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const findInputRef = useRef<HTMLInputElement>(null);
+
+  // Find & Replace state
+  const [findQuery, setFindQuery] = useState('');
+  const [replaceQuery, setReplaceQuery] = useState('');
+  const [findMatches, setFindMatches] = useState<{ pageId: string; elementId: string; indices: number[] }[]>([]);
+  const [currentMatchIndex, setCurrentMatchIndex] = useState(0);
+
+  // Compute matches when query changes
+  useEffect(() => {
+    if (!findQuery.trim() || !findReplaceMode) {
+      setFindMatches([]);
+      setCurrentMatchIndex(0);
+      return;
+    }
+    const q = findQuery.toLowerCase();
+    const matches: { pageId: string; elementId: string; indices: number[] }[] = [];
+    currentPages.forEach(page => {
+      const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      elems.forEach(el => {
+        if (el.type === 'text' && el.content) {
+          const content = el.content.toLowerCase();
+          const idxs: number[] = [];
+          let pos = 0;
+          while ((pos = content.indexOf(q, pos)) !== -1) {
+            idxs.push(pos);
+            pos += q.length;
+          }
+          if (idxs.length > 0) matches.push({ pageId: page.id, elementId: el.id, indices: idxs });
+        }
+      });
+    });
+    setFindMatches(matches);
+    setCurrentMatchIndex(0);
+  }, [findQuery, findReplaceMode, pageElements, currentPages, bookTitle]);
+
+  // Navigate to match
+  useEffect(() => {
+    if (findMatches.length === 0 || !findReplaceMode) return;
+    const match = findMatches[currentMatchIndex];
+    if (match) {
+      onPageSelect(match.pageId);
+      setSelectedElementId(match.elementId);
+      // Scroll to the page
+      const pageEl = pageRefs.current[match.pageId];
+      if (pageEl) pageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, [currentMatchIndex, findMatches, findReplaceMode]);
+
+  // Focus find input when panel opens
+  useEffect(() => {
+    if (findReplaceMode) setTimeout(() => findInputRef.current?.focus(), 100);
+  }, [findReplaceMode]);
+
+  const handleFindNext = () => {
+    if (findMatches.length === 0) return;
+    setCurrentMatchIndex(prev => (prev + 1) % findMatches.length);
+  };
+
+  const handleFindPrev = () => {
+    if (findMatches.length === 0) return;
+    setCurrentMatchIndex(prev => (prev - 1 + findMatches.length) % findMatches.length);
+  };
+
+  const handleReplaceCurrent = () => {
+    if (findMatches.length === 0 || !findQuery.trim()) return;
+    const match = findMatches[currentMatchIndex];
+    if (!match) return;
+    const elems = pageElements[match.pageId] || getElementsForPage(currentPages.find(p => p.id === match.pageId)!, currentPages, bookTitle);
+    const el = elems.find(e => e.id === match.elementId);
+    if (!el || !el.content) return;
+    const newContent = el.content.substring(0, match.indices[0]) + replaceQuery + el.content.substring(match.indices[0] + findQuery.length);
+    const newElems = elems.map(e => e.id === match.elementId ? { ...e, content: newContent } : e);
+    setPageElements(prev => ({ ...prev, [match.pageId]: newElems }));
+    toast.success('Replaced');
+  };
+
+  const handleReplaceAll = () => {
+    if (findMatches.length === 0 || !findQuery.trim()) return;
+    let count = 0;
+    const newPageElements = { ...pageElements };
+    currentPages.forEach(page => {
+      const elems = newPageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      let changed = false;
+      const updated = elems.map(el => {
+        if (el.type === 'text' && el.content && el.content.toLowerCase().includes(findQuery.toLowerCase())) {
+          const regex = new RegExp(findQuery.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+          const matches = el.content.match(regex);
+          if (matches) count += matches.length;
+          changed = true;
+          return { ...el, content: el.content.replace(regex, replaceQuery) };
+        }
+        return el;
+      });
+      if (changed) newPageElements[page.id] = updated;
+    });
+    setPageElements(newPageElements);
+    toast.success(`Replaced ${count} occurrence${count !== 1 ? 's' : ''}`);
+    setFindQuery('');
+  };
 
   // Auto-select page based on scroll position (IntersectionObserver)
   useEffect(() => {
@@ -1149,6 +1252,77 @@ const EbookCanvasEditor = ({
                   </>
                 )}
               </div>
+
+              {/* ── Find & Replace Panel ── */}
+              {findReplaceMode && (
+                <div className="absolute top-12 right-4 z-50 bg-background border border-foreground/[0.1] rounded-xl shadow-2xl w-80 overflow-hidden animate-in slide-in-from-top-2 duration-200">
+                  <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.06] bg-foreground/[0.02]">
+                    <span className="text-sm font-semibold text-foreground">
+                      {findReplaceMode === 'find-replace' ? 'Find & Replace' : 'Find'}
+                    </span>
+                    <div className="flex items-center gap-1">
+                      {findMatches.length > 0 && (
+                        <span className="text-xs text-muted-foreground mr-1">
+                          {currentMatchIndex + 1} of {findMatches.length}
+                        </span>
+                      )}
+                      <button onClick={() => onFindReplaceModeChange?.(null)}
+                        className="p-1 rounded hover:bg-foreground/[0.06] text-muted-foreground hover:text-foreground transition-colors">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-3 flex flex-col gap-2.5">
+                    <div className="flex items-center gap-2">
+                      <div className="flex-1 relative">
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground pointer-events-none" />
+                        <input
+                          ref={findInputRef}
+                          value={findQuery}
+                          onChange={e => setFindQuery(e.target.value)}
+                          onKeyDown={e => { if (e.key === 'Enter') handleFindNext(); if (e.key === 'Escape') onFindReplaceModeChange?.(null); }}
+                          placeholder="Find text..."
+                          className="w-full pl-8 pr-3 py-2 text-sm bg-foreground/[0.04] rounded-lg border border-foreground/[0.08] focus:outline-none focus:border-accent/40 transition-colors"
+                        />
+                      </div>
+                      <button onClick={handleFindPrev} disabled={findMatches.length === 0}
+                        className="p-1.5 rounded-lg hover:bg-foreground/[0.06] text-muted-foreground disabled:opacity-30 transition-colors">
+                        <ChevronUp className="w-4 h-4" />
+                      </button>
+                      <button onClick={handleFindNext} disabled={findMatches.length === 0}
+                        className="p-1.5 rounded-lg hover:bg-foreground/[0.06] text-muted-foreground disabled:opacity-30 transition-colors">
+                        <ChevronDown className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {findReplaceMode === 'find-replace' && (
+                      <>
+                        <div className="flex items-center gap-2">
+                          <input
+                            value={replaceQuery}
+                            onChange={e => setReplaceQuery(e.target.value)}
+                            onKeyDown={e => { if (e.key === 'Enter') handleReplaceCurrent(); if (e.key === 'Escape') onFindReplaceModeChange?.(null); }}
+                            placeholder="Replace with..."
+                            className="flex-1 px-3 py-2 text-sm bg-foreground/[0.04] rounded-lg border border-foreground/[0.08] focus:outline-none focus:border-accent/40 transition-colors"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button onClick={handleReplaceCurrent} disabled={findMatches.length === 0}
+                            className="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg border border-foreground/[0.1] hover:bg-foreground/[0.04] disabled:opacity-30 transition-colors">
+                            Replace
+                          </button>
+                          <button onClick={handleReplaceAll} disabled={findMatches.length === 0}
+                            className="flex-1 px-3 py-1.5 text-xs font-medium rounded-lg bg-accent text-white hover:bg-accent/90 disabled:opacity-30 transition-colors">
+                            Replace All
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {findQuery.trim() && findMatches.length === 0 && (
+                      <p className="text-xs text-muted-foreground text-center py-1">No matches found</p>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Canvas - Scrollable all pages */}
               <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative">

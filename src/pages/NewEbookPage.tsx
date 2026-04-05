@@ -184,6 +184,23 @@ const NewEbookPage = () => {
   const [selectedPageId, setSelectedPageId] = useState<string | null>("1");
   const [zoom, setZoom] = useState(100);
   const [isGridView, setIsGridView] = useState(false);
+  const [findReplaceMode, setFindReplaceMode] = useState<'find' | 'find-replace' | null>(null);
+
+  // ⌘H / Ctrl+H shortcut for Find & Replace
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'h') {
+        e.preventDefault();
+        setFindReplaceMode(prev => prev === 'find-replace' ? null : 'find-replace');
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'f' && activeTab === 'design') {
+        e.preventDefault();
+        setFindReplaceMode(prev => prev === 'find' ? null : 'find');
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [activeTab]);
 
   useEffect(() => {
     const state = location.state as { book?: any; fromCreate?: boolean; prompt?: string } | null;
@@ -406,8 +423,8 @@ const NewEbookPage = () => {
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={15} /></button></TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={15} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Search size={15} /></button></TooltipTrigger><TooltipContent>Find</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ArrowRightLeft size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><button onClick={() => setFindReplaceMode(prev => prev === 'find' ? null : 'find')} className={`p-1.5 rounded-lg hover:bg-foreground/[0.05] ${findReplaceMode === 'find' ? 'text-accent bg-accent/10' : 'text-muted'}`}><Search size={15} /></button></TooltipTrigger><TooltipContent>Find</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><button onClick={() => setFindReplaceMode(prev => prev === 'find-replace' ? null : 'find-replace')} className={`p-1.5 rounded-lg hover:bg-foreground/[0.05] ${findReplaceMode === 'find-replace' ? 'text-accent bg-accent/10' : 'text-muted'}`}><ArrowRightLeft size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomOut size={15} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
               <span className="text-xs text-muted font-medium w-10 text-center">{zoom}%</span>
@@ -827,6 +844,8 @@ const NewEbookPage = () => {
                 onZoomChange={setZoom}
                 isGridView={isGridView}
                 onGridViewToggle={() => setIsGridView(false)}
+                findReplaceMode={findReplaceMode}
+                onFindReplaceModeChange={setFindReplaceMode}
               />
               {/* RIGHT: Page Settings Panel (hidden in grid view) */}
               {!isGridView && (
