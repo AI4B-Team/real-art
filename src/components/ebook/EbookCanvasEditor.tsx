@@ -1835,6 +1835,35 @@ const EbookCanvasEditor = ({
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Element selection context menu */}
+      {contextMenu && (
+        <>
+          <div className="fixed inset-0 z-[9998]" onClick={() => setContextMenu(null)} onContextMenu={e => { e.preventDefault(); setContextMenu(null); }} />
+          <div className="fixed z-[9999] bg-background border border-foreground/10 rounded-lg shadow-xl py-1 min-w-[180px]"
+            style={{ left: contextMenu.x, top: contextMenu.y }}>
+            <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Select Element</p>
+            {contextMenu.elements.map((el, i) => {
+              const label = el.type === 'text' ? `Text: "${(el.content || '').slice(0, 20)}${(el.content || '').length > 20 ? '…' : ''}"` :
+                el.type === 'image' ? `Image${el.src ? '' : ' (placeholder)'}` :
+                el.shapeType === 'circle' ? 'Circle' : 'Shape';
+              const isActive = el.id === selectedElementId;
+              return (
+                <button key={el.id}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${isActive ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}
+                  onClick={() => { setSelectedElementId(el.id); setContextMenu(null); }}>
+                  <span className={`w-2 h-2 rounded-full ${el.type === 'text' ? 'bg-blue-500' : el.type === 'image' ? 'bg-emerald-500' : 'bg-destructive'}`} />
+                  <span>{label}</span>
+                  <span className="ml-auto text-[10px] text-muted-foreground">z:{el.zIndex ?? 1}</span>
+                </button>
+              );
+            })}
+            <div className="border-t border-foreground/[0.06] mt-1 pt-1 px-3 py-1">
+              <p className="text-[10px] text-muted-foreground">Tip: Alt+Click to cycle layers</p>
+            </div>
+          </div>
+        </>
+      )}
     </TooltipProvider>
   );
 };
