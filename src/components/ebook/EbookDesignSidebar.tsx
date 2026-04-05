@@ -598,8 +598,7 @@ const EbookDesignSidebar = ({
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
-    onAddElement?.('image', { src: url });
-    toast.success('Image added to canvas');
+    if (onReplaceImage) { onReplaceImage(url); } else { onAddElement?.('image', { src: url }); toast.success('Image added to canvas'); }
   };
 
   const handleAIAction = (action: AIEditAction) => {
