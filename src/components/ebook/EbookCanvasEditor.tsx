@@ -711,7 +711,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         return next;
       });
     },
-  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle]);
+    isReplacingImage: () => !!replaceModalElementId,
+    replaceImage: (src: string) => {
+      if (replaceModalElementId) {
+        updateElement(replaceModalElementId, { src, isPlaceholder: false });
+        toast.success('Image replaced');
+        setReplaceModalElementId(null);
+      }
+    },
+  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId]);
 
   const deleteElement = () => {
     if (!selectedElementId || !selectedPage || isPageLocked) return;
