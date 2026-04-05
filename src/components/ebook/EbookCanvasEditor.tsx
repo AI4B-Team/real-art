@@ -173,9 +173,16 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
       return createChapterPageElements(idx + 1, page.title);
     }
     case 'back': return createBackElements();
+    case 'blank': return [];
     default: return [];
   }
 };
+
+const PAGE_TYPE_OPTIONS: { type: Page['type']; label: string; description: string; icon: string }[] = [
+  { type: 'chapter', label: 'Chapter Cover', description: 'Full image with chapter number & title', icon: '📖' },
+  { type: 'chapter-page', label: 'Chapter Content', description: 'Top image with text content below', icon: '📄' },
+  { type: 'blank', label: 'Blank Page', description: 'Empty page to design from scratch', icon: '📃' },
+];
 
 export interface EbookCanvasEditorHandle {
   addElement: (type: string, extra?: any) => void;
