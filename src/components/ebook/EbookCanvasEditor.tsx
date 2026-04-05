@@ -1952,7 +1952,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     <Tooltip><TooltipTrigger asChild>
                       <div className="relative w-7 h-7 flex items-center justify-center cursor-pointer">
                         <input type="color" value={selectedElement.textColor || '#1a1a2e'}
-                          onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
+                          onChange={e => { if (editingTextId) { applyRichTextCommand('foreColor', e.target.value); } else { updateElement(selectedElement.id, { textColor: e.target.value }); } }}
                           onMouseDown={e => e.stopPropagation()}
                           onClick={e => e.stopPropagation()}
                           className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
