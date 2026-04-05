@@ -944,11 +944,14 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
 
           {/* Undo/Clear on canvas */}
           <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
-            <button onClick={() => setBrushStrokes(prev => prev.slice(0, -1))}
+            <button onClick={() => {
+              if (shapes.length > 0) setShapes(prev => prev.slice(0, -1));
+              else setBrushStrokes(prev => prev.slice(0, -1));
+            }}
               className="flex items-center gap-2 px-4 py-2.5 bg-card border border-foreground/[0.08] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.04] transition-colors shadow-sm">
               <RotateCcw className="w-4 h-4" />Undo
             </button>
-            <button onClick={() => { setBrushStrokes([]); if (drawingCanvasRef.current) drawingCanvasRef.current.getContext("2d")?.clearRect(0, 0, drawingCanvasRef.current.width, drawingCanvasRef.current.height); }}
+            <button onClick={() => { setBrushStrokes([]); setShapes([]); if (drawingCanvasRef.current) drawingCanvasRef.current.getContext("2d")?.clearRect(0, 0, drawingCanvasRef.current.width, drawingCanvasRef.current.height); }}
               className="flex items-center gap-2 px-4 py-2.5 bg-card border border-foreground/[0.08] rounded-lg text-muted text-sm font-medium hover:bg-foreground/[0.04] transition-colors shadow-sm">
               <RotateCw className="w-4 h-4" />Clear
             </button>
