@@ -3027,6 +3027,12 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <button type="button" onClick={isListening ? cancelSpeech : startListening} className={`p-1.5 rounded-lg transition-colors mr-2 ${isListening ? "bg-accent/10 text-accent animate-pulse" : "bg-foreground/[0.04] hover:bg-foreground/[0.08]"}`}><Mic size={15} className={isListening ? "" : "!text-black dark:!text-white"} /></button>
                   </TooltipTrigger><TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent></Tooltip>
                 )}
+                <Tooltip><TooltipTrigger asChild>
+                  <button type="button" onClick={() => onSaveTemplate?.()}
+                    className="p-1.5 rounded-lg bg-foreground/[0.04] hover:bg-foreground/[0.08] transition-colors mr-2">
+                    <Bookmark size={15} className="!text-black dark:!text-white" />
+                  </button>
+                </TooltipTrigger><TooltipContent>Save</TooltipContent></Tooltip>
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
                   className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white hover:bg-accent/85 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] active:scale-95">
                   {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
