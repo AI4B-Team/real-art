@@ -1299,6 +1299,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               fontWeight: el.fontWeight || 'normal',
               fontStyle: el.fontStyle || 'normal',
               textDecoration: el.textDecoration || 'none',
+              lineHeight: el.lineHeight ?? 1.5,
             }}>
               <span style={{ backgroundColor: el.highlightColor || 'transparent', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' }} dangerouslySetInnerHTML={{ __html: el.content || '' }} />
             </div>
