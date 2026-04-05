@@ -572,20 +572,6 @@ const EbookCanvasEditor = ({
   return (
     <TooltipProvider delayDuration={200}>
       <div className="flex h-full flex-1 min-w-0">
-        {/* Left: Vertical Toolbar */}
-        <div className="w-11 bg-foreground/[0.95] flex flex-col items-center py-3 gap-1 shrink-0">
-          {TOOLS.map(tool => (
-            <Tooltip key={tool.id}>
-              <TooltipTrigger asChild>
-                <button onClick={() => setActiveTool(tool.id)}
-                  className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${activeTool === tool.id ? 'bg-accent text-white' : 'text-background/60 hover:text-background hover:bg-background/10'}`}>
-                  <tool.icon className="w-4 h-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent side="right">{tool.label}</TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
 
         {/* Pages Panel */}
         {showPagesPanel && (
