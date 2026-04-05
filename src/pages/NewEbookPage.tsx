@@ -975,8 +975,36 @@ const NewEbookPage = () => {
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
                 onTranslate={async (scope, language) => {
+                  // Check for locked pages when applying to entire book
+                  if (scope === 'book') {
+                    const lockedPages = ebookPages.filter(p => p.locked);
+                    if (lockedPages.length > 0) {
+                      const lockedNumbers = lockedPages.map(p => ebookPages.indexOf(p) + 1).join(', ');
+                      toast(`${lockedPages.length} locked page${lockedPages.length > 1 ? 's' : ''} will be skipped (Page ${lockedNumbers})`, {
+                        description: 'Unlock to include all pages in translation.',
+                        action: {
+                          label: 'Unlock All',
+                          onClick: () => {
+                            setEbookPages(prev => prev.map(p => ({ ...p, locked: false })));
+                            toast.success('All pages unlocked. Please run the translation again.');
+                          },
+                        },
+                      });
+                    }
+                  }
+                  // Check if current page is locked for page-level scope
+                  if (scope === 'page' || scope === 'selected') {
+                    const currentPage = ebookPages.find(p => p.id === selectedPageId);
+                    if (currentPage?.locked) {
+                      toast.error('This page is locked. Unlock it to make changes.');
+                      return;
+                    }
+                  }
                   const textScope = scope === 'selected' ? 'page' : scope;
-                  const elements = canvasRef.current?.getTextElements(textScope);
+                  const elements = canvasRef.current?.getTextElements(textScope)?.filter(el => {
+                    const page = ebookPages.find(p => p.id === el.pageId);
+                    return !page?.locked;
+                  });
                   if (!elements || elements.length === 0) {
                     toast({ title: 'No text elements found', variant: 'destructive' });
                     return;
