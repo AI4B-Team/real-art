@@ -25,6 +25,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import AITextEditMenu, { type AIEditAction } from '@/components/ebook/AITextEditMenu';
+import { supabase } from '@/integrations/supabase/client';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
