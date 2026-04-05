@@ -1099,6 +1099,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   // ─── Render Element ───────────────────────────
   const renderElement = (el: CanvasElement, pageId?: string) => {
+    // Hide all non-replacing elements when replace mode is active
+    if (replaceModalElementId && el.id !== replaceModalElementId) return null;
     const isSelected = selectedElementId === el.id;
     const isEditing = editingTextId === el.id;
     const style: React.CSSProperties = {
