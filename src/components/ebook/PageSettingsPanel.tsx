@@ -207,9 +207,9 @@ const PageSettingsPanel = ({
               </TooltipTrigger><TooltipContent>Move Down</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={onGridViewToggle} className="p-1.5 rounded hover:bg-foreground/[0.05] text-muted-foreground">
-                  <LayoutGridIcon className="w-4 h-4" />
+                  <SlidersHorizontal className="w-4 h-4" />
                 </button>
-              </TooltipTrigger><TooltipContent>Page Settings</TooltipContent></Tooltip>
+              </TooltipTrigger><TooltipContent>Grid View</TooltipContent></Tooltip>
             </div>
           )}
 
