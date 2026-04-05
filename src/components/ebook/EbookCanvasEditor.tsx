@@ -809,8 +809,8 @@ const EbookCanvasEditor = ({
                   </div>
                 </div>
               </div>
-              {/* Bottom actions */}
-              <div className="flex justify-end gap-3 mt-8 pb-4">
+              {/* Bottom actions - sticky */}
+              <div className="sticky bottom-0 right-0 flex justify-end gap-3 py-4 pr-4 bg-gradient-to-t from-background via-background to-transparent">
                 <button onClick={onGridViewToggle} className="px-6 py-2.5 rounded-lg border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
                   Cancel
                 </button>
