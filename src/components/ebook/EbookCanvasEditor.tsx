@@ -897,7 +897,7 @@ const EbookCanvasEditor = ({
 
               {/* Shape/Image formatting bar */}
               {selectedElement && selectedElement.type !== 'text' && (
-                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
+                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 gap-2 shrink-0">
                   {selectedElement.type === 'shape' && (
                     <>
                       <span className="text-xs text-muted-foreground">Fill:</span>
