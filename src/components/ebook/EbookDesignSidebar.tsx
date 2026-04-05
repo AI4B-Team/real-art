@@ -367,7 +367,7 @@ const VideoPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any
 
   return (
     <div className="px-3 pb-3">
-      <MediaTabs active={tab} onChange={setTab} />
+      <MediaTabs active={tab} onChange={setTab} stockIcon={Video} />
       <div className="relative mb-2">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Press [Enter] To Search"
