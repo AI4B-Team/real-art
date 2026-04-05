@@ -1328,12 +1328,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                   >
                                     <Files className="w-4 h-4" /> Duplicate
                                   </button>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex + 1); setGridMenuOpenId(null); }}
-                                    className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
-                                  >
-                                    <Plus className="w-4 h-4" /> Add Page After
-                                  </button>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <button
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                      >
+                                        <Plus className="w-4 h-4" /> Add Page After
+                                      </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-56 p-2" side="right" align="start">
+                                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                                      {PAGE_TYPE_OPTIONS.map(opt => (
+                                        <button key={opt.type} onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex + 1, opt.type); setGridMenuOpenId(null); }}
+                                          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                                          <span className="text-base">{opt.icon}</span>
+                                          <div>
+                                            <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                            <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                                          </div>
+                                        </button>
+                                      ))}
+                                    </PopoverContent>
+                                  </Popover>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); toast.info('Hide page coming soon'); setGridMenuOpenId(null); }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
