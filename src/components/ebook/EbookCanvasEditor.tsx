@@ -1260,11 +1260,15 @@ const EbookCanvasEditor = ({
                       <SelectTrigger className="w-32 h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
                     </Select>
-                    <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.max(8, (selectedElement.fontSize || 16) - 2) })}
-                      className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Minus className="w-3 h-3" /></button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.max(8, (selectedElement.fontSize || 16) - 2) })}
+                        className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Minus className="w-3 h-3" /></button>
+                    </TooltipTrigger><TooltipContent>Decrease Font Size</TooltipContent></Tooltip>
                     <span className="text-xs font-medium w-7 text-center">{selectedElement.fontSize || 16}</span>
-                    <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.min(96, (selectedElement.fontSize || 16) + 2) })}
-                      className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Plus className="w-3 h-3" /></button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.min(96, (selectedElement.fontSize || 16) + 2) })}
+                        className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Plus className="w-3 h-3" /></button>
+                    </TooltipTrigger><TooltipContent>Increase Font Size</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <input type="color" value={selectedElement.textColor || '#1a1a2e'}
                         onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
@@ -1278,29 +1282,40 @@ const EbookCanvasEditor = ({
                         H
                       </button>
                     </TooltipTrigger><TooltipContent>Heading</TooltipContent></Tooltip>
-                    <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
-                      className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Bold className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
-                      className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Italic className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
-                      className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Underline className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' })}
-                      className={`p-1.5 rounded ${selectedElement.textDecoration === 'line-through' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                      <Strikethrough className="w-3.5 h-3.5" />
-                    </button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
+                        className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Bold className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Bold</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { fontStyle: selectedElement.fontStyle === 'italic' ? 'normal' : 'italic' })}
+                        className={`p-1.5 rounded ${selectedElement.fontStyle === 'italic' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Italic className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Italic</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'underline' ? 'none' : 'underline' })}
+                        className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Underline className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Underline</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' })}
+                        className={`p-1.5 rounded ${selectedElement.textDecoration === 'line-through' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                        <Strikethrough className="w-3.5 h-3.5" />
+                      </button>
+                    </TooltipTrigger><TooltipContent>Strikethrough</TooltipContent></Tooltip>
                     {(['left', 'center', 'right', 'justify'] as const).map(align => {
                       const Icon = align === 'left' ? AlignLeft : align === 'center' ? AlignCenter : align === 'right' ? AlignRight : AlignJustify;
+                      const label = align === 'left' ? 'Align Left' : align === 'center' ? 'Align Center' : align === 'right' ? 'Align Right' : 'Justify';
                       return (
-                        <button key={align} onClick={() => updateElement(selectedElement.id, { textAlign: align })}
-                          className={`p-1.5 rounded ${selectedElement.textAlign === align ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
-                          <Icon className="w-3.5 h-3.5" />
-                        </button>
+                        <Tooltip key={align}><TooltipTrigger asChild>
+                          <button onClick={() => updateElement(selectedElement.id, { textAlign: align })}
+                            className={`p-1.5 rounded ${selectedElement.textAlign === align ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                            <Icon className="w-3.5 h-3.5" />
+                          </button>
+                        </TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip>
                       );
                     })}
                     <Tooltip><TooltipTrigger asChild>
