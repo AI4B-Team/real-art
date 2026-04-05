@@ -898,7 +898,7 @@ const EbookCanvasEditor = ({
         {[
           { icon: Move, label: 'Move', action: () => {}, cursor: 'grab' },
           { icon: RotateCcw, label: 'Rotate', action: () => updateElement(el.id, { rotation: ((el.rotation || 0) + 15) % 360 }) },
-          { icon: el.locked ? Lock : Unlock, label: el.locked ? 'Unlock' : 'Lock', action: () => updateElement(el.id, { locked: !el.locked }) },
+          { icon: el.locked ? Lock : Unlock, label: el.locked ? 'Unlock' : 'Lock', action: () => updateElement(el.id, { locked: !el.locked }), destructive: el.locked ? true : undefined },
           { icon: Copy, label: 'Duplicate', action: duplicateElement },
           { icon: Trash2, label: 'Delete', action: deleteElement, destructive: true },
         ].map(({ icon: Icon, label, action, destructive, cursor }) => (
