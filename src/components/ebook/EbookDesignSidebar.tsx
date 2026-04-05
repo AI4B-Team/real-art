@@ -186,8 +186,8 @@ const TranslatePanel = ({ onTranslate }: { onTranslate?: (scope: 'page' | 'selec
       <div className="space-y-1.5">
         {([
           { value: 'page' as const, label: 'Translate Page' },
-          { value: 'selected' as const, label: 'Translate Selected Text' },
           { value: 'book' as const, label: 'Translate Entire Book' },
+          { value: 'selected' as const, label: 'Translate Selected Text' },
         ]).map(opt => (
           <button key={opt.value} onClick={() => setScope(opt.value)}
             className="w-full flex items-center gap-2.5 px-1 py-1.5 text-xs text-foreground rounded hover:bg-foreground/[0.03] transition-colors">
