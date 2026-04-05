@@ -64,6 +64,7 @@ import TranscribePage from "./pages/TranscribePage";
 import TranscriptDetailPage from "./pages/TranscriptDetailPage";
 import EditorPage from "./pages/EditorPage";
 import LandingPage from "./pages/LandingPage";
+import SharedEbookPage from "./pages/SharedEbookPage";
 
 const queryClient = new QueryClient();
 
