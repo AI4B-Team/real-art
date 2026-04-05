@@ -617,17 +617,38 @@ const EbookCanvasEditor = ({
                   const PageIcon = pageTypeIcon;
                   return (
                     <div key={page.id} className="flex items-stretch">
-                      {/* Insert button between pages */}
+                      {/* Insert zone with drop indicator */}
                       <div
                         className="relative flex items-center justify-center w-12 shrink-0"
-                        onMouseEnter={() => setGridInsertHover(pageIndex)}
+                        onMouseEnter={() => { if (draggedPageIndex === null) setGridInsertHover(pageIndex); }}
                         onMouseLeave={() => setGridInsertHover(null)}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.dataTransfer.dropEffect = 'move';
+                          if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) setDragOverPageIndex(pageIndex);
+                        }}
+                        onDragLeave={() => { if (dragOverPageIndex === pageIndex) setDragOverPageIndex(null); }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) {
+                            const newPages = [...currentPages];
+                            const [moved] = newPages.splice(draggedPageIndex, 1);
+                            const insertAt = pageIndex > draggedPageIndex ? pageIndex - 1 : pageIndex;
+                            newPages.splice(insertAt, 0, moved);
+                            setPages(newPages);
+                          }
+                          setDraggedPageIndex(null);
+                          setDragOverPageIndex(null);
+                        }}
                       >
+                        {/* Red drop indicator line */}
+                        <div className={`absolute inset-y-2 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-destructive transition-all duration-150 ${dragOverPageIndex === pageIndex && draggedPageIndex !== null ? 'opacity-100' : 'opacity-0'}`} />
+                        {/* Add page button (only when not dragging) */}
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <button
                               onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex); }}
-                              className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === pageIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
+                              className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === pageIndex && draggedPageIndex === null ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
                             >
                               <Plus className="w-5 h-5" />
                             </button>
@@ -647,29 +668,12 @@ const EbookCanvasEditor = ({
                           (e.currentTarget as HTMLElement).style.opacity = '1';
                           handlePageDragEnd();
                         }}
-                        onDragOver={(e) => {
-                          e.preventDefault();
-                          e.dataTransfer.dropEffect = 'move';
-                          if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) setDragOverPageIndex(pageIndex);
-                        }}
-                        onDragLeave={() => { if (dragOverPageIndex === pageIndex) setDragOverPageIndex(null); }}
-                        onDrop={(e) => {
-                          e.preventDefault();
-                          if (draggedPageIndex !== null && draggedPageIndex !== pageIndex) {
-                            const newPages = [...currentPages];
-                            const [moved] = newPages.splice(draggedPageIndex, 1);
-                            newPages.splice(pageIndex, 0, moved);
-                            setPages(newPages);
-                          }
-                          setDraggedPageIndex(null);
-                          setDragOverPageIndex(null);
-                        }}
                       >
                         <div
                           onClick={() => { onPageSelect(page.id); onGridViewToggle?.(); }}
                           className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                             isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
-                          } ${dragOverPageIndex === pageIndex ? 'ring-2 ring-accent/60 scale-105 shadow-xl' : ''} ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
+                          } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
                         >
                           <div className="w-full h-full relative">
                             <div className="absolute inset-0">
@@ -709,14 +713,32 @@ const EbookCanvasEditor = ({
                 <div className="flex items-stretch">
                   <div
                     className="relative flex items-center justify-center w-12 shrink-0"
-                    onMouseEnter={() => setGridInsertHover(currentPages.length)}
+                    onMouseEnter={() => { if (draggedPageIndex === null) setGridInsertHover(currentPages.length); }}
                     onMouseLeave={() => setGridInsertHover(null)}
+                    onDragOver={(e) => {
+                      e.preventDefault();
+                      e.dataTransfer.dropEffect = 'move';
+                      if (draggedPageIndex !== null) setDragOverPageIndex(currentPages.length);
+                    }}
+                    onDragLeave={() => { if (dragOverPageIndex === currentPages.length) setDragOverPageIndex(null); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      if (draggedPageIndex !== null) {
+                        const newPages = [...currentPages];
+                        const [moved] = newPages.splice(draggedPageIndex, 1);
+                        newPages.push(moved);
+                        setPages(newPages);
+                      }
+                      setDraggedPageIndex(null);
+                      setDragOverPageIndex(null);
+                    }}
                   >
+                    <div className={`absolute inset-y-2 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-destructive transition-all duration-150 ${dragOverPageIndex === currentPages.length && draggedPageIndex !== null ? 'opacity-100' : 'opacity-0'}`} />
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
                           onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length); }}
-                          className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === currentPages.length ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
+                          className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === currentPages.length && draggedPageIndex === null ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
                         >
                           <Plus className="w-5 h-5" />
                         </button>
