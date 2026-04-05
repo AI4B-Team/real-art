@@ -1959,6 +1959,35 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               const isLocked = action.id === 'lock' && currentSelectedPage?.locked;
                               const Icon = isLocked ? Lock : action.icon;
                               const label = isLocked ? 'Unlock Page' : action.label;
+                              if (action.id === 'add') {
+                                return (
+                                  <Popover key={action.id}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <PopoverTrigger asChild>
+                                          <button className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] transition-colors text-muted-foreground hover:text-foreground">
+                                            <action.icon className="w-4 h-4" />
+                                          </button>
+                                        </PopoverTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="right">{action.label}</TooltipContent>
+                                    </Tooltip>
+                                    <PopoverContent className="w-56 p-2" side="right" align="start">
+                                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                                      {PAGE_TYPE_OPTIONS.map(opt => (
+                                        <button key={opt.type} onClick={() => handleAddPage(opt.type)}
+                                          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                                          <span className="text-base">{opt.icon}</span>
+                                          <div>
+                                            <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                            <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                                          </div>
+                                        </button>
+                                      ))}
+                                    </PopoverContent>
+                                  </Popover>
+                                );
+                              }
                               return (
                                 <Tooltip key={action.id}>
                                   <TooltipTrigger asChild>
