@@ -44,6 +44,14 @@ const EbookCreatorPage = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
 
+  // Redirect to last ebook editor page if returning from another app
+  useEffect(() => {
+    const lastUrl = sessionStorage.getItem("ebook-last-url");
+    if (lastUrl && lastUrl !== "/ebook-creator") {
+      navigate(lastUrl, { replace: true });
+    }
+  }, [navigate]);
+
   const filteredEbooks = ebooks.filter(book => {
     const matchesSearch = book.title.toLowerCase().includes(searchQuery.toLowerCase()) || book.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesFilter = filterStatus === "all" || book.status === filterStatus;
