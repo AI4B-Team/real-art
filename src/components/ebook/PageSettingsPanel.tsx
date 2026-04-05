@@ -396,13 +396,13 @@ const PageSettingsPanel = ({
               {bgTab === 'color' && (
                 <div className="space-y-3">
                   <div className="grid grid-cols-6 gap-1.5">
-                    <button onClick={() => { setSelectedColor('custom'); toast.success('Color picker'); }}
-                      className="w-8 h-8 rounded-full border-2 border-dashed border-foreground/[0.15] flex items-center justify-center hover:border-accent/40">
+                    <label className="w-8 h-8 rounded-full border-2 border-dashed border-foreground/[0.15] flex items-center justify-center hover:border-accent/40 cursor-pointer">
                       <Plus className="w-3 h-3 text-muted-foreground" />
-                    </button>
+                      <input type="color" className="sr-only" onChange={e => { updateSelectedPage({ bgColor: e.target.value }); toast.success('Background color applied'); }} />
+                    </label>
                     {BG_COLORS.map((c, i) => (
-                      <button key={i} onClick={() => { setSelectedColor(c); toast.success('Background color applied'); }}
-                        className={`w-8 h-8 rounded-full border-2 transition-all ${selectedColor === c ? 'border-accent scale-110' : 'border-transparent hover:scale-105'}`}
+                      <button key={i} onClick={() => { updateSelectedPage({ bgColor: c }); toast.success('Background color applied'); }}
+                        className={`w-8 h-8 rounded-full border-2 transition-all ${selectedPage?.bgColor === c ? 'border-accent scale-110' : 'border-transparent hover:scale-105'}`}
                         style={{ backgroundColor: c }} />
                     ))}
                   </div>
@@ -410,6 +410,7 @@ const PageSettingsPanel = ({
                     <div className="flex-1">
                       <label className="text-[10px] text-muted-foreground mb-1 block">HEX</label>
                       <input value={hexValue} onChange={e => setHexValue(e.target.value)}
+                        onKeyDown={e => { if (e.key === 'Enter') { updateSelectedPage({ bgColor: hexValue }); toast.success('Background color applied'); } }}
                         className="w-full px-2.5 py-1.5 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs font-mono text-foreground focus:outline-none focus:border-accent/40" />
                     </div>
                     <div className="w-16">
