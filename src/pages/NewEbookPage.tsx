@@ -21,6 +21,7 @@ import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
 import EbookCanvasEditor, { type EbookCanvasEditorHandle } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
+import EbookInviteModal from "@/components/ebook/EbookInviteModal";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 
 interface NewBookData {
@@ -143,6 +144,7 @@ const NewEbookPage = () => {
   const [linkInputValue, setLinkInputValue] = useState("");
   const [attachedSources, setAttachedSources] = useState<{ id: string; type: "file" | "link" | "audio"; label: string }[]>([]);
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
 
   const addSource = useCallback((type: "file" | "link" | "audio", label: string) => {
     setAttachedSources(prev => [...prev, { id: `src-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, type, label }]);
@@ -496,7 +498,7 @@ const NewEbookPage = () => {
                   </div>
                 );
               })()}
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
+              <button onClick={() => setShowInviteModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <UserPlus className="w-3.5 h-3.5" />Invite
               </button>
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-accent/90 rounded-lg text-xs text-white font-semibold transition-colors">
@@ -1082,6 +1084,7 @@ const NewEbookPage = () => {
         )}
       </div>
       <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
+      <EbookInviteModal open={showInviteModal} onOpenChange={setShowInviteModal} />
     </PageShell>
   );
 };
