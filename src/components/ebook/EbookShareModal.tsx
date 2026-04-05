@@ -50,7 +50,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
   const [linkCopied, setLinkCopied] = useState(false);
 
   const handleCopyLink = () => {
-    const shareUrl = `${window.location.origin}/shared/ebook/${Date.now()}`;
+    const shareUrl = `${window.location.origin}/shared/ebook/${btoa(Date.now().toString()).slice(0, 12)}`;
     navigator.clipboard.writeText(shareUrl);
     setLinkCopied(true);
     toast({ title: "Link copied to clipboard!" });
