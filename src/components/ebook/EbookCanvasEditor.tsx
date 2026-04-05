@@ -1111,13 +1111,21 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           onDoubleClick={() => { if (isPageLocked) return; setEditingTextId(el.id); setSelectedElementId(el.id); }}>
           <TypeBadge />
           {isEditing ? (
-            <textarea
-              autoFocus
-              value={el.content || ''}
-              onChange={e => updateElement(el.id, { content: e.target.value })}
-              onBlur={() => setEditingTextId(null)}
-              onKeyDown={e => { if (e.key === 'Escape') setEditingTextId(null); }}
-              className="w-full h-full bg-transparent border-none outline-none resize-none p-1"
+            <div
+              ref={editableTextRef}
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={() => {
+                if (editableTextRef.current) {
+                  updateElement(el.id, { content: editableTextRef.current.innerHTML });
+                }
+                setEditingTextId(null);
+              }}
+              onKeyDown={e => { if (e.key === 'Escape') { if (editableTextRef.current) updateElement(el.id, { content: editableTextRef.current.innerHTML }); setEditingTextId(null); } }}
+              onMouseDown={e => e.stopPropagation()}
+              onClick={e => e.stopPropagation()}
+              dangerouslySetInnerHTML={{ __html: el.content || '' }}
+              className="w-full h-full overflow-auto p-1 whitespace-pre-wrap outline-none cursor-text"
               style={{
                 fontSize: `${(el.fontSize || 16) * zoom / 100 * 0.5}px`,
                 fontFamily: el.fontFamily, color: el.textColor,
@@ -1138,7 +1146,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               textDecoration: el.textDecoration || 'none',
               backgroundColor: el.highlightColor || 'transparent',
             }}>
-              {el.content}
+              <span dangerouslySetInnerHTML={{ __html: el.content || '' }} />
             </div>
           )}
           {isSelected && renderResizeHandles(el)}
