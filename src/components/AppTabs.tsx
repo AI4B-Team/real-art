@@ -8,7 +8,7 @@ import {
 import { useAppTabs, ALL_APPS, type AppDef } from "@/context/AppTabsContext";
 import { useNavigate } from "react-router-dom";
 
-const FAVORITE_IDS = ["create"];
+const DEFAULT_FAVORITE_IDS = ["create"];
 const TRENDING_IDS = ["master-closer", "editor", "sessions", "ai-influencer", "ai-story", "viral-shorts"];
 
 export default function AppTabs() {
