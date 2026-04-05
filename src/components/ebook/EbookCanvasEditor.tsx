@@ -425,7 +425,7 @@ const EbookCanvasEditor = ({
     const ro = new ResizeObserver(computeFit);
     ro.observe(container);
     return () => ro.disconnect();
-  }, []);
+  }, [pw, ph]);
 
   const zoom = zoomPct * fitScale;
 
