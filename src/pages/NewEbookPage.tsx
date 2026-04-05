@@ -728,8 +728,8 @@ const NewEbookPage = () => {
 
             {/* Prompt box */}
             <div className="rounded-2xl border-2 border-accent/30 bg-background p-1 mb-6">
-              <div className="flex items-start gap-2 px-3 py-3">
-                <button onClick={handleAutoPrompt} className="mt-1 text-emerald-500 hover:text-emerald-400 shrink-0"><Shuffle size={18} /></button>
+              <div className="flex items-center gap-2 px-3 py-3">
+                <button onClick={handleAutoPrompt} className="text-emerald-500 hover:text-emerald-400 shrink-0 self-start mt-0.5"><Shuffle size={18} /></button>
                 <div className="flex-1 min-w-0">
                   {/* Attached source pills */}
                   {attachedSources.length > 0 && (
