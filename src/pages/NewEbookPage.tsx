@@ -1127,8 +1127,8 @@ const NewEbookPage = () => {
                                 <badge.icon size={10} />{badge.label}
                               </span>
                               {isRecommended && (
-                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold text-amber-600 bg-amber-50">
-                                  <Star size={10} />Recommended For You
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-semibold text-amber-700 bg-amber-50 ring-1 ring-amber-200/60">
+                                  <Star size={10} className="fill-amber-400 text-amber-400" />Recommended For You
                                 </span>
                               )}
                             </div>
