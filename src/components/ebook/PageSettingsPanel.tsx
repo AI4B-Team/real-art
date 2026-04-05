@@ -342,8 +342,8 @@ const PageSettingsPanel = ({
             <div className="px-4 pb-4">
               <div className="grid grid-cols-2 gap-2">
                 {STYLE_LAYOUTS.map(layout => (
-                  <button key={layout.id} onClick={() => toast.success(`${layout.name} applied`)}
-                    className="rounded-lg border border-foreground/[0.06] hover:border-accent/40 overflow-hidden transition-all">
+                  <button key={layout.id} onClick={() => { updateSelectedPage({ layout: layout.id }); toast.success(`${layout.name} applied`); }}
+                    className={`rounded-lg border overflow-hidden transition-all ${selectedPage?.layout === layout.id ? 'border-accent ring-1 ring-accent' : 'border-foreground/[0.06] hover:border-accent/40'}`}>
                     <div className="aspect-[3/4] bg-foreground/[0.03] flex items-center justify-center p-2">
                       {layout.id.includes('double') ? (
                         <div className="w-full h-full flex gap-1">
