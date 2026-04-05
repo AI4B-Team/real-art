@@ -185,6 +185,15 @@ const NewEbookPage = () => {
   const [zoom, setZoom] = useState(100);
   const [isGridView, setIsGridView] = useState(false);
   const [findReplaceMode, setFindReplaceMode] = useState<'find' | 'find-replace' | null>(null);
+  const [showPageSettings, setShowPageSettings] = useState(true);
+
+  // Sections that should keep the Page Settings panel visible
+  const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
+
+  const handleSidebarSectionChange = useCallback((sections: Set<string>) => {
+    const shouldShow = Array.from(sections).some(s => PAGE_SETTINGS_SECTIONS.has(s));
+    setShowPageSettings(shouldShow);
+  }, []);
 
   // ⌘H / Ctrl+H shortcut for Find & Replace
   useEffect(() => {
@@ -830,6 +839,7 @@ const NewEbookPage = () => {
                     return arr;
                   });
                 }}
+                onSectionChange={handleSidebarSectionChange}
               />
               )}
               {/* CENTER: Canvas Editor (no pages panel - it's on the right) */}
@@ -847,8 +857,8 @@ const NewEbookPage = () => {
                 findReplaceMode={findReplaceMode}
                 onFindReplaceModeChange={setFindReplaceMode}
               />
-              {/* RIGHT: Page Settings Panel (hidden in grid view) */}
-              {!isGridView && (
+              {/* RIGHT: Page Settings Panel (shown contextually) */}
+              {!isGridView && showPageSettings && (
               <PageSettingsPanel
                 pages={ebookPages}
                 selectedPageId={selectedPageId}

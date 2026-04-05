@@ -34,6 +34,7 @@ interface EbookDesignSidebarProps {
   onChapterDelete?: (id: string) => void;
   onChapterReorder?: (fromIndex: number, toIndex: number) => void;
   onAddElement?: (type: string, data?: any) => void;
+  onSectionChange?: (sections: Set<string>) => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
@@ -106,7 +107,7 @@ const STOCK_IMAGES = [
 
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
-  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement,
+  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
@@ -124,6 +125,7 @@ const EbookDesignSidebar = ({
     setExpandedSections(prev => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
+      onSectionChange?.(next as Set<string>);
       return next;
     });
   };
