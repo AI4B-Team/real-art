@@ -9,7 +9,7 @@ import {
   Briefcase, Coffee, GraduationCap, Heart, Shield, Flame, Search, ChevronDown,
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut, Minus,
-  Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download, Settings,
+  Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download, Settings, MoreVertical,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -515,6 +515,14 @@ const NewEbookPage = () => {
               <button onClick={() => setShowShareModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <Share2 className="w-3.5 h-3.5" />Share
               </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }} className="p-1.5 rounded-lg hover:bg-background/15 text-background/70 hover:text-background transition-colors">
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Settings</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         )}
@@ -562,13 +570,6 @@ const NewEbookPage = () => {
                 </PopoverContent>
               </Popover>
               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.min(z + 10, 200))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Plus size={15} /></button></TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
-              <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
-              <button
-                onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${showPageSettings ? 'text-accent bg-accent/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}
-              >
-                <Settings size={14} />Settings
-              </button>
             </div>
           </div>
         )}
