@@ -251,7 +251,7 @@ const NewEbookPage = () => {
 
   const toTitleCase = (str: string) => str.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!bookData.prompt.trim()) { toast({ title: "Please describe your topic", variant: "destructive" }); return; }
     setIsGenerating(true);
     setGenerationProgress(0);
