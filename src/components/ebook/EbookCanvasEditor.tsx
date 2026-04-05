@@ -277,6 +277,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const scrollSelectedRef = useRef(false); // true when page was selected via scroll observer
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const findInputRef = useRef<HTMLInputElement>(null);
+  const editableTextRef = useRef<HTMLDivElement>(null);
+
+  // Helper: apply execCommand to selected text inside contentEditable
+  const applyRichTextCommand = (command: string, value?: string) => {
+    if (!editableTextRef.current) return;
+    editableTextRef.current.focus();
+    document.execCommand(command, false, value);
+    // sync content back
+    if (editingTextId) {
+      updateElement(editingTextId, { content: editableTextRef.current.innerHTML });
+    }
+  };
 
   // Access mode helpers
   const canEdit = accessMode === 'editing' || accessMode === 'admin';
