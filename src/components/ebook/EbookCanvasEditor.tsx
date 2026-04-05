@@ -687,20 +687,20 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   }), [selectedPage, currentElements, currentPages, pageElements, bookTitle]);
 
   const deleteElement = () => {
-    if (!selectedElementId || !selectedPage) return;
+    if (!selectedElementId || !selectedPage || isPageLocked) return;
     updateElements(selectedPage.id, currentElements.filter(e => e.id !== selectedElementId));
     setSelectedElementId(null);
   };
 
   const duplicateElement = () => {
-    if (!selectedElement || !selectedPage) return;
+    if (!selectedElement || !selectedPage || isPageLocked) return;
     const dup = { ...selectedElement, id: crypto.randomUUID(), x: selectedElement.x + 3, y: selectedElement.y + 3 };
     updateElements(selectedPage.id, [...currentElements, dup]);
     setSelectedElementId(dup.id);
   };
 
   const updateElement = (id: string, updates: Partial<CanvasElement>, skipUndo = false) => {
-    if (!selectedPage) return;
+    if (!selectedPage || isPageLocked) return;
     updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e), skipUndo);
   };
 
