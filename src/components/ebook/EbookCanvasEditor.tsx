@@ -46,7 +46,7 @@ export interface Page {
 
 export interface CanvasElement {
   id: string;
-  type: 'image' | 'shape' | 'text';
+  type: 'image' | 'shape' | 'text' | 'interactive';
   x: number; y: number; width: number; height: number;
   content?: string; src?: string;
   fill?: string; stroke?: string; strokeWidth?: number;
@@ -61,6 +61,8 @@ export interface CanvasElement {
   borderWidth?: number; borderColor?: string;
   isPlaceholder?: boolean;
   highlightColor?: string;
+  interactiveType?: string;
+  interactiveData?: Record<string, any>;
 }
 
 interface EbookCanvasEditorProps {
