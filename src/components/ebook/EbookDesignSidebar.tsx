@@ -894,7 +894,7 @@ const EbookDesignSidebar = ({
       {/* Text */}
       <SectionHeader id="text" title="Text" icon={Type} />
       {expandedSections.has('text') && (
-        <div className="px-3 pb-3 space-y-1.5">
+        <div className="px-3 pb-3 pt-2 space-y-1.5">
           {[
             { label: 'Heading', size: '24px', weight: 'bold' },
             { label: 'Subheading', size: '18px', weight: '600' },
