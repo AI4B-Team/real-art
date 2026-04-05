@@ -1069,7 +1069,7 @@ const EbookCanvasEditor = ({
             <>
               {/* Unified toolbar — only visible when element is selected */}
               {selectedElement && (
-              <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-1.5 shrink-0">
+              <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 gap-1.5 shrink-0">
                 {/* ── Left: Select tool ── */}
                 <Tooltip><TooltipTrigger asChild>
                   <button onClick={() => { setActiveTool('select'); setSelectedElementId(null); }}
