@@ -98,6 +98,17 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
   const [shareHistory, setShareHistory] = useState<ShareHistoryEntry[]>(loadHistory);
   const [showHistory, setShowHistory] = useState(false);
   const [editingEntry, setEditingEntry] = useState<ShareHistoryEntry | null>(null);
+  const [showPrint, setShowPrint] = useState(false);
+  const [printSettings, setPrintSettings] = useState({
+    paperSize: '6x9',
+    orientation: 'portrait',
+    colorMode: 'full-color',
+    binding: 'perfect',
+    bleed: true,
+    copies: 1,
+    duplex: true,
+    coverFinish: 'matte',
+  });
 
   useEffect(() => { saveHistory(shareHistory); }, [shareHistory]);
 
@@ -169,7 +180,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
       navigator.clipboard.writeText(embedCode);
       toast({ title: "Embed code copied!", description: "Paste this into your website" });
     } else if (optionId === "print") {
-      window.print();
+      setShowPrint(true);
     } else if (optionId === "qrcode") {
       toast({ title: "QR Code generated!", description: "Coming soon!" });
     } else {
@@ -238,6 +249,205 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
       setSchedulePlatforms(new Set(editingEntry.platforms || []));
     }
   }, [editingEntry, showSchedule]);
+
+  // Print sub-view
+  if (showPrint) {
+    const PAPER_SIZES = [
+      { id: '5.5x8.5', label: '5.5" × 8.5"', desc: 'Digest' },
+      { id: '6x9', label: '6" × 9"', desc: 'Trade' },
+      { id: '8.5x11', label: '8.5" × 11"', desc: 'Letter' },
+      { id: 'a4', label: 'A4', desc: '210 × 297mm' },
+      { id: 'a5', label: 'A5', desc: '148 × 210mm' },
+    ];
+    const BINDINGS = [
+      { id: 'perfect', label: 'Perfect Bound', desc: 'Glued spine, paperback' },
+      { id: 'saddle-stitch', label: 'Saddle Stitch', desc: 'Stapled, booklet style' },
+      { id: 'spiral', label: 'Spiral Bound', desc: 'Wire coil binding' },
+      { id: 'hardcover', label: 'Hardcover', desc: 'Case bound, durable' },
+    ];
+    const FINISHES = [
+      { id: 'matte', label: 'Matte' },
+      { id: 'glossy', label: 'Glossy' },
+      { id: 'soft-touch', label: 'Soft Touch' },
+    ];
+
+    const handlePrint = () => {
+      const summary = `${PAPER_SIZES.find(p => p.id === printSettings.paperSize)?.label} · ${printSettings.colorMode === 'full-color' ? 'Full Color' : 'B&W'} · ${BINDINGS.find(b => b.id === printSettings.binding)?.label} · ${printSettings.copies} copies`;
+      addHistoryEntry({ type: 'shared', platforms: ['Printer'], date: new Date().toLocaleDateString(), status: 'sent' });
+      toast({ title: "Sent to printer!", description: summary });
+      window.print();
+      setShowPrint(false);
+    };
+
+    return (
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-xl p-0 gap-0 rounded-2xl overflow-hidden max-h-[85vh] flex flex-col">
+          <DialogHeader className="p-5 pb-0 shrink-0">
+            <div className="flex items-center gap-2">
+              <button onClick={() => setShowPrint(false)} className="p-1 rounded-lg hover:bg-foreground/[0.05]">
+                <ArrowLeft className="w-4 h-4" />
+              </button>
+              <DialogTitle className="text-lg font-bold flex items-center gap-2">
+                <Printer className="w-5 h-5" /> Print Book
+              </DialogTitle>
+            </div>
+          </DialogHeader>
+          <div className="p-5 space-y-5 overflow-y-auto flex-1">
+            {/* Paper Size */}
+            <div>
+              <p className="text-sm font-bold mb-2">Paper Size</p>
+              <div className="grid grid-cols-5 gap-2">
+                {PAPER_SIZES.map(size => (
+                  <button key={size.id}
+                    onClick={() => setPrintSettings(s => ({ ...s, paperSize: size.id }))}
+                    className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-all text-center ${
+                      printSettings.paperSize === size.id
+                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                        : 'border-foreground/[0.08] hover:border-foreground/[0.15]'
+                    }`}>
+                    <span className="text-xs font-semibold">{size.label}</span>
+                    <span className="text-[9px] text-muted-foreground">{size.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color & Orientation */}
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-sm font-bold mb-2">Color Mode</p>
+                <div className="flex gap-2">
+                  {[{ id: 'full-color', label: 'Full Color' }, { id: 'bw', label: 'Black & White' }].map(c => (
+                    <button key={c.id}
+                      onClick={() => setPrintSettings(s => ({ ...s, colorMode: c.id }))}
+                      className={`flex-1 py-2.5 rounded-xl border text-xs font-medium transition-all ${
+                        printSettings.colorMode === c.id
+                          ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                          : 'border-foreground/[0.08] hover:border-foreground/[0.15]'
+                      }`}>
+                      {c.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="text-sm font-bold mb-2">Orientation</p>
+                <div className="flex gap-2">
+                  {[{ id: 'portrait', label: 'Portrait' }, { id: 'landscape', label: 'Landscape' }].map(o => (
+                    <button key={o.id}
+                      onClick={() => setPrintSettings(s => ({ ...s, orientation: o.id }))}
+                      className={`flex-1 py-2.5 rounded-xl border text-xs font-medium transition-all ${
+                        printSettings.orientation === o.id
+                          ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                          : 'border-foreground/[0.08] hover:border-foreground/[0.15]'
+                      }`}>
+                      {o.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Binding */}
+            <div>
+              <p className="text-sm font-bold mb-2">Binding</p>
+              <div className="grid grid-cols-4 gap-2">
+                {BINDINGS.map(b => (
+                  <button key={b.id}
+                    onClick={() => setPrintSettings(s => ({ ...s, binding: b.id }))}
+                    className={`flex flex-col items-center gap-1 p-3 rounded-xl border transition-all text-center ${
+                      printSettings.binding === b.id
+                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                        : 'border-foreground/[0.08] hover:border-foreground/[0.15]'
+                    }`}>
+                    <span className="text-xs font-semibold">{b.label}</span>
+                    <span className="text-[9px] text-muted-foreground">{b.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Cover Finish */}
+            <div>
+              <p className="text-sm font-bold mb-2">Cover Finish</p>
+              <div className="flex gap-2">
+                {FINISHES.map(f => (
+                  <button key={f.id}
+                    onClick={() => setPrintSettings(s => ({ ...s, coverFinish: f.id }))}
+                    className={`flex-1 py-2.5 rounded-xl border text-xs font-medium transition-all ${
+                      printSettings.coverFinish === f.id
+                        ? 'border-accent bg-accent/5 ring-1 ring-accent'
+                        : 'border-foreground/[0.08] hover:border-foreground/[0.15]'
+                    }`}>
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Options row */}
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <p className="text-sm font-bold mb-2">Copies</p>
+                <div className="flex items-center gap-2">
+                  <button onClick={() => setPrintSettings(s => ({ ...s, copies: Math.max(1, s.copies - 1) }))}
+                    className="w-8 h-8 rounded-lg border border-foreground/[0.08] flex items-center justify-center hover:bg-foreground/[0.04] text-sm font-bold">−</button>
+                  <span className="text-sm font-semibold w-8 text-center">{printSettings.copies}</span>
+                  <button onClick={() => setPrintSettings(s => ({ ...s, copies: s.copies + 1 }))}
+                    className="w-8 h-8 rounded-lg border border-foreground/[0.08] flex items-center justify-center hover:bg-foreground/[0.04] text-sm font-bold">+</button>
+                </div>
+              </div>
+              <div className="flex items-end gap-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={printSettings.duplex}
+                    onChange={e => setPrintSettings(s => ({ ...s, duplex: e.target.checked }))}
+                    className="rounded border-foreground/[0.2] accent-accent" />
+                  <span className="text-xs font-medium">Double-Sided</span>
+                </label>
+              </div>
+              <div className="flex items-end gap-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input type="checkbox" checked={printSettings.bleed}
+                    onChange={e => setPrintSettings(s => ({ ...s, bleed: e.target.checked }))}
+                    className="rounded border-foreground/[0.2] accent-accent" />
+                  <span className="text-xs font-medium">Include Bleed</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Summary */}
+            <div className="p-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] space-y-1">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Print Summary</p>
+              <p className="text-sm">
+                <span className="font-medium">{projectName || 'Untitled Book'}</span>
+                {' · '}
+                {PAPER_SIZES.find(p => p.id === printSettings.paperSize)?.label}
+                {' · '}
+                {printSettings.orientation === 'portrait' ? 'Portrait' : 'Landscape'}
+                {' · '}
+                {printSettings.colorMode === 'full-color' ? 'Full Color' : 'B&W'}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {BINDINGS.find(b => b.id === printSettings.binding)?.label}
+                {' · '}
+                {FINISHES.find(f => f.id === printSettings.coverFinish)?.label} cover
+                {' · '}
+                {printSettings.duplex ? 'Double-sided' : 'Single-sided'}
+                {printSettings.bleed ? ' · With bleed' : ''}
+                {' · '}
+                {printSettings.copies} {printSettings.copies === 1 ? 'copy' : 'copies'}
+              </p>
+            </div>
+
+            <button onClick={handlePrint}
+              className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+              <Printer className="w-4 h-4" /> Send to Printer
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   // Schedule sub-view
   if (showSchedule) {
