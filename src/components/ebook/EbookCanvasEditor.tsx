@@ -66,6 +66,11 @@ export interface CanvasElement {
   highlightColor?: string;
   interactiveType?: string;
   interactiveData?: Record<string, any>;
+  // Image filters & effects
+  brightness?: number; contrast?: number; saturate?: number; blur?: number; grayscale?: number; sepia?: number;
+  shadowX?: number; shadowY?: number; shadowBlur?: number; shadowColor?: string;
+  objectFit?: 'cover' | 'contain' | 'fill';
+  linkUrl?: string;
 }
 
 export type AccessMode = 'editing' | 'viewing' | 'commenting' | 'admin';
