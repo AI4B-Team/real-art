@@ -423,9 +423,11 @@ const EbookCanvasEditor = ({
   const currentElements = pageElements[selectedPage?.id || ''] ||
     (selectedPage ? getElementsForPage(selectedPage, currentPages, bookTitle) : []);
 
-  const updateElements = useCallback((pageId: string, newElements: CanvasElement[]) => {
-    setUndoStack(prev => [...prev.slice(-20), { ...pageElements }]);
-    setRedoStack([]);
+  const updateElements = useCallback((pageId: string, newElements: CanvasElement[], skipUndo = false) => {
+    if (!skipUndo) {
+      setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+      setRedoStack([]);
+    }
     setPageElements(prev => ({ ...prev, [pageId]: newElements }));
   }, [pageElements]);
 
