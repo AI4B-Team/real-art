@@ -1348,18 +1348,28 @@ const EbookCanvasEditor = ({
                 {/* ── Context: Shape formatting ── */}
                 {selectedElement?.type === 'shape' && (
                   <>
-                    <span className="text-xs text-muted-foreground">Fill:</span>
-                    <input type="color" value={selectedElement.fill || '#3b82f6'}
-                      onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
-                      className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-                    <span className="text-xs text-muted-foreground ml-1">Stroke:</span>
-                    <input type="color" value={selectedElement.stroke || '#1e40af'}
-                      onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
-                      className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-                    <button onClick={() => updateElement(selectedElement.id, { shapeType: selectedElement.shapeType === 'circle' ? 'rectangle' : 'circle' })}
-                      className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
-                      {selectedElement.shapeType === 'circle' ? <Square className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
-                    </button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <span className="text-xs text-muted-foreground">Fill:</span>
+                    </TooltipTrigger><TooltipContent>Fill Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <input type="color" value={selectedElement.fill || '#3b82f6'}
+                        onChange={e => updateElement(selectedElement.id, { fill: e.target.value })}
+                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                    </TooltipTrigger><TooltipContent>Fill Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <span className="text-xs text-muted-foreground ml-1">Stroke:</span>
+                    </TooltipTrigger><TooltipContent>Stroke Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <input type="color" value={selectedElement.stroke || '#1e40af'}
+                        onChange={e => updateElement(selectedElement.id, { stroke: e.target.value })}
+                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                    </TooltipTrigger><TooltipContent>Stroke Color</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => updateElement(selectedElement.id, { shapeType: selectedElement.shapeType === 'circle' ? 'rectangle' : 'circle' })}
+                        className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                        {selectedElement.shapeType === 'circle' ? <Square className="w-3.5 h-3.5" /> : <Circle className="w-3.5 h-3.5" />}
+                      </button>
+                    </TooltipTrigger><TooltipContent>Toggle Shape</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
                     </TooltipTrigger><TooltipContent>Duplicate</TooltipContent></Tooltip>
