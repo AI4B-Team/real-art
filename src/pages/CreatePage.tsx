@@ -4448,17 +4448,17 @@ export default App;`}</code>
             {TABS.map(tab => {
               if (tab.id === "creations") {
                 return (
-                  <div key={tab.id} className="relative flex shrink-0 items-center">
+                  <div key={tab.id} className={`relative flex shrink-0 items-center rounded-lg transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] border border-foreground/[0.08]" : ""}`}>
                     <button
                       onClick={() => { setActiveTab("creations"); setCreationsDropdownOpen(false); }}
-                      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap pl-4 pr-1.5 py-2 rounded-l-lg text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-r-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                      className={`flex shrink-0 items-center gap-1.5 whitespace-nowrap pl-4 pr-1 py-2 text-[0.82rem] font-semibold transition-all ${activeTab === tab.id ? "text-foreground" : "text-muted hover:text-foreground"}`}>
                       <tab.icon size={13} />{tab.label}
                     </button>
                     <Popover open={creationsDropdownOpen} onOpenChange={setCreationsDropdownOpen}>
                       <PopoverTrigger asChild>
                         <button
                           onClick={e => { e.stopPropagation(); }}
-                          className={`flex shrink-0 items-center whitespace-nowrap px-1.5 py-2 rounded-r-lg text-[0.82rem] transition-all ${activeTab === tab.id ? "bg-foreground/[0.06] text-foreground border border-l-0 border-foreground/[0.08]" : "text-muted hover:text-foreground"}`}>
+                          className={`flex shrink-0 items-center whitespace-nowrap pr-2.5 pl-0.5 py-2 text-[0.82rem] transition-all ${activeTab === tab.id ? "text-foreground" : "text-muted hover:text-foreground"}`}>
                           <ChevronDown size={12} className={`opacity-50 transition-transform ${creationsDropdownOpen ? "rotate-180" : ""}`} />
                         </button>
                       </PopoverTrigger>
