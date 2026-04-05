@@ -1061,7 +1061,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button onClick={e => { e.stopPropagation(); deleteElement(); }}
+                    <button onClick={e => { e.stopPropagation(); e.preventDefault(); if (selectedElementId && selectedPage) { updateElements(selectedPage.id, currentElements.filter(el2 => el2.id !== el.id)); setSelectedElementId(null); toast.success('Element deleted'); } }}
                       className="flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors px-2 py-1 text-xs">
                       <Trash2 className="w-3.5 h-3.5" />{!isSmall && 'Delete'}
                     </button>
