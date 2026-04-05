@@ -57,11 +57,14 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
     setTimeout(() => setLinkCopied(false), 2000);
   };
 
-  const handleDownload = (formatId: string) => {
-    setSelectedFormat(formatId);
-    const fmt = DOWNLOAD_FORMATS.find(f => f.id === formatId);
+  const handleSelectFormat = (formatId: string) => {
+    setSelectedFormat(prev => prev === formatId ? null : formatId);
+  };
+
+  const handleConfirmDownload = () => {
+    if (!selectedFormat) return;
+    const fmt = DOWNLOAD_FORMATS.find(f => f.id === selectedFormat);
     toast({ title: `Preparing ${fmt?.label} download...`, description: `${projectName || "Untitled Book"}${fmt?.ext}` });
-    // Simulate download
     setTimeout(() => {
       setSelectedFormat(null);
       toast({ title: `${fmt?.label} downloaded successfully!` });
