@@ -1269,11 +1269,15 @@ const EbookCanvasEditor = ({
                     <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.min(96, (selectedElement.fontSize || 16) + 2) })}
                       className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Plus className="w-3 h-3" /></button>
                     <Tooltip><TooltipTrigger asChild>
-                      <input type="color" value={selectedElement.textColor || '#1a1a2e'}
-                        onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
-                        onMouseDown={e => e.stopPropagation()}
-                        onClick={e => e.stopPropagation()}
-                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer p-0" />
+                      <div className="relative w-7 h-7 flex items-center justify-center cursor-pointer">
+                        <input type="color" value={selectedElement.textColor || '#1a1a2e'}
+                          onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
+                          onMouseDown={e => e.stopPropagation()}
+                          onClick={e => e.stopPropagation()}
+                          className="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+                        <span className="text-sm font-bold" style={{ color: selectedElement.textColor || '#1a1a2e' }}>A</span>
+                        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-4 h-1 rounded-full" style={{ backgroundColor: selectedElement.textColor || '#1a1a2e' }} />
+                      </div>
                     </TooltipTrigger><TooltipContent>Text Color</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <div className="relative">
