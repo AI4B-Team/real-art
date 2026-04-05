@@ -184,6 +184,7 @@ const NewEbookPage = () => {
   const [selectedPageId, setSelectedPageId] = useState<string | null>("1");
   const [zoom, setZoom] = useState(100);
   const [isGridView, setIsGridView] = useState(false);
+  const [findReplaceMode, setFindReplaceMode] = useState<'find' | 'find-replace' | null>(null);
 
   useEffect(() => {
     const state = location.state as { book?: any; fromCreate?: boolean; prompt?: string } | null;
