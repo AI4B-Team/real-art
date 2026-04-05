@@ -206,6 +206,34 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   useEffect(() => { if (!onPagesChange) setInternalPages(pages); }, [pages, onPagesChange]);
 
+  // Sync bookTitle to cover and back cover elements when it changes
+  useEffect(() => {
+    if (!bookTitle) return;
+    setPageElements(prev => {
+      const updated = { ...prev };
+      let changed = false;
+      currentPages.forEach(page => {
+        const elems = updated[page.id];
+        if (!elems) return;
+        if (page.type === 'cover') {
+          const titleEl = elems.find(e => e.id === 'title-text');
+          if (titleEl && titleEl.content !== bookTitle) {
+            updated[page.id] = elems.map(e => e.id === 'title-text' ? { ...e, content: bookTitle } : e);
+            changed = true;
+          }
+        }
+        if (page.type === 'back') {
+          const logoEl = elems.find(e => e.id === 'back-logo');
+          if (logoEl && logoEl.content !== bookTitle) {
+            updated[page.id] = elems.map(e => e.id === 'back-logo' ? { ...e, content: bookTitle } : e);
+            changed = true;
+          }
+        }
+      });
+      return changed ? updated : prev;
+    });
+  }, [bookTitle, currentPages]);
+
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
