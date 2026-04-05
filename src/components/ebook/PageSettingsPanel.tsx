@@ -234,11 +234,11 @@ const PageSettingsPanel = ({
               <div>
                 <label className="text-xs text-muted-foreground mb-1.5 block">Orientation</label>
                 <div className="flex rounded-lg border border-foreground/[0.08] overflow-hidden">
-                  <button onClick={() => setOrientation('portrait')}
+                  <button onClick={() => handleOrientationChange('portrait')}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors ${orientation === 'portrait' ? 'bg-accent text-white' : 'text-foreground hover:bg-foreground/[0.03]'}`}>
                     <Square className="w-3 h-3" /> Portrait
                   </button>
-                  <button onClick={() => setOrientation('landscape')}
+                  <button onClick={() => handleOrientationChange('landscape')}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors ${orientation === 'landscape' ? 'bg-accent text-white' : 'text-foreground hover:bg-foreground/[0.03]'}`}>
                     <Square className="w-3 h-3 rotate-90" /> Landscape
                   </button>
