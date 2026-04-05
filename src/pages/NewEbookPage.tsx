@@ -191,6 +191,8 @@ const NewEbookPage = () => {
   const [sidebarOpenSection, setSidebarOpenSection] = useState<string | null>(null);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
+  const [pageWidth, setPageWidth] = useState(480);
+  const [pageHeight, setPageHeight] = useState(640);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
