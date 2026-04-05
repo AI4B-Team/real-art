@@ -534,7 +534,24 @@ const EbookCanvasEditor = ({
       zIndex: el.zIndex ?? 1,
     };
 
-    const selectionBorder = isSelected ? 'ring-2 ring-accent ring-offset-1' : '';
+    const selectionBorderColor = el.type === 'shape' ? 'ring-destructive' : 'ring-blue-500';
+    const selectionBorder = isSelected ? `ring-2 ${selectionBorderColor} ring-offset-1` : '';
+
+    // Type badge label
+    const getTypeLabel = () => {
+      switch (el.type) {
+        case 'image': return 'Image';
+        case 'text': return 'Text';
+        case 'shape': return el.shapeType === 'circle' ? 'Circle' : 'Shape';
+        default: return 'Element';
+      }
+    };
+    const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : 'bg-blue-500';
+    const TypeBadge = () => isSelected ? (
+      <div className={`absolute -top-6 left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-30 whitespace-nowrap`}>
+        {getTypeLabel()}
+      </div>
+    ) : null;
 
     if (el.type === 'image') {
       return (
