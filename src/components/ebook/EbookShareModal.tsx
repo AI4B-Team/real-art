@@ -230,12 +230,12 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl p-0 gap-0 rounded-2xl overflow-hidden">
-        <DialogHeader className="p-5 pb-0">
+      <DialogContent className="sm:max-w-lg p-0 gap-0 rounded-2xl overflow-hidden max-h-[85vh] flex flex-col">
+        <DialogHeader className="p-5 pb-0 shrink-0">
           <DialogTitle className="text-lg font-bold flex items-center gap-2"><Share2 className="w-5 h-5" />Share</DialogTitle>
         </DialogHeader>
 
-        <div className="p-5 space-y-5">
+        <div className="p-5 space-y-5 overflow-y-auto flex-1">
           {/* Access Control */}
           <div className="flex items-center justify-between p-3 rounded-xl border border-foreground/[0.08] bg-foreground/[0.02]">
             <div className="flex items-center gap-2.5">
