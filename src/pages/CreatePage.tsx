@@ -4737,6 +4737,18 @@ export default App;`}</code>
           </div>
         )}
       </div>}
+
+      {saveTemplateOpen && saveTemplateDefaults && (
+        <SaveTemplateModal
+          open={saveTemplateOpen}
+          onClose={() => setSaveTemplateOpen(false)}
+          onSave={(template) => {
+            setSavedTemplates(loadSavedTemplates());
+            toast({ title: "Template saved!", description: `"${template.name}" has been saved.` });
+          }}
+          defaults={saveTemplateDefaults}
+        />
+      )}
     </PageShell>
   );
 }
