@@ -204,6 +204,7 @@ const EbookCanvasEditor = ({
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elements: CanvasElement[]; pageId: string } | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
