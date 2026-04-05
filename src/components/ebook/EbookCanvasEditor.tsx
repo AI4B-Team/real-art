@@ -1359,7 +1359,7 @@ const EbookCanvasEditor = ({
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     return (
-                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="flex items-start gap-2">
+                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="relative flex items-start gap-2">
                         {/* Page label */}
                         <div className="w-8 shrink-0 pt-2">
                           <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
