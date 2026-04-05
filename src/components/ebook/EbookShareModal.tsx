@@ -222,6 +222,9 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
               </div>
             </div>
 
+            {scheduleError && (
+              <p className="text-sm text-destructive text-center">{scheduleError}</p>
+            )}
             <button onClick={handleScheduleConfirm}
               className="w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
               <Clock className="w-4 h-4" />
