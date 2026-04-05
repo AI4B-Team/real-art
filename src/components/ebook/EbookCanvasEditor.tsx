@@ -58,6 +58,7 @@ export interface CanvasElement {
   textAlign?: 'left' | 'center' | 'right' | 'justify';
   fontWeight?: 'normal' | 'bold'; fontStyle?: 'normal' | 'italic';
   textDecoration?: 'none' | 'underline' | 'line-through';
+  lineHeight?: number;
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
   borderStyle?: 'none' | 'solid' | 'dashed' | 'dotted';
