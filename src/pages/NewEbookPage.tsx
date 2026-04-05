@@ -8,7 +8,7 @@ import {
   Briefcase, Coffee, GraduationCap, Heart, Shield, Flame, Search, ChevronDown,
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut,
-  Share2, Lock, Cloud, Copy, Cpu, Shuffle, UserPlus, Download,
+  Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -407,7 +407,7 @@ const NewEbookPage = () => {
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={15} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
               <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Search size={15} /></button></TooltipTrigger><TooltipContent>Find</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Shuffle size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ArrowRightLeft size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomOut size={15} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
               <span className="text-xs text-muted font-medium w-10 text-center">{zoom}%</span>
@@ -451,7 +451,7 @@ const NewEbookPage = () => {
             {/* Prompt box */}
             <div className="rounded-2xl border-2 border-accent/30 bg-background p-1 mb-6">
               <div className="flex items-start gap-2 px-3 py-3">
-                <button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><Shuffle size={18} /></button>
+                <button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><ArrowRightLeft size={18} /></button></button>
                 <div className="flex-1 min-w-0">
                   {/* Attached source pills */}
                   {attachedSources.length > 0 && (
