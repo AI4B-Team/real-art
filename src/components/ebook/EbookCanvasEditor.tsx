@@ -632,9 +632,9 @@ const EbookCanvasEditor = ({
     if (!pageId) return;
     e.preventDefault();
     e.stopPropagation();
-    const elems = pageElements[pageId] || [];
-    const canvasRect = canvasRef.current?.getBoundingClientRect();
-    if (!canvasRect) return;
+    const page = currentPages.find(p => p.id === pageId);
+    const elems = pageElements[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+    
     // Find all elements whose bounding box contains the click point
     const pageEl = pageRefs.current[pageId];
     if (!pageEl) return;
@@ -855,7 +855,7 @@ const EbookCanvasEditor = ({
             onMouseDown={e => handleElementMouseDown(e, el, pageId)}
             onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
             <TypeBadge />
-            <div className="w-full h-full bg-muted border-2 border-dashed border-foreground/20 flex flex-col items-center justify-center p-4 rounded-lg">
+            <div className="w-full h-full bg-foreground/[0.04] border-2 border-dashed border-foreground/10 flex flex-col items-center justify-center p-4 rounded-lg">
               <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
               <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
                 {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
