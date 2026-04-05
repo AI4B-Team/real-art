@@ -591,6 +591,7 @@ const EbookCanvasEditor = ({
           border: el.stroke && el.stroke !== 'transparent' ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined,
           borderRadius: el.shapeType === 'circle' ? '50%' : (el.borderRadius ?? 0),
         }} onMouseDown={e => handleElementMouseDown(e, el, pageId)}>
+          <TypeBadge />
           {isSelected && renderResizeHandles(el)}
         </div>
       );
