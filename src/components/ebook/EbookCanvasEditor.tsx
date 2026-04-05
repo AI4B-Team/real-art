@@ -212,6 +212,7 @@ const EbookCanvasEditor = ({
   const imageInputRef = useRef<HTMLInputElement>(null);
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
   const isScrollingRef = useRef(false);
+  const scrollSelectedRef = useRef(false); // true when page was selected via scroll observer
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const findInputRef = useRef<HTMLInputElement>(null);
 
@@ -334,6 +335,7 @@ const EbookCanvasEditor = ({
         if (bestEntry) {
           const pageId = (bestEntry as IntersectionObserverEntry).target.getAttribute('data-page-id');
           if (pageId && pageId !== selectedPageId) {
+            scrollSelectedRef.current = true;
             onPageSelect(pageId);
           }
         }
@@ -387,6 +389,11 @@ const EbookCanvasEditor = ({
   useEffect(() => {
     if (!selectedPageId || selectedPageId === prevSelectedRef.current) return;
     prevSelectedRef.current = selectedPageId;
+    // Don't auto-scroll if the page was selected by the scroll observer
+    if (scrollSelectedRef.current) {
+      scrollSelectedRef.current = false;
+      return;
+    }
     // Reset scrolling guard so programmatic navigation always works
     isScrollingRef.current = false;
     if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
