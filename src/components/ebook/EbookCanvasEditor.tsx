@@ -317,6 +317,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [commentDraft, setCommentDraft] = useState<{ pageId: string; x: number; y: number } | null>(null);
   const [commentText, setCommentText] = useState('');
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
+  const [showAllComments, setShowAllComments] = useState(false);
+
+  const resolveAllComments = () => {
+    setPageComments(prev => prev.map(c => ({ ...c, resolved: true })));
+    toast.success('All comments resolved');
+  };
 
   const addPageComment = () => {
     if (!commentDraft || !commentText.trim()) return;
