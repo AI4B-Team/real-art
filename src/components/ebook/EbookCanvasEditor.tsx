@@ -71,6 +71,8 @@ interface EbookCanvasEditorProps {
   onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
   onPageSettingsToggle?: () => void;
   onOpenImageSection?: () => void;
+  pageWidth?: number;
+  pageHeight?: number;
 }
 
 // ─── Constants ─────────────────────────────────────

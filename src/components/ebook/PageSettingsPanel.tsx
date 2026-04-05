@@ -19,6 +19,9 @@ interface PageSettingsPanelProps {
   onPagesChange: (pages: Page[]) => void;
   onGridViewToggle?: () => void;
   bookTitle?: string;
+  pageWidth?: number;
+  pageHeight?: number;
+  onDimensionsChange?: (w: number, h: number) => void;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
