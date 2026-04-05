@@ -774,6 +774,20 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
                   <span className="text-[11px] font-medium">See All</span>
                 </button>
               )}
+              {showAllSocial && (
+                <>
+                {SOCIAL_PLATFORMS_ALL.map(p => (
+                  <SocialButton key={p.id} platform={p} />
+                ))}
+                <button onClick={() => setShowAllSocial(false)}
+                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
+                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/[0.06]">
+                    <X className="w-4 h-4" />
+                  </div>
+                  <span className="text-[11px] font-medium">Collapse</span>
+                </button>
+                </>
+              )}
             </div>
             {/* Pending schedules summary */}
             {shareHistory.filter(e => e.status === 'pending').length > 0 && (
@@ -787,20 +801,6 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
                 </span>
                 <span className="text-[11px] text-amber-600 font-medium">View All →</span>
               </button>
-            )}
-            {showAllSocial && (
-              <div className="grid grid-cols-5 gap-2 mt-2">
-                {SOCIAL_PLATFORMS_ALL.map(p => (
-                  <SocialButton key={p.id} platform={p} />
-                ))}
-                <button onClick={() => setShowAllSocial(false)}
-                  className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
-                  <div className="w-8 h-8 rounded-full flex items-center justify-center bg-foreground/[0.06]">
-                    <X className="w-4 h-4" />
-                  </div>
-                  <span className="text-[11px] font-medium">Collapse</span>
-                </button>
-              </div>
             )}
           </div>
 
