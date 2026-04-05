@@ -43,10 +43,10 @@ const MORE_OPTIONS_MAIN = [
   { id: "embed", label: "Embed", icon: Code },
   { id: "template", label: "Template Link", icon: LinkIcon },
   { id: "present", label: "Present", icon: Monitor },
+  { id: "print", label: "Print", icon: Printer },
 ];
 
 const MORE_OPTIONS_ALL = [
-  { id: "print", label: "Print", icon: Printer },
   { id: "qrcode", label: "QR Code", icon: QrCode },
   { id: "bookmark", label: "Bookmark", icon: Bookmark },
 ];
