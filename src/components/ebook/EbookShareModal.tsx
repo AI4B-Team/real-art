@@ -25,6 +25,9 @@ const SOCIAL_PLATFORMS_MAIN = [
   { id: "facebook", label: "Facebook", icon: Facebook, color: "text-blue-600" },
   { id: "linkedin", label: "Linkedin", icon: Linkedin, color: "text-blue-700" },
   { id: "x", label: "X", icon: () => <span className="font-bold text-sm">𝕏</span>, color: "" },
+];
+
+const SOCIAL_PLATFORMS_EXPANDED = [
   { id: "instagram", label: "Instagram", icon: Instagram, color: "text-pink-500" },
 ];
 
