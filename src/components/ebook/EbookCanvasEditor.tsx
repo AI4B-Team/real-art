@@ -45,7 +45,7 @@ export interface CanvasElement {
   fontSize?: number; fontFamily?: string; textColor?: string;
   textAlign?: 'left' | 'center' | 'right' | 'justify';
   fontWeight?: 'normal' | 'bold'; fontStyle?: 'normal' | 'italic';
-  textDecoration?: 'none' | 'underline';
+  textDecoration?: 'none' | 'underline' | 'line-through';
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
 }
