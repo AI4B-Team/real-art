@@ -623,11 +623,17 @@ const EbookCanvasEditor = ({
     e.stopPropagation();
     if (pageId) onPageSelect(pageId);
     setSelectedElementId(el.id);
+    // Push undo snapshot once before drag begins
+    setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+    setRedoStack([]);
     setDragState({ id: el.id, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y });
   };
 
   const handleResizeMouseDown = (e: React.MouseEvent, el: CanvasElement, handle: string) => {
     e.stopPropagation();
+    // Push undo snapshot once before resize begins
+    setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
+    setRedoStack([]);
     setResizeState({ id: el.id, handle, startX: e.clientX, startY: e.clientY, elemX: el.x, elemY: el.y, elemW: el.width, elemH: el.height });
   };
 
