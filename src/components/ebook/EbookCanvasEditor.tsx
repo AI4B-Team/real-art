@@ -1382,14 +1382,18 @@ const EbookCanvasEditor = ({
                 {/* ── Context: Image formatting ── */}
                 {selectedElement?.type === 'image' && (
                   <>
-                    <button onClick={() => { if (selectedElement) updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); }}
-                      className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
-                      <ImagePlus className="w-3.5 h-3.5" />Replace
-                    </button>
-                    <button onClick={() => setShowAIEditModal(true)}
-                      className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
-                      <Sparkles className="w-3.5 h-3.5" />Edit
-                    </button>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => { if (selectedElement) updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); }}
+                        className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
+                        <ImagePlus className="w-3.5 h-3.5" />Replace
+                      </button>
+                    </TooltipTrigger><TooltipContent>Replace Image</TooltipContent></Tooltip>
+                    <Tooltip><TooltipTrigger asChild>
+                      <button onClick={() => setShowAIEditModal(true)}
+                        className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
+                        <Sparkles className="w-3.5 h-3.5" />Edit
+                      </button>
+                    </TooltipTrigger><TooltipContent>Edit with AI</TooltipContent></Tooltip>
                     {/* Text — after Edit */}
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => setActiveTool('text')}
