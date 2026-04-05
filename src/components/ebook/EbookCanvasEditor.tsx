@@ -1288,6 +1288,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 fontWeight: el.fontWeight || 'normal',
                 fontStyle: el.fontStyle || 'normal',
                 textDecoration: el.textDecoration || 'none',
+                lineHeight: el.lineHeight ?? 1.5,
               }}
             />
           ) : (
