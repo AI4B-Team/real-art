@@ -3,7 +3,7 @@ import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
   Minus, Hand, ChevronLeft, ChevronRight,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
-  Bold, Italic, Underline,
+  Bold, Italic, Underline, Strikethrough,
   Trash2, Copy, Lock, Unlock,
   ChevronUp, ChevronDown, RotateCcw,
   Plus, Check, X, SlidersHorizontal,
@@ -11,7 +11,7 @@ import {
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
   Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
-  BoxSelect, Maximize2,
+  BoxSelect, Maximize2, ArrowUpDown,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -45,7 +45,7 @@ export interface CanvasElement {
   fontSize?: number; fontFamily?: string; textColor?: string;
   textAlign?: 'left' | 'center' | 'right' | 'justify';
   fontWeight?: 'normal' | 'bold'; fontStyle?: 'normal' | 'italic';
-  textDecoration?: 'none' | 'underline';
+  textDecoration?: 'none' | 'underline' | 'line-through';
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
 }
@@ -534,13 +534,31 @@ const EbookCanvasEditor = ({
       zIndex: el.zIndex ?? 1,
     };
 
-    const selectionBorder = isSelected ? 'ring-2 ring-accent ring-offset-1' : '';
+    const selectionBorderColor = el.type === 'shape' ? 'ring-destructive' : 'ring-blue-500';
+    const selectionBorder = isSelected ? `ring-2 ${selectionBorderColor} ring-offset-1` : '';
+
+    // Type badge label
+    const getTypeLabel = () => {
+      switch (el.type) {
+        case 'image': return 'Image';
+        case 'text': return 'Text';
+        case 'shape': return el.shapeType === 'circle' ? 'Circle' : 'Shape';
+        default: return 'Element';
+      }
+    };
+    const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : 'bg-blue-500';
+    const TypeBadge = () => isSelected ? (
+      <div className={`absolute -top-6 left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-30 whitespace-nowrap`}>
+        {getTypeLabel()}
+      </div>
+    ) : null;
 
     if (el.type === 'image') {
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
+          <TypeBadge />
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
           {/* Floating action bar */}
@@ -573,6 +591,7 @@ const EbookCanvasEditor = ({
           border: el.stroke && el.stroke !== 'transparent' ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined,
           borderRadius: el.shapeType === 'circle' ? '50%' : (el.borderRadius ?? 0),
         }} onMouseDown={e => handleElementMouseDown(e, el, pageId)}>
+          <TypeBadge />
           {isSelected && renderResizeHandles(el)}
         </div>
       );
@@ -583,6 +602,7 @@ const EbookCanvasEditor = ({
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onDoubleClick={() => { setEditingTextId(el.id); setSelectedElementId(el.id); }}>
+          <TypeBadge />
           {isEditing ? (
             <textarea
               autoFocus
@@ -924,16 +944,40 @@ const EbookCanvasEditor = ({
 
               {/* Text formatting bar (when text selected) */}
               {selectedElement?.type === 'text' && (
-                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 gap-2 shrink-0">
+                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-1.5 shrink-0">
+                  {/* AI button */}
+                  <button onClick={() => toast.success('AI text tools')}
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+                    <Sparkles className="w-3 h-3" />AI
+                  </button>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  {/* Font family */}
                   <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
-                    <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
+                    <SelectTrigger className="w-32 h-7 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
                   </Select>
-                  <Select value={String(selectedElement.fontSize || 16)} onValueChange={v => updateElement(selectedElement.id, { fontSize: Number(v) })}>
-                    <SelectTrigger className="w-16 h-7 text-xs"><SelectValue /></SelectTrigger>
-                    <SelectContent>{FONT_SIZES.map(s => <SelectItem key={s} value={String(s)}>{s}</SelectItem>)}</SelectContent>
-                  </Select>
+                  {/* Font size with +/- */}
+                  <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.max(8, (selectedElement.fontSize || 16) - 2) })}
+                    className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Minus className="w-3 h-3" /></button>
+                  <span className="text-xs font-medium w-7 text-center">{selectedElement.fontSize || 16}</span>
+                  <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.min(96, (selectedElement.fontSize || 16) + 2) })}
+                    className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Plus className="w-3 h-3" /></button>
                   <div className="w-px h-5 bg-foreground/[0.08]" />
+                  {/* Color */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <input type="color" value={selectedElement.textColor || '#1a1a2e'}
+                      onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
+                      className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                  </TooltipTrigger><TooltipContent>Text Color</TooltipContent></Tooltip>
+                  {/* Heading toggle */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => updateElement(selectedElement.id, { fontSize: selectedElement.fontSize === 28 ? 16 : 28, fontWeight: selectedElement.fontSize === 28 ? 'normal' : 'bold' })}
+                      className={`w-7 h-7 rounded text-xs font-bold flex items-center justify-center ${selectedElement.fontSize && selectedElement.fontSize >= 28 ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                      H
+                    </button>
+                  </TooltipTrigger><TooltipContent>Heading</TooltipContent></Tooltip>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  {/* Bold / Italic / Underline / Strikethrough */}
                   <button onClick={() => updateElement(selectedElement.id, { fontWeight: selectedElement.fontWeight === 'bold' ? 'normal' : 'bold' })}
                     className={`p-1.5 rounded ${selectedElement.fontWeight === 'bold' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                     <Bold className="w-3.5 h-3.5" />
@@ -946,7 +990,12 @@ const EbookCanvasEditor = ({
                     className={`p-1.5 rounded ${selectedElement.textDecoration === 'underline' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                     <Underline className="w-3.5 h-3.5" />
                   </button>
+                  <button onClick={() => updateElement(selectedElement.id, { textDecoration: selectedElement.textDecoration === 'line-through' ? 'none' : 'line-through' })}
+                    className={`p-1.5 rounded ${selectedElement.textDecoration === 'line-through' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                    <Strikethrough className="w-3.5 h-3.5" />
+                  </button>
                   <div className="w-px h-5 bg-foreground/[0.08]" />
+                  {/* Alignment */}
                   {(['left', 'center', 'right', 'justify'] as const).map(align => {
                     const Icon = align === 'left' ? AlignLeft : align === 'center' ? AlignCenter : align === 'right' ? AlignRight : AlignJustify;
                     return (
@@ -957,13 +1006,38 @@ const EbookCanvasEditor = ({
                     );
                   })}
                   <div className="w-px h-5 bg-foreground/[0.08]" />
-                  <input type="color" value={selectedElement.textColor || '#1a1a2e'}
-                    onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
-                    className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
-                  <div className="ml-auto flex items-center gap-1">
+                  {/* Line height */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => toast.success('Line Height')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><ArrowUpDown className="w-3.5 h-3.5" /></button>
+                  </TooltipTrigger><TooltipContent>Line Height</TooltipContent></Tooltip>
+                  {/* Link */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => toast.success('Add Link')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Link2 className="w-3.5 h-3.5" /></button>
+                  </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  {/* Layers */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => toast.success('Layers')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Layers className="w-3.5 h-3.5" /></button>
+                  </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
+                  {/* Position */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
+                  </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
+                  <div className="w-px h-5 bg-foreground/[0.08]" />
+                  {/* Lock */}
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })}
+                      className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                      {selectedElement.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
+                    </button>
+                  </TooltipTrigger><TooltipContent>{selectedElement.locked ? 'Unlock' : 'Lock'}</TooltipContent></Tooltip>
+                  {/* Copy / Delete */}
+                  <Tooltip><TooltipTrigger asChild>
                     <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
+                  </TooltipTrigger><TooltipContent>Duplicate</TooltipContent></Tooltip>
+                  <Tooltip><TooltipTrigger asChild>
                     <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
-                  </div>
+                  </TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>
                 </div>
               )}
 
