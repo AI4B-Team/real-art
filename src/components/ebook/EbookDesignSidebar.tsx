@@ -780,121 +780,6 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* Images */}
-      <SectionHeader id="image" title="Image" icon={ImageIcon} />
-      {expandedSections.has('image') && (
-        <div className="px-3 pb-3 pt-2 space-y-2.5">
-          {/* Tabs */}
-          <div className="flex items-center gap-3 text-xs border-b border-foreground/[0.06] pb-1.5">
-            {([
-              { id: 'stock' as const, icon: ImageIcon, label: 'Stock' },
-              { id: 'creations' as const, icon: Sparkles, label: 'Creations' },
-              { id: 'community' as const, icon: Layers, label: 'Community' },
-              { id: 'uploads' as const, icon: Upload, label: 'Uploads' },
-            ]).map(tab => (
-              <button key={tab.id} onClick={() => setImageTab(tab.id)}
-                className={`flex items-center gap-1 pb-1 transition-colors ${imageTab === tab.id ? 'text-accent font-medium border-b-2 border-accent' : 'text-muted-foreground hover:text-foreground'}`}>
-                <tab.icon className="w-3 h-3" />{tab.label}
-              </button>
-            ))}
-          </div>
-
-          {/* Search — hidden on uploads & creations tabs */}
-          {(imageTab === 'stock' || imageTab === 'community') && (
-            <div className="relative">
-              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-              <input type="text" value={imageSearch} onChange={e => setImageSearch(e.target.value)}
-                placeholder="Press [Enter] To Search" className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
-            </div>
-          )}
-
-          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
-
-          {/* Stock tab */}
-          {imageTab === 'stock' && (
-            <div className="grid grid-cols-3 gap-1.5">
-              {STOCK_IMAGES.map((src, i) => (
-                <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
-                  className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
-                  <img src={src} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Creations tab */}
-          {imageTab === 'creations' && (
-            <div className="space-y-3">
-              {/* Generate Image header */}
-              <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                <Sparkles className="w-4 h-4 text-accent" />Generate Image
-              </div>
-              {/* Prompt box */}
-              <div className="border border-accent/30 rounded-xl p-3 space-y-2.5 bg-accent/[0.02]">
-                <div className="flex items-start gap-2">
-                  <button className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 hover:bg-accent/20 transition-colors" title="Image-To-Prompt">
-                    <ImageIcon className="w-4 h-4 text-accent" />
-                  </button>
-                  <textarea value={imagePrompt} onChange={e => setImagePrompt(e.target.value)}
-                    placeholder="Describe the image you want to create..."
-                    rows={2}
-                    className="flex-1 text-xs bg-transparent resize-none focus:outline-none placeholder:text-muted-foreground" />
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <button className="w-8 h-8 rounded-lg bg-foreground/[0.05] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.08] transition-colors" title="Auto Prompt">
-                    <Shuffle className="w-4 h-4" />
-                  </button>
-                  <button className="w-8 h-8 rounded-lg bg-foreground/[0.05] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.08] transition-colors" title="Tools">
-                    <SlidersHorizontal className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
-              {/* Creations grid */}
-              <div className="grid grid-cols-3 gap-1.5">
-                {CREATION_IMAGES.map((src, i) => (
-                  <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
-                    className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
-                    <img src={src} alt="" className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Community tab */}
-          {imageTab === 'community' && (
-            <div className="grid grid-cols-3 gap-1.5">
-              {COMMUNITY_IMAGES.map((src, i) => (
-                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
-                  className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
-                  <img src={src} alt="" className="w-full h-full object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* Uploads tab */}
-          {imageTab === 'uploads' && (
-            <div className="space-y-4">
-              <button onClick={() => fileInputRef.current?.click()}
-                className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-foreground/[0.12] rounded-lg text-sm text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
-                <Upload className="w-4 h-4" />Upload Images
-              </button>
-              <div className="flex flex-col items-center justify-center py-8 text-center">
-                <Upload className="w-10 h-10 text-muted-foreground/30 mb-3" />
-                <p className="text-sm text-muted-foreground">No uploaded images</p>
-                <p className="text-xs text-muted-foreground/60">Upload your own images</p>
-              </div>
-            </div>
-          )}
-
-          {/* Load More — for stock & community */}
-          {(imageTab === 'stock' || imageTab === 'community') && (
-            <button className="w-full text-center text-xs text-accent hover:underline py-1">Load More</button>
-          )}
-        </div>
-      )}
-
       {/* Text */}
       <SectionHeader id="text" title="Text" icon={Type} />
       {expandedSections.has('text') && (
@@ -957,6 +842,110 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
+      {/* Interactive */}
+      <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
+      {expandedSections.has('interactive') && (
+        <InteractivePanel onAddElement={onAddElement} />
+      )}
+
+      {/* Images */}
+      <SectionHeader id="image" title="Image" icon={ImageIcon} />
+      {expandedSections.has('image') && (
+        <div className="px-3 pb-3 pt-2 space-y-2.5">
+          <div className="flex items-center gap-3 text-xs border-b border-foreground/[0.06] pb-1.5">
+            {([
+              { id: 'stock' as const, icon: ImageIcon, label: 'Stock' },
+              { id: 'creations' as const, icon: Sparkles, label: 'Creations' },
+              { id: 'community' as const, icon: Layers, label: 'Community' },
+              { id: 'uploads' as const, icon: Upload, label: 'Uploads' },
+            ]).map(tab => (
+              <button key={tab.id} onClick={() => setImageTab(tab.id)}
+                className={`flex items-center gap-1 pb-1 transition-colors ${imageTab === tab.id ? 'text-accent font-medium border-b-2 border-accent' : 'text-muted-foreground hover:text-foreground'}`}>
+                <tab.icon className="w-3 h-3" />{tab.label}
+              </button>
+            ))}
+          </div>
+          {(imageTab === 'stock' || imageTab === 'community') && (
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+              <input type="text" value={imageSearch} onChange={e => setImageSearch(e.target.value)}
+                placeholder="Press [Enter] To Search" className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
+            </div>
+          )}
+          <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+          {imageTab === 'stock' && (
+            <div className="grid grid-cols-3 gap-1.5">
+              {STOCK_IMAGES.map((src, i) => (
+                <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
+                  className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+          {imageTab === 'creations' && (
+            <div className="space-y-3">
+              <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                <Sparkles className="w-4 h-4 text-accent" />Generate Image
+              </div>
+              <div className="border border-accent/30 rounded-xl p-3 space-y-2.5 bg-accent/[0.02]">
+                <div className="flex items-start gap-2">
+                  <button className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 hover:bg-accent/20 transition-colors" title="Image-To-Prompt">
+                    <ImageIcon className="w-4 h-4 text-accent" />
+                  </button>
+                  <textarea value={imagePrompt} onChange={e => setImagePrompt(e.target.value)}
+                    placeholder="Describe the image you want to create..."
+                    rows={2}
+                    className="flex-1 text-xs bg-transparent resize-none focus:outline-none placeholder:text-muted-foreground" />
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button className="w-8 h-8 rounded-lg bg-foreground/[0.05] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.08] transition-colors" title="Auto Prompt">
+                    <Shuffle className="w-4 h-4" />
+                  </button>
+                  <button className="w-8 h-8 rounded-lg bg-foreground/[0.05] flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-foreground/[0.08] transition-colors" title="Tools">
+                    <SlidersHorizontal className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+              <div className="grid grid-cols-3 gap-1.5">
+                {CREATION_IMAGES.map((src, i) => (
+                  <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
+                    className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
+                    <img src={src} alt="" className="w-full h-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          {imageTab === 'community' && (
+            <div className="grid grid-cols-3 gap-1.5">
+              {COMMUNITY_IMAGES.map((src, i) => (
+                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                  className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
+                  <img src={src} alt="" className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
+          {imageTab === 'uploads' && (
+            <div className="space-y-4">
+              <button onClick={() => fileInputRef.current?.click()}
+                className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-foreground/[0.12] rounded-lg text-sm text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
+                <Upload className="w-4 h-4" />Upload Images
+              </button>
+              <div className="flex flex-col items-center justify-center py-8 text-center">
+                <Upload className="w-10 h-10 text-muted-foreground/30 mb-3" />
+                <p className="text-sm text-muted-foreground">No uploaded images</p>
+                <p className="text-xs text-muted-foreground/60">Upload your own images</p>
+              </div>
+            </div>
+          )}
+          {(imageTab === 'stock' || imageTab === 'community') && (
+            <button className="w-full text-center text-xs text-accent hover:underline py-1">Load More</button>
+          )}
+        </div>
+      )}
+
       {/* Video */}
       <SectionHeader id="video" title="Video" icon={MonitorPlay} />
       {expandedSections.has('video') && (
@@ -969,22 +958,16 @@ const EbookDesignSidebar = ({
         <AudioPanel onAddElement={onAddElement} />
       )}
 
-      {/* Interactive */}
-      <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
-      {expandedSections.has('interactive') && (
-        <InteractivePanel onAddElement={onAddElement} />
+      {/* Translate */}
+      <SectionHeader id="translate" title="Translate" icon={Languages} />
+      {expandedSections.has('translate') && (
+        <TranslatePanel onTranslate={onTranslate} />
       )}
 
       {/* Mockups */}
       <SectionHeader id="mockups" title="Mockups" icon={Layers3} />
       {expandedSections.has('mockups') && (
         <MockupsPanel onAddElement={onAddElement} />
-      )}
-
-      {/* Translate */}
-      <SectionHeader id="translate" title="Translate" icon={Languages} />
-      {expandedSections.has('translate') && (
-        <TranslatePanel onTranslate={onTranslate} />
       )}
     </div>
   );
