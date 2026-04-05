@@ -577,6 +577,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     setActiveTool('select');
   };
 
+  useImperativeHandle(ref, () => ({ addElement }), [selectedPage, currentElements]);
+
   const deleteElement = () => {
     if (!selectedElementId || !selectedPage) return;
     updateElements(selectedPage.id, currentElements.filter(e => e.id !== selectedElementId));
