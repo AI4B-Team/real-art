@@ -151,6 +151,7 @@ const App = () => (
 
             {/* Landing (handled above, no 404) */}
             <Route path="/landing" element={null} />
+            <Route path="/shared/ebook/:shareId" element={null} />
             {/* Catch-all */}
             <Route path="*" element={<NotFound />} />
           </Routes>
