@@ -782,6 +782,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         addElement('shape', { shapeType: 'rectangle' });
       } else if (activeTool === 'circle') {
         addElement('shape', { shapeType: 'circle' });
+      } else if (activeTool === 'line') {
+        addElement('shape', { shapeType: 'rectangle', height: 1, fill: '#1a1a2e', stroke: 'transparent' });
       } else if (activeTool === 'image') {
         imageInputRef.current?.click();
       }
