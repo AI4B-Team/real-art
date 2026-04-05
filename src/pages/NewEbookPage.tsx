@@ -7,7 +7,7 @@ import {
   Bot, Link2, FileText, X, Plus, Layers,
   Briefcase, Coffee, GraduationCap, Heart, Shield, Flame, Search, ChevronDown,
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
-  ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut,
+  ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut, Minus,
   Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
@@ -448,20 +448,23 @@ const NewEbookPage = () => {
               <Tooltip><TooltipTrigger asChild><button onClick={() => setFindReplaceMode(prev => prev === 'find' ? null : 'find')} className={`p-1.5 rounded-lg hover:bg-foreground/[0.05] ${findReplaceMode === 'find' ? 'text-accent bg-accent/10' : 'text-muted'}`}><Search size={15} /></button></TooltipTrigger><TooltipContent>Find</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild><button onClick={() => setFindReplaceMode(prev => prev === 'find-replace' ? null : 'find-replace')} className={`p-1.5 rounded-lg hover:bg-foreground/[0.05] ${findReplaceMode === 'find-replace' ? 'text-accent bg-accent/10' : 'text-muted'}`}><ArrowRightLeft size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
-              <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomOut size={15} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
-              <input
-                type="text"
-                value={`${zoom}%`}
-                onChange={e => {
-                  const val = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
-                  if (!isNaN(val)) setZoom(Math.max(25, Math.min(200, val)));
-                }}
-                onFocus={e => { e.target.value = String(zoom); e.target.select(); }}
-                onBlur={e => { e.target.value = `${zoom}%`; }}
-                onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
-                className="text-xs text-muted font-medium w-12 text-center bg-transparent border border-transparent hover:border-foreground/[0.1] focus:border-accent focus:outline-none rounded px-1 py-0.5"
-              />
-              <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.min(z + 10, 200))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomIn size={15} /></button></TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
+               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Minus size={15} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="flex items-center gap-1 text-xs text-muted font-medium hover:bg-foreground/[0.05] rounded px-2 py-1 transition-colors">
+                    {zoom}%<ChevronDown size={11} className="opacity-60" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent className="w-28 p-1" align="center" side="bottom">
+                  {[25, 50, 75, 100, 125, 150, 175, 200].map(v => (
+                    <button key={v} onClick={() => setZoom(v)}
+                      className={`w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors ${zoom === v ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                      {v}%
+                    </button>
+                  ))}
+                </PopoverContent>
+              </Popover>
+              <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.min(z + 10, 200))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Plus size={15} /></button></TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
             </div>
           </div>
         )}
