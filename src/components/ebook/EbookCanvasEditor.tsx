@@ -25,6 +25,8 @@ import {
 } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import AITextEditMenu, { type AIEditAction } from '@/components/ebook/AITextEditMenu';
+import { supabase } from '@/integrations/supabase/client';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
@@ -192,6 +194,7 @@ const EbookCanvasEditor = ({
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
   const [showAIEditModal, setShowAIEditModal] = useState(false);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
+  const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
@@ -547,7 +550,27 @@ const EbookCanvasEditor = ({
     updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e));
   };
 
-  // ─── Canvas Click ─────────────────────────────
+  const handleAITextEdit = async (action: AIEditAction, params?: { tone?: string; prompt?: string }) => {
+    if (!selectedElement || selectedElement.type !== 'text' || !selectedElement.content) return;
+    setIsAIProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-text-edit', {
+        body: { text: selectedElement.content, action, tone: params?.tone, prompt: params?.prompt },
+      });
+      if (error) throw error;
+      if (data?.result) {
+        updateElement(selectedElement.id, { content: data.result });
+        toast.success('Text updated by AI');
+      } else if (data?.error) {
+        toast.error(data.error);
+      }
+    } catch (e: any) {
+      toast.error(e.message || 'AI edit failed');
+    } finally {
+      setIsAIProcessing(false);
+    }
+  };
+
   const handleCanvasClick = (e: React.MouseEvent) => {
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
@@ -1172,10 +1195,15 @@ const EbookCanvasEditor = ({
                 {/* ── Context: Text formatting ── */}
                 {selectedElement?.type === 'text' && (
                   <>
-                    <button onClick={() => toast.success('AI text tools')}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
-                      <Sparkles className="w-3 h-3" />AI
-                    </button>
+                    <AITextEditMenu
+                      onAction={handleAITextEdit}
+                      isProcessing={isAIProcessing}
+                      trigger={
+                        <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+                          <Sparkles className="w-3 h-3" />{isAIProcessing ? 'Working...' : 'AI'}
+                        </button>
+                      }
+                    />
                     <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
                       <SelectTrigger className="w-32 h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
