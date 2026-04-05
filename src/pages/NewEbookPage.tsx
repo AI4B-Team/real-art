@@ -857,8 +857,8 @@ const NewEbookPage = () => {
                 findReplaceMode={findReplaceMode}
                 onFindReplaceModeChange={setFindReplaceMode}
               />
-              {/* RIGHT: Page Settings Panel (hidden in grid view) */}
-              {!isGridView && (
+              {/* RIGHT: Page Settings Panel (shown contextually) */}
+              {!isGridView && showPageSettings && (
               <PageSettingsPanel
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
