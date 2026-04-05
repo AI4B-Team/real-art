@@ -133,8 +133,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   {i + 1}
                 </span>
                 <div
-                  draggable
-                  onDragStart={() => handleDragStart(i)}
+                  draggable={page.type !== 'cover' && page.type !== 'back'}
+                  onDragStart={() => { if (page.type !== 'cover' && page.type !== 'back') handleDragStart(i); }}
                   onDragOver={e => handleDragOver(e, i)}
                   onDragEnd={handleDragEnd}
                   onClick={() => onPageSelect(page.id)}
