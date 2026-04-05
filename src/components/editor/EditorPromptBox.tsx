@@ -14,9 +14,6 @@ import MentionDropdown from "@/components/MentionDropdown";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useAtMention } from "@/hooks/useAtMention";
-import MentionDropdown from "@/components/MentionDropdown";
-import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
 
 type ContentType = "video" | "image" | "audio";
 
