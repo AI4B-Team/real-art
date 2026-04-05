@@ -1139,7 +1139,7 @@ const EbookCanvasEditor = ({
                       <div key={page.id} className="flex items-start">
                         {/* Insert zone with drop indicator */}
                         <div
-                          className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out ${
+                          className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out aspect-[3/4] w-auto ${
                             (gridInsertHover === pageIndex && draggedPageIndex === null) || (dragOverPageIndex === pageIndex && draggedPageIndex !== null)
                               ? 'w-14' : 'w-2'
                           }`}
