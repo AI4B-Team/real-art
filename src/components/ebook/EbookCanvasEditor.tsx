@@ -624,6 +624,22 @@ const EbookCanvasEditor = ({
     if (el.locked || activeTool !== 'select') return;
     e.stopPropagation();
     if (pageId) onPageSelect(pageId);
+
+    // Alt+Click: cycle through overlapping elements at this position
+    if (e.altKey && pageId) {
+      const elems = pageElements[pageId] || [];
+      const overlapping = elems.filter(other => {
+        // Check if click position overlaps with this element (rough check via bounding box overlap with clicked element)
+        return !(other.x > el.x + el.width || other.x + other.width < el.x || other.y > el.y + el.height || other.y + other.height < el.y);
+      }).sort((a, b) => (a.zIndex ?? 1) - (b.zIndex ?? 1));
+      if (overlapping.length > 1) {
+        const currentIdx = overlapping.findIndex(o => o.id === selectedElementId);
+        const nextIdx = (currentIdx + 1) % overlapping.length;
+        setSelectedElementId(overlapping[nextIdx].id);
+        return;
+      }
+    }
+
     setSelectedElementId(el.id);
     // Push undo snapshot once before drag begins
     setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
