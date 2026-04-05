@@ -180,6 +180,7 @@ const EbookCanvasEditor = ({
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
   onPageSettingsToggle, onOpenImageSection,
+  pageWidth: pw = 480, pageHeight: ph = 640,
 }: EbookCanvasEditorProps) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
