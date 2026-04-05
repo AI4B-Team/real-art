@@ -484,7 +484,7 @@ const NewEbookPage = () => {
               <div className="flex items-center gap-2 px-3 pb-3 flex-wrap">
                 {/* Source */}
                 <button onClick={() => setShowSourceCards(prev => !prev)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${showSourceCards ? "bg-accent text-white" : "bg-accent/10 text-accent hover:bg-accent/15"}`}>
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${showSourceCards ? "bg-accent text-white" : "bg-accent/10 text-accent hover:bg-accent/15"}`}>
                   <Mic size={13} />Source: {SOURCE_OPTIONS.find(s => s.id === bookData.sourceType)?.label}
                   <ChevronDown size={11} className={`transition-transform ${showSourceCards ? "rotate-180" : ""}`} />
                 </button>
@@ -492,7 +492,7 @@ const NewEbookPage = () => {
                 {/* Type */}
                 <Popover>
                   <PopoverTrigger asChild>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
                       <Cpu size={13} />Type
                     </button>
                   </PopoverTrigger>
@@ -509,7 +509,7 @@ const NewEbookPage = () => {
                 {/* Model */}
                 <Popover>
                   <PopoverTrigger asChild>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
                       <Cpu size={13} />{AI_MODELS.find(m => m.id === bookData.model)?.name}
                       <ChevronDown size={11} />
                     </button>
@@ -528,7 +528,7 @@ const NewEbookPage = () => {
                 {/* Language */}
                 <Popover open={languageOpen} onOpenChange={o => { setLanguageOpen(o); if (!o) setLanguageSearch(""); }}>
                   <PopoverTrigger asChild>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
                       <span>{currentLanguage?.flag}</span>{currentLanguage?.name}
                       <ChevronDown size={11} />
                     </button>
@@ -552,7 +552,7 @@ const NewEbookPage = () => {
                 {/* Tone */}
                 <Popover>
                   <PopoverTrigger asChild>
-                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-foreground/[0.05] text-foreground text-xs font-medium hover:bg-foreground/[0.08] transition-colors">
                       <MessageSquare size={13} />Tone: {currentTone?.name}
                       <ChevronDown size={11} />
                     </button>
@@ -570,7 +570,7 @@ const NewEbookPage = () => {
                 <div className="flex-1" />
                 {/* Send button */}
                 <button id="ghost-ink-generate-btn" onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
-                  className="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center hover:bg-accent/90 transition-colors disabled:opacity-50 shrink-0">
+                  className="w-10 h-10 rounded-lg bg-accent text-white flex items-center justify-center hover:bg-accent/90 transition-colors disabled:opacity-50 shrink-0">
                   <Send size={16} />
                 </button>
               </div>
