@@ -619,6 +619,29 @@ const EbookCanvasEditor = ({
     }
   };
 
+  // Right-click context menu for selecting overlapping elements
+  const handleElementContextMenu = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
+    if (!pageId) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const elems = pageElements[pageId] || [];
+    const canvasRect = canvasRef.current?.getBoundingClientRect();
+    if (!canvasRect) return;
+    // Find all elements whose bounding box contains the click point
+    const pageEl = pageRefs.current[pageId];
+    if (!pageEl) return;
+    const pageRect = pageEl.getBoundingClientRect();
+    const clickXPct = ((e.clientX - pageRect.left) / pageRect.width) * 100;
+    const clickYPct = ((e.clientY - pageRect.top) / pageRect.height) * 100;
+    const overlapping = elems.filter(other =>
+      clickXPct >= other.x && clickXPct <= other.x + other.width &&
+      clickYPct >= other.y && clickYPct <= other.y + other.height
+    ).sort((a, b) => (b.zIndex ?? 1) - (a.zIndex ?? 1));
+    if (overlapping.length > 1) {
+      setContextMenu({ x: e.clientX, y: e.clientY, elements: overlapping, pageId });
+    }
+  };
+
   // ─── Drag ─────────────────────────────────────
   const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
     if (el.locked || activeTool !== 'select') return;
