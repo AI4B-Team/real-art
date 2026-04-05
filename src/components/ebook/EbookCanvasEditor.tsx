@@ -1411,17 +1411,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       }}
                     >
                       <div className={`absolute inset-y-2 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-destructive transition-all duration-150 ${dragOverPageIndex === currentPages.length && draggedPageIndex !== null ? 'opacity-100' : 'opacity-0'}`} />
-                      <Tooltip>
-                        <TooltipTrigger asChild>
+                      <Popover>
+                        <PopoverTrigger asChild>
                           <button
-                            onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length); }}
+                            onClick={(e) => e.stopPropagation()}
                             className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === currentPages.length && draggedPageIndex === null ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
                           >
                             <Plus className="w-5 h-5" />
                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">Add Page</TooltipContent>
-                      </Tooltip>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-56 p-2" side="bottom" align="center">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                          {PAGE_TYPE_OPTIONS.map(opt => (
+                            <button key={opt.type} onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length, opt.type); }}
+                              className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                              <span className="text-base">{opt.icon}</span>
+                              <div>
+                                <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 w-[140px]">
                       <Popover>
