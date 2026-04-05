@@ -1084,6 +1084,7 @@ const NewEbookPage = () => {
         )}
       </div>
       <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
+      <EbookInviteModal open={showInviteModal} onOpenChange={setShowInviteModal} />
     </PageShell>
   );
 };
