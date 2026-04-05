@@ -428,8 +428,8 @@ const PageSettingsPanel = ({
               {bgTab === 'pattern' && (
                 <div className="grid grid-cols-4 gap-1.5">
                   {PATTERNS.map(p => (
-                    <button key={p.id} onClick={() => toast.success(`${p.label} pattern applied`)}
-                      className="aspect-square rounded-lg border border-foreground/[0.06] hover:border-accent/40 flex items-center justify-center transition-colors">
+                    <button key={p.id} onClick={() => { updateSelectedPage({ bgPattern: p.id }); toast.success(`${p.label} pattern applied`); }}
+                      className={`aspect-square rounded-lg border hover:border-accent/40 flex items-center justify-center transition-colors ${selectedPage?.bgPattern === p.id ? 'border-accent bg-accent/5' : 'border-foreground/[0.06]'}`}>
                       <div className="w-8 h-8 bg-foreground/[0.03] rounded" />
                     </button>
                   ))}
