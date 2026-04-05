@@ -2336,6 +2336,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           data-canvas={isSelected ? 'bg' : undefined}
                           onClick={(e) => {
                             onPageSelect(page.id);
+                            if (page.locked) { setSelectedElementId(null); return; }
                             if (isSelected && canEdit) handleCanvasClick(e);
                             // Commenting mode: place a comment pin
                             if (accessMode === 'commenting' && isSelected) {
