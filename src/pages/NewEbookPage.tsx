@@ -787,7 +787,8 @@ const NewEbookPage = () => {
         {activeTab === "design" && (
           <div className="relative flex-1 min-h-0">
             <div className="flex h-full">
-              {/* LEFT: Design Sidebar (Templates, Content outline) */}
+              {/* LEFT: Design Sidebar (hidden in grid view) */}
+              {!isGridView && (
               <EbookDesignSidebar
                 bookTitle={bookData.selectedTitle}
                 chapters={ebookPages.map(p => ({ id: p.id, title: p.title }))}
@@ -813,6 +814,7 @@ const NewEbookPage = () => {
                   });
                 }}
               />
+              )}
               {/* CENTER: Canvas Editor (no pages panel - it's on the right) */}
               <EbookCanvasEditor
                 pages={ebookPages}
