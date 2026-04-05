@@ -638,9 +638,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       case 'settings': onPageSettingsToggle?.(); break;
     }
   };
+  const isPageLocked = selectedPage?.locked === true;
 
   // ─── Element Actions ──────────────────────────
   const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
+    if (isPageLocked) { toast.error('This page is locked. Unlock it to make changes.'); return; }
     const newEl: CanvasElement = {
       id: crypto.randomUUID(), type, x: 20, y: 20,
       width: type === 'interactive' ? 60 : 30,
@@ -685,20 +687,20 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   }), [selectedPage, currentElements, currentPages, pageElements, bookTitle]);
 
   const deleteElement = () => {
-    if (!selectedElementId || !selectedPage) return;
+    if (!selectedElementId || !selectedPage || isPageLocked) return;
     updateElements(selectedPage.id, currentElements.filter(e => e.id !== selectedElementId));
     setSelectedElementId(null);
   };
 
   const duplicateElement = () => {
-    if (!selectedElement || !selectedPage) return;
+    if (!selectedElement || !selectedPage || isPageLocked) return;
     const dup = { ...selectedElement, id: crypto.randomUUID(), x: selectedElement.x + 3, y: selectedElement.y + 3 };
     updateElements(selectedPage.id, [...currentElements, dup]);
     setSelectedElementId(dup.id);
   };
 
   const updateElement = (id: string, updates: Partial<CanvasElement>, skipUndo = false) => {
-    if (!selectedPage) return;
+    if (!selectedPage || isPageLocked) return;
     updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e), skipUndo);
   };
 
@@ -767,7 +769,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   // ─── Drag ─────────────────────────────────────
   const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
     if (!canEdit) return;
-    if (el.locked || activeTool !== 'select') return;
+    if (isPageLocked || el.locked || activeTool !== 'select') return;
     // On Mac, Ctrl+click triggers onMouseDown before onContextMenu — skip drag to let context menu work
     if (e.ctrlKey || e.button === 2) return;
     e.stopPropagation();
@@ -1106,7 +1108,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
-          onDoubleClick={() => { setEditingTextId(el.id); setSelectedElementId(el.id); }}>
+          onDoubleClick={() => { if (isPageLocked) return; setEditingTextId(el.id); setSelectedElementId(el.id); }}>
           <TypeBadge />
           {isEditing ? (
             <textarea
@@ -2334,6 +2336,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           data-canvas={isSelected ? 'bg' : undefined}
                           onClick={(e) => {
                             onPageSelect(page.id);
+                            if (page.locked) { setSelectedElementId(null); return; }
                             if (isSelected && canEdit) handleCanvasClick(e);
                             // Commenting mode: place a comment pin
                             if (accessMode === 'commenting' && isSelected) {
@@ -2367,6 +2370,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             )}
                           </div>
                           {elems.map(el => renderElement(el, page.id))}
+
+                          {/* Locked page overlay */}
+                          {page.locked && (
+                            <div className="absolute inset-0 z-[80] flex items-center justify-center bg-foreground/[0.03] pointer-events-auto cursor-not-allowed rounded-lg">
+                              <div className="flex items-center gap-1.5 bg-background/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-sm border border-foreground/[0.08]">
+                                <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                                <span className="text-xs font-medium text-muted-foreground">Page Locked</span>
+                              </div>
+                            </div>
+                          )}
 
                           {/* Comment pins */}
                           {canComment && pageComments.filter(c => c.pageId === page.id).map((c, ci) => (
