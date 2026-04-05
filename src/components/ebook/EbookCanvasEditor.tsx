@@ -853,7 +853,7 @@ const EbookCanvasEditor = ({
             onMouseDown={e => handleElementMouseDown(e, el, pageId)}
             onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
             <TypeBadge />
-            <div className="w-full h-full bg-muted/50 border-2 border-dashed border-foreground/20 flex flex-col items-center justify-center p-4 rounded-lg">
+            <div className="w-full h-full bg-muted border-2 border-dashed border-foreground/20 flex flex-col items-center justify-center p-4 rounded-lg">
               <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
               <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
                 {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
