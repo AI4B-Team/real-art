@@ -2164,9 +2164,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 {selectedElement?.type === 'image' && (
                   <>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => { if (selectedElement) { setReplaceModalElementId(selectedElement.id); onOpenImageSection?.(); } }}
-                        className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
-                        <ImagePlus className="w-3.5 h-3.5" />Replace
+                      <button onClick={() => { if (selectedElement) { const isActive = replaceModalElementId === selectedElement.id; setReplaceModalElementId(isActive ? null : selectedElement.id); if (!isActive) onOpenImageSection?.(); } }}
+                        className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border ${replaceModalElementId === selectedElement?.id ? 'bg-accent/10 text-accent border-accent/30' : 'text-foreground hover:bg-foreground/[0.05] border-foreground/[0.08]'}`}>
+                        <ImagePlus className="w-3.5 h-3.5" />{replaceModalElementId === selectedElement?.id ? 'Cancel' : 'Replace'}
                       </button>
                     </TooltipTrigger><TooltipContent>Replace Image</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
