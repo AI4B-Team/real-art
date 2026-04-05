@@ -839,6 +839,7 @@ const NewEbookPage = () => {
                     return arr;
                   });
                 }}
+                onSectionChange={handleSidebarSectionChange}
               />
               )}
               {/* CENTER: Canvas Editor (no pages panel - it's on the right) */}
