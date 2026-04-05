@@ -968,27 +968,32 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           {isSelected && renderResizeHandles(el)}
           {isSelected && (() => {
             const isSmall = el.width < 25 || el.height < 25;
+            const isFullPage = el.width >= 90 && el.height >= 90;
             return (
-              <div className={`absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-50`}
-                onMouseDown={e => e.stopPropagation()}>
+              <div className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-[60]`}
+                style={isFullPage ? { bottom: '12px' } : { bottom: '8px' }}
+                onClick={e => e.stopPropagation()}
+                onMouseDown={e => e.stopPropagation()}
+                onPointerDown={e => e.stopPropagation()}>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <button className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                    <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
                       <ImagePlus className="w-3.5 h-3.5" />Replace
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-auto p-2" side="top" align="center">
+                  <PopoverContent className="w-auto p-2 z-[70]" side="top" align="center"
+                    onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Select Replacement</p>
                     <div className="flex gap-1.5 mb-2">
                       {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
                         <button key={idx}
-                          onClick={() => { updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); }}
+                          onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); }}
                           className="w-16 h-16 rounded border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-105">
                           <img src={imgSrc} alt={`Option ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
                         </button>
                       ))}
                     </div>
-                    <button onClick={() => replaceImageInputRef.current?.click()}
+                    <button onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
                       className="w-full text-xs py-1.5 rounded bg-accent text-white hover:bg-accent/90 flex items-center justify-center gap-1.5">
                       <Upload className="w-3 h-3" />Upload
                     </button>
@@ -996,11 +1001,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 </Popover>
                 <Popover>
                   <PopoverTrigger asChild>
-                    <button className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                    <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
                       <LayoutGrid className="w-3.5 h-3.5" />Position
                     </button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-44 p-2" side="top" align="center">
+                  <PopoverContent className="w-44 p-2 z-[70]" side="top" align="center"
+                    onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
                     <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Quick Position</p>
                     <div className="grid grid-cols-2 gap-1">
                       {[
@@ -1012,7 +1018,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         { label: 'Bottom Strip', x: 0, y: 70, w: 100, h: 30, icon: '▁' },
                       ].map(preset => (
                         <button key={preset.label}
-                          onClick={() => { updateElement(el.id, { x: preset.x, y: preset.y, width: preset.w, height: preset.h }); toast.success(`Positioned: ${preset.label}`); }}
+                          onClick={e => { e.stopPropagation(); updateElement(el.id, { x: preset.x, y: preset.y, width: preset.w, height: preset.h }); toast.success(`Positioned: ${preset.label}`); }}
                           className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] rounded hover:bg-foreground/[0.05] transition-colors text-foreground">
                           <span className="text-xs">{preset.icon}</span>{preset.label}
                         </button>
@@ -1022,7 +1028,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 </Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button onClick={() => setShowAIEditModal(true)}
+                    <button onClick={e => { e.stopPropagation(); setShowAIEditModal(true); }}
                       className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
                       <Sparkles className="w-3.5 h-3.5 text-accent" />{!isSmall && 'Edit'}
                     </button>
@@ -1031,7 +1037,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <button onClick={deleteElement}
+                    <button onClick={e => { e.stopPropagation(); deleteElement(); }}
                       className="flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors px-2 py-1 text-xs">
                       <Trash2 className="w-3.5 h-3.5" />{!isSmall && 'Delete'}
                     </button>
