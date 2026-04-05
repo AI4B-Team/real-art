@@ -1395,12 +1395,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       </Tooltip>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 w-[140px]">
-                      <button onClick={handleAddPage}
-                        className="w-full rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
-                        style={{ aspectRatio: `${pw}/${ph}` }}>
-                        <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
-                        <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
-                      </button>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button
+                            className="w-full rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
+                            style={{ aspectRatio: `${pw}/${ph}` }}>
+                            <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
+                            <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-56 p-2" side="top" align="center">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                          {PAGE_TYPE_OPTIONS.map(opt => (
+                            <button key={opt.type} onClick={() => handleAddPage(opt.type)}
+                              className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                              <span className="text-base">{opt.icon}</span>
+                              <div>
+                                <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
                 </div>
