@@ -842,7 +842,8 @@ const EbookCanvasEditor = ({
       if (el.isPlaceholder || !el.src) {
         return (
           <div key={el.id} className={`${selectionBorder}`} style={style}
-            onMouseDown={e => handleElementMouseDown(e, el, pageId)}>
+            onMouseDown={e => handleElementMouseDown(e, el, pageId)}
+            onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
             <TypeBadge />
             <div className="w-full h-full bg-muted/50 border-2 border-dashed border-foreground/20 flex flex-col items-center justify-center p-4 rounded-lg">
               <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
