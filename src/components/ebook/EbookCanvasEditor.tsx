@@ -61,6 +61,8 @@ interface EbookCanvasEditorProps {
   onZoomChange?: (zoom: number) => void;
   isGridView?: boolean;
   onGridViewToggle?: () => void;
+  findReplaceMode?: 'find' | 'find-replace' | null;
+  onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
 }
 
 // ─── Constants ─────────────────────────────────────
