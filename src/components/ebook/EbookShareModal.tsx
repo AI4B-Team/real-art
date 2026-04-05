@@ -392,7 +392,17 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
                 <div className="flex items-center gap-2">
                   <button onClick={() => setPrintSettings(s => ({ ...s, copies: Math.max(1, s.copies - 1) }))}
                     className="w-8 h-8 rounded-lg border border-foreground/[0.08] flex items-center justify-center hover:bg-foreground/[0.04] text-sm font-bold">−</button>
-                  <span className="text-sm font-semibold w-8 text-center">{printSettings.copies}</span>
+                  <input
+                    type="number"
+                    min={1}
+                    value={printSettings.copies}
+                    onChange={e => {
+                      const val = parseInt(e.target.value, 10);
+                      if (!isNaN(val) && val >= 1) setPrintSettings(s => ({ ...s, copies: val }));
+                      if (e.target.value === '') setPrintSettings(s => ({ ...s, copies: 1 }));
+                    }}
+                    className="w-14 text-center text-sm font-semibold border border-foreground/[0.08] rounded-lg py-1 bg-background outline-none focus:border-accent/40 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  />
                   <button onClick={() => setPrintSettings(s => ({ ...s, copies: s.copies + 1 }))}
                     className="w-8 h-8 rounded-lg border border-foreground/[0.08] flex items-center justify-center hover:bg-foreground/[0.04] text-sm font-bold">+</button>
                 </div>
