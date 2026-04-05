@@ -1069,6 +1069,7 @@ const NewEbookPage = () => {
                 pageWidth={pageWidth}
                 pageHeight={pageHeight}
                 accessMode={accessMode}
+              />
 
               {/* Right panel collapse toggle */}
               {!isGridView && showPageSettings && (
