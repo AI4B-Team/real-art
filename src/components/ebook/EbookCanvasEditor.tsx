@@ -388,7 +388,27 @@ const EbookCanvasEditor = ({
   }, [selectedPageId]);
 
   const internalZoom = useState(100);
-  const zoom = externalZoom ?? internalZoom[0];
+  const zoomPct = externalZoom ?? internalZoom[0];
+
+  // Compute a base scale so 100% zoom fits the full page in the container
+  const [fitScale, setFitScale] = useState(1);
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const computeFit = () => {
+      const cw = container.clientWidth - 80; // padding + page label
+      const ch = container.clientHeight - 64; // vertical padding
+      const scaleW = cw / 480;
+      const scaleH = ch / 640;
+      setFitScale(Math.min(scaleW, scaleH, 1.5));
+    };
+    computeFit();
+    const ro = new ResizeObserver(computeFit);
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
+
+  const zoom = zoomPct * fitScale;
 
   const selectedPage = currentPages.find(p => p.id === selectedPageId) || currentPages[0];
 
