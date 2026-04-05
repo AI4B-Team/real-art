@@ -17,7 +17,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "@/hooks/use-toast";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
-import EbookCanvasEditor from "@/components/ebook/EbookCanvasEditor";
+import EbookCanvasEditor, { type EbookCanvasEditorHandle } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 
@@ -193,6 +193,7 @@ const NewEbookPage = () => {
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
   const [pageWidth, setPageWidth] = useState(480);
   const [pageHeight, setPageHeight] = useState(640);
+  const canvasRef = useRef<EbookCanvasEditorHandle>(null);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
@@ -864,6 +865,7 @@ const NewEbookPage = () => {
                 }}
                 onSectionChange={handleSidebarSectionChange}
                 openSection={sidebarOpenSection as any}
+                onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
               />
               )}
 
@@ -878,6 +880,7 @@ const NewEbookPage = () => {
 
               {/* CENTER: Canvas Editor */}
               <EbookCanvasEditor
+                ref={canvasRef}
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
                 onPageSelect={setSelectedPageId}

@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
   Minus, Hand, ChevronLeft, ChevronRight, Search,
@@ -173,15 +173,19 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
   }
 };
 
+export interface EbookCanvasEditorHandle {
+  addElement: (type: string, extra?: any) => void;
+}
+
 // ─── Component ─────────────────────────────────────
-const EbookCanvasEditor = ({
+const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorProps>(({
   pages, selectedPageId, onPageSelect, onPagesChange, bookTitle,
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
   onPageSettingsToggle, onOpenImageSection,
   pageWidth: pw = 480, pageHeight: ph = 640,
-}: EbookCanvasEditorProps) => {
+}, ref) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
   const setPages = (fn: Page[] | ((p: Page[]) => Page[])) => {
@@ -572,6 +576,8 @@ const EbookCanvasEditor = ({
     setSelectedElementId(newEl.id);
     setActiveTool('select');
   };
+
+  useImperativeHandle(ref, () => ({ addElement }), [selectedPage, currentElements]);
 
   const deleteElement = () => {
     if (!selectedElementId || !selectedPage) return;
@@ -1901,6 +1907,8 @@ const EbookCanvasEditor = ({
       )}
     </TooltipProvider>
   );
-};
+});
+
+EbookCanvasEditor.displayName = 'EbookCanvasEditor';
 
 export default EbookCanvasEditor;
