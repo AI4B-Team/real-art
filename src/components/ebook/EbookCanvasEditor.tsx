@@ -2695,7 +2695,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     <span className="text-xs font-semibold text-foreground">{c.author}</span>
                                     <span className="text-[10px] text-muted-foreground ml-auto">{c.timestamp}</span>
                                   </div>
-                                  <p className="text-xs text-foreground/80 mb-2">{c.text}</p>
+                                  <p className="text-xs text-foreground/80 mb-2">{renderCommentText(c.text)}</p>
                                   <div className="flex gap-1.5">
                                     <button onClick={() => setPageComments(prev => prev.map(pc => pc.id === c.id ? { ...pc, resolved: !pc.resolved } : pc))}
                                       className="text-[10px] text-accent hover:underline">{c.resolved ? 'Reopen' : 'Resolve'}</button>
