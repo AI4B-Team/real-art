@@ -2054,6 +2054,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   <MessageSquare className="w-3.5 h-3.5 text-accent" />
                   <span className="text-xs font-medium text-accent">Commenting Mode — Click anywhere on the page to leave a comment</span>
                   <span className="text-[10px] text-accent/60 ml-2">{pageComments.length} comment{pageComments.length !== 1 ? 's' : ''}</span>
+                  {pageComments.length > 0 && (
+                    <>
+                      <button onClick={() => setShowAllComments(!showAllComments)}
+                        className="ml-2 text-[10px] font-semibold text-accent hover:underline">
+                        {showAllComments ? 'Hide All' : 'See All'}
+                      </button>
+                      <button onClick={resolveAllComments}
+                        className="ml-1 text-[10px] font-semibold text-accent hover:underline flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Resolve All
+                      </button>
+                    </>
+                  )}
                 </div>
               )}
               {isViewOnly && (
