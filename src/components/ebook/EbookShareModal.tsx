@@ -25,9 +25,6 @@ const SOCIAL_PLATFORMS_MAIN = [
   { id: "facebook", label: "Facebook", icon: Facebook, color: "text-blue-600" },
   { id: "linkedin", label: "Linkedin", icon: Linkedin, color: "text-blue-700" },
   { id: "x", label: "X", icon: () => <span className="font-bold text-sm">𝕏</span>, color: "" },
-];
-
-const SOCIAL_PLATFORMS_EXPANDED = [
   { id: "instagram", label: "Instagram", icon: Instagram, color: "text-pink-500" },
 ];
 
@@ -340,9 +337,6 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
               {SOCIAL_PLATFORMS_MAIN.map(p => (
                 <SocialButton key={p.id} platform={p} />
               ))}
-              {showAllSocial && SOCIAL_PLATFORMS_EXPANDED.map(p => (
-                <SocialButton key={p.id} platform={p} />
-              ))}
               {!showAllSocial && (
                 <button onClick={() => setShowAllSocial(true)}
                   className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.08] hover:border-foreground/[0.15] hover:bg-foreground/[0.02] transition-all">
@@ -355,9 +349,6 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
             </div>
             {showAllSocial && (
               <div className="grid grid-cols-5 gap-2 mt-2">
-                {SOCIAL_PLATFORMS_EXPANDED.map(p => (
-                  <SocialButton key={p.id} platform={p} />
-                ))}
                 {SOCIAL_PLATFORMS_ALL.map(p => (
                   <SocialButton key={p.id} platform={p} />
                 ))}
