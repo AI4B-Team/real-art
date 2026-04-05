@@ -98,6 +98,7 @@ import LanguageDropdownContent from "@/components/LanguageDropdownContent";
 import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
+import SaveTemplateModal, { loadSavedTemplates, type SavedTemplate } from "@/components/create/SaveTemplateModal";
 import { SAMPLE_CREATIONS, SAMPLE_FAVORITES, SAMPLE_COLLECTIONS, SAMPLE_COMMUNITY, SAMPLE_TEMPLATES } from "@/lib/sampleGalleryData";
 import { WORKSPACE_MEMBERS } from "@/lib/workspaceMembers";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
