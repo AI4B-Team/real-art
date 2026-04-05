@@ -1585,11 +1585,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
     const toolbarStyle: React.CSSProperties = isFullPage
       ? { left, top: `${el.y + el.height / 2}%`, transform: 'translate(-50%, -50%)' }
-      : { left, bottom: `calc(${100 - (el.y + el.height)}% + 8px)`, transform: 'translateX(-50%)' };
+      : { left, top: `calc(${el.y + el.height}% + 8px)`, transform: 'translateX(-50%)' };
 
     const suggestionsStyle: React.CSSProperties = isFullPage
       ? { left, top: `calc(${el.y + el.height / 2}% + 44px)`, transform: 'translateX(-50%)' }
-      : { left, bottom: `calc(${100 - (el.y + el.height)}% + 44px)`, transform: 'translateX(-50%)' };
+      : { left, top: `calc(${el.y + el.height}% + 44px)`, transform: 'translateX(-50%)' };
 
     return (
       <>
