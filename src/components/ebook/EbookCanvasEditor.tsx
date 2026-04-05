@@ -830,9 +830,29 @@ const EbookCanvasEditor = ({
           ) : (
             /* ─── NORMAL VIEW ─── */
             <>
+              {/* Default toolbar (when no element selected) */}
+              {!selectedElement && (
+                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 gap-1 shrink-0">
+                  {TOOLS.map(tool => (
+                    <Tooltip key={tool.id}>
+                      <TooltipTrigger asChild>
+                        <button onClick={() => {
+                          setActiveTool(tool.id);
+                          if (tool.id === 'image') imageInputRef.current?.click();
+                        }}
+                          className={`p-1.5 rounded transition-colors ${activeTool === tool.id ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                          <tool.icon className="w-4 h-4" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>{tool.label}</TooltipContent>
+                    </Tooltip>
+                  ))}
+                </div>
+              )}
+
               {/* Text formatting bar (when text selected) */}
               {selectedElement?.type === 'text' && (
-                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
+                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 gap-2 shrink-0">
                   <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
                     <SelectTrigger className="w-36 h-7 text-xs"><SelectValue /></SelectTrigger>
                     <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
@@ -877,7 +897,7 @@ const EbookCanvasEditor = ({
 
               {/* Shape/Image formatting bar */}
               {selectedElement && selectedElement.type !== 'text' && (
-                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-2 shrink-0">
+                <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 gap-2 shrink-0">
                   {selectedElement.type === 'shape' && (
                     <>
                       <span className="text-xs text-muted-foreground">Fill:</span>
