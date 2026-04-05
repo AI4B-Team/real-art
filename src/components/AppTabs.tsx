@@ -58,9 +58,9 @@ export default function AppTabs() {
   };
 
   // Dropdown data
-  const favoriteApps = ALL_APPS.filter(a => FAVORITE_IDS.includes(a.id));
+  const favoriteApps = ALL_APPS.filter(a => favoriteIds.includes(a.id));
   const trendingApps = ALL_APPS.filter(a => TRENDING_IDS.includes(a.id));
-  const recentApps = ALL_APPS.filter(a => recentIds.includes(a.id) && !FAVORITE_IDS.includes(a.id));
+  const recentApps = ALL_APPS.filter(a => recentIds.includes(a.id) && !favoriteIds.includes(a.id));
   const filtered = search ? ALL_APPS.filter(a => a.label.toLowerCase().includes(search.toLowerCase())) : null;
 
   const tabApps = openTabs.map(id => ALL_APPS.find(a => a.id === id)).filter(Boolean) as AppDef[];
