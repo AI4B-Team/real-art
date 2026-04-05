@@ -10,6 +10,7 @@ import {
   LayoutGrid, LayoutTemplate, Presentation,
   MonitorPlay, AudioLines, MousePointerClick, Layers3, Languages,
   Shuffle, SlidersHorizontal, Play, Users, Library,
+  Brain, Award, BookOpen, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
