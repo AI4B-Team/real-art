@@ -32,7 +32,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Page {
   id: string;
   title: string;
-  type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back';
+  type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back' | 'blank';
   thumbnail?: string;
   locked?: boolean;
   bgColor?: string;
@@ -173,9 +173,16 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
       return createChapterPageElements(idx + 1, page.title);
     }
     case 'back': return createBackElements();
+    case 'blank': return [];
     default: return [];
   }
 };
+
+const PAGE_TYPE_OPTIONS: { type: Page['type']; label: string; description: string; icon: string }[] = [
+  { type: 'chapter', label: 'Chapter Cover', description: 'Full image with chapter number & title', icon: '📖' },
+  { type: 'chapter-page', label: 'Chapter Content', description: 'Top image with text content below', icon: '📄' },
+  { type: 'blank', label: 'Blank Page', description: 'Empty page to design from scratch', icon: '📃' },
+];
 
 export interface EbookCanvasEditorHandle {
   addElement: (type: string, extra?: any) => void;
@@ -485,8 +492,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const selectedElement = currentElements.find(e => e.id === selectedElementId);
 
   // ─── Page Actions ─────────────────────────────
-  const insertPageAt = (index: number) => {
-    const newPage: Page = { id: crypto.randomUUID(), title: 'New Page', type: 'chapter', locked: false };
+  const insertPageAt = (index: number, pageType: Page['type'] = 'chapter') => {
+    const titleMap: Record<string, string> = {
+      'chapter': 'Chapter Cover',
+      'chapter-page': 'Chapter Content',
+      'blank': 'Blank Page',
+    };
+    const newPage: Page = { id: crypto.randomUUID(), title: titleMap[pageType] || 'New Page', type: pageType, locked: false };
     const newPages = [...currentPages];
     newPages.splice(index, 0, newPage);
     setPages(newPages);
@@ -494,9 +506,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     toast.success('Page added');
   };
 
-  const handleAddPage = () => {
+  const handleAddPage = (pageType: Page['type'] = 'chapter') => {
     const idx = currentPages.findIndex(p => p.id === selectedPageId);
-    insertPageAt(idx + 1);
+    insertPageAt(idx + 1, pageType);
   };
 
   const handleDuplicatePage = () => {
@@ -556,7 +568,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   const handlePageAction = (actionId: string) => {
     switch (actionId) {
-      case 'add': handleAddPage(); break;
+      case 'add': /* handled by popover */ break;
       case 'duplicate': handleDuplicatePage(); break;
       case 'delete': handleDeletePage(); break;
       case 'moveUp': handleMovePage('up'); break;
@@ -1153,7 +1165,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {/* Thumbnail */}
                   <div className={`bg-foreground/[0.04] rounded overflow-hidden mb-1.5 ${isGridView ? 'aspect-[3/4]' : 'h-12'} flex items-center justify-center`}>
                     <span className={`text-[9px] font-bold ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
-                      {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : i + 1}
+                      {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : page.type === 'blank' ? '📃' : page.type === 'chapter-page' ? '📄' : '📖'}
                     </span>
                   </div>
                   <p className="text-[10px] font-medium text-foreground truncate">{page.title}</p>
@@ -1161,10 +1173,26 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 </div>
               ))}
             </div>
-            <button onClick={handleAddPage}
-              className="w-full mt-2 flex items-center justify-center gap-1 py-2 border-2 border-dashed border-foreground/[0.08] rounded-lg text-[10px] text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
-              <Plus className="w-3 h-3" />Add Page
-            </button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button className="w-full mt-2 flex items-center justify-center gap-1 py-2 border-2 border-dashed border-foreground/[0.08] rounded-lg text-[10px] text-muted-foreground hover:border-accent/40 hover:text-accent transition-colors">
+                  <Plus className="w-3 h-3" />Add Page
+                </button>
+              </PopoverTrigger>
+              <PopoverContent className="w-56 p-2" side="right" align="start">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                {PAGE_TYPE_OPTIONS.map(opt => (
+                  <button key={opt.type} onClick={() => handleAddPage(opt.type)}
+                    className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                    <span className="text-base">{opt.icon}</span>
+                    <div>
+                      <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                      <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                    </div>
+                  </button>
+                ))}
+              </PopoverContent>
+            </Popover>
           </div>
         )}
 
@@ -1222,17 +1250,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           {/* Red drop indicator line */}
                           <div className={`absolute inset-y-2 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-destructive transition-all duration-150 ${dragOverPageIndex === pageIndex && draggedPageIndex !== null ? 'opacity-100' : 'opacity-0'}`} />
                           {/* Add page button (only when not dragging) */}
-                          <Tooltip>
-                            <TooltipTrigger asChild>
+                          <Popover>
+                            <PopoverTrigger asChild>
                               <button
-                                onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex); }}
+                                onClick={(e) => e.stopPropagation()}
                                 className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === pageIndex && draggedPageIndex === null ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
                               >
                                 <Plus className="w-5 h-5" />
                               </button>
-                            </TooltipTrigger>
-                            <TooltipContent side="bottom">Add Page</TooltipContent>
-                          </Tooltip>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-56 p-2" side="bottom" align="center">
+                              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                              {PAGE_TYPE_OPTIONS.map(opt => (
+                                <button key={opt.type} onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex, opt.type); }}
+                                  className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                                  <span className="text-base">{opt.icon}</span>
+                                  <div>
+                                    <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                    <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                                  </div>
+                                </button>
+                              ))}
+                            </PopoverContent>
+                          </Popover>
                         </div>
                         {/* Page thumbnail */}
                         <div className="flex flex-col items-center gap-1.5 w-[140px]"
@@ -1288,12 +1328,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                   >
                                     <Files className="w-4 h-4" /> Duplicate
                                   </button>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex + 1); setGridMenuOpenId(null); }}
-                                    className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
-                                  >
-                                    <Plus className="w-4 h-4" /> Add Page After
-                                  </button>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <button
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                      >
+                                        <Plus className="w-4 h-4" /> Add Page After
+                                      </button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-56 p-2" side="right" align="start">
+                                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                                      {PAGE_TYPE_OPTIONS.map(opt => (
+                                        <button key={opt.type} onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex + 1, opt.type); setGridMenuOpenId(null); }}
+                                          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                                          <span className="text-base">{opt.icon}</span>
+                                          <div>
+                                            <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                            <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                                          </div>
+                                        </button>
+                                      ))}
+                                    </PopoverContent>
+                                  </Popover>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); toast.info('Hide page coming soon'); setGridMenuOpenId(null); }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
@@ -1354,25 +1411,54 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       }}
                     >
                       <div className={`absolute inset-y-2 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-destructive transition-all duration-150 ${dragOverPageIndex === currentPages.length && draggedPageIndex !== null ? 'opacity-100' : 'opacity-0'}`} />
-                      <Tooltip>
-                        <TooltipTrigger asChild>
+                      <Popover>
+                        <PopoverTrigger asChild>
                           <button
-                            onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length); }}
+                            onClick={(e) => e.stopPropagation()}
                             className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === currentPages.length && draggedPageIndex === null ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
                           >
                             <Plus className="w-5 h-5" />
                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent side="bottom">Add Page</TooltipContent>
-                      </Tooltip>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-56 p-2" side="bottom" align="center">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                          {PAGE_TYPE_OPTIONS.map(opt => (
+                            <button key={opt.type} onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length, opt.type); }}
+                              className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                              <span className="text-base">{opt.icon}</span>
+                              <div>
+                                <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div className="flex flex-col items-center gap-1.5 w-[140px]">
-                      <button onClick={handleAddPage}
-                        className="w-full rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
-                        style={{ aspectRatio: `${pw}/${ph}` }}>
-                        <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
-                        <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
-                      </button>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button
+                            className="w-full rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
+                            style={{ aspectRatio: `${pw}/${ph}` }}>
+                            <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
+                            <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-56 p-2" side="top" align="center">
+                          <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                          {PAGE_TYPE_OPTIONS.map(opt => (
+                            <button key={opt.type} onClick={() => handleAddPage(opt.type)}
+                              className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                              <span className="text-base">{opt.icon}</span>
+                              <div>
+                                <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                              </div>
+                            </button>
+                          ))}
+                        </PopoverContent>
+                      </Popover>
                     </div>
                   </div>
                 </div>
@@ -1873,6 +1959,35 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               const isLocked = action.id === 'lock' && currentSelectedPage?.locked;
                               const Icon = isLocked ? Lock : action.icon;
                               const label = isLocked ? 'Unlock Page' : action.label;
+                              if (action.id === 'add') {
+                                return (
+                                  <Popover key={action.id}>
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <PopoverTrigger asChild>
+                                          <button className="w-8 h-8 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] transition-colors text-muted-foreground hover:text-foreground">
+                                            <action.icon className="w-4 h-4" />
+                                          </button>
+                                        </PopoverTrigger>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="right">{action.label}</TooltipContent>
+                                    </Tooltip>
+                                    <PopoverContent className="w-56 p-2" side="right" align="start">
+                                      <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
+                                      {PAGE_TYPE_OPTIONS.map(opt => (
+                                        <button key={opt.type} onClick={() => handleAddPage(opt.type)}
+                                          className="w-full flex items-center gap-2.5 px-2 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors">
+                                          <span className="text-base">{opt.icon}</span>
+                                          <div>
+                                            <p className="text-xs font-medium text-foreground">{opt.label}</p>
+                                            <p className="text-[10px] text-muted-foreground">{opt.description}</p>
+                                          </div>
+                                        </button>
+                                      ))}
+                                    </PopoverContent>
+                                  </Popover>
+                                );
+                              }
                               return (
                                 <Tooltip key={action.id}>
                                   <TooltipTrigger asChild>
