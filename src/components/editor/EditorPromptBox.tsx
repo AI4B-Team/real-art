@@ -71,9 +71,11 @@ const PLACEHOLDERS: Record<ContentType, string> = {
 };
 
 export default function EditorPromptBox({ editorType, chatInput, onChatInputChange, onSend, isStreaming = false }: EditorPromptBoxProps) {
+  const { toast } = useToast();
   const [contentType, setContentType] = useState<ContentType>(editorType);
   const [isContentTypeOpen, setIsContentTypeOpen] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
+  const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
   const [typeSelected, setTypeSelected] = useState(false);
   const [typeDropdownOpen, setTypeDropdownOpen] = useState(false);
   const [selectedSubMode, setSelectedSubMode] = useState<string | null>(null);
@@ -86,6 +88,7 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
   const savedRangeRef = useRef<Range | null>(null);
   const pendingFocusRangeRef = useRef<Range | null>(null);
   const imgUploadRef = useRef<HTMLInputElement>(null);
+  const promptFileRef = useRef<HTMLInputElement>(null);
   const { mention, checkForMention, consumeMention, dismissMention } = useAtMention(editableRef);
 
   const currentType = CONTENT_TYPES.find(t => t.id === contentType)!;
