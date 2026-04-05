@@ -1506,19 +1506,22 @@ const EbookCanvasEditor = ({
                             onPageSelect(page.id);
                             if (isSelected) handleCanvasClick(e);
                           }}
-                          className={`bg-white rounded-lg shadow-lg relative overflow-hidden cursor-pointer transition-shadow ${
+                          className={`bg-white rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
                           }`}
                           style={{ width: `${480 * zoom / 100}px`, height: `${640 * zoom / 100}px` }}
                         >
-                          {isSelected && (
-                            <div className="absolute inset-0 pointer-events-none">
-                              <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
-                              <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
-                            </div>
-                          )}
+                          {/* Clip layer for page content */}
+                          <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none" style={{ zIndex: 0 }}>
+                            {isSelected && (
+                              <div className="absolute inset-0">
+                                <div className="absolute top-1/2 left-0 right-0 h-px bg-accent/10" />
+                                <div className="absolute left-1/2 top-0 bottom-0 w-px bg-accent/10" />
+                              </div>
+                            )}
+                          </div>
                           {elems.map(el => renderElement(el, page.id))}
-                          <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none">
+                          <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none" style={{ zIndex: 0 }}>
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
                         </div>
