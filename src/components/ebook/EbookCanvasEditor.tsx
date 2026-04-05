@@ -613,8 +613,17 @@ const EbookCanvasEditor = ({
                 {currentPages.map((page, pageIndex) => {
                   const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                   const isSelected = page.id === selectedPageId;
-                  const pageTypeIcon = page.type === 'chapter-page' ? MessageSquare : FileText;
-                  const PageIcon = pageTypeIcon;
+                  const getPageTypeIcon = () => {
+                    switch (page.type) {
+                      case 'cover': return FileText;
+                      case 'toc': return FileText;
+                      case 'chapter': return FileText;
+                      case 'chapter-page': return MessageSquare;
+                      case 'back': return FileText;
+                      default: return FileText;
+                    }
+                  };
+                  const PageIcon = getPageTypeIcon();
                   return (
                     <div key={page.id} className="flex items-stretch">
                       {/* Insert zone with drop indicator */}
