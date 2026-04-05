@@ -98,6 +98,7 @@ import LanguageDropdownContent from "@/components/LanguageDropdownContent";
 import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
+import SaveTemplateModal, { loadSavedTemplates, type SavedTemplate } from "@/components/create/SaveTemplateModal";
 import { SAMPLE_CREATIONS, SAMPLE_FAVORITES, SAMPLE_COLLECTIONS, SAMPLE_COMMUNITY, SAMPLE_TEMPLATES } from "@/lib/sampleGalleryData";
 import { WORKSPACE_MEMBERS } from "@/lib/workspaceMembers";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
@@ -340,7 +341,7 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
 
-function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void; onModeChange?: (type: ContentType | null, subMode: string | null) => void }) {
+function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void; onModeChange?: (type: ContentType | null, subMode: string | null) => void; onSaveTemplate?: (defaults: { contentType: string | null; subMode: string | null; model: string; style: string; ratio: string; prompt: string; number: number; duration: string; resolution: string; references: { src: string }[] }) => void }) {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedType, setSelectedType] = useState<ContentType | null>(() => {
@@ -3026,6 +3027,12 @@ function PromptBox({ onGenerate, onModeChange }: { onGenerate: (info: { type: Co
                     <button type="button" onClick={isListening ? cancelSpeech : startListening} className={`p-1.5 rounded-lg transition-colors mr-2 ${isListening ? "bg-accent/10 text-accent animate-pulse" : "bg-foreground/[0.04] hover:bg-foreground/[0.08]"}`}><Mic size={15} className={isListening ? "" : "!text-black dark:!text-white"} /></button>
                   </TooltipTrigger><TooltipContent>{isListening ? "Stop" : "Speak"}</TooltipContent></Tooltip>
                 )}
+                <Tooltip><TooltipTrigger asChild>
+                  <button type="button" onClick={() => onSaveTemplate?.({ contentType: selectedType, subMode: selectedSubMode, model: selectedModel, style: selectedStyle, ratio: selectedRatio, prompt, number: selectedNumber, duration: selectedDuration, resolution: selectedResolution, references })}
+                    className="p-1.5 rounded-lg bg-foreground/[0.04] hover:bg-foreground/[0.08] transition-colors mr-2">
+                    <Bookmark size={15} className="!text-black dark:!text-white" />
+                  </button>
+                </TooltipTrigger><TooltipContent>Save</TooltipContent></Tooltip>
                 <button type="button" onClick={handleGenerate} disabled={isGenerating || !prompt.trim()}
                   className="flex items-center justify-center w-9 h-9 rounded-lg bg-accent text-white hover:bg-accent/85 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:scale-[1.03] active:scale-95">
                   {isGenerating ? <Loader2 size={16} className="animate-spin" /> : <Send size={16} />}
@@ -3954,6 +3961,9 @@ export default function CreatePage() {
   const [likedCommunity, setLikedCommunity] = useState<Set<string>>(new Set());
   const [generated, setGenerated] = useState(false);
   const [currentMode, setCurrentMode] = useState<{ type: ContentType | null; subMode: string | null }>({ type: null, subMode: null });
+  const [saveTemplateOpen, setSaveTemplateOpen] = useState(false);
+  const [saveTemplateDefaults, setSaveTemplateDefaults] = useState<any>(null);
+  const [savedTemplates, setSavedTemplates] = useState<SavedTemplate[]>(loadSavedTemplates);
   const isSocialMode = currentMode.type === "content" && currentMode.subMode === "social";
   const [creations, setCreations] = useState<UserCreation[]>([]);
   const [loadingCreations, setLoadingCreations] = useState(true);
@@ -4439,7 +4449,7 @@ export default App;`}</code>
     <PageShell>
       <div className="max-w-[1100px] mx-auto px-5 md:px-10 pt-8 pb-0 overflow-visible">
         <div className="mb-10">
-          <PromptBox onGenerate={handleGenerate} onModeChange={(type, subMode) => setCurrentMode({ type, subMode })} />
+          <PromptBox onGenerate={handleGenerate} onModeChange={(type, subMode) => setCurrentMode({ type, subMode })} onSaveTemplate={(defaults) => { setSaveTemplateDefaults(defaults); setSaveTemplateOpen(true); }} />
         </div>
       </div>
 
@@ -4651,6 +4661,57 @@ export default App;`}</code>
         {/* TEMPLATES */}
         {activeTab === "templates" && (
           <div>
+            {/* Saved templates */}
+            {savedTemplates.length > 0 && (
+              <div className="mb-8">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Your Templates</h2>
+                  <span className="text-[0.75rem] text-muted">{savedTemplates.length} saved</span>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                  {savedTemplates.map(t => (
+                    <div key={t.id} className="group cursor-pointer" onClick={() => {
+                      // Load template into prompt box by navigating with params
+                      const params = new URLSearchParams();
+                      if (t.prompt) params.set("prompt", t.prompt);
+                      if (t.contentType) params.set("type", t.contentType);
+                      navigate(`/create?${params.toString()}`);
+                      toast({ title: "Template loaded", description: `"${t.name}" settings applied.` });
+                    }}>
+                      <div className="relative rounded-2xl overflow-hidden mb-2.5">
+                        {t.previewUrl ? (
+                          <img src={t.previewUrl} alt={t.name} className="w-full aspect-[4/3] object-cover group-hover:scale-[1.03] transition-transform duration-300" />
+                        ) : (
+                          <div className="w-full aspect-[4/3] bg-foreground/[0.04] flex items-center justify-center">
+                            <Bookmark size={24} className="text-muted" />
+                          </div>
+                        )}
+                        {t.contentType && (
+                          <div className="absolute top-2 left-2 bg-black/40 backdrop-blur-sm text-white text-[0.62rem] font-semibold px-2 py-0.5 rounded-md z-10 capitalize">{t.contentType}</div>
+                        )}
+                        <button
+                          onClick={e => {
+                            e.stopPropagation();
+                            const updated = savedTemplates.filter(st => st.id !== t.id);
+                            setSavedTemplates(updated);
+                            import("@/components/create/SaveTemplateModal").then(m => m.saveSavedTemplates(updated));
+                            toast({ title: "Template deleted" });
+                          }}
+                          className="absolute top-2 right-2 w-6 h-6 rounded-full bg-foreground/70 text-primary-foreground flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                      <div className="px-0.5">
+                        <h3 className="text-[0.84rem] font-semibold truncate">{t.name}</h3>
+                        <p className="text-[0.68rem] text-muted truncate">{t.model} · {t.ratio}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center justify-between mb-5">
               <h2 className="font-display font-black text-[1.1rem] tracking-[-0.02em]">Start with a Template</h2>
               <div className="flex items-center gap-1 p-0.5 bg-foreground/[0.04] rounded-lg border border-foreground/[0.06]">
@@ -4727,6 +4788,18 @@ export default App;`}</code>
           </div>
         )}
       </div>}
+
+      {saveTemplateOpen && saveTemplateDefaults && (
+        <SaveTemplateModal
+          open={saveTemplateOpen}
+          onClose={() => setSaveTemplateOpen(false)}
+          onSave={(template) => {
+            setSavedTemplates(loadSavedTemplates());
+            toast({ title: "Template saved!", description: `"${template.name}" has been saved.` });
+          }}
+          defaults={saveTemplateDefaults}
+        />
+      )}
     </PageShell>
   );
 }
