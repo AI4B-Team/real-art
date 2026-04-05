@@ -170,7 +170,7 @@ const NewEbookPage = () => {
   interface UnifiedPage { id: string; title: string; type: PageType; }
 
   const getDefaultPages = (): UnifiedPage[] => [
-    { id: "1", title: bookData.selectedTitle || "The Ultimate Guide to AI Marketing", type: "cover" },
+    { id: "1", title: "Cover", type: "cover" },
     { id: "2", title: "Table of Contents", type: "toc" },
     { id: "3", title: "Introduction", type: "chapter" },
     { id: "4", title: "Content Page", type: "chapter-page" },
