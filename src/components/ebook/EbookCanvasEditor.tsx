@@ -185,6 +185,7 @@ const EbookCanvasEditor = ({
   const [showAIEditModal, setShowAIEditModal] = useState(false);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
+  const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
