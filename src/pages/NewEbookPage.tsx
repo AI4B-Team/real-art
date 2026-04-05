@@ -9,7 +9,7 @@ import {
   Briefcase, Coffee, GraduationCap, Heart, Shield, Flame, Search, ChevronDown,
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut, Minus,
-  Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download, Settings, MoreVertical,
+  Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download, Settings, MoreVertical, Shuffle,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -729,7 +729,7 @@ const NewEbookPage = () => {
             {/* Prompt box */}
             <div className="rounded-2xl border-2 border-accent/30 bg-background p-1 mb-6">
               <div className="flex items-start gap-2 px-3 py-3">
-                <button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><button onClick={handleAutoPrompt} className="mt-1 text-accent hover:text-accent/80 shrink-0"><ArrowRightLeft size={18} /></button></button>
+                <button onClick={handleAutoPrompt} className="mt-1 text-emerald-500 hover:text-emerald-400 shrink-0"><Shuffle size={18} /></button>
                 <div className="flex-1 min-w-0">
                   {/* Attached source pills */}
                   {attachedSources.length > 0 && (
