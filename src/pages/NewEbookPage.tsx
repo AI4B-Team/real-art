@@ -1172,6 +1172,8 @@ const NewEbookPage = () => {
                 pageWidth={pageWidth}
                 pageHeight={pageHeight}
                 accessMode={accessMode}
+                initialPageElements={savedPageElements}
+                onPageElementsChange={handlePageElementsChange}
               />
 
               {/* Right panel collapse toggle */}
