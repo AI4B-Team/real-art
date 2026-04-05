@@ -73,6 +73,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
   const [scheduleDate, setScheduleDate] = useState("");
   const [scheduleTime, setScheduleTime] = useState("");
   const [schedulePlatforms, setSchedulePlatforms] = useState<Set<string>>(new Set());
+  const [scheduleError, setScheduleError] = useState("");
 
   const handleCopyLink = () => {
     const shareUrl = `${window.location.origin}/shared/ebook/${btoa(Date.now().toString()).slice(0, 12)}`;
