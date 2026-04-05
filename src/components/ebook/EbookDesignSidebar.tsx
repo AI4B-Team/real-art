@@ -122,6 +122,18 @@ const EbookDesignSidebar = ({
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Respond to external openSection prop
+  useEffect(() => {
+    if (openSection && !expandedSections.has(openSection)) {
+      setExpandedSections(prev => {
+        const next = new Set(prev);
+        next.add(openSection);
+        return next;
+      });
+      if (isCollapsed) setIsCollapsed(false);
+    }
+  }, [openSection]);
+
   const toggleSection = (id: SectionId) => {
     setExpandedSections(prev => {
       const next = new Set(prev);
