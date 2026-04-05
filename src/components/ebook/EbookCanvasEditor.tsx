@@ -1157,6 +1157,27 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <TypeBadge />
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
+          {/* Inline replace overlay — renders inside the image bounds */}
+          {isSelected && replaceModalElementId === el.id && (
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-4 z-[5]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
+              <p className="text-sm font-medium text-foreground mb-1 text-center">Select A Recommended Image</p>
+              <p className="text-[10px] text-muted-foreground mb-3 flex items-center gap-1"><Sparkles className="w-3 h-3 text-accent" /> Analyzing content for smart suggestions...</p>
+              <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
+                {STOCK_IMAGES.filter(src => src !== el.src).slice(0, 3).map((imgSrc, idx) => (
+                  <button key={idx}
+                    onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); setReplaceModalElementId(null); }}
+                    className="w-16 h-16 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                    <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
+                className="px-4 py-2 bg-accent text-white text-xs font-medium rounded-lg hover:bg-accent/90 flex items-center gap-2 transition-colors">
+                <Upload className="w-3.5 h-3.5" />Upload Image
+              </button>
+            </div>
+          )}
           {isSelected && renderResizeHandles(el)}
         </div>
       );
@@ -1587,9 +1608,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       ? { left, top: `${el.y + el.height / 2}%`, transform: 'translate(-50%, -50%)' }
       : { left, top: `calc(${el.y + el.height}% + 8px)`, transform: 'translateX(-50%)' };
 
-    const suggestionsStyle: React.CSSProperties = isFullPage
-      ? { left, top: `calc(${el.y + el.height / 2}% + 44px)`, transform: 'translateX(-50%)' }
-      : { left, top: `calc(${el.y + el.height}% + 44px)`, transform: 'translateX(-50%)' };
+    // Suggestions are now rendered inline inside the image element, not as a floating bar
 
     return (
       <>
@@ -1690,33 +1709,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           </Tooltip>
         </div>
 
-        {isReplacing && (
-          <div
-            className="absolute z-[125] flex max-w-[calc(100%-24px)] items-center gap-2 rounded-xl border border-foreground/[0.1] bg-background/95 px-3 py-2.5 shadow-xl backdrop-blur-sm pointer-events-auto"
-            style={suggestionsStyle}
-            onClick={e => e.stopPropagation()}
-            onMouseDown={e => e.stopPropagation()}
-            onPointerDown={e => e.stopPropagation()}
-          >
-            <Sparkles className="w-3.5 h-3.5 shrink-0 text-accent" />
-            <span className="whitespace-nowrap text-[10px] font-semibold text-muted-foreground">Suggested:</span>
-            {suggestions.map((imgSrc, idx) => (
-              <button
-                key={idx}
-                onClick={e => {
-                  e.stopPropagation();
-                  updateElement(el.id, { src: imgSrc, isPlaceholder: false });
-                  toast.success('Image replaced');
-                  setReplaceModalElementId(null);
-                }}
-                className="h-14 w-14 shrink-0 overflow-hidden rounded-lg border-2 border-transparent transition-all hover:scale-105 hover:border-accent hover:shadow-md"
-              >
-                <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="h-full w-full object-cover" draggable={false} />
-              </button>
-            ))}
-            <span className="whitespace-nowrap text-[10px] text-muted-foreground">or pick from panel →</span>
-          </div>
-        )}
       </>
     );
   };
