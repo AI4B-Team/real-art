@@ -204,6 +204,7 @@ const EbookCanvasEditor = ({
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elements: CanvasElement[]; pageId: string } | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -602,6 +603,7 @@ const EbookCanvasEditor = ({
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
+    setContextMenu(null);
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
       setEditingTextId(null);
@@ -618,11 +620,50 @@ const EbookCanvasEditor = ({
     }
   };
 
+  // Right-click context menu for selecting overlapping elements
+  const handleElementContextMenu = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
+    if (!pageId) return;
+    e.preventDefault();
+    e.stopPropagation();
+    const elems = pageElements[pageId] || [];
+    const canvasRect = canvasRef.current?.getBoundingClientRect();
+    if (!canvasRect) return;
+    // Find all elements whose bounding box contains the click point
+    const pageEl = pageRefs.current[pageId];
+    if (!pageEl) return;
+    const pageRect = pageEl.getBoundingClientRect();
+    const clickXPct = ((e.clientX - pageRect.left) / pageRect.width) * 100;
+    const clickYPct = ((e.clientY - pageRect.top) / pageRect.height) * 100;
+    const overlapping = elems.filter(other =>
+      clickXPct >= other.x && clickXPct <= other.x + other.width &&
+      clickYPct >= other.y && clickYPct <= other.y + other.height
+    ).sort((a, b) => (b.zIndex ?? 1) - (a.zIndex ?? 1));
+    if (overlapping.length > 1) {
+      setContextMenu({ x: e.clientX, y: e.clientY, elements: overlapping, pageId });
+    }
+  };
+
   // ─── Drag ─────────────────────────────────────
   const handleElementMouseDown = (e: React.MouseEvent, el: CanvasElement, pageId?: string) => {
     if (el.locked || activeTool !== 'select') return;
     e.stopPropagation();
     if (pageId) onPageSelect(pageId);
+
+    // Alt+Click: cycle through overlapping elements at this position
+    if (e.altKey && pageId) {
+      const elems = pageElements[pageId] || [];
+      const overlapping = elems.filter(other => {
+        // Check if click position overlaps with this element (rough check via bounding box overlap with clicked element)
+        return !(other.x > el.x + el.width || other.x + other.width < el.x || other.y > el.y + el.height || other.y + other.height < el.y);
+      }).sort((a, b) => (a.zIndex ?? 1) - (b.zIndex ?? 1));
+      if (overlapping.length > 1) {
+        const currentIdx = overlapping.findIndex(o => o.id === selectedElementId);
+        const nextIdx = (currentIdx + 1) % overlapping.length;
+        setSelectedElementId(overlapping[nextIdx].id);
+        return;
+      }
+    }
+
     setSelectedElementId(el.id);
     // Push undo snapshot once before drag begins
     setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
@@ -802,7 +843,8 @@ const EbookCanvasEditor = ({
       if (el.isPlaceholder || !el.src) {
         return (
           <div key={el.id} className={`${selectionBorder}`} style={style}
-            onMouseDown={e => handleElementMouseDown(e, el, pageId)}>
+            onMouseDown={e => handleElementMouseDown(e, el, pageId)}
+            onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
             <TypeBadge />
             <div className="w-full h-full bg-muted/50 border-2 border-dashed border-foreground/20 flex flex-col items-center justify-center p-4 rounded-lg">
               <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
@@ -829,6 +871,7 @@ const EbookCanvasEditor = ({
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
+          onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <TypeBadge />
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
@@ -862,7 +905,8 @@ const EbookCanvasEditor = ({
           backgroundColor: el.fill || '#3b82f6',
           border: el.stroke && el.stroke !== 'transparent' ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined,
           borderRadius: el.shapeType === 'circle' ? '50%' : (el.borderRadius ?? 0),
-        }} onMouseDown={e => handleElementMouseDown(e, el, pageId)}>
+        }} onMouseDown={e => handleElementMouseDown(e, el, pageId)}
+           onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
           <TypeBadge />
           {isSelected && renderResizeHandles(el)}
         </div>
@@ -873,6 +917,7 @@ const EbookCanvasEditor = ({
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
+          onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onDoubleClick={() => { setEditingTextId(el.id); setSelectedElementId(el.id); }}>
           <TypeBadge />
           {isEditing ? (
@@ -1791,6 +1836,35 @@ const EbookCanvasEditor = ({
           </DialogContent>
         </Dialog>
       </div>
+
+      {/* Element selection context menu */}
+      {contextMenu && (
+        <>
+          <div className="fixed inset-0 z-[9998]" onClick={() => setContextMenu(null)} onContextMenu={e => { e.preventDefault(); setContextMenu(null); }} />
+          <div className="fixed z-[9999] bg-background border border-foreground/10 rounded-lg shadow-xl py-1 min-w-[180px]"
+            style={{ left: contextMenu.x, top: contextMenu.y }}>
+            <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Select Element</p>
+            {contextMenu.elements.map((el, i) => {
+              const label = el.type === 'text' ? `Text: "${(el.content || '').slice(0, 20)}${(el.content || '').length > 20 ? '…' : ''}"` :
+                el.type === 'image' ? `Image${el.src ? '' : ' (placeholder)'}` :
+                el.shapeType === 'circle' ? 'Circle' : 'Shape';
+              const isActive = el.id === selectedElementId;
+              return (
+                <button key={el.id}
+                  className={`w-full flex items-center gap-2 px-3 py-2 text-sm text-left transition-colors ${isActive ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}
+                  onClick={() => { setSelectedElementId(el.id); setContextMenu(null); }}>
+                  <span className={`w-2 h-2 rounded-full ${el.type === 'text' ? 'bg-blue-500' : el.type === 'image' ? 'bg-emerald-500' : 'bg-destructive'}`} />
+                  <span>{label}</span>
+                  <span className="ml-auto text-[10px] text-muted-foreground">z:{el.zIndex ?? 1}</span>
+                </button>
+              );
+            })}
+            <div className="border-t border-foreground/[0.06] mt-1 pt-1 px-3 py-1">
+              <p className="text-[10px] text-muted-foreground">Tip: Alt+Click to cycle layers</p>
+            </div>
+          </div>
+        </>
+      )}
     </TooltipProvider>
   );
 };
