@@ -521,7 +521,7 @@ const NewEbookPage = () => {
                     <MoreVertical className="w-4 h-4" />
                   </button>
                 </TooltipTrigger>
-                <TooltipContent>Settings</TooltipContent>
+                <TooltipContent className="z-[9999]">Settings</TooltipContent>
               </Tooltip>
             </div>
           </div>
