@@ -512,8 +512,35 @@ const NewEbookPage = () => {
                 <UserPlus className="w-3.5 h-3.5" />Invite
               </button>
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-accent/90 rounded-lg text-xs text-white font-semibold transition-colors">
-                <Sparkles className="w-3.5 h-3.5" />Create
+                <Sparkles className="w-3.5 h-3.5" />Create<ChevronDown className="w-3 h-3 opacity-70" />
               </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-1.5" align="end" sideOffset={6}>
+              {[
+                { id: 'audiobook' as const, label: 'AudioBook', icon: Headphones },
+                { id: 'presentation' as const, label: 'Video Presentation', icon: Presentation },
+              ].map(opt => (
+                <button key={opt.id}
+                  onClick={() => {
+                    setBookData(prev => ({ ...prev, contentType: opt.id }));
+                    setContentTypeSelected(true);
+                    if (activeTab === 'design') {
+                      toast({ title: `Switched to ${opt.label} mode` });
+                    } else {
+                      setActiveTab('idea');
+                      toast({ title: `Creating ${opt.label}`, description: 'Enter your prompt to get started' });
+                    }
+                  }}
+                  className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                    bookData.contentType === opt.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'
+                  }`}>
+                  <opt.icon className="w-4 h-4" />
+                  {opt.label}
+                  {bookData.contentType === opt.id && <Check className="w-3.5 h-3.5 ml-auto" />}
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
               <button onClick={() => setShowShareModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <Share2 className="w-3.5 h-3.5" />Share
               </button>
