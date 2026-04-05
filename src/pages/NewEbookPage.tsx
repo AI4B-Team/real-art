@@ -515,6 +515,14 @@ const NewEbookPage = () => {
               <button onClick={() => setShowShareModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <Share2 className="w-3.5 h-3.5" />Share
               </button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }} className="p-1.5 rounded-lg hover:bg-background/15 text-background/70 hover:text-background transition-colors">
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent>Settings</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         )}
