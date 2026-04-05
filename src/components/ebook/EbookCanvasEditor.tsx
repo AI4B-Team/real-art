@@ -32,7 +32,7 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Page {
   id: string;
   title: string;
-  type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back';
+  type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back' | 'blank';
   thumbnail?: string;
   locked?: boolean;
   bgColor?: string;
