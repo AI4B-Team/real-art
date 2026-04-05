@@ -119,6 +119,12 @@ const STOCK_IMAGES = [
   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=600&auto=format&fit=crop',
 ];
 
 // ─── Element Generators ────────────────────────────
@@ -256,6 +262,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
   const [showAIEditModal, setShowAIEditModal] = useState(false);
+  const [replaceModalElementId, setReplaceModalElementId] = useState<string | null>(null);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
@@ -1012,30 +1019,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 onClick={e => e.stopPropagation()}
                 onMouseDown={e => e.stopPropagation()}
                 onPointerDown={e => e.stopPropagation()}>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                      <ImagePlus className="w-3.5 h-3.5" />Replace
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-2 z-[10050]" side="top" align="center"
-                    onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
-                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Select Replacement</p>
-                    <div className="flex gap-1.5 mb-2">
-                      {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
-                        <button key={idx}
-                          onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); }}
-                          className="w-16 h-16 rounded border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-105">
-                          <img src={imgSrc} alt={`Option ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
-                        </button>
-                      ))}
-                    </div>
-                    <button onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
-                      className="w-full text-xs py-1.5 rounded bg-accent text-accent-foreground hover:bg-accent/90 flex items-center justify-center gap-1.5">
-                      <Upload className="w-3 h-3" />Upload
-                    </button>
-                  </PopoverContent>
-                </Popover>
+                <button onClick={e => { e.stopPropagation(); setReplaceModalElementId(el.id); onOpenImageSection?.(); }}
+                  className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                  <ImagePlus className="w-3.5 h-3.5" />Replace
+                </button>
                 <Popover>
                   <PopoverTrigger asChild>
                     <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
@@ -2110,7 +2097,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 {selectedElement?.type === 'image' && (
                   <>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => { if (selectedElement) { updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); } }}
+                      <button onClick={() => { if (selectedElement) { setReplaceModalElementId(selectedElement.id); onOpenImageSection?.(); } }}
                         className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
                         <ImagePlus className="w-3.5 h-3.5" />Replace
                       </button>
@@ -2529,6 +2516,42 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               <Button variant="outline" onClick={() => setShowAIEditModal(false)}>Cancel</Button>
               <Button onClick={handleAIEdit} disabled={!aiEditPrompt.trim()} className="bg-accent hover:bg-accent/90 text-white gap-2">
                 <Sparkles className="w-4 h-4" />Apply Edit
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Replace Image Modal */}
+        <Dialog open={!!replaceModalElementId} onOpenChange={open => { if (!open) setReplaceModalElementId(null); }}>
+          <DialogContent className="sm:max-w-2xl max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ImagePlus className="w-5 h-5 text-accent" />
+                Replace Image
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-2">
+              <p className="text-sm text-muted-foreground mb-4">Select an image below or use the Image panel on the left to browse more options.</p>
+              <div className="grid grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto pr-1">
+                {STOCK_IMAGES.map((imgSrc, idx) => (
+                  <button key={idx}
+                    onClick={() => {
+                      if (replaceModalElementId) {
+                        updateElement(replaceModalElementId, { src: imgSrc, isPlaceholder: false });
+                        toast.success('Image replaced');
+                        setReplaceModalElementId(null);
+                      }
+                    }}
+                    className="aspect-[4/3] rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg">
+                    <img src={imgSrc} alt={`Option ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setReplaceModalElementId(null)}>Cancel</Button>
+              <Button onClick={() => { replaceImageInputRef.current?.click(); setReplaceModalElementId(null); }} className="bg-accent hover:bg-accent/90 text-white gap-2">
+                <Upload className="w-4 h-4" />Upload Image
               </Button>
             </DialogFooter>
           </DialogContent>
