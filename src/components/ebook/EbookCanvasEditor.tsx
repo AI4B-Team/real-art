@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import AITextEditMenu, { type AIEditAction } from '@/components/ebook/AITextEditMenu';
 import { supabase } from '@/integrations/supabase/client';
+import { WORKSPACE_MEMBERS } from '@/lib/workspaceMembers';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
