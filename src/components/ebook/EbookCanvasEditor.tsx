@@ -595,7 +595,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     setActiveTool('select');
   };
 
-  useImperativeHandle(ref, () => ({ addElement }), [selectedPage, currentElements]);
+  useImperativeHandle(ref, () => ({
+    addElement,
+    getTextElements: (scope: 'page' | 'book') => {
+      const pagesToScan = scope === 'page' && selectedPage ? [selectedPage] : currentPages;
+      const results: { pageId: string; elementId: string; content: string }[] = [];
+      pagesToScan.forEach(page => {
+        const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+        elems.forEach(el => {
+          if (el.type === 'text' && el.content) {
+            results.push({ pageId: page.id, elementId: el.id, content: el.content });
+          }
+        });
+      });
+      return results;
+    },
+    updateTextContent: (updates: { pageId: string; elementId: string; content: string }[]) => {
+      setPageElements(prev => {
+        const next = { ...prev };
+        updates.forEach(({ pageId, elementId, content }) => {
+          const page = currentPages.find(p => p.id === pageId);
+          const elems = next[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+          next[pageId] = elems.map(e => e.id === elementId ? { ...e, content } : e);
+        });
+        return next;
+      });
+    },
+  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle]);
 
   const deleteElement = () => {
     if (!selectedElementId || !selectedPage) return;
