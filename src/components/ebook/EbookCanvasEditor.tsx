@@ -1446,8 +1446,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const posClass = nearTop
       ? 'top-2 left-1/2 -translate-x-1/2'
       : nearBottom
-        ? '-top-10 left-1/2 -translate-x-1/2'
-        : '-top-10 left-1/2 -translate-x-1/2';
+        ? 'left-1/2 -translate-x-1/2'
+        : 'left-1/2 -translate-x-1/2';
+    const topOffset = nearTop ? undefined : -52;
     const isSmall = el.width < 180 || el.height < 120;
     const btnSize = isSmall ? 'w-5 h-5' : 'w-7 h-7';
     const iconSize = isSmall ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5';
