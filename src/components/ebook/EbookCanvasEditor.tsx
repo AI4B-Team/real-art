@@ -1019,30 +1019,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 onClick={e => e.stopPropagation()}
                 onMouseDown={e => e.stopPropagation()}
                 onPointerDown={e => e.stopPropagation()}>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                      <ImagePlus className="w-3.5 h-3.5" />Replace
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-2 z-[10050]" side="top" align="center"
-                    onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
-                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Select Replacement</p>
-                    <div className="flex gap-1.5 mb-2">
-                      {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
-                        <button key={idx}
-                          onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); }}
-                          className="w-16 h-16 rounded border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-105">
-                          <img src={imgSrc} alt={`Option ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
-                        </button>
-                      ))}
-                    </div>
-                    <button onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
-                      className="w-full text-xs py-1.5 rounded bg-accent text-accent-foreground hover:bg-accent/90 flex items-center justify-center gap-1.5">
-                      <Upload className="w-3 h-3" />Upload
-                    </button>
-                  </PopoverContent>
-                </Popover>
+                <button onClick={e => { e.stopPropagation(); setReplaceModalElementId(el.id); onOpenImageSection?.(); }}
+                  className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                  <ImagePlus className="w-3.5 h-3.5" />Replace
+                </button>
                 <Popover>
                   <PopoverTrigger asChild>
                     <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
