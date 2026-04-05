@@ -1026,7 +1026,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 <Popover>
                   <PopoverTrigger asChild>
                     <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                      <LayoutGrid className="w-3.5 h-3.5" />Position
+                      <Move className="w-3.5 h-3.5" />Position
                     </button>
                   </PopoverTrigger>
                   <PopoverContent className="w-44 p-2 z-[10050]" side="top" align="center"
