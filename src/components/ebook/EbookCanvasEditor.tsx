@@ -675,10 +675,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   // ─── Element Actions ──────────────────────────
   const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
     if (isPageLocked) { toast.error('This page is locked. Unlock it to make changes.'); return; }
+    // Stagger position so new elements don't fully overlap existing ones
+    const sameTypeCount = currentElements.filter(el => el.type === type).length;
+    const offset = (sameTypeCount % 5) * 5;
+    const baseX = extra?.x ?? (20 + offset);
+    const baseY = extra?.y ?? (20 + offset);
     const newEl: CanvasElement = {
-      id: crypto.randomUUID(), type, x: 20, y: 20,
-      width: type === 'interactive' ? 60 : 30,
-      height: type === 'text' ? 10 : (type === 'interactive' ? 30 : 20),
+      id: crypto.randomUUID(), type, x: baseX, y: baseY,
+      width: type === 'interactive' ? 60 : (type === 'image' ? 40 : 30),
+      height: type === 'text' ? 10 : (type === 'interactive' ? 30 : 25),
       ...(type === 'text' ? { content: 'New Text', fontSize: 16, fontFamily: 'Inter', textColor: '#1a1a2e' } : {}),
       ...(type === 'shape' ? { fill: '#3b82f6', stroke: '#1e40af', strokeWidth: 1, shapeType: 'rectangle' } : {}),
       ...(type === 'image' ? { src: STOCK_IMAGES[0] } : {}),
