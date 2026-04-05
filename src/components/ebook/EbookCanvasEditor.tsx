@@ -1888,8 +1888,22 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           ) : (
             /* ─── NORMAL VIEW ─── */
             <>
-              {/* Unified toolbar — only visible when element is selected */}
-              {selectedElement && (
+              {/* Commenting mode banner */}
+              {accessMode === 'commenting' && (
+                <div className="h-9 border-b border-accent/20 bg-accent/5 flex items-center justify-center gap-2 px-3 shrink-0">
+                  <MessageSquare className="w-3.5 h-3.5 text-accent" />
+                  <span className="text-xs font-medium text-accent">Commenting Mode — Click anywhere on the page to leave a comment</span>
+                  <span className="text-[10px] text-accent/60 ml-2">{pageComments.length} comment{pageComments.length !== 1 ? 's' : ''}</span>
+                </div>
+              )}
+              {isViewOnly && (
+                <div className="h-9 border-b border-blue-500/20 bg-blue-500/5 flex items-center justify-center gap-2 px-3 shrink-0">
+                  <Eye className="w-3.5 h-3.5 text-blue-500" />
+                  <span className="text-xs font-medium text-blue-500">View Only — You can browse but not edit this book</span>
+                </div>
+              )}
+              {/* Unified toolbar — only visible when element is selected and user can edit */}
+              {selectedElement && canEdit && (
 <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" onMouseDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
                 <div className="flex items-center gap-1">
                 {/* Select & Add Image — hidden for text elements */}
