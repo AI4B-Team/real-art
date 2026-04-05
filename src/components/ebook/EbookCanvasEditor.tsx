@@ -1035,9 +1035,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     <div className="grid grid-cols-2 gap-1">
                       {[
                         { label: 'Full Page', x: 0, y: 0, w: 100, h: 100, icon: '⬜' },
-                        { label: 'Top Half', x: 0, y: 0, w: 100, h: 50, icon: '⬆' },
-                        { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50, icon: '⬇' },
                         { label: 'Middle Band', x: 0, y: 25, w: 100, h: 50, icon: '↔' },
+                        { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50, icon: '⬇' },
+                        { label: 'Top Half', x: 0, y: 0, w: 100, h: 50, icon: '⬆' },
                         { label: 'Top Strip', x: 0, y: 0, w: 100, h: 30, icon: '▔' },
                         { label: 'Bottom Strip', x: 0, y: 70, w: 100, h: 30, icon: '▁' },
                       ].map(preset => (
