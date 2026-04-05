@@ -180,7 +180,7 @@ const TranslatePanel = ({ onTranslate }: { onTranslate?: (scope: 'page' | 'selec
           </div>
         )}
       </div>
-      <p className="text-[10px] text-muted-foreground">Automatically Detect Current Language</p>
+      <p className="text-[10px] text-muted-foreground">Automatically Detect Current Language (<button type="button" onClick={() => { if (onTranslate) onTranslate('page', '__detect__'); }} className="text-accent hover:underline font-medium">Edit</button>)</p>
       <div className="space-y-1.5">
         {([
           { value: 'page' as const, label: 'Translate Page' },
