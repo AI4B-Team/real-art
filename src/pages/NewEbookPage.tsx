@@ -869,6 +869,43 @@ const NewEbookPage = () => {
                 onSectionChange={handleSidebarSectionChange}
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
+                onTranslate={async (scope, language) => {
+                  const textScope = scope === 'selected' ? 'page' : scope;
+                  const elements = canvasRef.current?.getTextElements(textScope);
+                  if (!elements || elements.length === 0) {
+                    toast({ title: 'No text elements found to translate', variant: 'destructive' });
+                    return;
+                  }
+                  toast({ title: `Translating ${elements.length} text element${elements.length > 1 ? 's' : ''} to ${language}...` });
+                  try {
+                    const response = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-text-edit`, {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+                      body: JSON.stringify({
+                        action: 'custom',
+                        texts: elements.map(e => e.content),
+                        customInstruction: `Translate each text to ${language}. Return ONLY the translated texts as a JSON array of strings, in the same order. Keep formatting, line breaks, and special characters. Do not add explanations.`,
+                      }),
+                    });
+                    const result = await response.json();
+                    if (result.result) {
+                      try {
+                        const translated: string[] = JSON.parse(result.result);
+                        if (Array.isArray(translated) && translated.length === elements.length) {
+                          const updates = elements.map((el, i) => ({ ...el, content: translated[i] }));
+                          canvasRef.current?.updateTextContent(updates);
+                          toast({ title: `Translated ${elements.length} element${elements.length > 1 ? 's' : ''} to ${language}` });
+                        } else {
+                          toast({ title: 'Translation returned unexpected format', variant: 'destructive' });
+                        }
+                      } catch { toast({ title: 'Failed to parse translation result', variant: 'destructive' }); }
+                    } else {
+                      toast({ title: result.error || 'Translation failed', variant: 'destructive' });
+                    }
+                  } catch {
+                    toast({ title: 'Translation request failed', variant: 'destructive' });
+                  }
+                }}
               />
               )}
 

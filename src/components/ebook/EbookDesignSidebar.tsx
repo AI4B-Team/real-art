@@ -37,6 +37,7 @@ interface EbookDesignSidebarProps {
   onAddElement?: (type: string, data?: any) => void;
   onSectionChange?: (sections: Set<string>) => void;
   openSection?: SectionId | null;
+  onTranslate?: (scope: 'page' | 'selected' | 'book', language: string) => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
@@ -128,9 +129,85 @@ const CREATION_IMAGES = [
   'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=300&h=300&fit=crop',
 ];
 
+const LANGUAGES = [
+  { code: 'es', name: 'Spanish', flag: '🇪🇸' },
+  { code: 'fr', name: 'French', flag: '🇫🇷' },
+  { code: 'de', name: 'German', flag: '🇩🇪' },
+  { code: 'zh', name: 'Chinese', flag: '🇨🇳' },
+  { code: 'ja', name: 'Japanese', flag: '🇯🇵' },
+  { code: 'ko', name: 'Korean', flag: '🇰🇷' },
+  { code: 'ar', name: 'Arabic', flag: '🇸🇦' },
+  { code: 'pt', name: 'Portuguese', flag: '🇧🇷' },
+  { code: 'it', name: 'Italian', flag: '🇮🇹' },
+  { code: 'ru', name: 'Russian', flag: '🇷🇺' },
+  { code: 'hi', name: 'Hindi', flag: '🇮🇳' },
+  { code: 'nl', name: 'Dutch', flag: '🇳🇱' },
+];
+
+const TranslatePanel = ({ onTranslate }: { onTranslate?: (scope: 'page' | 'selected' | 'book', language: string) => void }) => {
+  const [selectedLang, setSelectedLang] = useState('');
+  const [scope, setScope] = useState<'page' | 'selected' | 'book'>('page');
+  const [isOpen, setIsOpen] = useState(false);
+  const [search, setSearch] = useState('');
+
+  const filtered = LANGUAGES.filter(l => l.name.toLowerCase().includes(search.toLowerCase()));
+  const selectedLabel = LANGUAGES.find(l => l.code === selectedLang);
+
+  return (
+    <div className="px-3 pb-3 space-y-3">
+      <p className="text-xs font-semibold text-foreground">Translate To</p>
+      <div className="relative">
+        <button onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-foreground/[0.02] text-xs text-foreground hover:border-foreground/[0.2] transition-colors">
+          <span>{selectedLabel ? `${selectedLabel.flag} ${selectedLabel.name}` : 'Select Language'}</span>
+          <ChevronDown className={`w-3.5 h-3.5 text-muted-foreground transition-transform ${isOpen ? 'rotate-180' : ''}`} />
+        </button>
+        {isOpen && (
+          <div className="absolute z-20 top-full left-0 right-0 mt-1 bg-background border border-foreground/[0.1] rounded-lg shadow-lg max-h-48 overflow-hidden">
+            <div className="p-1.5 border-b border-foreground/[0.06]">
+              <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search languages..."
+                className="w-full px-2 py-1.5 text-xs rounded border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" autoFocus />
+            </div>
+            <div className="overflow-auto max-h-36 p-1">
+              {filtered.map(lang => (
+                <button key={lang.code} onClick={() => { setSelectedLang(lang.code); setIsOpen(false); setSearch(''); }}
+                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-xs text-left transition-colors ${selectedLang === lang.code ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                  <span>{lang.flag}</span><span>{lang.name}</span>
+                </button>
+              ))}
+              {filtered.length === 0 && <p className="text-[10px] text-muted-foreground text-center py-2">No languages found</p>}
+            </div>
+          </div>
+        )}
+      </div>
+      <p className="text-[10px] text-muted-foreground">Automatically Detect Current Language</p>
+      <div className="space-y-1.5">
+        {([
+          { value: 'page' as const, label: 'Translate Page' },
+          { value: 'selected' as const, label: 'Translate Selected Text' },
+          { value: 'book' as const, label: 'Translate Entire Book' },
+        ]).map(opt => (
+          <button key={opt.value} onClick={() => setScope(opt.value)}
+            className="w-full flex items-center gap-2.5 px-1 py-1.5 text-xs text-foreground rounded hover:bg-foreground/[0.03] transition-colors">
+            <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center transition-colors ${scope === opt.value ? 'border-accent' : 'border-foreground/20'}`}>
+              {scope === opt.value && <div className="w-2 h-2 rounded-full bg-accent" />}
+            </div>
+            {opt.label}
+          </button>
+        ))}
+      </div>
+      <button disabled={!selectedLang}
+        onClick={() => { if (selectedLang && onTranslate) onTranslate(scope, LANGUAGES.find(l => l.code === selectedLang)!.name); }}
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
+        <Sparkles className="w-3.5 h-3.5" />Translate
+      </button>
+    </div>
+  );
+};
+
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
-  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection,
+  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
@@ -610,15 +687,7 @@ const EbookDesignSidebar = ({
       {/* Translate */}
       <SectionHeader id="translate" title="Translate" icon={Languages} />
       {expandedSections.has('translate') && (
-        <div className="px-3 pb-3 space-y-2">
-          <p className="text-[10px] text-muted-foreground">Translate all text content to another language.</p>
-          {['Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic'].map(lang => (
-            <button key={lang} onClick={() => toast.success(`Translating to ${lang}...`)}
-              className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors text-xs text-foreground">
-              {lang}
-            </button>
-          ))}
-        </div>
+        <TranslatePanel onTranslate={onTranslate} />
       )}
     </div>
   );
