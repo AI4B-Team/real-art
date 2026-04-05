@@ -1454,6 +1454,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const iconSize = isSmall ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5';
     return (
       <div className={`absolute ${posClass} flex items-center gap-2 z-50`}
+        style={topOffset !== undefined ? { top: topOffset } : undefined}
         onMouseDown={e => e.stopPropagation()}>
         {[
           { icon: Move, label: 'Move', action: () => {}, cursor: 'grab' },
