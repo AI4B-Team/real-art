@@ -1459,7 +1459,7 @@ const EbookCanvasEditor = ({
                 {selectedElement?.type === 'image' && (
                   <>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => { if (selectedElement) updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); }}
+                      <button onClick={() => { if (selectedElement) { updateElement(selectedElement.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); } }}
                         className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
                         <ImagePlus className="w-3.5 h-3.5" />Replace
                       </button>
