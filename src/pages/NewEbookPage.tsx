@@ -342,33 +342,30 @@ const NewEbookPage = () => {
           { id: "1", title: bookData.selectedTitle, type: "cover" },
           { id: "2", title: "Table of Contents", type: "toc" },
         ];
+        // Track which page IDs map to which AI content
+        const contentMap: { pageId: string; content: string }[] = [];
         let pageId = 3;
         for (const chapter of result.chapters) {
           newPages.push({ id: String(pageId++), title: chapter.title, type: "chapter" });
           for (const page of chapter.pages || []) {
-            newPages.push({ id: String(pageId++), title: page.title || "Content Page", type: "chapter-page" });
+            const pid = String(pageId++);
+            newPages.push({ id: pid, title: page.title || "Content Page", type: "chapter-page" });
+            if (page.content) {
+              contentMap.push({ pageId: pid, content: page.content });
+            }
           }
         }
         newPages.push({ id: String(pageId), title: "Back Cover", type: "back" });
         setEbookPages(newPages);
 
-        // Add text content to chapter pages via canvas
+        // Populate each page with AI-generated text after canvas renders
         setTimeout(() => {
-          let idx = 0;
-          for (const chapter of result.chapters) {
-            for (const page of chapter.pages || []) {
-              const matchingPage = newPages.find(p => p.title === (page.title || "Content Page") && p.type === "chapter-page");
-              if (matchingPage && canvasRef.current) {
-                canvasRef.current.addElement('text', {
-                  content: page.content,
-                  x: 8, y: 8, width: 84, height: 84,
-                  fontSize: 14, fontFamily: 'Inter', textColor: '#1a1a2e',
-                });
-              }
-              idx++;
+          if (canvasRef.current) {
+            for (const { pageId: pid, content } of contentMap) {
+              canvasRef.current.setPageContent(pid, content);
             }
           }
-        }, 500);
+        }, 800);
       }
       toast({ title: "Your AI-written book is ready!" });
     } catch (e: any) {

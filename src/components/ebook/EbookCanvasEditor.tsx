@@ -203,6 +203,7 @@ export interface EbookCanvasEditorHandle {
   updateTextContent: (updates: { pageId: string; elementId: string; content: string }[]) => void;
   isReplacingImage: () => boolean;
   replaceImage: (src: string) => void;
+  setPageContent: (pageId: string, content: string) => void;
 }
 
 // ─── Component ─────────────────────────────────────
@@ -728,6 +729,24 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         toast.success('Image replaced');
         setReplaceModalElementId(null);
       }
+    },
+    setPageContent: (pageId: string, content: string) => {
+      setPageElements(prev => {
+        const page = currentPages.find(p => p.id === pageId);
+        const elems = prev[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+        // Find existing body text element and update it, or add a new one
+        const bodyEl = elems.find(e => e.type === 'text' && e.id.includes('body'));
+        if (bodyEl) {
+          return { ...prev, [pageId]: elems.map(e => e.id === bodyEl.id ? { ...e, content } : e) };
+        }
+        // Add a full-page text element
+        const newEl: CanvasElement = {
+          id: `body-${pageId}-${Date.now()}`, type: 'text',
+          x: 8, y: 8, width: 84, height: 84,
+          content, fontSize: 14, fontFamily: 'Inter', textColor: '#1a1a2e',
+        };
+        return { ...prev, [pageId]: [...elems, newEl] };
+      });
     },
   }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId]);
 
