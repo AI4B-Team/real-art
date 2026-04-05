@@ -898,7 +898,7 @@ const EbookCanvasEditor = ({
         {[
           { icon: Move, label: 'Move', action: () => {}, cursor: 'grab' },
           { icon: RotateCcw, label: 'Rotate', action: () => updateElement(el.id, { rotation: ((el.rotation || 0) + 15) % 360 }) },
-          { icon: el.locked ? Lock : Unlock, label: el.locked ? 'Unlock' : 'Lock', action: () => updateElement(el.id, { locked: !el.locked }) },
+          { icon: el.locked ? Lock : Unlock, label: el.locked ? 'Unlock' : 'Lock', action: () => updateElement(el.id, { locked: !el.locked }), destructive: el.locked ? true : undefined },
           { icon: Copy, label: 'Duplicate', action: duplicateElement },
           { icon: Trash2, label: 'Delete', action: deleteElement, destructive: true },
         ].map(({ icon: Icon, label, action, destructive, cursor }) => (
@@ -1354,7 +1354,7 @@ const EbookCanvasEditor = ({
                     </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })}
-                        className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                        className={`p-1.5 rounded ${selectedElement.locked ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         {selectedElement.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
                       </button>
                     </TooltipTrigger><TooltipContent>{selectedElement.locked ? 'Unlock' : 'Lock'}</TooltipContent></Tooltip>
@@ -1486,7 +1486,8 @@ const EbookCanvasEditor = ({
                       <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
                     </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
+                      <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })}
+                        className={`p-1.5 rounded ${selectedElement.locked ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
                         {selectedElement.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
                       </button>
                     </TooltipTrigger><TooltipContent>{selectedElement.locked ? 'Unlock' : 'Lock'}</TooltipContent></Tooltip>
