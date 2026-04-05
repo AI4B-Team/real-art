@@ -1169,14 +1169,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {/* Inline replace overlay — renders inside the image bounds */}
           {isSelected && replaceModalElementId === el.id && (
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-4 z-[5]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
-              <p className="text-sm font-medium text-foreground mb-1 text-center">Select A Recommended Image</p>
-              <p className="text-[10px] text-muted-foreground mb-3 flex items-center gap-1"><Sparkles className="w-3 h-3 text-accent" /> Analyzing content for smart suggestions...</p>
-              <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-[10]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
+              <p className="text-sm font-medium text-foreground mb-3 text-center">Select A Recommended Image</p>
+              <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
                 {STOCK_IMAGES.filter(src => src !== el.src).slice(0, 3).map((imgSrc, idx) => (
                   <button key={idx}
                     onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); setReplaceModalElementId(null); }}
-                    className="w-16 h-16 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                    className="w-28 h-28 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
                     <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
                   </button>
                 ))}
