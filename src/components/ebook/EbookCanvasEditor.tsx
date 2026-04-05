@@ -1027,9 +1027,10 @@ const EbookCanvasEditor = ({
           ) : (
             /* ─── NORMAL VIEW ─── */
             <>
-              {/* Unified toolbar — always visible */}
+              {/* Unified toolbar — only visible when element is selected */}
+              {selectedElement && (
               <div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center px-3 gap-1.5 shrink-0">
-                {/* ── Left: 4 Creation Tool Buttons ── */}
+                {/* ── Left: Select tool ── */}
                 <Tooltip><TooltipTrigger asChild>
                   <button onClick={() => { setActiveTool('select'); setSelectedElementId(null); }}
                     className={`p-1.5 rounded transition-colors ${activeTool === 'select' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
@@ -1037,44 +1038,7 @@ const EbookCanvasEditor = ({
                   </button>
                 </TooltipTrigger><TooltipContent>Select (V)</TooltipContent></Tooltip>
 
-                <Tooltip><TooltipTrigger asChild>
-                  <button onClick={() => setActiveTool('text')}
-                    className={`p-1.5 rounded transition-colors ${activeTool === 'text' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                    <Type className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger><TooltipContent>Text (T)</TooltipContent></Tooltip>
-
-                {/* Shapes dropdown */}
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button className={`p-1.5 rounded transition-colors flex items-center gap-0.5 ${['rectangle','circle','line'].includes(activeTool) ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                      <Square className="w-4 h-4" />
-                      <ChevronDown className="w-2.5 h-2.5 opacity-60" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-36 p-1.5" align="start">
-                    {[
-                      { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
-                      { id: 'circle', icon: Circle, label: 'Circle (O)' },
-                      { id: 'line', icon: Minus, label: 'Line (L)' },
-                    ].map(shape => (
-                      <button key={shape.id} onClick={() => setActiveTool(shape.id)}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeTool === shape.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
-                        <shape.icon className="w-4 h-4" />{shape.label}
-                      </button>
-                    ))}
-                  </PopoverContent>
-                </Popover>
-
-                <Tooltip><TooltipTrigger asChild>
-                  <button onClick={() => { setActiveTool('image'); imageInputRef.current?.click(); }}
-                    className={`p-1.5 rounded transition-colors ${activeTool === 'image' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
-                    <ImageIcon className="w-4 h-4" />
-                  </button>
-                </TooltipTrigger><TooltipContent>Image (I)</TooltipContent></Tooltip>
-
-                {/* ── Separator between tools and context toolbar ── */}
-                {selectedElement && <div className="w-px h-5 bg-foreground/[0.08] mx-1" />}
+                <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
 
                 {/* ── Context: Text formatting ── */}
                 {selectedElement?.type === 'text' && (
@@ -1201,7 +1165,7 @@ const EbookCanvasEditor = ({
                     <div className="w-px h-5 bg-foreground/[0.08]" />
                     {[
                       { icon: Crop, label: 'Crop' },
-                      { icon: Droplets, label: 'Opacity (100%)' },
+                      { icon: Droplets, label: 'Opacity' },
                       { icon: Maximize2, label: 'Resize' },
                       { icon: SlidersVertical, label: 'Filter' },
                       { icon: CircleDot, label: 'Mask' },
@@ -1230,21 +1194,10 @@ const EbookCanvasEditor = ({
                     </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
                     <div className="w-px h-5 bg-foreground/[0.08]" />
                     <Tooltip><TooltipTrigger asChild>
-                      <input type="color" defaultValue="#e5e7eb"
-                        className="w-5 h-5 rounded border border-foreground/[0.1] cursor-pointer" />
-                    </TooltipTrigger><TooltipContent>Border Color</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Border Style')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><BoxSelect className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Border Style</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Border Width')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Maximize2 className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Border Width</TooltipContent></Tooltip>
-                    <div className="w-px h-5 bg-foreground/[0.08]" />
-                    <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
-                        <Lock className="w-3.5 h-3.5" />
+                        {selectedElement.locked ? <Lock className="w-3.5 h-3.5" /> : <Unlock className="w-3.5 h-3.5" />}
                       </button>
-                    </TooltipTrigger><TooltipContent>Lock</TooltipContent></Tooltip>
+                    </TooltipTrigger><TooltipContent>{selectedElement.locked ? 'Unlock' : 'Lock'}</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
                     </TooltipTrigger><TooltipContent>Duplicate</TooltipContent></Tooltip>
@@ -1253,7 +1206,47 @@ const EbookCanvasEditor = ({
                     </TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>
                   </>
                 )}
+
+                {/* ── Right: Add element tools (pinned right) ── */}
+                <div className="ml-auto flex items-center gap-1">
+                  <div className="w-px h-5 bg-foreground/[0.08] mr-0.5" />
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => setActiveTool('text')}
+                      className={`p-1.5 rounded transition-colors ${activeTool === 'text' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                      <Type className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger><TooltipContent>Add Text (T)</TooltipContent></Tooltip>
+
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className={`p-1.5 rounded transition-colors flex items-center gap-0.5 ${['rectangle','circle','line'].includes(activeTool) ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                        <Square className="w-4 h-4" />
+                        <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-36 p-1.5" align="end">
+                      {[
+                        { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
+                        { id: 'circle', icon: Circle, label: 'Circle (O)' },
+                        { id: 'line', icon: Minus, label: 'Line (L)' },
+                      ].map(shape => (
+                        <button key={shape.id} onClick={() => setActiveTool(shape.id)}
+                          className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${activeTool === shape.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                          <shape.icon className="w-4 h-4" />{shape.label}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
+
+                  <Tooltip><TooltipTrigger asChild>
+                    <button onClick={() => { setActiveTool('image'); imageInputRef.current?.click(); }}
+                      className={`p-1.5 rounded transition-colors ${activeTool === 'image' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                      <ImageIcon className="w-4 h-4" />
+                    </button>
+                  </TooltipTrigger><TooltipContent>Add Image (I)</TooltipContent></Tooltip>
+                </div>
               </div>
+              )}
 
               {/* ── Find & Replace Panel ── */}
               {findReplaceMode && (
