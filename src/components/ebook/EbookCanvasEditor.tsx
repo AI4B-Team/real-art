@@ -317,6 +317,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [commentDraft, setCommentDraft] = useState<{ pageId: string; x: number; y: number } | null>(null);
   const [commentText, setCommentText] = useState('');
   const [activeCommentId, setActiveCommentId] = useState<string | null>(null);
+  const [showAllComments, setShowAllComments] = useState(false);
+
+  const resolveAllComments = () => {
+    setPageComments(prev => prev.map(c => ({ ...c, resolved: true })));
+    toast.success('All comments resolved');
+  };
 
   const addPageComment = () => {
     if (!commentDraft || !commentText.trim()) return;
@@ -2048,6 +2054,56 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   <MessageSquare className="w-3.5 h-3.5 text-accent" />
                   <span className="text-xs font-medium text-accent">Commenting Mode — Click anywhere on the page to leave a comment</span>
                   <span className="text-[10px] text-accent/60 ml-2">{pageComments.length} comment{pageComments.length !== 1 ? 's' : ''}</span>
+                  {pageComments.length > 0 && (
+                    <>
+                      <button onClick={() => setShowAllComments(!showAllComments)}
+                        className="ml-2 text-[10px] font-semibold text-accent hover:underline">
+                        {showAllComments ? 'Hide All' : 'See All'}
+                      </button>
+                      <button onClick={resolveAllComments}
+                        className="ml-1 text-[10px] font-semibold text-accent hover:underline flex items-center gap-0.5">
+                        <Check className="w-3 h-3" /> Resolve All
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+              {/* All comments panel */}
+              {showAllComments && pageComments.length > 0 && (
+                <div className="border-b border-foreground/[0.06] bg-card max-h-60 overflow-y-auto">
+                  <div className="px-4 py-2 flex items-center justify-between border-b border-foreground/[0.06]">
+                    <span className="text-xs font-semibold text-foreground">All Comments ({pageComments.length})</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground">{pageComments.filter(c => c.resolved).length} resolved</span>
+                      <button onClick={() => setShowAllComments(false)} className="text-muted-foreground hover:text-foreground"><X className="w-3.5 h-3.5" /></button>
+                    </div>
+                  </div>
+                  <div className="divide-y divide-foreground/[0.04]">
+                    {pageComments.map((c, i) => {
+                      const page = currentPages.find(p => p.id === c.pageId);
+                      return (
+                        <div key={c.id} className={`px-4 py-2.5 flex items-start gap-3 text-xs ${c.resolved ? 'opacity-50' : ''}`}>
+                          <div className={`w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-bold shrink-0 mt-0.5 ${c.resolved ? 'bg-muted text-muted-foreground' : 'bg-accent text-white'}`}>{i + 1}</div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <span className="font-semibold text-foreground">{c.author}</span>
+                              <span className="text-muted-foreground">on {page?.title || 'Page'}</span>
+                              <span className="text-muted-foreground ml-auto">{c.timestamp}</span>
+                            </div>
+                            <p className="text-foreground/80 leading-relaxed">{c.text}</p>
+                          </div>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <button onClick={() => setPageComments(prev => prev.map(pc => pc.id === c.id ? { ...pc, resolved: !pc.resolved } : pc))}
+                              className="text-[10px] font-medium text-accent hover:underline">
+                              {c.resolved ? 'Reopen' : 'Resolve'}
+                            </button>
+                            <button onClick={() => setPageComments(prev => prev.filter(pc => pc.id !== c.id))}
+                              className="text-[10px] text-destructive hover:underline">Delete</button>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
               )}
               {isViewOnly && (
