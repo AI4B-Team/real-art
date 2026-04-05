@@ -1905,6 +1905,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       )}
     </TooltipProvider>
   );
-};
+});
+
+EbookCanvasEditor.displayName = 'EbookCanvasEditor';
 
 export default EbookCanvasEditor;
