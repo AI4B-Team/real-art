@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import {
-  MessageSquare, Send, ChevronLeft, ChevronRight, ZoomIn, ZoomOut,
-  ThumbsUp, Share2, Download, BookOpen, User, Clock, Eye,
+  Send, ChevronLeft, ChevronRight, ZoomIn, ZoomOut,
+  ThumbsUp, Share2, Download, BookOpen, Eye, LayoutGrid, Maximize,
+  MessageSquare, Highlighter, X,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import type { Page, CanvasElement } from "@/components/ebook/EbookCanvasEditor";
@@ -42,14 +43,35 @@ const INITIAL_COMMENTS: Comment[] = [
 export default function SharedEbookPage() {
   const { shareId } = useParams();
   const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const [zoom, setZoom] = useState(85);
+  const [zoom, setZoom] = useState(100);
   const [comments, setComments] = useState<Comment[]>(INITIAL_COMMENTS);
   const [newComment, setNewComment] = useState("");
   const [guestName, setGuestName] = useState("");
   const [showNamePrompt, setShowNamePrompt] = useState(true);
   const [sidebarTab, setSidebarTab] = useState<"comments" | "pages">("comments");
   const [viewCount] = useState(142);
+  const [isGridView, setIsGridView] = useState(false);
+  const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
+  const [highlightedElements, setHighlightedElements] = useState<Set<string>>(new Set());
+  const [elementComments, setElementComments] = useState<Record<string, string[]>>({});
+  const [elementCommentDraft, setElementCommentDraft] = useState("");
   const pageContainerRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [baseScale, setBaseScale] = useState(1);
+
+  // Compute base scale so 100% zoom fits the page nicely (what was ~150% before)
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+    const observer = new ResizeObserver(() => {
+      const rect = container.getBoundingClientRect();
+      const scaleX = (rect.width - 80) / 480;
+      const scaleY = (rect.height - 80) / 640;
+      setBaseScale(Math.min(scaleX, scaleY, 1.5));
+    });
+    observer.observe(container);
+    return () => observer.disconnect();
+  }, []);
 
   const pages = SAMPLE_PAGES;
   const currentPage = pages[currentPageIndex];
@@ -96,18 +118,53 @@ export default function SharedEbookPage() {
     toast({ title: "Link copied to clipboard!" });
   };
 
-  const renderElement = (el: CanvasElement) => {
+  const toggleHighlight = (elId: string) => {
+    setHighlightedElements(prev => {
+      const next = new Set(prev);
+      if (next.has(elId)) next.delete(elId); else next.add(elId);
+      return next;
+    });
+  };
+
+  const addElementComment = () => {
+    if (!selectedElementId || !elementCommentDraft.trim()) return;
+    const name = guestName.trim() || "Anonymous";
+    setElementComments(prev => ({
+      ...prev,
+      [selectedElementId]: [...(prev[selectedElementId] || []), `${name}: ${elementCommentDraft.trim()}`],
+    }));
+    // Also add to general comments
+    setComments(prev => [{
+      id: `ec-${Date.now()}`,
+      author: name,
+      avatar: name.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase(),
+      text: elementCommentDraft.trim(),
+      timestamp: "Just now",
+      likes: 0,
+      liked: false,
+      pageRef: currentPageIndex + 1,
+    }, ...prev]);
+    setElementCommentDraft("");
+    toast({ title: "Comment added to element!" });
+  };
+
+  const renderElement = (el: CanvasElement, interactive = false) => {
     const style: React.CSSProperties = {
       position: "absolute",
-      left: el.x, top: el.y, width: el.width, height: el.height,
+      left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
       opacity: el.opacity ?? 1,
       borderRadius: el.borderRadius ?? 0,
       transform: el.rotation ? `rotate(${el.rotation}deg)` : undefined,
       zIndex: el.zIndex ?? 0,
+      cursor: interactive ? "pointer" : undefined,
+      outline: interactive && selectedElementId === el.id ? "2px solid hsl(var(--accent))" : undefined,
+      outlineOffset: "2px",
+      boxShadow: highlightedElements.has(el.id) ? "inset 0 0 0 3px rgba(250,204,21,0.5)" : undefined,
     };
 
     if (el.type === "image") {
-      return <img key={el.id} src={el.src} alt="" style={style} className="object-cover" draggable={false} />;
+      return <img key={el.id} src={el.src} alt="" style={style} className="object-cover"
+        draggable={false} onClick={interactive ? (e) => { e.stopPropagation(); setSelectedElementId(el.id); } : undefined} />;
     }
     if (el.type === "shape") {
       return (
@@ -116,7 +173,7 @@ export default function SharedEbookPage() {
           backgroundColor: el.fill || "transparent",
           border: el.stroke ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined,
           borderRadius: el.shapeType === "circle" ? "50%" : style.borderRadius,
-        }} />
+        }} onClick={interactive ? (e) => { e.stopPropagation(); setSelectedElementId(el.id); } : undefined} />
       );
     }
     if (el.type === "text") {
@@ -134,11 +191,15 @@ export default function SharedEbookPage() {
           overflow: "hidden",
           whiteSpace: "pre-wrap",
           wordBreak: "break-word",
-        }} dangerouslySetInnerHTML={{ __html: el.content || "" }} />
+        }}
+          onClick={interactive ? (e) => { e.stopPropagation(); setSelectedElementId(el.id); } : undefined}
+          dangerouslySetInnerHTML={{ __html: el.content || "" }} />
       );
     }
     return null;
   };
+
+  const effectiveScale = baseScale * (zoom / 100);
 
   return (
     <div className="flex flex-col h-screen bg-muted/30">
@@ -172,58 +233,114 @@ export default function SharedEbookPage() {
           {/* Page navigation bar */}
           <div className="flex items-center justify-between px-4 py-2 bg-background/50 border-b border-foreground/[0.04]">
             <div className="flex items-center gap-2">
-              <button onClick={() => goTo("prev")} disabled={currentPageIndex === 0}
+              <button onClick={() => goTo("prev")} disabled={currentPageIndex === 0 || isGridView}
                 className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground disabled:opacity-30 transition-colors">
                 <ChevronLeft className="w-4 h-4" />
               </button>
               <span className="text-xs font-medium text-foreground min-w-[80px] text-center">
                 Page {currentPageIndex + 1} of {pages.length}
               </span>
-              <button onClick={() => goTo("next")} disabled={currentPageIndex === pages.length - 1}
+              <button onClick={() => goTo("next")} disabled={currentPageIndex === pages.length - 1 || isGridView}
                 className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground disabled:opacity-30 transition-colors">
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
-            <p className="text-xs text-muted-foreground truncate max-w-[300px]">{currentPage?.title}</p>
-            <div className="flex items-center gap-1">
+            <p className="text-xs text-muted-foreground truncate max-w-[300px]">{isGridView ? "All Pages" : currentPage?.title}</p>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setIsGridView(!isGridView)}
+                className={`p-1.5 rounded-lg transition-colors ${isGridView ? "bg-accent/10 text-accent" : "text-muted-foreground hover:bg-foreground/[0.05]"}`}
+                title={isGridView ? "Single page view" : "Grid view"}>
+                <LayoutGrid className="w-3.5 h-3.5" />
+              </button>
+              <div className="w-px h-4 bg-foreground/[0.08]" />
               <button onClick={() => setZoom(z => Math.max(50, z - 10))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground">
                 <ZoomOut className="w-3.5 h-3.5" />
               </button>
               <span className="text-xs text-muted-foreground w-10 text-center">{zoom}%</span>
-              <button onClick={() => setZoom(z => Math.min(150, z + 10))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground">
+              <button onClick={() => setZoom(z => Math.min(200, z + 10))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted-foreground">
                 <ZoomIn className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
           {/* Page canvas */}
-          <div ref={pageContainerRef} className="flex-1 overflow-auto flex items-start justify-center p-8 bg-muted/30">
-            <div
-              className="bg-background shadow-lg rounded-sm relative"
-              style={{
-                width: 480 * (zoom / 100),
-                height: 640 * (zoom / 100),
-                transform: `scale(1)`,
-                transformOrigin: "top center",
-              }}
-            >
-              <div style={{
-                width: 480, height: 640,
-                transform: `scale(${zoom / 100})`,
-                transformOrigin: "top left",
-                position: "relative",
-                backgroundColor: currentPage?.bgColor || undefined,
-              }}>
-                {elements.map(renderElement)}
+          <div ref={containerRef} className="flex-1 overflow-auto bg-muted/30" onClick={() => setSelectedElementId(null)}>
+            {isGridView ? (
+              /* Grid View */
+              <div className="p-6 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {pages.map((page, i) => {
+                  const pageEls = getElementsForPage(page, pages, BOOK_TITLE);
+                  return (
+                    <button key={page.id} onClick={() => { setCurrentPageIndex(i); setIsGridView(false); }}
+                      className={`group relative bg-background shadow-md rounded-lg overflow-hidden border-2 transition-all hover:shadow-xl hover:border-accent/40 ${
+                        i === currentPageIndex ? "border-accent" : "border-transparent"
+                      }`}>
+                      <div className="relative w-full" style={{ paddingTop: "133.33%" }}>
+                        <div className="absolute inset-0" style={{ backgroundColor: page.bgColor || undefined }}>
+                          <div style={{ position: "relative", width: "100%", height: "100%" }}>
+                            {pageEls.map(el => renderElement(el))}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-2 bg-background border-t border-foreground/[0.06]">
+                        <p className="text-[10px] font-medium text-foreground truncate">{page.title}</p>
+                        <p className="text-[9px] text-muted-foreground">{i + 1}</p>
+                      </div>
+                    </button>
+                  );
+                })}
               </div>
-            </div>
+            ) : (
+              /* Single Page View */
+              <div ref={pageContainerRef} className="flex items-start justify-center p-8 min-h-full">
+                <div className="relative">
+                  <div
+                    className="bg-background shadow-lg rounded-sm relative overflow-hidden"
+                    style={{
+                      width: 480 * effectiveScale,
+                      height: 640 * effectiveScale,
+                    }}
+                  >
+                    <div style={{
+                      width: 480, height: 640,
+                      transform: `scale(${effectiveScale})`,
+                      transformOrigin: "top left",
+                      position: "relative",
+                      backgroundColor: currentPage?.bgColor || undefined,
+                    }}>
+                      {elements.map(el => renderElement(el, true))}
+                    </div>
+                  </div>
+
+                  {/* Selected element actions */}
+                  {selectedElementId && (
+                    <div className="absolute -bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-1 bg-background border border-foreground/[0.1] rounded-lg shadow-lg px-2 py-1.5 z-10">
+                      <button onClick={(e) => { e.stopPropagation(); toggleHighlight(selectedElementId); }}
+                        className={`flex items-center gap-1 px-2 py-1 rounded text-xs transition-colors ${highlightedElements.has(selectedElementId) ? "bg-yellow-100 text-yellow-700" : "hover:bg-foreground/[0.05] text-muted-foreground"}`}>
+                        <Highlighter className="w-3 h-3" /> {highlightedElements.has(selectedElementId) ? "Unhighlight" : "Highlight"}
+                      </button>
+                      <div className="w-px h-4 bg-foreground/[0.08]" />
+                      <button onClick={(e) => { e.stopPropagation(); const draft = prompt("Add a comment on this element:"); if (draft?.trim()) { setElementCommentDraft(draft); setTimeout(() => { const name = guestName.trim() || "Anonymous"; setElementComments(prev => ({ ...prev, [selectedElementId]: [...(prev[selectedElementId] || []), `${name}: ${draft.trim()}`] })); setComments(prev => [{ id: `ec-${Date.now()}`, author: name, avatar: name.split(" ").map(w => w[0]).join("").substring(0, 2).toUpperCase(), text: draft.trim(), timestamp: "Just now", likes: 0, liked: false, pageRef: currentPageIndex + 1 }, ...prev]); toast({ title: "Comment added!" }); }, 0); } }}
+                        className="flex items-center gap-1 px-2 py-1 rounded text-xs hover:bg-foreground/[0.05] text-muted-foreground transition-colors">
+                        <MessageSquare className="w-3 h-3" /> Comment
+                      </button>
+                      <div className="w-px h-4 bg-foreground/[0.08]" />
+                      <button onClick={(e) => { e.stopPropagation(); setSelectedElementId(null); }}
+                        className="p-1 rounded hover:bg-foreground/[0.05] text-muted-foreground transition-colors">
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Bottom page dots */}
-          <div className="flex items-center justify-center gap-1.5 py-3 bg-background/50 border-t border-foreground/[0.04]">
+          <div className="flex items-center justify-center gap-1.5 py-2.5 bg-background/50 border-t border-foreground/[0.04]">
             {pages.map((_, i) => (
               <button key={i} onClick={() => setCurrentPageIndex(i)}
-                className={`w-2 h-2 rounded-full transition-all ${i === currentPageIndex ? "bg-accent w-6" : "bg-foreground/[0.15] hover:bg-foreground/[0.25]"}`} />
+                className={`h-2 rounded-full transition-all ${i === currentPageIndex ? "bg-accent w-6" : "w-2 bg-foreground/[0.15] hover:bg-foreground/[0.25]"}`} />
             ))}
           </div>
         </div>
