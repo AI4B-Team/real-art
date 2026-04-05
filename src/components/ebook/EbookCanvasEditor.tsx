@@ -189,8 +189,80 @@ const EbookCanvasEditor = ({
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const pageRefs = useRef<Record<string, HTMLDivElement | null>>({});
   const imageInputRef = useRef<HTMLInputElement>(null);
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
+  const isScrollingRef = useRef(false);
+  const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Auto-select page based on scroll position (IntersectionObserver)
+  useEffect(() => {
+    if (isGridView) return;
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (isScrollingRef.current) return;
+        let bestEntry: IntersectionObserverEntry | null = null;
+        let bestRatio = 0;
+        entries.forEach(entry => {
+          if (entry.isIntersecting && entry.intersectionRatio > bestRatio) {
+            bestRatio = entry.intersectionRatio;
+            bestEntry = entry;
+          }
+        });
+        if (bestEntry) {
+          const pageId = (bestEntry as IntersectionObserverEntry).target.getAttribute('data-page-id');
+          if (pageId && pageId !== selectedPageId) {
+            onPageSelect(pageId);
+          }
+        }
+      },
+      { root: container, threshold: [0.3, 0.5, 0.7] }
+    );
+
+    Object.entries(pageRefs.current).forEach(([, el]) => {
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [isGridView, currentPages, selectedPageId, onPageSelect]);
+
+  // Track scrolling state to suppress observer during active scroll
+  useEffect(() => {
+    if (isGridView) return;
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const handleScroll = () => {
+      isScrollingRef.current = true;
+      if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = setTimeout(() => {
+        isScrollingRef.current = false;
+        // After scroll stops, find the most visible page
+        const containerRect = container.getBoundingClientRect();
+        const containerCenter = containerRect.top + containerRect.height / 2;
+        let closestId: string | null = null;
+        let closestDist = Infinity;
+        Object.entries(pageRefs.current).forEach(([id, el]) => {
+          if (!el) return;
+          const rect = el.getBoundingClientRect();
+          const pageCenter = rect.top + rect.height / 2;
+          const dist = Math.abs(pageCenter - containerCenter);
+          if (dist < closestDist) {
+            closestDist = dist;
+            closestId = id;
+          }
+        });
+        if (closestId && closestId !== selectedPageId) {
+          onPageSelect(closestId);
+        }
+      }, 150);
+    };
+    container.addEventListener('scroll', handleScroll, { passive: true });
+    return () => container.removeEventListener('scroll', handleScroll);
+  }, [isGridView, selectedPageId, onPageSelect]);
 
   const internalZoom = useState(100);
   const zoom = externalZoom ?? internalZoom[0];
