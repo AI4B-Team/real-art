@@ -115,6 +115,7 @@ const EbookDesignSidebar = ({
   const [editingChapterId, setEditingChapterId] = useState<string | null>(null);
   const [editingValue, setEditingValue] = useState('');
   const [imageSearch, setImageSearch] = useState('');
+  const [imageTab, setImageTab] = useState<'stock' | 'creations' | 'community' | 'uploads'>('stock');
   const [imagePrompt, setImagePrompt] = useState('');
   const [elementSearch, setElementSearch] = useState('');
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
