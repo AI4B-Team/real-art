@@ -1151,8 +1151,6 @@ const EbookCanvasEditor = ({
               </div>
 
 
-
-
                   <button onClick={() => updateElement(selectedElement.id, { fontSize: Math.max(8, (selectedElement.fontSize || 16) - 2) })}
                     className="p-1 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Minus className="w-3 h-3" /></button>
                   <span className="text-xs font-medium w-7 text-center">{selectedElement.fontSize || 16}</span>
