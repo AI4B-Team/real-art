@@ -962,14 +962,6 @@ const EbookCanvasEditor = ({
                       </TooltipTrigger><TooltipContent>Delete</TooltipContent></Tooltip>
                     </>
                   )}
-                  <div className="ml-auto flex items-center gap-1">
-                    <button onClick={() => updateElement(selectedElement.id, { rotation: ((selectedElement.rotation || 0) + 15) % 360 })}
-                      className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]">
-                      <RotateCcw className="w-3.5 h-3.5" />
-                    </button>
-                    <button onClick={duplicateElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Copy className="w-3.5 h-3.5" /></button>
-                    <button onClick={deleteElement} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-destructive"><Trash2 className="w-3.5 h-3.5" /></button>
-                  </div>
                 </div>
               )}
 
