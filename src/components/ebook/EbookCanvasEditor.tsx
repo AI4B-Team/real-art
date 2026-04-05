@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
 import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
+  Brain, CheckSquare, BookOpen, Award, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch, Shuffle as ShuffleIcon,
   Minus, Hand, ChevronLeft, ChevronRight, Search,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Bold, Italic, Underline, Strikethrough,
@@ -46,7 +47,7 @@ export interface Page {
 
 export interface CanvasElement {
   id: string;
-  type: 'image' | 'shape' | 'text';
+  type: 'image' | 'shape' | 'text' | 'interactive';
   x: number; y: number; width: number; height: number;
   content?: string; src?: string;
   fill?: string; stroke?: string; strokeWidth?: number;
@@ -61,6 +62,8 @@ export interface CanvasElement {
   borderWidth?: number; borderColor?: string;
   isPlaceholder?: boolean;
   highlightColor?: string;
+  interactiveType?: string;
+  interactiveData?: Record<string, any>;
 }
 
 interface EbookCanvasEditorProps {
@@ -611,7 +614,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   // ─── Element Actions ──────────────────────────
   const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
     const newEl: CanvasElement = {
-      id: crypto.randomUUID(), type, x: 20, y: 20, width: 30, height: type === 'text' ? 10 : 20,
+      id: crypto.randomUUID(), type, x: 20, y: 20,
+      width: type === 'interactive' ? 60 : 30,
+      height: type === 'text' ? 10 : (type === 'interactive' ? 30 : 20),
       ...(type === 'text' ? { content: 'New Text', fontSize: 16, fontFamily: 'Inter', textColor: '#1a1a2e' } : {}),
       ...(type === 'shape' ? { fill: '#3b82f6', stroke: '#1e40af', strokeWidth: 1, shapeType: 'rectangle' } : {}),
       ...(type === 'image' ? { src: STOCK_IMAGES[0] } : {}),
@@ -918,10 +923,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         case 'image': return 'Image';
         case 'text': return 'Text';
         case 'shape': return el.shapeType === 'circle' ? 'Circle' : 'Shape';
+        case 'interactive': return el.interactiveType ? el.interactiveType.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Interactive';
         default: return 'Element';
       }
     };
-    const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : 'bg-blue-500';
+    const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : el.type === 'interactive' ? 'bg-purple-500' : 'bg-blue-500';
     const TypeBadge = () => isSelected ? (
       <div className={`absolute -top-6 left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-30 whitespace-nowrap`}>
         {getTypeLabel()}
@@ -1109,7 +1115,310 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       );
     }
 
-    return null;
+    // Interactive elements
+    if (el.type === 'interactive') {
+      const iType = el.interactiveType || 'flashcards';
+      const data = el.interactiveData || {};
+      const scaledFont = (size: number) => `${size * zoom / 100 * 0.5}px`;
+
+      const INTERACTIVE_ICONS: Record<string, typeof Brain> = {
+        flashcards: Brain, quiz: CheckSquare, course: BookOpen, certificate: Award,
+        'progress-tracker': TrendingUp, 'knowledge-check': HelpCircle,
+        'interactive-exercise': Zap, 'sorting-activity': ShuffleIcon,
+        matching: GitBranch, checklist: ListChecks,
+        'fill-in-blank': Type, 'drag-drop': Move, timeline: ArrowUpDown,
+        'rating-scale': CircleDot, accordion: Layers,
+      };
+      const INTERACTIVE_COLORS: Record<string, string> = {
+        flashcards: '#F59E0B', quiz: '#8B5CF6', course: '#3B82F6', certificate: '#10B981',
+        'progress-tracker': '#14B8A6', 'knowledge-check': '#F43F5E',
+        'interactive-exercise': '#A855F7', 'sorting-activity': '#F97316',
+        matching: '#6366F1', checklist: '#0EA5E9',
+        'fill-in-blank': '#EC4899', 'drag-drop': '#84CC16', timeline: '#06B6D4',
+        'rating-scale': '#EAB308', accordion: '#64748B',
+      };
+
+      const Icon = INTERACTIVE_ICONS[iType] || Zap;
+      const color = INTERACTIVE_COLORS[iType] || '#8B5CF6';
+      const label = iType.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+
+      const renderInteractiveContent = () => {
+        switch (iType) {
+          case 'flashcards': {
+            const cards = data.cards || [{ front: 'Term 1', back: 'Definition 1' }, { front: 'Term 2', back: 'Definition 2' }, { front: 'Term 3', back: 'Definition 3' }];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <Brain style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Flashcards</span>
+                  <span style={{ fontSize: scaledFont(10), color: '#9CA3AF', marginLeft: 'auto' }}>{cards.length} cards</span>
+                </div>
+                <div className="flex-1 grid grid-cols-3 gap-[2%]">
+                  {cards.slice(0, 3).map((card: any, i: number) => (
+                    <div key={i} className="rounded-lg border flex flex-col items-center justify-center text-center p-[4%]"
+                      style={{ borderColor: `${color}30`, backgroundColor: `${color}08` }}>
+                      <span style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#1F2937' }}>{card.front}</span>
+                      <span style={{ fontSize: scaledFont(8), color: '#9CA3AF', marginTop: '4%' }}>Click to flip</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'quiz':
+          case 'knowledge-check': {
+            const question = data.question || 'What is the main concept discussed in this chapter?';
+            const options = data.options || ['Option A', 'Option B', 'Option C', 'Option D'];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <CheckSquare style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>{iType === 'quiz' ? 'Quiz' : 'Knowledge Check'}</span>
+                </div>
+                <p style={{ fontSize: scaledFont(11), color: '#1F2937', fontWeight: 500, marginBottom: '3%' }}>{question}</p>
+                <div className="flex flex-col gap-[2%] flex-1">
+                  {options.map((opt: string, i: number) => (
+                    <div key={i} className="rounded-lg border px-[3%] py-[2%] flex items-center gap-[2%]"
+                      style={{ borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' }}>
+                      <div className="rounded-full border-2 flex items-center justify-center shrink-0"
+                        style={{ width: scaledFont(14), height: scaledFont(14), borderColor: '#D1D5DB' }} />
+                      <span style={{ fontSize: scaledFont(10), color: '#374151' }}>{opt}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'checklist': {
+            const items = data.items || ['Review chapter summary', 'Complete practice exercises', 'Take the quiz', 'Submit your notes'];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <ListChecks style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Checklist</span>
+                </div>
+                <div className="flex flex-col gap-[2%] flex-1">
+                  {items.map((item: string, i: number) => (
+                    <div key={i} className="flex items-center gap-[2%] rounded-lg px-[3%] py-[2%]"
+                      style={{ backgroundColor: i === 0 ? `${color}10` : 'transparent' }}>
+                      <div className="rounded border-2 flex items-center justify-center shrink-0"
+                        style={{ width: scaledFont(14), height: scaledFont(14), borderColor: i === 0 ? color : '#D1D5DB', backgroundColor: i === 0 ? color : 'transparent', borderRadius: '3px' }}>
+                        {i === 0 && <Check style={{ width: scaledFont(10), height: scaledFont(10), color: '#fff' }} />}
+                      </div>
+                      <span style={{ fontSize: scaledFont(10), color: i === 0 ? '#9CA3AF' : '#374151', textDecoration: i === 0 ? 'line-through' : 'none' }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'progress-tracker': {
+            const progress = data.progress ?? 65;
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <TrendingUp style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Progress</span>
+                  <span style={{ fontSize: scaledFont(12), fontWeight: 700, color, marginLeft: 'auto' }}>{progress}%</span>
+                </div>
+                <div className="w-full rounded-full" style={{ height: scaledFont(10), backgroundColor: `${color}20` }}>
+                  <div className="h-full rounded-full transition-all" style={{ width: `${progress}%`, backgroundColor: color }} />
+                </div>
+                <div className="flex justify-between mt-[2%]">
+                  <span style={{ fontSize: scaledFont(9), color: '#9CA3AF' }}>Chapter 4 of 12</span>
+                  <span style={{ fontSize: scaledFont(9), color: '#9CA3AF' }}>~20 min left</span>
+                </div>
+              </div>
+            );
+          }
+          case 'sorting-activity': {
+            const categories = data.categories || ['Category A', 'Category B'];
+            const sortItems = data.items || ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <ShuffleIcon style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Sorting Activity</span>
+                </div>
+                <div className="flex gap-[2%] flex-1">
+                  {categories.map((cat: string, ci: number) => (
+                    <div key={ci} className="flex-1 rounded-lg border-2 border-dashed p-[2%] flex flex-col items-center"
+                      style={{ borderColor: `${color}40` }}>
+                      <span style={{ fontSize: scaledFont(10), fontWeight: 600, color: '#374151', marginBottom: '3%' }}>{cat}</span>
+                      <span style={{ fontSize: scaledFont(8), color: '#9CA3AF' }}>Drop items here</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-[1.5%] mt-[2%]">
+                  {sortItems.map((item: string, i: number) => (
+                    <span key={i} className="rounded-lg px-[2%] py-[1%]"
+                      style={{ fontSize: scaledFont(9), backgroundColor: `${color}15`, color, fontWeight: 500, border: `1px solid ${color}30` }}>{item}</span>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'matching': {
+            const pairs = data.pairs || [{ left: 'Term A', right: 'Definition A' }, { left: 'Term B', right: 'Definition B' }, { left: 'Term C', right: 'Definition C' }];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <GitBranch style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Matching</span>
+                </div>
+                <div className="flex gap-[5%] flex-1">
+                  <div className="flex-1 flex flex-col gap-[3%]">
+                    {pairs.map((p: any, i: number) => (
+                      <div key={i} className="rounded-lg border px-[4%] py-[3%] text-center"
+                        style={{ borderColor: `${color}40`, fontSize: scaledFont(10), color: '#374151', fontWeight: 500 }}>{p.left}</div>
+                    ))}
+                  </div>
+                  <div className="flex-1 flex flex-col gap-[3%]">
+                    {pairs.map((p: any, i: number) => (
+                      <div key={i} className="rounded-lg border px-[4%] py-[3%] text-center"
+                        style={{ borderColor: '#E5E7EB', backgroundColor: '#F9FAFB', fontSize: scaledFont(10), color: '#6B7280' }}>{p.right}</div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            );
+          }
+          case 'certificate': {
+            const name = data.name || 'Certificate of Completion';
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center p-[4%] text-center"
+                style={{ border: `3px double ${color}`, borderRadius: '12px', backgroundColor: `${color}05` }}>
+                <Award style={{ width: scaledFont(28), height: scaledFont(28), color, marginBottom: '3%' }} />
+                <span style={{ fontSize: scaledFont(14), fontWeight: 700, color: '#1F2937' }}>{name}</span>
+                <span style={{ fontSize: scaledFont(9), color: '#6B7280', marginTop: '2%' }}>Awarded to [Student Name]</span>
+                <div style={{ width: '40%', height: '1px', backgroundColor: '#D1D5DB', margin: '4% 0' }} />
+                <span style={{ fontSize: scaledFont(8), color: '#9CA3AF' }}>Date: ___________</span>
+              </div>
+            );
+          }
+          case 'interactive-exercise': {
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <Zap style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Interactive Exercise</span>
+                </div>
+                <div className="flex-1 rounded-lg border-2 border-dashed flex flex-col items-center justify-center"
+                  style={{ borderColor: `${color}40`, backgroundColor: `${color}05` }}>
+                  <Zap style={{ width: scaledFont(24), height: scaledFont(24), color: `${color}60`, marginBottom: '2%' }} />
+                  <span style={{ fontSize: scaledFont(11), color: '#374151', fontWeight: 500 }}>Hands-on Practice Area</span>
+                  <span style={{ fontSize: scaledFont(9), color: '#9CA3AF', marginTop: '1%' }}>Students interact here</span>
+                </div>
+              </div>
+            );
+          }
+          case 'fill-in-blank': {
+            const sentence = data.sentence || 'The process of _______ involves converting raw data into meaningful _______.';
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <Type style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Fill in the Blank</span>
+                </div>
+                <p style={{ fontSize: scaledFont(11), color: '#374151', lineHeight: 1.8 }}>{sentence}</p>
+              </div>
+            );
+          }
+          case 'timeline': {
+            const events = data.events || [{ year: '2020', text: 'Event one' }, { year: '2021', text: 'Event two' }, { year: '2022', text: 'Event three' }];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <ArrowUpDown style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Timeline</span>
+                </div>
+                <div className="flex-1 flex items-center gap-[3%]">
+                  {events.map((ev: any, i: number) => (
+                    <div key={i} className="flex-1 flex flex-col items-center">
+                      <div className="rounded-full flex items-center justify-center"
+                        style={{ width: scaledFont(28), height: scaledFont(28), backgroundColor: color, color: '#fff', fontSize: scaledFont(9), fontWeight: 700 }}>{ev.year}</div>
+                      {i < events.length - 1 && <div style={{ width: '100%', height: '2px', backgroundColor: `${color}30`, margin: '4% 0' }} />}
+                      <span style={{ fontSize: scaledFont(9), color: '#374151', textAlign: 'center', marginTop: '2%' }}>{ev.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'rating-scale': {
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <CircleDot style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Rating Scale</span>
+                </div>
+                <p style={{ fontSize: scaledFont(10), color: '#374151', marginBottom: '3%' }}>How well do you understand this topic?</p>
+                <div className="flex items-center justify-between">
+                  {[1, 2, 3, 4, 5].map(n => (
+                    <div key={n} className="flex flex-col items-center gap-[4%]">
+                      <div className="rounded-full border-2 flex items-center justify-center"
+                        style={{ width: scaledFont(24), height: scaledFont(24), borderColor: n <= 3 ? `${color}40` : color, backgroundColor: n <= 3 ? 'transparent' : `${color}15` }}>
+                        <span style={{ fontSize: scaledFont(10), color: n <= 3 ? '#9CA3AF' : color, fontWeight: 600 }}>{n}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <div className="flex justify-between mt-[2%]">
+                  <span style={{ fontSize: scaledFont(8), color: '#9CA3AF' }}>Not at all</span>
+                  <span style={{ fontSize: scaledFont(8), color: '#9CA3AF' }}>Very well</span>
+                </div>
+              </div>
+            );
+          }
+          case 'accordion': {
+            const sections = data.sections || [{ title: 'Section 1', expanded: true }, { title: 'Section 2' }, { title: 'Section 3' }];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <Layers style={{ width: scaledFont(16), height: scaledFont(16), color }} />
+                  <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>Accordion</span>
+                </div>
+                <div className="flex flex-col gap-[1.5%] flex-1">
+                  {sections.map((s: any, i: number) => (
+                    <div key={i} className="rounded-lg border overflow-hidden" style={{ borderColor: s.expanded ? color : '#E5E7EB' }}>
+                      <div className="flex items-center justify-between px-[3%] py-[2%]"
+                        style={{ backgroundColor: s.expanded ? `${color}10` : '#F9FAFB' }}>
+                        <span style={{ fontSize: scaledFont(10), fontWeight: 600, color: s.expanded ? color : '#374151' }}>{s.title}</span>
+                        <ChevronDown style={{ width: scaledFont(12), height: scaledFont(12), color: '#9CA3AF', transform: s.expanded ? 'rotate(180deg)' : 'none' }} />
+                      </div>
+                      {s.expanded && <div className="px-[3%] py-[2%]"><span style={{ fontSize: scaledFont(9), color: '#6B7280' }}>Content goes here...</span></div>}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          default: {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center p-[3%]"
+                style={{ backgroundColor: `${color}08`, border: `2px dashed ${color}30`, borderRadius: '8px' }}>
+                <Icon style={{ width: scaledFont(28), height: scaledFont(28), color: `${color}60`, marginBottom: '3%' }} />
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151' }}>{label}</span>
+                <span style={{ fontSize: scaledFont(9), color: '#9CA3AF' }}>Interactive Element</span>
+              </div>
+            );
+          }
+        }
+      };
+
+      return (
+        <div key={el.id} className={`${selectionBorder}`} style={style}
+          onMouseDown={e => handleElementMouseDown(e, el, pageId)}
+          onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
+          <TypeBadge />
+          <div className="w-full h-full overflow-hidden rounded-lg bg-white shadow-sm">
+            {renderInteractiveContent()}
+          </div>
+          {isSelected && renderResizeHandles(el)}
+        </div>
+      );
+    }
+
   };
 
   const renderElementControls = (el: CanvasElement) => {
