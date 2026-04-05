@@ -959,7 +959,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : el.type === 'interactive' ? 'bg-purple-500' : 'bg-blue-500';
     const TypeBadge = () => isSelected ? (
       <div className={`absolute left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-[60] whitespace-nowrap pointer-events-none`}
-        style={{ top: el.y < 40 ? '-6px' : '-42px' }}>
+        style={{ top: el.y < 40 ? '4px' : '-58px' }}>
         {getTypeLabel()}
       </div>
     ) : null;
