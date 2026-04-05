@@ -595,15 +595,7 @@ const EbookDesignSidebar = ({
       {/* Translate */}
       <SectionHeader id="translate" title="Translate" icon={Languages} />
       {expandedSections.has('translate') && (
-        <div className="px-3 pb-3 space-y-2">
-          <p className="text-[10px] text-muted-foreground">Translate all text content to another language.</p>
-          {['Spanish', 'French', 'German', 'Chinese', 'Japanese', 'Arabic'].map(lang => (
-            <button key={lang} onClick={() => toast.success(`Translating to ${lang}...`)}
-              className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors text-xs text-foreground">
-              {lang}
-            </button>
-          ))}
-        </div>
+        <TranslatePanel onTranslate={onTranslate} />
       )}
     </div>
   );
