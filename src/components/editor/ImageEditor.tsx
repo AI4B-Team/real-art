@@ -203,8 +203,17 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
   const [toolSettings, setToolSettings] = useState<Record<string, any>>({
     fontSize: 24, brushSize: 20, brushColor: "#000000", hardness: 100, opacity: 100,
     tolerance: 32, aiStrength: 75, imageOpacity: 100, quality: 90, eraserSize: 20, eraserOpacity: 100,
-    fillColor: "#000000", textColor: "#000000",
+    fillColor: "#000000", textColor: "#000000", inpaintSize: 40, inpaintStrength: 75,
+    arrowStroke: 3, arrowColor: "#ff0000", rectStroke: 3, rectColor: "#ff0000",
   });
+
+  // Shape annotations (arrows + rectangles)
+  interface ShapeAnnotation {
+    id: string; type: "arrow" | "rectangle"; x1: number; y1: number; x2: number; y2: number;
+    color: string; strokeWidth: number; filled?: boolean;
+  }
+  const [shapes, setShapes] = useState<ShapeAnnotation[]>([]);
+  const [drawingShape, setDrawingShape] = useState<ShapeAnnotation | null>(null);
 
   // Creations strip
   const [creations, setCreations] = useState(() => {
