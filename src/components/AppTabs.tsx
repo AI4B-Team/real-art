@@ -65,16 +65,28 @@ export default function AppTabs() {
 
   const tabApps = openTabs.map(id => ALL_APPS.find(a => a.id === id)).filter(Boolean) as AppDef[];
 
-  const renderGridApp = (app: AppDef) => {
+  const renderGridApp = (app: AppDef, showFavStar = false) => {
     const Icon = app.icon;
+    const isFav = favoriteIds.includes(app.id);
     return (
-      <button key={app.id} onClick={() => handleOpenApp(app)}
-        className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors group">
-        <div className={`w-11 h-11 ${app.bgColor} rounded-xl flex items-center justify-center`}>
-          <Icon size={20} className="text-white" />
-        </div>
-        <span className="text-[0.72rem] font-medium text-foreground/70 text-center leading-tight">{app.label}</span>
-      </button>
+      <div key={app.id} className="relative group/app">
+        <button onClick={() => handleOpenApp(app)}
+          className="flex flex-col items-center gap-1.5 p-2.5 rounded-xl hover:bg-foreground/[0.04] transition-colors w-full">
+          <div className={`w-11 h-11 ${app.bgColor} rounded-xl flex items-center justify-center`}>
+            <Icon size={20} className="text-white" />
+          </div>
+          <span className="text-[0.72rem] font-medium text-foreground/70 text-center leading-tight">{app.label}</span>
+        </button>
+        {showFavStar && (
+          <button
+            onClick={(e) => { e.stopPropagation(); toggleFavorite(app.id); }}
+            className="absolute top-1 right-1 p-0.5 rounded-md transition-opacity opacity-0 group-hover/app:opacity-100 data-[fav=true]:opacity-100"
+            data-fav={isFav}
+          >
+            <Star size={13} className={isFav ? "fill-amber-500 text-amber-500" : "text-muted-foreground/40 hover:text-amber-400"} />
+          </button>
+        )}
+      </div>
     );
   };
 
