@@ -221,10 +221,10 @@ const PageSettingsPanel = ({
                 </button>
               </TooltipTrigger><TooltipContent>Duplicate</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
-                <button onClick={() => handlePageAction('lock', selectedPageId)} className="p-1.5 rounded hover:bg-foreground/[0.05] text-muted-foreground">
-                  <Lock className="w-4 h-4" />
+                <button onClick={() => handlePageAction('lock', selectedPageId)} className={`p-1.5 rounded hover:bg-foreground/[0.05] ${selectedPage?.locked ? 'text-destructive' : 'text-muted-foreground'}`}>
+                  {selectedPage?.locked ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
                 </button>
-              </TooltipTrigger><TooltipContent>Lock Page</TooltipContent></Tooltip>
+              </TooltipTrigger><TooltipContent>{selectedPage?.locked ? 'Unlock Page' : 'Lock Page'}</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild>
                 <button onClick={() => handlePageAction('delete', selectedPageId)} className="p-1.5 rounded hover:bg-foreground/[0.05] text-muted-foreground hover:text-destructive">
                   <Trash2 className="w-4 h-4" />
