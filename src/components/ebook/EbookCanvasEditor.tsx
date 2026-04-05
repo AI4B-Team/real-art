@@ -374,8 +374,11 @@ const EbookCanvasEditor = ({
   useEffect(() => {
     if (!selectedPageId || selectedPageId === prevSelectedRef.current) return;
     prevSelectedRef.current = selectedPageId;
+    // Reset scrolling guard so programmatic navigation always works
+    isScrollingRef.current = false;
+    if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
     const el = pageRefs.current[selectedPageId];
-    if (el && !isScrollingRef.current) {
+    if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }, [selectedPageId]);
