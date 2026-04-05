@@ -111,6 +111,17 @@ const NewEbookPage = () => {
   })();
 
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
+
+  // Persist current ebook editor URL so we can return to it
+  useEffect(() => {
+    sessionStorage.setItem("ebook-last-url", location.pathname + location.search);
+  }, [location.pathname, location.search, activeTab]);
+
+  // Also update when tab changes (since tab is local state, not always in URL)
+  useEffect(() => {
+    const url = `${location.pathname}?tab=${activeTab}`;
+    sessionStorage.setItem("ebook-last-url", url);
+  }, [activeTab, location.pathname]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [titleSuggestions, setTitleSuggestions] = useState<string[]>([]);
