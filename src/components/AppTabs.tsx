@@ -19,6 +19,18 @@ export default function AppTabs() {
 
   const [dropOpen, setDropOpen] = useState(false);
   const [search, setSearch] = useState("");
+  const [favoriteIds, setFavoriteIds] = useState<string[]>(() => {
+    const stored = localStorage.getItem("app-favorites");
+    return stored ? JSON.parse(stored) : DEFAULT_FAVORITE_IDS;
+  });
+
+  const toggleFavorite = (appId: string) => {
+    setFavoriteIds(prev => {
+      const next = prev.includes(appId) ? prev.filter(id => id !== appId) : [...prev, appId];
+      localStorage.setItem("app-favorites", JSON.stringify(next));
+      return next;
+    });
+  };
 
   // Close dropdown on outside click
   useEffect(() => {
