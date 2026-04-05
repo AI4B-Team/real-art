@@ -7,7 +7,9 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import SaveToBoardModal from "@/components/SaveToBoardModal";
 import { suggestCollection, addItemToCollection } from "@/lib/collectionStore";
 
@@ -238,29 +240,30 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
               <span className="text-[0.72rem] text-primary-foreground/90 truncate">{cr.n}</span>
             </Link>
 
-            <div className="flex gap-1.5 shrink-0">
-              <Popover open={useOpen} onOpenChange={setUseOpen}>
-                <PopoverTrigger asChild>
+            <div className="flex gap-1.5 shrink-0" onPointerDown={e => e.stopPropagation()} onClick={e => { e.stopPropagation(); e.preventDefault(); }}>
+              <DropdownMenu open={useOpen} onOpenChange={setUseOpen}>
+                <DropdownMenuTrigger asChild>
                   <button
+                    onPointerDown={e => { e.stopPropagation(); }}
                     onClick={e => { e.stopPropagation(); e.preventDefault(); }}
                     className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg bg-white/90 hover:bg-white text-foreground transition-all text-[0.78rem] font-bold shadow-sm backdrop-blur-sm"
                   >
                     Use <ChevronDown className="w-3 h-3 opacity-60" />
                   </button>
-                </PopoverTrigger>
-                <PopoverContent className="w-40 p-1" align="end" side="top" sideOffset={6}>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-40 p-1" align="end" side="top" sideOffset={6}>
                   {USE_OPTIONS.map(opt => (
-                    <button
+                    <DropdownMenuItem
                       key={opt.id}
                       onClick={e => handleUseAction(opt.id, e)}
-                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-[0.8rem] font-medium text-foreground hover:bg-foreground/[0.06] transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 rounded-lg text-[0.8rem] font-medium cursor-pointer"
                     >
                       <opt.icon className="w-3.5 h-3.5 text-muted" />
                       {opt.label}
-                    </button>
+                    </DropdownMenuItem>
                   ))}
-                </PopoverContent>
-              </Popover>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </TooltipProvider>
