@@ -6,7 +6,7 @@ import {
   Square, Circle, Triangle, Star, Hexagon, Diamond, Pentagon,
   ArrowRight, ArrowDown, BarChart3, LineChart, PieChart,
   Smile, Tag, StickyNote, ExternalLink, MapPin,
-  GripVertical, Trash2, X, Check,
+  GripVertical, Trash2, X, Check, Lock,
   LayoutGrid, LayoutTemplate, Presentation,
   MonitorPlay, AudioLines, MousePointerClick, Layers3, Languages,
   Shuffle, SlidersHorizontal, Play, Users, Library,
