@@ -828,6 +828,8 @@ const NewEbookPage = () => {
                 onZoomChange={setZoom}
                 isGridView={isGridView}
                 onGridViewToggle={() => setIsGridView(false)}
+                findReplaceMode={findReplaceMode}
+                onFindReplaceModeChange={setFindReplaceMode}
               />
               {/* RIGHT: Page Settings Panel (hidden in grid view) */}
               {!isGridView && (
