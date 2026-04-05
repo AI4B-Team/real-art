@@ -2332,7 +2332,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           data-canvas={isSelected ? 'bg' : undefined}
                           onClick={(e) => {
                             onPageSelect(page.id);
-                            if (isSelected) handleCanvasClick(e);
+                            if (isSelected && canEdit) handleCanvasClick(e);
+                            // Commenting mode: place a comment pin
+                            if (accessMode === 'commenting' && isSelected) {
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const x = ((e.clientX - rect.left) / rect.width) * 100;
+                              const y = ((e.clientY - rect.top) / rect.height) * 100;
+                              setCommentDraft({ pageId: page.id, x, y });
+                              setActiveCommentId(null);
+                            }
                           }}
                           className={`rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
