@@ -726,7 +726,7 @@ const EbookCanvasEditor = ({
 
   const handleAIEdit = async () => {
     if (!aiEditPrompt.trim() || !selectedElementId) return;
-    const el = (pageElements[selectedPage] || []).find(e => e.id === selectedElementId);
+    const el = (pageElements[selectedPage?.id || ''] || []).find(e => e.id === selectedElementId);
     if (!el?.src) return;
     setIsAIProcessing(true);
     setShowAIEditModal(false);
