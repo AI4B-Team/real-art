@@ -10,7 +10,7 @@ import {
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut, Minus,
   Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download, Settings, MoreVertical, Shuffle,
-  ChevronLeft, ChevronRight,
+  ChevronLeft, ChevronRight, Image, BookOpenCheck, Hash, Star, Trophy, Gem, Rocket, Users,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -67,6 +67,19 @@ const TONES = [
   { id: "friendly", name: "Friendly", icon: Heart },
   { id: "authoritative", name: "Authoritative", icon: Shield },
   { id: "inspirational", name: "Inspirational", icon: Flame },
+];
+
+const TITLE_BADGES: { label: string; icon: React.ComponentType<any>; color: string }[] = [
+  { label: "Professional", icon: Briefcase, color: "text-blue-600 bg-blue-50" },
+  { label: "Advanced", icon: Gem, color: "text-emerald-600 bg-emerald-50" },
+  { label: "Bold & Tactical", icon: Flame, color: "text-orange-600 bg-orange-50" },
+  { label: "Practical", icon: Target, color: "text-green-600 bg-green-50" },
+  { label: "Beginner-Friendly", icon: Heart, color: "text-pink-600 bg-pink-50" },
+  { label: "Advanced", icon: Gem, color: "text-emerald-600 bg-emerald-50" },
+  { label: "Creative / Strategy", icon: Sparkles, color: "text-violet-600 bg-violet-50" },
+  { label: "Transformation", icon: Rocket, color: "text-amber-600 bg-amber-50" },
+  { label: "Reference", icon: BookOpenCheck, color: "text-slate-600 bg-slate-50" },
+  { label: "Beginner-Friendly", icon: Heart, color: "text-pink-600 bg-pink-50" },
 ];
 
 const AI_MODELS = [
@@ -135,6 +148,10 @@ const NewEbookPage = () => {
   const [isGeneratingBook, setIsGeneratingBook] = useState(false);
   const [chapterSequence, setChapterSequence] = useState<ChapterData[]>([]);
   const [bookDescription, setBookDescription] = useState("");
+  const [generateStep, setGenerateStep] = useState<"titles" | "chapters">("titles");
+  const [editingTitleIndex, setEditingTitleIndex] = useState<number | null>(null);
+  const [customTitle, setCustomTitle] = useState("");
+  const [showCustomTitle, setShowCustomTitle] = useState(false);
   const [isEnhancingPrompt, setIsEnhancingPrompt] = useState(false);
   const [showRecordModal, setShowRecordModal] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -1011,53 +1028,289 @@ const NewEbookPage = () => {
         </Dialog>
         {activeTab === "generate" && (
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-lg font-semibold text-foreground mb-2">Select a title for your eBook</h2>
-            <p className="text-sm text-muted mb-6">Choose from the AI-generated suggestions or write your own.</p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
-              {titleSuggestions.map((title, i) => (
-                <button key={i} onClick={() => setBookData(prev => ({ ...prev, selectedTitle: title }))}
-                  className={`text-left p-4 rounded-xl border-2 transition-all ${bookData.selectedTitle === title ? "border-accent bg-accent/5" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
-                  <div className="flex items-start gap-3">
-                    <div className={`w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-xs font-bold ${bookData.selectedTitle === title ? "bg-accent text-white" : "bg-foreground/[0.06] text-muted"}`}>
-                      {bookData.selectedTitle === title ? <Check size={14} /> : i + 1}
+            {/* Step Progress Bar */}
+            <div className="flex items-center justify-center gap-0 mb-10">
+              {[
+                { key: "source", label: "Source Material", done: true },
+                { key: "titles", label: "Book Title", active: generateStep === "titles" },
+                { key: "chapters", label: "Book Outline", active: generateStep === "chapters" },
+                { key: "drafts", label: "Chapter Drafts", done: false },
+              ].map((step, i, arr) => (
+                <div key={step.key} className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold mb-1.5 transition-all ${
+                      step.done ? "bg-emerald-500 text-white" : step.active ? "bg-accent text-white ring-4 ring-accent/20" : "bg-foreground/[0.06] text-muted-foreground"
+                    }`}>
+                      {step.done ? <Check size={18} /> : i + 1}
                     </div>
-                    <span className={`text-sm font-medium ${bookData.selectedTitle === title ? "text-accent" : "text-foreground"}`}>{title}</span>
+                    <span className={`text-xs font-medium ${step.active ? "text-foreground" : "text-muted-foreground"}`}>{step.label}</span>
                   </div>
-                </button>
+                  {i < arr.length - 1 && (
+                    <div className={`w-16 h-0.5 mx-2 mt-[-18px] ${i === 0 || step.done ? "bg-emerald-500" : "bg-foreground/[0.08]"}`} />
+                  )}
+                </div>
               ))}
             </div>
 
-            {/* Chapter outline */}
-            {chapterSequence.length > 0 && (
-              <div className="mb-8">
-                <h3 className="text-sm font-semibold text-foreground mb-3">Chapter Outline ({chapterSequence.length} chapters)</h3>
-                <div className="border border-foreground/[0.08] rounded-xl divide-y divide-foreground/[0.06]">
-                  {chapterSequence.map((ch, i) => (
-                    <div key={ch.id} className="flex items-start gap-3 p-4">
-                      <span className="w-7 h-7 rounded-lg bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0">{i + 1}</span>
-                      <div>
-                        <p className="font-medium text-foreground text-sm">{ch.title}</p>
-                        <p className="text-xs text-muted mt-0.5">{ch.description}</p>
-                        <div className="flex flex-wrap gap-1.5 mt-2">
-                          {ch.topics.map(t => <span key={t} className="px-2 py-0.5 bg-foreground/[0.04] text-muted text-xs rounded-full">{t}</span>)}
+            {/* TITLE SELECTION PAGE */}
+            {generateStep === "titles" && (
+              <div>
+                <h2 className="text-2xl font-bold text-foreground text-center mb-2">Choose A Title</h2>
+                <p className="text-sm text-muted-foreground text-center mb-8">Select A Title Or Tweak One To Match Your Voice. You Can Change It Anytime.</p>
+
+                <div className="space-y-3 mb-6">
+                  {titleSuggestions.map((title, i) => {
+                    const badge = TITLE_BADGES[i % TITLE_BADGES.length];
+                    const isSelected = bookData.selectedTitle === title;
+                    const isEditing = editingTitleIndex === i;
+                    const isRecommended = i === 4; // 5th option is "recommended"
+
+                    return (
+                      <button key={i} onClick={() => { if (!isEditing) setBookData(prev => ({ ...prev, selectedTitle: title })); }}
+                        className={`w-full text-left p-4 rounded-xl border-2 transition-all group relative ${
+                          isSelected ? "border-accent bg-accent/5" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                        }`}>
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold ${
+                            isSelected ? "bg-accent text-white" : "bg-emerald-500 text-white"
+                          }`}>
+                            {isSelected ? <Check size={16} /> : i + 1}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            {isEditing ? (
+                              <input
+                                autoFocus
+                                value={title}
+                                onChange={e => {
+                                  const newTitle = e.target.value;
+                                  setTitleSuggestions(prev => prev.map((t, idx) => idx === i ? newTitle : t));
+                                  if (isSelected) setBookData(prev => ({ ...prev, selectedTitle: newTitle }));
+                                }}
+                                onBlur={() => setEditingTitleIndex(null)}
+                                onKeyDown={e => { if (e.key === "Enter") setEditingTitleIndex(null); }}
+                                className="w-full text-sm font-semibold text-foreground bg-transparent border-b-2 border-accent outline-none py-0.5"
+                                onClick={e => e.stopPropagation()}
+                              />
+                            ) : (
+                              <p className="text-sm font-semibold text-foreground">{title}</p>
+                            )}
+                            <div className="flex items-center gap-2 mt-1.5">
+                              <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold ${badge.color}`}>
+                                <badge.icon size={10} />{badge.label}
+                              </span>
+                              {isRecommended && (
+                                <span className="text-[10px] text-accent font-medium">Recommended For You</span>
+                              )}
+                            </div>
+                          </div>
+                          <button onClick={e => { e.stopPropagation(); setEditingTitleIndex(isEditing ? null : i); }}
+                            className="p-1.5 rounded-lg opacity-0 group-hover:opacity-100 hover:bg-foreground/[0.05] text-muted-foreground transition-all">
+                            <Pencil size={14} />
+                          </button>
                         </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Write My Own Title */}
+                {showCustomTitle ? (
+                  <div className="p-4 rounded-xl border-2 border-foreground/[0.08] mb-6">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-foreground/[0.06] flex items-center justify-center shrink-0">
+                        <Pencil size={14} className="text-muted-foreground" />
                       </div>
+                      <input
+                        autoFocus
+                        value={customTitle}
+                        onChange={e => setCustomTitle(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === "Enter" && customTitle.trim()) {
+                            setBookData(prev => ({ ...prev, selectedTitle: customTitle.trim() }));
+                          }
+                        }}
+                        placeholder="Type your book title..."
+                        className="flex-1 text-sm font-semibold text-foreground bg-transparent outline-none placeholder:text-muted-foreground/50"
+                      />
+                      {customTitle.trim() && (
+                        <button onClick={() => setBookData(prev => ({ ...prev, selectedTitle: customTitle.trim() }))}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                            bookData.selectedTitle === customTitle.trim() ? "bg-accent text-white" : "bg-foreground/[0.05] hover:bg-foreground/[0.08] text-foreground"
+                          }`}>
+                          {bookData.selectedTitle === customTitle.trim() ? "Selected" : "Use This"}
+                        </button>
+                      )}
                     </div>
-                  ))}
+                  </div>
+                ) : (
+                  <button onClick={() => setShowCustomTitle(true)}
+                    className="w-full p-4 rounded-xl border-2 border-dashed border-foreground/[0.1] hover:border-foreground/[0.2] text-sm font-medium text-muted-foreground hover:text-foreground transition-all mb-6 flex items-center gap-3">
+                    <Pencil size={16} /> Write My Own Title
+                  </button>
+                )}
+
+                {/* Footer Actions */}
+                <div className="flex items-center justify-between pt-4 border-t border-foreground/[0.06]">
+                  <button onClick={() => { setTitleSuggestions([]); setGenerateStep("titles"); setActiveTab("idea"); }}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
+                    <ArrowLeft size={16} />Back
+                  </button>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => { setTitleSuggestions([]); setActiveTab("idea"); }}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
+                      <RefreshCw size={14} />Regenerate
+                    </button>
+                    <button onClick={() => setGenerateStep("chapters")} disabled={!bookData.selectedTitle}
+                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
+                      Continue<ArrowRight size={16} />
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
 
-            <div className="flex gap-3">
-              <button onClick={() => { setTitleSuggestions([]); setActiveTab("idea"); }} className="flex-1 py-3 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors flex items-center justify-center gap-2">
-                <RefreshCw size={16} />Regenerate
-              </button>
-              <button onClick={handleGenerateBook} disabled={!bookData.selectedTitle}
-                className="flex-1 py-3 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
-                <Sparkles size={16} />Generate eBook<ArrowRight size={16} />
-              </button>
-            </div>
+            {/* CHAPTER OUTLINE PAGE */}
+            {generateStep === "chapters" && chapterSequence.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-foreground text-center mb-2">Book Outline</h2>
+                <p className="text-sm text-muted-foreground text-center mb-2">
+                  <span className="font-semibold text-foreground">{bookData.selectedTitle}</span>
+                </p>
+                <p className="text-xs text-muted-foreground text-center mb-8">Review and customize your chapter structure before generating.</p>
+
+                {/* Book Stats Bar */}
+                <div className="flex items-center justify-center gap-6 mb-8 p-3 bg-foreground/[0.02] rounded-xl border border-foreground/[0.06]">
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <BookOpen size={14} className="text-accent" />
+                    <span className="font-semibold text-foreground">{chapterSequence.length}</span> Chapters
+                  </div>
+                  <div className="w-px h-4 bg-foreground/[0.1]" />
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <FileText size={14} className="text-accent" />
+                    <span className="font-semibold text-foreground">~{chapterSequence.reduce((sum, ch) => sum + (ch.pageCount || 8), 0)}</span> Pages
+                  </div>
+                  <div className="w-px h-4 bg-foreground/[0.1]" />
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Hash size={14} className="text-accent" />
+                    <span className="font-semibold text-foreground">~{(bookData.wordsPerChapter * chapterSequence.length).toLocaleString()}</span> Words
+                  </div>
+                  <div className="w-px h-4 bg-foreground/[0.1]" />
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <Image size={14} className="text-accent" />
+                    <span className="font-semibold text-foreground">{chapterSequence.filter(ch => ch.includeImages).length}</span> w/ Images
+                  </div>
+                </div>
+
+                {/* Chapter Cards */}
+                <div className="space-y-3 mb-8">
+                  {chapterSequence.map((ch, i) => (
+                    <div key={ch.id} className="rounded-xl border border-foreground/[0.08] bg-background overflow-hidden">
+                      <div className="flex items-start gap-3 p-4">
+                        <span className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                        <div className="flex-1 min-w-0">
+                          <input
+                            value={ch.title}
+                            onChange={e => setChapterSequence(prev => prev.map((c, idx) => idx === i ? { ...c, title: e.target.value } : c))}
+                            className="w-full font-semibold text-foreground text-sm bg-transparent outline-none border-b border-transparent hover:border-foreground/[0.1] focus:border-accent transition-colors pb-0.5"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">{ch.description}</p>
+                          <div className="flex flex-wrap gap-1.5 mt-2">
+                            {ch.topics.map(t => <span key={t} className="px-2 py-0.5 bg-foreground/[0.04] text-muted-foreground text-[10px] rounded-full">{t}</span>)}
+                          </div>
+
+                          {/* Chapter settings row */}
+                          <div className="flex items-center gap-4 mt-3 pt-3 border-t border-foreground/[0.04]">
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <FileText size={12} />
+                              <span>~{ch.pageCount || 8} pages</span>
+                            </div>
+                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <Hash size={12} />
+                              <span>~{bookData.wordsPerChapter.toLocaleString()} words</span>
+                            </div>
+                            <button
+                              onClick={() => setChapterSequence(prev => prev.map((c, idx) => idx === i ? { ...c, includeImages: !c.includeImages } : c))}
+                              className={`flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-md transition-colors ${
+                                ch.includeImages ? "text-accent bg-accent/10" : "text-muted-foreground bg-foreground/[0.04]"
+                              }`}>
+                              <Image size={12} />
+                              {ch.includeImages ? "Images On" : "No Images"}
+                            </button>
+                          </div>
+                        </div>
+                        <button onClick={() => setChapterSequence(prev => prev.filter((_, idx) => idx !== i))}
+                          className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors shrink-0">
+                          <X size={14} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add Chapter */}
+                <button onClick={() => setChapterSequence(prev => [...prev, {
+                  id: `ch-${Date.now()}`,
+                  title: `Chapter ${prev.length + 1}`,
+                  description: "New chapter",
+                  topics: [],
+                  includeImages: true,
+                  pageCount: 8,
+                }])}
+                  className="w-full p-3 rounded-xl border-2 border-dashed border-foreground/[0.08] hover:border-foreground/[0.15] text-sm font-medium text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2 mb-8">
+                  <Plus size={16} />Add Chapter
+                </button>
+
+                {/* Global Settings */}
+                <div className="p-4 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01] mb-8">
+                  <h4 className="text-xs font-semibold text-foreground mb-3 uppercase tracking-wider">Generation Settings</h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Words Per Chapter</label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          value={bookData.wordsPerChapter}
+                          onChange={e => setBookData(prev => ({ ...prev, wordsPerChapter: parseInt(e.target.value) || 2000 }))}
+                          className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent/40"
+                          min={500} max={10000} step={500}
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="text-xs text-muted-foreground mb-1 block">Image Integration</label>
+                      <button
+                        onClick={() => {
+                          const allOn = chapterSequence.every(ch => ch.includeImages);
+                          setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: !allOn })));
+                        }}
+                        className={`w-full px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
+                          chapterSequence.every(ch => ch.includeImages) ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.1] text-muted-foreground hover:bg-foreground/[0.04]"
+                        }`}>
+                        {chapterSequence.every(ch => ch.includeImages) ? "All Chapters" : "Custom"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="flex items-center justify-between pt-4 border-t border-foreground/[0.06]">
+                  <button onClick={() => setGenerateStep("titles")}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
+                    <ArrowLeft size={16} />Back
+                  </button>
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => { setTitleSuggestions([]); setGenerateStep("titles"); setActiveTab("idea"); }}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
+                      <RefreshCw size={14} />Regenerate
+                    </button>
+                    <button onClick={handleGenerateBook} disabled={!bookData.selectedTitle}
+                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
+                      <Sparkles size={16} />Generate eBook<ArrowRight size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         )}
 
