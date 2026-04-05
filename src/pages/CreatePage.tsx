@@ -99,6 +99,7 @@ import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import { SAMPLE_CREATIONS, SAMPLE_FAVORITES, SAMPLE_COLLECTIONS, SAMPLE_COMMUNITY, SAMPLE_TEMPLATES } from "@/lib/sampleGalleryData";
+import { WORKSPACE_MEMBERS } from "@/lib/workspaceMembers";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
 import { useAtMention } from "@/hooks/useAtMention";
 import MentionDropdown from "@/components/MentionDropdown";
@@ -4481,10 +4482,7 @@ export default App;`}</code>
                       </div>
                       {[
                         { id: "all", label: "All Members", avatar: null },
-                        { id: "dolmar", label: "Dolmar Cross", avatar: "DC" },
-                        { id: "javier", label: "Javier Pons", avatar: "JP" },
-                        { id: "jaypee", label: "Jaypee Vestidas", avatar: "JV" },
-                        { id: "digital", label: "Digital Babes", avatar: "DB" },
+                        ...WORKSPACE_MEMBERS.filter(m => m.id !== "you").map(m => ({ id: m.id, label: m.name, avatar: m.initials })),
                       ].map(member => (
                         <button key={member.id} onClick={() => { setCreationsCreatorFilter(member.id); setActiveTab("creations"); setCreationsDropdownOpen(false); }}
                           className={`w-full flex items-center gap-2.5 px-3 py-2 text-[0.82rem] font-medium transition-colors ${creationsCreatorFilter === member.id ? "bg-accent/10 text-accent" : "text-foreground hover:bg-foreground/[0.04]"}`}>
