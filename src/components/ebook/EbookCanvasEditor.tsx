@@ -119,6 +119,12 @@ const STOCK_IMAGES = [
   'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1573164713988-8665fc963095?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=600&auto=format&fit=crop',
 ];
 
 // ─── Element Generators ────────────────────────────
