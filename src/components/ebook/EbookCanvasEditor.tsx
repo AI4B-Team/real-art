@@ -137,15 +137,12 @@ const createTocElements = (pages: Page[]): CanvasElement[] => {
 };
 
 const createChapterElements = (num: number, title: string): CanvasElement[] => [
-  { id: `ch${num}-bg`, type: 'shape', x: 0, y: 0, width: 100, height: 25, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
-  ...Array.from({ length: 3 }, (_, i) => ({
-    id: `ch${num}-img${i}`, type: 'image' as const, x: 52 + i * 16, y: 3, width: 14, height: 18,
-    src: STOCK_IMAGES[(num - 1 + i) % STOCK_IMAGES.length],
-  })),
-  { id: `ch${num}-num`, type: 'text', x: 10, y: 8, width: 30, height: 10, content: num.toString().padStart(2, '0'), fontSize: 48, fontFamily: 'Georgia', textColor: '#ffffff' },
-  { id: `ch${num}-title`, type: 'text', x: 10, y: 28, width: 80, height: 8, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e' },
-  { id: `ch${num}-body`, type: 'text', x: 10, y: 40, width: 80, height: 15, content: 'This section provides a comprehensive overview of our strategic approach, detailing key methodologies and expected outcomes for stakeholders.', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
-  { id: `ch${num}-body2`, type: 'text', x: 10, y: 58, width: 80, height: 20, content: 'Our research indicates significant growth potential in emerging markets. The data suggests a 15% increase in investor confidence over the past quarter.', fontSize: 10, fontFamily: 'Georgia', textColor: '#374151' },
+  { id: `ch${num}-bg`, type: 'shape', x: 0, y: 0, width: 100, height: 30, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `ch${num}-img`, type: 'image', x: 0, y: 0, width: 100, height: 30, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length] },
+  { id: `ch${num}-num`, type: 'text', x: 10, y: 8, width: 30, height: 10, content: num.toString().padStart(2, '0'), fontSize: 48, fontFamily: 'Georgia', textColor: '#ffffff', zIndex: 2 },
+  { id: `ch${num}-title`, type: 'text', x: 10, y: 33, width: 80, height: 8, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e' },
+  { id: `ch${num}-body`, type: 'text', x: 10, y: 44, width: 80, height: 15, content: 'This section provides a comprehensive overview of our strategic approach, detailing key methodologies and expected outcomes for stakeholders.', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
+  { id: `ch${num}-body2`, type: 'text', x: 10, y: 62, width: 80, height: 20, content: 'Our research indicates significant growth potential in emerging markets. The data suggests a 15% increase in investor confidence over the past quarter.', fontSize: 10, fontFamily: 'Georgia', textColor: '#374151' },
 ];
 
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => [
@@ -901,38 +898,51 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           <TypeBadge />
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
-          {/* Floating action bar — compact vertical for small images, horizontal with labels for large */}
           {isSelected && (() => {
             const isSmall = el.width < 25 || el.height < 25;
             return (
-              <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 ${isSmall ? 'flex flex-col gap-0.5 p-1' : 'flex items-center gap-1 px-2 py-1.5'} bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-50`}
+              <div className={`absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-50`}
                 onMouseDown={e => e.stopPropagation()}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={() => { updateElement(el.id, { src: undefined, isPlaceholder: true }); onOpenImageSection?.(); }}
-                      className={`flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors ${isSmall ? 'p-1.5' : 'px-2 py-1 text-xs'}`}>
-                      <ImagePlus className={isSmall ? 'w-4 h-4' : 'w-3.5 h-3.5'} />{!isSmall && 'Replace'}
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                      <ImagePlus className="w-3.5 h-3.5" />Replace
                     </button>
-                  </TooltipTrigger>
-                  {isSmall && <TooltipContent side="right">Replace</TooltipContent>}
-                </Tooltip>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-auto p-2" side="top" align="center">
+                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Select Replacement</p>
+                    <div className="flex gap-1.5 mb-2">
+                      {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
+                        <button key={idx}
+                          onClick={() => { updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); }}
+                          className="w-16 h-16 rounded border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-105">
+                          <img src={imgSrc} alt={`Option ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                        </button>
+                      ))}
+                    </div>
+                    <button onClick={() => replaceImageInputRef.current?.click()}
+                      className="w-full text-xs py-1.5 rounded bg-accent text-white hover:bg-accent/90 flex items-center justify-center gap-1.5">
+                      <Upload className="w-3 h-3" />Upload
+                    </button>
+                  </PopoverContent>
+                </Popover>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button onClick={() => setShowAIEditModal(true)}
-                      className={`flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors ${isSmall ? 'p-1.5' : 'px-2 py-1 text-xs'}`}>
-                      <Sparkles className={`${isSmall ? 'w-4 h-4' : 'w-3.5 h-3.5'} text-accent`} />{!isSmall && 'Edit'}
+                      className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                      <Sparkles className="w-3.5 h-3.5 text-accent" />{!isSmall && 'Edit'}
                     </button>
                   </TooltipTrigger>
-                  {isSmall && <TooltipContent side="right">Edit</TooltipContent>}
+                  {isSmall && <TooltipContent side="top">Edit</TooltipContent>}
                 </Tooltip>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <button onClick={deleteElement}
-                      className={`flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors ${isSmall ? 'p-1.5' : 'px-2 py-1 text-xs'}`}>
-                      <Trash2 className={isSmall ? 'w-4 h-4' : 'w-3.5 h-3.5'} />{!isSmall && 'Delete'}
+                      className="flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors px-2 py-1 text-xs">
+                      <Trash2 className="w-3.5 h-3.5" />{!isSmall && 'Delete'}
                     </button>
                   </TooltipTrigger>
-                  {isSmall && <TooltipContent side="right">Delete</TooltipContent>}
+                  {isSmall && <TooltipContent side="top">Delete</TooltipContent>}
                 </Tooltip>
               </div>
             );
