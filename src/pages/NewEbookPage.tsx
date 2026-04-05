@@ -187,6 +187,7 @@ const NewEbookPage = () => {
   const [findReplaceMode, setFindReplaceMode] = useState<'find' | 'find-replace' | null>(null);
   const [showPageSettings, setShowPageSettings] = useState(true);
   const [manualPageSettings, setManualPageSettings] = useState(false);
+  const [sidebarOpenSection, setSidebarOpenSection] = useState<string | null>(null);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
