@@ -2520,6 +2520,42 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             </DialogFooter>
           </DialogContent>
         </Dialog>
+
+        {/* Replace Image Modal */}
+        <Dialog open={!!replaceModalElementId} onOpenChange={open => { if (!open) setReplaceModalElementId(null); }}>
+          <DialogContent className="sm:max-w-2xl max-h-[80vh]">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ImagePlus className="w-5 h-5 text-accent" />
+                Replace Image
+              </DialogTitle>
+            </DialogHeader>
+            <div className="py-2">
+              <p className="text-sm text-muted-foreground mb-4">Select an image below or use the Image panel on the left to browse more options.</p>
+              <div className="grid grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto pr-1">
+                {STOCK_IMAGES.map((imgSrc, idx) => (
+                  <button key={idx}
+                    onClick={() => {
+                      if (replaceModalElementId) {
+                        updateElement(replaceModalElementId, { src: imgSrc, isPlaceholder: false });
+                        toast.success('Image replaced');
+                        setReplaceModalElementId(null);
+                      }
+                    }}
+                    className="aspect-[4/3] rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg">
+                    <img src={imgSrc} alt={`Option ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setReplaceModalElementId(null)}>Cancel</Button>
+              <Button onClick={() => { replaceImageInputRef.current?.click(); setReplaceModalElementId(null); }} className="bg-accent hover:bg-accent/90 text-white gap-2">
+                <Upload className="w-4 h-4" />Upload Image
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Element selection context menu */}
