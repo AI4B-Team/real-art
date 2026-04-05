@@ -1060,13 +1060,13 @@ const EbookCanvasEditor = ({
               )}
 
               {/* Canvas - Scrollable all pages */}
-              <div className="flex-1 overflow-auto py-8 px-4 relative">
+              <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative">
                 <div className="flex flex-col items-center gap-8">
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     return (
-                      <div key={page.id} className="flex items-start gap-2">
+                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="flex items-start gap-2">
                         {/* Page label */}
                         <div className="w-8 shrink-0 pt-2">
                           <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
