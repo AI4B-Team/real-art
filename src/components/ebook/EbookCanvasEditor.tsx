@@ -608,17 +608,32 @@ const EbookCanvasEditor = ({
 
         updateElement(resizeState.id, { x: newX, y: newY, width: newW, height: newH });
       }
+
+      if (rotateState) {
+        const angle = Math.atan2(
+          e.clientY - rotateState.centerY,
+          e.clientX - rotateState.centerX
+        ) * (180 / Math.PI);
+        let rotation = rotateState.elemRotation + (angle - rotateState.startAngle);
+        // Snap to 0/90/180/270 when within 5°
+        for (const snap of [0, 90, 180, 270, 360]) {
+          if (Math.abs(rotation - snap) < 5) { rotation = snap % 360; break; }
+          if (Math.abs(rotation + 360 - snap) < 5) { rotation = snap % 360; break; }
+        }
+        updateElement(rotateState.id, { rotation: ((rotation % 360) + 360) % 360 });
+      }
     };
 
     const handleMouseUp = () => {
       setDragState(null);
       setResizeState(null);
+      setRotateState(null);
     };
 
     window.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
     return () => { window.removeEventListener('mousemove', handleMouseMove); window.removeEventListener('mouseup', handleMouseUp); };
-  }, [dragState, resizeState, zoom]);
+  }, [dragState, resizeState, rotateState, zoom]);
 
   // ─── Keyboard Shortcuts ───────────────────────
   useEffect(() => {
