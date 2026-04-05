@@ -311,9 +311,23 @@ const PageSettingsPanel = ({
               </label>
               <div>
                 <label className="text-xs text-muted-foreground mb-1.5 block">Apply To</label>
-                <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-sm text-foreground hover:border-foreground/[0.15]">
-                  All Pages (1-{pages.length}) <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-sm text-foreground hover:border-foreground/[0.15]">
+                      {applyTo === 'all' ? `All Pages (1-${pages.length})` : `Current Page (${selectedIndex + 1})`} <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-1" align="start">
+                    <button onClick={() => setApplyTo('current')}
+                      className={`w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors ${applyTo === 'current' ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                      Current Page ({selectedIndex + 1})
+                    </button>
+                    <button onClick={() => setApplyTo('all')}
+                      className={`w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors ${applyTo === 'all' ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                      All Pages (1-{pages.length})
+                    </button>
+                  </PopoverContent>
+                </Popover>
               </div>
               <button onClick={() => toast.success('Size applied')}
                 className="w-full py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
