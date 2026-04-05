@@ -9,7 +9,7 @@ import {
   Briefcase, Coffee, GraduationCap, Heart, Shield, Flame, Search, ChevronDown,
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
   ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut, Minus,
-  Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download,
+  Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download, Settings,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
@@ -554,6 +554,13 @@ const NewEbookPage = () => {
                 </PopoverContent>
               </Popover>
               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.min(z + 10, 200))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Plus size={15} /></button></TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
+              <div className="w-px h-5 bg-foreground/[0.08] mx-1" />
+              <button
+                onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${showPageSettings ? 'text-accent bg-accent/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}
+              >
+                <Settings size={14} />Settings
+              </button>
             </div>
           </div>
         )}
