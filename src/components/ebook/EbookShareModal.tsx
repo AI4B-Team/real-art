@@ -4,7 +4,7 @@ import {
   Calendar, MoreHorizontal, FileText, Image as ImageIcon, X,
   Facebook, Linkedin, Check, Mail, MessageCircle, Send,
   Bookmark, Printer, QrCode, Rss, Share2, ArrowLeft,
-  Instagram, Youtube, Clock, History, Pencil, Trash2, ExternalLink,
+  Instagram, Youtube, Clock, History, Pencil, Trash2, RefreshCw,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Switch } from "@/components/ui/switch";
@@ -420,6 +420,18 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
                           <span className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${getStatusBadge(entry.status)}`}>
                             {entry.status}
                           </span>
+                          {(entry.type === 'shared' || entry.type === 'scheduled') && entry.platforms?.length ? (
+                            <button
+                              onClick={() => {
+                                entry.platforms!.forEach(p => handleSocialShare(p));
+                                addHistoryEntry({ type: 'shared', platforms: [...entry.platforms!], date: new Date().toLocaleDateString(), status: 'sent' });
+                              }}
+                              className="p-1.5 rounded-lg hover:bg-accent/10 text-muted-foreground hover:text-accent transition-colors"
+                              title="Reshare"
+                            >
+                              <RefreshCw className="w-3 h-3" />
+                            </button>
+                          ) : null}
                           <button
                             onClick={() => removeHistoryEntry(entry.id)}
                             className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
