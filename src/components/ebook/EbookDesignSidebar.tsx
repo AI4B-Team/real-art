@@ -104,6 +104,18 @@ const STOCK_IMAGES = [
   'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?w=300&h=200&fit=crop',
   'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=300&h=200&fit=crop',
   'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=300&h=200&fit=crop',
+];
+
+const COMMUNITY_IMAGES = [
+  'https://images.unsplash.com/photo-1553877522-43269d4ea984?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1552664730-d307ca884978?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1557804506-669a67965ba0?w=300&h=200&fit=crop',
+  'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=300&h=200&fit=crop',
 ];
 
 const EbookDesignSidebar = ({
