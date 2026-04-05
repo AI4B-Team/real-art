@@ -810,7 +810,7 @@ const EbookDesignSidebar = ({
           {imageTab === 'stock' && (
             <div className="grid grid-cols-3 gap-1.5">
               {STOCK_IMAGES.map((src, i) => (
-                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
                   className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
                   <img src={src} alt="" className="w-full h-full object-cover" />
                 </button>
