@@ -188,7 +188,37 @@ const NewEbookPage = () => {
     { id: "9", title: "Back Cover", type: "back" },
   ];
 
-  const [ebookPages, setEbookPages] = useState<UnifiedPage[]>(getDefaultPages);
+  const STORAGE_KEY_PAGES = "ebook_pages_data";
+  const STORAGE_KEY_ELEMENTS = "ebook_elements_data";
+
+  const [ebookPages, setEbookPages] = useState<UnifiedPage[]>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_PAGES);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return getDefaultPages();
+  });
+
+  const [savedPageElements, setSavedPageElements] = useState<Record<string, any[]>>(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY_ELEMENTS);
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return {};
+  });
+
+  // Persist pages to localStorage
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEY_PAGES, JSON.stringify(ebookPages));
+  }, [ebookPages]);
+
+  // Callback when canvas elements change
+  const handlePageElementsChange = useCallback((elements: Record<string, any[]>) => {
+    setSavedPageElements(elements);
+    localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(elements));
+    setLastSaved(new Date());
+  }, []);
+
   const [selectedPageId, setSelectedPageId] = useState<string | null>("1");
   const [zoom, setZoom] = useState(100);
   const [isGridView, setIsGridView] = useState(false);
