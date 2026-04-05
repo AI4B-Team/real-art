@@ -463,31 +463,50 @@ const PageSettingsPanel = ({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-muted-foreground mb-1.5 block">Type</label>
-                  <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15]">
-                    No Border <ChevronDown className="w-3 h-3 text-muted-foreground" />
-                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15] capitalize">
+                        {selectedPage?.pageBorderType === 'none' || !selectedPage?.pageBorderType ? 'No Border' : selectedPage.pageBorderType} <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-36 p-1" align="start">
+                      {BORDER_TYPES.map(t => (
+                        <button key={t} onClick={() => updateSelectedPage({ pageBorderType: t })}
+                          className={`w-full text-left px-3 py-1.5 text-xs rounded-md capitalize transition-colors ${selectedPage?.pageBorderType === t ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                          {t === 'none' ? 'No Border' : t}
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
                 </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1.5 block">Style</label>
-                  <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15]">
-                    Solid <ChevronDown className="w-3 h-3 text-muted-foreground" />
-                  </button>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs text-muted-foreground mb-1.5 block">Size</label>
-                  <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15]">
-                    1px <ChevronDown className="w-3 h-3 text-muted-foreground" />
-                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-xs text-foreground hover:border-foreground/[0.15]">
+                        {selectedPage?.pageBorderWidth || 1}px <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-28 p-1" align="start">
+                      {BORDER_SIZES.map(s => (
+                        <button key={s} onClick={() => updateSelectedPage({ pageBorderWidth: s })}
+                          className={`w-full text-left px-3 py-1.5 text-xs rounded-md transition-colors ${(selectedPage?.pageBorderWidth || 1) === s ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                          {s}px
+                        </button>
+                      ))}
+                    </PopoverContent>
+                  </Popover>
                 </div>
-                <div>
-                  <label className="text-xs text-muted-foreground mb-1.5 block">Color</label>
-                  <div className="flex items-center gap-2 px-3 py-2 rounded-lg border border-foreground/[0.08]">
-                    <div className="w-4 h-4 rounded border border-foreground/[0.1]" style={{ backgroundColor: '#e5e7eb' }} />
-                    <span className="text-xs text-foreground font-mono">#e5e7eb</span>
-                  </div>
-                </div>
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground mb-1.5 block">Color</label>
+                <label className="flex items-center gap-2 px-3 py-2 rounded-lg border border-foreground/[0.08] cursor-pointer hover:border-foreground/[0.15]">
+                  <div className="w-4 h-4 rounded border border-foreground/[0.1]" style={{ backgroundColor: selectedPage?.pageBorderColor || '#e5e7eb' }} />
+                  <span className="text-xs text-foreground font-mono">{selectedPage?.pageBorderColor || '#e5e7eb'}</span>
+                  <input type="color" value={selectedPage?.pageBorderColor || '#e5e7eb'}
+                    onChange={e => updateSelectedPage({ pageBorderColor: e.target.value })}
+                    className="sr-only" />
+                </label>
               </div>
             </div>
           )}
