@@ -558,6 +558,7 @@ const EbookCanvasEditor = ({
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
+          <TypeBadge />
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {isSelected && renderResizeHandles(el)}
           {/* Floating action bar */}
