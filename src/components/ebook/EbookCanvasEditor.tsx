@@ -1151,7 +1151,7 @@ const EbookCanvasEditor = ({
             <>
               {/* Unified toolbar — only visible when element is selected */}
               {selectedElement && (
-<div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0">
+<div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" onMouseDown={e => e.stopPropagation()} onClick={e => e.stopPropagation()}>
                 <div className="flex items-center gap-1">
                 {/* Select */}
                 <Tooltip><TooltipTrigger asChild>
@@ -1188,7 +1188,9 @@ const EbookCanvasEditor = ({
                     <Tooltip><TooltipTrigger asChild>
                       <input type="color" value={selectedElement.textColor || '#1a1a2e'}
                         onChange={e => updateElement(selectedElement.id, { textColor: e.target.value })}
-                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                        onMouseDown={e => e.stopPropagation()}
+                        onClick={e => e.stopPropagation()}
+                        className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer p-0" />
                     </TooltipTrigger><TooltipContent>Text Color</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => updateElement(selectedElement.id, { fontSize: selectedElement.fontSize === 28 ? 16 : 28, fontWeight: selectedElement.fontSize === 28 ? 'normal' : 'bold' })}
