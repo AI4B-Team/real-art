@@ -343,10 +343,10 @@ const STOCK_AUDIO = [
 
 type MediaTab = 'stock' | 'creations' | 'community' | 'uploads';
 
-const MediaTabs = ({ active, onChange }: { active: MediaTab; onChange: (t: MediaTab) => void }) => (
+const MediaTabs = ({ active, onChange, stockIcon }: { active: MediaTab; onChange: (t: MediaTab) => void; stockIcon?: React.ComponentType<any> }) => (
   <div className="flex items-center gap-0.5 border-b border-foreground/[0.06] mt-2 mb-2">
     {([
-      { id: 'stock' as const, label: 'Stock', icon: Library },
+      { id: 'stock' as const, label: 'Stock', icon: stockIcon || Library },
       { id: 'creations' as const, label: 'Creations', icon: Sparkles },
       { id: 'community' as const, label: 'Community', icon: Users },
       { id: 'uploads' as const, label: 'Uploads', icon: Upload },
@@ -408,7 +408,7 @@ const AudioPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any
 
   return (
     <div className="px-3 pb-3">
-      <MediaTabs active={tab} onChange={setTab} />
+      <MediaTabs active={tab} onChange={setTab} stockIcon={Music} />
       <div className="relative mb-2">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
         <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Press [Enter] To Search"
