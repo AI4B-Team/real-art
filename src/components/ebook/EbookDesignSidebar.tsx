@@ -693,7 +693,7 @@ const EbookDesignSidebar = ({
                       isSelected ? 'bg-accent/[0.08] border border-accent/30' : 'hover:bg-foreground/[0.03] border border-transparent'
                     } ${isDropTarget ? 'bg-accent/[0.06]' : ''}`}>
                   {/* Drag handle - visible on selected/hover */}
-                  <GripVertical className={`w-3.5 h-3.5 text-muted-foreground shrink-0 cursor-grab ${isSelected ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`} />
+                  <GripVertical className={`w-3.5 h-3.5 text-muted-foreground shrink-0 ${isCoverOrBack ? 'opacity-20 cursor-default' : `cursor-grab ${isSelected ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`}`} />
                   {/* Page number */}
                   <span className={`text-xs font-semibold shrink-0 w-5 text-center ${
                     isSelected ? 'text-accent' : 'text-muted-foreground'
