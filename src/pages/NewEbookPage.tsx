@@ -442,7 +442,18 @@ const NewEbookPage = () => {
               <Tooltip><TooltipTrigger asChild><button onClick={() => setFindReplaceMode(prev => prev === 'find-replace' ? null : 'find-replace')} className={`p-1.5 rounded-lg hover:bg-foreground/[0.05] ${findReplaceMode === 'find-replace' ? 'text-accent bg-accent/10' : 'text-muted'}`}><ArrowRightLeft size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.max(z - 10, 25))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomOut size={15} /></button></TooltipTrigger><TooltipContent>Zoom Out</TooltipContent></Tooltip>
-              <span className="text-xs text-muted font-medium w-10 text-center">{zoom}%</span>
+              <input
+                type="text"
+                value={`${zoom}%`}
+                onChange={e => {
+                  const val = parseInt(e.target.value.replace(/[^0-9]/g, ''), 10);
+                  if (!isNaN(val)) setZoom(Math.max(25, Math.min(200, val)));
+                }}
+                onFocus={e => { e.target.value = String(zoom); e.target.select(); }}
+                onBlur={e => { e.target.value = `${zoom}%`; }}
+                onKeyDown={e => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur(); }}
+                className="text-xs text-muted font-medium w-12 text-center bg-transparent border border-transparent hover:border-foreground/[0.1] focus:border-accent focus:outline-none rounded px-1 py-0.5"
+              />
               <Tooltip><TooltipTrigger asChild><button onClick={() => setZoom(z => Math.min(z + 10, 200))} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><ZoomIn size={15} /></button></TooltipTrigger><TooltipContent>Zoom In</TooltipContent></Tooltip>
             </div>
           </div>
