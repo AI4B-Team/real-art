@@ -619,17 +619,21 @@ const EbookCanvasEditor = ({
                     <div key={page.id} className="flex items-stretch">
                       {/* Insert button between pages */}
                       <div
-                        className="relative flex items-center justify-center w-5 shrink-0"
+                        className="relative flex items-center justify-center w-12 shrink-0"
                         onMouseEnter={() => setGridInsertHover(pageIndex)}
                         onMouseLeave={() => setGridInsertHover(null)}
                       >
-                        <div className={`absolute inset-y-4 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-accent transition-all duration-200 ${gridInsertHover === pageIndex ? 'opacity-100' : 'opacity-0'}`} />
-                        <button
-                          onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex); }}
-                          className={`relative z-10 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center shadow-md transition-all duration-200 ${gridInsertHover === pageIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
-                        >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <button
+                              onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex); }}
+                              className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === pageIndex ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
+                            >
+                              <Plus className="w-5 h-5" />
+                            </button>
+                          </TooltipTrigger>
+                          <TooltipContent side="bottom">Add Page</TooltipContent>
+                        </Tooltip>
                       </div>
                       {/* Page thumbnail */}
                       <div className="flex flex-col items-center gap-1.5 w-[140px]"
@@ -704,17 +708,21 @@ const EbookCanvasEditor = ({
                 {/* Trailing insert + Add Page card */}
                 <div className="flex items-stretch">
                   <div
-                    className="relative flex items-center justify-center w-5 shrink-0"
+                    className="relative flex items-center justify-center w-12 shrink-0"
                     onMouseEnter={() => setGridInsertHover(currentPages.length)}
                     onMouseLeave={() => setGridInsertHover(null)}
                   >
-                    <div className={`absolute inset-y-4 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-accent transition-all duration-200 ${gridInsertHover === currentPages.length ? 'opacity-100' : 'opacity-0'}`} />
-                    <button
-                      onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length); }}
-                      className={`relative z-10 w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center shadow-md transition-all duration-200 ${gridInsertHover === currentPages.length ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
-                    >
-                      <Plus className="w-3.5 h-3.5" />
-                    </button>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); insertPageAt(currentPages.length); }}
+                          className={`relative z-10 w-10 h-10 rounded-full bg-background border border-foreground/[0.12] text-muted-foreground flex items-center justify-center shadow-lg transition-all duration-200 hover:border-accent hover:text-accent ${gridInsertHover === currentPages.length ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'}`}
+                        >
+                          <Plus className="w-5 h-5" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent side="bottom">Add Page</TooltipContent>
+                    </Tooltip>
                   </div>
                   <div className="flex flex-col items-center gap-1.5 w-[140px]">
                     <button onClick={handleAddPage}
