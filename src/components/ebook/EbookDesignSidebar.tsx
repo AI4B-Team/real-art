@@ -671,17 +671,7 @@ const EbookDesignSidebar = ({
       {/* Mockups */}
       <SectionHeader id="mockups" title="Mockups" icon={Layers3} />
       {expandedSections.has('mockups') && (
-        <div className="px-3 pb-3">
-          <div className="grid grid-cols-2 gap-1.5">
-            {['Phone', 'Laptop', 'Tablet', 'Book'].map(m => (
-              <button key={m} onClick={() => { onAddElement?.('mockup', { type: m.toLowerCase() }); toast.success(`${m} mockup added`); }}
-                className="flex flex-col items-center gap-1 p-3 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
-                <Layers3 className="w-5 h-5 text-muted-foreground" />
-                <span className="text-[10px] text-muted-foreground">{m}</span>
-              </button>
-            ))}
-          </div>
-        </div>
+        <MockupsPanel onAddElement={onAddElement} />
       )}
 
       {/* Translate */}
