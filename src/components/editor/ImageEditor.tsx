@@ -8,7 +8,7 @@ import {
   FileText, User, Video, Sparkles, Captions, LayoutGrid, AudioLines, Mic,
   Film, Send, ChevronLeft, Wrench, Palette, Heart, Zap,
   MessageSquare, RefreshCw, Loader2, Shuffle, X as XIcon,
-  Hash, Copy, Box, Link, Clock,
+  Hash, Copy, Box, Link, Clock, Hand, Square, ArrowUpRight, PenTool,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "@/hooks/use-toast";
