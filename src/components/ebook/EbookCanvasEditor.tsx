@@ -152,9 +152,9 @@ const createChapterPageElements = (num: number, title: string): CanvasElement[] 
   { id: `cp${num}-title`, type: 'text', x: 10, y: 48, width: 80, height: 15, content: title, fontSize: 36, fontFamily: 'Georgia', textColor: '#ffffff' },
 ];
 
-const createBackElements = (): CanvasElement[] => [
+const createBackElements = (title: string): CanvasElement[] => [
   { id: 'back-bg', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: 'back-logo', type: 'text', x: 35, y: 40, width: 30, height: 10, content: 'REAL ART', fontSize: 28, fontFamily: 'Georgia', textColor: '#ffffff', textAlign: 'center' },
+  { id: 'back-logo', type: 'text', x: 15, y: 40, width: 70, height: 10, content: title || 'Untitled Book', fontSize: 28, fontFamily: 'Georgia', textColor: '#ffffff', textAlign: 'center' },
   { id: 'back-tag', type: 'text', x: 25, y: 52, width: 50, height: 6, content: 'Creative Excellence', fontSize: 12, fontFamily: 'Georgia', textColor: '#94a3b8', textAlign: 'center' },
 ];
 
@@ -172,7 +172,7 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
       const idx = chapterPagePages.indexOf(page);
       return createChapterPageElements(idx + 1, page.title);
     }
-    case 'back': return createBackElements();
+    case 'back': return createBackElements(bookTitle);
     case 'blank': return [];
     default: return [];
   }
@@ -205,6 +205,34 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   };
 
   useEffect(() => { if (!onPagesChange) setInternalPages(pages); }, [pages, onPagesChange]);
+
+  // Sync bookTitle to cover and back cover elements when it changes
+  useEffect(() => {
+    if (!bookTitle) return;
+    setPageElements(prev => {
+      const updated = { ...prev };
+      let changed = false;
+      currentPages.forEach(page => {
+        const elems = updated[page.id];
+        if (!elems) return;
+        if (page.type === 'cover') {
+          const titleEl = elems.find(e => e.id === 'title-text');
+          if (titleEl && titleEl.content !== bookTitle) {
+            updated[page.id] = elems.map(e => e.id === 'title-text' ? { ...e, content: bookTitle } : e);
+            changed = true;
+          }
+        }
+        if (page.type === 'back') {
+          const logoEl = elems.find(e => e.id === 'back-logo');
+          if (logoEl && logoEl.content !== bookTitle) {
+            updated[page.id] = elems.map(e => e.id === 'back-logo' ? { ...e, content: bookTitle } : e);
+            changed = true;
+          }
+        }
+      });
+      return changed ? updated : prev;
+    });
+  }, [bookTitle, currentPages]);
 
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
