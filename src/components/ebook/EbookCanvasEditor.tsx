@@ -11,7 +11,7 @@ import {
   GripVertical, MoreHorizontal, FileText, MessageSquare,
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
-  Sparkles, EyeOff, Download, Files, CircleDot, Eclipse,
+  Sparkles, EyeOff, Download, Files, CircleDot, Eclipse, Eye,
   BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid,
 } from 'lucide-react';
 import {
