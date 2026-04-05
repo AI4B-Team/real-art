@@ -81,6 +81,7 @@ const App = () => (
         <QuickViewPanel />
         <Routes>
           <Route path="/landing" element={<LandingPage />} />
+          <Route path="/shared/ebook/:shareId" element={<SharedEbookPage />} />
         </Routes>
         <AuthLayout>
           <Routes>
