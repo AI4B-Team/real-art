@@ -1143,12 +1143,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
               <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
                 {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
-                  <button key={idx}
-                    onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
-                    onContextMenu={e => { e.preventDefault(); e.stopPropagation(); setPreviewImageSrc(imgSrc); }}
-                    className="w-28 h-28 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                    <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
-                  </button>
+                  <div key={idx} className="relative group">
+                    <button
+                      onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
+                      className="w-28 h-28 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                      <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                    </button>
+                    <button
+                      onClick={e => { e.stopPropagation(); setPreviewImageSrc(imgSrc); }}
+                      className="absolute top-1 right-1 w-6 h-6 bg-background/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
+                      <Eye className="w-3 h-3 text-foreground" />
+                    </button>
+                  </div>
                 ))}
               </div>
               <button
