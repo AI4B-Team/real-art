@@ -151,7 +151,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   <p className="text-[10px] font-medium text-foreground truncate px-1.5 py-1 bg-background">{page.title}</p>
                 </div>
 
-                {/* Hover action buttons */}
+                {/* Hover action buttons — hidden for cover/back */}
+                {page.type !== 'cover' && page.type !== 'back' && (
                 <div className="flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -186,6 +187,7 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                     <TooltipContent side="left">Delete</TooltipContent>
                   </Tooltip>
                 </div>
+                )}
               </div>
             </div>
           ))}
