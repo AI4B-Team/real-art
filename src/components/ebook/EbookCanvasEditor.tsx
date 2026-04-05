@@ -860,6 +860,29 @@ const EbookCanvasEditor = ({
             style={positions[h]}
             onMouseDown={e => handleResizeMouseDown(e, el, h)} />
         ))}
+        {/* Rotation handle — line + circle above top-center */}
+        {!el.locked && (
+          <div className="absolute z-50" style={{ top: -30, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              className="w-4 h-4 rounded-full bg-accent border-2 border-background shadow-md cursor-grab active:cursor-grabbing flex items-center justify-center"
+              onMouseDown={e => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (!canvasRef.current) return;
+                const parent = (e.target as HTMLElement).closest('[style*="position"]')?.parentElement;
+                if (!parent) return;
+                const parentRect = parent.getBoundingClientRect();
+                const centerX = parentRect.left + parentRect.width / 2;
+                const centerY = parentRect.top + parentRect.height / 2;
+                const startAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+                setRotateState({ id: el.id, centerX, centerY, startAngle, elemRotation: el.rotation || 0 });
+              }}
+            >
+              <RotateCcw className="w-2.5 h-2.5 text-background" />
+            </div>
+            <div className="w-px h-3 bg-accent" />
+          </div>
+        )}
       </>
     );
   };
