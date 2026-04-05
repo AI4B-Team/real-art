@@ -1224,7 +1224,7 @@ const EbookCanvasEditor = ({
                         <ChevronDown className="w-2.5 h-2.5 opacity-60" />
                       </button>
                     </PopoverTrigger>
-                    <PopoverContent className="w-36 p-1.5" align="end">
+                    <PopoverContent className="w-44 p-1.5" align="end">
                       {[
                         { id: 'rectangle', icon: Square, label: 'Rectangle (R)' },
                         { id: 'circle', icon: Circle, label: 'Circle (O)' },
