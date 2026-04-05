@@ -617,7 +617,7 @@ const EbookDesignSidebar = ({
 
   const SectionHeader = ({ id, title, icon: Icon }: { id: SectionId; title: string; icon: any }) => (
     <button onClick={() => toggleSection(id)}
-      className={`w-full flex items-center justify-between px-3 py-2.5 transition-colors ${expandedSections.has(id) ? 'bg-foreground/[0.04] border-l-2 border-l-accent' : 'hover:bg-foreground/[0.03] border-l-2 border-l-transparent'}`}>
+      className={`w-full flex items-center justify-between px-3 py-2.5 transition-colors ${expandedSections.has(id) ? 'bg-foreground/[0.12] border-l-2 border-l-accent' : 'hover:bg-foreground/[0.03] border-l-2 border-l-transparent'}`}>
       <div className="flex items-center gap-2">
         <Icon className="w-4 h-4 text-muted-foreground" />
         <span className="text-xs font-semibold text-foreground">{title}</span>
@@ -629,7 +629,7 @@ const EbookDesignSidebar = ({
   return (
     <div className="w-80 border-l border-foreground/[0.04] bg-background overflow-y-auto flex flex-col">
       {/* Header */}
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04]">
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12]">
         <span className="text-xs font-bold text-foreground uppercase tracking-wider">Design</span>
         <button onClick={() => setIsCollapsed(true)} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]" title="Close Panel">
           <ChevronDown className="w-3.5 h-3.5 rotate-90" />

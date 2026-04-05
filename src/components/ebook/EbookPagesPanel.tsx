@@ -105,7 +105,7 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
     <TooltipProvider delayDuration={200}>
       <div className="w-56 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
         {/* Header */}
-        <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04]">
+        <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12]">
           <span className="text-sm font-bold text-foreground">Pages</span>
           <div className="flex items-center gap-1">
             <button onClick={handleAddPage} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
