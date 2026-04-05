@@ -574,9 +574,9 @@ const EbookCanvasEditor = ({
     setSelectedElementId(dup.id);
   };
 
-  const updateElement = (id: string, updates: Partial<CanvasElement>) => {
+  const updateElement = (id: string, updates: Partial<CanvasElement>, skipUndo = false) => {
     if (!selectedPage) return;
-    updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e));
+    updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e), skipUndo);
   };
 
   const handleAITextEdit = async (action: AIEditAction, params?: { tone?: string; prompt?: string }) => {
