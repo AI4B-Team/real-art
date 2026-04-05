@@ -1195,10 +1195,15 @@ const EbookCanvasEditor = ({
                 {/* ── Context: Text formatting ── */}
                 {selectedElement?.type === 'text' && (
                   <>
-                    <button onClick={() => toast.success('AI text tools')}
-                      className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
-                      <Sparkles className="w-3 h-3" />AI
-                    </button>
+                    <AITextEditMenu
+                      onAction={handleAITextEdit}
+                      isProcessing={isAIProcessing}
+                      trigger={
+                        <button className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+                          <Sparkles className="w-3 h-3" />{isAIProcessing ? 'Working...' : 'AI'}
+                        </button>
+                      }
+                    />
                     <Select value={selectedElement.fontFamily || 'Inter'} onValueChange={v => updateElement(selectedElement.id, { fontFamily: v })}>
                       <SelectTrigger className="w-32 h-7 text-xs"><SelectValue /></SelectTrigger>
                       <SelectContent>{FONTS.map(f => <SelectItem key={f} value={f}><span style={{ fontFamily: f }}>{f}</span></SelectItem>)}</SelectContent>
