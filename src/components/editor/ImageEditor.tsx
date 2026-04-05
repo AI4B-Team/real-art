@@ -328,17 +328,52 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
     ctx.globalCompositeOperation = "source-over";
   }, [brushStrokes, selectedImage, isDrawing]);
 
-  // Image drag
+  // Image drag (hand tool or select tool)
   const handleMouseDown = (e: React.MouseEvent) => {
-    if (selectedImage && activeTool === "select" && isImageSelected) {
+    if (selectedImage && (activeTool === "hand" || (activeTool === "select" && isImageSelected))) {
       e.preventDefault(); setIsDragging(true);
       setDragStart({ x: e.clientX - imagePosition.x, y: e.clientY - imagePosition.y });
     }
   };
   const handleMouseMove = (e: React.MouseEvent) => {
     if (isDragging && selectedImage) setImagePosition({ x: e.clientX - dragStart.x, y: e.clientY - dragStart.y });
+    // Shape drawing preview
+    if (drawingShape && (activeTool === "arrow" || activeTool === "rectangle")) {
+      const canvas = drawingCanvasRef.current;
+      if (!canvas) return;
+      const rect = canvas.getBoundingClientRect();
+      setDrawingShape(prev => prev ? { ...prev, x2: e.clientX - rect.left, y2: e.clientY - rect.top } : null);
+    }
   };
-  const handleMouseUp = () => setIsDragging(false);
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    if (drawingShape && (activeTool === "arrow" || activeTool === "rectangle")) {
+      const dx = Math.abs(drawingShape.x2 - drawingShape.x1);
+      const dy = Math.abs(drawingShape.y2 - drawingShape.y1);
+      if (dx > 5 || dy > 5) {
+        setShapes(prev => [...prev, drawingShape]);
+        setHasChanges(true);
+      }
+      setDrawingShape(null);
+    }
+  };
+
+  // Shape start on canvas
+  const handleShapeStart = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (activeTool !== "arrow" && activeTool !== "rectangle") return;
+    const canvas = drawingCanvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const shape: ShapeAnnotation = {
+      id: `shape-${Date.now()}`, type: activeTool as "arrow" | "rectangle",
+      x1: x, y1: y, x2: x, y2: y,
+      color: activeTool === "arrow" ? toolSettings.arrowColor : toolSettings.rectColor,
+      strokeWidth: activeTool === "arrow" ? toolSettings.arrowStroke : toolSettings.rectStroke,
+    };
+    setDrawingShape(shape);
+  };
 
   const handleToolClick = (toolId: string) => {
     if (toolId === "delete") {
