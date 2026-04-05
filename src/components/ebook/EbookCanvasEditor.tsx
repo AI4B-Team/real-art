@@ -500,6 +500,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           }
         });
         if (closestId && closestId !== selectedPageId) {
+          scrollSelectedRef.current = true;
           onPageSelect(closestId);
         }
       }, 50);
