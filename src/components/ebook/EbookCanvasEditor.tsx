@@ -745,9 +745,33 @@ const EbookCanvasEditor = ({
     return null;
   };
 
+  const renderElementControls = (el: CanvasElement) => (
+    <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-0.5 z-50"
+      onMouseDown={e => e.stopPropagation()}>
+      {[
+        { icon: Move, label: 'Move', action: () => {}, cursor: 'grab' },
+        { icon: RotateCcw, label: 'Rotate', action: () => updateElement(el.id, { rotation: ((el.rotation || 0) + 15) % 360 }) },
+        { icon: el.locked ? Lock : Unlock, label: el.locked ? 'Unlock' : 'Lock', action: () => updateElement(el.id, { locked: !el.locked }) },
+        { icon: Copy, label: 'Duplicate', action: duplicateElement },
+        { icon: Trash2, label: 'Delete', action: deleteElement, destructive: true },
+      ].map(({ icon: Icon, label, action, destructive, cursor }) => (
+        <Tooltip key={label}><TooltipTrigger asChild>
+          <button onClick={action}
+            className={`w-7 h-7 rounded-full flex items-center justify-center shadow-md border transition-colors ${
+              destructive
+                ? 'bg-destructive text-destructive-foreground border-destructive/20 hover:bg-destructive/90'
+                : 'bg-accent text-accent-foreground border-accent/20 hover:bg-accent/90'
+            }`}
+            style={cursor ? { cursor } : undefined}>
+            <Icon className="w-3.5 h-3.5" />
+          </button>
+        </TooltipTrigger><TooltipContent side="top" className="text-xs">{label}</TooltipContent></Tooltip>
+      ))}
+    </div>
+  );
+
   const renderResizeHandles = (el: CanvasElement) => {
-    if (el.locked) return null;
-    const handles = ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'];
+    const handles = el.locked ? [] : ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'];
     const positions: Record<string, React.CSSProperties> = {
       nw: { top: -4, left: -4, cursor: 'nwse-resize' },
       ne: { top: -4, right: -4, cursor: 'nesw-resize' },
@@ -758,11 +782,16 @@ const EbookCanvasEditor = ({
       e: { top: '50%', right: -4, transform: 'translateY(-50%)', cursor: 'ew-resize' },
       w: { top: '50%', left: -4, transform: 'translateY(-50%)', cursor: 'ew-resize' },
     };
-    return handles.map(h => (
-      <div key={h} className="absolute w-2 h-2 bg-accent border border-white rounded-sm z-50"
-        style={positions[h]}
-        onMouseDown={e => handleResizeMouseDown(e, el, h)} />
-    ));
+    return (
+      <>
+        {renderElementControls(el)}
+        {handles.map(h => (
+          <div key={h} className="absolute w-2.5 h-2.5 bg-background border-2 border-accent rounded-full z-50"
+            style={positions[h]}
+            onMouseDown={e => handleResizeMouseDown(e, el, h)} />
+        ))}
+      </>
+    );
   };
 
   // ─── Render ───────────────────────────────────
