@@ -1239,9 +1239,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               fontWeight: el.fontWeight || 'normal',
               fontStyle: el.fontStyle || 'normal',
               textDecoration: el.textDecoration || 'none',
-              backgroundColor: el.highlightColor || 'transparent',
             }}>
-              <span dangerouslySetInnerHTML={{ __html: el.content || '' }} />
+              <span style={{ backgroundColor: el.highlightColor || 'transparent', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' }} dangerouslySetInnerHTML={{ __html: el.content || '' }} />
             </div>
           )}
           {isSelected && renderResizeHandles(el)}
