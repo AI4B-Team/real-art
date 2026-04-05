@@ -633,7 +633,27 @@ const NewEbookPage = () => {
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
                     <Copy className="w-4 h-4 text-muted-foreground" />Copy Project Link
                   </button>
-                  <button onClick={() => sonnerToast.success('Version history coming soon')}
+                  <button onClick={() => {
+                    // Build version history from localStorage saves
+                    const pages = localStorage.getItem(STORAGE_KEY_PAGES);
+                    const elements = localStorage.getItem(STORAGE_KEY_ELEMENTS);
+                    const hasData = pages || elements;
+                    if (hasData) {
+                      // Save current as a snapshot
+                      const snapshot = {
+                        timestamp: new Date().toISOString(),
+                        title: bookData.selectedTitle || 'Untitled',
+                        pageCount: ebookPages.length,
+                      };
+                      const history = JSON.parse(localStorage.getItem('ebook_version_history') || '[]');
+                      history.unshift(snapshot);
+                      if (history.length > 20) history.pop();
+                      localStorage.setItem('ebook_version_history', JSON.stringify(history));
+                      sonnerToast.success(`Version saved! ${history.length} version(s) in history.`);
+                    } else {
+                      sonnerToast.info('No saved versions yet. Make some changes first.');
+                    }
+                  }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
                     <Undo2 className="w-4 h-4 text-muted-foreground" />Version History
                   </button>
@@ -641,18 +661,26 @@ const NewEbookPage = () => {
                   <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">View</p>
                   <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
-                    <Eye className="w-4 h-4 text-muted-foreground" />Toggle Page Settings
+                    <Eye className="w-4 h-4 text-muted-foreground" />{showPageSettings ? 'Hide' : 'Show'} Page Settings
                   </button>
-                  <button onClick={() => sonnerToast.success('Grid view toggled')}
+                  <button onClick={() => setIsGridView(prev => !prev)}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
-                    <Layers className="w-4 h-4 text-muted-foreground" />Grid View
+                    <Layers className="w-4 h-4 text-muted-foreground" />{isGridView ? 'Single Page View' : 'Grid View'}
                   </button>
                   <div className="my-1 border-t border-foreground/[0.06]" />
                   <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Danger Zone</p>
                   <button onClick={() => {
-                    if (confirm('Are you sure you want to reset all pages? This cannot be undone.')) {
-                      sonnerToast.success('Book reset');
-                      navigate('/ebook-creator/new');
+                    if (confirm('Are you sure you want to reset this book? All pages and content will be deleted. This cannot be undone.')) {
+                      localStorage.removeItem(STORAGE_KEY_PAGES);
+                      localStorage.removeItem(STORAGE_KEY_ELEMENTS);
+                      sessionStorage.removeItem('ebook-last-url');
+                      setEbookPages(getDefaultPages());
+                      setSavedPageElements({});
+                      setBookData(prev => ({ ...prev, selectedTitle: '', prompt: '' }));
+                      setTitleSuggestions([]);
+                      setChapterSequence([]);
+                      setActiveTab('idea');
+                      sonnerToast.success('Book has been reset');
                     }
                   }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors">
