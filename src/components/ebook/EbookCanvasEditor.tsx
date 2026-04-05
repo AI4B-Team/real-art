@@ -649,7 +649,7 @@ const EbookCanvasEditor = ({
         updateElement(dragState.id, {
           x: Math.max(0, Math.min(95, dragState.elemX + dx)),
           y: Math.max(0, Math.min(95, dragState.elemY + dy)),
-        });
+        }, true);
       }
 
       if (resizeState) {
@@ -664,7 +664,7 @@ const EbookCanvasEditor = ({
         if (h.includes('s')) newH = Math.max(3, resizeState.elemH + dy);
         if (h.includes('n')) { newH = Math.max(3, resizeState.elemH - dy); newY = resizeState.elemY + dy; }
 
-        updateElement(resizeState.id, { x: newX, y: newY, width: newW, height: newH });
+        updateElement(resizeState.id, { x: newX, y: newY, width: newW, height: newH }, true);
       }
 
       if (rotateState) {
@@ -673,12 +673,11 @@ const EbookCanvasEditor = ({
           e.clientX - rotateState.centerX
         ) * (180 / Math.PI);
         let rotation = rotateState.elemRotation + (angle - rotateState.startAngle);
-        // Snap to 0/90/180/270 when within 5°
         for (const snap of [0, 90, 180, 270, 360]) {
           if (Math.abs(rotation - snap) < 5) { rotation = snap % 360; break; }
           if (Math.abs(rotation + 360 - snap) < 5) { rotation = snap % 360; break; }
         }
-        updateElement(rotateState.id, { rotation: ((rotation % 360) + 360) % 360 });
+        updateElement(rotateState.id, { rotation: ((rotation % 360) + 360) % 360 }, true);
       }
     };
 
