@@ -287,6 +287,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elements: CanvasElement[]; pageId: string } | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
+  const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -1140,13 +1141,20 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             <TypeBadge />
             <div className="w-full h-full bg-foreground/[0.04] border-2 border-dashed border-foreground/10 flex flex-col items-center justify-center p-4 rounded-lg">
               <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
-              <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
+              <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
                 {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
-                  <button key={idx}
-                    onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
-                    className="w-20 h-20 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                    <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
-                  </button>
+                  <div key={idx} className="relative group">
+                    <button
+                      onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
+                      className="w-28 h-28 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                      <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                    </button>
+                    <button
+                      onClick={e => { e.stopPropagation(); setPreviewImageSrc(imgSrc); }}
+                      className="absolute top-1 right-1 w-6 h-6 bg-background/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
+                      <Eye className="w-3 h-3 text-foreground" />
+                    </button>
+                  </div>
                 ))}
               </div>
               <button
@@ -1169,16 +1177,22 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
           {/* Inline replace overlay — renders inside the image bounds */}
           {isSelected && replaceModalElementId === el.id && (
-            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-4 z-[5]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
-              <p className="text-sm font-medium text-foreground mb-1 text-center">Select A Recommended Image</p>
-              <p className="text-[10px] text-muted-foreground mb-3 flex items-center gap-1"><Sparkles className="w-3 h-3 text-accent" /> Analyzing content for smart suggestions...</p>
-              <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-[10]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
+              <p className="text-sm font-medium text-foreground mb-3 text-center">Select A Recommended Image</p>
+              <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
                 {STOCK_IMAGES.filter(src => src !== el.src).slice(0, 3).map((imgSrc, idx) => (
-                  <button key={idx}
-                    onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); setReplaceModalElementId(null); }}
-                    className="w-16 h-16 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                    <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
-                  </button>
+                  <div key={idx} className="relative group">
+                    <button
+                      onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); setReplaceModalElementId(null); }}
+                      className="w-28 h-28 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                      <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                    </button>
+                    <button
+                      onClick={e => { e.stopPropagation(); setPreviewImageSrc(imgSrc); }}
+                      className="absolute top-1 right-1 w-6 h-6 bg-background/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
+                      <Eye className="w-3 h-3 text-foreground" />
+                    </button>
+                  </div>
                 ))}
               </div>
               <button
@@ -1605,6 +1619,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   const renderSelectedImageActions = (el: CanvasElement, pageId: string) => {
     if (el.type !== 'image' || !el.src || selectedElementId !== el.id || selectedPageId !== pageId) return null;
+    // Hide the action bar when replace overlay is showing
+    if (replaceModalElementId === el.id) return null;
 
     const isSmall = el.width < 25 || el.height < 25;
     const isFullPage = el.width >= 90 && el.height >= 90;
@@ -2840,6 +2856,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 <Sparkles className="w-4 h-4" />Apply Edit
               </Button>
             </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Image Preview Modal */}
+        <Dialog open={!!previewImageSrc} onOpenChange={() => setPreviewImageSrc(null)}>
+          <DialogContent className="sm:max-w-2xl p-2">
+            <DialogHeader>
+              <DialogTitle>Image Preview</DialogTitle>
+            </DialogHeader>
+            {previewImageSrc && (
+              <img src={previewImageSrc} alt="Preview" className="w-full h-auto rounded-lg object-contain max-h-[70vh]" />
+            )}
           </DialogContent>
         </Dialog>
 
