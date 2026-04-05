@@ -494,9 +494,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     return () => container.removeEventListener('scroll', handleScroll);
   }, [isGridView, selectedPageId, onPageSelect]);
 
-  // Track previously selected page (no auto-scroll to avoid snapping)
+  // Scroll to selected page when it changes (unless triggered by scroll observer)
   const prevSelectedRef = useRef<string | null>(null);
   useEffect(() => {
+    if (selectedPageId && selectedPageId !== prevSelectedRef.current && !scrollSelectedRef.current) {
+      const pageEl = pageRefs.current[selectedPageId];
+      if (pageEl) {
+        pageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
     prevSelectedRef.current = selectedPageId;
     scrollSelectedRef.current = false;
   }, [selectedPageId]);
