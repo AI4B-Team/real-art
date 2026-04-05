@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import {
   ChevronDown, ChevronUp, Layers, FileText, Image as ImageIcon,
   Plus, Pencil, Search, Sparkles, Send, Upload, Loader2,
