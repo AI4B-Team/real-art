@@ -214,7 +214,7 @@ const EbookDesignSidebar = ({
 
   const SectionHeader = ({ id, title, icon: Icon }: { id: SectionId; title: string; icon: any }) => (
     <button onClick={() => toggleSection(id)}
-      className="w-full flex items-center justify-between px-3 py-2.5 hover:bg-foreground/[0.03] transition-colors">
+      className={`w-full flex items-center justify-between px-3 py-2.5 transition-colors ${expandedSections.has(id) ? 'bg-accent/15' : 'hover:bg-foreground/[0.03]'}`}>
       <div className="flex items-center gap-2">
         <Icon className="w-4 h-4 text-muted-foreground" />
         <span className="text-xs font-semibold text-foreground">{title}</span>
