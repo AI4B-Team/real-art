@@ -349,6 +349,11 @@ const EbookDesignSidebar = ({
                       <span className={`text-[10px] font-medium shrink-0 w-5 text-right ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>{i + 1}</span>
                     </>
                   )}
+                  </div>
+                  {/* Drop indicator line — below */}
+                  {dropBelow && (
+                    <div className="absolute -bottom-0.5 left-2 right-2 h-0.5 bg-accent rounded-full z-10" />
+                  )}
                 </div>
               );
             })}
