@@ -66,6 +66,8 @@ export interface CanvasElement {
   interactiveData?: Record<string, any>;
 }
 
+export type AccessMode = 'editing' | 'viewing' | 'commenting' | 'admin';
+
 interface EbookCanvasEditorProps {
   pages: Page[];
   selectedPageId: string | null;
@@ -83,6 +85,7 @@ interface EbookCanvasEditorProps {
   onOpenImageSection?: () => void;
   pageWidth?: number;
   pageHeight?: number;
+  accessMode?: AccessMode;
 }
 
 // ─── Constants ─────────────────────────────────────
