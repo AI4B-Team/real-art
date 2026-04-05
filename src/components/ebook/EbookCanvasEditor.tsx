@@ -1391,8 +1391,8 @@ const EbookCanvasEditor = ({
                           </div>
                         </div>
                         {/* Page action buttons - shown for selected page */}
-                        <div className={`shrink-0 transition-all duration-300 ease-out ${
-                          isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-2 pointer-events-none'
+                        <div className={`absolute -right-12 top-1/2 -translate-y-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                          isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-3 pointer-events-none'
                         }`}>
                           <div className="flex flex-col gap-1 bg-background/80 backdrop-blur-sm rounded-xl p-1 border border-foreground/[0.06] shadow-sm">
                             {PAGE_ACTIONS.map(action => {
