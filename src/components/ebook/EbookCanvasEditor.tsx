@@ -10,7 +10,7 @@ import {
   GripVertical, MoreHorizontal, FileText, MessageSquare,
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
-  Sparkles,
+  Sparkles, EyeOff, Download, Files,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -18,6 +18,7 @@ import {
 import {
   Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
 } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter,
 } from '@/components/ui/dialog';
@@ -185,6 +186,7 @@ const EbookCanvasEditor = ({
   const [showAIEditModal, setShowAIEditModal] = useState(false);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
+  const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const replaceImageInputRef = useRef<HTMLInputElement>(null);
@@ -234,13 +236,32 @@ const EbookCanvasEditor = ({
     toast.success('Page duplicated');
   };
 
-  const handleDeletePage = () => {
+  const handleDeletePage = (pageId?: string) => {
+    const targetId = pageId || selectedPageId;
     if (currentPages.length <= 1) return;
-    const idx = currentPages.findIndex(p => p.id === selectedPageId);
-    const newPages = currentPages.filter(p => p.id !== selectedPageId);
+    const page = currentPages.find(p => p.id === targetId);
+    if (page?.type === 'cover' || page?.type === 'back') {
+      toast.error('Cannot delete cover or back cover pages');
+      return;
+    }
+    const idx = currentPages.findIndex(p => p.id === targetId);
+    const newPages = currentPages.filter(p => p.id !== targetId);
     setPages(newPages);
     onPageSelect(newPages[Math.min(idx, newPages.length - 1)].id);
     toast.success('Page deleted');
+  };
+
+  const handleDuplicatePageById = (pageId: string) => {
+    const page = currentPages.find(p => p.id === pageId);
+    if (!page) return;
+    const idx = currentPages.findIndex(p => p.id === pageId);
+    const dup: Page = { ...page, id: crypto.randomUUID(), title: `${page.title} (Copy)` };
+    const newPages = [...currentPages];
+    newPages.splice(idx + 1, 0, dup);
+    setPages(newPages);
+    setPageElements(prev => ({ ...prev, [dup.id]: [...(prev[pageId] || getElementsForPage(page, currentPages, bookTitle))] }));
+    onPageSelect(dup.id);
+    toast.success('Page duplicated');
   };
 
   const handleMovePage = (dir: 'up' | 'down') => {
@@ -704,10 +725,47 @@ const EbookCanvasEditor = ({
                               })}
                             </div>
                           </div>
-                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={e => e.stopPropagation()} className="w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </button>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <Popover open={gridMenuOpenId === page.id} onOpenChange={(open) => setGridMenuOpenId(open ? page.id : null)}>
+                              <PopoverTrigger asChild>
+                                <button onClick={e => e.stopPropagation()} className="w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm">
+                                  <MoreHorizontal className="w-4 h-4" />
+                                </button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-48 p-1.5" align="end" side="bottom">
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleDuplicatePageById(page.id); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <Files className="w-4 h-4" /> Duplicate
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex + 1); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <Plus className="w-4 h-4" /> Add Page After
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); toast.info('Hide page coming soon'); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <EyeOff className="w-4 h-4" /> Hide
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); toast.info('Download page coming soon'); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <Download className="w-4 h-4" /> Download
+                                </button>
+                                <div className="my-1 border-t border-foreground/[0.06]" />
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleDeletePage(page.id); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-destructive/10 text-destructive flex items-center gap-3 transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" /> Delete
+                                </button>
+                              </PopoverContent>
+                            </Popover>
                           </div>
                         </div>
                         <div className="flex items-center gap-1 text-muted-foreground">
