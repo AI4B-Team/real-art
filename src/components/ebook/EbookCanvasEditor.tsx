@@ -1006,7 +1006,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             const isFullPage = el.width >= 90 && el.height >= 90;
             return (
               <div className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-[60]`}
-                style={isFullPage ? { bottom: '12px' } : { bottom: '8px' }}
+                style={isFullPage ? { top: '50%', transform: 'translate(-50%, -50%)' } : { bottom: '8px' }}
                 onClick={e => e.stopPropagation()}
                 onMouseDown={e => e.stopPropagation()}
                 onPointerDown={e => e.stopPropagation()}>
