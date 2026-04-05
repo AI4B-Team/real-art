@@ -464,7 +464,7 @@ const EbookCanvasEditor = ({
       case 'moveUp': handleMovePage('up'); break;
       case 'moveDown': handleMovePage('down'); break;
       case 'lock': handleToggleLock(); break;
-      case 'settings': setShowPageSettings(true); break;
+      case 'settings': onPageSettingsToggle?.(); break;
     }
   };
 
