@@ -175,7 +175,7 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
             <p className="text-[11px] text-muted-foreground mb-3">Select The Format</p>
             <div className="grid grid-cols-5 gap-2">
               {DOWNLOAD_FORMATS.map(fmt => (
-                <button key={fmt.id} onClick={() => handleDownload(fmt.id)}
+                <button key={fmt.id} onClick={() => handleSelectFormat(fmt.id)}
                   className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border transition-all ${
                     selectedFormat === fmt.id
                       ? "border-accent bg-accent/5 ring-1 ring-accent"
@@ -187,6 +187,12 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
                 </button>
               ))}
             </div>
+            {selectedFormat && (
+              <button onClick={handleConfirmDownload}
+                className="mt-3 w-full py-2.5 rounded-xl bg-accent text-accent-foreground font-medium text-sm hover:opacity-90 transition-opacity">
+                Download {DOWNLOAD_FORMATS.find(f => f.id === selectedFormat)?.label}
+              </button>
+            )}
           </div>
 
           {/* Publish to Social Media */}
