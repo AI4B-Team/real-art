@@ -145,9 +145,10 @@ export default function EbookShareModal({ open, onOpenChange, projectName }: Ebo
 
   const handleScheduleConfirm = () => {
     if (!scheduleDate || !scheduleTime || schedulePlatforms.size === 0) {
-      toast({ title: "Please select a date, time, and at least one platform" });
+      setScheduleError("Please select a date, time, and at least one platform");
       return;
     }
+    setScheduleError("");
     const names = [...schedulePlatforms].join(", ");
     toast({ title: "Publishing scheduled!", description: `${scheduleDate} at ${scheduleTime} on ${names}` });
     setShowSchedule(false);
