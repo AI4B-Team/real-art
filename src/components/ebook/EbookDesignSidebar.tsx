@@ -39,6 +39,7 @@ interface EbookDesignSidebarProps {
   onSectionChange?: (sections: Set<string>) => void;
   openSection?: SectionId | null;
   onTranslate?: (scope: 'page' | 'selected' | 'book', language: string) => void;
+  onReplaceImage?: ((src: string) => void) | null;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
