@@ -7,7 +7,7 @@ import {
   Bot, Link2, FileText, X, Plus, Layers,
   Briefcase, Coffee, GraduationCap, Heart, Shield, Flame, Search, ChevronDown,
   Check, Pencil, Eye, Loader2, Wand2, RefreshCw,
-  ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut,
+  ArrowRight, Target, Zap, Undo2, Redo2, ZoomIn, ZoomOut, Minus,
   Share2, Lock, Cloud, Copy, Cpu, ArrowRightLeft, UserPlus, Download,
   ChevronLeft, ChevronRight,
 } from "lucide-react";
