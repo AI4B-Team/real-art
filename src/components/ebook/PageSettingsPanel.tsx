@@ -417,7 +417,7 @@ const PageSettingsPanel = ({
           {/* Background */}
           <SectionToggle id="background" title="Background" icon={Palette} />
           {expandedSections.has('background') && (
-            <div className="px-4 pb-4 space-y-3">
+            <div className="px-4 pt-2 pb-4 space-y-3">
               {/* Tabs */}
               <div className="flex rounded-lg border border-foreground/[0.08] overflow-hidden">
                 {(['color', 'pattern', 'image'] as BgTab[]).map(tab => (
