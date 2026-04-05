@@ -724,10 +724,47 @@ const EbookCanvasEditor = ({
                               })}
                             </div>
                           </div>
-                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button onClick={e => e.stopPropagation()} className="w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm">
-                              <MoreHorizontal className="w-4 h-4" />
-                            </button>
+                          <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                            <Popover open={gridMenuOpenId === page.id} onOpenChange={(open) => setGridMenuOpenId(open ? page.id : null)}>
+                              <PopoverTrigger asChild>
+                                <button onClick={e => e.stopPropagation()} className="w-7 h-7 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center text-muted-foreground hover:text-foreground shadow-sm">
+                                  <MoreHorizontal className="w-4 h-4" />
+                                </button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-48 p-1.5" align="end" side="bottom">
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleDuplicatePageById(page.id); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <Files className="w-4 h-4" /> Duplicate
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex + 1); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <Plus className="w-4 h-4" /> Add Page After
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); toast.info('Hide page coming soon'); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <EyeOff className="w-4 h-4" /> Hide
+                                </button>
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); toast.info('Download page coming soon'); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                >
+                                  <Download className="w-4 h-4" /> Download
+                                </button>
+                                <div className="my-1 border-t border-foreground/[0.06]" />
+                                <button
+                                  onClick={(e) => { e.stopPropagation(); handleDeletePage(page.id); setGridMenuOpenId(null); }}
+                                  className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-destructive/10 text-destructive flex items-center gap-3 transition-colors"
+                                >
+                                  <Trash2 className="w-4 h-4" /> Delete
+                                </button>
+                              </PopoverContent>
+                            </Popover>
                           </div>
                         </div>
                         <div className="flex items-center gap-1 text-muted-foreground">
