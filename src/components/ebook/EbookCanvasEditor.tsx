@@ -902,6 +902,9 @@ const EbookCanvasEditor = ({
       : nearBottom
         ? '-top-10 left-1/2 -translate-x-1/2'
         : '-top-10 left-1/2 -translate-x-1/2';
+    const isSmall = el.width < 180 || el.height < 120;
+    const btnSize = isSmall ? 'w-5 h-5' : 'w-7 h-7';
+    const iconSize = isSmall ? 'w-2.5 h-2.5' : 'w-3.5 h-3.5';
     return (
       <div className={`absolute ${posClass} flex items-center gap-0.5 z-50`}
         onMouseDown={e => e.stopPropagation()}>
@@ -914,13 +917,13 @@ const EbookCanvasEditor = ({
         ].map(({ icon: Icon, label, action, destructive, cursor }) => (
           <Tooltip key={label}><TooltipTrigger asChild>
             <button onClick={action}
-              className={`w-7 h-7 rounded-full flex items-center justify-center shadow-md border transition-colors ${
+              className={`${btnSize} rounded-full flex items-center justify-center shadow-md border transition-colors ${
                 destructive
                   ? 'bg-destructive text-destructive-foreground border-destructive/20 hover:bg-destructive/90'
                   : 'bg-accent text-accent-foreground border-accent/20 hover:bg-accent/90'
               }`}
               style={cursor ? { cursor } : undefined}>
-              <Icon className="w-3.5 h-3.5" />
+              <Icon className={iconSize} />
             </button>
           </TooltipTrigger><TooltipContent side="top" className="text-xs">{label}</TooltipContent></Tooltip>
         ))}
