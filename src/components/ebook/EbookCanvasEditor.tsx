@@ -724,11 +724,30 @@ const EbookCanvasEditor = ({
     toast.success('Image replaced');
   };
 
-  const handleAIEdit = () => {
-    if (!aiEditPrompt.trim()) return;
-    toast.success('AI edit applied: ' + aiEditPrompt);
+  const handleAIEdit = async () => {
+    if (!aiEditPrompt.trim() || !selectedElementId) return;
+    const el = (pageElements[selectedPage] || []).find(e => e.id === selectedElementId);
+    if (!el?.src) return;
+    setIsAIProcessing(true);
     setShowAIEditModal(false);
-    setAIEditPrompt('');
+    toast.success('AI is processing your edit: ' + aiEditPrompt);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-image-tools', {
+        body: { action: 'style-transfer', imageUrl: el.src, prompt: aiEditPrompt },
+      });
+      if (error) throw error;
+      if (data?.imageUrl) {
+        updateElement(selectedElementId, { src: data.imageUrl });
+        toast.success('Image edited successfully');
+      } else {
+        throw new Error('No image returned');
+      }
+    } catch (err: any) {
+      toast.error('AI edit failed: ' + (err.message || 'Unknown error'));
+    } finally {
+      setIsAIProcessing(false);
+      setAIEditPrompt('');
+    }
   };
 
   // ─── Page Panel DnD ───────────────────────────
