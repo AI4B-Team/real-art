@@ -1141,11 +1141,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             <TypeBadge />
             <div className="w-full h-full bg-foreground/[0.04] border-2 border-dashed border-foreground/10 flex flex-col items-center justify-center p-4 rounded-lg">
               <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
-              <div className="flex flex-wrap gap-2 mb-4 justify-center max-w-[90%]">
+              <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
                 {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
                   <button key={idx}
                     onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
-                    className="w-20 h-20 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                    onContextMenu={e => { e.preventDefault(); e.stopPropagation(); setPreviewImageSrc(imgSrc); }}
+                    className="w-28 h-28 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
                     <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
                   </button>
                 ))}
