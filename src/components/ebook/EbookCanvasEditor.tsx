@@ -83,6 +83,7 @@ interface EbookCanvasEditorProps {
   onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
   onPageSettingsToggle?: () => void;
   onOpenImageSection?: () => void;
+  onReplaceStateChange?: (isReplacing: boolean) => void;
   pageWidth?: number;
   pageHeight?: number;
   accessMode?: AccessMode;
@@ -200,6 +201,8 @@ export interface EbookCanvasEditorHandle {
   addElement: (type: string, extra?: any) => void;
   getTextElements: (scope: 'page' | 'book') => { pageId: string; elementId: string; content: string }[];
   updateTextContent: (updates: { pageId: string; elementId: string; content: string }[]) => void;
+  isReplacingImage: () => boolean;
+  replaceImage: (src: string) => void;
 }
 
 // ─── Component ─────────────────────────────────────
@@ -208,7 +211,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
-  onPageSettingsToggle, onOpenImageSection,
+  onPageSettingsToggle, onOpenImageSection, onReplaceStateChange,
   pageWidth: pw = 480, pageHeight: ph = 640,
   accessMode = 'editing',
 }, ref) => {
@@ -262,7 +265,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
   const [showAIEditModal, setShowAIEditModal] = useState(false);
-  const [replaceModalElementId, setReplaceModalElementId] = useState<string | null>(null);
+  const [replaceModalElementId, setReplaceModalElementIdRaw] = useState<string | null>(null);
+  const setReplaceModalElementId = useCallback((id: string | null) => {
+    setReplaceModalElementIdRaw(id);
+    onReplaceStateChange?.(!!id);
+  }, [onReplaceStateChange]);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
@@ -709,7 +716,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         return next;
       });
     },
-  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle]);
+    isReplacingImage: () => !!replaceModalElementId,
+    replaceImage: (src: string) => {
+      if (replaceModalElementId) {
+        updateElement(replaceModalElementId, { src, isPlaceholder: false });
+        toast.success('Image replaced');
+        setReplaceModalElementId(null);
+      }
+    },
+  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId]);
 
   const deleteElement = () => {
     if (!selectedElementId || !selectedPage || isPageLocked) return;
@@ -1031,62 +1046,85 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           {isSelected && (() => {
             const isSmall = el.width < 25 || el.height < 25;
             const isFullPage = el.width >= 90 && el.height >= 90;
+            const isReplacing = replaceModalElementId === el.id;
+            // Pick 3 contextual suggestions (rotate through stock images, skip current)
+            const suggestions = STOCK_IMAGES.filter(s => s !== el.src).slice(0, 3);
             return (
-              <div className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-[60]`}
-                style={isFullPage ? { top: '50%', transform: 'translate(-50%, -50%)' } : { bottom: '8px' }}
-                onClick={e => e.stopPropagation()}
-                onMouseDown={e => e.stopPropagation()}
-                onPointerDown={e => e.stopPropagation()}>
-                <button onClick={e => { e.stopPropagation(); setReplaceModalElementId(el.id); onOpenImageSection?.(); }}
-                  className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                  <ImagePlus className="w-3.5 h-3.5" />Replace
-                </button>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                      <Move className="w-3.5 h-3.5" />Position
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-44 p-2 z-[10050]" side="top" align="center"
-                    onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
-                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Quick Position</p>
-                    <div className="grid grid-cols-2 gap-1">
-                      {[
-                        { label: 'Full Page', x: 0, y: 0, w: 100, h: 100, icon: '⬜' },
-                        { label: 'Middle Band', x: 0, y: 25, w: 100, h: 50, icon: '↔' },
-                        { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50, icon: '⬇' },
-                        { label: 'Top Half', x: 0, y: 0, w: 100, h: 50, icon: '⬆' },
-                        { label: 'Top Strip', x: 0, y: 0, w: 100, h: 30, icon: '▔' },
-                        { label: 'Bottom Strip', x: 0, y: 70, w: 100, h: 30, icon: '▁' },
-                      ].map(preset => (
-                        <button key={preset.label}
-                          onClick={e => { e.stopPropagation(); updateElement(el.id, { x: preset.x, y: preset.y, width: preset.w, height: preset.h }); toast.success(`Positioned: ${preset.label}`); }}
-                          className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] rounded hover:bg-foreground/[0.05] transition-colors text-foreground">
-                          <span className="text-xs">{preset.icon}</span>{preset.label}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={e => { e.stopPropagation(); setShowAIEditModal(true); }}
-                      className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                      <Sparkles className="w-3.5 h-3.5 text-accent" />{!isSmall && 'Edit'}
-                    </button>
-                  </TooltipTrigger>
-                  {isSmall && <TooltipContent side="top">Edit</TooltipContent>}
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={e => { e.stopPropagation(); e.preventDefault(); if (selectedElementId && selectedPage) { updateElements(selectedPage.id, currentElements.filter(el2 => el2.id !== el.id)); setSelectedElementId(null); toast.success('Element deleted'); } }}
-                      className="flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors px-2 py-1 text-xs">
-                      <Trash2 className="w-3.5 h-3.5" />{!isSmall && 'Delete'}
-                    </button>
-                  </TooltipTrigger>
-                  {isSmall && <TooltipContent side="top">Delete</TooltipContent>}
-                </Tooltip>
-              </div>
+              <>
+                <div className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-[60]`}
+                  style={isFullPage ? { top: '50%', transform: 'translate(-50%, -50%)' } : { bottom: '8px' }}
+                  onClick={e => e.stopPropagation()}
+                  onMouseDown={e => e.stopPropagation()}
+                  onPointerDown={e => e.stopPropagation()}>
+                  <button onClick={e => { e.stopPropagation(); if (isReplacing) { setReplaceModalElementId(null); } else { setReplaceModalElementId(el.id); onOpenImageSection?.(); } }}
+                    className={`flex items-center gap-1.5 rounded transition-colors px-2 py-1 text-xs ${isReplacing ? 'bg-accent/10 text-accent font-medium' : 'text-foreground hover:bg-foreground/[0.05]'}`}>
+                    <ImagePlus className="w-3.5 h-3.5" />{isReplacing ? 'Cancel' : 'Replace'}
+                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                        <Move className="w-3.5 h-3.5" />Position
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-44 p-2 z-[10050]" side="top" align="center"
+                      onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
+                      <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Quick Position</p>
+                      <div className="grid grid-cols-2 gap-1">
+                        {[
+                          { label: 'Full Page', x: 0, y: 0, w: 100, h: 100, icon: '⬜' },
+                          { label: 'Middle Band', x: 0, y: 25, w: 100, h: 50, icon: '↔' },
+                          { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50, icon: '⬇' },
+                          { label: 'Top Half', x: 0, y: 0, w: 100, h: 50, icon: '⬆' },
+                          { label: 'Top Strip', x: 0, y: 0, w: 100, h: 30, icon: '▔' },
+                          { label: 'Bottom Strip', x: 0, y: 70, w: 100, h: 30, icon: '▁' },
+                        ].map(preset => (
+                          <button key={preset.label}
+                            onClick={e => { e.stopPropagation(); updateElement(el.id, { x: preset.x, y: preset.y, width: preset.w, height: preset.h }); toast.success(`Positioned: ${preset.label}`); }}
+                            className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] rounded hover:bg-foreground/[0.05] transition-colors text-foreground">
+                            <span className="text-xs">{preset.icon}</span>{preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={e => { e.stopPropagation(); setShowAIEditModal(true); }}
+                        className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                        <Sparkles className="w-3.5 h-3.5 text-accent" />{!isSmall && 'Edit'}
+                      </button>
+                    </TooltipTrigger>
+                    {isSmall && <TooltipContent side="top">Edit</TooltipContent>}
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={e => { e.stopPropagation(); e.preventDefault(); if (selectedElementId && selectedPage) { updateElements(selectedPage.id, currentElements.filter(el2 => el2.id !== el.id)); setSelectedElementId(null); toast.success('Element deleted'); } }}
+                        className="flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors px-2 py-1 text-xs">
+                        <Trash2 className="w-3.5 h-3.5" />{!isSmall && 'Delete'}
+                      </button>
+                    </TooltipTrigger>
+                    {isSmall && <TooltipContent side="top">Delete</TooltipContent>}
+                  </Tooltip>
+                </div>
+                {/* Inline image suggestions */}
+                {isReplacing && (
+                  <div className="absolute left-1/2 -translate-x-1/2 z-[65] flex items-center gap-2 px-3 py-2.5 bg-background/95 backdrop-blur-sm rounded-xl shadow-xl border border-foreground/[0.1]"
+                    style={isFullPage ? { top: 'calc(50% + 28px)', transform: 'translateX(-50%)' } : { bottom: '44px' }}
+                    onClick={e => e.stopPropagation()}
+                    onMouseDown={e => e.stopPropagation()}>
+                    <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                    <span className="text-[10px] font-semibold text-muted-foreground whitespace-nowrap">Suggested:</span>
+                    {suggestions.map((imgSrc, idx) => (
+                      <button key={idx}
+                        onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); setReplaceModalElementId(null); }}
+                        className="w-14 h-14 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-105 hover:shadow-md shrink-0">
+                        <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                      </button>
+                    ))}
+                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">or pick from panel →</span>
+                  </div>
+                )}
+              </>
             );
           })()}
         </div>
@@ -2126,9 +2164,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 {selectedElement?.type === 'image' && (
                   <>
                     <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => { if (selectedElement) { setReplaceModalElementId(selectedElement.id); onOpenImageSection?.(); } }}
-                        className="flex items-center gap-1.5 text-xs text-foreground px-2.5 py-1.5 rounded-lg hover:bg-foreground/[0.05] border border-foreground/[0.08]">
-                        <ImagePlus className="w-3.5 h-3.5" />Replace
+                      <button onClick={() => { if (selectedElement) { const isActive = replaceModalElementId === selectedElement.id; setReplaceModalElementId(isActive ? null : selectedElement.id); if (!isActive) onOpenImageSection?.(); } }}
+                        className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border ${replaceModalElementId === selectedElement?.id ? 'bg-accent/10 text-accent border-accent/30' : 'text-foreground hover:bg-foreground/[0.05] border-foreground/[0.08]'}`}>
+                        <ImagePlus className="w-3.5 h-3.5" />{replaceModalElementId === selectedElement?.id ? 'Cancel' : 'Replace'}
                       </button>
                     </TooltipTrigger><TooltipContent>Replace Image</TooltipContent></Tooltip>
                     <Tooltip><TooltipTrigger asChild>
@@ -2550,41 +2588,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           </DialogContent>
         </Dialog>
 
-        {/* Replace Image Modal */}
-        <Dialog open={!!replaceModalElementId} onOpenChange={open => { if (!open) setReplaceModalElementId(null); }}>
-          <DialogContent className="sm:max-w-2xl max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2">
-                <ImagePlus className="w-5 h-5 text-accent" />
-                Replace Image
-              </DialogTitle>
-            </DialogHeader>
-            <div className="py-2">
-              <p className="text-sm text-muted-foreground mb-4">Select an image below or use the Image panel on the left to browse more options.</p>
-              <div className="grid grid-cols-3 gap-3 max-h-[50vh] overflow-y-auto pr-1">
-                {STOCK_IMAGES.map((imgSrc, idx) => (
-                  <button key={idx}
-                    onClick={() => {
-                      if (replaceModalElementId) {
-                        updateElement(replaceModalElementId, { src: imgSrc, isPlaceholder: false });
-                        toast.success('Image replaced');
-                        setReplaceModalElementId(null);
-                      }
-                    }}
-                    className="aspect-[4/3] rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-[1.02] hover:shadow-lg">
-                    <img src={imgSrc} alt={`Option ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
-                  </button>
-                ))}
-              </div>
-            </div>
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setReplaceModalElementId(null)}>Cancel</Button>
-              <Button onClick={() => { replaceImageInputRef.current?.click(); setReplaceModalElementId(null); }} className="bg-accent hover:bg-accent/90 text-white gap-2">
-                <Upload className="w-4 h-4" />Upload Image
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
       </div>
 
       {/* Element selection context menu */}

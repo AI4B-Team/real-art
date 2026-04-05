@@ -39,6 +39,7 @@ interface EbookDesignSidebarProps {
   onSectionChange?: (sections: Set<string>) => void;
   openSection?: SectionId | null;
   onTranslate?: (scope: 'page' | 'selected' | 'book', language: string) => void;
+  onReplaceImage?: ((src: string) => void) | null;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
@@ -533,7 +534,7 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
 
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
-  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate,
+  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
@@ -597,8 +598,7 @@ const EbookDesignSidebar = ({
     const file = e.target.files?.[0];
     if (!file) return;
     const url = URL.createObjectURL(file);
-    onAddElement?.('image', { src: url });
-    toast.success('Image added to canvas');
+    if (onReplaceImage) { onReplaceImage(url); } else { onAddElement?.('image', { src: url }); toast.success('Image added to canvas'); }
   };
 
   const handleAIAction = (action: AIEditAction) => {
@@ -810,7 +810,7 @@ const EbookDesignSidebar = ({
           {imageTab === 'stock' && (
             <div className="grid grid-cols-3 gap-1.5">
               {STOCK_IMAGES.map((src, i) => (
-                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
                   className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
                   <img src={src} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -848,7 +848,7 @@ const EbookDesignSidebar = ({
               {/* Creations grid */}
               <div className="grid grid-cols-3 gap-1.5">
                 {CREATION_IMAGES.map((src, i) => (
-                  <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                  <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
                     className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
                     <img src={src} alt="" className="w-full h-full object-cover" />
                   </button>

@@ -201,6 +201,7 @@ const NewEbookPage = () => {
   const [pageWidth, setPageWidth] = useState(480);
   const [pageHeight, setPageHeight] = useState(640);
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
+  const [isReplacingImage, setIsReplacingImage] = useState(false);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
@@ -975,6 +976,7 @@ const NewEbookPage = () => {
                 onSectionChange={handleSidebarSectionChange}
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
+                onReplaceImage={isReplacingImage ? (src) => canvasRef.current?.replaceImage(src) : null}
                 onTranslate={async (scope, language) => {
                   // Check for locked pages when applying to entire book
                   if (scope === 'book') {
@@ -1096,6 +1098,7 @@ const NewEbookPage = () => {
                 onFindReplaceModeChange={setFindReplaceMode}
                 onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
+                onReplaceStateChange={setIsReplacingImage}
                 pageWidth={pageWidth}
                 pageHeight={pageHeight}
                 accessMode={accessMode}
