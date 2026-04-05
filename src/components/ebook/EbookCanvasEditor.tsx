@@ -172,7 +172,7 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
       const idx = chapterPagePages.indexOf(page);
       return createChapterPageElements(idx + 1, page.title);
     }
-    case 'back': return createBackElements();
+    case 'back': return createBackElements(bookTitle);
     case 'blank': return [];
     default: return [];
   }
