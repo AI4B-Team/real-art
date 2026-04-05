@@ -940,7 +940,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       border: el.borderStyle && el.borderStyle !== 'none' ? `${el.borderWidth || 1}px ${el.borderStyle} ${el.borderColor || '#000000'}` : undefined,
       transform: el.rotation ? `rotate(${el.rotation}deg)` : undefined,
       cursor: activeTool === 'select' ? (el.locked ? 'not-allowed' : 'move') : 'crosshair',
-      zIndex: isSelected ? 9999 : (el.zIndex ?? 1),
+      zIndex: el.zIndex ?? 1,
     };
 
     const selectionBorderColor = el.type === 'shape' ? 'ring-destructive' : 'ring-blue-500';
