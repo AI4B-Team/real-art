@@ -790,30 +790,39 @@ const EbookCanvasEditor = ({
     return null;
   };
 
-  const renderElementControls = (el: CanvasElement) => (
-    <div className="absolute -top-10 left-1/2 -translate-x-1/2 flex items-center gap-0.5 z-50"
-      onMouseDown={e => e.stopPropagation()}>
-      {[
-        { icon: Move, label: 'Move', action: () => {}, cursor: 'grab' },
-        { icon: RotateCcw, label: 'Rotate', action: () => updateElement(el.id, { rotation: ((el.rotation || 0) + 15) % 360 }) },
-        { icon: el.locked ? Lock : Unlock, label: el.locked ? 'Unlock' : 'Lock', action: () => updateElement(el.id, { locked: !el.locked }) },
-        { icon: Copy, label: 'Duplicate', action: duplicateElement },
-        { icon: Trash2, label: 'Delete', action: deleteElement, destructive: true },
-      ].map(({ icon: Icon, label, action, destructive, cursor }) => (
-        <Tooltip key={label}><TooltipTrigger asChild>
-          <button onClick={action}
-            className={`w-7 h-7 rounded-full flex items-center justify-center shadow-md border transition-colors ${
-              destructive
-                ? 'bg-destructive text-destructive-foreground border-destructive/20 hover:bg-destructive/90'
-                : 'bg-accent text-accent-foreground border-accent/20 hover:bg-accent/90'
-            }`}
-            style={cursor ? { cursor } : undefined}>
-            <Icon className="w-3.5 h-3.5" />
-          </button>
-        </TooltipTrigger><TooltipContent side="top" className="text-xs">{label}</TooltipContent></Tooltip>
-      ))}
-    </div>
-  );
+  const renderElementControls = (el: CanvasElement) => {
+    const nearTop = el.y < 40;
+    const nearBottom = (el.y + el.height) > 600;
+    const posClass = nearTop
+      ? 'top-2 left-1/2 -translate-x-1/2'
+      : nearBottom
+        ? '-top-10 left-1/2 -translate-x-1/2'
+        : '-top-10 left-1/2 -translate-x-1/2';
+    return (
+      <div className={`absolute ${posClass} flex items-center gap-0.5 z-50`}
+        onMouseDown={e => e.stopPropagation()}>
+        {[
+          { icon: Move, label: 'Move', action: () => {}, cursor: 'grab' },
+          { icon: RotateCcw, label: 'Rotate', action: () => updateElement(el.id, { rotation: ((el.rotation || 0) + 15) % 360 }) },
+          { icon: el.locked ? Lock : Unlock, label: el.locked ? 'Unlock' : 'Lock', action: () => updateElement(el.id, { locked: !el.locked }) },
+          { icon: Copy, label: 'Duplicate', action: duplicateElement },
+          { icon: Trash2, label: 'Delete', action: deleteElement, destructive: true },
+        ].map(({ icon: Icon, label, action, destructive, cursor }) => (
+          <Tooltip key={label}><TooltipTrigger asChild>
+            <button onClick={action}
+              className={`w-7 h-7 rounded-full flex items-center justify-center shadow-md border transition-colors ${
+                destructive
+                  ? 'bg-destructive text-destructive-foreground border-destructive/20 hover:bg-destructive/90'
+                  : 'bg-accent text-accent-foreground border-accent/20 hover:bg-accent/90'
+              }`}
+              style={cursor ? { cursor } : undefined}>
+              <Icon className="w-3.5 h-3.5" />
+            </button>
+          </TooltipTrigger><TooltipContent side="top" className="text-xs">{label}</TooltipContent></Tooltip>
+        ))}
+      </div>
+    );
+  };
 
   const renderResizeHandles = (el: CanvasElement) => {
     const handles = el.locked ? [] : ['nw', 'ne', 'sw', 'se', 'n', 's', 'e', 'w'];
