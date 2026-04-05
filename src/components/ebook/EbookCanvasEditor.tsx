@@ -398,6 +398,37 @@ const EbookCanvasEditor = ({
     setPageElements(prev => ({ ...prev, [pageId]: newElements }));
   }, [pageElements]);
 
+  const undo = useCallback(() => {
+    if (undoStack.length === 0) return;
+    const prev = undoStack[undoStack.length - 1];
+    setRedoStack(r => [...r, { ...pageElements }]);
+    setUndoStack(s => s.slice(0, -1));
+    setPageElements(prev);
+  }, [undoStack, pageElements]);
+
+  const redo = useCallback(() => {
+    if (redoStack.length === 0) return;
+    const next = redoStack[redoStack.length - 1];
+    setUndoStack(s => [...s, { ...pageElements }]);
+    setRedoStack(r => r.slice(0, -1));
+    setPageElements(next);
+  }, [redoStack, pageElements]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'z') {
+        e.preventDefault();
+        if (e.shiftKey) { redo(); } else { undo(); }
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === 'y') {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [undo, redo]);
+
   const selectedElement = currentElements.find(e => e.id === selectedElementId);
 
   // ─── Page Actions ─────────────────────────────
