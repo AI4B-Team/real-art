@@ -258,7 +258,7 @@ const EbookCanvasEditor = ({
         if (closestId && closestId !== selectedPageId) {
           onPageSelect(closestId);
         }
-      }, 150);
+      }, 50);
     };
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
