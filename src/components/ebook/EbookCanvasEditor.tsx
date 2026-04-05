@@ -550,7 +550,27 @@ const EbookCanvasEditor = ({
     updateElements(selectedPage.id, currentElements.map(e => e.id === id ? { ...e, ...updates } : e));
   };
 
-  // ─── Canvas Click ─────────────────────────────
+  const handleAITextEdit = async (action: AIEditAction, params?: { tone?: string; prompt?: string }) => {
+    if (!selectedElement || selectedElement.type !== 'text' || !selectedElement.content) return;
+    setIsAIProcessing(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-text-edit', {
+        body: { text: selectedElement.content, action, tone: params?.tone, prompt: params?.prompt },
+      });
+      if (error) throw error;
+      if (data?.result) {
+        updateElement(selectedElement.id, { content: data.result });
+        toast.success('Text updated by AI');
+      } else if (data?.error) {
+        toast.error(data.error);
+      }
+    } catch (e: any) {
+      toast.error(e.message || 'AI edit failed');
+    } finally {
+      setIsAIProcessing(false);
+    }
+  };
+
   const handleCanvasClick = (e: React.MouseEvent) => {
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
