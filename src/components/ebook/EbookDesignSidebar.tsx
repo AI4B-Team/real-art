@@ -263,20 +263,31 @@ const EbookDesignSidebar = ({
             </div>
             <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Page #</span>
           </div>
-          <div className="space-y-1">
+          <div className="space-y-0.5">
             {chapters.map((ch, i) => {
               const isSelected = selectedChapterId === ch.id;
               const isSpecial = ['cover', 'table of contents', 'introduction', 'summary'].includes(ch.type || '');
+              const isDragged = draggedIndex === i;
+              const isDropTarget = dragOverIndex === i && draggedIndex !== null && draggedIndex !== i;
+              const dropAbove = isDropTarget && draggedIndex !== null && draggedIndex > i;
+              const dropBelow = isDropTarget && draggedIndex !== null && draggedIndex < i;
               return (
-                <div key={ch.id}
-                  draggable
-                  onDragStart={() => handleDragStart(i)}
-                  onDragOver={e => handleDragOver(e, i)}
-                  onDragEnd={handleDragEnd}
-                  onClick={() => onChapterSelect(ch.id)}
-                  className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition-all cursor-pointer ${
-                    isSelected ? 'bg-accent/[0.08] border border-accent/30' : 'hover:bg-foreground/[0.03] border border-transparent'
-                  } ${dragOverIndex === i ? 'border-accent/50' : ''}`}>
+                <div key={ch.id} className="relative">
+                  {/* Drop indicator line — above */}
+                  {dropAbove && (
+                    <div className="absolute -top-0.5 left-2 right-2 h-0.5 bg-accent rounded-full z-10" />
+                  )}
+                  <div
+                    draggable
+                    onDragStart={() => handleDragStart(i)}
+                    onDragOver={e => handleDragOver(e, i)}
+                    onDragEnd={handleDragEnd}
+                    onDragLeave={() => { if (dragOverIndex === i) setDragOverIndex(null); }}
+                    onClick={() => onChapterSelect(ch.id)}
+                    className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition-all cursor-pointer ${
+                      isDragged ? 'opacity-40 scale-95 bg-accent/5 border border-accent/20' :
+                      isSelected ? 'bg-accent/[0.08] border border-accent/30' : 'hover:bg-foreground/[0.03] border border-transparent'
+                    } ${isDropTarget ? 'bg-accent/[0.06]' : ''}`}>
                   {/* Drag handle - visible on selected/hover */}
                   <GripVertical className={`w-3.5 h-3.5 text-muted-foreground shrink-0 cursor-grab ${isSelected ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`} />
                   {/* Page number */}
@@ -337,6 +348,11 @@ const EbookDesignSidebar = ({
                       {/* Page number on right */}
                       <span className={`text-[10px] font-medium shrink-0 w-5 text-right ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>{i + 1}</span>
                     </>
+                  )}
+                  </div>
+                  {/* Drop indicator line — below */}
+                  {dropBelow && (
+                    <div className="absolute -bottom-0.5 left-2 right-2 h-0.5 bg-accent rounded-full z-10" />
                   )}
                 </div>
               );
