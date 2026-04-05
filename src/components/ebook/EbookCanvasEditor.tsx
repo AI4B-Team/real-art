@@ -50,6 +50,8 @@ export interface CanvasElement {
   textDecoration?: 'none' | 'underline' | 'line-through';
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
+  borderStyle?: 'none' | 'solid' | 'dashed' | 'dotted';
+  borderWidth?: number; borderColor?: string;
   isPlaceholder?: boolean;
   highlightColor?: string;
 }
