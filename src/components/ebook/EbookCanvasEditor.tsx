@@ -58,6 +58,7 @@ export interface CanvasElement {
   textAlign?: 'left' | 'center' | 'right' | 'justify';
   fontWeight?: 'normal' | 'bold'; fontStyle?: 'normal' | 'italic';
   textDecoration?: 'none' | 'underline' | 'line-through';
+  lineHeight?: number;
   locked?: boolean; rotation?: number; zIndex?: number;
   opacity?: number; borderRadius?: number;
   borderStyle?: 'none' | 'solid' | 'dashed' | 'dotted';
@@ -66,6 +67,11 @@ export interface CanvasElement {
   highlightColor?: string;
   interactiveType?: string;
   interactiveData?: Record<string, any>;
+  // Image filters & effects
+  brightness?: number; contrast?: number; saturate?: number; blur?: number; grayscale?: number; sepia?: number;
+  shadowX?: number; shadowY?: number; shadowBlur?: number; shadowColor?: string;
+  objectFit?: 'cover' | 'contain' | 'fill';
+  linkUrl?: string;
 }
 
 export type AccessMode = 'editing' | 'viewing' | 'commenting' | 'admin';
@@ -1184,7 +1190,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
           <TypeBadge />
-          <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
+          <img src={el.src} alt="" className={`w-full h-full ${el.objectFit === 'contain' ? 'object-contain' : el.objectFit === 'fill' ? 'object-fill' : 'object-cover'}`} draggable={false}
+            style={{
+              filter: [
+                el.brightness !== undefined && el.brightness !== 100 ? `brightness(${el.brightness}%)` : '',
+                el.contrast !== undefined && el.contrast !== 100 ? `contrast(${el.contrast}%)` : '',
+                el.saturate !== undefined && el.saturate !== 100 ? `saturate(${el.saturate}%)` : '',
+                el.blur ? `blur(${el.blur}px)` : '',
+                el.grayscale ? `grayscale(${el.grayscale}%)` : '',
+                el.sepia ? `sepia(${el.sepia}%)` : '',
+              ].filter(Boolean).join(' ') || undefined,
+              boxShadow: el.shadowBlur || el.shadowX || el.shadowY ? `${el.shadowX || 0}px ${el.shadowY || 0}px ${el.shadowBlur || 0}px ${el.shadowColor || 'rgba(0,0,0,0.5)'}` : undefined,
+            }}
+          />
           {/* Inline replace overlay — renders inside the image bounds */}
           {isSelected && replaceModalElementId === el.id && (
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-[10]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
@@ -1270,6 +1288,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 fontWeight: el.fontWeight || 'normal',
                 fontStyle: el.fontStyle || 'normal',
                 textDecoration: el.textDecoration || 'none',
+                lineHeight: el.lineHeight ?? 1.5,
               }}
             />
           ) : (
@@ -1280,6 +1299,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               fontWeight: el.fontWeight || 'normal',
               fontStyle: el.fontStyle || 'normal',
               textDecoration: el.textDecoration || 'none',
+              lineHeight: el.lineHeight ?? 1.5,
             }}>
               <span style={{ backgroundColor: el.highlightColor || 'transparent', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' }} dangerouslySetInnerHTML={{ __html: el.content || '' }} />
             </div>
@@ -2331,15 +2351,71 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </TooltipTrigger><TooltipContent>{label}</TooltipContent></Tooltip>
                       );
                     })}
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Line Height')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><ArrowUpDown className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Line Height</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Add Link')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Link2 className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Layers')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Layers className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
+                    {/* Line Height */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] flex items-center gap-0.5">
+                            <ArrowUpDown className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Line Height</TooltipContent></Tooltip>
+                      <PopoverContent className="w-52 p-3" align="center">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-foreground">Line Height</span>
+                          <span className="text-xs text-muted-foreground">{(selectedElement.lineHeight ?? 1.5).toFixed(1)}</span>
+                        </div>
+                        <Slider
+                          value={[(selectedElement.lineHeight ?? 1.5) * 10]}
+                          onValueChange={([v]) => updateElement(selectedElement.id, { lineHeight: v / 10 })}
+                          min={8} max={30} step={1} className="w-full"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {/* Link */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className={`p-1.5 rounded hover:bg-foreground/[0.05] ${selectedElement.linkUrl ? 'text-accent' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <Link2 className="w-3.5 h-3.5" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
+                      <PopoverContent className="w-64 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Link URL</p>
+                        <input type="url" placeholder="https://example.com"
+                          value={selectedElement.linkUrl || ''}
+                          onChange={e => updateElement(selectedElement.id, { linkUrl: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-foreground/[0.02] text-xs focus:outline-none focus:border-accent/40" />
+                        {selectedElement.linkUrl && (
+                          <button onClick={() => updateElement(selectedElement.id, { linkUrl: '' })}
+                            className="mt-2 text-xs text-accent hover:underline">Remove Link</button>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+                    {/* Layers */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Layers className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
+                      <PopoverContent className="w-44 p-2" align="center">
+                        {[
+                          { label: 'Bring to Front', zIndex: 999 },
+                          { label: 'Bring Forward', zIndex: Math.min(999, (selectedElement.zIndex ?? 1) + 1) },
+                          { label: 'Send Backward', zIndex: Math.max(0, (selectedElement.zIndex ?? 1) - 1) },
+                          { label: 'Send to Back', zIndex: 0 },
+                        ].map(l => (
+                          <button key={l.label} onClick={() => updateElement(selectedElement.id, { zIndex: l.zIndex })}
+                            className="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-foreground/[0.04] transition-colors">{l.label}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
                     {/* Border controls */}
                     <Popover>
                       <Tooltip><TooltipTrigger asChild>
@@ -2378,9 +2454,36 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </div>
                       </PopoverContent>
                     </Popover>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
+                    {/* Position */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Move className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Position</p>
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          {[
+                            { label: 'X', key: 'x' as const },
+                            { label: 'Y', key: 'y' as const },
+                            { label: 'W', key: 'width' as const },
+                            { label: 'H', key: 'height' as const },
+                          ].map(({ label, key }) => (
+                            <div key={key} className="flex items-center gap-1">
+                              <span className="text-[10px] text-muted-foreground w-3">{label}</span>
+                              <input type="number" value={Math.round(selectedElement[key])}
+                                onChange={e => updateElement(selectedElement.id, { [key]: Number(e.target.value) })}
+                                className="flex-1 px-2 py-1 rounded border border-foreground/[0.1] bg-foreground/[0.02] text-xs w-full" />
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground">Values in % of page</p>
+                      </PopoverContent>
+                    </Popover>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })}
                         className={`p-1.5 rounded ${selectedElement.locked ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
@@ -2477,24 +2580,164 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </div>
                       </PopoverContent>
                     </Popover>
-                    {[
-                      { icon: Crop, label: 'Crop' },
-                      { icon: Maximize2, label: 'Resize' },
-                      { icon: SlidersVertical, label: 'Filter' },
-                      { icon: CircleDot, label: 'Mask' },
-                      { icon: Eclipse, label: 'Shadow' },
-                    ].map(tool => (
-                      <Tooltip key={tool.label}>
-                        <TooltipTrigger asChild>
-                          <button onClick={() => toast.success(`${tool.label} tool`)}
-                            className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground">
-                            <tool.icon className="w-3.5 h-3.5" />
+                    {/* Crop / Resize */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Crop className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
                           </button>
-                        </TooltipTrigger>
-                        <TooltipContent>{tool.label}</TooltipContent>
-                      </Tooltip>
-                    ))}
-                    {/* Shapes — after Shadow */}
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Crop & Fit</TooltipContent></Tooltip>
+                      <PopoverContent className="w-48 p-2" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Object Fit</p>
+                        {(['cover', 'contain', 'fill'] as const).map(fit => (
+                          <button key={fit} onClick={() => updateElement(selectedElement.id, { objectFit: fit })}
+                            className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors capitalize ${(selectedElement.objectFit || 'cover') === fit ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                            {fit}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+                    {/* Resize */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Maximize2 className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Resize & Position</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Size & Position</p>
+                        <div className="grid grid-cols-2 gap-2 mb-2">
+                          {[
+                            { label: 'X', key: 'x' as const },
+                            { label: 'Y', key: 'y' as const },
+                            { label: 'W', key: 'width' as const },
+                            { label: 'H', key: 'height' as const },
+                          ].map(({ label, key }) => (
+                            <div key={key} className="flex items-center gap-1">
+                              <span className="text-[10px] text-muted-foreground w-3">{label}</span>
+                              <input type="number" value={Math.round(selectedElement[key])}
+                                onChange={e => updateElement(selectedElement.id, { [key]: Number(e.target.value) })}
+                                className="flex-1 px-2 py-1 rounded border border-foreground/[0.1] bg-foreground/[0.02] text-xs w-full" />
+                            </div>
+                          ))}
+                        </div>
+                        <p className="text-[10px] text-muted-foreground mt-1">Values are in % of page</p>
+                        <div className="border-t border-foreground/[0.06] mt-2 pt-2">
+                          <p className="text-xs font-medium mb-1.5">Quick Presets</p>
+                          {[
+                            { label: 'Full Page', x: 0, y: 0, width: 100, height: 100 },
+                            { label: 'Top Half', x: 0, y: 0, width: 100, height: 50 },
+                            { label: 'Bottom Half', x: 0, y: 50, width: 100, height: 50 },
+                            { label: 'Center Band', x: 0, y: 25, width: 100, height: 50 },
+                          ].map(p => (
+                            <button key={p.label} onClick={() => updateElement(selectedElement.id, { x: p.x, y: p.y, width: p.width, height: p.height })}
+                              className="w-full text-left px-2 py-1 text-xs rounded hover:bg-foreground/[0.04] transition-colors">{p.label}</button>
+                          ))}
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                    {/* Filter */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <SlidersVertical className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Filter</TooltipContent></Tooltip>
+                      <PopoverContent className="w-64 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-3">Image Adjustments</p>
+                        {[
+                          { label: 'Brightness', key: 'brightness' as const, min: 0, max: 200, def: 100 },
+                          { label: 'Contrast', key: 'contrast' as const, min: 0, max: 200, def: 100 },
+                          { label: 'Saturation', key: 'saturate' as const, min: 0, max: 200, def: 100 },
+                          { label: 'Blur', key: 'blur' as const, min: 0, max: 20, def: 0 },
+                          { label: 'Grayscale', key: 'grayscale' as const, min: 0, max: 100, def: 0 },
+                          { label: 'Sepia', key: 'sepia' as const, min: 0, max: 100, def: 0 },
+                        ].map(f => (
+                          <div key={f.key} className="flex items-center gap-2 mb-2">
+                            <span className="text-[10px] text-muted-foreground w-16 shrink-0">{f.label}</span>
+                            <Slider
+                              value={[selectedElement[f.key] ?? f.def]}
+                              onValueChange={([v]) => updateElement(selectedElement.id, { [f.key]: v })}
+                              min={f.min} max={f.max} step={1} className="flex-1"
+                            />
+                            <span className="text-[10px] text-muted-foreground w-8 text-right">{selectedElement[f.key] ?? f.def}</span>
+                          </div>
+                        ))}
+                        <button onClick={() => updateElement(selectedElement.id, { brightness: 100, contrast: 100, saturate: 100, blur: 0, grayscale: 0, sepia: 0 })}
+                          className="mt-1 text-xs text-accent hover:underline">Reset All</button>
+                      </PopoverContent>
+                    </Popover>
+                    {/* Mask / Clip Shape */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <CircleDot className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Mask Shape</TooltipContent></Tooltip>
+                      <PopoverContent className="w-48 p-2" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Clip Shape</p>
+                        {[
+                          { label: 'None (Rectangle)', radius: 0 },
+                          { label: 'Rounded', radius: 12 },
+                          { label: 'More Rounded', radius: 24 },
+                          { label: 'Circle', radius: 9999 },
+                        ].map(m => (
+                          <button key={m.label} onClick={() => updateElement(selectedElement.id, { borderRadius: m.radius })}
+                            className={`w-full text-left px-3 py-1.5 text-xs rounded-lg transition-colors ${(selectedElement.borderRadius || 0) === m.radius ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                            {m.label}
+                          </button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+                    {/* Shadow */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Eclipse className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Shadow</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-3">Drop Shadow</p>
+                        {[
+                          { label: 'X Offset', key: 'shadowX' as const, min: -50, max: 50, def: 0 },
+                          { label: 'Y Offset', key: 'shadowY' as const, min: -50, max: 50, def: 0 },
+                          { label: 'Blur', key: 'shadowBlur' as const, min: 0, max: 50, def: 0 },
+                        ].map(s => (
+                          <div key={s.key} className="flex items-center gap-2 mb-2">
+                            <span className="text-[10px] text-muted-foreground w-14 shrink-0">{s.label}</span>
+                            <Slider
+                              value={[selectedElement[s.key] ?? s.def]}
+                              onValueChange={([v]) => updateElement(selectedElement.id, { [s.key]: v })}
+                              min={s.min} max={s.max} step={1} className="flex-1"
+                            />
+                            <span className="text-[10px] text-muted-foreground w-6 text-right">{selectedElement[s.key] ?? s.def}</span>
+                          </div>
+                        ))}
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-[10px] text-muted-foreground">Color</span>
+                          <input type="color" value={selectedElement.shadowColor || '#000000'}
+                            onChange={e => updateElement(selectedElement.id, { shadowColor: e.target.value })}
+                            className="w-6 h-6 rounded border border-foreground/[0.1] cursor-pointer" />
+                        </div>
+                        <button onClick={() => updateElement(selectedElement.id, { shadowX: 0, shadowY: 0, shadowBlur: 0, shadowColor: '#000000' })}
+                          className="mt-2 text-xs text-accent hover:underline">Remove Shadow</button>
+                      </PopoverContent>
+                    </Popover>
                     <Tooltip>
                       <Popover>
                         <TooltipTrigger asChild>
@@ -2558,24 +2801,94 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </div>
                       </PopoverContent>
                     </Popover>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <button onClick={() => toast.success('Corner Radius tool')}
-                          className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground">
-                          <BoxSelect className="w-3.5 h-3.5" />
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent>Corner Radius</TooltipContent>
-                    </Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Add Link')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Link2 className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Layers')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Layers className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => toast.success('Position')} className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05]"><Move className="w-3.5 h-3.5" /></button>
-                    </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
+                    {/* Corner Radius */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <BoxSelect className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Corner Radius</TooltipContent></Tooltip>
+                      <PopoverContent className="w-52 p-3" align="center">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-xs font-medium text-foreground">Corner Radius</span>
+                          <span className="text-xs text-muted-foreground">{selectedElement.borderRadius || 0}px</span>
+                        </div>
+                        <Slider
+                          value={[selectedElement.borderRadius || 0]}
+                          onValueChange={([v]) => updateElement(selectedElement.id, { borderRadius: v })}
+                          min={0} max={100} step={1} className="w-full"
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    {/* Link */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className={`p-1.5 rounded hover:bg-foreground/[0.05] flex items-center gap-0.5 ${selectedElement.linkUrl ? 'text-accent' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <Link2 className="w-3.5 h-3.5" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Add Link</TooltipContent></Tooltip>
+                      <PopoverContent className="w-64 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Link URL</p>
+                        <input type="url" placeholder="https://example.com"
+                          value={selectedElement.linkUrl || ''}
+                          onChange={e => updateElement(selectedElement.id, { linkUrl: e.target.value })}
+                          className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-foreground/[0.02] text-xs focus:outline-none focus:border-accent/40" />
+                        {selectedElement.linkUrl && (
+                          <button onClick={() => updateElement(selectedElement.id, { linkUrl: '' })}
+                            className="mt-2 text-xs text-accent hover:underline">Remove Link</button>
+                        )}
+                      </PopoverContent>
+                    </Popover>
+                    {/* Layers (z-index) */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Layers className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Layers</TooltipContent></Tooltip>
+                      <PopoverContent className="w-44 p-2" align="center">
+                        {[
+                          { label: 'Bring to Front', zIndex: 999 },
+                          { label: 'Bring Forward', zIndex: Math.min(999, (selectedElement.zIndex ?? 1) + 1) },
+                          { label: 'Send Backward', zIndex: Math.max(0, (selectedElement.zIndex ?? 1) - 1) },
+                          { label: 'Send to Back', zIndex: 0 },
+                        ].map(l => (
+                          <button key={l.label} onClick={() => updateElement(selectedElement.id, { zIndex: l.zIndex })}
+                            className="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-foreground/[0.04] transition-colors">{l.label}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
+                    {/* Position */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className="p-1.5 rounded text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground flex items-center gap-0.5">
+                            <Move className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Position</TooltipContent></Tooltip>
+                      <PopoverContent className="w-48 p-2" align="center">
+                        {[
+                          { label: 'Full Page', x: 0, y: 0, w: 100, h: 100 },
+                          { label: 'Middle Band', x: 0, y: 25, w: 100, h: 50 },
+                          { label: 'Top Half', x: 0, y: 0, w: 100, h: 50 },
+                          { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50 },
+                          { label: 'Center', x: 25, y: 25, w: 50, h: 50 },
+                        ].map(p => (
+                          <button key={p.label} onClick={() => updateElement(selectedElement.id, { x: p.x, y: p.y, width: p.w, height: p.h })}
+                            className="w-full text-left px-3 py-1.5 text-xs rounded-lg hover:bg-foreground/[0.04] transition-colors">{p.label}</button>
+                        ))}
+                      </PopoverContent>
+                    </Popover>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => updateElement(selectedElement.id, { locked: !selectedElement.locked })}
                         className={`p-1.5 rounded ${selectedElement.locked ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
