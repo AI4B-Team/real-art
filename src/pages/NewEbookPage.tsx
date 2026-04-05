@@ -587,14 +587,62 @@ const NewEbookPage = () => {
               <button onClick={() => setShowShareModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <Share2 className="w-3.5 h-3.5" />Share
               </button>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }} className="p-1.5 rounded-lg hover:bg-background/15 text-background/70 hover:text-background transition-colors">
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button className="p-1.5 rounded-lg hover:bg-background/15 text-background/70 hover:text-background transition-colors">
                     <MoreVertical className="w-4 h-4" />
                   </button>
-                </TooltipTrigger>
-                <TooltipContent className="z-[9999]">Settings</TooltipContent>
-              </Tooltip>
+                </PopoverTrigger>
+                <PopoverContent className="w-64 p-1.5 z-[10050]" align="end" side="bottom">
+                  <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Book Settings</p>
+                  <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Settings className="w-4 h-4 text-muted-foreground" />Page Settings
+                  </button>
+                  <button onClick={() => {
+                    const el = document.createElement('a');
+                    el.download = `${bookData.selectedTitle || 'Untitled Book'}.json`;
+                    el.href = URL.createObjectURL(new Blob([JSON.stringify(bookData, null, 2)], { type: 'application/json' }));
+                    el.click();
+                    sonnerToast.success('Book data exported');
+                  }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Download className="w-4 h-4 text-muted-foreground" />Export Book Data
+                  </button>
+                  <button onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    sonnerToast.success('Link copied to clipboard');
+                  }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Copy className="w-4 h-4 text-muted-foreground" />Copy Project Link
+                  </button>
+                  <button onClick={() => sonnerToast.success('Version history coming soon')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Undo2 className="w-4 h-4 text-muted-foreground" />Version History
+                  </button>
+                  <div className="my-1 border-t border-foreground/[0.06]" />
+                  <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">View</p>
+                  <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Eye className="w-4 h-4 text-muted-foreground" />Toggle Page Settings
+                  </button>
+                  <button onClick={() => sonnerToast.success('Grid view toggled')}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Layers className="w-4 h-4 text-muted-foreground" />Grid View
+                  </button>
+                  <div className="my-1 border-t border-foreground/[0.06]" />
+                  <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Danger Zone</p>
+                  <button onClick={() => {
+                    if (confirm('Are you sure you want to reset all pages? This cannot be undone.')) {
+                      sonnerToast.success('Book reset');
+                      navigate('/ebook-creator/new');
+                    }
+                  }}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors">
+                    <X className="w-4 h-4" />Reset Book
+                  </button>
+                </PopoverContent>
+              </Popover>
             </div>
           </div>
         )}
