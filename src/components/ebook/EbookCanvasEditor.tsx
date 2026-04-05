@@ -923,6 +923,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         case 'image': return 'Image';
         case 'text': return 'Text';
         case 'shape': return el.shapeType === 'circle' ? 'Circle' : 'Shape';
+        case 'interactive': return el.interactiveType ? el.interactiveType.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Interactive';
         default: return 'Element';
       }
     };
