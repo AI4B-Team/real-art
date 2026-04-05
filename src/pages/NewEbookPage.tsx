@@ -490,7 +490,7 @@ const NewEbookPage = () => {
               <button className="flex items-center gap-1.5 px-3 py-1.5 bg-accent hover:bg-accent/90 rounded-lg text-xs text-white font-semibold transition-colors">
                 <Sparkles className="w-3.5 h-3.5" />Create
               </button>
-              <button className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
+              <button onClick={() => setShowShareModal(true)} className="flex items-center gap-1.5 px-3 py-1.5 bg-background/10 hover:bg-background/15 rounded-lg text-xs text-background font-medium transition-colors">
                 <Share2 className="w-3.5 h-3.5" />Share
               </button>
             </div>
