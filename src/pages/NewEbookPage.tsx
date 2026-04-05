@@ -892,6 +892,8 @@ const NewEbookPage = () => {
                 onFindReplaceModeChange={setFindReplaceMode}
                 onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
+                pageWidth={pageWidth}
+                pageHeight={pageHeight}
               />
 
               {/* Right panel collapse toggle */}
