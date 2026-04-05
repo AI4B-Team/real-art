@@ -295,11 +295,11 @@ const EbookDesignSidebar = ({
                   ) : (
                     <>
                       {isSpecial ? (
-                        <span className="text-xs font-medium text-foreground bg-foreground/[0.05] px-2 py-0.5 rounded truncate">{ch.title}</span>
+                        <span className="text-xs font-medium text-foreground bg-foreground/[0.05] px-2 py-0.5 rounded truncate group-hover:max-w-[90px] max-w-full transition-all">{ch.title}</span>
                       ) : (
-                        <span className="text-xs font-medium text-foreground truncate">{ch.title}</span>
+                        <span className="text-xs font-medium text-foreground truncate group-hover:max-w-[90px] max-w-full transition-all">{ch.title}</span>
                       )}
-                      <div className="flex-1" />
+                      <div className="flex-1 shrink" />
                       {/* Hover action buttons */}
                       <div className={`flex items-center gap-0.5 shrink-0 ${isSelected ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'} transition-opacity`}>
                         {onChapterReorder && (
