@@ -166,7 +166,7 @@ const NewEbookPage = () => {
   const [contentTypeSelected, setContentTypeSelected] = useState(initialTab === "design");
 
   // Canvas design state
-  type PageType = "cover" | "toc" | "chapter" | "chapter-page" | "back";
+  type PageType = "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank";
   interface UnifiedPage { id: string; title: string; type: PageType; }
 
   const getDefaultPages = (): UnifiedPage[] => [
