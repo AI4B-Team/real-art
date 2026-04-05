@@ -192,6 +192,36 @@ export default function EditorPromptBox({ editorType, chatInput, onChatInputChan
     syncText();
   }, [syncText]);
 
+  const handleExtractPrompt = async (file: File) => {
+    setIsExtractingPrompt(true);
+    try {
+      const base64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const { data, error } = await supabase.functions.invoke("generate-prompts", {
+        body: { imageUrl: base64 },
+      });
+
+      if (error) throw error;
+
+      const extracted = contentType === "video" ? data.video_prompt : data.image_prompt;
+      if (extracted && editableRef.current) {
+        editableRef.current.textContent = extracted;
+        syncText();
+      }
+      toast({ title: "Prompt extracted!", description: "AI analyzed your image and generated a prompt." });
+    } catch (e: any) {
+      console.error("Extract prompt error:", e);
+      toast({ title: "Failed to extract prompt", description: e.message || "Please try again.", variant: "destructive" });
+    } finally {
+      setIsExtractingPrompt(false);
+      if (promptFileRef.current) promptFileRef.current.value = "";
+    }
+  };
 
   const addChip = useCallback((type: AssetChip["type"], item: { id: string; label: string; thumbnail?: string }) => {
     if (chipIds.has(item.id)) return;
