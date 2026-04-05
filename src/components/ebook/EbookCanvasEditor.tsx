@@ -2104,7 +2104,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               {accessMode === 'commenting' && (
                 <div className="h-9 border-b border-accent/20 bg-accent/5 flex items-center justify-center gap-2 px-3 shrink-0">
                   <MessageSquare className="w-3.5 h-3.5 text-accent" />
-                  <span className="text-xs font-medium text-accent">Commenting Mode — Click anywhere on the page to leave a comment</span>
+                  <span className="text-xs font-medium text-accent">Commenting Mode — Click Anywhere On The Page To Leave A Comment</span>
                   <span className="text-[10px] text-accent/60 ml-2">{pageComments.length} comment{pageComments.length !== 1 ? 's' : ''}</span>
                   {pageComments.length > 0 && (
                     <>
