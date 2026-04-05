@@ -1041,62 +1041,85 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           {isSelected && (() => {
             const isSmall = el.width < 25 || el.height < 25;
             const isFullPage = el.width >= 90 && el.height >= 90;
+            const isReplacing = replaceModalElementId === el.id;
+            // Pick 3 contextual suggestions (rotate through stock images, skip current)
+            const suggestions = STOCK_IMAGES.filter(s => s !== el.src).slice(0, 3);
             return (
-              <div className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-[60]`}
-                style={isFullPage ? { top: '50%', transform: 'translate(-50%, -50%)' } : { bottom: '8px' }}
-                onClick={e => e.stopPropagation()}
-                onMouseDown={e => e.stopPropagation()}
-                onPointerDown={e => e.stopPropagation()}>
-                <button onClick={e => { e.stopPropagation(); setReplaceModalElementId(el.id); onOpenImageSection?.(); }}
-                  className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                  <ImagePlus className="w-3.5 h-3.5" />Replace
-                </button>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                      <Move className="w-3.5 h-3.5" />Position
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-44 p-2 z-[10050]" side="top" align="center"
-                    onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
-                    <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Quick Position</p>
-                    <div className="grid grid-cols-2 gap-1">
-                      {[
-                        { label: 'Full Page', x: 0, y: 0, w: 100, h: 100, icon: '⬜' },
-                        { label: 'Middle Band', x: 0, y: 25, w: 100, h: 50, icon: '↔' },
-                        { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50, icon: '⬇' },
-                        { label: 'Top Half', x: 0, y: 0, w: 100, h: 50, icon: '⬆' },
-                        { label: 'Top Strip', x: 0, y: 0, w: 100, h: 30, icon: '▔' },
-                        { label: 'Bottom Strip', x: 0, y: 70, w: 100, h: 30, icon: '▁' },
-                      ].map(preset => (
-                        <button key={preset.label}
-                          onClick={e => { e.stopPropagation(); updateElement(el.id, { x: preset.x, y: preset.y, width: preset.w, height: preset.h }); toast.success(`Positioned: ${preset.label}`); }}
-                          className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] rounded hover:bg-foreground/[0.05] transition-colors text-foreground">
-                          <span className="text-xs">{preset.icon}</span>{preset.label}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={e => { e.stopPropagation(); setShowAIEditModal(true); }}
-                      className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
-                      <Sparkles className="w-3.5 h-3.5 text-accent" />{!isSmall && 'Edit'}
-                    </button>
-                  </TooltipTrigger>
-                  {isSmall && <TooltipContent side="top">Edit</TooltipContent>}
-                </Tooltip>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button onClick={e => { e.stopPropagation(); e.preventDefault(); if (selectedElementId && selectedPage) { updateElements(selectedPage.id, currentElements.filter(el2 => el2.id !== el.id)); setSelectedElementId(null); toast.success('Element deleted'); } }}
-                      className="flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors px-2 py-1 text-xs">
-                      <Trash2 className="w-3.5 h-3.5" />{!isSmall && 'Delete'}
-                    </button>
-                  </TooltipTrigger>
-                  {isSmall && <TooltipContent side="top">Delete</TooltipContent>}
-                </Tooltip>
-              </div>
+              <>
+                <div className={`absolute left-1/2 -translate-x-1/2 flex items-center gap-1 px-2 py-1.5 bg-background/95 backdrop-blur-sm rounded-lg shadow-lg border border-foreground/[0.08] z-[60]`}
+                  style={isFullPage ? { top: '50%', transform: 'translate(-50%, -50%)' } : { bottom: '8px' }}
+                  onClick={e => e.stopPropagation()}
+                  onMouseDown={e => e.stopPropagation()}
+                  onPointerDown={e => e.stopPropagation()}>
+                  <button onClick={e => { e.stopPropagation(); if (isReplacing) { setReplaceModalElementId(null); } else { setReplaceModalElementId(el.id); onOpenImageSection?.(); } }}
+                    className={`flex items-center gap-1.5 rounded transition-colors px-2 py-1 text-xs ${isReplacing ? 'bg-accent/10 text-accent font-medium' : 'text-foreground hover:bg-foreground/[0.05]'}`}>
+                    <ImagePlus className="w-3.5 h-3.5" />{isReplacing ? 'Cancel' : 'Replace'}
+                  </button>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button onClick={e => e.stopPropagation()} className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                        <Move className="w-3.5 h-3.5" />Position
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-44 p-2 z-[10050]" side="top" align="center"
+                      onMouseDown={e => e.stopPropagation()} onPointerDown={e => e.stopPropagation()}>
+                      <p className="text-[10px] font-semibold text-muted-foreground mb-1.5">Quick Position</p>
+                      <div className="grid grid-cols-2 gap-1">
+                        {[
+                          { label: 'Full Page', x: 0, y: 0, w: 100, h: 100, icon: '⬜' },
+                          { label: 'Middle Band', x: 0, y: 25, w: 100, h: 50, icon: '↔' },
+                          { label: 'Bottom Half', x: 0, y: 50, w: 100, h: 50, icon: '⬇' },
+                          { label: 'Top Half', x: 0, y: 0, w: 100, h: 50, icon: '⬆' },
+                          { label: 'Top Strip', x: 0, y: 0, w: 100, h: 30, icon: '▔' },
+                          { label: 'Bottom Strip', x: 0, y: 70, w: 100, h: 30, icon: '▁' },
+                        ].map(preset => (
+                          <button key={preset.label}
+                            onClick={e => { e.stopPropagation(); updateElement(el.id, { x: preset.x, y: preset.y, width: preset.w, height: preset.h }); toast.success(`Positioned: ${preset.label}`); }}
+                            className="flex items-center gap-1.5 px-2 py-1.5 text-[11px] rounded hover:bg-foreground/[0.05] transition-colors text-foreground">
+                            <span className="text-xs">{preset.icon}</span>{preset.label}
+                          </button>
+                        ))}
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={e => { e.stopPropagation(); setShowAIEditModal(true); }}
+                        className="flex items-center gap-1.5 rounded text-foreground hover:bg-foreground/[0.05] transition-colors px-2 py-1 text-xs">
+                        <Sparkles className="w-3.5 h-3.5 text-accent" />{!isSmall && 'Edit'}
+                      </button>
+                    </TooltipTrigger>
+                    {isSmall && <TooltipContent side="top">Edit</TooltipContent>}
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={e => { e.stopPropagation(); e.preventDefault(); if (selectedElementId && selectedPage) { updateElements(selectedPage.id, currentElements.filter(el2 => el2.id !== el.id)); setSelectedElementId(null); toast.success('Element deleted'); } }}
+                        className="flex items-center gap-1.5 rounded text-destructive hover:bg-destructive/10 transition-colors px-2 py-1 text-xs">
+                        <Trash2 className="w-3.5 h-3.5" />{!isSmall && 'Delete'}
+                      </button>
+                    </TooltipTrigger>
+                    {isSmall && <TooltipContent side="top">Delete</TooltipContent>}
+                  </Tooltip>
+                </div>
+                {/* Inline image suggestions */}
+                {isReplacing && (
+                  <div className="absolute left-1/2 -translate-x-1/2 z-[65] flex items-center gap-2 px-3 py-2.5 bg-background/95 backdrop-blur-sm rounded-xl shadow-xl border border-foreground/[0.1]"
+                    style={isFullPage ? { top: 'calc(50% + 28px)', transform: 'translateX(-50%)' } : { bottom: '44px' }}
+                    onClick={e => e.stopPropagation()}
+                    onMouseDown={e => e.stopPropagation()}>
+                    <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                    <span className="text-[10px] font-semibold text-muted-foreground whitespace-nowrap">Suggested:</span>
+                    {suggestions.map((imgSrc, idx) => (
+                      <button key={idx}
+                        onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); setReplaceModalElementId(null); }}
+                        className="w-14 h-14 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:scale-105 hover:shadow-md shrink-0">
+                        <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                      </button>
+                    ))}
+                    <span className="text-[10px] text-muted-foreground whitespace-nowrap">or pick from panel →</span>
+                  </div>
+                )}
+              </>
             );
           })()}
         </div>
