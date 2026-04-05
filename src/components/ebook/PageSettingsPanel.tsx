@@ -19,6 +19,9 @@ interface PageSettingsPanelProps {
   onPagesChange: (pages: Page[]) => void;
   onGridViewToggle?: () => void;
   bookTitle?: string;
+  pageWidth?: number;
+  pageHeight?: number;
+  onDimensionsChange?: (w: number, h: number) => void;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
@@ -50,18 +53,23 @@ const PATTERNS = [
 
 const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
+  pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
   const [bgTab, setBgTab] = useState<BgTab>('color');
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
-  const [pageWidth, setPageWidth] = useState(800);
-  const [pageHeight, setPageHeight] = useState(1131);
+  const orientation = externalWidth > externalHeight ? 'landscape' : 'portrait';
   const [resizeContent, setResizeContent] = useState(true);
   const [selectedColor, setSelectedColor] = useState('hsl(0 0% 100%)');
   const [hexValue, setHexValue] = useState('#FFFFFF');
   const [opacity, setOpacity] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleOrientationChange = (newOrientation: 'portrait' | 'landscape') => {
+    if (newOrientation === orientation) return;
+    // Swap width and height
+    onDimensionsChange?.(externalHeight, externalWidth);
+  };
 
   const selectedIndex = pages.findIndex(p => p.id === selectedPageId);
 
@@ -226,11 +234,11 @@ const PageSettingsPanel = ({
               <div>
                 <label className="text-xs text-muted-foreground mb-1.5 block">Orientation</label>
                 <div className="flex rounded-lg border border-foreground/[0.08] overflow-hidden">
-                  <button onClick={() => setOrientation('portrait')}
+                  <button onClick={() => handleOrientationChange('portrait')}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors ${orientation === 'portrait' ? 'bg-accent text-white' : 'text-foreground hover:bg-foreground/[0.03]'}`}>
                     <Square className="w-3 h-3" /> Portrait
                   </button>
-                  <button onClick={() => setOrientation('landscape')}
+                  <button onClick={() => handleOrientationChange('landscape')}
                     className={`flex-1 flex items-center justify-center gap-1.5 py-2 text-xs font-medium transition-colors ${orientation === 'landscape' ? 'bg-accent text-white' : 'text-foreground hover:bg-foreground/[0.03]'}`}>
                     <Square className="w-3 h-3 rotate-90" /> Landscape
                   </button>
@@ -241,13 +249,13 @@ const PageSettingsPanel = ({
                 <div className="flex items-center gap-2">
                   <div className="flex items-center gap-1 flex-1">
                     <span className="text-xs text-muted-foreground">W</span>
-                    <input type="number" value={pageWidth} onChange={e => setPageWidth(Number(e.target.value))}
+                    <input type="number" value={externalWidth} onChange={e => onDimensionsChange?.(Number(e.target.value), externalHeight)}
                       className="w-full px-2 py-1.5 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs text-foreground focus:outline-none focus:border-accent/40" />
                   </div>
                   <span className="text-muted-foreground text-xs">⟷</span>
                   <div className="flex items-center gap-1 flex-1">
                     <span className="text-xs text-muted-foreground">H</span>
-                    <input type="number" value={pageHeight} onChange={e => setPageHeight(Number(e.target.value))}
+                    <input type="number" value={externalHeight} onChange={e => onDimensionsChange?.(externalWidth, Number(e.target.value))}
                       className="w-full px-2 py-1.5 rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] text-xs text-foreground focus:outline-none focus:border-accent/40" />
                   </div>
                 </div>

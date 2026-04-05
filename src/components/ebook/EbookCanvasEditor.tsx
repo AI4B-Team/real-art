@@ -71,6 +71,8 @@ interface EbookCanvasEditorProps {
   onFindReplaceModeChange?: (mode: 'find' | 'find-replace' | null) => void;
   onPageSettingsToggle?: () => void;
   onOpenImageSection?: () => void;
+  pageWidth?: number;
+  pageHeight?: number;
 }
 
 // ─── Constants ─────────────────────────────────────
@@ -178,6 +180,7 @@ const EbookCanvasEditor = ({
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
   onPageSettingsToggle, onOpenImageSection,
+  pageWidth: pw = 480, pageHeight: ph = 640,
 }: EbookCanvasEditorProps) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
@@ -414,15 +417,15 @@ const EbookCanvasEditor = ({
     const computeFit = () => {
       const cw = container.clientWidth - 80; // padding + page label
       const ch = container.clientHeight - 64; // vertical padding
-      const scaleW = cw / 480;
-      const scaleH = ch / 640;
+      const scaleW = cw / pw;
+      const scaleH = ch / ph;
       setFitScale(Math.min(scaleW, scaleH, 1.5));
     };
     computeFit();
     const ro = new ResizeObserver(computeFit);
     ro.observe(container);
     return () => ro.disconnect();
-  }, []);
+  }, [pw, ph]);
 
   const zoom = zoomPct * fitScale;
 
@@ -1141,10 +1144,11 @@ const EbookCanvasEditor = ({
                       <div key={page.id} className="flex items-start">
                         {/* Insert zone with drop indicator */}
                         <div
-                          className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out h-[187px] ${
+                          className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out ${
                             (gridInsertHover === pageIndex && draggedPageIndex === null) || (dragOverPageIndex === pageIndex && draggedPageIndex !== null)
                               ? 'w-14' : 'w-2'
                           }`}
+                          style={{ height: `${140 * ph / pw}px` }}
                           onMouseEnter={() => { if (draggedPageIndex === null) setGridInsertHover(pageIndex); }}
                           onMouseLeave={() => setGridInsertHover(null)}
                           onDragOver={(e) => {
@@ -1196,9 +1200,10 @@ const EbookCanvasEditor = ({
                         >
                           <div
                             onClick={() => { onPageSelect(page.id); onGridViewToggle?.(); }}
-                            className={`group relative w-full aspect-[3/4] bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
+                            className={`group relative w-full bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                               isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
                             } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
+                            style={{ aspectRatio: `${pw}/${ph}` }}
                           >
                             <div className="w-full h-full relative">
                               <div className="absolute inset-0">
@@ -1274,10 +1279,11 @@ const EbookCanvasEditor = ({
                   {/* Trailing insert + Add Page card */}
                   <div className="flex items-start">
                     <div
-                      className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out h-[187px] ${
+                      className={`relative flex items-center justify-center shrink-0 transition-all duration-300 ease-in-out ${
                         (gridInsertHover === currentPages.length && draggedPageIndex === null) || (dragOverPageIndex === currentPages.length && draggedPageIndex !== null)
                           ? 'w-14' : 'w-2'
                       }`}
+                      style={{ height: `${140 * ph / pw}px` }}
                       onMouseEnter={() => { if (draggedPageIndex === null) setGridInsertHover(currentPages.length); }}
                       onMouseLeave={() => setGridInsertHover(null)}
                       onDragOver={(e) => {
@@ -1313,7 +1319,8 @@ const EbookCanvasEditor = ({
                     </div>
                     <div className="flex flex-col items-center gap-1.5 w-[140px]">
                       <button onClick={handleAddPage}
-                        className="w-full aspect-[3/4] rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group">
+                        className="w-full rounded-lg border-2 border-dashed border-foreground/[0.1] hover:border-accent/50 flex flex-col items-center justify-center gap-2 transition-colors cursor-pointer group"
+                        style={{ aspectRatio: `${pw}/${ph}` }}>
                         <Plus className="w-6 h-6 text-muted-foreground group-hover:text-accent transition-colors" />
                         <span className="text-xs text-muted-foreground group-hover:text-accent transition-colors">Add Page</span>
                       </button>
@@ -1783,7 +1790,7 @@ const EbookCanvasEditor = ({
                           className={`bg-white rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
                           }`}
-                          style={{ width: `${480 * zoom / 100}px`, height: `${640 * zoom / 100}px` }}
+                          style={{ width: `${pw * zoom / 100}px`, height: `${ph * zoom / 100}px` }}
                         >
                           {/* Clip layer for page content */}
                           <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none" style={{ zIndex: 0 }}>

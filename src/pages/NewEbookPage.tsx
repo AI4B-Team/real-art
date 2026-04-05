@@ -191,6 +191,8 @@ const NewEbookPage = () => {
   const [sidebarOpenSection, setSidebarOpenSection] = useState<string | null>(null);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
+  const [pageWidth, setPageWidth] = useState(480);
+  const [pageHeight, setPageHeight] = useState(640);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
@@ -890,6 +892,8 @@ const NewEbookPage = () => {
                 onFindReplaceModeChange={setFindReplaceMode}
                 onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
+                pageWidth={pageWidth}
+                pageHeight={pageHeight}
               />
 
               {/* Right panel collapse toggle */}
@@ -910,6 +914,9 @@ const NewEbookPage = () => {
                 onPagesChange={setEbookPages}
                 onGridViewToggle={() => setIsGridView(true)}
                 bookTitle={bookData.selectedTitle}
+                pageWidth={pageWidth}
+                pageHeight={pageHeight}
+                onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
               />
               )}
             </div>
