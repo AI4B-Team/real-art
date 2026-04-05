@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
-  Minus, Hand, ChevronLeft, ChevronRight,
+  Minus, Hand, ChevronLeft, ChevronRight, Search,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Bold, Italic, Underline, Strikethrough,
   Trash2, Copy, Lock, Unlock,
