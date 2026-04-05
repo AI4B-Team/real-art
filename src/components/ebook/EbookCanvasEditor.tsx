@@ -2859,6 +2859,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           </DialogContent>
         </Dialog>
 
+        {/* Image Preview Modal */}
+        <Dialog open={!!previewImageSrc} onOpenChange={() => setPreviewImageSrc(null)}>
+          <DialogContent className="sm:max-w-2xl p-2">
+            <DialogHeader>
+              <DialogTitle>Image Preview</DialogTitle>
+            </DialogHeader>
+            {previewImageSrc && (
+              <img src={previewImageSrc} alt="Preview" className="w-full h-auto rounded-lg object-contain max-h-[70vh]" />
+            )}
+          </DialogContent>
+        </Dialog>
+
       </div>
 
       {/* Element selection context menu */}
