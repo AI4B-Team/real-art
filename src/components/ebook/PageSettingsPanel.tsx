@@ -53,18 +53,23 @@ const PATTERNS = [
 
 const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
+  pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
   const [bgTab, setBgTab] = useState<BgTab>('color');
-  const [orientation, setOrientation] = useState<'portrait' | 'landscape'>('portrait');
-  const [pageWidth, setPageWidth] = useState(800);
-  const [pageHeight, setPageHeight] = useState(1131);
+  const orientation = externalWidth > externalHeight ? 'landscape' : 'portrait';
   const [resizeContent, setResizeContent] = useState(true);
   const [selectedColor, setSelectedColor] = useState('hsl(0 0% 100%)');
   const [hexValue, setHexValue] = useState('#FFFFFF');
   const [opacity, setOpacity] = useState(1);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleOrientationChange = (newOrientation: 'portrait' | 'landscape') => {
+    if (newOrientation === orientation) return;
+    // Swap width and height
+    onDimensionsChange?.(externalHeight, externalWidth);
+  };
 
   const selectedIndex = pages.findIndex(p => p.id === selectedPageId);
 
