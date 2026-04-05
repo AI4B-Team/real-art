@@ -862,7 +862,7 @@ const NewEbookPage = () => {
                 onGridViewToggle={() => setIsGridView(false)}
                 findReplaceMode={findReplaceMode}
                 onFindReplaceModeChange={setFindReplaceMode}
-                onPageSettingsToggle={() => setShowPageSettings(true)}
+                onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
               />
               {/* RIGHT: Page Settings Panel (shown contextually) */}
               {!isGridView && showPageSettings && (
