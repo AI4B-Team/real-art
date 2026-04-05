@@ -721,6 +721,7 @@ const EbookDesignSidebar = ({
                         )}
                       </div>
                       {/* Hover action buttons */}
+                      {!isCoverOrBack && (
                       <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[132px] group-hover:opacity-100 group-hover:ml-1 group-hover:pointer-events-auto transition-[max-width,opacity,margin] duration-200">
                         {onChapterReorder && (
                           <>
@@ -754,6 +755,7 @@ const EbookDesignSidebar = ({
                           </TooltipTrigger><TooltipContent side="top">Delete Page</TooltipContent></Tooltip>
                         )}
                       </div>
+                      )}
                       {/* Page number on right */}
                       <span className={`text-[10px] font-medium shrink-0 w-5 text-right ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>{i + 1}</span>
                     </>

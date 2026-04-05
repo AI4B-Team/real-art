@@ -950,7 +950,7 @@ const NewEbookPage = () => {
               {!isGridView && !isLeftPanelCollapsed && (
               <EbookDesignSidebar
                 bookTitle={bookData.selectedTitle}
-                chapters={ebookPages.map(p => ({ id: p.id, title: p.title }))}
+                chapters={ebookPages.map(p => ({ id: p.id, title: p.title, type: p.type as any }))}
                 selectedChapterId={selectedPageId}
                 onChapterSelect={setSelectedPageId}
                 onChapterAdd={() => {
