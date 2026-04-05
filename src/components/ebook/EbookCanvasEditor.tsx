@@ -80,7 +80,7 @@ const TOOLS = [
 const PAGE_ACTIONS = [
   { id: 'add', icon: Plus, label: 'Add Page' },
   { id: 'duplicate', icon: Copy, label: 'Duplicate Page' },
-  { id: 'lock', icon: Unlock, label: 'Toggle Lock' },
+  { id: 'lock', icon: Unlock, label: 'Lock Page' },
   { id: 'delete', icon: Trash2, label: 'Delete Page' },
   { id: 'moveUp', icon: ChevronUp, label: 'Move Page Up' },
   { id: 'moveDown', icon: ChevronDown, label: 'Move Page Down' },
