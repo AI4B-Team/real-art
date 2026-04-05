@@ -344,7 +344,7 @@ const STOCK_AUDIO = [
 type MediaTab = 'stock' | 'creations' | 'community' | 'uploads';
 
 const MediaTabs = ({ active, onChange }: { active: MediaTab; onChange: (t: MediaTab) => void }) => (
-  <div className="flex items-center gap-0.5 border-b border-foreground/[0.06] mb-2">
+  <div className="flex items-center gap-0.5 border-b border-foreground/[0.06] mt-2 mb-2">
     {([
       { id: 'stock' as const, label: 'Stock', icon: Library },
       { id: 'creations' as const, label: 'Creations', icon: Sparkles },
