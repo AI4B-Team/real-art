@@ -52,6 +52,17 @@ const PATTERNS = [
   { id: 'waves', label: 'Waves' },
 ];
 
+const BORDER_TYPES = ['none', 'solid', 'dashed', 'dotted'] as const;
+const BORDER_SIZES = [0, 1, 2, 3, 4, 5];
+const FORMAT_PRESETS = [
+  { id: 'a4', label: 'A4', w: 595, h: 842 },
+  { id: 'a5', label: 'A5', w: 420, h: 595 },
+  { id: 'letter', label: 'US Letter', w: 612, h: 792 },
+  { id: '6x9', label: '6×9 in', w: 432, h: 648 },
+  { id: 'square', label: 'Square', w: 600, h: 600 },
+  { id: 'custom', label: 'Custom', w: 0, h: 0 },
+];
+
 const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
   pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange,
@@ -61,14 +72,29 @@ const PageSettingsPanel = ({
   const [bgTab, setBgTab] = useState<BgTab>('color');
   const orientation = externalWidth > externalHeight ? 'landscape' : 'portrait';
   const [resizeContent, setResizeContent] = useState(true);
-  const [selectedColor, setSelectedColor] = useState('hsl(0 0% 100%)');
   const [hexValue, setHexValue] = useState('#FFFFFF');
   const [opacity, setOpacity] = useState(1);
+  const [selectedFormat, setSelectedFormat] = useState('custom');
+  const [applyTo, setApplyTo] = useState<'current' | 'all'>('current');
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const selectedPage = pages.find(p => p.id === selectedPageId);
+
+  const updatePage = useCallback((pageId: string, patch: Partial<Page>) => {
+    onPagesChange(pages.map(p => p.id === pageId ? { ...p, ...patch } : p));
+  }, [pages, onPagesChange]);
+
+  const updateSelectedPage = useCallback((patch: Partial<Page>) => {
+    if (!selectedPageId) return;
+    if (applyTo === 'all') {
+      onPagesChange(pages.map(p => ({ ...p, ...patch })));
+    } else {
+      updatePage(selectedPageId, patch);
+    }
+  }, [selectedPageId, applyTo, pages, onPagesChange, updatePage]);
 
   const handleOrientationChange = (newOrientation: 'portrait' | 'landscape') => {
     if (newOrientation === orientation) return;
-    // Swap width and height
     onDimensionsChange?.(externalHeight, externalWidth);
   };
 
