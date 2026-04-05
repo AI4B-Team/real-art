@@ -2365,6 +2365,63 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             )}
                           </div>
                           {elems.map(el => renderElement(el, page.id))}
+
+                          {/* Comment pins */}
+                          {canComment && pageComments.filter(c => c.pageId === page.id).map((c, ci) => (
+                            <div key={c.id}
+                              className="absolute z-[60] pointer-events-auto cursor-pointer group"
+                              style={{ left: `${c.x}%`, top: `${c.y}%`, transform: 'translate(-50%, -100%)' }}
+                              onClick={e => { e.stopPropagation(); setActiveCommentId(activeCommentId === c.id ? null : c.id); }}>
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shadow-md transition-transform ${
+                                c.resolved ? 'bg-muted text-muted-foreground' : 'bg-accent text-white'
+                              } ${activeCommentId === c.id ? 'scale-125' : 'group-hover:scale-110'}`}>
+                                {ci + 1}
+                              </div>
+                              {activeCommentId === c.id && (
+                                <div className="absolute left-1/2 -translate-x-1/2 top-full mt-1 w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3 z-[70]"
+                                  onClick={e => e.stopPropagation()}>
+                                  <div className="flex items-center gap-2 mb-1.5">
+                                    <div className="w-5 h-5 rounded-full bg-accent/20 flex items-center justify-center text-[8px] font-bold text-accent">{c.author.charAt(0)}</div>
+                                    <span className="text-xs font-semibold text-foreground">{c.author}</span>
+                                    <span className="text-[10px] text-muted-foreground ml-auto">{c.timestamp}</span>
+                                  </div>
+                                  <p className="text-xs text-foreground/80 mb-2">{c.text}</p>
+                                  <div className="flex gap-1.5">
+                                    <button onClick={() => setPageComments(prev => prev.map(pc => pc.id === c.id ? { ...pc, resolved: !pc.resolved } : pc))}
+                                      className="text-[10px] text-accent hover:underline">{c.resolved ? 'Reopen' : 'Resolve'}</button>
+                                    <button onClick={() => { setPageComments(prev => prev.filter(pc => pc.id !== c.id)); setActiveCommentId(null); }}
+                                      className="text-[10px] text-destructive hover:underline ml-auto">Delete</button>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          ))}
+
+                          {/* Comment draft input */}
+                          {commentDraft && commentDraft.pageId === page.id && (
+                            <div className="absolute z-[70] pointer-events-auto"
+                              style={{ left: `${commentDraft.x}%`, top: `${commentDraft.y}%`, transform: 'translate(-50%, -100%)' }}
+                              onClick={e => e.stopPropagation()}>
+                              <div className="w-6 h-6 rounded-full bg-accent text-white flex items-center justify-center text-[9px] font-bold shadow-md animate-pulse mb-1 mx-auto">+</div>
+                              <div className="w-56 bg-background border border-foreground/[0.1] rounded-xl shadow-xl p-3">
+                                <textarea
+                                  value={commentText}
+                                  onChange={e => setCommentText(e.target.value)}
+                                  placeholder="Add your comment..."
+                                  className="w-full text-xs bg-transparent border border-foreground/[0.08] rounded-lg p-2 outline-none focus:border-accent/40 resize-none h-16"
+                                  autoFocus
+                                />
+                                <div className="flex gap-1.5 mt-2">
+                                  <button onClick={addPageComment}
+                                    className="flex-1 py-1.5 rounded-lg bg-accent text-white text-[10px] font-semibold hover:bg-accent/90 disabled:opacity-40"
+                                    disabled={!commentText.trim()}>Post</button>
+                                  <button onClick={() => { setCommentDraft(null); setCommentText(''); }}
+                                    className="px-3 py-1.5 rounded-lg border border-foreground/[0.08] text-[10px] font-medium hover:bg-foreground/[0.04]">Cancel</button>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
                           <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none" style={{ zIndex: 0 }}>
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
