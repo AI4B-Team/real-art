@@ -990,11 +990,12 @@ const ImageEditor = ({ image, zoomLevel, onZoomChange }: Props) => {
                   {layers.find(l => l.id === "drawing-layer")?.visible && (
                     <canvas ref={drawingCanvasRef} className="absolute inset-0 w-full h-full"
                       style={{
-                        cursor: ["brush", "eraser", "fill", "text"].includes(activeTool || "") ? "crosshair" : "inherit",
-                        pointerEvents: ["brush", "eraser", "fill", "text"].includes(activeTool || "") ? "auto" : "none",
+                        cursor: ["brush", "eraser", "fill", "text", "inpaint", "arrow", "rectangle"].includes(activeTool || "") ? "crosshair" : "inherit",
+                        pointerEvents: ["brush", "eraser", "fill", "text", "inpaint", "arrow", "rectangle"].includes(activeTool || "") ? "auto" : "none",
                         opacity: (layers.find(l => l.id === "drawing-layer")?.opacity ?? 100) / 100,
                       }}
-                      onMouseDown={handleBrushStart} onMouseMove={handleBrushMove} onMouseUp={handleBrushEnd} onMouseLeave={handleBrushEnd}
+                      onMouseDown={(e) => { handleBrushStart(e); handleShapeStart(e); }}
+                      onMouseMove={handleBrushMove} onMouseUp={handleBrushEnd} onMouseLeave={handleBrushEnd}
                       onClick={(e) => { if (activeTool === "text") handleCanvasTextClick(e); }} />
                   )}
                   {/* Text elements */}
