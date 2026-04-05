@@ -254,9 +254,24 @@ const PageSettingsPanel = ({
             <div className="px-4 pb-4 space-y-3">
               <div>
                 <label className="text-xs text-muted-foreground mb-1.5 block">Resize By Format</label>
-                <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-sm text-foreground hover:border-foreground/[0.15]">
-                  Custom <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-                </button>
+                <Popover>
+                  <PopoverTrigger asChild>
+                    <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg border border-foreground/[0.08] text-sm text-foreground hover:border-foreground/[0.15]">
+                      {FORMAT_PRESETS.find(f => f.id === selectedFormat)?.label || 'Custom'} <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-48 p-1" align="start">
+                    {FORMAT_PRESETS.map(f => (
+                      <button key={f.id} onClick={() => {
+                        setSelectedFormat(f.id);
+                        if (f.id !== 'custom' && f.w > 0) onDimensionsChange?.(f.w, f.h);
+                      }}
+                        className={`w-full text-left px-3 py-1.5 text-sm rounded-md transition-colors ${selectedFormat === f.id ? 'bg-accent/10 text-accent font-medium' : 'hover:bg-foreground/[0.04]'}`}>
+                        {f.label}{f.w > 0 ? ` (${f.w}×${f.h})` : ''}
+                      </button>
+                    ))}
+                  </PopoverContent>
+                </Popover>
               </div>
               <div>
                 <label className="text-xs text-muted-foreground mb-1.5 block">Orientation</label>
