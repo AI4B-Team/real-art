@@ -284,8 +284,8 @@ const PageSettingsPanel = ({
           </div>
 
           {/* ═══ SECTION 2: QUICK AI ACTIONS — "Do it fast" (1-click upgrades) ═══ */}
-          <div className="border-t-2 border-accent/20">
-            <div className="flex items-center gap-2 px-4 py-3 bg-accent/[0.04]">
+          <div className="border-t border-foreground/[0.06]">
+            <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02]">
               <Zap className="w-4 h-4 text-accent" />
               <span className="text-xs font-bold text-foreground uppercase tracking-wider">Quick Actions</span>
             </div>
