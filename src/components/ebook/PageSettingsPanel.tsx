@@ -25,6 +25,7 @@ interface PageSettingsPanelProps {
   pageWidth?: number;
   pageHeight?: number;
   onDimensionsChange?: (w: number, h: number) => void;
+  onOpenImageSection?: () => void;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
@@ -67,10 +68,11 @@ const FORMAT_PRESETS = [
 
 const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
-  pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange,
+  pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange, onOpenImageSection,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
+  const [aiActionFeedback, setAiActionFeedback] = useState<string | null>(null);
   const [bgTab, setBgTab] = useState<BgTab>('color');
   const orientation = externalWidth > externalHeight ? 'landscape' : 'portrait';
   const [resizeContent, setResizeContent] = useState(true);
@@ -289,6 +291,12 @@ const PageSettingsPanel = ({
               <span className="text-xs font-bold text-foreground uppercase tracking-wider">AI Assistant</span>
             </div>
             <div className="px-4 pt-2 pb-4 space-y-1.5">
+              {aiActionFeedback && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 animate-in fade-in-0 slide-in-from-top-1 duration-300">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-[11px] font-semibold text-emerald-600">{aiActionFeedback}</span>
+                </div>
+              )}
               {[
                 { label: 'Improve Layout', desc: 'Optimize spacing & alignment', icon: Wand2 },
                 { label: 'Improve Readability', desc: 'Better typography & contrast', icon: Eye },
@@ -296,7 +304,18 @@ const PageSettingsPanel = ({
                 { label: 'Add Visual', desc: 'Suggest images & graphics', icon: ImageIcon },
                 { label: 'Rewrite Content', desc: 'Refresh tone & clarity', icon: FileText },
               ].map(item => (
-                <button key={item.label} onClick={() => toast.success(`AI: ${item.label} — processing...`)}
+                <button key={item.label} onClick={() => {
+                  if (item.label === 'Add Visual' && onOpenImageSection) {
+                    onOpenImageSection();
+                    return;
+                  }
+                  setAiActionFeedback(null);
+                  toast.success(`AI: ${item.label} — processing...`);
+                  setTimeout(() => {
+                    setAiActionFeedback(`${item.label} applied ✨`);
+                    setTimeout(() => setAiActionFeedback(null), 3000);
+                  }, 1500);
+                }}
                   className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/[0.04] transition-all group text-left">
                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
                     <item.icon className="w-4 h-4 text-accent" />
@@ -359,8 +378,8 @@ const PageSettingsPanel = ({
             </div>
             <div className="px-4 pt-1 pb-4 space-y-2.5">
               {[
-                { severity: 'warning' as const, title: 'Missing visuals (hurting engagement)', detail: 'Adding an image or chart can increase engagement by up to 40%.', cta: 'Add Visual', icon: ImageIcon },
-                { severity: 'info' as const, title: 'Text density is high', detail: 'Breaking content into shorter paragraphs improves readability by 25%.', cta: 'Simplify Text', icon: FileText },
+                { severity: 'warning' as const, title: 'Missing visuals (hurting engagement)', detail: 'Adding an image or chart can increase engagement by up to 40%.', cta: 'Add Visual', icon: ImageIcon, actionType: 'image' as const },
+                { severity: 'info' as const, title: 'Text density is high', detail: 'Breaking content into shorter paragraphs improves readability by 25%.', cta: 'Simplify Text', icon: FileText, actionType: 'ai' as const },
               ].map((s, i) => (
                 <div key={i} className={`p-3 rounded-xl border ${s.severity === 'warning' ? 'border-amber-500/20 bg-amber-500/[0.04]' : 'border-blue-500/20 bg-blue-500/[0.04]'}`}>
                   <div className="flex items-start gap-2.5">
@@ -370,7 +389,17 @@ const PageSettingsPanel = ({
                     <div className="min-w-0 flex-1">
                       <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
                       <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">{s.detail}</p>
-                      <button onClick={() => toast.success(`AI: ${s.cta} — processing...`)}
+                      <button onClick={() => {
+                        if (s.actionType === 'image' && onOpenImageSection) {
+                          onOpenImageSection();
+                        } else {
+                          toast.success(`AI: ${s.cta} — processing...`);
+                          setTimeout(() => {
+                            setAiActionFeedback(`${s.cta} applied ✨`);
+                            setTimeout(() => setAiActionFeedback(null), 3000);
+                          }, 1500);
+                        }
+                      }}
                         className={`mt-2 text-[10px] font-bold hover:underline ${s.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'}`}>
                         {s.cta} →
                       </button>

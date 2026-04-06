@@ -292,6 +292,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
   const [contextualAIPrompt, setContextualAIPrompt] = useState('');
+  const [aiUpdatedFeedback, setAiUpdatedFeedback] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elements: CanvasElement[]; pageId: string } | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
@@ -888,7 +889,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           body: { text: selectedElement.content, action: actionMap[action] || 'improve-writing', prompt },
         });
         if (error) throw error;
-        if (data?.result) { updateElement(selectedElement.id, { content: data.result }); toast.success('Updated by AI'); }
+        if (data?.result) {
+          updateElement(selectedElement.id, { content: data.result });
+          setAiUpdatedFeedback(true);
+          setTimeout(() => setAiUpdatedFeedback(false), 2500);
+          toast.success('Updated by AI ✨');
+        }
         else if (data?.error) toast.error(data.error);
       } catch (e: any) { toast.error(e.message || 'AI edit failed'); }
       finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
@@ -3206,35 +3212,44 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             onMouseDown={e => e.stopPropagation()}
                           >
                             <div className="flex items-center gap-2 p-2.5">
-                              <div className="flex-1 relative">
-                                <Sparkles className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-accent/60" />
-                                <input
-                                  type="text"
-                                  placeholder="Ask AI to improve this..."
-                                  value={contextualAIPrompt}
-                                  onChange={e => setContextualAIPrompt(e.target.value)}
-                                  onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
-                                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-foreground/[0.03] rounded-lg border border-foreground/[0.06] focus:outline-none focus:ring-1 focus:ring-accent/40 placeholder:text-muted-foreground/50"
-                                  disabled={isAIProcessing}
-                                />
-                              </div>
-                              <div className="flex items-center gap-1">
-                                {[
-                                  { id: 'rewrite', label: 'Rewrite' },
-                                  { id: 'improve', label: 'Improve' },
-                                  { id: 'shorten', label: 'Shorten' },
-                                  { id: 'expand', label: 'Expand' },
-                                ].map(btn => (
-                                  <button
-                                    key={btn.id}
-                                    onClick={() => handleContextualAI(btn.id)}
-                                    disabled={isAIProcessing}
-                                    className="px-2.5 py-1.5 text-[10px] font-medium rounded-lg border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
-                                  >
-                                    {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
-                                  </button>
-                                ))}
-                              </div>
+                              {aiUpdatedFeedback ? (
+                                <div className="flex-1 flex items-center justify-center gap-2 py-1.5 animate-in fade-in-0 duration-300">
+                                  <Sparkles className="w-4 h-4 text-emerald-500" />
+                                  <span className="text-xs font-semibold text-emerald-600">Updated ✨</span>
+                                </div>
+                              ) : (
+                                <>
+                                  <div className="flex-1 relative">
+                                    <Sparkles className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-accent/60" />
+                                    <input
+                                      type="text"
+                                      placeholder="Ask AI to improve this..."
+                                      value={contextualAIPrompt}
+                                      onChange={e => setContextualAIPrompt(e.target.value)}
+                                      onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
+                                      className="w-full pl-8 pr-3 py-1.5 text-xs bg-foreground/[0.03] rounded-lg border border-foreground/[0.06] focus:outline-none focus:ring-1 focus:ring-accent/40 placeholder:text-muted-foreground/50"
+                                      disabled={isAIProcessing}
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    {[
+                                      { id: 'rewrite', label: 'Rewrite' },
+                                      { id: 'improve', label: 'Improve' },
+                                      { id: 'shorten', label: 'Shorten' },
+                                      { id: 'expand', label: 'Expand' },
+                                    ].map(btn => (
+                                      <button
+                                        key={btn.id}
+                                        onClick={() => handleContextualAI(btn.id)}
+                                        disabled={isAIProcessing}
+                                        className="px-2.5 py-1.5 text-[10px] font-medium rounded-lg border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
+                                      >
+                                        {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
+                                      </button>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </div>
                         )}
