@@ -4,6 +4,7 @@ import {
   Heart, Shield, Flame, Cpu, Wand2, Loader2, Download, Copy, Undo2,
   ChevronDown, ChevronRight, Zap, Star, BookOpen, Clock, FileCheck, Save, Layers,
   Target, Rocket, Users, Globe, Pencil, TrendingUp, CheckCircle2,
+  Hash, Lightbulb, Trophy, ArrowUpRight,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { toast as sonnerToast } from "sonner";
@@ -63,19 +64,33 @@ const AI_MODELS = [
 ];
 
 const USE_CASES = [
-  { id: "lead-magnet", label: "Lead Magnet", icon: Target, desc: "Short, punchy, high-conversion", defaults: { wordsPerChapter: 500, tone: "conversational", chapters: 5 } },
-  { id: "authority-book", label: "Authority Book", icon: Shield, desc: "In-depth, expert positioning", defaults: { wordsPerChapter: 2000, tone: "authoritative", chapters: 10 } },
-  { id: "course-content", label: "Course Content", icon: GraduationCap, desc: "Structured learning material", defaults: { wordsPerChapter: 1500, tone: "academic", chapters: 8 } },
-  { id: "personal-brand", label: "Personal Brand", icon: Users, desc: "Storytelling & personal voice", defaults: { wordsPerChapter: 1500, tone: "friendly", chapters: 8 } },
+  { id: "lead-magnet", label: "Lead Magnet", icon: Target, desc: "Short, punchy, high-conversion", defaults: { wordsPerChapter: 500, tone: "conversational", chapters: 5 }, titleTemplate: "The Ultimate [Topic] Lead Magnet" },
+  { id: "authority-book", label: "Authority Book", icon: Shield, desc: "In-depth, expert positioning", defaults: { wordsPerChapter: 2000, tone: "authoritative", chapters: 10 }, titleTemplate: "The Authority Guide to [Topic]" },
+  { id: "course-content", label: "Course Content", icon: GraduationCap, desc: "Structured learning material", defaults: { wordsPerChapter: 1500, tone: "academic", chapters: 8 }, titleTemplate: "Mastering [Topic]: A Complete Course" },
+  { id: "personal-brand", label: "Personal Brand", icon: Users, desc: "Storytelling & personal voice", defaults: { wordsPerChapter: 1500, tone: "friendly", chapters: 8 }, titleTemplate: "The [Topic] Playbook" },
 ];
 
 const SAMPLE_CHAPTER_TITLES = [
-  "Introduction & Overview", "The Foundation", "Core Concepts", "Building Blocks",
-  "Advanced Strategies", "Real-World Applications", "Case Studies & Examples",
-  "Implementation Guide", "Measuring Success", "Future Outlook",
-  "Best Practices", "Common Pitfalls", "Expert Interviews", "Action Plan",
-  "Resources & References", "Appendix", "Glossary", "Summary & Next Steps",
-  "Deep Dive: Strategy", "The Complete Framework",
+  { title: "Introduction & Overview", icon: BookOpen, key: true },
+  { title: "The Foundation", icon: Layers, key: false },
+  { title: "Core Concepts", icon: Lightbulb, key: true },
+  { title: "Building Blocks", icon: Hash, key: false },
+  { title: "Advanced Strategies", icon: Target, key: true },
+  { title: "Real-World Applications", icon: Rocket, key: false },
+  { title: "Case Studies & Examples", icon: Trophy, key: false },
+  { title: "Implementation Guide", icon: FileCheck, key: false },
+  { title: "Measuring Success", icon: TrendingUp, key: false },
+  { title: "Future Outlook", icon: Star, key: false },
+  { title: "Best Practices", icon: Shield, key: false },
+  { title: "Common Pitfalls", icon: Flame, key: false },
+  { title: "Expert Interviews", icon: Users, key: false },
+  { title: "Action Plan", icon: Zap, key: true },
+  { title: "Resources & References", icon: FileText, key: false },
+  { title: "Appendix", icon: Layers, key: false },
+  { title: "Glossary", icon: BookOpen, key: false },
+  { title: "Summary & Next Steps", icon: ArrowUpRight, key: false },
+  { title: "Deep Dive: Strategy", icon: Target, key: false },
+  { title: "The Complete Framework", icon: Layers, key: false },
 ];
 
 const SAMPLE_PARAGRAPHS = [
@@ -111,14 +126,25 @@ function estimateGenTime(chapters: number, words: number) {
   return "8–15 min";
 }
 
+function generateSmartTitle(useCase: string | null): string {
+  const titles: Record<string, string[]> = {
+    "lead-magnet": ["The Conversion Blueprint", "The Growth Accelerator", "The Quick-Start Authority Guide"],
+    "authority-book": ["The Definitive Expert Guide", "Strategic Mastery Blueprint", "The Complete Authority Playbook"],
+    "course-content": ["The Structured Learning Path", "Mastering the Fundamentals", "The Complete Training Manual"],
+    "personal-brand": ["Your Story, Your Impact", "The Personal Brand Blueprint", "Building Your Legacy"],
+  };
+  const pool = titles[useCase || "authority-book"] || titles["authority-book"];
+  return pool[Math.floor(Math.random() * pool.length)];
+}
+
 // ─── Sections for sidebar nav ───────────────────────────────────────
 const SECTIONS = [
-  { id: "use-case", label: "Use Case" },
-  { id: "content-type", label: "Content Type" },
-  { id: "length", label: "Length" },
-  { id: "tone", label: "Tone" },
-  { id: "language", label: "Language" },
-  { id: "ai-model", label: "AI Model" },
+  { id: "use-case", label: "Use Case", icon: Target, num: "01" },
+  { id: "content-type", label: "Content Type", icon: Layers, num: "02" },
+  { id: "length", label: "Length", icon: FileText, num: "03" },
+  { id: "tone", label: "Tone", icon: Briefcase, num: "04" },
+  { id: "language", label: "Language", icon: Globe, num: "05" },
+  { id: "ai-model", label: "AI Model", icon: Cpu, num: "06" },
 ];
 
 // ─── Component ──────────────────────────────────────────────────────
@@ -150,6 +176,15 @@ export default function BookSettingsPanel({
   const [previewKey, setPreviewKey] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [initialData] = useState(bookData);
+
+  // Auto-generate a title if empty on mount
+  useEffect(() => {
+    if (!bookData.selectedTitle || bookData.selectedTitle === "Untitled Book") {
+      const title = generateSmartTitle(selectedUseCase);
+      onBookDataChange(prev => ({ ...prev, selectedTitle: title }));
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Trigger preview animation on changes
   useEffect(() => {
@@ -200,13 +235,15 @@ export default function BookSettingsPanel({
     const uc = USE_CASES.find(u => u.id === id);
     if (!uc) return;
     setSelectedUseCase(id);
+    const newTitle = generateSmartTitle(id);
     onBookDataChange(prev => ({
       ...prev,
       wordsPerChapter: uc.defaults.wordsPerChapter,
       tone: uc.defaults.tone,
       chapters: uc.defaults.chapters,
+      selectedTitle: newTitle,
     }));
-    sonnerToast.success(`Applied "${uc.label}" settings`);
+    sonnerToast.success(`Applied "${uc.label}" — title updated`);
   };
 
   const totalWords = chapterCount * bookData.wordsPerChapter;
@@ -227,15 +264,16 @@ export default function BookSettingsPanel({
   const currentImageCount = bookData.chapterContentType !== "text-only" ? chapterCount * 2 : 0;
   const imagesDiff = currentImageCount - initialImageCount;
 
-  // Collapsible section helper
-  const SectionHeader = ({ id, label, icon: Icon }: { id: string; label: string; icon: React.ElementType }) => {
+  // Collapsible section helper with numbered system feel
+  const SectionHeader = ({ id, label, icon: Icon, num }: { id: string; label: string; icon: React.ElementType; num: string }) => {
     const isOpen = expandedSections.has(id);
     return (
       <button onClick={() => toggleSection(id)}
-        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-l-2 ${isOpen ? "bg-foreground/[0.12] border-l-accent" : "hover:bg-foreground/[0.03] border-l-transparent"}`}>
-        <Icon size={16} className="text-foreground/60" />
-        <span className="text-sm font-medium flex-1 text-foreground">{label}</span>
-        <ChevronRight size={14} className={`text-muted-foreground transition-transform ${isOpen ? "rotate-90" : ""}`} />
+        className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-all border-l-2 group ${isOpen ? "bg-foreground/[0.12] border-l-accent" : "hover:bg-foreground/[0.03] border-l-transparent"}`}>
+        <span className={`text-[9px] font-mono font-bold w-5 text-right shrink-0 ${isOpen ? "text-accent" : "text-foreground/25"}`}>{num}</span>
+        <Icon size={15} className={`shrink-0 transition-colors ${isOpen ? "text-accent" : "text-foreground/40 group-hover:text-foreground/60"}`} />
+        <span className={`text-sm font-semibold flex-1 transition-colors ${isOpen ? "text-foreground" : "text-foreground/70"}`}>{label}</span>
+        <ChevronRight size={14} className={`text-muted-foreground transition-transform duration-200 ${isOpen ? "rotate-90" : ""}`} />
       </button>
     );
   };
@@ -254,17 +292,27 @@ export default function BookSettingsPanel({
 
           {/* Impact Preview Banner */}
           {hasChanges && (
-            <div className="mx-3 mt-3 p-3 rounded-lg border border-accent/20 bg-accent/[0.03] flex items-center gap-2">
-              <Zap size={14} className="text-accent shrink-0" />
-              <div className="flex-1 flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-foreground/80">
-                {wordsDiff !== 0 && (
-                  <span className={wordsDiff > 0 ? "text-emerald-600" : "text-orange-600"}>
-                    {wordsDiff > 0 ? "+" : ""}{wordsDiff.toLocaleString()} words
+            <div className="mx-3 mt-3 p-3 rounded-lg border border-accent/20 bg-accent/[0.03] animate-[fadeSlideIn_0.3s_ease-out]">
+              <div className="flex items-center gap-2 mb-1.5">
+                <Zap size={12} className="text-accent" />
+                <span className="text-[10px] font-bold text-foreground/70 uppercase tracking-wider">Impact Preview</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {pagesDiff !== 0 && (
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full animate-[fadeSlideIn_0.25s_ease-out] ${pagesDiff > 0 ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}>
+                    <FileCheck size={9} />{pagesDiff > 0 ? "+" : ""}{pagesDiff} pages
                   </span>
                 )}
-                {bookData.chapterContentType !== initialData.chapterContentType && <span>Content type changed</span>}
-                {bookData.tone !== initialData.tone && <span>Tone updated</span>}
-                {bookData.model !== initialData.model && <span>Model changed</span>}
+                {wordsDiff !== 0 && (
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full animate-[fadeSlideIn_0.25s_ease-out] ${wordsDiff > 0 ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}>
+                    <FileText size={9} />{wordsDiff > 0 ? "+" : ""}{wordsDiff.toLocaleString()} words
+                  </span>
+                )}
+                {imagesDiff !== 0 && (
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full animate-[fadeSlideIn_0.25s_ease-out] ${imagesDiff > 0 ? "bg-emerald-500/10 text-emerald-600" : "bg-orange-500/10 text-orange-600"}`}>
+                    <Image size={9} />{imagesDiff > 0 ? "+" : ""}{imagesDiff} images
+                  </span>
+                )}
               </div>
             </div>
           )}
@@ -272,7 +320,7 @@ export default function BookSettingsPanel({
           <div className="divide-y divide-foreground/[0.06]">
             {/* ── Use Case ── */}
             <div>
-              <SectionHeader id="use-case" label="Use Case" icon={Target} />
+              <SectionHeader id="use-case" label="Use Case" icon={Target} num="01" />
               {expandedSections.has("use-case") && (
                 <div className="px-4 pb-4 pt-1">
                   <div className="grid grid-cols-2 gap-2">
@@ -297,7 +345,7 @@ export default function BookSettingsPanel({
 
             {/* ── Content Type ── */}
             <div>
-              <SectionHeader id="content-type" label="Content Type" icon={Layers} />
+              <SectionHeader id="content-type" label="Content Type" icon={Layers} num="02" />
               {expandedSections.has("content-type") && (
                 <div className="px-4 pb-4 pt-1 space-y-2">
                   {CHAPTER_CONTENT_TYPES.map(ct => {
@@ -321,7 +369,7 @@ export default function BookSettingsPanel({
 
             {/* ── Length ── */}
             <div>
-              <SectionHeader id="length" label="Length" icon={FileText} />
+              <SectionHeader id="length" label="Length" icon={FileText} num="03" />
               {expandedSections.has("length") && (
                 <div className="px-4 pb-4 pt-1">
                   <p className="text-[10px] text-muted-foreground mb-3">{getWordsLabel(bookData.wordsPerChapter)}</p>
@@ -344,7 +392,7 @@ export default function BookSettingsPanel({
 
             {/* ── Tone ── */}
             <div>
-              <SectionHeader id="tone" label="Tone" icon={Briefcase} />
+              <SectionHeader id="tone" label="Tone" icon={Briefcase} num="04" />
               {expandedSections.has("tone") && (
                 <div className="px-4 pb-4 pt-1">
                   <div className="grid grid-cols-2 gap-2">
@@ -368,7 +416,7 @@ export default function BookSettingsPanel({
 
             {/* ── Language ── */}
             <div>
-              <SectionHeader id="language" label="Language" icon={Globe} />
+              <SectionHeader id="language" label="Language" icon={Globe} num="05" />
               {expandedSections.has("language") && (
                 <div className="px-4 pb-4 pt-1">
                   <div className="flex items-center gap-3 mb-2">
@@ -397,7 +445,7 @@ export default function BookSettingsPanel({
 
             {/* ── AI Model ── */}
             <div>
-              <SectionHeader id="ai-model" label="AI Model" icon={Cpu} />
+              <SectionHeader id="ai-model" label="AI Model" icon={Cpu} num="06" />
               {expandedSections.has("ai-model") && (
                 <div className="px-4 pb-4 pt-1 space-y-2">
                   {AI_MODELS.map(m => {
@@ -431,13 +479,13 @@ export default function BookSettingsPanel({
 
             {/* ── Presets ── */}
             <div>
-              <SectionHeader id="presets" label="Presets" icon={Save} />
+              <SectionHeader id="presets" label="Presets" icon={Save} num="07" />
               {expandedSections.has("presets") && (
                 <div className="px-4 pb-4 pt-1">
                   <div className="flex items-center gap-2 mb-3">
                     <input value={presetName} onChange={e => setPresetName(e.target.value)} placeholder="Preset name..."
                       className="text-xs px-2.5 py-1.5 rounded-md border border-foreground/[0.1] bg-background outline-none focus:border-accent/40 flex-1" />
-                    <button onClick={savePreset} className="px-2.5 py-1.5 rounded-md bg-accent text-white text-xs font-semibold shrink-0">Save</button>
+                    <button onClick={savePreset} className="px-2.5 py-1.5 rounded-md bg-accent text-accent-foreground text-xs font-semibold shrink-0">Save</button>
                   </div>
                   {presets.length > 0 ? (
                     <div className="space-y-1">
@@ -460,7 +508,7 @@ export default function BookSettingsPanel({
           <div className="p-4 border-t border-foreground/[0.06]">
             <div className="flex flex-col gap-2">
               <button onClick={onApply} disabled={isApplying}
-                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-white text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50">
+                className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-accent-foreground text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50">
                 {isApplying ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
                 {isApplying ? "Rebuilding..." : "Rebuild My Book"}
               </button>
@@ -469,18 +517,29 @@ export default function BookSettingsPanel({
           </div>
         </div>
 
-        {/* ─── CENTER: Living Book Preview ─── */}
-        <div className="flex-1 min-w-0 overflow-y-auto flex flex-col items-center justify-start py-8 px-6">
-          <div className="w-full max-w-lg">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground/70 mb-4 text-center">Live Preview</h3>
-            <div key={previewKey} className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] shadow-sm overflow-hidden animate-[fadeSlideIn_0.35s_ease-out]">
+        {/* ─── CENTER: Living Book Preview (HERO) ─── */}
+        <div className="flex-1 min-w-0 overflow-y-auto flex flex-col items-center justify-start py-8 px-6"
+          style={{ background: "radial-gradient(ellipse 600px 400px at 50% 30%, hsl(var(--accent) / 0.06), transparent 70%)" }}>
+          <div className="w-full max-w-xl">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-foreground/50 mb-5 text-center flex items-center justify-center gap-2">
+              <BookOpen size={12} className="text-accent" /> Live Preview
+            </h3>
+
+            {/* Book card with elevation */}
+            <div key={previewKey}
+              className="rounded-2xl border border-foreground/[0.1] bg-card overflow-hidden animate-[fadeSlideIn_0.35s_ease-out] transition-shadow duration-300"
+              style={{ boxShadow: "0 20px 60px -15px hsl(var(--foreground) / 0.12), 0 8px 24px -8px hsl(var(--foreground) / 0.08)" }}>
 
               {/* ── Book Cover ── */}
-              <div className="aspect-[3/4] max-h-[380px] bg-gradient-to-br from-foreground/[0.03] to-foreground/[0.06] flex flex-col items-center justify-center p-8 relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent" />
-                <div className="relative z-10 text-center space-y-4">
-                  <div className="w-16 h-16 mx-auto rounded-2xl bg-accent/10 flex items-center justify-center">
-                    <BookOpen size={28} className="text-accent" />
+              <div className="aspect-[3/4] max-h-[420px] flex flex-col items-center justify-center p-10 relative overflow-hidden"
+                style={{ background: "linear-gradient(135deg, hsl(var(--foreground) / 0.03) 0%, hsl(var(--foreground) / 0.07) 50%, hsl(var(--accent) / 0.05) 100%)" }}>
+                {/* Decorative gradient orb */}
+                <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 rounded-full opacity-40 blur-3xl"
+                  style={{ background: "radial-gradient(circle, hsl(var(--accent) / 0.15), transparent 70%)" }} />
+
+                <div className="relative z-10 text-center space-y-5">
+                  <div className="w-20 h-20 mx-auto rounded-2xl bg-accent/10 flex items-center justify-center shadow-sm border border-accent/10">
+                    <BookOpen size={32} className="text-accent" />
                   </div>
                   <div>
                     {isEditingTitle ? (
@@ -490,47 +549,53 @@ export default function BookSettingsPanel({
                         onBlur={() => setIsEditingTitle(false)}
                         onKeyDown={e => e.key === "Enter" && setIsEditingTitle(false)}
                         autoFocus
-                        className="text-lg font-bold text-foreground text-center bg-transparent border-b-2 border-accent/40 outline-none w-full px-2 py-1"
+                        className="text-xl font-bold text-foreground text-center bg-transparent border-b-2 border-accent/40 outline-none w-full px-2 py-1"
                         placeholder="Enter your book title..."
                       />
                     ) : (
                       <div className="group relative">
-                        <h4 className="text-lg font-bold text-foreground leading-tight cursor-pointer hover:text-accent/80 transition-colors"
+                        <h4 className="text-xl font-bold text-foreground leading-tight cursor-pointer hover:text-accent/80 transition-colors"
                           onClick={() => setIsEditingTitle(true)}>
-                          {bookData.selectedTitle || "Untitled Book"}
-                          <Pencil size={12} className="inline ml-2 opacity-0 group-hover:opacity-60 transition-opacity" />
+                          {bookData.selectedTitle || "Click to add title"}
+                          <Pencil size={13} className="inline ml-2 opacity-0 group-hover:opacity-60 transition-opacity" />
                         </h4>
-                        {!bookData.selectedTitle && (
-                          <button onClick={() => {
-                            const titles = ["The Automated Blueprint", "Strategic Edge", "The Complete Playbook", "Mastering the Fundamentals"];
-                            onBookDataChange(prev => ({ ...prev, selectedTitle: titles[Math.floor(Math.random() * titles.length)] }));
-                            sonnerToast.success("Title generated!");
-                          }} className="mt-2 flex items-center gap-1.5 mx-auto text-[10px] font-semibold text-accent hover:text-accent/80 transition-colors">
-                            <Sparkles size={10} /> Generate Title
-                          </button>
-                        )}
+                        <button onClick={() => {
+                          const title = generateSmartTitle(selectedUseCase);
+                          onBookDataChange(prev => ({ ...prev, selectedTitle: title }));
+                          sonnerToast.success("Title generated!");
+                        }} className="mt-2.5 flex items-center gap-1.5 mx-auto text-[11px] font-semibold text-accent hover:text-accent/80 transition-colors">
+                          <Sparkles size={11} /> Generate New Title
+                        </button>
                       </div>
                     )}
-                    <p className="text-[10px] text-muted-foreground mt-1.5 capitalize">{currentTone?.name || "Professional"} · {currentLang?.name || "English"}</p>
+                    <p className="text-[11px] text-muted-foreground mt-2 capitalize">{currentTone?.name || "Professional"} · {currentLang?.name || "English"}</p>
                   </div>
-                  <div className="flex items-center justify-center gap-3 pt-2">
-                    <span className="text-[10px] px-2 py-1 rounded-full bg-foreground/[0.06] text-foreground/60">{chapterCount} chapters</span>
-                    <span className="text-[10px] px-2 py-1 rounded-full bg-foreground/[0.06] text-foreground/60">~{estPages} pages</span>
+                  <div className="flex items-center justify-center gap-3 pt-1">
+                    <span className="text-[10px] px-2.5 py-1 rounded-full bg-foreground/[0.06] text-foreground/60 font-medium">{chapterCount} chapters</span>
+                    <span className="text-[10px] px-2.5 py-1 rounded-full bg-foreground/[0.06] text-foreground/60 font-medium">~{estPages} pages</span>
                   </div>
                 </div>
               </div>
 
-              {/* ── Table of Contents with real chapter titles ── */}
-              <div className="p-5 border-t border-foreground/[0.06]">
+              {/* ── Table of Contents with icons ── */}
+              <div className="p-6 border-t border-foreground/[0.06]">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-3">Table of Contents</p>
-                <div className="space-y-1">
-                  {Array.from({ length: Math.min(chapterCount, 8) }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-3 py-1.5 group hover:bg-foreground/[0.02] rounded-lg px-2 -mx-2 transition-colors">
-                      <span className="text-[10px] font-mono text-accent w-5 text-right shrink-0">{String(i + 1).padStart(2, "0")}</span>
-                      <span className="text-xs text-foreground/80 flex-1 truncate">{SAMPLE_CHAPTER_TITLES[i % SAMPLE_CHAPTER_TITLES.length]}</span>
-                      <span className="text-[9px] text-muted-foreground shrink-0 tabular-nums">{bookData.wordsPerChapter.toLocaleString()}w</span>
-                    </div>
-                  ))}
+                <div className="space-y-0.5">
+                  {Array.from({ length: Math.min(chapterCount, 8) }).map((_, i) => {
+                    const chapter = SAMPLE_CHAPTER_TITLES[i % SAMPLE_CHAPTER_TITLES.length];
+                    const ChIcon = chapter.icon;
+                    return (
+                      <div key={i} className={`flex items-center gap-3 py-2 group hover:bg-foreground/[0.03] rounded-lg px-2.5 -mx-2 transition-all ${chapter.key ? "bg-accent/[0.02]" : ""}`}>
+                        <span className="text-[10px] font-mono text-accent/60 w-5 text-right shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                        <ChIcon size={12} className={`shrink-0 ${chapter.key ? "text-accent" : "text-foreground/25"}`} />
+                        <span className={`text-xs flex-1 truncate ${chapter.key ? "text-foreground font-semibold" : "text-foreground/70"}`}>
+                          {chapter.title}
+                        </span>
+                        {chapter.key && <span className="text-[8px] px-1.5 py-0.5 rounded-full bg-accent/10 text-accent font-bold uppercase shrink-0">Key</span>}
+                        <span className="text-[9px] text-muted-foreground shrink-0 tabular-nums">{bookData.wordsPerChapter.toLocaleString()}w</span>
+                      </div>
+                    );
+                  })}
                   {chapterCount > 8 && (
                     <p className="text-[10px] text-muted-foreground text-center pt-2">+ {chapterCount - 8} more chapters</p>
                   )}
@@ -538,27 +603,27 @@ export default function BookSettingsPanel({
               </div>
 
               {/* ── Sample Paragraph Preview ── */}
-              <div className="px-5 pb-4 border-t border-foreground/[0.06] pt-4">
+              <div className="px-6 pb-5 border-t border-foreground/[0.06] pt-4">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2">Sample Preview</p>
-                <p className="text-[11px] text-foreground/60 leading-relaxed italic">
+                <p className="text-[11px] text-foreground/55 leading-relaxed italic">
                   "{SAMPLE_PARAGRAPHS[0]}"
                 </p>
               </div>
 
               {/* ── Content type badges ── */}
-              <div className="px-5 pb-4 flex items-center gap-2 flex-wrap border-t border-foreground/[0.06] pt-3">
+              <div className="px-6 pb-5 flex items-center gap-2 flex-wrap border-t border-foreground/[0.06] pt-3">
                 {bookData.chapterContentType !== "text-only" && (
-                  <span className="text-[9px] px-2 py-1 rounded-full bg-accent/10 text-accent font-medium flex items-center gap-1">
+                  <span className="text-[9px] px-2.5 py-1 rounded-full bg-accent/10 text-accent font-semibold flex items-center gap-1">
                     <Image size={9} /> Images
                   </span>
                 )}
                 {bookData.chapterContentType === "text-images-interactive" && (
-                  <span className="text-[9px] px-2 py-1 rounded-full bg-accent/10 text-accent font-medium flex items-center gap-1">
+                  <span className="text-[9px] px-2.5 py-1 rounded-full bg-accent/10 text-accent font-semibold flex items-center gap-1">
                     <Sparkles size={9} /> Interactive
                   </span>
                 )}
-                <span className="text-[9px] px-2 py-1 rounded-full bg-foreground/[0.04] text-foreground/50 font-medium">{totalWords.toLocaleString()} words</span>
-                <span className="ml-auto text-[9px] text-muted-foreground">{estTime}</span>
+                <span className="text-[9px] px-2.5 py-1 rounded-full bg-foreground/[0.04] text-foreground/50 font-medium">{totalWords.toLocaleString()} words</span>
+                <span className="ml-auto text-[9px] text-muted-foreground flex items-center gap-1"><Clock size={9} /> {estTime}</span>
               </div>
             </div>
           </div>
@@ -583,28 +648,28 @@ export default function BookSettingsPanel({
 
               {/* ── Change Impact Deltas ── */}
               {hasChanges && (
-                <div className="mt-4 pt-3 border-t border-foreground/[0.06]">
+                <div className="mt-4 pt-3 border-t border-foreground/[0.06] animate-[fadeSlideIn_0.3s_ease-out]">
                   <h4 className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2 flex items-center gap-1.5">
                     <TrendingUp size={10} className="text-accent" /> Change Impact
                   </h4>
                   <div className="space-y-1.5">
                     {pagesDiff !== 0 && (
-                      <div className={`flex items-center gap-2 text-xs font-medium ${pagesDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
+                      <div className={`flex items-center gap-2 text-xs font-semibold ${pagesDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
                         <FileCheck size={11} />{pagesDiff > 0 ? "+" : ""}{pagesDiff} pages
                       </div>
                     )}
                     {wordsDiff !== 0 && (
-                      <div className={`flex items-center gap-2 text-xs font-medium ${wordsDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
+                      <div className={`flex items-center gap-2 text-xs font-semibold ${wordsDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
                         <FileText size={11} />{wordsDiff > 0 ? "+" : ""}{wordsDiff.toLocaleString()} words
                       </div>
                     )}
                     {imagesDiff !== 0 && (
-                      <div className={`flex items-center gap-2 text-xs font-medium ${imagesDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
+                      <div className={`flex items-center gap-2 text-xs font-semibold ${imagesDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
                         <Image size={11} />{imagesDiff > 0 ? "+" : ""}{imagesDiff} images
                       </div>
                     )}
                     {bookData.tone !== initialData.tone && (
-                      <div className="flex items-center gap-2 text-xs font-medium text-accent">
+                      <div className="flex items-center gap-2 text-xs font-semibold text-accent">
                         <Briefcase size={11} />Tone → {currentTone?.name}
                       </div>
                     )}
@@ -647,6 +712,12 @@ export default function BookSettingsPanel({
                   <CheckCircle2 size={14} className="text-accent mt-0.5 shrink-0" />
                   <span className="text-xs text-foreground/70">Ready for publishing or lead generation</span>
                 </div>
+              </div>
+              {/* Emotional trigger */}
+              <div className="mt-4 pt-3 border-t border-accent/10">
+                <p className="text-[11px] text-foreground/50 italic leading-relaxed">
+                  "Your book will be ready to publish, share, or sell — perfect for lead generation, authority building, or content repurposing."
+                </p>
               </div>
             </div>
 
