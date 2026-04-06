@@ -69,6 +69,20 @@ const USE_CASES = [
   { id: "personal-brand", label: "Personal Brand", icon: Users, desc: "Storytelling & personal voice", defaults: { wordsPerChapter: 1500, tone: "friendly", chapters: 8 } },
 ];
 
+const SAMPLE_CHAPTER_TITLES = [
+  "Introduction & Overview", "The Foundation", "Core Concepts", "Building Blocks",
+  "Advanced Strategies", "Real-World Applications", "Case Studies & Examples",
+  "Implementation Guide", "Measuring Success", "Future Outlook",
+  "Best Practices", "Common Pitfalls", "Expert Interviews", "Action Plan",
+  "Resources & References", "Appendix", "Glossary", "Summary & Next Steps",
+  "Deep Dive: Strategy", "The Complete Framework",
+];
+
+const SAMPLE_PARAGRAPHS = [
+  "This comprehensive guide will walk you through everything you need to know, from foundational concepts to advanced strategies that industry leaders use daily.",
+  "Each chapter has been carefully crafted to build upon the previous one, creating a natural learning progression that makes complex topics accessible and actionable.",
+];
+
 const PRESETS_KEY = "ebook_presets";
 
 interface SavedPreset {
