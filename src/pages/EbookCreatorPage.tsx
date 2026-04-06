@@ -314,18 +314,21 @@ const EbookCreatorPage = () => {
                         <p className="text-sm text-muted line-clamp-1 mt-0.5">{book.description}</p>
                       </div>
                       <div className="flex items-center gap-2">
-                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity relative">
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           <Tooltip><TooltipTrigger asChild>
-                            <button onClick={e => { e.stopPropagation(); navigate("/ebook-creator/new?tab=design", { state: { book } }); }} className="p-2 text-muted hover:text-accent hover:bg-accent/10 rounded-lg transition-colors"><Edit className="w-5 h-5" /></button>
+                            <button onClick={e => { e.stopPropagation(); navigate("/ebook-creator/new?tab=design", { state: { book } }); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><Edit className="w-4.5 h-4.5" /></button>
                           </TooltipTrigger><TooltipContent>Edit</TooltipContent></Tooltip>
                           <Tooltip><TooltipTrigger asChild>
-                            <button onClick={e => { e.stopPropagation(); }} className="p-2 text-muted hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 rounded-lg transition-colors"><Download className="w-5 h-5" /></button>
+                            <button onClick={e => { e.stopPropagation(); navigate("/ebook-creator/new?tab=design", { state: { book } }); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><Palette className="w-4.5 h-4.5" /></button>
+                          </TooltipTrigger><TooltipContent>Design</TooltipContent></Tooltip>
+                          <Tooltip><TooltipTrigger asChild>
+                            <button onClick={e => { e.stopPropagation(); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><Download className="w-4.5 h-4.5" /></button>
                           </TooltipTrigger><TooltipContent>Export</TooltipContent></Tooltip>
                           <div className="relative">
-                            <button onClick={e => { e.stopPropagation(); setShowDropdown(showDropdown === book.id ? null : book.id); }} className="p-2 text-muted hover:text-foreground hover:bg-muted rounded-lg transition-colors"><MoreVertical className="w-5 h-5" /></button>
+                            <button onClick={e => { e.stopPropagation(); setShowDropdown(showDropdown === book.id ? null : book.id); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><MoreVertical className="w-4.5 h-4.5" /></button>
                             {showDropdown === book.id && (
                               <div className="absolute right-0 top-full mt-1 w-40 bg-popover border border-foreground/[0.08] rounded-xl shadow-lg py-1 z-10">
-                                <button onClick={e => { e.stopPropagation(); duplicateEbook(book); }} className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-muted flex items-center gap-2"><Copy className="w-4 h-4" />Duplicate</button>
+                                <button onClick={e => { e.stopPropagation(); duplicateEbook(book); }} className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-foreground/[0.04] flex items-center gap-2"><Copy className="w-4 h-4" />Duplicate</button>
                                 <button onClick={e => { e.stopPropagation(); setDeleteConfirmBook(book); setShowDropdown(null); }} className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-destructive/10 flex items-center gap-2"><Trash2 className="w-4 h-4" />Delete</button>
                               </div>
                             )}
