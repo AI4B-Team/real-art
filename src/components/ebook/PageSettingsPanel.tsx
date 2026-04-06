@@ -277,7 +277,7 @@ const PageSettingsPanel = ({
           {/* ═══ SECTION 2: AI ASSISTANT ═══ */}
           <div className="border-t-2 border-accent/20">
             <div className="flex items-center gap-2 px-4 py-3 bg-accent/[0.04]">
-              <Brain className="w-4 h-4 text-accent" />
+              <Sparkles className="w-4 h-4 text-accent" />
               <span className="text-xs font-bold text-foreground uppercase tracking-wider">AI Assistant</span>
             </div>
             <div className="px-4 pt-2 pb-4 space-y-1.5">
