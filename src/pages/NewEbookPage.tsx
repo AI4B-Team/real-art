@@ -1711,6 +1711,13 @@ const NewEbookPage = () => {
                 accessMode={accessMode}
                 initialPageElements={savedPageElements}
                 onPageElementsChange={handlePageElementsChange}
+                onAiPanelToggle={(isOpen) => {
+                  if (isOpen) {
+                    setIsRightPanelCollapsed(true);
+                  } else {
+                    setIsRightPanelCollapsed(false);
+                  }
+                }}
               />
               )}
 

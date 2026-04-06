@@ -12,7 +12,7 @@ import {
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
   Sparkles, EyeOff, Download, Files, CircleDot, Eclipse, Eye,
-  BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid,
+  BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid, Target, MinusCircle,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -92,6 +92,7 @@ interface EbookCanvasEditorProps {
   onPageSettingsToggle?: () => void;
   onOpenImageSection?: () => void;
   onReplaceStateChange?: (isReplacing: boolean) => void;
+  onAiPanelToggle?: (isOpen: boolean) => void;
   pageWidth?: number;
   pageHeight?: number;
   accessMode?: AccessMode;
@@ -223,7 +224,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   showPagesPanel = true, zoom: externalZoom, onZoomChange,
   isGridView = false, onGridViewToggle,
   findReplaceMode, onFindReplaceModeChange,
-  onPageSettingsToggle, onOpenImageSection, onReplaceStateChange,
+  onPageSettingsToggle, onOpenImageSection, onReplaceStateChange, onAiPanelToggle,
   pageWidth: pw = 480, pageHeight: ph = 640,
   accessMode = 'editing',
   initialPageElements, onPageElementsChange,
@@ -921,7 +922,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
       setEditingTextId(null);
-      setAiExpandedPageId(null);
+      if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); }
 
       if (activeTool === 'text') {
         addElement('text');
@@ -3023,8 +3024,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               )}
 
               {/* Canvas - Scrollable all pages */}
-              <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); setAiExpandedPageId(null); } }}>
-                <div className="flex flex-col items-center gap-8" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); setAiExpandedPageId(null); } }}>
+              <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
+                <div className="flex flex-col items-center gap-8" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
@@ -3234,52 +3235,90 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                   <div key={action.id} className="relative">
                                     <Tooltip>
                                       <TooltipTrigger asChild>
-                                        <button onClick={() => setAiExpandedPageId(isAiOpen ? null : page.id)}
+                                        <button onClick={() => {
+                                          const newId = isAiOpen ? null : page.id;
+                                          setAiExpandedPageId(newId);
+                                          onAiPanelToggle?.(!!newId);
+                                        }}
                                           className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isAiOpen ? 'bg-accent/20 text-accent' : 'bg-accent/10 hover:bg-accent/20 text-accent'}`}>
                                           <Sparkles className="w-4 h-4" />
                                         </button>
                                       </TooltipTrigger>
                                       <TooltipContent side="right">AI Assistant</TooltipContent>
                                     </Tooltip>
-                                    {/* Expanded AI bar */}
-                                    <div className={`absolute left-full top-1/2 -translate-y-1/2 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                                      <div className="flex flex-col gap-2 bg-background/95 backdrop-blur-md rounded-2xl px-3 py-2.5 border border-foreground/[0.08] shadow-lg whitespace-nowrap"
-                                        style={{ minWidth: '340px', maxWidth: '600px' }}>
+                                    {/* Expanded AI panel — unified brain */}
+                                    <div className={`absolute left-full top-0 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
+                                      <div className="flex flex-col bg-background/95 backdrop-blur-md rounded-2xl border border-foreground/[0.08] shadow-lg whitespace-nowrap"
+                                        style={{ width: '320px' }}>
                                         {aiUpdatedFeedback ? (
-                                          <div className="flex items-center justify-center gap-2 py-1.5 animate-in fade-in-0 duration-300">
+                                          <div className="flex items-center justify-center gap-2 py-4 animate-in fade-in-0 duration-300">
                                             <Sparkles className="w-4 h-4 text-emerald-500" />
                                             <span className="text-xs font-semibold text-emerald-600">Updated ✨</span>
                                           </div>
                                         ) : (
                                           <>
-                                            <div className="flex items-start gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
-                                              <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                                              <textarea
-                                                value={contextualAIPrompt}
-                                                onChange={e => setContextualAIPrompt(e.target.value)}
-                                                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
-                                                placeholder="Ask AI to improve this page..."
-                                                className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
-                                                style={{ minHeight: '24px', maxHeight: '200px' }}
-                                                rows={1}
-                                              />
+                                            {/* Header */}
+                                            <div className="flex items-center gap-2 px-3.5 py-2.5 border-b border-foreground/[0.06]">
+                                              <Sparkles className="w-3.5 h-3.5 text-accent" />
+                                              <span className="text-[11px] font-bold text-foreground">AI Assistant</span>
+                                              <span className="ml-auto text-[9px] text-muted-foreground">Page {pageIndex + 1}</span>
                                             </div>
-                                            <div className="flex items-center gap-1 flex-wrap">
+
+                                            {/* Smart Suggestions — proactive nudges */}
+                                            <div className="px-3 py-2.5 space-y-2 border-b border-foreground/[0.06]">
+                                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Here's What I'd Fix First…</p>
                                               {[
-                                                { id: 'rewrite', label: 'Make It Persuasive' },
-                                                { id: 'improve', label: 'Improve Clarity' },
-                                                { id: 'shorten', label: 'Simplify' },
-                                                { id: 'expand', label: 'Add Detail' },
-                                              ].map(btn => (
-                                                <button
-                                                  key={btn.id}
-                                                  onClick={() => handleContextualAI(btn.id)}
-                                                  disabled={isAIProcessing}
-                                                  className="px-2.5 py-1.5 text-[10px] font-medium rounded-xl border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
-                                                >
-                                                  {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
+                                                { severity: 'critical' as const, title: 'Weak headline detected', cta: 'Rewrite Headline', color: 'text-destructive bg-destructive/10' },
+                                                { severity: 'warning' as const, title: 'Missing visuals', cta: 'Add Visual', color: 'text-amber-600 bg-amber-500/10' },
+                                                { severity: 'info' as const, title: 'Text too dense', cta: 'Simplify', color: 'text-blue-600 bg-blue-500/10' },
+                                              ].map((nudge, i) => (
+                                                <button key={i} onClick={() => {
+                                                  if (nudge.cta === 'Add Visual') {
+                                                    onOpenImageSection?.();
+                                                  } else {
+                                                    handleContextualAI(nudge.cta === 'Rewrite Headline' ? 'rewrite' : 'shorten');
+                                                  }
+                                                }}
+                                                  className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-foreground/[0.03] transition-colors text-left">
+                                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${nudge.severity === 'critical' ? 'bg-destructive' : nudge.severity === 'warning' ? 'bg-amber-500' : 'bg-blue-500'}`} />
+                                                  <span className="text-[11px] text-foreground flex-1">{nudge.title}</span>
+                                                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md ${nudge.color}`}>{nudge.cta}</span>
                                                 </button>
                                               ))}
+                                            </div>
+
+                                            {/* Quick Actions grid */}
+                                            <div className="px-3 py-2.5 border-b border-foreground/[0.06]">
+                                              <div className="grid grid-cols-4 gap-1">
+                                                {[
+                                                  { id: 'rewrite', label: 'Persuade', icon: Target },
+                                                  { id: 'improve', label: 'Clarity', icon: Eye },
+                                                  { id: 'shorten', label: 'Simplify', icon: MinusCircle },
+                                                  { id: 'expand', label: 'Detail', icon: FileText },
+                                                ].map(btn => (
+                                                  <button key={btn.id} onClick={() => handleContextualAI(btn.id)} disabled={isAIProcessing}
+                                                    className="flex flex-col items-center gap-1 py-2 rounded-lg hover:bg-accent/[0.06] transition-colors disabled:opacity-40">
+                                                    <btn.icon className="w-3.5 h-3.5 text-accent" />
+                                                    <span className="text-[9px] font-medium text-muted-foreground">{btn.label}</span>
+                                                  </button>
+                                                ))}
+                                              </div>
+                                            </div>
+
+                                            {/* Prompt input */}
+                                            <div className="px-3 py-2.5">
+                                              <div className="flex items-start gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
+                                                <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                                                <textarea
+                                                  value={contextualAIPrompt}
+                                                  onChange={e => setContextualAIPrompt(e.target.value)}
+                                                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
+                                                  placeholder="Ask AI anything about this page..."
+                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
+                                                  style={{ minHeight: '24px', maxHeight: '200px' }}
+                                                  rows={1}
+                                                />
+                                              </div>
                                             </div>
                                           </>
                                         )}
