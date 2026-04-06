@@ -3214,7 +3214,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 </div>
               {/* Floating AI Prompt Bar */}
               {canEdit && !isGridView && (
-                <div className="sticky bottom-4 mx-auto w-full max-w-lg z-[60] px-4">
+                <div className="sticky bottom-4 mx-auto w-full max-w-2xl z-[60] px-4">
                   <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md border border-foreground/[0.1] rounded-xl px-3 py-2 shadow-xl">
                     <Sparkles className="w-4 h-4 text-accent shrink-0" />
                     <input
