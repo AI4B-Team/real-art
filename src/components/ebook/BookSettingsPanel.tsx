@@ -207,7 +207,7 @@ export default function BookSettingsPanel({
     const isOpen = expandedSections.has(id);
     return (
       <button onClick={() => toggleSection(id)}
-        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:bg-foreground/[0.03] ${isOpen ? "bg-foreground/[0.02]" : ""}`}>
+        className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all border-l-2 ${isOpen ? "bg-foreground/[0.12] border-l-accent" : "hover:bg-foreground/[0.03] border-l-transparent"}`}>
         <Icon size={16} className="text-foreground/60" />
         <span className="text-sm font-medium flex-1 text-foreground">{label}</span>
         <ChevronRight size={14} className={`text-muted-foreground transition-transform ${isOpen ? "rotate-90" : ""}`} />
