@@ -26,6 +26,7 @@ interface PageSettingsPanelProps {
   pageHeight?: number;
   onDimensionsChange?: (w: number, h: number) => void;
   onOpenImageSection?: () => void;
+  showLockedPagesWarning?: (actionLabel: string, onApplyAll: () => void, onApplySkipping: () => void) => boolean;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
