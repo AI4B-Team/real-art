@@ -3244,7 +3244,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     {/* Expanded AI bar */}
                                     <div className={`absolute left-full top-1/2 -translate-y-1/2 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
                                       <div className="flex flex-col gap-2 bg-background/95 backdrop-blur-md rounded-2xl px-3 py-2.5 border border-foreground/[0.08] shadow-lg whitespace-nowrap"
-                                        style={{ resize: 'both', overflow: 'auto', minWidth: '340px', maxWidth: '600px', minHeight: '80px', maxHeight: '400px' }}>
+                                        style={{ minWidth: '340px', maxWidth: '600px' }}>
                                         {aiUpdatedFeedback ? (
                                           <div className="flex items-center justify-center gap-2 py-1.5 animate-in fade-in-0 duration-300">
                                             <Sparkles className="w-4 h-4 text-emerald-500" />
@@ -3252,15 +3252,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                           </div>
                                         ) : (
                                           <>
-                                            <div className="flex items-center gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
-                                              <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
-                                              <input
-                                                type="text"
+                                            <div className="flex items-start gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
+                                              <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
+                                              <textarea
                                                 value={contextualAIPrompt}
                                                 onChange={e => setContextualAIPrompt(e.target.value)}
-                                                onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
+                                                onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
                                                 placeholder="Ask AI to improve this page..."
-                                                className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full"
+                                                className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
+                                                style={{ minHeight: '24px', maxHeight: '200px' }}
+                                                rows={1}
                                               />
                                             </div>
                                             <div className="flex items-center gap-1 flex-wrap">
