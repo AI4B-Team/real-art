@@ -263,7 +263,7 @@ const MockupsPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: a
   );
 
   return (
-    <div className="px-3 pb-3 space-y-3">
+    <div className="px-3 pt-2 pb-3 space-y-3">
       {/* Tabs */}
       <div className="flex gap-1.5">
         {(['mockups', 'scenes'] as const).map(t => (
