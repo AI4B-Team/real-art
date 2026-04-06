@@ -12,7 +12,7 @@ import {
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
   Sparkles, EyeOff, Download, Files, CircleDot, Eclipse, Eye,
-  BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid,
+  BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid, Target, MinusCircle,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
