@@ -25,10 +25,13 @@ import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 
+type ChapterContentType = "text-only" | "text-images" | "text-images-interactive";
+
 interface NewBookData {
   prompt: string;
   sourceType: "ai" | "upload" | "link" | "record";
   contentType: "ebook" | "audiobook" | "presentation";
+  chapterContentType: ChapterContentType;
   language: string;
   tone: string;
   audience: string;
@@ -38,6 +41,20 @@ interface NewBookData {
   selectedTitle: string;
   model: string;
 }
+
+const WORDS_PRESETS = [
+  { value: 500, label: "500", sub: "Quick read" },
+  { value: 1000, label: "1,000", sub: "Standard" },
+  { value: 1500, label: "1,500", sub: "Detailed" },
+  { value: 2000, label: "2,000", sub: "In-depth" },
+  { value: 3000, label: "3,000", sub: "Comprehensive" },
+];
+
+const CHAPTER_CONTENT_TYPES = [
+  { id: "text-only" as const, label: "Text Only", desc: "Clean text content only", icon: FileText },
+  { id: "text-images" as const, label: "Text + Images", desc: "AI-generated images per chapter", icon: Image },
+  { id: "text-images-interactive" as const, label: "Text + Images + Interactive", desc: "Includes quizzes & flashcards", icon: Sparkles },
+];
 
 const CONTENT_TYPES = [
   { id: "ebook", label: "eBook", icon: BookOpen },
@@ -177,15 +194,19 @@ const NewEbookPage = () => {
     prompt: "",
     sourceType: "ai",
     contentType: "ebook",
+    chapterContentType: "text-images",
     language: "en",
     tone: "professional",
     audience: "",
     chapters: 8,
-    wordsPerChapter: 2000,
+    wordsPerChapter: 1500,
     includeImages: true,
     selectedTitle: "",
     model: "auto",
   });
+  const [showBookSettingsDialog, setShowBookSettingsDialog] = useState(false);
+  const [customWordsInput, setCustomWordsInput] = useState("");
+  const [isApplyingSettings, setIsApplyingSettings] = useState(false);
 
   const [contentTypeSelected, setContentTypeSelected] = useState(initialTab === "design");
 
@@ -645,6 +666,10 @@ const NewEbookPage = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-64 p-1.5 z-[10050]" align="end" side="bottom">
                   <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Book Settings</p>
+                  <button onClick={() => setShowBookSettingsDialog(true)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Cpu className="w-4 h-4 text-muted-foreground" />AI Book Settings
+                  </button>
                   <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
                     <Settings className="w-4 h-4 text-muted-foreground" />Page Settings
@@ -1367,40 +1392,96 @@ const NewEbookPage = () => {
                   </button>
                 </div>
 
-                {/* Global Settings — more breathing room */}
-                <div className="p-5 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01] mb-10">
-                  <h4 className="text-xs font-semibold text-foreground mb-4 uppercase tracking-wider">Generation Settings</h4>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1.5 block">Words Per Chapter</label>
+                {/* Chapter Settings */}
+                <div className="p-5 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01] mb-10 space-y-6">
+                  <h4 className="text-xs font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
+                    <Sparkles size={14} className="text-accent" />Chapter Settings
+                  </h4>
+
+                  {/* Generate Chapter As */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs font-semibold text-foreground uppercase tracking-wider">Generate Chapter As</span>
+                      <Tooltip><TooltipTrigger><span className="w-4 h-4 rounded-full bg-foreground/[0.06] flex items-center justify-center text-[9px] text-muted-foreground">?</span></TooltipTrigger>
+                      <TooltipContent className="max-w-[240px] text-xs">Choose what type of content each chapter includes</TooltipContent></Tooltip>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3">
+                      {CHAPTER_CONTENT_TYPES.map(ct => {
+                        const isActive = bookData.chapterContentType === ct.id;
+                        return (
+                          <button key={ct.id} onClick={() => {
+                            setBookData(prev => ({ ...prev, chapterContentType: ct.id, includeImages: ct.id !== "text-only" }));
+                            if (ct.id === "text-only") setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: false })));
+                            else setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: true })));
+                          }}
+                            className={`flex flex-col items-center p-5 rounded-xl border-2 transition-all ${
+                              isActive ? "border-accent bg-accent/[0.04] shadow-sm" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                            }`}>
+                            <ct.icon className={`w-6 h-6 mb-2.5 ${isActive ? "text-accent" : "text-muted-foreground"}`} />
+                            <span className={`text-sm font-semibold mb-1 ${isActive ? "text-foreground" : "text-foreground/80"}`}>{ct.label}</span>
+                            <span className="text-[10px] text-muted-foreground text-center">{ct.desc}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Words Per Chapter */}
+                  <div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-xs font-semibold text-foreground uppercase tracking-wider">Words Per Chapter</span>
+                      <Tooltip><TooltipTrigger><span className="w-4 h-4 rounded-full bg-foreground/[0.06] flex items-center justify-center text-[9px] text-muted-foreground">?</span></TooltipTrigger>
+                      <TooltipContent className="max-w-[240px] text-xs">Target word count for each chapter. You can also enter a custom number.</TooltipContent></Tooltip>
+                    </div>
+                    <div className="flex gap-2 mb-2">
+                      {WORDS_PRESETS.map(wp => (
+                        <button key={wp.value} onClick={() => { setBookData(prev => ({ ...prev, wordsPerChapter: wp.value })); setCustomWordsInput(""); }}
+                          className={`flex-1 py-3 rounded-xl border-2 text-center transition-all ${
+                            bookData.wordsPerChapter === wp.value && !customWordsInput
+                              ? "border-accent bg-accent/[0.04]"
+                              : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                          }`}>
+                          <span className={`block text-sm font-bold ${bookData.wordsPerChapter === wp.value && !customWordsInput ? "text-accent" : "text-foreground"}`}>{wp.label}</span>
+                          <span className="block text-[10px] text-muted-foreground mt-0.5">{wp.sub}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="flex items-center gap-2">
                       <input
                         type="number"
-                        value={bookData.wordsPerChapter}
-                        onChange={e => setBookData(prev => ({ ...prev, wordsPerChapter: parseInt(e.target.value) || 2000 }))}
-                        className="w-full px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent/40"
-                        min={500} max={10000} step={500}
+                        placeholder="Custom (e.g. 1800)"
+                        value={customWordsInput}
+                        onChange={e => {
+                          setCustomWordsInput(e.target.value);
+                          const v = parseInt(e.target.value);
+                          if (v && v >= 100 && v <= 20000) setBookData(prev => ({ ...prev, wordsPerChapter: v }));
+                        }}
+                        className="flex-1 px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent/40 placeholder:text-muted-foreground/40"
+                        min={100} max={20000}
                       />
+                      <span className="text-xs text-muted-foreground whitespace-nowrap">words/chapter</span>
                     </div>
-                    <div>
-                      <label className="text-xs text-muted-foreground mb-1.5 block">Image Integration</label>
-                      <div className="flex gap-1.5">
-                        {[
-                          { label: "All Chapters", action: () => setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: true }))), active: chapterSequence.every(ch => ch.includeImages) },
-                          { label: "None", action: () => setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: false }))), active: chapterSequence.every(ch => !ch.includeImages) },
-                          { label: "Per Chapter", action: () => {}, active: !chapterSequence.every(ch => ch.includeImages) && !chapterSequence.every(ch => !ch.includeImages) },
-                        ].map(opt => (
-                          <button key={opt.label} onClick={opt.action}
-                            className={`flex-1 px-2 py-2.5 rounded-lg border text-[11px] font-medium transition-colors ${
-                              opt.active
-                                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
-                                : "border-foreground/[0.1] text-muted-foreground hover:bg-foreground/[0.04]"
-                            }`}>
-                            {opt.label}
-                          </button>
-                        ))}
+                  </div>
+
+                  {/* Include AI-Generated Images — Switch-style */}
+                  <div className="flex items-center justify-between p-4 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01]">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                        <Image className="w-5 h-5 text-accent" />
                       </div>
-                      <p className="text-[10px] text-muted-foreground/50 mt-1.5">Toggle per chapter using the Images badge on each card</p>
+                      <div>
+                        <p className="text-sm font-semibold text-foreground">Include AI-Generated Images</p>
+                        <p className="text-xs text-muted-foreground">Generate relevant images for each chapter</p>
+                      </div>
                     </div>
+                    <button onClick={() => {
+                      const newVal = !bookData.includeImages;
+                      setBookData(prev => ({ ...prev, includeImages: newVal, chapterContentType: newVal ? "text-images" : "text-only" }));
+                      setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: newVal })));
+                    }}
+                      className={`relative w-12 h-7 rounded-full transition-colors ${bookData.includeImages ? "bg-emerald-500" : "bg-foreground/[0.15]"}`}>
+                      <div className={`absolute top-0.5 w-6 h-6 bg-white rounded-full shadow-md transition-transform ${bookData.includeImages ? "translate-x-5" : "translate-x-0.5"}`} />
+                    </button>
                   </div>
                 </div>
 
@@ -1622,6 +1703,154 @@ const NewEbookPage = () => {
       </div>
       <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
       <EbookInviteModal open={showInviteModal} onOpenChange={setShowInviteModal} />
+      {/* Book Settings Dialog — AI-powered settings modification */}
+      <Dialog open={showBookSettingsDialog} onOpenChange={setShowBookSettingsDialog}>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Cpu className="w-5 h-5 text-accent" />Book Settings
+            </DialogTitle>
+            <p className="text-xs text-muted-foreground">Modify your book's generation settings. AI will adjust existing content accordingly.</p>
+          </DialogHeader>
+          <div className="space-y-6 py-4">
+            {/* Content Type */}
+            <div>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Content Type</label>
+              <div className="grid grid-cols-3 gap-3">
+                {CHAPTER_CONTENT_TYPES.map(ct => {
+                  const isActive = bookData.chapterContentType === ct.id;
+                  return (
+                    <button key={ct.id} onClick={() => {
+                      setBookData(prev => ({ ...prev, chapterContentType: ct.id, includeImages: ct.id !== "text-only" }));
+                    }}
+                      className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all ${
+                        isActive ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                      }`}>
+                      <ct.icon className={`w-5 h-5 mb-2 ${isActive ? "text-accent" : "text-muted-foreground"}`} />
+                      <span className={`text-xs font-semibold ${isActive ? "text-foreground" : "text-foreground/80"}`}>{ct.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Words Per Chapter */}
+            <div>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Words Per Chapter</label>
+              <div className="flex gap-2 mb-2">
+                {WORDS_PRESETS.map(wp => (
+                  <button key={wp.value} onClick={() => setBookData(prev => ({ ...prev, wordsPerChapter: wp.value }))}
+                    className={`flex-1 py-2.5 rounded-xl border-2 text-center transition-all ${
+                      bookData.wordsPerChapter === wp.value ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                    }`}>
+                    <span className={`block text-sm font-bold ${bookData.wordsPerChapter === wp.value ? "text-accent" : "text-foreground"}`}>{wp.label}</span>
+                    <span className="block text-[10px] text-muted-foreground">{wp.sub}</span>
+                  </button>
+                ))}
+              </div>
+              <input type="number" value={bookData.wordsPerChapter}
+                onChange={e => setBookData(prev => ({ ...prev, wordsPerChapter: parseInt(e.target.value) || 1500 }))}
+                className="w-full px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent/40"
+                min={100} max={20000} />
+            </div>
+
+            {/* Tone */}
+            <div>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Writing Tone</label>
+              <div className="grid grid-cols-3 gap-2">
+                {TONES.map(t => (
+                  <button key={t.id} onClick={() => setBookData(prev => ({ ...prev, tone: t.id }))}
+                    className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm transition-all ${
+                      bookData.tone === t.id ? "border-accent bg-accent/[0.04] font-semibold" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                    }`}>
+                    <t.icon size={14} className={bookData.tone === t.id ? "text-accent" : "text-muted-foreground"} />{t.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Language */}
+            <div>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Language</label>
+              <div className="grid grid-cols-4 gap-2">
+                {LANGUAGES.slice(0, 8).map(l => (
+                  <button key={l.code} onClick={() => setBookData(prev => ({ ...prev, language: l.code }))}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-xl border-2 text-sm transition-all ${
+                      bookData.language === l.code ? "border-accent bg-accent/[0.04] font-semibold" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                    }`}>
+                    <span>{l.flag}</span>{l.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* AI Model */}
+            <div>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">AI Model</label>
+              <div className="grid grid-cols-2 gap-2">
+                {AI_MODELS.map(m => (
+                  <button key={m.id} onClick={() => setBookData(prev => ({ ...prev, model: m.id }))}
+                    className={`flex flex-col px-3 py-2.5 rounded-xl border-2 text-left transition-all ${
+                      bookData.model === m.id ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                    }`}>
+                    <span className={`text-sm font-semibold ${bookData.model === m.id ? "text-accent" : "text-foreground"}`}>{m.name}</span>
+                    <span className="text-[10px] text-muted-foreground">{m.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* AI-Powered Apply Button */}
+            <div className="flex items-center justify-between pt-4 border-t border-foreground/[0.06]">
+              <p className="text-xs text-muted-foreground max-w-[300px]">
+                <Sparkles size={12} className="inline mr-1 text-accent" />
+                Changes to words per chapter or content type will use AI to regenerate affected content.
+              </p>
+              <button onClick={async () => {
+                setIsApplyingSettings(true);
+                try {
+                  // Re-generate the outline/chapters with new settings
+                  const { data, error } = await supabase.functions.invoke('generate-ebook', {
+                    body: {
+                      action: 'generate-outline',
+                      prompt: bookData.prompt || bookData.selectedTitle,
+                      model: bookData.model,
+                      language: bookData.language,
+                      tone: bookData.tone,
+                      chapters: chapterSequence.length || bookData.chapters,
+                      wordsPerChapter: bookData.wordsPerChapter,
+                    },
+                  });
+                  if (error) throw new Error(error.message);
+                  if (data?.error) throw new Error(data.error);
+                  const result = data.result;
+                  if (result?.chapters) {
+                    setChapterSequence(result.chapters.map((ch: any, i: number) => ({
+                      id: `ch-${i + 1}`,
+                      title: ch.title,
+                      description: ch.description,
+                      topics: ch.topics || [],
+                      includeImages: bookData.chapterContentType !== "text-only",
+                      pageCount: ch.pageCount || 8,
+                    })));
+                  }
+                  toast({ title: "Settings applied! Outline regenerated with new parameters." });
+                  setShowBookSettingsDialog(false);
+                } catch (e: any) {
+                  toast({ title: e.message || "Failed to apply settings", variant: "destructive" });
+                } finally {
+                  setIsApplyingSettings(false);
+                }
+              }}
+                disabled={isApplyingSettings}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50">
+                {isApplyingSettings ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+                {isApplyingSettings ? "Applying..." : "Apply & Regenerate"}
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </PageShell>
   );
 };
