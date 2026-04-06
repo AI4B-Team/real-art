@@ -111,6 +111,7 @@ const TOOLS = [
 ];
 
 const PAGE_ACTIONS = [
+  { id: 'ai', icon: Sparkles, label: 'AI Assistant' },
   { id: 'add', icon: Plus, label: 'Add Page' },
   { id: 'duplicate', icon: Copy, label: 'Duplicate Page' },
   { id: 'lock', icon: Unlock, label: 'Lock Page' },
