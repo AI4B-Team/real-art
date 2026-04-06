@@ -98,6 +98,7 @@ interface EbookCanvasEditorProps {
   accessMode?: AccessMode;
   initialPageElements?: Record<string, CanvasElement[]>;
   onPageElementsChange?: (elements: Record<string, CanvasElement[]>) => void;
+  panelOffset?: number;
 }
 
 // ─── Constants ─────────────────────────────────────
