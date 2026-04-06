@@ -1664,10 +1664,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const isReplacing = replaceModalElementId === el.id;
     const suggestions = STOCK_IMAGES.filter(src => src !== el.src).slice(0, 3);
     const left = `${el.x + el.width / 2}%`;
+    const top = `${el.y + el.height / 2}%`;
 
-    const toolbarStyle: React.CSSProperties = isFullPage
-      ? { left, top: `${el.y + el.height / 2}%`, transform: 'translate(-50%, -50%)' }
-      : { left, top: `calc(${el.y + el.height}% + 8px)`, transform: 'translateX(-50%)' };
+    const toolbarStyle: React.CSSProperties = {
+      left,
+      top,
+      transform: 'translate(-50%, -50%)',
+    };
 
     // Suggestions are now rendered inline inside the image element, not as a floating bar
 
