@@ -911,6 +911,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
       setEditingTextId(null);
+      setAiExpandedPageId(null);
 
       if (activeTool === 'text') {
         addElement('text');
@@ -3012,14 +3013,14 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               )}
 
               {/* Canvas - Scrollable all pages */}
-              <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); } }}>
-                <div className="flex flex-col items-center gap-8" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); } }}>
+              <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); setAiExpandedPageId(null); } }}>
+                <div className="flex flex-col items-center gap-8" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); setAiExpandedPageId(null); } }}>
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     const pageTypeLabel = page.type === 'cover' ? 'Cover' : page.type === 'toc' ? 'Table of Contents' : page.type === 'back' ? 'Back Cover' : page.type === 'chapter' ? 'Chapter Cover' : page.type === 'chapter-page' ? 'Chapter Page' : 'Page';
                     return (
-                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="relative flex flex-col items-center">
+                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className={`relative flex flex-col items-center transition-all duration-300 ${aiExpandedPageId === page.id ? '-translate-x-[200px]' : ''}`}>
                         {/* Page label above page — hidden when an element is selected on this page */}
                         <div className={`mb-2 flex items-center justify-center gap-2 transition-opacity duration-200 ${isSelected && selectedElementId ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                           <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
@@ -3207,55 +3208,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
                         </div>
-                        {/* Contextual AI bar — appears when an element is selected on this page */}
-                        {isSelected && selectedElementId && canEdit && (
-                          <div
-                            className="mt-3 rounded-xl border border-foreground/[0.08] bg-background/95 backdrop-blur-sm shadow-lg transition-all duration-300 animate-in fade-in-0 slide-in-from-bottom-2"
-                            style={{ width: `${pw * zoom / 100}px`, marginLeft: '2rem' }}
-                            onMouseDown={e => e.stopPropagation()}
-                          >
-                            <div className="flex items-center gap-2 p-2.5">
-                              {aiUpdatedFeedback ? (
-                                <div className="flex-1 flex items-center justify-center gap-2 py-1.5 animate-in fade-in-0 duration-300">
-                                  <Sparkles className="w-4 h-4 text-emerald-500" />
-                                  <span className="text-xs font-semibold text-emerald-600">Updated ✨</span>
-                                </div>
-                              ) : (
-                                <>
-                                  <div className="flex-1 relative">
-                                    <Sparkles className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-accent/60" />
-                                    <input
-                                      type="text"
-                                      placeholder="Ask AI to improve this..."
-                                      value={contextualAIPrompt}
-                                      onChange={e => setContextualAIPrompt(e.target.value)}
-                                      onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
-                                      className="w-full pl-8 pr-3 py-1.5 text-xs bg-foreground/[0.03] rounded-lg border border-foreground/[0.06] focus:outline-none focus:ring-1 focus:ring-accent/40 placeholder:text-muted-foreground/50"
-                                      disabled={isAIProcessing}
-                                    />
-                                  </div>
-                                  <div className="flex items-center gap-1">
-                                    {[
-                                      { id: 'rewrite', label: 'Make it persuasive' },
-                                      { id: 'improve', label: 'Improve clarity' },
-                                      { id: 'shorten', label: 'Simplify' },
-                                      { id: 'expand', label: 'Add detail' },
-                                    ].map(btn => (
-                                      <button
-                                        key={btn.id}
-                                        onClick={() => handleContextualAI(btn.id)}
-                                        disabled={isAIProcessing}
-                                        className="px-2.5 py-1.5 text-[10px] font-medium rounded-lg border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
-                                      >
-                                        {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
-                                      </button>
-                                    ))}
-                                  </div>
-                                </>
-                              )}
-                            </div>
-                          </div>
-                        )}
                         {/* Page action buttons - shown for selected page in edit modes */}
                         {canEdit && <div className={`absolute -right-12 top-1/2 -translate-y-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                           isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-3 pointer-events-none'
@@ -3281,36 +3233,45 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     </Tooltip>
                                     {/* Expanded AI bar */}
                                     <div className={`absolute left-full top-1/2 -translate-y-1/2 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                                      <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md rounded-2xl px-3 py-2 border border-foreground/[0.08] shadow-lg whitespace-nowrap">
-                                        <div className="flex items-center gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02] min-w-[180px]">
-                                          <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
-                                          <input
-                                            type="text"
-                                            value={contextualAIPrompt}
-                                            onChange={e => setContextualAIPrompt(e.target.value)}
-                                            onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
-                                            placeholder="Ask AI to improve this..."
-                                            className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full"
-                                          />
-                                        </div>
-                                        {[
-                                          { id: 'rewrite', label: 'Rewrite' },
-                                          { id: 'improve', label: 'Improve' },
-                                          { id: 'shorten', label: 'Shorten' },
-                                          { id: 'expand', label: 'Expand' },
-                                        ].map(btn => (
-                                          <button
-                                            key={btn.id}
-                                            onClick={() => handleContextualAI(btn.id)}
-                                            disabled={isAIProcessing}
-                                            className="px-3 py-1.5 text-[11px] font-medium rounded-xl border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
-                                          >
-                                            {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
-                                          </button>
-                                        ))}
-                                        <button onClick={() => setAiExpandedPageId(null)} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] text-muted-foreground hover:text-foreground transition-colors ml-1">
-                                          <X className="w-3.5 h-3.5" />
-                                        </button>
+                                      <div className="flex flex-col gap-2 bg-background/95 backdrop-blur-md rounded-2xl px-3 py-2.5 border border-foreground/[0.08] shadow-lg whitespace-nowrap"
+                                        style={{ resize: 'horizontal', overflow: 'auto', minWidth: '340px', maxWidth: '600px' }}>
+                                        {aiUpdatedFeedback ? (
+                                          <div className="flex items-center justify-center gap-2 py-1.5 animate-in fade-in-0 duration-300">
+                                            <Sparkles className="w-4 h-4 text-emerald-500" />
+                                            <span className="text-xs font-semibold text-emerald-600">Updated ✨</span>
+                                          </div>
+                                        ) : (
+                                          <>
+                                            <div className="flex items-center gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
+                                              <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                                              <input
+                                                type="text"
+                                                value={contextualAIPrompt}
+                                                onChange={e => setContextualAIPrompt(e.target.value)}
+                                                onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
+                                                placeholder="Ask AI to improve this page..."
+                                                className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full"
+                                              />
+                                            </div>
+                                            <div className="flex items-center gap-1 flex-wrap">
+                                              {[
+                                                { id: 'rewrite', label: 'Make it persuasive' },
+                                                { id: 'improve', label: 'Improve clarity' },
+                                                { id: 'shorten', label: 'Simplify' },
+                                                { id: 'expand', label: 'Add detail' },
+                                              ].map(btn => (
+                                                <button
+                                                  key={btn.id}
+                                                  onClick={() => handleContextualAI(btn.id)}
+                                                  disabled={isAIProcessing}
+                                                  className="px-2.5 py-1.5 text-[10px] font-medium rounded-xl border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
+                                                >
+                                                  {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
+                                                </button>
+                                              ))}
+                                            </div>
+                                          </>
+                                        )}
                                       </div>
                                     </div>
                                   </div>
