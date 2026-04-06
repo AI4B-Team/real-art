@@ -666,6 +666,10 @@ const NewEbookPage = () => {
                 </PopoverTrigger>
                 <PopoverContent className="w-64 p-1.5 z-[10050]" align="end" side="bottom">
                   <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Book Settings</p>
+                  <button onClick={() => setShowBookSettingsDialog(true)}
+                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Cpu className="w-4 h-4 text-muted-foreground" />AI Book Settings
+                  </button>
                   <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
                     className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
                     <Settings className="w-4 h-4 text-muted-foreground" />Page Settings
