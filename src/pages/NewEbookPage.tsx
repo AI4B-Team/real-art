@@ -194,15 +194,19 @@ const NewEbookPage = () => {
     prompt: "",
     sourceType: "ai",
     contentType: "ebook",
+    chapterContentType: "text-images",
     language: "en",
     tone: "professional",
     audience: "",
     chapters: 8,
-    wordsPerChapter: 2000,
+    wordsPerChapter: 1500,
     includeImages: true,
     selectedTitle: "",
     model: "auto",
   });
+  const [showBookSettingsDialog, setShowBookSettingsDialog] = useState(false);
+  const [customWordsInput, setCustomWordsInput] = useState("");
+  const [isApplyingSettings, setIsApplyingSettings] = useState(false);
 
   const [contentTypeSelected, setContentTypeSelected] = useState(initialTab === "design");
 
