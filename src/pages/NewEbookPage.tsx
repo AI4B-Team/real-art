@@ -24,6 +24,7 @@ import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
+import BookSettingsPanel from "@/components/ebook/BookSettingsPanel";
 
 type ChapterContentType = "text-only" | "text-images" | "text-images-interactive";
 
