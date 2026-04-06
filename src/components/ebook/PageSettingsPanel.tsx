@@ -208,7 +208,7 @@ const PageSettingsPanel = ({
     <TooltipProvider delayDuration={200}>
       <div className="w-64 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
         {/* Header */}
-        <div className="flex items-center px-4 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.02]">
+        <div className="flex items-center px-4 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
           <div className="flex items-center gap-2">
             <Brain className="w-4 h-4 text-accent" />
             <span className="text-xs font-bold text-foreground uppercase tracking-wider">Page Studio</span>
