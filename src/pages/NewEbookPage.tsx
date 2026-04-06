@@ -1770,6 +1770,7 @@ const NewEbookPage = () => {
                 pageHeight={pageHeight}
                 onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
+                showLockedPagesWarning={showLockedPagesWarning}
               />
               )}
             </div>
@@ -1779,6 +1780,15 @@ const NewEbookPage = () => {
       </div>
       <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
       <EbookInviteModal open={showInviteModal} onOpenChange={setShowInviteModal} />
+      <LockedPagesModal
+        open={lockedPagesModal.open}
+        onOpenChange={(open) => setLockedPagesModal(prev => ({ ...prev, open }))}
+        lockedPages={ebookPages.filter(p => p.locked).map(p => ({ page: p, index: ebookPages.indexOf(p) }))}
+        actionLabel={lockedPagesModal.actionLabel}
+        onUnlockAll={lockedPagesModal.onUnlockAllAndApply}
+        onUnlockPage={(pageId) => setEbookPages(prev => prev.map(p => p.id === pageId ? { ...p, locked: false } : p))}
+        onProceedSkipping={lockedPagesModal.onProceedSkipping}
+      />
     </PageShell>
   );
 };
