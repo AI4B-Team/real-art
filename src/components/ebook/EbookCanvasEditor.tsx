@@ -3047,6 +3047,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             return selectedImage ? renderSelectedImageActions(selectedImage, page.id) : null;
                           })()}
 
+                          {/* Empty-state guidance for blank/sparse pages */}
+                          {isSelected && canEdit && elems.length === 0 && (
+                            <div className="absolute inset-0 flex flex-col items-center justify-center z-[5] pointer-events-none">
+                              <div className="pointer-events-auto flex flex-col items-center gap-4 max-w-[70%]">
+                                <p className="text-sm font-medium text-muted-foreground/60">This page is empty</p>
+                                <div className="grid grid-cols-2 gap-2 w-full max-w-[240px]">
+                                  {[
+                                    { label: 'Add Headline', icon: '✏️', action: () => addElement('text', { content: 'Heading', fontSize: 28, fontWeight: 'bold', width: 60, height: 8, x: 20, y: 10 }) },
+                                    { label: 'Insert Image', icon: '🖼️', action: () => addElement('image', { isPlaceholder: true, width: 80, height: 50, x: 10, y: 25 }) },
+                                    { label: 'Add Body Text', icon: '📝', action: () => addElement('text', { content: 'Start writing here...', fontSize: 12, width: 80, height: 15, x: 10, y: 45 }) },
+                                    { label: 'Generate with AI', icon: '✨', action: () => setShowAIEditModal(true) },
+                                  ].map(item => (
+                                    <button key={item.label} onClick={item.action}
+                                      className="flex items-center gap-2 px-3 py-2.5 rounded-lg border border-dashed border-foreground/[0.12] hover:border-accent/40 hover:bg-accent/[0.03] transition-all text-left group">
+                                      <span className="text-sm">{item.icon}</span>
+                                      <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">{item.label}</span>
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+                          )}
+
                           {/* Locked page overlay */}
                           {page.locked && (
                             <div className="absolute inset-0 z-[80] flex items-center justify-center bg-foreground/[0.03] pointer-events-auto cursor-not-allowed rounded-lg">
