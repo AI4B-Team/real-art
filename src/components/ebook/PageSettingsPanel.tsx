@@ -70,6 +70,7 @@ const FORMAT_PRESETS = [
 const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
   pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange, onOpenImageSection,
+  showLockedPagesWarning,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
