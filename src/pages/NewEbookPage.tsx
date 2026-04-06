@@ -1494,6 +1494,7 @@ const NewEbookPage = () => {
 
                 {/* Footer Actions */}
                 <div className="flex items-center justify-between pt-6 border-t border-foreground/[0.06]">
+                  <button onClick={() => setGenerateStep("titles")}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
                     <ArrowLeft size={16} />Back
                   </button>
