@@ -15,7 +15,7 @@ import { toast } from "@/hooks/use-toast";
 const StatusBadge = ({ status }: { status: string }) => {
   const styles: Record<string, string> = {
     published: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    draft: "bg-muted text-muted-foreground border-border",
+    draft: "bg-foreground/[0.06] text-foreground/70 border-foreground/[0.12]",
     generating: "bg-amber-100 text-amber-700 border-amber-200",
   };
   const labels: Record<string, string> = { published: "Published", draft: "Draft", generating: "Generating..." };
