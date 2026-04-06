@@ -233,135 +233,174 @@ const PageSettingsPanel = ({
           </div>
 
 
-          {/* ═══ SECTION 1: SMART SUGGESTIONS (top — always visible) ═══ */}
+          {/* ═══ SECTION 1: SMART SUGGESTIONS — "Tell me what to do" ═══ */}
           <div className="border-t-2 border-amber-500/20">
             <div className="flex items-center gap-2 px-4 py-3 bg-amber-500/[0.04]">
               <Sparkles className="w-4 h-4 text-amber-500" />
               <span className="text-xs font-bold text-foreground uppercase tracking-wider">Smart Suggestions</span>
-              <span className="ml-auto text-[9px] font-bold text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded-full">2 items</span>
+              <span className="ml-auto text-[9px] font-bold text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded-full">3 items</span>
             </div>
             <div className="px-4 pt-1 pb-4 space-y-2.5">
+              {/* Proactive trigger-based AI nudges */}
               {[
+                { severity: 'critical' as const, title: 'Your headline is weak compared to top ebooks', detail: 'AI detected low keyword impact. Stronger headlines get 2× more reads.', cta: 'Rewrite Headline', icon: Target, actionType: 'ai' as const },
                 { severity: 'warning' as const, title: 'Missing visuals (hurting engagement)', detail: 'Adding an image or chart can increase engagement by up to 40%.', cta: 'Add Visual', icon: ImageIcon, actionType: 'image' as const },
-                { severity: 'info' as const, title: 'Text density is high', detail: 'Breaking content into shorter paragraphs improves readability by 25%.', cta: 'Simplify Text', icon: FileText, actionType: 'ai' as const },
-              ].map((s, i) => (
-                <div key={i} className={`p-3 rounded-xl border ${s.severity === 'warning' ? 'border-amber-500/20 bg-amber-500/[0.04]' : 'border-blue-500/20 bg-blue-500/[0.04]'}`}>
-                  <div className="flex items-start gap-2.5">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${s.severity === 'warning' ? 'bg-amber-500/15' : 'bg-blue-500/15'}`}>
-                      <s.icon className={`w-3.5 h-3.5 ${s.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'}`} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
-                      <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">{s.detail}</p>
-                      <button onClick={() => {
-                        if (s.actionType === 'image' && onOpenImageSection) {
-                          onOpenImageSection();
-                        } else {
-                          toast.success(`AI: ${s.cta} — processing...`);
-                          setTimeout(() => {
-                            setAiActionFeedback(`${s.cta} applied ✨`);
-                            setTimeout(() => setAiActionFeedback(null), 3000);
-                          }, 1500);
-                        }
-                      }}
-                        className={`mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold transition-colors ${s.severity === 'warning' ? 'text-amber-700 bg-amber-500/10 hover:bg-amber-500/20' : 'text-blue-700 bg-blue-500/10 hover:bg-blue-500/20'}`}>
-                        {s.cta} →
-                      </button>
+                { severity: 'info' as const, title: 'This page is too text-heavy', detail: 'Break content into shorter sections to improve readability by 25%.', cta: 'Simplify Text', icon: FileText, actionType: 'ai' as const },
+              ].map((s, i) => {
+                const colors = s.severity === 'critical'
+                  ? { border: 'border-destructive/20', bg: 'bg-destructive/[0.04]', iconBg: 'bg-destructive/15', iconText: 'text-destructive', ctaBg: 'bg-destructive/10 hover:bg-destructive/20', ctaText: 'text-destructive' }
+                  : s.severity === 'warning'
+                  ? { border: 'border-amber-500/20', bg: 'bg-amber-500/[0.04]', iconBg: 'bg-amber-500/15', iconText: 'text-amber-600', ctaBg: 'bg-amber-500/10 hover:bg-amber-500/20', ctaText: 'text-amber-700' }
+                  : { border: 'border-blue-500/20', bg: 'bg-blue-500/[0.04]', iconBg: 'bg-blue-500/15', iconText: 'text-blue-600', ctaBg: 'bg-blue-500/10 hover:bg-blue-500/20', ctaText: 'text-blue-700' };
+                return (
+                  <div key={i} className={`p-3 rounded-xl border ${colors.border} ${colors.bg} ${s.severity === 'critical' ? 'ring-1 ring-destructive/10' : ''}`}>
+                    <div className="flex items-start gap-2.5">
+                      <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${colors.iconBg}`}>
+                        <s.icon className={`w-3.5 h-3.5 ${colors.iconText}`} />
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">{s.detail}</p>
+                        <button onClick={() => {
+                          if (s.actionType === 'image' && onOpenImageSection) {
+                            onOpenImageSection();
+                          } else {
+                            toast.success(`AI: ${s.cta} — processing...`);
+                            setTimeout(() => {
+                              setAiActionFeedback(`${s.cta} applied ✨`);
+                              setTimeout(() => setAiActionFeedback(null), 3000);
+                            }, 1500);
+                          }
+                        }}
+                          className={`mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold transition-colors ${colors.ctaText} ${colors.ctaBg}`}>
+                          {s.cta} →
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {/* ═══ SECTION 2: AI ASSISTANT ═══ */}
+          {/* ═══ SECTION 2: QUICK AI ACTIONS — "Do it fast" (1-click upgrades) ═══ */}
           <div className="border-t-2 border-accent/20">
             <div className="flex items-center gap-2 px-4 py-3 bg-accent/[0.04]">
-              <Sparkles className="w-4 h-4 text-accent" />
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">AI Assistant</span>
+              <Zap className="w-4 h-4 text-accent" />
+              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Quick Actions</span>
             </div>
-            <div className="px-4 pt-2 pb-4 space-y-1.5">
+            <div className="px-4 pt-1 pb-3">
               {aiActionFeedback && (
-                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 animate-in fade-in-0 slide-in-from-top-1 duration-300">
+                <div className="flex items-center gap-2 px-3 py-2 mb-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 animate-in fade-in-0 slide-in-from-top-1 duration-300">
                   <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
                   <span className="text-[11px] font-semibold text-emerald-600">{aiActionFeedback}</span>
                 </div>
               )}
-              {[
-                { label: 'Improve Layout', desc: 'Optimize spacing & alignment', icon: Wand2 },
-                { label: 'Improve Readability', desc: 'Better typography & contrast', icon: Eye },
-                { label: 'Make More Persuasive', desc: 'Strengthen calls-to-action', icon: Target },
-                { label: 'Add Visual', desc: 'Suggest images & graphics', icon: ImageIcon },
-                { label: 'Rewrite Content', desc: 'Refresh tone & clarity', icon: FileText },
-              ].map(item => (
-                <button key={item.label} onClick={() => {
-                  if (item.label === 'Add Visual' && onOpenImageSection) {
-                    onOpenImageSection();
-                    return;
-                  }
-                  setAiActionFeedback(null);
-                  toast.success(`AI: ${item.label} — processing...`);
-                  setTimeout(() => {
-                    setAiActionFeedback(`${item.label} applied ✨`);
-                    setTimeout(() => setAiActionFeedback(null), 3000);
-                  }, 1500);
-                }}
-                  className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/[0.04] transition-all group text-left">
-                  <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
-                    <item.icon className="w-4 h-4 text-accent" />
-                  </div>
-                  <div className="min-w-0">
-                    <span className="text-[11px] font-semibold text-foreground block leading-tight">{item.label}</span>
-                    <span className="text-[10px] text-muted-foreground leading-tight">{item.desc}</span>
-                  </div>
-                  <ChevronRight className="w-3 h-3 text-muted-foreground/40 ml-auto shrink-0 group-hover:text-accent transition-colors" />
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* ═══ SECTION 2: PAGE INTELLIGENCE ═══ */}
-          <div className="border-t-2 border-foreground/[0.06]">
-            <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02]">
-              <Zap className="w-4 h-4 text-amber-500" />
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Page Intelligence</span>
-            </div>
-            <div className="px-4 pt-1 pb-4 space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Page Score</span>
-                <span className="text-2xl font-black text-foreground">82</span>
-              </div>
-              <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 w-fit">
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                <span className="text-[10px] font-semibold text-emerald-600">Optimized for Engagement</span>
-              </div>
-              <div className="space-y-2.5">
+              <div className="grid grid-cols-2 gap-1.5">
                 {[
-                  { label: 'Readability', score: 88, hint: '+5 possible', trend: '↑' },
-                  { label: 'Engagement', score: 76, hint: '+12 possible', trend: '↑' },
-                  { label: 'Visual Balance', score: 82, hint: '+8 possible', trend: '↑' },
-                ].map(m => {
-                  const statusColor = m.score >= 85 ? 'text-emerald-600' : m.score >= 70 ? 'text-amber-600' : 'text-destructive';
-                  const barColor = m.score >= 85 ? 'bg-emerald-500' : m.score >= 70 ? 'bg-amber-500' : 'bg-destructive';
-                  return (
-                    <div key={m.label}>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[11px] font-medium text-foreground">{m.label}</span>
-                        <span className={`text-[10px] font-semibold ${statusColor}`}>{m.trend} {m.score}</span>
-                      </div>
-                      <div className="flex-1 h-2 rounded-full bg-foreground/[0.06] overflow-hidden">
-                        <div className={`h-full rounded-full ${barColor} transition-all duration-500`} style={{ width: `${m.score}%` }} />
-                      </div>
-                      <span className="text-[9px] text-muted-foreground/60 mt-0.5 block">+{m.hint}</span>
+                  { label: 'Improve Layout', icon: Wand2 },
+                  { label: 'Improve Readability', icon: Eye },
+                  { label: 'Add Visual', icon: ImageIcon },
+                  { label: 'Make Persuasive', icon: Target },
+                ].map(item => (
+                  <button key={item.label} onClick={() => {
+                    if (item.label === 'Add Visual' && onOpenImageSection) {
+                      onOpenImageSection();
+                      return;
+                    }
+                    setAiActionFeedback(null);
+                    toast.success(`AI: ${item.label} — processing...`);
+                    setTimeout(() => {
+                      setAiActionFeedback(`${item.label} applied ✨`);
+                      setTimeout(() => setAiActionFeedback(null), 3000);
+                    }, 1500);
+                  }}
+                    className="flex flex-col items-center gap-1.5 p-2.5 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/[0.04] transition-all group text-center">
+                    <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+                      <item.icon className="w-4 h-4 text-accent" />
                     </div>
-                  );
-                })}
+                    <span className="text-[10px] font-semibold text-foreground leading-tight">{item.label}</span>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
 
+          {/* ═══ SECTION 3: AI ASSISTANT — "Help me think" (expandable, deeper work) ═══ */}
+          <div className="border-t border-foreground/[0.06]">
+            <SectionToggle id="ai-assistant" title="AI Assistant" icon={Sparkles} />
+            {expandedSections.has('ai-assistant') && (
+              <div className="px-4 pt-1 pb-4 space-y-1.5">
+                {[
+                  { label: 'Make It More Persuasive', desc: 'Strengthen calls-to-action & hooks', icon: Target },
+                  { label: 'Improve Clarity & Flow', desc: 'Better structure & transitions', icon: Eye },
+                  { label: 'Simplify This', desc: 'Use simpler words & sentences', icon: MinusCircle },
+                  { label: 'Add More Detail', desc: 'Expand with supporting points', icon: ArrowDownToLine },
+                  { label: 'Rewrite Content', desc: 'Refresh tone & style', icon: FileText },
+                ].map(item => (
+                  <button key={item.label} onClick={() => {
+                    setAiActionFeedback(null);
+                    toast.success(`AI: ${item.label} — processing...`);
+                    setTimeout(() => {
+                      setAiActionFeedback(`${item.label} applied ✨`);
+                      setTimeout(() => setAiActionFeedback(null), 3000);
+                    }, 1500);
+                  }}
+                    className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/[0.04] transition-all group text-left">
+                    <div className="w-7 h-7 rounded-md bg-foreground/[0.04] flex items-center justify-center shrink-0 group-hover:bg-accent/10 transition-colors">
+                      <item.icon className="w-3.5 h-3.5 text-muted-foreground group-hover:text-accent transition-colors" />
+                    </div>
+                    <div className="min-w-0">
+                      <span className="text-[11px] font-semibold text-foreground block leading-tight">{item.label}</span>
+                      <span className="text-[10px] text-muted-foreground leading-tight">{item.desc}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
 
-          {/* ═══ SECTION 4: PAGE SETTINGS ═══ */}
+          {/* ═══ SECTION 4: PAGE INTELLIGENCE — "Show me score" (diagnostic) ═══ */}
+          <div className="border-t border-foreground/[0.06]">
+            <SectionToggle id="page-intel" title="Page Intelligence" icon={Brain} />
+            {expandedSections.has('page-intel') && (
+              <div className="px-4 pt-1 pb-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Page Score</span>
+                  <span className="text-2xl font-black text-foreground">82</span>
+                </div>
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 w-fit">
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-[10px] font-semibold text-emerald-600">Optimized for Engagement</span>
+                </div>
+                <div className="space-y-2.5">
+                  {[
+                    { label: 'Readability', score: 88, hint: '+5 possible', trend: '↑' },
+                    { label: 'Engagement', score: 76, hint: '+12 possible', trend: '↑' },
+                    { label: 'Visual Balance', score: 82, hint: '+8 possible', trend: '↑' },
+                  ].map(m => {
+                    const statusColor = m.score >= 85 ? 'text-emerald-600' : m.score >= 70 ? 'text-amber-600' : 'text-destructive';
+                    const barColor = m.score >= 85 ? 'bg-emerald-500' : m.score >= 70 ? 'bg-amber-500' : 'bg-destructive';
+                    return (
+                      <div key={m.label}>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[11px] font-medium text-foreground">{m.label}</span>
+                          <span className={`text-[10px] font-semibold ${statusColor}`}>{m.trend} {m.score}</span>
+                        </div>
+                        <div className="flex-1 h-2 rounded-full bg-foreground/[0.06] overflow-hidden">
+                          <div className={`h-full rounded-full ${barColor} transition-all duration-500`} style={{ width: `${m.score}%` }} />
+                        </div>
+                        <span className="text-[9px] text-muted-foreground/60 mt-0.5 block">+{m.hint}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </div>
+
+
+          {/* ═══ SECTION 5: PAGE SETTINGS ═══ */}
           <div className="border-t-2 border-foreground/[0.06]">
             <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02]">
               <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
