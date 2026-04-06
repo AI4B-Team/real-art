@@ -1383,18 +1383,23 @@ const NewEbookPage = () => {
                     </div>
                     <div>
                       <label className="text-xs text-muted-foreground mb-1.5 block">Image Integration</label>
-                      <button
-                        onClick={() => {
-                          const allOn = chapterSequence.every(ch => ch.includeImages);
-                          setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: !allOn })));
-                        }}
-                        className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
-                          chapterSequence.every(ch => ch.includeImages)
-                            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
-                            : "border-foreground/[0.1] text-muted-foreground hover:bg-foreground/[0.04]"
-                        }`}>
-                        {chapterSequence.every(ch => ch.includeImages) ? "All Chapters" : "Custom"}
-                      </button>
+                      <div className="flex gap-1.5">
+                        {[
+                          { label: "All Chapters", action: () => setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: true }))), active: chapterSequence.every(ch => ch.includeImages) },
+                          { label: "None", action: () => setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: false }))), active: chapterSequence.every(ch => !ch.includeImages) },
+                          { label: "Per Chapter", action: () => {}, active: !chapterSequence.every(ch => ch.includeImages) && !chapterSequence.every(ch => !ch.includeImages) },
+                        ].map(opt => (
+                          <button key={opt.label} onClick={opt.action}
+                            className={`flex-1 px-2 py-2.5 rounded-lg border text-[11px] font-medium transition-colors ${
+                              opt.active
+                                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
+                                : "border-foreground/[0.1] text-muted-foreground hover:bg-foreground/[0.04]"
+                            }`}>
+                            {opt.label}
+                          </button>
+                        ))}
+                      </div>
+                      <p className="text-[10px] text-muted-foreground/50 mt-1.5">Toggle per chapter using the Images badge on each card</p>
                     </div>
                   </div>
                 </div>
