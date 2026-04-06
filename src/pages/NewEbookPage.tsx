@@ -1599,7 +1599,7 @@ const NewEbookPage = () => {
               )}
 
               {/* Left panel collapse toggle */}
-              {!isGridView && (
+              {!isGridView && !showBookSettingsDialog && (
                 <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
                   className="absolute top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-accent rounded-r-lg flex items-center justify-center hover:bg-accent/90 transition-colors"
                   style={{ left: isLeftPanelCollapsed ? 0 : 320 }}>
@@ -1607,7 +1607,221 @@ const NewEbookPage = () => {
                 </button>
               )}
 
-              {/* CENTER: Canvas Editor */}
+              {/* CENTER: Book Settings Page OR Canvas Editor */}
+              {showBookSettingsDialog ? (
+                <div className="flex-1 overflow-y-auto bg-background">
+                  <div className="max-w-2xl mx-auto py-10 px-6">
+                    {/* Header */}
+                    <div className="flex items-center justify-between mb-8">
+                      <div>
+                        <div className="flex items-center gap-2.5 mb-1">
+                          <div className="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                            <Cpu className="w-5 h-5 text-accent" />
+                          </div>
+                          <div>
+                            <h1 className="text-xl font-bold text-foreground">Book Settings</h1>
+                            <p className="text-xs text-muted-foreground">Modify your book's generation settings. AI will adjust existing content accordingly.</p>
+                          </div>
+                        </div>
+                      </div>
+                      <button onClick={() => setShowBookSettingsDialog(false)}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
+                        <ArrowLeft size={14} />Back to Editor
+                      </button>
+                    </div>
+
+                    <div className="space-y-8">
+                      {/* Content Type */}
+                      <div>
+                        <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Content Type</label>
+                        <div className="grid grid-cols-3 gap-3">
+                          {CHAPTER_CONTENT_TYPES.map(ct => {
+                            const isActive = bookData.chapterContentType === ct.id;
+                            return (
+                              <button key={ct.id} onClick={() => {
+                                setBookData(prev => ({ ...prev, chapterContentType: ct.id, includeImages: ct.id !== "text-only" }));
+                              }}
+                                className={`flex flex-col items-center p-5 rounded-xl border-2 transition-all ${
+                                  isActive ? "border-accent bg-accent/[0.04] shadow-sm" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                                }`}>
+                                <ct.icon className={`w-6 h-6 mb-2.5 ${isActive ? "text-accent" : "text-muted-foreground"}`} />
+                                <span className={`text-sm font-semibold mb-1 ${isActive ? "text-foreground" : "text-foreground/80"}`}>{ct.label}</span>
+                                <span className="text-[10px] text-muted-foreground text-center">{ct.desc}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Words Per Chapter */}
+                      <div>
+                        <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Words Per Chapter</label>
+                        <div className="flex gap-2 mb-3">
+                          {WORDS_PRESETS.map(wp => (
+                            <button key={wp.value} onClick={() => setBookData(prev => ({ ...prev, wordsPerChapter: wp.value }))}
+                              className={`flex-1 py-3 rounded-xl border-2 text-center transition-all ${
+                                bookData.wordsPerChapter === wp.value ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                              }`}>
+                              <span className={`block text-sm font-bold ${bookData.wordsPerChapter === wp.value ? "text-accent" : "text-foreground"}`}>{wp.label}</span>
+                              <span className="block text-[10px] text-muted-foreground mt-0.5">{wp.sub}</span>
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <input type="number" value={bookData.wordsPerChapter}
+                            onChange={e => setBookData(prev => ({ ...prev, wordsPerChapter: parseInt(e.target.value) || 1500 }))}
+                            className="flex-1 px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent/40"
+                            min={100} max={20000} />
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">words/chapter</span>
+                        </div>
+                      </div>
+
+                      {/* Tone */}
+                      <div>
+                        <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Writing Tone</label>
+                        <div className="grid grid-cols-3 gap-2">
+                          {TONES.map(t => (
+                            <button key={t.id} onClick={() => setBookData(prev => ({ ...prev, tone: t.id }))}
+                              className={`flex items-center gap-2 px-3 py-3 rounded-xl border-2 text-sm transition-all ${
+                                bookData.tone === t.id ? "border-accent bg-accent/[0.04] font-semibold" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                              }`}>
+                              <t.icon size={14} className={bookData.tone === t.id ? "text-accent" : "text-muted-foreground"} />{t.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Language */}
+                      <div>
+                        <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Language</label>
+                        <div className="grid grid-cols-4 gap-2">
+                          {LANGUAGES.slice(0, 8).map(l => (
+                            <button key={l.code} onClick={() => setBookData(prev => ({ ...prev, language: l.code }))}
+                              className={`flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm transition-all ${
+                                bookData.language === l.code ? "border-accent bg-accent/[0.04] font-semibold" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                              }`}>
+                              <span>{l.flag}</span>{l.name}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* AI Model */}
+                      <div>
+                        <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">AI Model</label>
+                        <div className="grid grid-cols-2 gap-2">
+                          {AI_MODELS.map(m => (
+                            <button key={m.id} onClick={() => setBookData(prev => ({ ...prev, model: m.id }))}
+                              className={`flex flex-col px-4 py-3 rounded-xl border-2 text-left transition-all ${
+                                bookData.model === m.id ? "border-accent bg-accent/[0.04]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                              }`}>
+                              <span className={`text-sm font-semibold ${bookData.model === m.id ? "text-accent" : "text-foreground"}`}>{m.name}</span>
+                              <span className="text-[10px] text-muted-foreground">{m.description}</span>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Project Actions */}
+                      <div className="p-5 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01]">
+                        <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Project</label>
+                        <div className="grid grid-cols-3 gap-3">
+                          <button onClick={() => {
+                            const el = document.createElement('a');
+                            el.download = `${bookData.selectedTitle || 'Untitled Book'}.json`;
+                            el.href = URL.createObjectURL(new Blob([JSON.stringify(bookData, null, 2)], { type: 'application/json' }));
+                            el.click();
+                            sonnerToast.success('Book data exported');
+                          }}
+                            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors">
+                            <Download className="w-5 h-5 text-muted-foreground" />
+                            <span className="text-xs font-medium text-foreground">Export Book Data</span>
+                          </button>
+                          <button onClick={() => {
+                            navigator.clipboard.writeText(window.location.href);
+                            sonnerToast.success('Link copied to clipboard');
+                          }}
+                            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors">
+                            <Copy className="w-5 h-5 text-muted-foreground" />
+                            <span className="text-xs font-medium text-foreground">Copy Project Link</span>
+                          </button>
+                          <button onClick={() => {
+                            const pages = localStorage.getItem(STORAGE_KEY_PAGES);
+                            const elements = localStorage.getItem(STORAGE_KEY_ELEMENTS);
+                            const hasData = pages || elements;
+                            if (hasData) {
+                              const snapshot = {
+                                timestamp: new Date().toISOString(),
+                                title: bookData.selectedTitle || 'Untitled',
+                                pageCount: ebookPages.length,
+                              };
+                              const history = JSON.parse(localStorage.getItem('ebook_version_history') || '[]');
+                              history.unshift(snapshot);
+                              if (history.length > 20) history.pop();
+                              localStorage.setItem('ebook_version_history', JSON.stringify(history));
+                              sonnerToast.success(`Version saved! ${history.length} version(s) in history.`);
+                            } else {
+                              sonnerToast.info('No saved versions yet. Make some changes first.');
+                            }
+                          }}
+                            className="flex flex-col items-center gap-2 p-4 rounded-xl border border-foreground/[0.08] hover:bg-foreground/[0.03] transition-colors">
+                            <Undo2 className="w-5 h-5 text-muted-foreground" />
+                            <span className="text-xs font-medium text-foreground">Version History</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Apply & Regenerate */}
+                      <div className="flex items-center justify-between p-5 rounded-xl bg-accent/[0.03] border border-accent/20">
+                        <div className="flex items-center gap-2">
+                          <Sparkles size={14} className="text-accent" />
+                          <p className="text-xs text-muted-foreground">Changes to words per chapter or content type will use AI to regenerate affected content.</p>
+                        </div>
+                        <button onClick={async () => {
+                          setIsApplyingSettings(true);
+                          try {
+                            const { data, error } = await supabase.functions.invoke('generate-ebook', {
+                              body: {
+                                action: 'generate-outline',
+                                prompt: bookData.prompt || bookData.selectedTitle,
+                                model: bookData.model,
+                                language: bookData.language,
+                                tone: bookData.tone,
+                                chapters: chapterSequence.length || bookData.chapters,
+                                wordsPerChapter: bookData.wordsPerChapter,
+                              },
+                            });
+                            if (error) throw new Error(error.message);
+                            if (data?.error) throw new Error(data.error);
+                            const result = data.result;
+                            if (result?.chapters) {
+                              setChapterSequence(result.chapters.map((ch: any, i: number) => ({
+                                id: `ch-${i + 1}`,
+                                title: ch.title,
+                                description: ch.description,
+                                topics: ch.topics || [],
+                                includeImages: bookData.chapterContentType !== "text-only",
+                                pageCount: ch.pageCount || 8,
+                              })));
+                            }
+                            toast({ title: "Settings applied! Outline regenerated with new parameters." });
+                            setShowBookSettingsDialog(false);
+                          } catch (e: any) {
+                            toast({ title: e.message || "Failed to apply settings", variant: "destructive" });
+                          } finally {
+                            setIsApplyingSettings(false);
+                          }
+                        }}
+                          disabled={isApplyingSettings}
+                          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-accent text-white text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50 shrink-0">
+                          {isApplyingSettings ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
+                          {isApplyingSettings ? "Applying..." : "Apply & Regenerate"}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
               <EbookCanvasEditor
                 ref={canvasRef}
                 pages={ebookPages}
@@ -1631,9 +1845,10 @@ const NewEbookPage = () => {
                 initialPageElements={savedPageElements}
                 onPageElementsChange={handlePageElementsChange}
               />
+              )}
 
               {/* Right panel collapse toggle */}
-              {!isGridView && showPageSettings && (
+              {!isGridView && showPageSettings && !showBookSettingsDialog && (
                 <button onClick={() => setIsRightPanelCollapsed(!isRightPanelCollapsed)}
                   className="absolute top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-accent rounded-l-lg flex items-center justify-center hover:bg-accent/90 transition-colors"
                   style={{ right: isRightPanelCollapsed ? 0 : 256 }}>
@@ -1642,7 +1857,7 @@ const NewEbookPage = () => {
               )}
 
               {/* RIGHT: Page Settings Panel */}
-              {!isGridView && showPageSettings && !isRightPanelCollapsed && (
+              {!isGridView && showPageSettings && !isRightPanelCollapsed && !showBookSettingsDialog && (
               <PageSettingsPanel
                 pages={ebookPages}
                 selectedPageId={selectedPageId}
