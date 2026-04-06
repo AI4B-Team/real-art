@@ -751,6 +751,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   const handlePageAction = (actionId: string) => {
     switch (actionId) {
+      case 'ai': onPageSettingsToggle?.(); break;
       case 'add': /* handled by popover */ break;
       case 'duplicate': handleDuplicatePage(); break;
       case 'delete': handleDeletePage(); break;
