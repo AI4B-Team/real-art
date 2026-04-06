@@ -94,25 +94,15 @@ const PageSettingsPanel = ({
     if (!selectedPageId) return;
     if (applyTo === 'all') {
       const lockedPages = pages.filter(p => p.locked);
-      if (lockedPages.length > 0) {
-        const lockedNumbers = lockedPages.map(p => pages.indexOf(p) + 1).join(', ');
-        onPagesChange(pages.map(p => p.locked ? p : { ...p, ...patch }));
-        toast(
-          `${lockedPages.length} locked page${lockedPages.length > 1 ? 's' : ''} skipped (Page ${lockedNumbers})`,
-          {
-            description: 'Unlock to apply changes to all pages.',
-            action: {
-              label: 'Unlock All',
-              onClick: () => {
-                onPagesChange(pages.map(p => ({ ...p, locked: false, ...patch })));
-                toast.success('All pages unlocked and updated');
-              },
-            },
-          }
+      if (lockedPages.length > 0 && showLockedPagesWarning) {
+        const showed = showLockedPagesWarning(
+          'Apply To All Pages',
+          () => onPagesChange(pages.map(p => ({ ...p, locked: false, ...patch }))),
+          () => onPagesChange(pages.map(p => p.locked ? p : { ...p, ...patch })),
         );
-      } else {
-        onPagesChange(pages.map(p => ({ ...p, ...patch })));
+        if (showed) return;
       }
+      onPagesChange(pages.map(p => ({ ...p, ...patch })));
     } else {
       const currentPage = pages.find(p => p.id === selectedPageId);
       if (currentPage?.locked) {
@@ -121,7 +111,7 @@ const PageSettingsPanel = ({
       }
       updatePage(selectedPageId, patch);
     }
-  }, [selectedPageId, applyTo, pages, onPagesChange, updatePage]);
+  }, [selectedPageId, applyTo, pages, onPagesChange, updatePage, showLockedPagesWarning]);
 
   const handleOrientationChange = (newOrientation: 'portrait' | 'landscape') => {
     if (newOrientation === orientation) return;
