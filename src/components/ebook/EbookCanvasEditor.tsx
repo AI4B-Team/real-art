@@ -2,7 +2,7 @@ import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHand
 import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
   Brain, CheckSquare, BookOpen, Award, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch, Shuffle as ShuffleIcon,
-  Minus, Hand, ChevronLeft, ChevronRight, Search,
+  Minus, Hand, ChevronLeft, ChevronRight, Search, Loader2,
   AlignLeft, AlignCenter, AlignRight, AlignJustify,
   Bold, Italic, Underline, Strikethrough,
   Trash2, Copy, Lock, Unlock,
