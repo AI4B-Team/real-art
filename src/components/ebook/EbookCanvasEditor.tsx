@@ -98,6 +98,7 @@ interface EbookCanvasEditorProps {
   accessMode?: AccessMode;
   initialPageElements?: Record<string, CanvasElement[]>;
   onPageElementsChange?: (elements: Record<string, CanvasElement[]>) => void;
+  panelOffset?: number;
 }
 
 // ─── Constants ─────────────────────────────────────
@@ -228,6 +229,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   pageWidth: pw = 480, pageHeight: ph = 640,
   accessMode = 'editing',
   initialPageElements, onPageElementsChange,
+  panelOffset = 0,
 }, ref) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
@@ -3028,7 +3030,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
               {/* Canvas - Scrollable all pages */}
               <div ref={scrollContainerRef} className="flex-1 overflow-auto py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
-                <div className="flex flex-col items-center gap-8" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
+                <div className="flex flex-col items-center gap-8" style={{ marginLeft: panelOffset }} onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
