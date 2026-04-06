@@ -1415,7 +1415,7 @@ const NewEbookPage = () => {
                         className="flex items-center gap-2 px-8 py-3 rounded-xl bg-accent text-white text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50 shadow-lg shadow-accent/20 hover:shadow-accent/30">
                         <Zap size={16} />Generate eBook<ArrowRight size={16} />
                       </button>
-                      <span className="text-[10px] text-muted-foreground/60">Generate your full book in minutes</span>
+                      <span className="text-[10px] text-muted-foreground/60">Generate Your Full Book In Minutes</span>
                     </div>
                   </div>
                 </div>
