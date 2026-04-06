@@ -92,6 +92,7 @@ interface EbookCanvasEditorProps {
   onPageSettingsToggle?: () => void;
   onOpenImageSection?: () => void;
   onReplaceStateChange?: (isReplacing: boolean) => void;
+  onAiPanelToggle?: (isOpen: boolean) => void;
   pageWidth?: number;
   pageHeight?: number;
   accessMode?: AccessMode;
