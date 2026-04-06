@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   ArrowLeft, FileText, Image, Sparkles, Briefcase, Coffee, GraduationCap,
   Heart, Shield, Flame, Cpu, Wand2, Loader2, Download, Copy, Undo2,
   ChevronDown, ChevronRight, Zap, Star, BookOpen, Clock, FileCheck, Save, Layers,
-  Target, Rocket, Users, Globe,
+  Target, Rocket, Users, Globe, Pencil, TrendingUp, CheckCircle2,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { toast as sonnerToast } from "sonner";
