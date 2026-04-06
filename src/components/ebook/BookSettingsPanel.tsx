@@ -444,8 +444,65 @@ export default function BookSettingsPanel({
               </div>
             </div>
 
+            {/* ─── CENTER: Live Book Preview ─── */}
+            <div className="flex-1 min-w-0 hidden md:flex flex-col items-center justify-start pt-4">
+              <div className="sticky top-0 w-full max-w-md">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-foreground/70 mb-4 text-center">Live Preview</h3>
+                <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] shadow-sm overflow-hidden">
+                  {/* Book Cover */}
+                  <div className="aspect-[3/4] max-h-[420px] bg-gradient-to-br from-foreground/[0.03] to-foreground/[0.06] flex flex-col items-center justify-center p-8 relative">
+                    <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent" />
+                    <div className="relative z-10 text-center space-y-4">
+                      <div className="w-16 h-16 mx-auto rounded-2xl bg-accent/10 flex items-center justify-center">
+                        <BookOpen size={28} className="text-accent" />
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-bold text-foreground leading-tight">{bookData.selectedTitle || "Untitled Book"}</h4>
+                        <p className="text-[10px] text-muted-foreground mt-1.5 capitalize">{currentTone?.name || "Professional"} · {currentLang?.name || "English"}</p>
+                      </div>
+                      <div className="flex items-center justify-center gap-3 pt-2">
+                        <span className="text-[10px] px-2 py-1 rounded-full bg-foreground/[0.06] text-foreground/60">{chapterCount} chapters</span>
+                        <span className="text-[10px] px-2 py-1 rounded-full bg-foreground/[0.06] text-foreground/60">~{estPages} pages</span>
+                      </div>
+                    </div>
+                  </div>
+                  {/* Table of Contents */}
+                  <div className="p-5 border-t border-foreground/[0.06]">
+                    <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-3">Table of Contents</p>
+                    <div className="space-y-2">
+                      {Array.from({ length: Math.min(chapterCount, 6) }).map((_, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <span className="text-[10px] font-mono text-accent/60 w-5 text-right">{String(i + 1).padStart(2, "0")}</span>
+                          <div className="flex-1 h-2 rounded-full bg-foreground/[0.05]" />
+                          <span className="text-[9px] text-muted-foreground">{bookData.wordsPerChapter.toLocaleString()}w</span>
+                        </div>
+                      ))}
+                      {chapterCount > 6 && (
+                        <p className="text-[10px] text-muted-foreground text-center pt-1">+ {chapterCount - 6} more chapters</p>
+                      )}
+                    </div>
+                  </div>
+                  {/* Content type badges */}
+                  <div className="px-5 pb-4 flex items-center gap-2 flex-wrap">
+                    {bookData.chapterContentType !== "text-only" && (
+                      <span className="text-[9px] px-2 py-1 rounded-full bg-accent/10 text-accent font-medium flex items-center gap-1">
+                        <Image size={9} /> Images
+                      </span>
+                    )}
+                    {bookData.chapterContentType === "text-images-interactive" && (
+                      <span className="text-[9px] px-2 py-1 rounded-full bg-accent/10 text-accent font-medium flex items-center gap-1">
+                        <Sparkles size={9} /> Interactive
+                      </span>
+                    )}
+                    <span className="text-[9px] px-2 py-1 rounded-full bg-foreground/[0.04] text-foreground/50 font-medium">{totalWords.toLocaleString()} words</span>
+                    <span className="ml-auto text-[9px] text-muted-foreground">{estTime}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             {/* ─── RIGHT: Live Summary (sticky) ─── */}
-            <div className="w-60 shrink-0 hidden lg:block">
+            <div className="w-56 shrink-0 hidden lg:block">
               <div className="sticky top-0 pt-2">
                 <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.01] p-5">
                   <h3 className="text-xs font-bold uppercase tracking-wider text-foreground/70 mb-4">Live Summary</h3>
