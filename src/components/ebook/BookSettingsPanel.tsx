@@ -208,8 +208,8 @@ export default function BookSettingsPanel({
     return (
       <button onClick={() => toggleSection(id)}
         className={`w-full flex items-center gap-3 px-4 py-3 text-left transition-all hover:bg-foreground/[0.03] ${isOpen ? "bg-foreground/[0.02]" : ""}`}>
-        <Icon size={16} className={isOpen ? "text-accent" : "text-muted-foreground"} />
-        <span className={`text-sm font-semibold flex-1 ${isOpen ? "text-foreground" : "text-foreground/70"}`}>{label}</span>
+        <Icon size={16} className="text-foreground/60" />
+        <span className="text-sm font-medium flex-1 text-foreground">{label}</span>
         <ChevronRight size={14} className={`text-muted-foreground transition-transform ${isOpen ? "rotate-90" : ""}`} />
       </button>
     );
