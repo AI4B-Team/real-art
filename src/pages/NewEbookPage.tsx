@@ -1571,20 +1571,16 @@ const NewEbookPage = () => {
                 onTranslate={async (scope, language) => {
                   // Check for locked pages when applying to entire book
                   if (scope === 'book') {
-                    const lockedPages = ebookPages.filter(p => p.locked);
-                    if (lockedPages.length > 0) {
-                      const lockedNumbers = lockedPages.map(p => ebookPages.indexOf(p) + 1).join(', ');
-                      sonnerToast(`${lockedPages.length} locked page${lockedPages.length > 1 ? 's' : ''} will be skipped (Page ${lockedNumbers})`, {
-                        description: 'Unlock to include all pages in translation.',
-                        action: {
-                          label: 'Unlock All',
-                          onClick: () => {
-                            setEbookPages(prev => prev.map(p => ({ ...p, locked: false })));
-                            sonnerToast.success('All pages unlocked. Please run the translation again.');
-                          },
-                        },
-                      });
-                    }
+                    const hasLocked = showLockedPagesWarning(
+                      'Translate Entire Book',
+                      () => {
+                        sonnerToast.success('All pages unlocked. Please run the translation again.');
+                      },
+                      () => {
+                        sonnerToast.info('Locked pages were skipped during translation.');
+                      },
+                    );
+                    if (hasLocked) return;
                   }
                   // Check if current page is locked for page-level scope
                   if (scope === 'page' || scope === 'selected') {
