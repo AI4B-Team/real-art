@@ -25,6 +25,7 @@ import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 import BookSettingsPanel from "@/components/ebook/BookSettingsPanel";
+import LockedPagesModal from "@/components/ebook/LockedPagesModal";
 
 type ChapterContentType = "text-only" | "text-images" | "text-images-interactive";
 
