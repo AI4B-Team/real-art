@@ -3280,7 +3280,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                       <TooltipContent side="right">AI Assistant</TooltipContent>
                                     </Tooltip>
                                     {/* Expanded AI bar */}
-                                    <div className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-4 pointer-events-none'}`}>
+                                    <div className={`absolute left-full top-1/2 -translate-y-1/2 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
                                       <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md rounded-2xl px-3 py-2 border border-foreground/[0.08] shadow-lg whitespace-nowrap">
                                         <div className="flex items-center gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02] min-w-[180px]">
                                           <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
