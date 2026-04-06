@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import {
   ArrowLeft, FileText, Image, Sparkles, Briefcase, Coffee, GraduationCap,
   Heart, Shield, Flame, Cpu, Wand2, Loader2, Download, Copy, Undo2,
   ChevronDown, ChevronRight, Zap, Star, BookOpen, Clock, FileCheck, Save, Layers,
-  Target, Rocket, Users, Globe,
+  Target, Rocket, Users, Globe, Pencil, TrendingUp, CheckCircle2,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { toast as sonnerToast } from "sonner";
@@ -69,6 +69,20 @@ const USE_CASES = [
   { id: "personal-brand", label: "Personal Brand", icon: Users, desc: "Storytelling & personal voice", defaults: { wordsPerChapter: 1500, tone: "friendly", chapters: 8 } },
 ];
 
+const SAMPLE_CHAPTER_TITLES = [
+  "Introduction & Overview", "The Foundation", "Core Concepts", "Building Blocks",
+  "Advanced Strategies", "Real-World Applications", "Case Studies & Examples",
+  "Implementation Guide", "Measuring Success", "Future Outlook",
+  "Best Practices", "Common Pitfalls", "Expert Interviews", "Action Plan",
+  "Resources & References", "Appendix", "Glossary", "Summary & Next Steps",
+  "Deep Dive: Strategy", "The Complete Framework",
+];
+
+const SAMPLE_PARAGRAPHS = [
+  "This comprehensive guide will walk you through everything you need to know, from foundational concepts to advanced strategies that industry leaders use daily.",
+  "Each chapter has been carefully crafted to build upon the previous one, creating a natural learning progression that makes complex topics accessible and actionable.",
+];
+
 const PRESETS_KEY = "ebook_presets";
 
 interface SavedPreset {
@@ -132,8 +146,15 @@ export default function BookSettingsPanel({
   });
   const [presetName, setPresetName] = useState("");
   const [showPresetInput, setShowPresetInput] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [initialData] = useState(bookData);
+
+  // Trigger preview animation on changes
+  useEffect(() => {
+    setPreviewKey(k => k + 1);
+  }, [bookData.wordsPerChapter, bookData.chapterContentType, bookData.tone, bookData.chapters]);
 
   const toggleSection = (id: string) => {
     setExpandedSections(prev => {
@@ -201,6 +222,10 @@ export default function BookSettingsPanel({
     || bookData.language !== initialData.language;
 
   const wordsDiff = (bookData.wordsPerChapter - initialData.wordsPerChapter) * chapterCount;
+  const pagesDiff = estPages - estimatePages(chapterCount, initialData.wordsPerChapter);
+  const initialImageCount = initialData.chapterContentType !== "text-only" ? chapterCount * 2 : 0;
+  const currentImageCount = bookData.chapterContentType !== "text-only" ? chapterCount * 2 : 0;
+  const imagesDiff = currentImageCount - initialImageCount;
 
   // Collapsible section helper
   const SectionHeader = ({ id, label, icon: Icon }: { id: string; label: string; icon: React.ElementType }) => {
@@ -444,20 +469,48 @@ export default function BookSettingsPanel({
           </div>
         </div>
 
-        {/* ─── CENTER: Live Book Preview ─── */}
+        {/* ─── CENTER: Living Book Preview ─── */}
         <div className="flex-1 min-w-0 overflow-y-auto flex flex-col items-center justify-start py-8 px-6">
-          <div className="w-full max-w-md">
+          <div className="w-full max-w-lg">
             <h3 className="text-xs font-bold uppercase tracking-wider text-foreground/70 mb-4 text-center">Live Preview</h3>
-            <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] shadow-sm overflow-hidden">
-              {/* Book Cover */}
-              <div className="aspect-[3/4] max-h-[420px] bg-gradient-to-br from-foreground/[0.03] to-foreground/[0.06] flex flex-col items-center justify-center p-8 relative">
+            <div key={previewKey} className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.02] shadow-sm overflow-hidden animate-[fadeSlideIn_0.35s_ease-out]">
+
+              {/* ── Book Cover ── */}
+              <div className="aspect-[3/4] max-h-[380px] bg-gradient-to-br from-foreground/[0.03] to-foreground/[0.06] flex flex-col items-center justify-center p-8 relative">
                 <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent" />
                 <div className="relative z-10 text-center space-y-4">
                   <div className="w-16 h-16 mx-auto rounded-2xl bg-accent/10 flex items-center justify-center">
                     <BookOpen size={28} className="text-accent" />
                   </div>
                   <div>
-                    <h4 className="text-lg font-bold text-foreground leading-tight">{bookData.selectedTitle || "Untitled Book"}</h4>
+                    {isEditingTitle ? (
+                      <input
+                        value={bookData.selectedTitle}
+                        onChange={e => onBookDataChange(prev => ({ ...prev, selectedTitle: e.target.value }))}
+                        onBlur={() => setIsEditingTitle(false)}
+                        onKeyDown={e => e.key === "Enter" && setIsEditingTitle(false)}
+                        autoFocus
+                        className="text-lg font-bold text-foreground text-center bg-transparent border-b-2 border-accent/40 outline-none w-full px-2 py-1"
+                        placeholder="Enter your book title..."
+                      />
+                    ) : (
+                      <div className="group relative">
+                        <h4 className="text-lg font-bold text-foreground leading-tight cursor-pointer hover:text-accent/80 transition-colors"
+                          onClick={() => setIsEditingTitle(true)}>
+                          {bookData.selectedTitle || "Untitled Book"}
+                          <Pencil size={12} className="inline ml-2 opacity-0 group-hover:opacity-60 transition-opacity" />
+                        </h4>
+                        {!bookData.selectedTitle && (
+                          <button onClick={() => {
+                            const titles = ["The Automated Blueprint", "Strategic Edge", "The Complete Playbook", "Mastering the Fundamentals"];
+                            onBookDataChange(prev => ({ ...prev, selectedTitle: titles[Math.floor(Math.random() * titles.length)] }));
+                            sonnerToast.success("Title generated!");
+                          }} className="mt-2 flex items-center gap-1.5 mx-auto text-[10px] font-semibold text-accent hover:text-accent/80 transition-colors">
+                            <Sparkles size={10} /> Generate Title
+                          </button>
+                        )}
+                      </div>
+                    )}
                     <p className="text-[10px] text-muted-foreground mt-1.5 capitalize">{currentTone?.name || "Professional"} · {currentLang?.name || "English"}</p>
                   </div>
                   <div className="flex items-center justify-center gap-3 pt-2">
@@ -466,24 +519,34 @@ export default function BookSettingsPanel({
                   </div>
                 </div>
               </div>
-              {/* Table of Contents */}
+
+              {/* ── Table of Contents with real chapter titles ── */}
               <div className="p-5 border-t border-foreground/[0.06]">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-3">Table of Contents</p>
-                <div className="space-y-2">
-                  {Array.from({ length: Math.min(chapterCount, 6) }).map((_, i) => (
-                    <div key={i} className="flex items-center gap-3">
-                      <span className="text-[10px] font-mono text-accent/60 w-5 text-right">{String(i + 1).padStart(2, "0")}</span>
-                      <div className="flex-1 h-2 rounded-full bg-foreground/[0.05]" />
-                      <span className="text-[9px] text-muted-foreground">{bookData.wordsPerChapter.toLocaleString()}w</span>
+                <div className="space-y-1">
+                  {Array.from({ length: Math.min(chapterCount, 8) }).map((_, i) => (
+                    <div key={i} className="flex items-center gap-3 py-1.5 group hover:bg-foreground/[0.02] rounded-lg px-2 -mx-2 transition-colors">
+                      <span className="text-[10px] font-mono text-accent w-5 text-right shrink-0">{String(i + 1).padStart(2, "0")}</span>
+                      <span className="text-xs text-foreground/80 flex-1 truncate">{SAMPLE_CHAPTER_TITLES[i % SAMPLE_CHAPTER_TITLES.length]}</span>
+                      <span className="text-[9px] text-muted-foreground shrink-0 tabular-nums">{bookData.wordsPerChapter.toLocaleString()}w</span>
                     </div>
                   ))}
-                  {chapterCount > 6 && (
-                    <p className="text-[10px] text-muted-foreground text-center pt-1">+ {chapterCount - 6} more chapters</p>
+                  {chapterCount > 8 && (
+                    <p className="text-[10px] text-muted-foreground text-center pt-2">+ {chapterCount - 8} more chapters</p>
                   )}
                 </div>
               </div>
-              {/* Content type badges */}
-              <div className="px-5 pb-4 flex items-center gap-2 flex-wrap">
+
+              {/* ── Sample Paragraph Preview ── */}
+              <div className="px-5 pb-4 border-t border-foreground/[0.06] pt-4">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2">Sample Preview</p>
+                <p className="text-[11px] text-foreground/60 leading-relaxed italic">
+                  "{SAMPLE_PARAGRAPHS[0]}"
+                </p>
+              </div>
+
+              {/* ── Content type badges ── */}
+              <div className="px-5 pb-4 flex items-center gap-2 flex-wrap border-t border-foreground/[0.06] pt-3">
                 {bookData.chapterContentType !== "text-only" && (
                   <span className="text-[9px] px-2 py-1 rounded-full bg-accent/10 text-accent font-medium flex items-center gap-1">
                     <Image size={9} /> Images
@@ -501,9 +564,11 @@ export default function BookSettingsPanel({
           </div>
         </div>
 
-        {/* ─── RIGHT: Live Summary (sticky) ─── */}
+        {/* ─── RIGHT: Live Summary + Value Prop (sticky) ─── */}
         <div className="w-72 shrink-0 hidden lg:block border-l border-foreground/[0.06] overflow-y-auto p-5">
-          <div className="sticky top-0">
+          <div className="sticky top-0 space-y-4">
+
+            {/* Live Summary */}
             <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.01] p-5">
               <h3 className="text-xs font-bold uppercase tracking-wider text-foreground/70 mb-4">Live Summary</h3>
               <div className="space-y-3">
@@ -515,7 +580,40 @@ export default function BookSettingsPanel({
                 <SummaryRow icon={<Globe size={14} />} label="Language" value={currentLang?.name || "English"} />
                 <SummaryRow icon={<Cpu size={14} />} label="Model" value={AI_MODELS.find(m => m.id === bookData.model)?.name || "Auto"} />
               </div>
-              <div className="mt-5 pt-4 border-t border-foreground/[0.06]">
+
+              {/* ── Change Impact Deltas ── */}
+              {hasChanges && (
+                <div className="mt-4 pt-3 border-t border-foreground/[0.06]">
+                  <h4 className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2 flex items-center gap-1.5">
+                    <TrendingUp size={10} className="text-accent" /> Change Impact
+                  </h4>
+                  <div className="space-y-1.5">
+                    {pagesDiff !== 0 && (
+                      <div className={`flex items-center gap-2 text-xs font-medium ${pagesDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
+                        <FileCheck size={11} />{pagesDiff > 0 ? "+" : ""}{pagesDiff} pages
+                      </div>
+                    )}
+                    {wordsDiff !== 0 && (
+                      <div className={`flex items-center gap-2 text-xs font-medium ${wordsDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
+                        <FileText size={11} />{wordsDiff > 0 ? "+" : ""}{wordsDiff.toLocaleString()} words
+                      </div>
+                    )}
+                    {imagesDiff !== 0 && (
+                      <div className={`flex items-center gap-2 text-xs font-medium ${imagesDiff > 0 ? "text-emerald-600" : "text-orange-600"}`}>
+                        <Image size={11} />{imagesDiff > 0 ? "+" : ""}{imagesDiff} images
+                      </div>
+                    )}
+                    {bookData.tone !== initialData.tone && (
+                      <div className="flex items-center gap-2 text-xs font-medium text-accent">
+                        <Briefcase size={11} />Tone → {currentTone?.name}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* Estimated Output */}
+              <div className="mt-4 pt-3 border-t border-foreground/[0.06]">
                 <h4 className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2">Estimated Output</h4>
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2 text-xs text-foreground/70"><Layers size={12} className="text-accent" /><span>~{chapterCount} chapters</span></div>
@@ -524,8 +622,36 @@ export default function BookSettingsPanel({
                 </div>
               </div>
             </div>
+
+            {/* 🔥 What You're About to Create */}
+            <div className="rounded-xl border border-accent/20 bg-accent/[0.03] p-5">
+              <h4 className="text-xs font-bold text-foreground flex items-center gap-2 mb-3">
+                <Flame size={14} className="text-accent" /> What You're About To Create
+              </h4>
+              <div className="space-y-2.5">
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 size={14} className="text-accent mt-0.5 shrink-0" />
+                  <span className="text-xs text-foreground/70">A complete, structured ebook</span>
+                </div>
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 size={14} className="text-accent mt-0.5 shrink-0" />
+                  <span className="text-xs text-foreground/70">~{estPages} pages of {currentTone?.name?.toLowerCase() || "professional"} content</span>
+                </div>
+                {bookData.chapterContentType !== "text-only" && (
+                  <div className="flex items-start gap-2.5">
+                    <CheckCircle2 size={14} className="text-accent mt-0.5 shrink-0" />
+                    <span className="text-xs text-foreground/70">AI-generated images per chapter</span>
+                  </div>
+                )}
+                <div className="flex items-start gap-2.5">
+                  <CheckCircle2 size={14} className="text-accent mt-0.5 shrink-0" />
+                  <span className="text-xs text-foreground/70">Ready for publishing or lead generation</span>
+                </div>
+              </div>
+            </div>
+
             {/* Project Actions */}
-            <div className="mt-4 rounded-xl border border-foreground/[0.06] bg-foreground/[0.01] p-4">
+            <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.01] p-4">
               <h4 className="text-[10px] font-bold uppercase tracking-wider text-foreground/50 mb-2">Project</h4>
               <div className="space-y-0.5">
                 <button onClick={() => {
