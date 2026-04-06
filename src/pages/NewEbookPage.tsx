@@ -1339,23 +1339,23 @@ const NewEbookPage = () => {
                     const newId = `ch-${Date.now()}`;
                     setChapterSequence(prev => [...prev, { id: newId, title: "Generating...", description: "AI is writing this chapter...", topics: [], includeImages: true, pageCount: 8 }]);
                     try {
-                      const resp = await supabase.functions.invoke("generate-prompts", {
+                      const resp = await supabase.functions.invoke("generate-ebook", {
                         body: {
-                          prompt: `Given the book titled "${bookData.selectedTitle}" with existing chapters: ${chapterSequence.map((c, i) => `${i+1}. ${c.title}`).join(", ")}. Generate ONE new chapter that logically follows. Return JSON: {"title":"...","description":"...","topics":["...","...","..."]}`,
-                          count: 1,
+                          action: "generate-outline",
+                          prompt: `Given the book titled "${bookData.selectedTitle}" with existing chapters: ${chapterSequence.map((c, i) => `${i+1}. ${c.title}`).join(", ")}. Generate ONE additional chapter that logically follows and complements the existing content.`,
+                          model: bookData.model || "auto",
+                          tone: bookData.tone || "professional",
+                          language: bookData.language || "en",
+                          chapters: 1,
+                          wordsPerChapter: bookData.wordsPerChapter || 2000,
                         },
                       });
-                      const text = resp.data?.prompts?.[0] || resp.data?.text || "";
-                      try {
-                        const jsonMatch = text.match(/\{[\s\S]*\}/);
-                        if (jsonMatch) {
-                          const parsed = JSON.parse(jsonMatch[0]);
-                          setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: parsed.title || "New Chapter", description: parsed.description || "", topics: parsed.topics || [] } : c));
-                        } else {
-                          setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: `Chapter ${chapterSequence.length + 1}`, description: "AI-suggested chapter" } : c));
-                        }
-                      } catch {
-                        setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: `Chapter ${chapterSequence.length + 1}`, description: text.slice(0, 100) } : c));
+                      const result = resp.data?.result;
+                      if (result?.chapters?.[0]) {
+                        const ch = result.chapters[0];
+                        setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: ch.title || "New Chapter", description: ch.description || "", topics: ch.topics || [], pageCount: ch.pageCount || 8 } : c));
+                      } else {
+                        setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: `Chapter ${chapterSequence.length + 1}`, description: "AI-suggested chapter" } : c));
                       }
                     } catch {
                       setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: `Chapter ${chapterSequence.length + 1}`, description: "New chapter" } : c));
