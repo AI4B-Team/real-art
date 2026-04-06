@@ -889,7 +889,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           body: { text: selectedElement.content, action: actionMap[action] || 'improve-writing', prompt },
         });
         if (error) throw error;
-        if (data?.result) { updateElement(selectedElement.id, { content: data.result }); toast.success('Updated by AI'); }
+        if (data?.result) {
+          updateElement(selectedElement.id, { content: data.result });
+          setAiUpdatedFeedback(true);
+          setTimeout(() => setAiUpdatedFeedback(false), 2500);
+          toast.success('Updated by AI ✨');
+        }
         else if (data?.error) toast.error(data.error);
       } catch (e: any) { toast.error(e.message || 'AI edit failed'); }
       finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
