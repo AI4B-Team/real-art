@@ -605,6 +605,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     scrollSelectedRef.current = false;
   }, [selectedPageId]);
 
+  // On mount, scroll to top so cover page is fully visible
+  const hasInitialScrolled = useRef(false);
+  useEffect(() => {
+    if (hasInitialScrolled.current) return;
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    hasInitialScrolled.current = true;
+    container.scrollTo({ top: 0, behavior: 'instant' as ScrollBehavior });
+  }, []);
+
   const internalZoom = useState(100);
   const zoomPct = externalZoom ?? internalZoom[0];
 
