@@ -1759,6 +1759,50 @@ const NewEbookPage = () => {
               </div>
             </div>
 
+            {/* Project Actions */}
+            <div className="space-y-1">
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-2 block">Project</label>
+              <button onClick={() => {
+                const el = document.createElement('a');
+                el.download = `${bookData.selectedTitle || 'Untitled Book'}.json`;
+                el.href = URL.createObjectURL(new Blob([JSON.stringify(bookData, null, 2)], { type: 'application/json' }));
+                el.click();
+                sonnerToast.success('Book data exported');
+              }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                <Download className="w-4 h-4 text-muted-foreground" />Export Book Data
+              </button>
+              <button onClick={() => {
+                navigator.clipboard.writeText(window.location.href);
+                sonnerToast.success('Link copied to clipboard');
+              }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                <Copy className="w-4 h-4 text-muted-foreground" />Copy Project Link
+              </button>
+              <button onClick={() => {
+                const pages = localStorage.getItem(STORAGE_KEY_PAGES);
+                const elements = localStorage.getItem(STORAGE_KEY_ELEMENTS);
+                const hasData = pages || elements;
+                if (hasData) {
+                  const snapshot = {
+                    timestamp: new Date().toISOString(),
+                    title: bookData.selectedTitle || 'Untitled',
+                    pageCount: ebookPages.length,
+                  };
+                  const history = JSON.parse(localStorage.getItem('ebook_version_history') || '[]');
+                  history.unshift(snapshot);
+                  if (history.length > 20) history.pop();
+                  localStorage.setItem('ebook_version_history', JSON.stringify(history));
+                  sonnerToast.success(`Version saved! ${history.length} version(s) in history.`);
+                } else {
+                  sonnerToast.info('No saved versions yet. Make some changes first.');
+                }
+              }}
+                className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                <Undo2 className="w-4 h-4 text-muted-foreground" />Version History
+              </button>
+            </div>
+
             {/* AI-Powered Apply Button */}
             <div className="flex items-center justify-between pt-4 border-t border-foreground/[0.06]">
               <p className="text-xs text-muted-foreground max-w-[300px]">
