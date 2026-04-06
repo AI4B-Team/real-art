@@ -442,13 +442,13 @@ export default function BookSettingsPanel({
                         <div className="flex items-center gap-2">
                           <span className={`text-sm font-semibold ${isActive ? "text-foreground" : "text-foreground/80"}`}>{m.name}</span>
                           {m.badge === "Recommended" && (
-                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700">⭐ Recommended</span>
+                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-accent/10 text-accent">⭐ Recommended</span>
                           )}
                           {m.badge === "Premium" && (
-                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-purple-100 text-purple-700">Premium</span>
+                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-foreground/[0.06] text-foreground/60">Premium</span>
                           )}
                           {m.badge === "Fast" && (
-                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700">⚡ Fast</span>
+                            <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded-full bg-foreground/[0.06] text-foreground/60">⚡ Fast</span>
                           )}
                         </div>
                         <span className="text-[10px] text-muted-foreground">{m.description}</span>
