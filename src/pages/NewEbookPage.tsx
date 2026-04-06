@@ -25,10 +25,13 @@ import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 
+type ChapterContentType = "text-only" | "text-images" | "text-images-interactive";
+
 interface NewBookData {
   prompt: string;
   sourceType: "ai" | "upload" | "link" | "record";
   contentType: "ebook" | "audiobook" | "presentation";
+  chapterContentType: ChapterContentType;
   language: string;
   tone: string;
   audience: string;
@@ -38,6 +41,20 @@ interface NewBookData {
   selectedTitle: string;
   model: string;
 }
+
+const WORDS_PRESETS = [
+  { value: 500, label: "500", sub: "Quick read" },
+  { value: 1000, label: "1,000", sub: "Standard" },
+  { value: 1500, label: "1,500", sub: "Detailed" },
+  { value: 2000, label: "2,000", sub: "In-depth" },
+  { value: 3000, label: "3,000", sub: "Comprehensive" },
+];
+
+const CHAPTER_CONTENT_TYPES = [
+  { id: "text-only" as const, label: "Text Only", desc: "Clean text content only", icon: FileText },
+  { id: "text-images" as const, label: "Text + Images", desc: "AI-generated images per chapter", icon: Image },
+  { id: "text-images-interactive" as const, label: "Text + Images + Interactive", desc: "Includes quizzes & flashcards", icon: Sparkles },
+];
 
 const CONTENT_TYPES = [
   { id: "ebook", label: "eBook", icon: BookOpen },
