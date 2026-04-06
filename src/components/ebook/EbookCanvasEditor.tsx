@@ -2983,9 +2983,17 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
+                    const pageTypeLabel = page.type === 'cover' ? 'Cover' : page.type === 'toc' ? 'Table of Contents' : page.type === 'back' ? 'Back Cover' : page.type === 'chapter' ? 'Chapter Cover' : page.type === 'chapter-page' ? 'Chapter Page' : 'Page';
                     return (
-                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="relative flex items-start gap-2">
-                        {/* Page label */}
+                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="relative flex flex-col items-center">
+                        {/* Page label above page */}
+                        <div className="mb-2 text-center">
+                          <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
+                            {pageTypeLabel}{page.title ? ` – ${page.title}` : ''}
+                          </span>
+                        </div>
+                        <div className="relative flex items-start gap-2">
+                        {/* Page number */}
                         <div className="w-8 shrink-0 pt-2">
                           <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
                             {pageIndex + 1}
