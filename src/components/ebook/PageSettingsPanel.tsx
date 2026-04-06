@@ -378,8 +378,8 @@ const PageSettingsPanel = ({
             </div>
             <div className="px-4 pt-1 pb-4 space-y-2.5">
               {[
-                { severity: 'warning' as const, title: 'Missing visuals (hurting engagement)', detail: 'Adding an image or chart can increase engagement by up to 40%.', cta: 'Add Visual', icon: ImageIcon },
-                { severity: 'info' as const, title: 'Text density is high', detail: 'Breaking content into shorter paragraphs improves readability by 25%.', cta: 'Simplify Text', icon: FileText },
+                { severity: 'warning' as const, title: 'Missing visuals (hurting engagement)', detail: 'Adding an image or chart can increase engagement by up to 40%.', cta: 'Add Visual', icon: ImageIcon, actionType: 'image' as const },
+                { severity: 'info' as const, title: 'Text density is high', detail: 'Breaking content into shorter paragraphs improves readability by 25%.', cta: 'Simplify Text', icon: FileText, actionType: 'ai' as const },
               ].map((s, i) => (
                 <div key={i} className={`p-3 rounded-xl border ${s.severity === 'warning' ? 'border-amber-500/20 bg-amber-500/[0.04]' : 'border-blue-500/20 bg-blue-500/[0.04]'}`}>
                   <div className="flex items-start gap-2.5">
@@ -389,7 +389,17 @@ const PageSettingsPanel = ({
                     <div className="min-w-0 flex-1">
                       <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
                       <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">{s.detail}</p>
-                      <button onClick={() => toast.success(`AI: ${s.cta} — processing...`)}
+                      <button onClick={() => {
+                        if (s.actionType === 'image' && onOpenImageSection) {
+                          onOpenImageSection();
+                        } else {
+                          toast.success(`AI: ${s.cta} — processing...`);
+                          setTimeout(() => {
+                            setAiActionFeedback(`${s.cta} applied ✨`);
+                            setTimeout(() => setAiActionFeedback(null), 3000);
+                          }, 1500);
+                        }
+                      }}
                         className={`mt-2 text-[10px] font-bold hover:underline ${s.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'}`}>
                         {s.cta} →
                       </button>
