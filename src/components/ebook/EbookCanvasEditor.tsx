@@ -3265,6 +3265,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               const isLocked = action.id === 'lock' && currentSelectedPage?.locked;
                               const Icon = isLocked ? Lock : action.icon;
                               const label = isLocked ? 'Unlock Page' : action.label;
+                              if (action.id === 'ai') {
+                                return (
+                                  <Tooltip key={action.id}>
+                                    <TooltipTrigger asChild>
+                                      <button onClick={() => handlePageAction('ai')}
+                                        className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent/10 hover:bg-accent/20 transition-colors text-accent">
+                                        <Sparkles className="w-4 h-4" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">AI Assistant</TooltipContent>
+                                  </Tooltip>
+                                );
+                              }
                               if (action.id === 'add') {
                                 return (
                                   <Popover key={action.id}>
