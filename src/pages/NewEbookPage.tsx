@@ -314,6 +314,36 @@ const NewEbookPage = () => {
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
   const [isReplacingImage, setIsReplacingImage] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date>(new Date());
+  const [lockedPagesModal, setLockedPagesModal] = useState<{
+    open: boolean;
+    actionLabel: string;
+    onUnlockAllAndApply: () => void;
+    onProceedSkipping: () => void;
+  }>({ open: false, actionLabel: '', onUnlockAllAndApply: () => {}, onProceedSkipping: () => {} });
+
+  const showLockedPagesWarning = useCallback((
+    actionLabel: string,
+    onApplyAll: () => void,
+    onApplySkipping: () => void,
+  ) => {
+    const lockedPages = ebookPages.filter(p => p.locked);
+    if (lockedPages.length === 0) {
+      onApplyAll();
+      return false;
+    }
+    setLockedPagesModal({
+      open: true,
+      actionLabel,
+      onUnlockAllAndApply: () => {
+        setEbookPages(prev => prev.map(p => ({ ...p, locked: false })));
+        onApplyAll();
+      },
+      onProceedSkipping: () => {
+        onApplySkipping();
+      },
+    });
+    return true;
+  }, [ebookPages]);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
