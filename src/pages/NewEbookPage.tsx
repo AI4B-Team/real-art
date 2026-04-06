@@ -1240,74 +1240,79 @@ const NewEbookPage = () => {
             {/* CHAPTER OUTLINE PAGE */}
             {generateStep === "chapters" && chapterSequence.length > 0 && (
               <div>
-                <h2 className="text-2xl font-bold text-foreground text-center mb-2">Book Outline</h2>
-                <p className="text-sm text-muted-foreground text-center mb-2">
+                {/* Stronger heading */}
+                <h2 className="text-2xl font-bold text-foreground text-center mb-1">Your Book Blueprint</h2>
+                <p className="text-sm text-foreground/80 text-center mb-1">
                   <span className="font-semibold text-foreground">{bookData.selectedTitle}</span>
                 </p>
-                <p className="text-xs text-muted-foreground text-center mb-8">Review and customize your chapter structure before generating.</p>
+                <p className="text-xs text-muted-foreground text-center mb-8">Edit, refine, and finalize your chapters before generating your book.</p>
 
-                {/* Book Stats Bar */}
-                <div className="flex items-center justify-center gap-6 mb-8 p-3 bg-foreground/[0.02] rounded-xl border border-foreground/[0.06]">
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <BookOpen size={14} className="text-accent" />
-                    <span className="font-semibold text-foreground">{chapterSequence.length}</span> Chapters
-                  </div>
-                  <div className="w-px h-4 bg-foreground/[0.1]" />
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <FileText size={14} className="text-accent" />
-                    <span className="font-semibold text-foreground">~{chapterSequence.reduce((sum, ch) => sum + (ch.pageCount || 8), 0)}</span> Pages
-                  </div>
-                  <div className="w-px h-4 bg-foreground/[0.1]" />
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Hash size={14} className="text-accent" />
-                    <span className="font-semibold text-foreground">~{(bookData.wordsPerChapter * chapterSequence.length).toLocaleString()}</span> Words
-                  </div>
-                  <div className="w-px h-4 bg-foreground/[0.1]" />
-                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                    <Image size={14} className="text-accent" />
-                    <span className="font-semibold text-foreground">{chapterSequence.filter(ch => ch.includeImages).length}</span> w/ Images
-                  </div>
+                {/* Confidence Stats Bar */}
+                <div className="flex items-center justify-center gap-4 mb-10 p-4 bg-foreground/[0.02] rounded-2xl border border-foreground/[0.06] shadow-sm">
+                  {[
+                    { icon: BookOpen, value: chapterSequence.length, label: "Chapters" },
+                    { icon: FileText, value: `~${chapterSequence.reduce((sum, ch) => sum + (ch.pageCount || 8), 0)}`, label: "Pages" },
+                    { icon: Hash, value: `~${(bookData.wordsPerChapter * chapterSequence.length).toLocaleString()}`, label: "Words" },
+                    { icon: Image, value: chapterSequence.filter(ch => ch.includeImages).length, label: "w/ Images" },
+                  ].map((stat, idx) => (
+                    <div key={stat.label} className="flex items-center gap-2">
+                      {idx > 0 && <div className="w-px h-5 bg-foreground/[0.08] mr-2" />}
+                      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center">
+                        <stat.icon size={14} className="text-accent" />
+                      </div>
+                      <div>
+                        <span className="font-bold text-foreground text-sm">{stat.value}</span>
+                        <span className="text-[11px] text-muted-foreground ml-1">{stat.label}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
 
                 {/* Chapter Cards */}
                 <div className="space-y-3 mb-8">
                   {chapterSequence.map((ch, i) => (
-                    <div key={ch.id} className="rounded-xl border border-foreground/[0.08] bg-background overflow-hidden">
-                      <div className="flex items-start gap-3 p-4">
+                    <div key={ch.id} className="rounded-xl border border-foreground/[0.08] bg-background overflow-hidden hover:border-foreground/[0.14] transition-colors">
+                      <div className="flex items-start gap-3 p-5">
                         <span className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
                         <div className="flex-1 min-w-0">
+                          {/* Title — darker, bigger */}
                           <input
                             value={ch.title}
                             onChange={e => setChapterSequence(prev => prev.map((c, idx) => idx === i ? { ...c, title: e.target.value } : c))}
-                            className="w-full font-semibold text-foreground text-sm bg-transparent outline-none border-b border-transparent hover:border-foreground/[0.1] focus:border-accent transition-colors pb-0.5"
+                            className="w-full font-bold text-foreground text-[15px] bg-transparent outline-none border-b border-transparent hover:border-foreground/[0.1] focus:border-accent transition-colors pb-0.5"
                           />
-                          <p className="text-xs text-muted-foreground mt-1">{ch.description}</p>
-                          <div className="flex flex-wrap gap-1.5 mt-2">
-                            {ch.topics.map(t => <span key={t} className="px-2 py-0.5 bg-foreground/[0.04] text-muted-foreground text-[10px] rounded-full">{t}</span>)}
+                          {/* Description — lighter */}
+                          <p className="text-xs text-muted-foreground/80 mt-1.5 leading-relaxed">{ch.description}</p>
+                          {/* Topics — even more subtle */}
+                          <div className="flex flex-wrap gap-1.5 mt-2.5">
+                            {ch.topics.map(t => <span key={t} className="px-2 py-0.5 bg-foreground/[0.03] text-muted-foreground/60 text-[10px] rounded-full border border-foreground/[0.04]">{t}</span>)}
                           </div>
 
-                          {/* Chapter settings row */}
+                          {/* Chapter metadata row — smallest + muted */}
                           <div className="flex items-center gap-4 mt-3 pt-3 border-t border-foreground/[0.04]">
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <FileText size={12} />
+                            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/70">
+                              <FileText size={11} />
                               <span>~{ch.pageCount || 8} pages</span>
                             </div>
-                            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                              <Hash size={12} />
+                            <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground/70">
+                              <Hash size={11} />
                               <span>~{bookData.wordsPerChapter.toLocaleString()} words</span>
                             </div>
+                            {/* Images toggle — neutral style, NOT red */}
                             <button
                               onClick={() => setChapterSequence(prev => prev.map((c, idx) => idx === i ? { ...c, includeImages: !c.includeImages } : c))}
-                              className={`flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-md transition-colors ${
-                                ch.includeImages ? "text-accent bg-accent/10" : "text-muted-foreground bg-foreground/[0.04]"
+                              className={`flex items-center gap-1.5 text-[11px] font-medium px-2.5 py-1 rounded-full transition-colors ${
+                                ch.includeImages
+                                  ? "text-emerald-600 bg-emerald-500/10 border border-emerald-500/20"
+                                  : "text-muted-foreground/60 bg-foreground/[0.03] border border-foreground/[0.06]"
                               }`}>
-                              <Image size={12} />
-                              {ch.includeImages ? "Images On" : "No Images"}
+                              <Image size={11} />
+                              {ch.includeImages ? "Images: On" : "Images: Off"}
                             </button>
                           </div>
                         </div>
                         <button onClick={() => setChapterSequence(prev => prev.filter((_, idx) => idx !== i))}
-                          className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors shrink-0">
+                          className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground/40 hover:text-destructive transition-colors shrink-0">
                           <X size={14} />
                         </button>
                       </div>
@@ -1315,44 +1320,78 @@ const NewEbookPage = () => {
                   ))}
                 </div>
 
-                {/* Add Chapter */}
-                <button onClick={() => setChapterSequence(prev => [...prev, {
-                  id: `ch-${Date.now()}`,
-                  title: `Chapter ${prev.length + 1}`,
-                  description: "New chapter",
-                  topics: [],
-                  includeImages: true,
-                  pageCount: 8,
-                }])}
-                  className="w-full p-3 rounded-xl border-2 border-dashed border-foreground/[0.08] hover:border-foreground/[0.15] text-sm font-medium text-muted-foreground hover:text-foreground transition-all flex items-center justify-center gap-2 mb-8">
-                  <Plus size={16} />Add Chapter
-                </button>
+                {/* Add Chapter — prominent */}
+                <div className="flex gap-2 mb-12">
+                  <button onClick={() => setChapterSequence(prev => [...prev, {
+                    id: `ch-${Date.now()}`,
+                    title: `Chapter ${prev.length + 1}`,
+                    description: "New chapter",
+                    topics: [],
+                    includeImages: true,
+                    pageCount: 8,
+                  }])}
+                    className="flex-1 p-4 rounded-xl border-2 border-dashed border-foreground/[0.1] hover:border-accent/30 hover:bg-accent/[0.02] text-sm font-semibold text-muted-foreground hover:text-accent transition-all flex items-center justify-center gap-2 group">
+                    <Plus size={18} className="group-hover:scale-110 transition-transform" />
+                    Add New Chapter
+                  </button>
+                  <button onClick={async () => {
+                    const lastChapter = chapterSequence[chapterSequence.length - 1];
+                    const newId = `ch-${Date.now()}`;
+                    setChapterSequence(prev => [...prev, { id: newId, title: "Generating...", description: "AI is writing this chapter...", topics: [], includeImages: true, pageCount: 8 }]);
+                    try {
+                      const resp = await supabase.functions.invoke("generate-prompts", {
+                        body: {
+                          prompt: `Given the book titled "${bookData.selectedTitle}" with existing chapters: ${chapterSequence.map((c, i) => `${i+1}. ${c.title}`).join(", ")}. Generate ONE new chapter that logically follows. Return JSON: {"title":"...","description":"...","topics":["...","...","..."]}`,
+                          count: 1,
+                        },
+                      });
+                      const text = resp.data?.prompts?.[0] || resp.data?.text || "";
+                      try {
+                        const jsonMatch = text.match(/\{[\s\S]*\}/);
+                        if (jsonMatch) {
+                          const parsed = JSON.parse(jsonMatch[0]);
+                          setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: parsed.title || "New Chapter", description: parsed.description || "", topics: parsed.topics || [] } : c));
+                        } else {
+                          setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: `Chapter ${chapterSequence.length + 1}`, description: "AI-suggested chapter" } : c));
+                        }
+                      } catch {
+                        setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: `Chapter ${chapterSequence.length + 1}`, description: text.slice(0, 100) } : c));
+                      }
+                    } catch {
+                      setChapterSequence(prev => prev.map(c => c.id === newId ? { ...c, title: `Chapter ${chapterSequence.length + 1}`, description: "New chapter" } : c));
+                    }
+                  }}
+                    className="px-4 py-4 rounded-xl border-2 border-dashed border-foreground/[0.1] hover:border-amber-400/40 hover:bg-amber-50/30 text-sm font-semibold text-muted-foreground hover:text-amber-600 transition-all flex items-center gap-2 group">
+                    <Sparkles size={16} className="group-hover:scale-110 transition-transform text-amber-500" />
+                    AI Chapter
+                  </button>
+                </div>
 
-                {/* Global Settings */}
-                <div className="p-4 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01] mb-8">
-                  <h4 className="text-xs font-semibold text-foreground mb-3 uppercase tracking-wider">Generation Settings</h4>
+                {/* Global Settings — more breathing room */}
+                <div className="p-5 rounded-xl border border-foreground/[0.08] bg-foreground/[0.01] mb-10">
+                  <h4 className="text-xs font-semibold text-foreground mb-4 uppercase tracking-wider">Generation Settings</h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">Words Per Chapter</label>
-                      <div className="flex items-center gap-2">
-                        <input
-                          type="number"
-                          value={bookData.wordsPerChapter}
-                          onChange={e => setBookData(prev => ({ ...prev, wordsPerChapter: parseInt(e.target.value) || 2000 }))}
-                          className="w-full px-3 py-2 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent/40"
-                          min={500} max={10000} step={500}
-                        />
-                      </div>
+                      <label className="text-xs text-muted-foreground mb-1.5 block">Words Per Chapter</label>
+                      <input
+                        type="number"
+                        value={bookData.wordsPerChapter}
+                        onChange={e => setBookData(prev => ({ ...prev, wordsPerChapter: parseInt(e.target.value) || 2000 }))}
+                        className="w-full px-3 py-2.5 rounded-lg border border-foreground/[0.1] bg-background text-sm outline-none focus:border-accent/40"
+                        min={500} max={10000} step={500}
+                      />
                     </div>
                     <div>
-                      <label className="text-xs text-muted-foreground mb-1 block">Image Integration</label>
+                      <label className="text-xs text-muted-foreground mb-1.5 block">Image Integration</label>
                       <button
                         onClick={() => {
                           const allOn = chapterSequence.every(ch => ch.includeImages);
                           setChapterSequence(prev => prev.map(ch => ({ ...ch, includeImages: !allOn })));
                         }}
-                        className={`w-full px-3 py-2 rounded-lg border text-sm font-medium transition-colors ${
-                          chapterSequence.every(ch => ch.includeImages) ? "border-accent bg-accent/10 text-accent" : "border-foreground/[0.1] text-muted-foreground hover:bg-foreground/[0.04]"
+                        className={`w-full px-3 py-2.5 rounded-lg border text-sm font-medium transition-colors ${
+                          chapterSequence.every(ch => ch.includeImages)
+                            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-600"
+                            : "border-foreground/[0.1] text-muted-foreground hover:bg-foreground/[0.04]"
                         }`}>
                         {chapterSequence.every(ch => ch.includeImages) ? "All Chapters" : "Custom"}
                       </button>
@@ -1361,7 +1400,7 @@ const NewEbookPage = () => {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="flex items-center justify-between pt-4 border-t border-foreground/[0.06]">
+                <div className="flex items-center justify-between pt-6 border-t border-foreground/[0.06]">
                   <button onClick={() => setGenerateStep("titles")}
                     className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-foreground/[0.04] transition-colors">
                     <ArrowLeft size={16} />Back
@@ -1371,10 +1410,13 @@ const NewEbookPage = () => {
                       className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
                       <RefreshCw size={14} />Regenerate
                     </button>
-                    <button onClick={handleGenerateBook} disabled={!bookData.selectedTitle}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
-                      <Sparkles size={16} />Generate eBook<ArrowRight size={16} />
-                    </button>
+                    <div className="flex flex-col items-center gap-1">
+                      <button onClick={handleGenerateBook} disabled={!bookData.selectedTitle}
+                        className="flex items-center gap-2 px-8 py-3 rounded-xl bg-accent text-white text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50 shadow-lg shadow-accent/20 hover:shadow-accent/30">
+                        <Zap size={16} />Generate eBook<ArrowRight size={16} />
+                      </button>
+                      <span className="text-[10px] text-muted-foreground/60">Generate your full book in minutes</span>
+                    </div>
                   </div>
                 </div>
               </div>
