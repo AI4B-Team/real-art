@@ -340,7 +340,7 @@ const EbookCreatorPage = () => {
                       <span className="flex items-center gap-1"><FileText className="w-4 h-4" />{(book.words / 1000).toFixed(1)}k words</span>
                     </div>
                     <div className="flex items-center gap-2 mt-3">
-                      {book.tags.map(tag => <span key={tag} className="px-2 py-0.5 bg-muted text-muted-foreground text-xs rounded-full font-medium">{tag}</span>)}
+                      {book.tags.map(tag => <span key={tag} className="px-2.5 py-1 bg-foreground/[0.04] text-foreground text-[11px] rounded-md font-medium border border-foreground/[0.08]">{tag}</span>)}
                     </div>
                   </div>
                 </div>
