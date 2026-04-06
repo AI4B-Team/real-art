@@ -854,12 +854,6 @@ const EbookDesignSidebar = ({
         <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Enhance</span>
       </div>
 
-      {/* Interactive */}
-      <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
-      {expandedSections.has('interactive') && (
-        <InteractivePanel onAddElement={onAddElement} />
-      )}
-
       {/* Images */}
       <SectionHeader id="image" title="Image" icon={ImageIcon} />
       {expandedSections.has('image') && (
