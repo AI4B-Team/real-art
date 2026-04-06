@@ -59,7 +59,8 @@ const EbookCreatorPage = () => {
   });
 
   const duplicateEbook = (book: Ebook) => {
-    addEbook({ ...book, id: Date.now(), title: `${book.title} (Copy)`, status: "draft", progress: 0, createdAt: new Date().toISOString().split("T")[0], updatedAt: new Date().toISOString().split("T")[0] });
+    const { id: _id, ...rest } = book;
+    addEbook({ ...rest, title: `${book.title} (Copy)`, status: "draft", progress: 0, createdAt: new Date().toISOString().split("T")[0], updatedAt: new Date().toISOString().split("T")[0] });
     setShowDropdown(null);
     toast({ title: "eBook duplicated" });
   };
