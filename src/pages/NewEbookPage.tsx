@@ -1730,6 +1730,7 @@ const NewEbookPage = () => {
                 pageWidth={pageWidth}
                 pageHeight={pageHeight}
                 onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
+                onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
               />
               )}
             </div>
