@@ -310,7 +310,7 @@ export default function BookSettingsPanel({
               {/* ── Content Type ── */}
               <section id="settings-content-type">
                 <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Content Type</label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="flex gap-3">
                   {CHAPTER_CONTENT_TYPES.map(ct => {
                     const isActive = bookData.chapterContentType === ct.id;
                     return (
