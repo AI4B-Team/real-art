@@ -565,28 +565,108 @@ const PageSettingsPanel = ({
             </div>
           )}
 
-          {/* AI Design Assistant */}
-          <SectionToggle id="ai-design" title="AI Design" icon={Sparkles} />
+          {/* AI Assistant */}
+          <SectionToggle id="ai-design" title="AI Assistant" icon={Brain} />
           {expandedSections.has('ai-design') && (
-            <div className="px-4 pt-2 pb-4 space-y-2">
-              <p className="text-[10px] text-muted-foreground mb-1">Let AI improve your page design</p>
-              {[
-                { label: 'Improve Layout', desc: 'Optimize spacing & alignment', icon: Wand2 },
-                { label: 'Make More Modern', desc: 'Apply contemporary design trends', icon: Sparkles },
-                { label: 'Increase Readability', desc: 'Better typography & contrast', icon: Eye },
-                { label: 'Convert to Sales Style', desc: 'Persuasive, conversion-focused', icon: BookOpen },
-              ].map(item => (
-                <button key={item.label} onClick={() => toast.success(`AI: ${item.label} — processing...`)}
-                  className="w-full flex items-center gap-3 p-2.5 rounded-lg border border-accent/15 bg-accent/[0.02] hover:bg-accent/[0.06] hover:border-accent/30 transition-all group text-left">
-                  <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
-                    <item.icon className="w-4 h-4 text-accent" />
+            <div className="px-4 pt-2 pb-4 space-y-3">
+              {/* AI Prompt Input */}
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Ask AI about this page..."
+                  className="w-full pl-3 pr-9 py-2.5 rounded-lg border border-accent/20 bg-accent/[0.03] text-xs text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent/50 focus:ring-1 focus:ring-accent/20"
+                  onKeyDown={e => {
+                    if (e.key === 'Enter' && (e.target as HTMLInputElement).value.trim()) {
+                      toast.success(`AI: "${(e.target as HTMLInputElement).value}" — processing...`);
+                      (e.target as HTMLInputElement).value = '';
+                    }
+                  }}
+                />
+                <Send className="w-3.5 h-3.5 text-accent/50 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+              </div>
+
+              {/* Quick Actions */}
+              <div>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Page Actions</p>
+                <div className="space-y-1.5">
+                  {[
+                    { label: 'Improve Layout', desc: 'Optimize spacing & alignment', icon: Wand2 },
+                    { label: 'Increase Readability', desc: 'Better typography & contrast', icon: Eye },
+                    { label: 'Make More Persuasive', desc: 'Strengthen calls-to-action', icon: Target },
+                    { label: 'Add Visual Examples', desc: 'Suggest images & graphics', icon: ImageIcon },
+                  ].map(item => (
+                    <button key={item.label} onClick={() => toast.success(`AI: ${item.label} — processing...`)}
+                      className="w-full flex items-center gap-2.5 p-2 rounded-lg border border-foreground/[0.04] hover:border-accent/20 hover:bg-accent/[0.03] transition-all group text-left">
+                      <div className="w-7 h-7 rounded-md bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
+                        <item.icon className="w-3.5 h-3.5 text-accent" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="text-[11px] font-medium text-foreground block leading-tight">{item.label}</span>
+                        <span className="text-[10px] text-muted-foreground leading-tight">{item.desc}</span>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Content Actions */}
+              <div>
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-2">Content</p>
+                <div className="grid grid-cols-2 gap-1.5">
+                  {[
+                    { label: 'Expand', icon: ArrowDownToLine },
+                    { label: 'Shorten', icon: MinusCircle },
+                    { label: 'Rewrite', icon: FileText },
+                    { label: 'Fix Grammar', icon: Sparkles },
+                  ].map(item => (
+                    <button key={item.label} onClick={() => toast.success(`AI: ${item.label} — processing...`)}
+                      className="flex items-center gap-1.5 px-2.5 py-2 rounded-lg border border-foreground/[0.04] hover:border-accent/20 hover:bg-accent/[0.03] text-[11px] font-medium text-foreground transition-all">
+                      <item.icon className="w-3 h-3 text-accent" />
+                      {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Book Intelligence Score */}
+              <div className="p-3 rounded-lg border border-foreground/[0.06] bg-foreground/[0.02] space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-semibold text-foreground uppercase tracking-wider flex items-center gap-1.5">
+                    <Zap className="w-3 h-3 text-amber-500" /> Book Score
+                  </span>
+                  <span className="text-sm font-bold text-accent">82</span>
+                </div>
+                <div className="space-y-1.5">
+                  {[
+                    { label: 'Readability', score: 88, color: 'bg-emerald-500' },
+                    { label: 'Engagement', score: 76, color: 'bg-accent' },
+                    { label: 'Visual Balance', score: 82, color: 'bg-blue-500' },
+                  ].map(m => (
+                    <div key={m.label} className="flex items-center gap-2">
+                      <span className="text-[10px] text-muted-foreground w-20 shrink-0">{m.label}</span>
+                      <div className="flex-1 h-1.5 rounded-full bg-foreground/[0.06] overflow-hidden">
+                        <div className={`h-full rounded-full ${m.color} transition-all`} style={{ width: `${m.score}%` }} />
+                      </div>
+                      <span className="text-[10px] font-medium text-foreground w-6 text-right">{m.score}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* AI Suggestions */}
+              <div className="p-2.5 rounded-lg border border-amber-500/20 bg-amber-500/[0.03]">
+                <div className="flex items-start gap-2">
+                  <MessageSquare className="w-3.5 h-3.5 text-amber-500 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-[11px] font-medium text-foreground leading-tight">This page has no visuals</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">Adding an image or chart can improve engagement by 40%</p>
+                    <button onClick={() => toast.success('AI: Adding visual — processing...')}
+                      className="mt-1.5 text-[10px] font-medium text-accent hover:underline">
+                      Add visual →
+                    </button>
                   </div>
-                  <div className="min-w-0">
-                    <span className="text-xs font-medium text-foreground block">{item.label}</span>
-                    <span className="text-[10px] text-muted-foreground">{item.desc}</span>
-                  </div>
-                </button>
-              ))}
+                </div>
+              </div>
             </div>
           )}
         </div>
