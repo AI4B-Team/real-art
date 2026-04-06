@@ -257,8 +257,8 @@ export default function BookSettingsPanel({
       </div>
 
       {/* ─── MAIN CONTENT: Two-column layout ─── */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto py-8 px-6 lg:px-10">
-        <div className="max-w-5xl mx-auto">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto py-8 px-6 lg:px-8">
+        <div>
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-xl font-bold text-foreground">Book Settings</h1>
