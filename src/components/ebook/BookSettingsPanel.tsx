@@ -222,6 +222,10 @@ export default function BookSettingsPanel({
     || bookData.language !== initialData.language;
 
   const wordsDiff = (bookData.wordsPerChapter - initialData.wordsPerChapter) * chapterCount;
+  const pagesDiff = estPages - estimatePages(chapterCount, initialData.wordsPerChapter);
+  const initialImageCount = initialData.chapterContentType !== "text-only" ? chapterCount * 2 : 0;
+  const currentImageCount = bookData.chapterContentType !== "text-only" ? chapterCount * 2 : 0;
+  const imagesDiff = currentImageCount - initialImageCount;
 
   // Collapsible section helper
   const SectionHeader = ({ id, label, icon: Icon }: { id: string; label: string; icon: React.ElementType }) => {
