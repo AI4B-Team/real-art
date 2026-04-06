@@ -315,7 +315,7 @@ export default function BookSettingsPanel({
                     const isActive = bookData.chapterContentType === ct.id;
                     return (
                       <button key={ct.id} onClick={() => onBookDataChange(prev => ({ ...prev, chapterContentType: ct.id, includeImages: ct.id !== "text-only" }))}
-                        className={`flex flex-col items-center p-5 rounded-xl border-2 transition-all ${isActive ? "border-accent bg-accent/[0.04] shadow-sm" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
+                        className={`flex flex-col items-center p-5 rounded-xl border-2 transition-all min-w-[120px] flex-1 ${isActive ? "border-accent bg-accent/[0.04] shadow-sm" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${isActive ? "bg-accent/10" : "bg-foreground/[0.04]"}`}>
                           <ct.icon className={`w-6 h-6 ${isActive ? "text-accent" : "text-muted-foreground"}`} />
                         </div>
