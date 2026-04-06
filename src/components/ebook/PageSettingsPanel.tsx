@@ -401,7 +401,7 @@ const PageSettingsPanel = ({
 
 
           {/* ═══ SECTION 5: PAGE SETTINGS ═══ */}
-          <div className="border-t-2 border-foreground/[0.06]">
+          <div className="border-t border-foreground/[0.06]">
             <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02]">
               <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
               <span className="text-xs font-bold text-foreground uppercase tracking-wider">Page Settings</span>
