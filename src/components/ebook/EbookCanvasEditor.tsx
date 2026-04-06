@@ -770,7 +770,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       case 'moveUp': handleMovePage('up'); break;
       case 'moveDown': handleMovePage('down'); break;
       case 'lock': handleToggleLock(); break;
-      case 'settings': onPageSettingsToggle?.(); break;
+      case 'settings':
+        if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); }
+        onPageSettingsToggle?.();
+        break;
     }
   };
   const isPageLocked = selectedPage?.locked === true;
