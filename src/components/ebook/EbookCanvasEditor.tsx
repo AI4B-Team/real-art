@@ -3267,16 +3267,53 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               const Icon = isLocked ? Lock : action.icon;
                               const label = isLocked ? 'Unlock Page' : action.label;
                               if (action.id === 'ai') {
+                                const isAiOpen = aiExpandedPageId === page.id;
                                 return (
-                                  <Tooltip key={action.id}>
-                                    <TooltipTrigger asChild>
-                                      <button onClick={() => handlePageAction('ai')}
-                                        className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent/10 hover:bg-accent/20 transition-colors text-accent">
-                                        <Sparkles className="w-4 h-4" />
-                                      </button>
-                                    </TooltipTrigger>
-                                    <TooltipContent side="right">AI Assistant</TooltipContent>
-                                  </Tooltip>
+                                  <div key={action.id} className="relative">
+                                    <Tooltip>
+                                      <TooltipTrigger asChild>
+                                        <button onClick={() => setAiExpandedPageId(isAiOpen ? null : page.id)}
+                                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isAiOpen ? 'bg-accent/20 text-accent' : 'bg-accent/10 hover:bg-accent/20 text-accent'}`}>
+                                          <Sparkles className="w-4 h-4" />
+                                        </button>
+                                      </TooltipTrigger>
+                                      <TooltipContent side="right">AI Assistant</TooltipContent>
+                                    </Tooltip>
+                                    {/* Expanded AI bar */}
+                                    <div className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-4 pointer-events-none'}`}>
+                                      <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md rounded-2xl px-3 py-2 border border-foreground/[0.08] shadow-lg whitespace-nowrap">
+                                        <div className="flex items-center gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02] min-w-[180px]">
+                                          <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                                          <input
+                                            type="text"
+                                            value={contextualAIPrompt}
+                                            onChange={e => setContextualAIPrompt(e.target.value)}
+                                            onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
+                                            placeholder="Ask AI to improve this..."
+                                            className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full"
+                                          />
+                                        </div>
+                                        {[
+                                          { id: 'rewrite', label: 'Rewrite' },
+                                          { id: 'improve', label: 'Improve' },
+                                          { id: 'shorten', label: 'Shorten' },
+                                          { id: 'expand', label: 'Expand' },
+                                        ].map(btn => (
+                                          <button
+                                            key={btn.id}
+                                            onClick={() => handleContextualAI(btn.id)}
+                                            disabled={isAIProcessing}
+                                            className="px-3 py-1.5 text-[11px] font-medium rounded-xl border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
+                                          >
+                                            {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
+                                          </button>
+                                        ))}
+                                        <button onClick={() => setAiExpandedPageId(null)} className="w-6 h-6 rounded-lg flex items-center justify-center hover:bg-foreground/[0.06] text-muted-foreground hover:text-foreground transition-colors ml-1">
+                                          <X className="w-3.5 h-3.5" />
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
                                 );
                               }
                               if (action.id === 'add') {
