@@ -1474,7 +1474,7 @@ const NewEbookPage = () => {
           <div className="relative flex-1 min-h-0">
             <div className="flex h-full">
               {/* LEFT: Design Sidebar (hidden in grid view) */}
-              {!isGridView && !isLeftPanelCollapsed && (
+              {!isGridView && !isLeftPanelCollapsed && !showBookSettingsDialog && (
               <EbookDesignSidebar
                 bookTitle={bookData.selectedTitle}
                 chapters={ebookPages.map(p => ({ id: p.id, title: p.title, type: p.type as any }))}
