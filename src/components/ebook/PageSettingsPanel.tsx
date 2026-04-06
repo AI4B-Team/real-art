@@ -563,6 +563,31 @@ const PageSettingsPanel = ({
               </div>
             </div>
           )}
+
+          {/* AI Design Assistant */}
+          <SectionToggle id="ai-design" title="AI Design" icon={Sparkles} />
+          {expandedSections.has('ai-design') && (
+            <div className="px-4 pt-2 pb-4 space-y-2">
+              <p className="text-[10px] text-muted-foreground mb-1">Let AI improve your page design</p>
+              {[
+                { label: 'Improve Layout', desc: 'Optimize spacing & alignment', icon: Wand2 },
+                { label: 'Make More Modern', desc: 'Apply contemporary design trends', icon: Sparkles },
+                { label: 'Increase Readability', desc: 'Better typography & contrast', icon: Eye },
+                { label: 'Convert to Sales Style', desc: 'Persuasive, conversion-focused', icon: BookOpen },
+              ].map(item => (
+                <button key={item.label} onClick={() => toast.success(`AI: ${item.label} — processing...`)}
+                  className="w-full flex items-center gap-3 p-2.5 rounded-lg border border-accent/15 bg-accent/[0.02] hover:bg-accent/[0.06] hover:border-accent/30 transition-all group text-left">
+                  <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
+                    <item.icon className="w-4 h-4 text-accent" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-xs font-medium text-foreground block">{item.label}</span>
+                    <span className="text-[10px] text-muted-foreground">{item.desc}</span>
+                  </div>
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Bottom navigation */}
