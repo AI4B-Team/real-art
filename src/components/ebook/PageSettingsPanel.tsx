@@ -224,6 +224,36 @@ const PageSettingsPanel = ({
             </span>
           </div>
 
+          {/* ═══ SMART SUGGESTIONS ═══ */}
+          <div className="border-t border-foreground/[0.06]">
+            <SectionToggle id="smart-suggestions" title="Smart Suggestions" icon={Sparkles} />
+            {expandedSections.has('smart-suggestions') && (
+              <div className="px-3 pt-1 pb-3 space-y-2">
+                <div className="flex items-center justify-between px-1 mb-1">
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Issues Found</span>
+                  <span className="text-[10px] font-bold text-destructive bg-destructive/10 px-2 py-0.5 rounded-full">3 Items</span>
+                </div>
+                {[
+                  { icon: Target, color: 'text-amber-500', bg: 'bg-amber-500/10', title: 'Your headline is weak compared to top ebooks', desc: 'AI detected low keyword impact. Stronger headlines get 2× more reads.', action: 'Rewrite Headline →' },
+                  { icon: ImageIcon, color: 'text-destructive', bg: 'bg-destructive/10', title: 'Missing visuals (hurting engagement)', desc: 'Adding an image or chart can increase engagement by up to 40%.', action: 'Add Visual →' },
+                  { icon: FileText, color: 'text-violet-500', bg: 'bg-violet-500/10', title: 'This page is too text-heavy', desc: 'Break content into shorter sections to improve readability by 25%.', action: 'Simplify Text →' },
+                ].map((s, i) => (
+                  <div key={i} className="p-3 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] space-y-1.5">
+                    <div className="flex items-start gap-2">
+                      <div className={`p-1 rounded-md ${s.bg} mt-0.5`}>
+                        <s.icon className={`w-3.5 h-3.5 ${s.color}`} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-foreground leading-tight">{s.title}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug">{s.desc}</p>
+                      </div>
+                    </div>
+                    <button className="text-[11px] font-semibold text-accent hover:underline">{s.action}</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
           {/* ═══ PAGE INTELLIGENCE — "Show me score" (diagnostic) ═══ */}
           <div className="border-t border-foreground/[0.06]">
