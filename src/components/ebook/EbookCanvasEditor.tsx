@@ -2992,7 +2992,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         {/* Page label above page */}
                         <div className="mb-2 text-center">
                           <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
-                            {pageTypeLabel}{page.title ? ` – ${page.title}` : ''}
+                            {pageTypeLabel} – {page.type === 'cover' || page.type === 'back' ? (bookTitle || 'Untitled Book') : (page.title || `Page ${pageIndex + 1}`)}
                           </span>
                         </div>
                         <div className="relative flex items-start gap-2">
