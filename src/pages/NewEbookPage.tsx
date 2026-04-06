@@ -698,8 +698,15 @@ const NewEbookPage = () => {
         {activeTab === "design" && (
           <div className="relative flex items-center px-4 py-2 border-b border-foreground/[0.04] bg-background">
             <div className="flex items-center gap-3 shrink-0">
-              <button onClick={() => { sessionStorage.removeItem("ebook-last-url"); navigate("/ebook-creator"); }} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
-                <ArrowLeft size={16} />Back To Projects
+              <button onClick={() => {
+                if (showBookSettingsDialog) {
+                  setShowBookSettingsDialog(false);
+                } else {
+                  sessionStorage.removeItem("ebook-last-url");
+                  navigate("/ebook-creator");
+                }
+              }} className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors cursor-pointer">
+                <ArrowLeft size={16} />{showBookSettingsDialog ? "Back To Editor" : "Back To Projects"}
               </button>
             </div>
             <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
