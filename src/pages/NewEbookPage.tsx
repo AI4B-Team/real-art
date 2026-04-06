@@ -664,28 +664,12 @@ const NewEbookPage = () => {
                     <MoreVertical className="w-4 h-4" />
                   </button>
                 </PopoverTrigger>
-                <PopoverContent className="w-64 p-1.5 z-[10050]" align="end" side="bottom">
-                  <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Book Settings</p>
+                <PopoverContent className="w-52 p-1.5 z-[10050]" align="end" side="bottom">
                   <button onClick={() => setShowBookSettingsDialog(true)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
-                    <Cpu className="w-4 h-4 text-muted-foreground" />AI Book Settings
-                  </button>
-                  <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
-                    <Settings className="w-4 h-4 text-muted-foreground" />Page Settings
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
+                    <Settings className="w-4 h-4 text-muted-foreground" />Book Settings
                   </button>
                   <div className="my-1 border-t border-foreground/[0.06]" />
-                  <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">View</p>
-                  <button onClick={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
-                    <Eye className="w-4 h-4 text-muted-foreground" />{showPageSettings ? 'Hide' : 'Show'} Page Settings
-                  </button>
-                  <button onClick={() => setIsGridView(prev => !prev)}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm hover:bg-foreground/[0.04] transition-colors">
-                    <Layers className="w-4 h-4 text-muted-foreground" />{isGridView ? 'Single Page View' : 'Grid View'}
-                  </button>
-                  <div className="my-1 border-t border-foreground/[0.06]" />
-                  <p className="px-3 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Danger Zone</p>
                   <button onClick={() => {
                     if (confirm('Are you sure you want to reset this book? All pages and content will be deleted. This cannot be undone.')) {
                       localStorage.removeItem(STORAGE_KEY_PAGES);
@@ -700,7 +684,7 @@ const NewEbookPage = () => {
                       sonnerToast.success('Book has been reset');
                     }
                   }}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors">
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors">
                     <X className="w-4 h-4" />Reset Book
                   </button>
                 </PopoverContent>
