@@ -427,18 +427,18 @@ export default function BookSettingsPanel({
 
               {/* ── CTA ── */}
               <div className="pt-4 pb-8">
-                <div className="flex items-center justify-between p-5 rounded-xl bg-accent/[0.03] border border-accent/20">
+                <div className="p-5 rounded-xl bg-accent/[0.03] border border-accent/20 space-y-4">
                   <div>
                     <p className="text-sm font-semibold text-foreground mb-0.5">Rebuild My Book</p>
                     <p className="text-[10px] text-muted-foreground">This will update your book structure and regenerate affected content</p>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <button onClick={onClose} className="px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">Cancel</button>
+                  <div className="flex flex-col gap-2">
                     <button onClick={onApply} disabled={isApplying}
-                      className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50">
+                      className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg bg-accent text-white text-sm font-bold hover:bg-accent/90 transition-all disabled:opacity-50">
                       {isApplying ? <Loader2 size={14} className="animate-spin" /> : <Wand2 size={14} />}
                       {isApplying ? "Rebuilding..." : "Rebuild My Book"}
                     </button>
+                    <button onClick={onClose} className="w-full py-2.5 rounded-lg border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">Cancel</button>
                   </div>
                 </div>
               </div>
