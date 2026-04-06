@@ -3019,7 +3019,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     const isSelected = page.id === selectedPageId;
                     const pageTypeLabel = page.type === 'cover' ? 'Cover' : page.type === 'toc' ? 'Table of Contents' : page.type === 'back' ? 'Back Cover' : page.type === 'chapter' ? 'Chapter Cover' : page.type === 'chapter-page' ? 'Chapter Page' : 'Page';
                     return (
-                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className={`relative flex flex-col items-center transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${aiExpandedPageId === page.id ? '-translate-x-[240px]' : ''}`}>
+                      <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="relative flex flex-col items-center">
                         {/* Page label above page — hidden when an element is selected on this page */}
                         <div className={`mb-2 flex items-center justify-center gap-2 transition-opacity duration-200 ${isSelected && selectedElementId ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
                           <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
@@ -3280,7 +3280,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                       <TooltipContent side="right">AI Assistant</TooltipContent>
                                     </Tooltip>
                                     {/* Expanded AI bar */}
-                                    <div className={`absolute right-full top-1/2 -translate-y-1/2 mr-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 translate-x-4 pointer-events-none'}`}>
+                                    <div className={`absolute left-full top-1/2 -translate-y-1/2 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
                                       <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md rounded-2xl px-3 py-2 border border-foreground/[0.08] shadow-lg whitespace-nowrap">
                                         <div className="flex items-center gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02] min-w-[180px]">
                                           <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
