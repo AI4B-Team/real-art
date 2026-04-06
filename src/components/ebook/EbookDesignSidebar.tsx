@@ -970,6 +970,11 @@ const EbookDesignSidebar = ({
         <AudioPanel onAddElement={onAddElement} />
       )}
 
+      {/* ─── ADVANCED ─── */}
+      <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Advanced</span>
+      </div>
+
       {/* Translate */}
       <SectionHeader id="translate" title="Translate" icon={Languages} />
       {expandedSections.has('translate') && (
