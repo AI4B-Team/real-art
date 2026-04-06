@@ -40,6 +40,7 @@ interface EbookDesignSidebarProps {
   openSection?: SectionId | null;
   onTranslate?: (scope: 'page' | 'selected' | 'book', language: string) => void;
   onReplaceImage?: ((src: string) => void) | null;
+  onAIClick?: () => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
