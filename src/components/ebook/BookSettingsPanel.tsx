@@ -259,16 +259,10 @@ export default function BookSettingsPanel({
       {/* ─── CENTER: Main Config ─── */}
       <div ref={scrollRef} className="flex-1 overflow-y-auto py-8 px-6 lg:px-10">
         <div className="max-w-xl mx-auto">
-          {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-xl font-bold text-foreground">Book Settings</h1>
-              <p className="text-xs text-muted-foreground mt-0.5">Design how your book gets created</p>
-            </div>
-            <button onClick={onClose}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
-              <ArrowLeft size={14} />Back to Editor
-            </button>
+           {/* Header */}
+          <div className="mb-8">
+            <h1 className="text-xl font-bold text-foreground">Book Settings</h1>
+            <p className="text-xs text-muted-foreground mt-0.5">Design how your book gets created</p>
           </div>
 
           {/* Impact Preview Banner */}
