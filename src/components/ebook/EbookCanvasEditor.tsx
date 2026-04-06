@@ -3181,8 +3181,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             })}
                           </div>
                         </div>}
-                        </div>{/* end flex items-start */}
-                      </div>{/* end flex-col wrapper */}
+                        </div>
+                      </div>
                     );
                   })}
                 </div>
