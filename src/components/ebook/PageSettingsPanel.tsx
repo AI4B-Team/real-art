@@ -224,8 +224,76 @@ const PageSettingsPanel = ({
             </span>
           </div>
 
+          {/* ═══ SMART SUGGESTIONS — "Tell me what to do" ═══ */}
+          <div className="border-t border-foreground/[0.06]">
+            <SectionToggle id="smart-suggestions" title="Smart Suggestions" icon={Sparkles} />
+            {expandedSections.has('smart-suggestions') && (
+              <div className="px-3 pt-1 pb-3 space-y-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Issues Found</span>
+                  <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full">3 Items</span>
+                </div>
+                {[
+                  { icon: Target, title: 'Your headline is weak compared to top ebooks', desc: 'AI detected low keyword impact. Stronger headlines get 2× more reads.', action: 'Rewrite Headline →', color: 'text-accent' },
+                  { icon: ImageIcon, title: 'Missing visuals (hurting engagement)', desc: 'Adding an image or chart can increase engagement by up to 40%.', action: 'Add Visual →', color: 'text-accent' },
+                  { icon: FileText, title: 'This page is too text-heavy', desc: 'Break content into shorter sections to improve readability by 25%.', action: 'Simplify Text →', color: 'text-accent' },
+                ].map((nudge, i) => (
+                  <div key={i} className="p-3 rounded-xl border border-foreground/[0.06] bg-foreground/[0.01] space-y-1.5">
+                    <div className="flex items-start gap-2">
+                      <nudge.icon className="w-4 h-4 text-accent mt-0.5 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-foreground leading-tight">{nudge.title}</p>
+                        <p className="text-[10px] text-muted-foreground mt-1 leading-snug">{nudge.desc}</p>
+                      </div>
+                    </div>
+                    <button className={`text-[11px] font-semibold ${nudge.color} hover:underline`}>{nudge.action}</button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-          {/* ═══ PAGE INTELLIGENCE — "Show me score" (diagnostic) ═══ */}
+          {/* ═══ QUICK AI ACTIONS ═══ */}
+          <div className="border-t border-foreground/[0.06]">
+            <div className="px-3 py-3">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Quick Actions</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { icon: ImageIcon, label: 'Add Visual', color: 'text-accent' },
+                  { icon: Target, label: 'Make Persuasive', color: 'text-accent' },
+                  { icon: Eye, label: 'Readability', color: 'text-accent' },
+                  { icon: Wand2, label: 'Improve Layout', color: 'text-accent' },
+                ].map(a => (
+                  <button key={a.label}
+                    className="flex flex-col items-center gap-1.5 p-3 rounded-xl border border-foreground/[0.06] hover:border-accent/30 hover:bg-accent/[0.03] transition-all"
+                    onClick={() => toast.success(`${a.label} applied`)}>
+                    <a.icon className={`w-5 h-5 ${a.color}`} />
+                    <span className="text-[10px] font-semibold text-foreground">{a.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* ═══ AI ASSISTANT ═══ */}
+          <div className="border-t border-foreground/[0.06]">
+            <SectionToggle id="ai-assistant" title="AI Assistant" icon={Sparkles} />
+            {expandedSections.has('ai-assistant') && (
+              <div className="px-3 pt-1 pb-3">
+                <div className="flex items-center gap-2">
+                  <input
+                    placeholder="Ask AI to improve this page..."
+                    className="flex-1 px-3 py-2 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] placeholder:text-muted-foreground/50 focus:outline-none focus:border-accent/40"
+                  />
+                  <button className="p-2 rounded-lg bg-accent text-white hover:bg-accent/90 transition-colors">
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
           <div className="border-t border-foreground/[0.06]">
             <SectionToggle id="page-intel" title="Page Intelligence" icon={Brain} />
             {expandedSections.has('page-intel') && (
