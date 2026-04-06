@@ -283,9 +283,9 @@ export default function BookSettingsPanel({
             </div>
           )}
 
-          <div className="flex gap-8">
+          <div className="flex gap-6">
             {/* ─── LEFT: Config Sections ─── */}
-            <div className="flex-1 min-w-0 space-y-10">
+            <div className="w-[360px] shrink-0 space-y-10 overflow-y-auto">
               {/* ── Use Case ── */}
               <section id="settings-use-case">
                 <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">What Are You Creating?</label>
