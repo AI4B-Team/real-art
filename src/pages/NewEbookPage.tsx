@@ -118,7 +118,7 @@ const NewEbookPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { updateEbook } = useEbooks();
+  const { updateEbook, addEbook } = useEbooks();
 
   const initialTab = (() => {
     const tab = searchParams.get("tab");
@@ -364,6 +364,25 @@ const NewEbookPage = () => {
     setActiveTab("design");
     setIsGeneratingBook(true);
 
+    // Save ebook to DB/context
+    const newEbook = await addEbook({
+      title: bookData.selectedTitle,
+      description: bookDescription,
+      chapters: chapterSequence.length,
+      words: 0,
+      status: "generating",
+      createdAt: new Date().toISOString().split("T")[0],
+      updatedAt: new Date().toISOString().split("T")[0],
+      coverColor: "#6366F1",
+      tags: [],
+      progress: 10,
+      prompt: bookData.prompt,
+      tone: bookData.tone,
+      language: bookData.language,
+      model: bookData.model,
+      outline: { chapters: chapterSequence },
+    });
+
     // Generate full book content with AI
     try {
       const { data, error } = await supabase.functions.invoke('generate-ebook', {
@@ -389,9 +408,9 @@ const NewEbookPage = () => {
           { id: "1", title: bookData.selectedTitle, type: "cover" },
           { id: "2", title: "Table of Contents", type: "toc" },
         ];
-        // Track which page IDs map to which AI content
         const contentMap: { pageId: string; content: string }[] = [];
         let pageId = 3;
+        let totalWords = 0;
         for (const chapter of result.chapters) {
           newPages.push({ id: String(pageId++), title: chapter.title, type: "chapter" });
           for (const page of chapter.pages || []) {
@@ -399,11 +418,22 @@ const NewEbookPage = () => {
             newPages.push({ id: pid, title: page.title || "Content Page", type: "chapter-page" });
             if (page.content) {
               contentMap.push({ pageId: pid, content: page.content });
+              totalWords += page.content.split(/\s+/).length;
             }
           }
         }
         newPages.push({ id: String(pageId), title: "Back Cover", type: "back" });
         setEbookPages(newPages);
+
+        // Update ebook with final stats
+        if (newEbook) {
+          updateEbook(newEbook.id, {
+            status: "draft",
+            progress: 100,
+            words: totalWords,
+            chapters: result.chapters.length,
+          });
+        }
 
         // Populate each page with AI-generated text after canvas renders
         setTimeout(() => {
@@ -417,6 +447,9 @@ const NewEbookPage = () => {
       toast({ title: "Your AI-written book is ready!" });
     } catch (e: any) {
       console.error('Generate book error:', e);
+      if (newEbook) {
+        updateEbook(newEbook.id, { status: "draft", progress: 0 });
+      }
       toast({ title: e.message || "Book generation failed. The outline is still available.", variant: "destructive" });
     } finally {
       setIsGeneratingBook(false);

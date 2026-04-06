@@ -39,7 +39,7 @@ const EbookCreatorPage = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [viewMode, setViewMode] = useState("list");
-  const [showDropdown, setShowDropdown] = useState<number | null>(null);
+  const [showDropdown, setShowDropdown] = useState<string | null>(null);
   const [deleteConfirmBook, setDeleteConfirmBook] = useState<Ebook | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const audioInputRef = useRef<HTMLInputElement>(null);
@@ -59,7 +59,8 @@ const EbookCreatorPage = () => {
   });
 
   const duplicateEbook = (book: Ebook) => {
-    addEbook({ ...book, id: Date.now(), title: `${book.title} (Copy)`, status: "draft", progress: 0, createdAt: new Date().toISOString().split("T")[0], updatedAt: new Date().toISOString().split("T")[0] });
+    const { id: _id, ...rest } = book;
+    addEbook({ ...rest, title: `${book.title} (Copy)`, status: "draft", progress: 0, createdAt: new Date().toISOString().split("T")[0], updatedAt: new Date().toISOString().split("T")[0] });
     setShowDropdown(null);
     toast({ title: "eBook duplicated" });
   };
