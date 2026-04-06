@@ -20,7 +20,7 @@ const StatusBadge = ({ status }: { status: string }) => {
   };
   const labels: Record<string, string> = { published: "Published", draft: "Draft", generating: "Generating..." };
   return (
-    <span className={`px-2.5 py-1 text-xs font-medium rounded-full border ${styles[status]} inline-flex items-center`}>
+    <span className={`px-2.5 py-1 text-xs font-medium rounded-lg border ${styles[status]} inline-flex items-center`}>
       {status === "generating" && <span className="w-1.5 h-1.5 mr-1.5 bg-amber-500 rounded-full animate-pulse" />}
       {labels[status]}
     </span>
