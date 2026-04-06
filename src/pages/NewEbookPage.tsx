@@ -1099,7 +1099,9 @@ const NewEbookPage = () => {
                     return (
                       <button key={i} onClick={() => { if (!isEditing) setBookData(prev => ({ ...prev, selectedTitle: title })); }}
                         className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 group relative ${
-                          isSelected ? "border-accent bg-accent/[0.04] shadow-sm shadow-accent/10 animate-[titleSelect_0.25s_ease-out]" : "border-foreground/[0.08] hover:border-foreground/[0.15]"
+                          isSelected ? "border-accent bg-accent/[0.04] shadow-sm shadow-accent/10 animate-[titleSelect_0.25s_ease-out]"
+                          : isRecommended ? "border-amber-200/80 bg-amber-50/30 shadow-[0_0_12px_-3px_rgba(245,185,60,0.15)] hover:border-amber-300/80"
+                          : "border-foreground/[0.08] hover:border-foreground/[0.15]"
                         }`}>
                         <div className="flex items-center gap-3">
                           <div className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-xs font-bold transition-all duration-200 ${
