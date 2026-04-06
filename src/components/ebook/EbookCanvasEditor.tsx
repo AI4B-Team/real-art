@@ -3233,10 +3233,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                   </div>
                                   <div className="flex items-center gap-1">
                                     {[
-                                      { id: 'rewrite', label: 'Rewrite' },
-                                      { id: 'improve', label: 'Improve' },
-                                      { id: 'shorten', label: 'Shorten' },
-                                      { id: 'expand', label: 'Expand' },
+                                      { id: 'rewrite', label: 'Make it persuasive' },
+                                      { id: 'improve', label: 'Improve clarity' },
+                                      { id: 'shorten', label: 'Simplify' },
+                                      { id: 'expand', label: 'Add detail' },
                                     ].map(btn => (
                                       <button
                                         key={btn.id}

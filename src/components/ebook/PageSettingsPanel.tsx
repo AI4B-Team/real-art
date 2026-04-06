@@ -233,7 +233,48 @@ const PageSettingsPanel = ({
           </div>
 
 
-          {/* ═══ SECTION 1: AI ASSISTANT ═══ */}
+          {/* ═══ SECTION 1: SMART SUGGESTIONS (top — always visible) ═══ */}
+          <div className="border-t-2 border-amber-500/20">
+            <div className="flex items-center gap-2 px-4 py-3 bg-amber-500/[0.04]">
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Smart Suggestions</span>
+              <span className="ml-auto text-[9px] font-bold text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded-full">2 items</span>
+            </div>
+            <div className="px-4 pt-1 pb-4 space-y-2.5">
+              {[
+                { severity: 'warning' as const, title: 'Missing visuals (hurting engagement)', detail: 'Adding an image or chart can increase engagement by up to 40%.', cta: 'Add Visual', icon: ImageIcon, actionType: 'image' as const },
+                { severity: 'info' as const, title: 'Text density is high', detail: 'Breaking content into shorter paragraphs improves readability by 25%.', cta: 'Simplify Text', icon: FileText, actionType: 'ai' as const },
+              ].map((s, i) => (
+                <div key={i} className={`p-3 rounded-xl border ${s.severity === 'warning' ? 'border-amber-500/20 bg-amber-500/[0.04]' : 'border-blue-500/20 bg-blue-500/[0.04]'}`}>
+                  <div className="flex items-start gap-2.5">
+                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${s.severity === 'warning' ? 'bg-amber-500/15' : 'bg-blue-500/15'}`}>
+                      <s.icon className={`w-3.5 h-3.5 ${s.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'}`} />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">{s.detail}</p>
+                      <button onClick={() => {
+                        if (s.actionType === 'image' && onOpenImageSection) {
+                          onOpenImageSection();
+                        } else {
+                          toast.success(`AI: ${s.cta} — processing...`);
+                          setTimeout(() => {
+                            setAiActionFeedback(`${s.cta} applied ✨`);
+                            setTimeout(() => setAiActionFeedback(null), 3000);
+                          }, 1500);
+                        }
+                      }}
+                        className={`mt-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-[10px] font-bold transition-colors ${s.severity === 'warning' ? 'text-amber-700 bg-amber-500/10 hover:bg-amber-500/20' : 'text-blue-700 bg-blue-500/10 hover:bg-blue-500/20'}`}>
+                        {s.cta} →
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ═══ SECTION 2: AI ASSISTANT ═══ */}
           <div className="border-t-2 border-accent/20">
             <div className="flex items-center gap-2 px-4 py-3 bg-accent/[0.04]">
               <Brain className="w-4 h-4 text-accent" />
@@ -319,45 +360,6 @@ const PageSettingsPanel = ({
             </div>
           </div>
 
-          {/* ═══ SECTION 3: SMART SUGGESTIONS ═══ */}
-          <div className="border-t-2 border-foreground/[0.06]">
-            <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02]">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Smart Suggestions</span>
-            </div>
-            <div className="px-4 pt-1 pb-4 space-y-2.5">
-              {[
-                { severity: 'warning' as const, title: 'Missing visuals (hurting engagement)', detail: 'Adding an image or chart can increase engagement by up to 40%.', cta: 'Add Visual', icon: ImageIcon, actionType: 'image' as const },
-                { severity: 'info' as const, title: 'Text density is high', detail: 'Breaking content into shorter paragraphs improves readability by 25%.', cta: 'Simplify Text', icon: FileText, actionType: 'ai' as const },
-              ].map((s, i) => (
-                <div key={i} className={`p-3 rounded-xl border ${s.severity === 'warning' ? 'border-amber-500/20 bg-amber-500/[0.04]' : 'border-blue-500/20 bg-blue-500/[0.04]'}`}>
-                  <div className="flex items-start gap-2.5">
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${s.severity === 'warning' ? 'bg-amber-500/15' : 'bg-blue-500/15'}`}>
-                      <s.icon className={`w-3.5 h-3.5 ${s.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'}`} />
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
-                      <p className="text-[10px] text-muted-foreground mt-1 leading-relaxed">{s.detail}</p>
-                      <button onClick={() => {
-                        if (s.actionType === 'image' && onOpenImageSection) {
-                          onOpenImageSection();
-                        } else {
-                          toast.success(`AI: ${s.cta} — processing...`);
-                          setTimeout(() => {
-                            setAiActionFeedback(`${s.cta} applied ✨`);
-                            setTimeout(() => setAiActionFeedback(null), 3000);
-                          }, 1500);
-                        }
-                      }}
-                        className={`mt-2 text-[10px] font-bold hover:underline ${s.severity === 'warning' ? 'text-amber-600' : 'text-blue-600'}`}>
-                        {s.cta} →
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* ═══ SECTION 4: PAGE SETTINGS ═══ */}
           <div className="border-t-2 border-foreground/[0.06]">

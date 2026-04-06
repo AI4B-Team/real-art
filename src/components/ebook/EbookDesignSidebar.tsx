@@ -40,6 +40,7 @@ interface EbookDesignSidebarProps {
   openSection?: SectionId | null;
   onTranslate?: (scope: 'page' | 'selected' | 'book', language: string) => void;
   onReplaceImage?: ((src: string) => void) | null;
+  onAIClick?: () => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
@@ -534,7 +535,7 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
 
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
-  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage,
+  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage, onAIClick,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
@@ -628,9 +629,21 @@ const EbookDesignSidebar = ({
 
   return (
     <div className="w-80 border-l border-foreground/[0.04] bg-background overflow-y-auto flex flex-col">
-      {/* Header */}
-      <div className="flex items-center px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
+      {/* Header with AI button */}
+      <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
         <span className="text-xs font-bold text-foreground uppercase tracking-wider">Design</span>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <button
+              onClick={() => onAIClick?.()}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent/15 hover:bg-accent/25 text-accent text-[10px] font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <Brain className="w-3.5 h-3.5" />
+              AI
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>Open AI Assistant</TooltipContent>
+        </Tooltip>
       </div>
 
       {/* ─── STRUCTURE ─── */}
