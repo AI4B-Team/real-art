@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import {
   ArrowLeft, FileText, Image, Sparkles, Briefcase, Coffee, GraduationCap,
   Heart, Shield, Flame, Cpu, Wand2, Loader2, Download, Copy, Undo2,
-  ChevronDown, Zap, Star, BookOpen, Clock, FileCheck, Save, Layers,
+  ChevronDown, ChevronRight, Zap, Star, BookOpen, Clock, FileCheck, Save, Layers,
   Target, Rocket, Users, Globe,
 } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
