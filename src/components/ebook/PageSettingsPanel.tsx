@@ -3,6 +3,7 @@ import {
   X, ChevronDown, ChevronUp, ChevronLeft, Plus, Copy, Lock, Trash2,
   Maximize2, LayoutGrid as LayoutGridIcon, Palette, Square, SlidersHorizontal,
   Upload, ImageIcon, ChevronsLeft, ChevronsRight, ChevronRight, Unlock,
+  Sparkles, Wand2, Eye, BookOpen,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
