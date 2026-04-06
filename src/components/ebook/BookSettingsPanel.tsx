@@ -310,17 +310,19 @@ export default function BookSettingsPanel({
               {/* ── Content Type ── */}
               <section id="settings-content-type">
                 <label className="text-xs font-semibold text-foreground uppercase tracking-wider mb-3 block">Content Type</label>
-                <div className="flex gap-3">
+                <div className="space-y-2">
                   {CHAPTER_CONTENT_TYPES.map(ct => {
                     const isActive = bookData.chapterContentType === ct.id;
                     return (
                       <button key={ct.id} onClick={() => onBookDataChange(prev => ({ ...prev, chapterContentType: ct.id, includeImages: ct.id !== "text-only" }))}
-                        className={`flex flex-col items-center p-5 rounded-xl border-2 transition-all min-w-[120px] flex-1 ${isActive ? "border-accent bg-accent/[0.04] shadow-sm" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${isActive ? "bg-accent/10" : "bg-foreground/[0.04]"}`}>
-                          <ct.icon className={`w-6 h-6 ${isActive ? "text-accent" : "text-muted-foreground"}`} />
+                        className={`flex items-center gap-3 w-full p-3 rounded-lg border-2 text-left transition-all ${isActive ? "border-accent bg-accent/[0.04] shadow-sm" : "border-foreground/[0.08] hover:border-foreground/[0.15]"}`}>
+                        <div className={`w-10 h-10 rounded-lg flex items-center justify-center shrink-0 ${isActive ? "bg-accent/10" : "bg-foreground/[0.04]"}`}>
+                          <ct.icon className={`w-5 h-5 ${isActive ? "text-accent" : "text-muted-foreground"}`} />
                         </div>
-                        <span className={`text-sm font-semibold mb-1 ${isActive ? "text-foreground" : "text-foreground/80"}`}>{ct.label}</span>
-                        <span className="text-[10px] text-muted-foreground text-center">{ct.desc}</span>
+                        <div>
+                          <span className={`text-sm font-semibold block ${isActive ? "text-foreground" : "text-foreground/80"}`}>{ct.label}</span>
+                          <span className="text-[10px] text-muted-foreground">{ct.desc}</span>
+                        </div>
                       </button>
                     );
                   })}
