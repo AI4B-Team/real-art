@@ -219,53 +219,41 @@ export default function BookSettingsPanel({
   const currentTone = TONES.find(t => t.id === bookData.tone);
 
   return (
-    <div className="flex-1 flex overflow-hidden bg-background">
-      {/* ─── LEFT NAV ─── */}
-      <div className="w-52 shrink-0 border-r border-foreground/[0.06] py-8 px-4 hidden lg:block">
-        <div className="sticky top-8">
-          <div className="flex items-center gap-2 mb-6 px-2">
-            <Cpu className="w-4 h-4 text-accent" />
-            <span className="text-xs font-bold uppercase tracking-wider text-foreground/70">Settings</span>
-          </div>
-          <nav className="space-y-0.5">
-            {SECTIONS.map(s => (
-              <button key={s.id} onClick={() => scrollTo(s.id)}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
-                  activeSection === s.id
-                    ? "bg-accent/[0.08] text-accent font-semibold"
-                    : "text-muted-foreground hover:bg-foreground/[0.03] hover:text-foreground"
-                }`}>
-                {s.label}
-              </button>
-            ))}
-          </nav>
-
-          {/* Presets */}
-          <div className="mt-8 pt-6 border-t border-foreground/[0.06]">
-            <div className="flex items-center justify-between px-2 mb-3">
-              <span className="text-xs font-bold uppercase tracking-wider text-foreground/70">Presets</span>
-              <button onClick={() => setShowPresetInput(!showPresetInput)} className="text-xs text-accent hover:text-accent/80">
-                <Save size={12} />
-              </button>
-            </div>
-            {showPresetInput && (
-              <div className="flex gap-1 mb-2 px-1">
-                <input value={presetName} onChange={e => setPresetName(e.target.value)} placeholder="Preset name..."
-                  className="flex-1 text-xs px-2 py-1.5 rounded-md border border-foreground/[0.1] bg-background outline-none focus:border-accent/40" />
-                <button onClick={savePreset} className="px-2 py-1.5 rounded-md bg-accent text-white text-xs font-semibold">Save</button>
-              </div>
-            )}
-            {presets.length === 0 && (
-              <p className="text-[10px] text-muted-foreground px-2">No saved presets yet</p>
-            )}
-            {presets.map(p => (
-              <div key={p.id} className="flex items-center justify-between px-2 py-1.5 rounded-lg hover:bg-foreground/[0.03] group">
-                <button onClick={() => loadPreset(p)} className="text-xs text-foreground/80 hover:text-foreground truncate flex-1 text-left">{p.name}</button>
-                <button onClick={() => deletePreset(p.id)} className="text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100 ml-1">×</button>
-              </div>
-            ))}
-          </div>
+    <div className="flex-1 flex flex-col overflow-hidden bg-background">
+      {/* ─── TOP HORIZONTAL NAV ─── */}
+      <div className="shrink-0 border-b border-foreground/[0.06] bg-background px-6 lg:px-10">
+        <div className="max-w-xl mx-auto flex items-center gap-1 overflow-x-auto pt-6 pb-0">
+          {SECTIONS.map(s => (
+            <button key={s.id} onClick={() => scrollTo(s.id)}
+              className={`px-3 py-2 rounded-t-lg text-sm whitespace-nowrap transition-all border-b-2 ${
+                activeSection === s.id
+                  ? "border-accent text-accent font-semibold bg-accent/[0.04]"
+                  : "border-transparent text-muted-foreground hover:text-foreground hover:bg-foreground/[0.03]"
+              }`}>
+              {s.label}
+            </button>
+          ))}
+          {/* Presets toggle */}
+          <button onClick={() => setShowPresetInput(!showPresetInput)}
+            className="ml-auto flex items-center gap-1.5 px-3 py-2 text-xs text-muted-foreground hover:text-foreground transition-colors whitespace-nowrap">
+            <Save size={12} /> Presets
+          </button>
         </div>
+        {/* Inline preset bar */}
+        {showPresetInput && (
+          <div className="max-w-xl mx-auto pb-3 flex items-center gap-2 flex-wrap">
+            <input value={presetName} onChange={e => setPresetName(e.target.value)} placeholder="Preset name..."
+              className="text-xs px-2.5 py-1.5 rounded-md border border-foreground/[0.1] bg-background outline-none focus:border-accent/40 w-36" />
+            <button onClick={savePreset} className="px-2.5 py-1.5 rounded-md bg-accent text-white text-xs font-semibold">Save</button>
+            {presets.map(p => (
+              <div key={p.id} className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-foreground/[0.03] hover:bg-foreground/[0.06] group">
+                <button onClick={() => loadPreset(p)} className="text-xs text-foreground/80 hover:text-foreground">{p.name}</button>
+                <button onClick={() => deletePreset(p.id)} className="text-[10px] text-muted-foreground opacity-0 group-hover:opacity-100">×</button>
+              </div>
+            ))}
+            {presets.length === 0 && <span className="text-[10px] text-muted-foreground">No saved presets</span>}
+          </div>
+        )}
       </div>
 
       {/* ─── CENTER: Main Config ─── */}
