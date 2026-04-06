@@ -535,7 +535,7 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
 
 const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
-  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage,
+  onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage, onAIClick,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
