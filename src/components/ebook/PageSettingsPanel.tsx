@@ -73,7 +73,7 @@ const PageSettingsPanel = ({
   showLockedPagesWarning,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size', 'smart-suggestions']));
   const [aiActionFeedback, setAiActionFeedback] = useState<string | null>(null);
   const [bgTab, setBgTab] = useState<BgTab>('color');
   const orientation = externalWidth > externalHeight ? 'landscape' : 'portrait';
