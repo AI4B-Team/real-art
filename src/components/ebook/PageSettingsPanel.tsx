@@ -68,10 +68,11 @@ const FORMAT_PRESETS = [
 
 const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
-  pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange,
+  pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange, onOpenImageSection,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
+  const [aiActionFeedback, setAiActionFeedback] = useState<string | null>(null);
   const [bgTab, setBgTab] = useState<BgTab>('color');
   const orientation = externalWidth > externalHeight ? 'landscape' : 'portrait';
   const [resizeContent, setResizeContent] = useState(true);
