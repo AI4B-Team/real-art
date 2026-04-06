@@ -25,6 +25,7 @@ import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
 import PageSettingsPanel from "@/components/ebook/PageSettingsPanel";
 import BookSettingsPanel from "@/components/ebook/BookSettingsPanel";
+import LockedPagesModal from "@/components/ebook/LockedPagesModal";
 
 type ChapterContentType = "text-only" | "text-images" | "text-images-interactive";
 
@@ -313,6 +314,36 @@ const NewEbookPage = () => {
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
   const [isReplacingImage, setIsReplacingImage] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date>(new Date());
+  const [lockedPagesModal, setLockedPagesModal] = useState<{
+    open: boolean;
+    actionLabel: string;
+    onUnlockAllAndApply: () => void;
+    onProceedSkipping: () => void;
+  }>({ open: false, actionLabel: '', onUnlockAllAndApply: () => {}, onProceedSkipping: () => {} });
+
+  const showLockedPagesWarning = useCallback((
+    actionLabel: string,
+    onApplyAll: () => void,
+    onApplySkipping: () => void,
+  ) => {
+    const lockedPages = ebookPages.filter(p => p.locked);
+    if (lockedPages.length === 0) {
+      onApplyAll();
+      return false;
+    }
+    setLockedPagesModal({
+      open: true,
+      actionLabel,
+      onUnlockAllAndApply: () => {
+        setEbookPages(prev => prev.map(p => ({ ...p, locked: false })));
+        onApplyAll();
+      },
+      onProceedSkipping: () => {
+        onApplySkipping();
+      },
+    });
+    return true;
+  }, [ebookPages]);
 
   // Sections that should keep the Page Settings panel visible
   const PAGE_SETTINGS_SECTIONS = new Set(['content', 'templates']);
@@ -1540,20 +1571,16 @@ const NewEbookPage = () => {
                 onTranslate={async (scope, language) => {
                   // Check for locked pages when applying to entire book
                   if (scope === 'book') {
-                    const lockedPages = ebookPages.filter(p => p.locked);
-                    if (lockedPages.length > 0) {
-                      const lockedNumbers = lockedPages.map(p => ebookPages.indexOf(p) + 1).join(', ');
-                      sonnerToast(`${lockedPages.length} locked page${lockedPages.length > 1 ? 's' : ''} will be skipped (Page ${lockedNumbers})`, {
-                        description: 'Unlock to include all pages in translation.',
-                        action: {
-                          label: 'Unlock All',
-                          onClick: () => {
-                            setEbookPages(prev => prev.map(p => ({ ...p, locked: false })));
-                            sonnerToast.success('All pages unlocked. Please run the translation again.');
-                          },
-                        },
-                      });
-                    }
+                    const hasLocked = showLockedPagesWarning(
+                      'Translate Entire Book',
+                      () => {
+                        sonnerToast.success('All pages unlocked. Please run the translation again.');
+                      },
+                      () => {
+                        sonnerToast.info('Locked pages were skipped during translation.');
+                      },
+                    );
+                    if (hasLocked) return;
                   }
                   // Check if current page is locked for page-level scope
                   if (scope === 'page' || scope === 'selected') {
@@ -1743,6 +1770,7 @@ const NewEbookPage = () => {
                 pageHeight={pageHeight}
                 onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
+                showLockedPagesWarning={showLockedPagesWarning}
               />
               )}
             </div>
@@ -1752,6 +1780,15 @@ const NewEbookPage = () => {
       </div>
       <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
       <EbookInviteModal open={showInviteModal} onOpenChange={setShowInviteModal} />
+      <LockedPagesModal
+        open={lockedPagesModal.open}
+        onOpenChange={(open) => setLockedPagesModal(prev => ({ ...prev, open }))}
+        lockedPages={ebookPages.filter(p => p.locked).map(p => ({ page: p, index: ebookPages.indexOf(p) }))}
+        actionLabel={lockedPagesModal.actionLabel}
+        onUnlockAll={lockedPagesModal.onUnlockAllAndApply}
+        onUnlockPage={(pageId) => setEbookPages(prev => prev.map(p => p.id === pageId ? { ...p, locked: false } : p))}
+        onProceedSkipping={lockedPagesModal.onProceedSkipping}
+      />
     </PageShell>
   );
 };
