@@ -291,6 +291,12 @@ const PageSettingsPanel = ({
               <span className="text-xs font-bold text-foreground uppercase tracking-wider">AI Assistant</span>
             </div>
             <div className="px-4 pt-2 pb-4 space-y-1.5">
+              {aiActionFeedback && (
+                <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20 animate-in fade-in-0 slide-in-from-top-1 duration-300">
+                  <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                  <span className="text-[11px] font-semibold text-emerald-600">{aiActionFeedback}</span>
+                </div>
+              )}
               {[
                 { label: 'Improve Layout', desc: 'Optimize spacing & alignment', icon: Wand2 },
                 { label: 'Improve Readability', desc: 'Better typography & contrast', icon: Eye },
@@ -298,7 +304,18 @@ const PageSettingsPanel = ({
                 { label: 'Add Visual', desc: 'Suggest images & graphics', icon: ImageIcon },
                 { label: 'Rewrite Content', desc: 'Refresh tone & clarity', icon: FileText },
               ].map(item => (
-                <button key={item.label} onClick={() => toast.success(`AI: ${item.label} — processing...`)}
+                <button key={item.label} onClick={() => {
+                  if (item.label === 'Add Visual' && onOpenImageSection) {
+                    onOpenImageSection();
+                    return;
+                  }
+                  setAiActionFeedback(null);
+                  toast.success(`AI: ${item.label} — processing...`);
+                  setTimeout(() => {
+                    setAiActionFeedback(`${item.label} applied ✨`);
+                    setTimeout(() => setAiActionFeedback(null), 3000);
+                  }, 1500);
+                }}
                   className="w-full flex items-center gap-2.5 p-2.5 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/[0.04] transition-all group text-left">
                   <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center shrink-0 group-hover:bg-accent/20 transition-colors">
                     <item.icon className="w-4 h-4 text-accent" />
