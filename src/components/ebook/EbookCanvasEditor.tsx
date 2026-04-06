@@ -3212,33 +3212,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     );
                   })}
                 </div>
-              {/* Floating AI Prompt Bar */}
-              {canEdit && !isGridView && (
-                <div className="sticky bottom-4 mx-auto w-full max-w-2xl z-[60] px-4">
-                  <div className="flex items-center gap-2 bg-background/95 backdrop-blur-md border border-foreground/[0.1] rounded-xl px-3 py-2 shadow-xl">
-                    <Sparkles className="w-4 h-4 text-accent shrink-0" />
-                    <input
-                      type="text"
-                      placeholder="Ask AI: Write this section, improve layout, add examples..."
-                      className="flex-1 text-xs bg-transparent outline-none placeholder:text-muted-foreground/50 text-foreground"
-                      onKeyDown={e => {
-                        if (e.key === 'Enter' && (e.target as HTMLInputElement).value.trim()) {
-                          toast.success(`AI: "${(e.target as HTMLInputElement).value}" — processing...`);
-                          (e.target as HTMLInputElement).value = '';
-                        }
-                      }}
-                    />
-                    <div className="flex items-center gap-1 shrink-0">
-                      {['Write', 'Improve', 'Shorten'].map(action => (
-                        <button key={action} onClick={() => toast.success(`AI: ${action} — processing...`)}
-                          className="px-2 py-1 text-[10px] font-medium text-accent bg-accent/[0.06] hover:bg-accent/[0.12] rounded-md transition-colors">
-                          {action}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
               </div>
             </>
           )}
