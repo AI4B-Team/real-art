@@ -3198,6 +3198,46 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
                           </div>
                         </div>
+                        {/* Contextual AI bar — appears when an element is selected on this page */}
+                        {isSelected && selectedElementId && canEdit && (
+                          <div
+                            className="mt-3 rounded-xl border border-foreground/[0.08] bg-background/95 backdrop-blur-sm shadow-lg transition-all duration-300 animate-in fade-in-0 slide-in-from-bottom-2"
+                            style={{ width: `${pw * zoom / 100}px`, marginLeft: '2rem' }}
+                            onMouseDown={e => e.stopPropagation()}
+                          >
+                            <div className="flex items-center gap-2 p-2.5">
+                              <div className="flex-1 relative">
+                                <Sparkles className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-accent/60" />
+                                <input
+                                  type="text"
+                                  placeholder="Ask AI to improve this..."
+                                  value={contextualAIPrompt}
+                                  onChange={e => setContextualAIPrompt(e.target.value)}
+                                  onKeyDown={e => { if (e.key === 'Enter' && contextualAIPrompt.trim()) handleContextualAI('custom'); }}
+                                  className="w-full pl-8 pr-3 py-1.5 text-xs bg-foreground/[0.03] rounded-lg border border-foreground/[0.06] focus:outline-none focus:ring-1 focus:ring-accent/40 placeholder:text-muted-foreground/50"
+                                  disabled={isAIProcessing}
+                                />
+                              </div>
+                              <div className="flex items-center gap-1">
+                                {[
+                                  { id: 'rewrite', label: 'Rewrite' },
+                                  { id: 'improve', label: 'Improve' },
+                                  { id: 'shorten', label: 'Shorten' },
+                                  { id: 'expand', label: 'Expand' },
+                                ].map(btn => (
+                                  <button
+                                    key={btn.id}
+                                    onClick={() => handleContextualAI(btn.id)}
+                                    disabled={isAIProcessing}
+                                    className="px-2.5 py-1.5 text-[10px] font-medium rounded-lg border border-foreground/[0.06] hover:bg-accent/[0.08] hover:border-accent/30 hover:text-accent transition-all disabled:opacity-40"
+                                  >
+                                    {isAIProcessing ? <Loader2 className="w-3 h-3 animate-spin" /> : btn.label}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        )}
                         {/* Page action buttons - shown for selected page in edit modes */}
                         {canEdit && <div className={`absolute -right-12 top-1/2 -translate-y-1/2 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
                           isSelected ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-3 pointer-events-none'
