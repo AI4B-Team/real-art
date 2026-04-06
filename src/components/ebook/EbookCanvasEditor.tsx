@@ -111,6 +111,7 @@ const TOOLS = [
 ];
 
 const PAGE_ACTIONS = [
+  { id: 'ai', icon: Sparkles, label: 'AI Assistant' },
   { id: 'add', icon: Plus, label: 'Add Page' },
   { id: 'duplicate', icon: Copy, label: 'Duplicate Page' },
   { id: 'lock', icon: Unlock, label: 'Lock Page' },
@@ -750,6 +751,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   const handlePageAction = (actionId: string) => {
     switch (actionId) {
+      case 'ai': onPageSettingsToggle?.(); break;
       case 'add': /* handled by popover */ break;
       case 'duplicate': handleDuplicatePage(); break;
       case 'delete': handleDeletePage(); break;
@@ -3263,6 +3265,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               const isLocked = action.id === 'lock' && currentSelectedPage?.locked;
                               const Icon = isLocked ? Lock : action.icon;
                               const label = isLocked ? 'Unlock Page' : action.label;
+                              if (action.id === 'ai') {
+                                return (
+                                  <Tooltip key={action.id}>
+                                    <TooltipTrigger asChild>
+                                      <button onClick={() => handlePageAction('ai')}
+                                        className="w-8 h-8 rounded-lg flex items-center justify-center bg-accent/10 hover:bg-accent/20 transition-colors text-accent">
+                                        <Sparkles className="w-4 h-4" />
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">AI Assistant</TooltipContent>
+                                  </Tooltip>
+                                );
+                              }
                               if (action.id === 'add') {
                                 return (
                                   <Popover key={action.id}>
