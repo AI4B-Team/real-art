@@ -2990,10 +2990,32 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     return (
                       <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className="relative flex flex-col items-center">
                         {/* Page label above page */}
-                        <div className="mb-2 text-center">
+                        <div className="mb-2 flex items-center justify-center gap-2">
                           <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
                             {pageTypeLabel} – {page.type === 'cover' || page.type === 'back' ? (bookTitle || 'Untitled Book') : (page.title || `Page ${pageIndex + 1}`)}
                           </span>
+                          {/* Page issue indicator */}
+                          {(() => {
+                            const hasImages = elems.some(el => el.type === 'image');
+                            const hasIssue = !hasImages && page.type !== 'toc' && page.type !== 'blank';
+                            if (!hasIssue) return null;
+                            return (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <button
+                                    onClick={() => onPageSettingsToggle?.()}
+                                    className="w-5 h-5 rounded-full bg-amber-500/15 flex items-center justify-center hover:bg-amber-500/25 transition-colors"
+                                  >
+                                    <span className="text-[10px]">⚠️</span>
+                                  </button>
+                                </TooltipTrigger>
+                                <TooltipContent side="right" className="max-w-[200px]">
+                                  <p className="text-xs font-medium">Missing visuals (hurting engagement)</p>
+                                  <p className="text-[10px] text-muted-foreground mt-0.5">Click to view suggestions</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            );
+                          })()}
                         </div>
                         <div className="relative flex items-start gap-2">
                         {/* Page number */}
