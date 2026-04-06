@@ -193,6 +193,116 @@ export type Database = {
         }
         Relationships: []
       }
+      ebook_pages: {
+        Row: {
+          content: string | null
+          created_at: string
+          ebook_id: string
+          elements: Json | null
+          id: string
+          locked: boolean | null
+          page_index: number
+          page_type: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          ebook_id: string
+          elements?: Json | null
+          id?: string
+          locked?: boolean | null
+          page_index?: number
+          page_type?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          ebook_id?: string
+          elements?: Json | null
+          id?: string
+          locked?: boolean | null
+          page_index?: number
+          page_type?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ebook_pages_ebook_id_fkey"
+            columns: ["ebook_id"]
+            isOneToOne: false
+            referencedRelation: "ebooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ebooks: {
+        Row: {
+          chapters: number | null
+          cover_color: string | null
+          cover_image: string | null
+          created_at: string
+          description: string | null
+          id: string
+          language: string | null
+          model: string | null
+          outline: Json | null
+          progress: number | null
+          prompt: string | null
+          status: string
+          tags: string[] | null
+          title: string
+          tone: string | null
+          updated_at: string
+          user_id: string
+          words: number | null
+        }
+        Insert: {
+          chapters?: number | null
+          cover_color?: string | null
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          language?: string | null
+          model?: string | null
+          outline?: Json | null
+          progress?: number | null
+          prompt?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          tone?: string | null
+          updated_at?: string
+          user_id: string
+          words?: number | null
+        }
+        Update: {
+          chapters?: number | null
+          cover_color?: string | null
+          cover_image?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          language?: string | null
+          model?: string | null
+          outline?: Json | null
+          progress?: number | null
+          prompt?: string | null
+          status?: string
+          tags?: string[] | null
+          title?: string
+          tone?: string | null
+          updated_at?: string
+          user_id?: string
+          words?: number | null
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
