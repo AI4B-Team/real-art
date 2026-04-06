@@ -3311,11 +3311,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                 <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
                                                 <textarea
                                                   value={contextualAIPrompt}
-                                                  onChange={e => setContextualAIPrompt(e.target.value)}
+                                                  onChange={e => {
+                                                    setContextualAIPrompt(e.target.value);
+                                                    e.target.style.height = 'auto';
+                                                    e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+                                                  }}
                                                   onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
                                                   placeholder="Ask AI anything about this page..."
-                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
-                                                  style={{ minHeight: '24px', maxHeight: '200px' }}
+                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-none overflow-hidden"
+                                                  style={{ minHeight: '24px' }}
                                                   rows={1}
                                                 />
                                               </div>
