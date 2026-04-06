@@ -970,7 +970,7 @@ const EbookDesignSidebar = ({
         <InteractivePanel onAddElement={onAddElement} />
       )}
 
-      {/* ─── ADVANCED ─── */}
+      {/* ─── ADVANCED (collapsed by default) ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
         <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Advanced</span>
       </div>
@@ -979,12 +979,6 @@ const EbookDesignSidebar = ({
       <SectionHeader id="translate" title="Translate" icon={Languages} />
       {expandedSections.has('translate') && (
         <TranslatePanel onTranslate={onTranslate} />
-      )}
-
-      {/* Mockups */}
-      <SectionHeader id="mockups" title="Mockups" icon={Layers3} />
-      {expandedSections.has('mockups') && (
-        <MockupsPanel onAddElement={onAddElement} />
       )}
     </div>
   );
