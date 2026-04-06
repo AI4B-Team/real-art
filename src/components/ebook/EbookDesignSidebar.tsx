@@ -964,6 +964,12 @@ const EbookDesignSidebar = ({
         <AudioPanel onAddElement={onAddElement} />
       )}
 
+      {/* Interactive */}
+      <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
+      {expandedSections.has('interactive') && (
+        <InteractivePanel onAddElement={onAddElement} />
+      )}
+
       {/* ─── ADVANCED ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
         <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Advanced</span>
