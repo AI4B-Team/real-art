@@ -291,6 +291,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   }, [onReplaceStateChange]);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
+  const [contextualAIPrompt, setContextualAIPrompt] = useState('');
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
   const [contextMenu, setContextMenu] = useState<{ x: number; y: number; elements: CanvasElement[]; pageId: string } | null>(null);
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
