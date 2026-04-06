@@ -124,7 +124,7 @@ export default function BookSettingsPanel({
   bookData, onBookDataChange, chapterCount, pageCount,
   onApply, isApplying, onClose, storageKeyPages, storageKeyElements,
 }: Props) {
-  const [activeSection, setActiveSection] = useState("use-case");
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(["use-case"]));
   const [selectedUseCase, setSelectedUseCase] = useState<string | null>(null);
   const [showAllLanguages, setShowAllLanguages] = useState(false);
   const [presets, setPresets] = useState<SavedPreset[]>(() => {
@@ -135,36 +135,12 @@ export default function BookSettingsPanel({
   const scrollRef = useRef<HTMLDivElement>(null);
   const [initialData] = useState(bookData);
 
-  // Track changes for impact preview
-  const hasChanges = bookData.wordsPerChapter !== initialData.wordsPerChapter
-    || bookData.chapterContentType !== initialData.chapterContentType
-    || bookData.tone !== initialData.tone
-    || bookData.model !== initialData.model
-    || bookData.language !== initialData.language;
-
-  const wordsDiff = (bookData.wordsPerChapter - initialData.wordsPerChapter) * chapterCount;
-
-  // Scroll spy
-  useEffect(() => {
-    const container = scrollRef.current;
-    if (!container) return;
-    const handleScroll = () => {
-      for (const s of SECTIONS) {
-        const el = container.querySelector(`#settings-${s.id}`);
-        if (el) {
-          const rect = el.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-          if (rect.top - containerRect.top < 120) setActiveSection(s.id);
-        }
-      }
-    };
-    container.addEventListener("scroll", handleScroll);
-    return () => container.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollTo = (id: string) => {
-    setActiveSection(id);
-    scrollRef.current?.querySelector(`#settings-${id}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
+  const toggleSection = (id: string) => {
+    setExpandedSections(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
   };
 
   const savePreset = () => {
