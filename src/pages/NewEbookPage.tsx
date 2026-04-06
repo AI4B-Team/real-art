@@ -132,6 +132,47 @@ export interface ChapterData {
   pageCount: number;
 }
 
+const ProjectNameInput = ({ value, onChange }: { value: string; onChange: (v: string) => void }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => { setDraft(value); }, [value]);
+
+  const handleSave = () => { onChange(draft.trim() || "Untitled Book"); setIsEditing(false); };
+  const handleCancel = () => { setDraft(value); setIsEditing(false); };
+
+  if (!isEditing) {
+    return (
+      <div className="flex items-center gap-2 pointer-events-auto">
+        <span className="text-sm text-muted-foreground">Project Name:</span>
+        <button onClick={() => setIsEditing(true)}
+          className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-3 py-1.5 hover:border-foreground/[0.15] transition-colors">
+          {value}
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex items-center gap-2 pointer-events-auto">
+      <span className="text-sm text-muted-foreground">Project Name:</span>
+      <input
+        value={draft}
+        onChange={e => setDraft(e.target.value)}
+        onKeyDown={e => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') handleCancel(); }}
+        autoFocus
+        className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-accent/40 rounded-lg px-3 py-1.5 w-64 focus:outline-none transition-colors"
+      />
+      <button onClick={handleSave} className="p-1.5 rounded-lg bg-accent text-white hover:bg-accent/90 transition-colors">
+        <Check className="w-3.5 h-3.5" />
+      </button>
+      <button onClick={handleCancel} className="p-1.5 rounded-lg bg-foreground/[0.06] text-muted-foreground hover:bg-foreground/[0.1] transition-colors">
+        <X className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+};
+
 const NewEbookPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
