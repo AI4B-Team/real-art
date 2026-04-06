@@ -638,7 +638,7 @@ const EbookDesignSidebar = ({
               onClick={() => onAIClick?.()}
               className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent/15 hover:bg-accent/25 text-accent text-[10px] font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
-              <Brain className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5" />
               AI
             </button>
           </TooltipTrigger>
