@@ -876,7 +876,28 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     }
   };
 
-  const handleCanvasClick = (e: React.MouseEvent) => {
+  const handleContextualAI = async (action: string) => {
+    if (!selectedElement) return;
+    const prompt = action === 'custom' ? contextualAIPrompt.trim() : undefined;
+    if (action === 'custom' && !prompt) return;
+    if (selectedElement.type === 'text' && selectedElement.content) {
+      setIsAIProcessing(true);
+      try {
+        const actionMap: Record<string, string> = { rewrite: 'improve-writing', improve: 'improve-writing', shorten: 'make-shorter', expand: 'make-longer' };
+        const { data, error } = await supabase.functions.invoke('ai-text-edit', {
+          body: { text: selectedElement.content, action: actionMap[action] || 'improve-writing', prompt },
+        });
+        if (error) throw error;
+        if (data?.result) { updateElement(selectedElement.id, { content: data.result }); toast.success('Updated by AI'); }
+        else if (data?.error) toast.error(data.error);
+      } catch (e: any) { toast.error(e.message || 'AI edit failed'); }
+      finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
+    } else if (selectedElement.type === 'image') {
+      toast.info('AI image editing coming soon');
+    }
+  };
+
+
     setContextMenu(null);
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
