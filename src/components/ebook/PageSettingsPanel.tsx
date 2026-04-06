@@ -25,6 +25,7 @@ interface PageSettingsPanelProps {
   pageWidth?: number;
   pageHeight?: number;
   onDimensionsChange?: (w: number, h: number) => void;
+  onOpenImageSection?: () => void;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
