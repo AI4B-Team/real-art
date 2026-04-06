@@ -146,8 +146,15 @@ export default function BookSettingsPanel({
   });
   const [presetName, setPresetName] = useState("");
   const [showPresetInput, setShowPresetInput] = useState(false);
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [previewKey, setPreviewKey] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [initialData] = useState(bookData);
+
+  // Trigger preview animation on changes
+  useEffect(() => {
+    setPreviewKey(k => k + 1);
+  }, [bookData.wordsPerChapter, bookData.chapterContentType, bookData.tone, bookData.chapters]);
 
   const toggleSection = (id: string) => {
     setExpandedSections(prev => {
