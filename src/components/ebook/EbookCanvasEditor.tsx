@@ -229,6 +229,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   pageWidth: pw = 480, pageHeight: ph = 640,
   accessMode = 'editing',
   initialPageElements, onPageElementsChange,
+  panelOffset = 0,
 }, ref) => {
   const [internalPages, setInternalPages] = useState<Page[]>(pages);
   const currentPages = onPagesChange ? pages : internalPages;
