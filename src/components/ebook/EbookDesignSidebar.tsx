@@ -633,6 +633,11 @@ const EbookDesignSidebar = ({
         <span className="text-xs font-bold text-foreground uppercase tracking-wider">Design</span>
       </div>
 
+      {/* ─── STRUCTURE ─── */}
+      <div className="px-3 pt-3 pb-1">
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Structure</span>
+      </div>
+
       {/* Templates */}
       <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
       {expandedSections.has('templates') && (
@@ -777,6 +782,11 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
+      {/* ─── ADD ─── */}
+      <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Add</span>
+      </div>
+
       {/* Text */}
       <SectionHeader id="text" title="Text" icon={Type} />
       {expandedSections.has('text') && (
@@ -838,6 +848,11 @@ const EbookDesignSidebar = ({
           })}
         </div>
       )}
+
+      {/* ─── ENHANCE ─── */}
+      <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Enhance</span>
+      </div>
 
       {/* Interactive */}
       <SectionHeader id="interactive" title="Interactive" icon={MousePointerClick} />
@@ -954,6 +969,11 @@ const EbookDesignSidebar = ({
       {expandedSections.has('audio') && (
         <AudioPanel onAddElement={onAddElement} />
       )}
+
+      {/* ─── ADVANCED ─── */}
+      <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Advanced</span>
+      </div>
 
       {/* Translate */}
       <SectionHeader id="translate" title="Translate" icon={Languages} />
