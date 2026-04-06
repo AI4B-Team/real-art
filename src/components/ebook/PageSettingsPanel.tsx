@@ -234,8 +234,8 @@ const PageSettingsPanel = ({
 
 
           {/* ═══ SECTION 1: SMART SUGGESTIONS — "Tell me what to do" ═══ */}
-          <div className="border-t-2 border-amber-500/20">
-            <div className="flex items-center gap-2 px-4 py-3 bg-amber-500/[0.04]">
+          <div className="border-t border-foreground/[0.06]">
+            <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.02]">
               <Sparkles className="w-4 h-4 text-amber-500" />
               <span className="text-xs font-bold text-foreground uppercase tracking-wider">Smart Suggestions</span>
               <span className="ml-auto text-[9px] font-bold text-amber-600 bg-amber-500/10 px-1.5 py-0.5 rounded-full">3 items</span>
