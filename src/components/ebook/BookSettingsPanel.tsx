@@ -502,7 +502,7 @@ export default function BookSettingsPanel({
         </div>
 
         {/* ─── RIGHT: Live Summary (sticky) ─── */}
-        <div className="w-56 shrink-0 hidden lg:block border-l border-foreground/[0.06] overflow-y-auto p-5">
+        <div className="w-72 shrink-0 hidden lg:block border-l border-foreground/[0.06] overflow-y-auto p-5">
           <div className="sticky top-0">
             <div className="rounded-xl border border-foreground/[0.06] bg-foreground/[0.01] p-5">
               <h3 className="text-xs font-bold uppercase tracking-wider text-foreground/70 mb-4">Live Summary</h3>
