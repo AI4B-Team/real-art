@@ -1529,6 +1529,11 @@ const NewEbookPage = () => {
                   });
                 }}
                 onSectionChange={handleSidebarSectionChange}
+                onAIClick={() => {
+                  setShowPageSettings(true);
+                  setManualPageSettings(true);
+                  setIsRightPanelCollapsed(false);
+                }}
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
                 onReplaceImage={isReplacingImage ? (src) => canvasRef.current?.replaceImage(src) : null}
