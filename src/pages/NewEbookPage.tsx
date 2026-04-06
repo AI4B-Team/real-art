@@ -118,7 +118,7 @@ const NewEbookPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
-  const { updateEbook } = useEbooks();
+  const { updateEbook, addEbook } = useEbooks();
 
   const initialTab = (() => {
     const tab = searchParams.get("tab");
