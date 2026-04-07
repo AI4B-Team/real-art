@@ -637,7 +637,7 @@ const EbookDesignSidebar = ({
   );
 
   return (
-    <div className="w-72 border-l border-foreground/[0.04] bg-background flex flex-col" style={{ height: '100%' }}>
+    <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col" style={{ height: '100%' }}>
       {/* Mode toggle tabs: Design | AI */}
       <div className="flex border-b border-foreground/[0.04] shrink-0">
         <button onClick={() => onSidebarModeChange?.('design')}
