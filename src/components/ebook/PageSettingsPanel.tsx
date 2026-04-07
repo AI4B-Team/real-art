@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import type { Page } from './EbookCanvasEditor';
 import { getElementsForPage } from './EbookCanvasEditor';
 import PageThumbnail from './PageThumbnail';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ChatMessage {
   id: string;
