@@ -2320,7 +2320,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               )}
               {/* Unified toolbar — only visible when element is selected and user can edit */}
               {selectedElement && canEdit && (
-<div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" onMouseDown={e => { e.stopPropagation(); if (editingTextId) e.preventDefault(); }} onClick={e => e.stopPropagation()}>
+<div className="h-10 border-b border-foreground/[0.04] bg-background flex items-center justify-center px-3 shrink-0" style={{ paddingLeft: panelOffset > 0 ? panelOffset : undefined, paddingRight: panelOffset < 0 ? -panelOffset : undefined }} onMouseDown={e => { e.stopPropagation(); if (editingTextId) e.preventDefault(); }} onClick={e => e.stopPropagation()}>
                 <div className="flex items-center gap-1">
                 {/* Select & Add Image — hidden for text elements */}
                 {selectedElement?.type !== 'text' && (
