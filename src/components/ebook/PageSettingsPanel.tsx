@@ -172,9 +172,9 @@ const PageSettingsPanel = ({
     {/* Tabs: Director | Format | Pages */}
     <div className="flex border-b border-foreground/[0.04] shrink-0">
       {([
-        { id: 'director' as const, label: 'Director', icon: Brain },
-        { id: 'format' as const, label: 'Format', icon: SlidersHorizontal },
         { id: 'pages' as const, label: 'Pages', icon: Files },
+        { id: 'format' as const, label: 'Format', icon: SlidersHorizontal },
+        { id: 'director' as const, label: 'Director', icon: Brain },
       ]).map(tab => (
         <button key={tab.id}
           className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${rightTab === tab.id ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}
