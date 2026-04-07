@@ -401,22 +401,31 @@ const PageSettingsPanel = ({
           </div>
 
           {/* ═══ 3. QUICK ACTIONS (horizontal pills) ═══ */}
+          {/* ═══ 3. QUICK ACTIONS ═══ */}
           <div className="px-3 py-3 border-b border-foreground/[0.04]">
             <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-1 mb-2 block">Quick Actions</span>
-            <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-1">
               {[
-                { label: 'Make persuasive', icon: Zap },
-                { label: 'Improve clarity', icon: Eye },
-                { label: 'Add visual', icon: ImageIcon },
-                { label: 'Shorten', icon: MinusCircle },
-                { label: 'Expand', icon: FileText },
-                { label: 'Change tone', icon: MessageSquare },
+                { label: 'Improve Writing', desc: 'Enhance clarity and flow', icon: Sparkles },
+                { label: 'Fix Spelling & Grammar', desc: 'Correct errors automatically', icon: Check },
+                { label: 'Make Shorter', desc: 'Condense while keeping meaning', icon: MinusCircle },
+                { label: 'Make Longer', desc: 'Expand with more detail', icon: ArrowDownToLine },
+                { label: 'Make Persuasive', desc: 'Increase conversion impact', icon: Zap },
+                { label: 'Improve Clarity', desc: 'Sharpen readability', icon: Eye },
+                { label: 'Change Tone', desc: 'Adjust writing style', icon: MessageSquare },
+                { label: 'Rewrite in Plain Language', desc: 'Simplify complex text', icon: FileText },
+                { label: 'Change Focus', desc: 'Shift emphasis or perspective', icon: Target },
+                { label: 'Simplify Language', desc: 'Use simpler words and sentences', icon: BookOpen },
+                { label: 'Add Visual', desc: 'Insert supporting imagery', icon: ImageIcon },
               ].map(a => (
                 <button key={a.label}
-                  onClick={() => handleInsightToChat(a.label, `Apply "${a.label}" to the current page content`)}
-                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/[0.06] text-[10px] font-medium text-foreground hover:border-accent/30 hover:bg-accent/[0.04] transition-colors">
-                  <a.icon className="w-3 h-3 text-muted-foreground" />
-                  {a.label}
+                  onClick={() => handleInsightToChat(a.label, a.desc)}
+                  className="flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors group">
+                  <a.icon className="w-4 h-4 text-muted-foreground shrink-0 group-hover:text-accent transition-colors" />
+                  <div className="min-w-0">
+                    <p className="text-[11px] font-semibold text-foreground leading-tight">{a.label}</p>
+                    <p className="text-[10px] text-muted-foreground leading-snug">{a.desc}</p>
+                  </div>
                 </button>
               ))}
             </div>
