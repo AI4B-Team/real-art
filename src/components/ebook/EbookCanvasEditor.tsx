@@ -2327,7 +2327,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   <>
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => { setActiveTool('select'); setSelectedElementId(null); }}
-                        className={`p-1.5 rounded transition-colors ${activeTool === 'select' ? 'bg-accent/10 text-accent' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
+                        className={`p-1.5 rounded transition-colors ${activeTool === 'select' ? 'bg-foreground/[0.08] text-foreground' : 'text-muted-foreground hover:bg-foreground/[0.05] hover:text-foreground'}`}>
                         <MousePointer2 className="w-4 h-4" />
                       </button>
                     </TooltipTrigger><TooltipContent>Select (V)</TooltipContent></Tooltip>
