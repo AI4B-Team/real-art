@@ -236,7 +236,7 @@ const PageSettingsPanel = ({
                 {[
                   { icon: Target, color: 'text-amber-500', bg: 'bg-amber-500/10', title: 'Your headline is weak compared to top ebooks', desc: 'AI detected low keyword impact. Stronger headlines get 2× more reads.', action: 'Rewrite Headline →' },
                   { icon: ImageIcon, color: 'text-destructive', bg: 'bg-destructive/10', title: 'Missing visuals (hurting engagement)', desc: 'Adding an image or chart can increase engagement by up to 40%.', action: 'Add Visual →' },
-                  { icon: FileText, color: 'text-violet-500', bg: 'bg-violet-500/10', title: 'This page is too text-heavy', desc: 'Break content into shorter sections to improve readability by 25%.', action: 'Simplify Text →' },
+                  { icon: FileText, color: 'text-blue-500', bg: 'bg-blue-500/10', title: 'This page is too text-heavy', desc: 'Break content into shorter sections to improve readability by 25%.', action: 'Simplify Text →' },
                 ].map((s, i) => (
                   <div key={i} className="p-3 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] space-y-1.5">
                     <div className="flex items-start gap-2">
