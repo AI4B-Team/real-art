@@ -581,6 +581,116 @@ const PageSettingsPanel = ({
         </div>
     )}
 
+    {/* === PAGES TAB === */}
+    {rightTab === 'pages' && (
+      <div className="flex-1 overflow-y-auto p-2.5 space-y-3">
+        {pages.map((page, i) => {
+          const isCoverOrBack = page.type === 'cover' || page.type === 'back';
+          return (
+            <div key={page.id} className="group relative">
+              <div className="flex items-start gap-2">
+                <span className={`text-xs font-medium mt-1 w-5 text-right shrink-0 ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
+                  {i + 1}
+                </span>
+                <div
+                  draggable={!isCoverOrBack}
+                  onDragStart={() => { if (!isCoverOrBack) setDraggedIndex(i); }}
+                  onDragOver={e => { e.preventDefault(); setDragOverIndex(i); }}
+                  onDragEnd={() => {
+                    if (draggedIndex !== null && dragOverIndex !== null && draggedIndex !== dragOverIndex) {
+                      const arr = [...pages];
+                      const [moved] = arr.splice(draggedIndex, 1);
+                      arr.splice(dragOverIndex, 0, moved);
+                      onPagesChange(arr);
+                    }
+                    setDraggedIndex(null);
+                    setDragOverIndex(null);
+                  }}
+                  onClick={() => onPageSelect(page.id)}
+                  className={`flex-1 cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
+                    selectedPageId === page.id ? 'border-accent shadow-sm' : 'border-transparent hover:border-foreground/[0.1]'
+                  } ${dragOverIndex === i ? 'border-accent/50' : ''}`}
+                >
+                  <div className="aspect-[3/4] bg-foreground/[0.03] relative">
+                    <PageThumbnail elements={getElementsForPage(page, pages, bookTitle)} />
+                    {page.locked && <Lock className="w-3 h-3 text-muted-foreground absolute top-1 right-1" />}
+                  </div>
+                  <p className="text-[10px] font-medium text-foreground truncate px-1.5 py-1 bg-background">{page.title}</p>
+                </div>
+
+                {/* Hover action buttons */}
+                {!isCoverOrBack && (
+                <div className="flex flex-col gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity mt-1">
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => {
+                        const dup = { ...page, id: crypto.randomUUID(), title: page.title + ' (copy)' };
+                        const arr = [...pages];
+                        arr.splice(i + 1, 0, dup);
+                        onPagesChange(arr);
+                        toast.success('Page duplicated');
+                      }} className="p-1 rounded hover:bg-foreground/[0.05] text-muted-foreground">
+                        <Copy className="w-3 h-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">Duplicate</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => {
+                        if (i === 0) return;
+                        const arr = [...pages];
+                        [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]];
+                        onPagesChange(arr);
+                      }} className="p-1 rounded hover:bg-foreground/[0.05] text-muted-foreground">
+                        <ChevronUp className="w-3 h-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">Move Up</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => {
+                        if (i === pages.length - 1) return;
+                        const arr = [...pages];
+                        [arr[i], arr[i + 1]] = [arr[i + 1], arr[i]];
+                        onPagesChange(arr);
+                      }} className="p-1 rounded hover:bg-foreground/[0.05] text-muted-foreground">
+                        <ChevronDown className="w-3 h-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">Move Down</TooltipContent>
+                  </Tooltip>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button onClick={() => {
+                        if (pages.length <= 1) return;
+                        onPagesChange(pages.filter(p => p.id !== page.id));
+                        if (selectedPageId === page.id) onPageSelect(pages[0].id);
+                        toast.success('Page deleted');
+                      }} className="p-1 rounded hover:bg-foreground/[0.05] text-muted-foreground hover:text-destructive">
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent side="left">Delete</TooltipContent>
+                  </Tooltip>
+                </div>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        <button onClick={() => {
+          const newPage = { id: crypto.randomUUID(), title: `Page ${pages.length + 1}`, type: 'chapter' as const };
+          onPagesChange([...pages, newPage]);
+          onPageSelect(newPage.id);
+          toast.success('Page added');
+        }} className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+          <Plus className="w-3.5 h-3.5" />Add Page
+        </button>
+      </div>
+    )}
+
         {/* Bottom navigation */}
         <div className="border-t border-foreground/[0.04] px-3 py-2 flex items-center justify-center gap-1">
           <button onClick={() => goTo('first')} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
