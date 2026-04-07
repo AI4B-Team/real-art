@@ -3,6 +3,9 @@ import {
   ChevronDown, ChevronUp, ChevronLeft, Plus,
   Maximize2, LayoutGrid as LayoutGridIcon, Palette, Square, SlidersHorizontal,
   Upload, ImageIcon, ChevronsLeft, ChevronsRight, ChevronRight,
+  Brain, Target, Eye, FileText, Zap, BookOpen, MessageSquare,
+  MinusCircle, ArrowDownToLine, Check, Sparkles, RefreshCw,
+  PenTool, Layers, Wand2, Type, Mic, Globe,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
