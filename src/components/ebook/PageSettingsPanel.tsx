@@ -292,8 +292,8 @@ const PageSettingsPanel = ({
       </div>
     )}
 
-    {/* === FORMAT MODE (when design is active) === */}
-    {sidebarMode !== 'ai' && (
+    {/* === FORMAT TAB === */}
+    {rightTab === 'format' && (
         <div className="flex-1 overflow-y-auto">
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
