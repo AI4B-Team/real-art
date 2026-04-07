@@ -900,9 +900,9 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* ─── UPGRADE ─── */}
+      {/* ─── MEDIA ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
-        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Upgrade</span>
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Media</span>
       </div>
 
       {/* Images */}
