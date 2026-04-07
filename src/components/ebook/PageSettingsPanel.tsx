@@ -6,6 +6,7 @@ import {
   Brain, Target, Eye, FileText, Zap, BookOpen, MessageSquare,
   MinusCircle, ArrowDownToLine, Check, Sparkles, RefreshCw,
   PenTool, Layers, Wand2, Type, Mic, Globe,
+  Lock, GripVertical, Copy, Trash2, Files,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
@@ -13,6 +14,8 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { toast } from 'sonner';
 import type { Page } from './EbookCanvasEditor';
+import { getElementsForPage } from './EbookCanvasEditor';
+import PageThumbnail from './PageThumbnail';
 
 interface PageSettingsPanelProps {
   pages: Page[];
