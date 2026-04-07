@@ -1751,7 +1751,7 @@ const NewEbookPage = () => {
                   }
                 }}
                 panelOffset={(() => {
-                  const leftW = (!isGridView && !isLeftPanelCollapsed && !showBookSettingsDialog) ? 288 : 0;
+                  const leftW = (!isGridView && !isLeftPanelCollapsed && !showBookSettingsDialog) ? 320 : 0;
                   const rightW = (!isGridView && showPageSettings && !isRightPanelCollapsed && !showBookSettingsDialog) ? 320 : 0;
                   return (rightW - leftW) / 2;
                 })()}
