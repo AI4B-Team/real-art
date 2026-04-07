@@ -637,25 +637,34 @@ const EbookDesignSidebar = ({
   );
 
   return (
-    <div className="w-72 border-l border-foreground/[0.04] bg-background overflow-y-auto flex flex-col">
-      {/* Header with AI button */}
-      <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
-        <span className="text-xs font-bold text-foreground uppercase tracking-wider">Design</span>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button
-              onClick={() => onAIClick?.()}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-accent/15 hover:bg-accent/25 text-accent text-[10px] font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              AI
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>Open AI Assistant</TooltipContent>
-        </Tooltip>
+    <div className="w-72 border-l border-foreground/[0.04] bg-background flex flex-col" style={{ height: '100%' }}>
+      {/* Mode toggle tabs: Design | AI */}
+      <div className="flex border-b border-foreground/[0.04] shrink-0">
+        <button onClick={() => onSidebarModeChange?.('design')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${sidebarMode === 'design' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}>
+          <Palette className="w-3.5 h-3.5" /> Design
+        </button>
+        <button onClick={() => onSidebarModeChange?.('ai')}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${sidebarMode === 'ai' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}>
+          <Sparkles className="w-3.5 h-3.5" /> AI
+        </button>
       </div>
 
+      {/* AI Mode: AIVA Panel */}
+      {sidebarMode === 'ai' && (
+        <AIVAPanel
+          selectedPageId={selectedChapterId}
+          selectedPageTitle={selectedPageTitle || chapters.find(c => c.id === selectedChapterId)?.title}
+          pageCount={pageCount || chapters.length}
+          pageIndex={pageIndex ?? chapters.findIndex(c => c.id === selectedChapterId)}
+          onOpenImageSection={onOpenImageSection}
+        />
+      )}
+
+      {/* Design Mode */}
+      {sidebarMode === 'design' && (<>
       {/* ─── STRUCTURE ─── */}
+      <div className="flex-1 overflow-y-auto">
       <div className="px-3 pt-3 pb-1">
         <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Structure</span>
       </div>
