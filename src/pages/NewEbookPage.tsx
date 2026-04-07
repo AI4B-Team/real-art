@@ -1751,9 +1751,12 @@ const NewEbookPage = () => {
                   }
                 }}
                 panelOffset={(() => {
-                  const leftW = (!isGridView && !isLeftPanelCollapsed && !showBookSettingsDialog) ? 320 : 0;
-                  const rightW = (!isGridView && showPageSettings && !isRightPanelCollapsed && !showBookSettingsDialog) ? 320 : 0;
-                  return (rightW - leftW) / 2;
+                  if (sidebarMode === 'ai' && !isLeftPanelCollapsed && !isGridView && !showBookSettingsDialog) {
+                    const leftW = 320;
+                    const rightW = (showPageSettings && !isRightPanelCollapsed) ? 320 : 0;
+                    return (rightW - leftW) / 2;
+                  }
+                  return 0;
                 })()}
               />
               )}
