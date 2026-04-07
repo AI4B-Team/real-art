@@ -413,7 +413,7 @@ const PageSettingsPanel = ({
                 { label: 'Change tone', icon: MessageSquare },
               ].map(a => (
                 <button key={a.label}
-                  onClick={() => toast.success(`"${a.label}" applied`)}
+                  onClick={() => handleInsightToChat(a.label, `Apply "${a.label}" to the current page content`)}
                   className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-foreground/[0.04] border border-foreground/[0.06] text-[10px] font-medium text-foreground hover:border-accent/30 hover:bg-accent/[0.04] transition-colors">
                   <a.icon className="w-3 h-3 text-muted-foreground" />
                   {a.label}
@@ -423,7 +423,123 @@ const PageSettingsPanel = ({
           </div>
           </>)}
 
-          {mode === 'settings' && (<>
+          {/* ═══ CHAT MODE ═══ */}
+          {mode === 'chat' && (
+            <div className="flex flex-col" style={{ height: 'calc(100vh - 200px)' }}>
+              {/* Pinned messages */}
+              {currentPageMessages.filter(m => m.pinned).length > 0 && (
+                <div className="px-3 py-2 border-b border-foreground/[0.04] bg-accent/[0.03]">
+                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                    <Pin className="w-3 h-3" /> Pinned
+                  </span>
+                  {currentPageMessages.filter(m => m.pinned).map(m => (
+                    <div key={m.id} className="mt-1.5 p-2 rounded-lg bg-accent/[0.05] border border-accent/20">
+                      <p className="text-[11px] text-foreground line-clamp-2">{m.content}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Message thread */}
+              <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
+                {currentPageMessages.length === 0 && (
+                  <div className="text-center py-8">
+                    <Sparkles className="w-8 h-8 mx-auto text-accent/40 mb-3" />
+                    <p className="text-sm font-semibold text-foreground">AI Creative Director</p>
+                    <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed max-w-[200px] mx-auto">
+                      Ask me anything about this page. I'll analyze, rewrite, and optimize your content.
+                    </p>
+                    <div className="mt-4 space-y-1.5">
+                      {['What needs fixing on this page?', 'Rewrite my headline', 'Make this more engaging'].map(q => (
+                        <button key={q} onClick={() => sendChatMessage(q)}
+                          className="w-full text-left px-3 py-2 rounded-lg bg-foreground/[0.03] border border-foreground/[0.06] text-[11px] text-foreground hover:border-accent/30 hover:bg-accent/[0.04] transition-colors">
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {currentPageMessages.map(msg => (
+                  <div key={msg.id} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`max-w-[90%] ${msg.role === 'user'
+                      ? 'bg-accent text-white rounded-2xl rounded-br-md px-3 py-2'
+                      : 'bg-foreground/[0.04] border border-foreground/[0.06] rounded-2xl rounded-bl-md px-3 py-2.5'
+                    }`}>
+                      <p className={`text-[11px] leading-relaxed whitespace-pre-wrap ${msg.role === 'user' ? '' : 'text-foreground'}`}>
+                        {msg.content}
+                      </p>
+                      {msg.applied && (
+                        <div className="flex items-center gap-1 mt-1.5 text-emerald-500">
+                          <Check className="w-3 h-3" />
+                          <span className="text-[9px] font-semibold">Applied</span>
+                        </div>
+                      )}
+                      {msg.role === 'ai' && !msg.applied && (
+                        <div className="flex items-center gap-1 mt-2 pt-1.5 border-t border-foreground/[0.06]">
+                          <button onClick={() => markApplied(msg.id)}
+                            className="flex items-center gap-0.5 px-2 py-1 rounded-md text-[9px] font-semibold text-accent hover:bg-accent/10 transition-colors">
+                            <Check className="w-3 h-3" /> Apply
+                          </button>
+                          <button onClick={() => toggleMessagePin(msg.id)}
+                            className={`flex items-center gap-0.5 px-2 py-1 rounded-md text-[9px] font-semibold transition-colors ${msg.pinned ? 'text-amber-500 bg-amber-500/10' : 'text-muted-foreground hover:bg-foreground/[0.05]'}`}>
+                            <Pin className="w-3 h-3" /> {msg.pinned ? 'Unpin' : 'Pin'}
+                          </button>
+                          <button onClick={() => sendChatMessage(`Regenerate: ${msg.content.slice(0, 50)}`)}
+                            className="flex items-center gap-0.5 px-2 py-1 rounded-md text-[9px] font-semibold text-muted-foreground hover:bg-foreground/[0.05] transition-colors">
+                            <RefreshCw className="w-3 h-3" /> Redo
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+
+                {isChatLoading && (
+                  <div className="flex justify-start">
+                    <div className="bg-foreground/[0.04] border border-foreground/[0.06] rounded-2xl rounded-bl-md px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-accent" />
+                        <span className="text-[11px] text-muted-foreground">Analyzing...</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+
+              {/* Chat input */}
+              <div className="border-t border-foreground/[0.04] p-3">
+                <div className="flex items-end gap-2">
+                  <textarea
+                    value={chatInput}
+                    onChange={e => setChatInput(e.target.value)}
+                    onKeyDown={e => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendChatMessage(chatInput);
+                      }
+                    }}
+                    placeholder="Ask AI anything about this page..."
+                    rows={1}
+                    className="flex-1 resize-none rounded-xl border border-foreground/[0.08] bg-foreground/[0.02] px-3 py-2 text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-accent/40 transition-colors"
+                    style={{ maxHeight: '80px', minHeight: '36px' }}
+                  />
+                  <button
+                    onClick={() => sendChatMessage(chatInput)}
+                    disabled={!chatInput.trim() || isChatLoading}
+                    className="p-2 rounded-xl bg-accent text-white hover:bg-accent/90 disabled:opacity-40 transition-colors shrink-0"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <p className="text-[9px] text-muted-foreground mt-1.5 text-center">
+                  Page {(pages.findIndex(p => p.id === selectedPageId) + 1) || 1} · {currentPageMessages.length} messages
+                </p>
+              </div>
+            </div>
+          )}
+
 
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
