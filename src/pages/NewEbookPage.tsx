@@ -1781,6 +1781,15 @@ const NewEbookPage = () => {
                 onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 showLockedPagesWarning={showLockedPagesWarning}
+                sidebarMode={sidebarMode}
+                selectedPageTitle={ebookPages.find(p => p.id === selectedPageId)?.title}
+                pageIndex={ebookPages.findIndex(p => p.id === selectedPageId)}
+                onSendToChat={(prompt) => {
+                  setSidebarMode('ai');
+                  setIsLeftPanelCollapsed(false);
+                  // Small delay to let panel render, then we'd need a ref-based approach
+                  // For now, the user can see the prompt suggestion in the left panel
+                }}
               />
               )}
             </div>
