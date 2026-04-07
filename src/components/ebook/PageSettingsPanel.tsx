@@ -573,6 +573,7 @@ const PageSettingsPanel = ({
             <p className="text-[11px] text-muted-foreground italic">"Your book will be ready to publish, share, or sell."</p>
           </div>
         </div>
+    )}
 
         {/* Bottom navigation */}
         <div className="border-t border-foreground/[0.04] px-3 py-2 flex items-center justify-center gap-1">
