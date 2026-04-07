@@ -26,6 +26,10 @@ interface PageSettingsPanelProps {
   onDimensionsChange?: (w: number, h: number) => void;
   onOpenImageSection?: () => void;
   showLockedPagesWarning?: (actionLabel: string, onApplyAll: () => void, onApplySkipping: () => void) => boolean;
+  sidebarMode?: 'design' | 'ai';
+  selectedPageTitle?: string;
+  pageIndex?: number;
+  onSendToChat?: (prompt: string) => void;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
