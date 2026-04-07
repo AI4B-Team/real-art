@@ -294,7 +294,7 @@ const PageSettingsPanel = ({
           {/* ═══ 3. QUICK ACTIONS (horizontal pills) ═══ */}
           <div className="px-3 py-3 border-b border-foreground/[0.04]">
             <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-1 mb-2 block">Quick Actions</span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-col gap-1.5">
               {[
                 { label: 'Make persuasive', icon: Zap },
                 { label: 'Improve clarity', icon: Eye },
