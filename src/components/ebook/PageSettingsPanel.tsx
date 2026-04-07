@@ -163,14 +163,131 @@ const PageSettingsPanel = ({
   return (
     <TooltipProvider delayDuration={200}>
       <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
-        {/* Header */}
-        <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
-          <div className="flex items-center gap-1.5">
-            <SlidersHorizontal className="w-3.5 h-3.5 text-muted-foreground" />
-            <span className="text-xs font-bold text-foreground uppercase tracking-wider">Format</span>
+    {/* Tabs: Director | Format */}
+    <div className="flex border-b border-foreground/[0.04] shrink-0">
+      <button
+        className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${sidebarMode === 'ai' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}
+        onClick={() => {/* Director tab is auto-shown when AI mode */}}
+      >
+        <Brain className="w-3.5 h-3.5" /> Director
+      </button>
+      <button
+        className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${sidebarMode !== 'ai' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}
+        onClick={() => {/* Format tab is auto-shown when design mode */}}
+      >
+        <SlidersHorizontal className="w-3.5 h-3.5" /> Format
+      </button>
+    </div>
+
+    {/* === DIRECTOR MODE (when AI is active) === */}
+    {sidebarMode === 'ai' && (
+      <div className="flex-1 overflow-y-auto">
+        {/* Performance Snapshot */}
+        <div className="px-4 py-3 border-b border-foreground/[0.04]">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Page Performance</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-2xl font-black text-foreground leading-none">82</span>
+              <span className="text-[10px] text-muted-foreground">/100</span>
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit mb-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+            <span className="text-[10px] font-semibold text-amber-600">Good, but underperforming</span>
+          </div>
+          <p className="text-[11px] text-muted-foreground leading-snug italic">
+            "This page is visually strong but lacks a clear hook and engagement driver."
+          </p>
+          <div className="mt-3 space-y-1.5">
+            {[
+              { label: 'Readability', score: 88 },
+              { label: 'Engagement', score: 76 },
+              { label: 'Visual Balance', score: 82 },
+            ].map(m => {
+              const barColor = m.score >= 85 ? 'bg-emerald-500' : m.score >= 70 ? 'bg-amber-500' : 'bg-destructive';
+              return (
+                <div key={m.label} className="flex items-center gap-2">
+                  <span className="text-[10px] text-muted-foreground w-20 shrink-0">{m.label}</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-foreground/[0.06] overflow-hidden">
+                    <div className={`h-full rounded-full ${barColor} transition-all duration-500`} style={{ width: `${m.score}%` }} />
+                  </div>
+                  <span className="text-[10px] font-semibold text-foreground w-6 text-right">{m.score}</span>
+                </div>
+              );
+            })}
           </div>
         </div>
 
+        {/* Priority Fixes */}
+        <div className="border-b border-foreground/[0.04]">
+          <div className="flex items-center justify-between px-4 py-2">
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Priority Fixes</span>
+            <span className="text-[10px] font-bold text-destructive bg-destructive/10 px-2 py-0.5 rounded-full">3 Items</span>
+          </div>
+          <div className="px-3 pb-3 space-y-2">
+            {[
+              { icon: Target, color: 'text-amber-500', bg: 'bg-amber-500/10', title: 'Weak headline — low keyword impact', desc: 'Stronger headlines get 2× more reads.', action: 'Rewrite' },
+              { icon: Eye, color: 'text-destructive', bg: 'bg-destructive/10', title: 'Missing visual hierarchy', desc: 'No clear focal point hurting engagement by 40%.', action: 'Add Visual' },
+              { icon: FileText, color: 'text-blue-500', bg: 'bg-blue-500/10', title: 'Text too dense', desc: 'Break into shorter sections for 25% better readability.', action: 'Simplify' },
+            ].map((s, i) => (
+              <div key={i} className="p-2.5 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] flex items-start gap-2">
+                <div className={`p-1 rounded-md ${s.bg} mt-0.5 shrink-0`}>
+                  <s.icon className={`w-3.5 h-3.5 ${s.color}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
+                  <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug">{s.desc}</p>
+                </div>
+                <button
+                  onClick={() => onSendToChat?.(`${s.action}: ${s.desc}`)}
+                  className="text-[10px] font-bold text-accent hover:underline shrink-0 mt-0.5"
+                >
+                  {s.action} →
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="px-3 py-3">
+          <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-1 mb-2 block">Quick Actions</span>
+          <div className="flex flex-col gap-1">
+            {[
+              { label: 'Improve Writing', desc: 'Enhance clarity and flow', icon: Sparkles },
+              { label: 'Fix Spelling & Grammar', desc: 'Correct errors automatically', icon: Check },
+              { label: 'Make Shorter', desc: 'Condense while keeping meaning', icon: MinusCircle },
+              { label: 'Make Longer', desc: 'Expand with more detail', icon: ArrowDownToLine },
+              { label: 'Make Persuasive', desc: 'Increase conversion impact', icon: Zap },
+              { label: 'Improve Clarity', desc: 'Sharpen readability', icon: Eye },
+              { label: 'Change Tone', desc: 'Adjust writing style', icon: MessageSquare },
+              { label: 'Rewrite in Plain Language', desc: 'Simplify complex text', icon: FileText },
+              { label: 'Change Focus', desc: 'Shift emphasis or perspective', icon: Target },
+              { label: 'Simplify Language', desc: 'Use simpler words and sentences', icon: BookOpen },
+              { label: 'Add Visual', desc: 'Insert supporting imagery', icon: ImageIcon },
+              { label: 'Rewrite Section', desc: 'Completely rewrite selected text', icon: RefreshCw },
+              { label: 'Add Heading', desc: 'Generate a compelling heading', icon: Type },
+              { label: 'Generate Summary', desc: 'Create a concise summary', icon: Layers },
+              { label: 'Add Call-to-Action', desc: 'Insert a persuasive CTA', icon: Wand2 },
+              { label: 'Translate', desc: 'Translate to another language', icon: Globe },
+            ].map(a => (
+              <button key={a.label}
+                onClick={() => onSendToChat?.(`${a.label}: ${a.desc}`)}
+                className="flex items-center gap-2.5 w-full px-2.5 py-2 rounded-lg text-left hover:bg-foreground/[0.04] transition-colors group">
+                <a.icon className="w-4 h-4 text-muted-foreground shrink-0 group-hover:text-accent transition-colors" />
+                <div className="min-w-0">
+                  <p className="text-[11px] font-semibold text-foreground leading-tight">{a.label}</p>
+                  <p className="text-[10px] text-muted-foreground leading-snug">{a.desc}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    )}
+
+    {/* === FORMAT MODE (when design is active) === */}
+    {sidebarMode !== 'ai' && (
         <div className="flex-1 overflow-y-auto">
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
