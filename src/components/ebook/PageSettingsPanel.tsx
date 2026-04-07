@@ -97,6 +97,96 @@ const PageSettingsPanel = ({
   const [applyTo, setApplyTo] = useState<'current' | 'all'>('current');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Chat state
+  const [chatMessages, setChatMessages] = useState<Record<string, ChatMessage[]>>({});
+  const [chatInput, setChatInput] = useState('');
+  const [isChatLoading, setIsChatLoading] = useState(false);
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  const currentPageMessages = chatMessages[selectedPageId || ''] || [];
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [currentPageMessages.length]);
+
+  const sendChatMessage = useCallback(async (content: string) => {
+    if (!content.trim() || !selectedPageId) return;
+    const userMsg: ChatMessage = {
+      id: `msg-${Date.now()}`,
+      role: 'user',
+      content: content.trim(),
+      timestamp: new Date(),
+    };
+    setChatMessages(prev => ({
+      ...prev,
+      [selectedPageId]: [...(prev[selectedPageId] || []), userMsg],
+    }));
+    setChatInput('');
+    setIsChatLoading(true);
+
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-text-edit', {
+        body: { action: 'custom', text: '', prompt: content.trim(), customInstruction: content.trim() },
+      });
+      const aiContent = data?.result || 'I analyzed your page. Here are my recommendations based on the current content.';
+      const aiMsg: ChatMessage = {
+        id: `msg-${Date.now()}-ai`,
+        role: 'ai',
+        content: typeof aiContent === 'string' ? aiContent : JSON.stringify(aiContent),
+        timestamp: new Date(),
+        actions: [
+          { label: 'Apply to page', id: 'apply' },
+          { label: 'Regenerate', id: 'regenerate' },
+        ],
+      };
+      setChatMessages(prev => ({
+        ...prev,
+        [selectedPageId]: [...(prev[selectedPageId] || []), aiMsg],
+      }));
+    } catch {
+      const errMsg: ChatMessage = {
+        id: `msg-${Date.now()}-err`,
+        role: 'ai',
+        content: 'Sorry, I encountered an error. Please try again.',
+        timestamp: new Date(),
+      };
+      setChatMessages(prev => ({
+        ...prev,
+        [selectedPageId]: [...(prev[selectedPageId] || []), errMsg],
+      }));
+    } finally {
+      setIsChatLoading(false);
+    }
+  }, [selectedPageId]);
+
+  const handleInsightToChat = useCallback((action: string, desc: string) => {
+    onModeChange?.('chat');
+    const prompt = `${action}: ${desc}`;
+    // Small delay to let tab switch render
+    setTimeout(() => sendChatMessage(prompt), 100);
+  }, [onModeChange, sendChatMessage]);
+
+  const toggleMessagePin = useCallback((msgId: string) => {
+    if (!selectedPageId) return;
+    setChatMessages(prev => ({
+      ...prev,
+      [selectedPageId]: (prev[selectedPageId] || []).map(m =>
+        m.id === msgId ? { ...m, pinned: !m.pinned } : m
+      ),
+    }));
+  }, [selectedPageId]);
+
+  const markApplied = useCallback((msgId: string) => {
+    if (!selectedPageId) return;
+    setChatMessages(prev => ({
+      ...prev,
+      [selectedPageId]: (prev[selectedPageId] || []).map(m =>
+        m.id === msgId ? { ...m, applied: true } : m
+      ),
+    }));
+    toast.success('Applied to page');
+  }, [selectedPageId]);
+
   const selectedPage = pages.find(p => p.id === selectedPageId);
 
   const updatePage = useCallback((pageId: string, patch: Partial<Page>) => {
