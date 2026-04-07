@@ -833,9 +833,9 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* ─── CREATE ─── */}
+      {/* ─── ADD ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
-        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Create</span>
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Add</span>
       </div>
 
       {/* Text */}
