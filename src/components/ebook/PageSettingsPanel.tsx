@@ -319,14 +319,9 @@ const PageSettingsPanel = ({
               ))}
             </div>
           </div>
+          </>)}
 
-          {/* ═══ SECTION: PAGE SETTINGS ═══ */}
-          <div className="border-t border-foreground/[0.06]">
-            <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.12] border-l-2 border-l-accent">
-              <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Page Settings</span>
-            </div>
-          </div>
+          {mode === 'settings' && (<>
 
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
