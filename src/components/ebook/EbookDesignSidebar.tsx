@@ -663,6 +663,26 @@ const EbookDesignSidebar = ({
 
       {/* Design Mode */}
       {sidebarMode === 'design' && (<>
+      {/* ─── Smart Action Row ─── */}
+      <div className="px-3 pt-3 pb-2 border-b border-foreground/[0.04]">
+        <div className="flex items-center gap-1.5 mb-2">
+          <Sparkles className="w-3 h-3 text-accent" />
+          <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Recommended Next</span>
+        </div>
+        <div className="flex flex-wrap gap-1.5">
+          {[
+            { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Headline', fontSize: 24 }); toast.success('Headline added'); } },
+            { label: 'Add Image', action: () => { onAddElement?.('image'); toast.success('Image added'); } },
+            { label: 'Add Section', action: () => { onAddElement?.('text', { content: 'New section content', fontSize: 14 }); toast.success('Section added'); } },
+          ].map(btn => (
+            <button key={btn.label} onClick={btn.action}
+              className="px-2.5 py-1.5 rounded-lg bg-accent/[0.06] border border-accent/20 text-[10px] font-semibold text-accent hover:bg-accent/[0.12] transition-colors">
+              {btn.label}
+            </button>
+          ))}
+        </div>
+      </div>
+
       {/* ─── STRUCTURE ─── */}
       <div className="flex-1 overflow-y-auto">
       <div className="px-3 pt-3 pb-1">
@@ -813,9 +833,9 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* ─── ADD ─── */}
+      {/* ─── CREATE ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
-        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Add</span>
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Create</span>
       </div>
 
       {/* Text */}
@@ -880,9 +900,9 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* ─── ENHANCE ─── */}
+      {/* ─── UPGRADE ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
-        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Enhance</span>
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Upgrade</span>
       </div>
 
       {/* Images */}
