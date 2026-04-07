@@ -310,12 +310,16 @@ const PageSettingsPanel = ({
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="w-64 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
+      <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
         {/* Mode tabs */}
         <div className="flex border-b border-foreground/[0.04]">
           <button onClick={() => onModeChange?.('ai')}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${mode === 'ai' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}>
             <Brain className="w-3.5 h-3.5" /> Director
+          </button>
+          <button onClick={() => onModeChange?.('chat')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${mode === 'chat' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}>
+            <MessageSquare className="w-3.5 h-3.5" /> Chat
           </button>
           <button onClick={() => onModeChange?.('settings')}
             className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${mode === 'settings' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}>
