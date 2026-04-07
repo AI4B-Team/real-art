@@ -11,7 +11,9 @@ import {
   MonitorPlay, AudioLines, MousePointerClick, Layers3, Languages,
   Shuffle, SlidersHorizontal, Play, Users, Library,
   Brain, Award, BookOpen, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch,
+  Palette,
 } from 'lucide-react';
+import AIVAPanel from './AIVAPanel';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
