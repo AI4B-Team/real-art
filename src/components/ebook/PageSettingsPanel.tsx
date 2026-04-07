@@ -608,6 +608,7 @@ const PageSettingsPanel = ({
           <div className="mt-3 p-3 mx-4 mb-4 rounded-xl bg-foreground/[0.02] border border-foreground/[0.04] text-center">
             <p className="text-[11px] text-muted-foreground italic">"Your book will be ready to publish, share, or sell."</p>
           </div>
+          </>)}
         </div>
 
         {/* Bottom navigation */}
