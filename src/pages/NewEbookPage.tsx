@@ -310,6 +310,7 @@ const NewEbookPage = () => {
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
   const [rightPanelMode, setRightPanelMode] = useState<'settings' | 'ai' | 'chat'>('settings');
+  const [sidebarMode, setSidebarMode] = useState<'design' | 'ai'>('design');
   const [pageWidth, setPageWidth] = useState(480);
   const [pageHeight, setPageHeight] = useState(640);
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
@@ -1561,11 +1562,13 @@ const NewEbookPage = () => {
                   });
                 }}
                 onSectionChange={handleSidebarSectionChange}
-                onAIClick={() => {
-                  setShowPageSettings(true);
-                  setManualPageSettings(true);
-                  setIsRightPanelCollapsed(false);
-                }}
+                onAIClick={() => setSidebarMode('ai')}
+                sidebarMode={sidebarMode}
+                onSidebarModeChange={setSidebarMode}
+                selectedPageTitle={ebookPages.find(p => p.id === selectedPageId)?.title}
+                pageCount={ebookPages.length}
+                pageIndex={ebookPages.findIndex(p => p.id === selectedPageId)}
+                onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
                 onReplaceImage={isReplacingImage ? (src) => canvasRef.current?.replaceImage(src) : null}
@@ -1741,11 +1744,10 @@ const NewEbookPage = () => {
                 onPageElementsChange={handlePageElementsChange}
                 onAiPanelToggle={(isOpen) => {
                   if (isOpen) {
-                    setRightPanelMode('ai');
-                    setIsRightPanelCollapsed(false);
-                    setShowPageSettings(true);
+                    setSidebarMode('ai');
+                    setIsLeftPanelCollapsed(false);
                   } else {
-                    setRightPanelMode('settings');
+                    setSidebarMode('design');
                   }
                 }}
                 panelOffset={(() => {
@@ -1779,8 +1781,6 @@ const NewEbookPage = () => {
                 onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 showLockedPagesWarning={showLockedPagesWarning}
-                mode={rightPanelMode}
-                onModeChange={setRightPanelMode}
               />
               )}
             </div>
