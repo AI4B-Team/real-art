@@ -1,0 +1,4 @@
+# Memory: features/apps/ebook-creator/editor-ai-assistant-panel
+Updated: now
+
+The eBook Studio right panel is a unified "AI Creative Director" panel that merges Smart Suggestions, Page Intelligence, and AI Assistant into one cohesive brain. The layout follows a conversion-driven hierarchy: 1. Performance Snapshot (score out of 100 with mini readability/engagement/visual-balance bars and a diagnostic one-liner), 2. Priority Fixes (ordered action cards with inline action buttons like Rewrite/Add Visual/Simplify), 3. Quick Actions (horizontal pills: Make persuasive, Improve clarity, Add visual, Shorten, Expand, Change tone), 4. Chat input at bottom (inside the per-page AI toolbar). Page Settings sits below the AI panel as a secondary section. There are no separate "Smart Suggestions" or "Page Intelligence" sections — everything is merged into the single AI panel.
