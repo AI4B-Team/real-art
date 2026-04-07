@@ -1731,7 +1731,7 @@ const NewEbookPage = () => {
                 onGridViewToggle={() => setIsGridView(false)}
                 findReplaceMode={findReplaceMode}
                 onFindReplaceModeChange={setFindReplaceMode}
-                onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
+                onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); setRightPanelMode('settings'); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 onReplaceStateChange={setIsReplacingImage}
                 pageWidth={pageWidth}
