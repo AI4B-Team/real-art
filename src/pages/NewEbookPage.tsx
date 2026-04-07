@@ -1667,7 +1667,7 @@ const NewEbookPage = () => {
               {!isGridView && !showBookSettingsDialog && (
                 <button onClick={() => setIsLeftPanelCollapsed(!isLeftPanelCollapsed)}
                   className="absolute top-1/2 -translate-y-1/2 z-10 w-5 h-10 bg-accent rounded-r-lg flex items-center justify-center hover:bg-accent/90 transition-colors"
-                  style={{ left: isLeftPanelCollapsed ? 0 : 288 }}>
+                  style={{ left: isLeftPanelCollapsed ? 0 : 320 }}>
                   <ChevronLeft className={`w-3 h-3 text-white transition-transform ${isLeftPanelCollapsed ? "rotate-180" : ""}`} />
                 </button>
               )}
@@ -1751,7 +1751,7 @@ const NewEbookPage = () => {
                   }
                 }}
                 panelOffset={(() => {
-                  const leftW = (!isGridView && !isLeftPanelCollapsed && !showBookSettingsDialog) ? 288 : 0;
+                  const leftW = (!isGridView && !isLeftPanelCollapsed && !showBookSettingsDialog) ? 320 : 0;
                   const rightW = (!isGridView && showPageSettings && !isRightPanelCollapsed && !showBookSettingsDialog) ? 320 : 0;
                   return (rightW - leftW) / 2;
                 })()}
