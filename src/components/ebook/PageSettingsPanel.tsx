@@ -169,24 +169,24 @@ const PageSettingsPanel = ({
   return (
     <TooltipProvider delayDuration={200}>
       <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
-    {/* Tabs: Director | Format */}
+    {/* Tabs: Director | Format | Pages */}
     <div className="flex border-b border-foreground/[0.04] shrink-0">
-      <button
-        className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${sidebarMode === 'ai' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}
-        onClick={() => {/* Director tab is auto-shown when AI mode */}}
-      >
-        <Brain className="w-3.5 h-3.5" /> Director
-      </button>
-      <button
-        className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${sidebarMode !== 'ai' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}
-        onClick={() => {/* Format tab is auto-shown when design mode */}}
-      >
-        <SlidersHorizontal className="w-3.5 h-3.5" /> Format
-      </button>
+      {([
+        { id: 'director' as const, label: 'Director', icon: Brain },
+        { id: 'format' as const, label: 'Format', icon: SlidersHorizontal },
+        { id: 'pages' as const, label: 'Pages', icon: Files },
+      ]).map(tab => (
+        <button key={tab.id}
+          className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-all ${rightTab === tab.id ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}
+          onClick={() => setRightTab(tab.id)}
+        >
+          <tab.icon className="w-3.5 h-3.5" /> {tab.label}
+        </button>
+      ))}
     </div>
 
-    {/* === DIRECTOR MODE (when AI is active) === */}
-    {sidebarMode === 'ai' && (
+    {/* === DIRECTOR TAB === */}
+    {rightTab === 'director' && (
       <div className="flex-1 overflow-y-auto">
         {/* Performance Snapshot */}
         <div className="px-4 py-3 border-b border-foreground/[0.04]">
