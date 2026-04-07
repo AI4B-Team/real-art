@@ -1,10 +1,11 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   X, ChevronDown, ChevronUp, ChevronLeft, Plus, Copy, Lock, Trash2,
   Maximize2, LayoutGrid as LayoutGridIcon, Palette, Square, SlidersHorizontal,
   Upload, ImageIcon, ChevronsLeft, ChevronsRight, ChevronRight, Unlock,
   Sparkles, Wand2, Eye, BookOpen, Brain, Zap, FileText, Target,
   ArrowDownToLine, MinusCircle, MessageSquare, Loader2, Send,
+  Pin, RotateCcw, Pencil, Check, RefreshCw,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
