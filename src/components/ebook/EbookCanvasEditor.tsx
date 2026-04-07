@@ -3268,114 +3268,23 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               if (action.id === 'ai') {
                                 const isAiOpen = aiExpandedPageId === page.id;
                                 return (
-                                  <div key={action.id} className="relative">
-                                    <Tooltip>
-                                      <TooltipTrigger asChild>
-                                        <button onClick={() => {
-                                          const newId = isAiOpen ? null : page.id;
-                                          setAiExpandedPageId(newId);
-                                          onAiPanelToggle?.(!!newId);
-                                        }}
-                                          className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${isAiOpen ? 'bg-accent/20 text-accent' : 'bg-accent/10 hover:bg-accent/20 text-accent'}`}>
-                                          <Sparkles className="w-4 h-4" />
-                                        </button>
-                                      </TooltipTrigger>
-                                      <TooltipContent side="right">AI Assistant</TooltipContent>
-                                    </Tooltip>
-                                    {/* Expanded AI panel — unified brain */}
-                                    <div className={`absolute left-full top-0 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                                      <div className="flex flex-col bg-background/95 backdrop-blur-md rounded-2xl border border-foreground/[0.08] shadow-lg whitespace-nowrap"
-                                        style={{ width: '320px' }}>
-                                        {aiUpdatedFeedback ? (
-                                          <div className="flex items-center justify-center gap-2 py-4 animate-in fade-in-0 duration-300">
-                                            <Sparkles className="w-4 h-4 text-emerald-500" />
-                                            <span className="text-xs font-semibold text-emerald-600">Updated ✨</span>
-                                          </div>
-                                        ) : (
-                                          <>
-                                            {/* Header */}
-                                            <div className="flex items-center gap-2 px-3.5 py-2.5 border-b border-foreground/[0.06]">
-                                              <Sparkles className="w-3.5 h-3.5 text-accent" />
-                                              <span className="text-[11px] font-bold text-foreground">AI Assistant</span>
-                                              <span className="ml-auto text-[9px] text-muted-foreground">Page {pageIndex + 1}</span>
-                                            </div>
-
-                                            {/* Smart Suggestions — proactive nudges */}
-                                            <div className="px-3 py-2.5 space-y-2 border-b border-foreground/[0.06]">
-                                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Here's What I'd Fix First…</p>
-                                              {[
-                                                { severity: 'critical' as const, title: 'Weak headline detected', cta: 'Rewrite Headline', color: 'text-destructive bg-destructive/10' },
-                                                { severity: 'warning' as const, title: 'Missing visuals', cta: 'Add Visual', color: 'text-amber-600 bg-amber-500/10' },
-                                                { severity: 'info' as const, title: 'Text too dense', cta: 'Simplify', color: 'text-blue-600 bg-blue-500/10' },
-                                              ].map((nudge, i) => (
-                                                <button key={i} onClick={() => {
-                                                  if (nudge.cta === 'Add Visual') {
-                                                    onOpenImageSection?.();
-                                                  } else {
-                                                    handleContextualAI(nudge.cta === 'Rewrite Headline' ? 'rewrite' : 'shorten');
-                                                  }
-                                                }}
-                                                  className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-foreground/[0.03] transition-colors text-left">
-                                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${nudge.severity === 'critical' ? 'bg-destructive' : nudge.severity === 'warning' ? 'bg-amber-500' : 'bg-blue-500'}`} />
-                                                  <span className="text-[11px] text-foreground flex-1">{nudge.title}</span>
-                                                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md ${nudge.color}`}>{nudge.cta}</span>
-                                                </button>
-                                              ))}
-                                            </div>
-
-                                            {/* Quick Actions grid */}
-                                            <div className="px-3 py-2.5 border-b border-foreground/[0.06]">
-                                              <div className="grid grid-cols-4 gap-1">
-                                                {[
-                                                  { id: 'rewrite', label: 'Persuade', icon: Target },
-                                                  { id: 'improve', label: 'Clarity', icon: Eye },
-                                                  { id: 'shorten', label: 'Simplify', icon: MinusCircle },
-                                                  { id: 'expand', label: 'Detail', icon: FileText },
-                                                ].map(btn => (
-                                                  <button key={btn.id} onClick={() => handleContextualAI(btn.id)} disabled={isAIProcessing}
-                                                    className="flex flex-col items-center gap-1 py-2 rounded-lg hover:bg-accent/[0.06] transition-colors disabled:opacity-40">
-                                                    <btn.icon className="w-3.5 h-3.5 text-accent" />
-                                                    <span className="text-[9px] font-medium text-muted-foreground">{btn.label}</span>
-                                                  </button>
-                                                ))}
-                                              </div>
-                                            </div>
-
-                                            {/* Prompt input */}
-                                            <div className="px-3 py-2.5">
-                                              <div className="flex items-start gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
-                                                <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
-                                                <textarea
-                                                  value={contextualAIPrompt}
-                                                  onChange={e => {
-                                                    setContextualAIPrompt(e.target.value);
-                                                    e.target.style.height = 'auto';
-                                                    e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
-                                                  }}
-                                                  onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
-                                                  placeholder="Ask AI anything about this page..."
-                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
-                                                  style={{ minHeight: '24px', maxHeight: `calc(100vh - ${(() => { const el = document.querySelector('[data-ai-prompt-container]'); return el ? el.getBoundingClientRect().top + 60 : 600; })()}px)` }}
-                                                  ref={(el) => {
-                                                    if (!el) return;
-                                                    const updateMax = () => {
-                                                      const rect = el.getBoundingClientRect();
-                                                      const remaining = window.innerHeight - rect.top - 20;
-                                                      el.style.maxHeight = Math.max(24, remaining) + 'px';
-                                                    };
-                                                    updateMax();
-                                                    const ro = new ResizeObserver(updateMax);
-                                                    ro.observe(el);
-                                                  }}
-                                                  rows={1}
-                                                />
-                                              </div>
-                                            </div>
-                                          </>
+                                  <Tooltip key={action.id}>
+                                    <TooltipTrigger asChild>
+                                      <button onClick={() => {
+                                        const newId = isAiOpen ? null : page.id;
+                                        setAiExpandedPageId(newId);
+                                        onAiPanelToggle?.(!!newId);
+                                      }}
+                                        className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors relative ${isAiOpen ? 'bg-accent/20 text-accent' : 'bg-accent/10 hover:bg-accent/20 text-accent'}`}>
+                                        <Sparkles className="w-4 h-4" />
+                                        {/* Subtle glow pulse when issues detected */}
+                                        {!isAiOpen && (
+                                          <span className="absolute inset-0 rounded-lg animate-ai-glow pointer-events-none" />
                                         )}
-                                      </div>
-                                    </div>
-                                  </div>
+                                      </button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">AI Assistant</TooltipContent>
+                                  </Tooltip>
                                 );
                               }
                               if (action.id === 'add') {

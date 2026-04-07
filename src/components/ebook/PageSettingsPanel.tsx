@@ -27,6 +27,8 @@ interface PageSettingsPanelProps {
   onDimensionsChange?: (w: number, h: number) => void;
   onOpenImageSection?: () => void;
   showLockedPagesWarning?: (actionLabel: string, onApplyAll: () => void, onApplySkipping: () => void) => boolean;
+  mode?: 'settings' | 'ai';
+  onModeChange?: (mode: 'settings' | 'ai') => void;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
@@ -70,7 +72,7 @@ const FORMAT_PRESETS = [
 const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
   pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange, onOpenImageSection,
-  showLockedPagesWarning,
+  showLockedPagesWarning, mode = 'settings', onModeChange,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size', 'smart-suggestions']));
@@ -207,15 +209,20 @@ const PageSettingsPanel = ({
   return (
     <TooltipProvider delayDuration={200}>
       <div className="w-64 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
-        {/* Header */}
-        <div className="flex items-center px-4 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
-          <div className="flex items-center gap-2">
-            <Brain className="w-4 h-4 text-accent" />
-            <span className="text-xs font-bold text-foreground uppercase tracking-wider">AI Creative Director</span>
-          </div>
+        {/* Mode tabs */}
+        <div className="flex border-b border-foreground/[0.04]">
+          <button onClick={() => onModeChange?.('ai')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${mode === 'ai' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}>
+            <Brain className="w-3.5 h-3.5" /> AI Director
+          </button>
+          <button onClick={() => onModeChange?.('settings')}
+            className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-[10px] font-bold uppercase tracking-wider transition-colors ${mode === 'settings' ? 'bg-foreground/[0.12] text-foreground border-b-2 border-b-accent' : 'text-muted-foreground hover:bg-foreground/[0.04]'}`}>
+            <SlidersHorizontal className="w-3.5 h-3.5" /> Settings
+          </button>
         </div>
 
         <div className="flex-1 overflow-y-auto">
+          {mode === 'ai' && (<>
           {/* ═══ 1. PERFORMANCE SNAPSHOT ═══ */}
           <div className="px-4 py-3 border-b border-foreground/[0.04]">
             <div className="flex items-center justify-between mb-2">
@@ -312,14 +319,9 @@ const PageSettingsPanel = ({
               ))}
             </div>
           </div>
+          </>)}
 
-          {/* ═══ SECTION: PAGE SETTINGS ═══ */}
-          <div className="border-t border-foreground/[0.06]">
-            <div className="flex items-center gap-2 px-4 py-3 bg-foreground/[0.12] border-l-2 border-l-accent">
-              <SlidersHorizontal className="w-4 h-4 text-muted-foreground" />
-              <span className="text-xs font-bold text-foreground uppercase tracking-wider">Page Settings</span>
-            </div>
-          </div>
+          {mode === 'settings' && (<>
 
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
@@ -606,6 +608,7 @@ const PageSettingsPanel = ({
           <div className="mt-3 p-3 mx-4 mb-4 rounded-xl bg-foreground/[0.02] border border-foreground/[0.04] text-center">
             <p className="text-[11px] text-muted-foreground italic">"Your book will be ready to publish, share, or sell."</p>
           </div>
+          </>)}
         </div>
 
         {/* Bottom navigation */}

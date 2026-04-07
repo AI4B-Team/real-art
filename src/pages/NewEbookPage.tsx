@@ -309,6 +309,7 @@ const NewEbookPage = () => {
   const [sidebarOpenSection, setSidebarOpenSection] = useState<string | null>(null);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
+  const [rightPanelMode, setRightPanelMode] = useState<'settings' | 'ai'>('settings');
   const [pageWidth, setPageWidth] = useState(480);
   const [pageHeight, setPageHeight] = useState(640);
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
@@ -1730,7 +1731,7 @@ const NewEbookPage = () => {
                 onGridViewToggle={() => setIsGridView(false)}
                 findReplaceMode={findReplaceMode}
                 onFindReplaceModeChange={setFindReplaceMode}
-                onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); }}
+                onPageSettingsToggle={() => { setManualPageSettings(true); setShowPageSettings(prev => !prev); setRightPanelMode('settings'); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 onReplaceStateChange={setIsReplacingImage}
                 pageWidth={pageWidth}
@@ -1740,9 +1741,11 @@ const NewEbookPage = () => {
                 onPageElementsChange={handlePageElementsChange}
                 onAiPanelToggle={(isOpen) => {
                   if (isOpen) {
-                    setIsRightPanelCollapsed(true);
-                  } else {
+                    setRightPanelMode('ai');
                     setIsRightPanelCollapsed(false);
+                    setShowPageSettings(true);
+                  } else {
+                    setRightPanelMode('settings');
                   }
                 }}
                 panelOffset={(() => {
@@ -1776,6 +1779,8 @@ const NewEbookPage = () => {
                 onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 showLockedPagesWarning={showLockedPagesWarning}
+                mode={rightPanelMode}
+                onModeChange={setRightPanelMode}
               />
               )}
             </div>
