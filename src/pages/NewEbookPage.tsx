@@ -1779,6 +1779,8 @@ const NewEbookPage = () => {
                 onDimensionsChange={(w, h) => { setPageWidth(w); setPageHeight(h); }}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 showLockedPagesWarning={showLockedPagesWarning}
+                mode={rightPanelMode}
+                onModeChange={setRightPanelMode}
               />
               )}
             </div>
