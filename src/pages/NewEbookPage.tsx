@@ -593,7 +593,7 @@ const NewEbookPage = () => {
 
   return (
     <PageShell>
-      <div className={isDesign ? "flex flex-col h-[calc(100vh-64px)] -mt-0 overflow-hidden" : "max-w-7xl mx-auto px-6 py-6"}>
+      <div className={isDesign ? "flex flex-col h-[calc(100vh-128px)] overflow-hidden" : "max-w-7xl mx-auto px-6 py-6"}>
 
         {/* === DESIGN TAB TOP BAR === */}
         {activeTab === "design" && (
