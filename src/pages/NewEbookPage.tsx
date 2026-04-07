@@ -1741,9 +1741,11 @@ const NewEbookPage = () => {
                 onPageElementsChange={handlePageElementsChange}
                 onAiPanelToggle={(isOpen) => {
                   if (isOpen) {
-                    setIsRightPanelCollapsed(true);
-                  } else {
+                    setRightPanelMode('ai');
                     setIsRightPanelCollapsed(false);
+                    setShowPageSettings(true);
+                  } else {
+                    setRightPanelMode('settings');
                   }
                 }}
                 panelOffset={(() => {
