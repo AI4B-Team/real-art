@@ -3096,7 +3096,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             );
                           })()}
                         </div>
-                        <div className="relative flex items-start gap-2">
+                        <div className="relative flex items-start gap-2 justify-center">
                         {/* Page number */}
                         <div className="w-8 shrink-0 pt-2">
                           <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
