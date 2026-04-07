@@ -112,7 +112,11 @@ export const EbookProvider = ({ children }: { children: ReactNode }) => {
     ));
     // If it's a real UUID (not demo), persist to DB
     if (!id.startsWith("demo-") && userId) {
-      const dbUpdates: Record<string, any> = {};
+      const dbUpdates: {
+        title?: string; description?: string; status?: string; progress?: number;
+        chapters?: number; words?: number; cover_color?: string; cover_image?: string;
+        tags?: string[]; outline?: any;
+      } = {};
       if (updates.title !== undefined) dbUpdates.title = updates.title;
       if (updates.description !== undefined) dbUpdates.description = updates.description;
       if (updates.status !== undefined) dbUpdates.status = updates.status;
