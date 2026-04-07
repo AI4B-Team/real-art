@@ -1011,6 +1011,8 @@ const EbookDesignSidebar = ({
       {expandedSections.has('translate') && (
         <TranslatePanel onTranslate={onTranslate} />
       )}
+      </div>
+      </>)}
     </div>
   );
 };
