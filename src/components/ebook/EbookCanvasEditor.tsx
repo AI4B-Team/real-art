@@ -2609,18 +2609,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                 {/* ── Context: Image formatting ── */}
                 {selectedElement?.type === 'image' && (
                   <>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => { if (selectedElement) { const isActive = replaceModalElementId === selectedElement.id; setReplaceModalElementId(isActive ? null : selectedElement.id); if (!isActive) onOpenImageSection?.(); } }}
-                        className={`flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border ${replaceModalElementId === selectedElement?.id ? 'bg-accent/10 text-accent border-accent/30' : 'text-foreground hover:bg-foreground/[0.05] border-foreground/[0.08]'}`}>
-                        <ImagePlus className="w-3.5 h-3.5" />{replaceModalElementId === selectedElement?.id ? 'Cancel' : 'Replace'}
-                      </button>
-                    </TooltipTrigger><TooltipContent>Replace Image</TooltipContent></Tooltip>
-                    <Tooltip><TooltipTrigger asChild>
-                      <button onClick={() => setShowAIEditModal(true)}
-                        className="flex items-center gap-1.5 text-xs text-accent px-2.5 py-1.5 rounded-lg hover:bg-accent/10 border border-accent/20">
-                        <Sparkles className="w-3.5 h-3.5" />Edit
-                      </button>
-                    </TooltipTrigger><TooltipContent>Edit with AI</TooltipContent></Tooltip>
                     {/* Text — after Edit */}
                     <Tooltip><TooltipTrigger asChild>
                       <button onClick={() => setActiveTool('text')}
