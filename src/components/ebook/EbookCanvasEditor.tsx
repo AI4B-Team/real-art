@@ -3307,8 +3307,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                             <div className="px-3 py-2.5 space-y-2 border-b border-foreground/[0.06]">
                                               <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Here's What I'd Fix First…</p>
                                               {[
-                                                { severity: 'critical' as const, title: 'Weak headline detected', cta: 'Rewrite Headline', color: 'text-destructive bg-destructive/10' },
-                                                { severity: 'warning' as const, title: 'Missing visuals', cta: 'Add Visual', color: 'text-amber-600 bg-amber-500/10' },
+                                                { severity: 'critical' as const, title: 'Weak headline detected', cta: 'Rewrite Headline', color: 'text-amber-600 bg-amber-500/10' },
+                                                { severity: 'warning' as const, title: 'Missing visuals', cta: 'Add Visual', color: 'text-destructive bg-destructive/10' },
                                                 { severity: 'info' as const, title: 'Text too dense', cta: 'Simplify', color: 'text-blue-600 bg-blue-500/10' },
                                               ].map((nudge, i) => (
                                                 <button key={i} onClick={() => {
