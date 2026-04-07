@@ -309,6 +309,7 @@ const NewEbookPage = () => {
   const [sidebarOpenSection, setSidebarOpenSection] = useState<string | null>(null);
   const [isLeftPanelCollapsed, setIsLeftPanelCollapsed] = useState(false);
   const [isRightPanelCollapsed, setIsRightPanelCollapsed] = useState(false);
+  const [rightPanelMode, setRightPanelMode] = useState<'settings' | 'ai'>('settings');
   const [pageWidth, setPageWidth] = useState(480);
   const [pageHeight, setPageHeight] = useState(640);
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
