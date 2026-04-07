@@ -905,7 +905,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       setIsAIProcessing(true);
       try {
         // Gather all text content from the current page for context
-        const currentPageId = currentPages[currentPageIndex]?.id;
+        const currentPageId = selectedPageId || currentPages[0]?.id;
         const pageElems = currentPageId ? (pageElements[currentPageId] || []) : [];
         const pageTextContent = pageElems
           .filter(el => el.type === 'text' && el.content)
