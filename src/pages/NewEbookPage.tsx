@@ -1562,11 +1562,13 @@ const NewEbookPage = () => {
                   });
                 }}
                 onSectionChange={handleSidebarSectionChange}
-                onAIClick={() => {
-                  setShowPageSettings(true);
-                  setManualPageSettings(true);
-                  setIsRightPanelCollapsed(false);
-                }}
+                onAIClick={() => setSidebarMode('ai')}
+                sidebarMode={sidebarMode}
+                onSidebarModeChange={setSidebarMode}
+                selectedPageTitle={ebookPages.find(p => p.id === selectedPageId)?.title}
+                pageCount={ebookPages.length}
+                pageIndex={ebookPages.findIndex(p => p.id === selectedPageId)}
+                onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
                 onReplaceImage={isReplacingImage ? (src) => canvasRef.current?.replaceImage(src) : null}
