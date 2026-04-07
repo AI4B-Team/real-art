@@ -3324,7 +3324,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                   onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
                                                   placeholder="Ask AI anything about this page..."
                                                   className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
-                                                  style={{ minHeight: '24px', maxHeight: '300px' }}
+                                                  style={{ minHeight: '24px', maxHeight: `calc(100vh - ${(() => { const el = document.querySelector('[data-ai-prompt-container]'); return el ? el.getBoundingClientRect().top + 60 : 600; })()}px)` }}
+                                                  ref={(el) => {
+                                                    if (!el) return;
+                                                    const updateMax = () => {
+                                                      const rect = el.getBoundingClientRect();
+                                                      const remaining = window.innerHeight - rect.top - 20;
+                                                      el.style.maxHeight = Math.max(24, remaining) + 'px';
+                                                    };
+                                                    updateMax();
+                                                    const ro = new ResizeObserver(updateMax);
+                                                    ro.observe(el);
+                                                  }}
                                                   rows={1}
                                                 />
                                               </div>
