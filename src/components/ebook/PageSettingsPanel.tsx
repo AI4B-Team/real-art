@@ -88,7 +88,7 @@ const PageSettingsPanel = ({
   const [selectedFormat, setSelectedFormat] = useState('custom');
   const [applyTo, setApplyTo] = useState<'current' | 'all'>('current');
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [rightTab, setRightTab] = useState<'director' | 'format' | 'pages'>(sidebarMode === 'ai' ? 'director' : 'director');
+  const [rightTab, setRightTab] = useState<'pages' | 'format' | 'director'>('pages');
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 
