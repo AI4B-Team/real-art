@@ -897,9 +897,40 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   };
 
   const handleContextualAI = async (action: string) => {
-    if (!selectedElement) return;
     const prompt = action === 'custom' ? contextualAIPrompt.trim() : undefined;
     if (action === 'custom' && !prompt) return;
+
+    // If no element is selected but user typed a custom prompt, treat as a general page question
+    if (!selectedElement && action === 'custom') {
+      setIsAIProcessing(true);
+      try {
+        // Gather all text content from the current page for context
+        const currentPageId = currentPages[currentPageIndex]?.id;
+        const pageElems = currentPageId ? (pageElements[currentPageId] || []) : [];
+        const pageTextContent = pageElems
+          .filter(el => el.type === 'text' && el.content)
+          .map(el => el.content)
+          .join('\n\n');
+
+        const { data, error } = await supabase.functions.invoke('ai-text-edit', {
+          body: {
+            text: pageTextContent || 'This is an ebook page.',
+            action: 'custom',
+            prompt: `The user is asking about this ebook page. Here is their question: "${prompt}". Please provide a helpful, concise answer.`,
+          },
+        });
+        if (error) throw error;
+        if (data?.result) {
+          toast.success(data.result, { duration: 8000 });
+        } else if (data?.error) {
+          toast.error(data.error);
+        }
+      } catch (e: any) { toast.error(e.message || 'AI request failed'); }
+      finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
+      return;
+    }
+
+    if (!selectedElement) return;
     if (selectedElement.type === 'text' && selectedElement.content) {
       setIsAIProcessing(true);
       try {
