@@ -628,8 +628,8 @@ const PageSettingsPanel = ({
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>
-                          <button onClick={(e) => { e.stopPropagation(); updatePage(page.id, { locked: !page.locked }); toast.success(page.locked ? 'Page unlocked' : 'Page locked'); }} className={`p-1 rounded hover:bg-foreground/[0.05] ${page.locked ? 'text-accent' : 'text-muted-foreground'}`}>
-                            <Lock className="w-3 h-3" />
+                          <button onClick={(e) => { e.stopPropagation(); updatePage(page.id, { locked: !page.locked }); toast.success(page.locked ? 'Page unlocked' : 'Page locked'); }} className={`p-1 rounded hover:bg-foreground/[0.05] ${page.locked ? 'text-destructive' : 'text-muted-foreground'}`}>
+                            {page.locked ? <Lock className="w-3 h-3" /> : <Unlock className="w-3 h-3" />}
                           </button>
                         </TooltipTrigger>
                         <TooltipContent side="left">{page.locked ? 'Unlock Page' : 'Lock Page'}</TooltipContent>
