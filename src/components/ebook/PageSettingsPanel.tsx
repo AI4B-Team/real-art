@@ -6,7 +6,7 @@ import {
   Brain, Target, Eye, FileText, Zap, BookOpen, MessageSquare,
   MinusCircle, ArrowDownToLine, Check, Sparkles, RefreshCw,
   PenTool, Layers, Wand2, Type, Mic, Globe,
-  Lock, GripVertical, Copy, Trash2, Files,
+  Lock, Unlock, GripVertical, Copy, Trash2, Files,
 } from 'lucide-react';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
