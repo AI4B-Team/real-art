@@ -16,6 +16,16 @@ import type { Page } from './EbookCanvasEditor';
 import { getElementsForPage } from './EbookCanvasEditor';
 import PageThumbnail from './PageThumbnail';
 
+interface ChatMessage {
+  id: string;
+  role: 'user' | 'ai';
+  content: string;
+  timestamp: Date;
+  actions?: { label: string; id: string }[];
+  applied?: boolean;
+  pinned?: boolean;
+}
+
 interface PageSettingsPanelProps {
   pages: Page[];
   selectedPageId: string | null;
@@ -28,8 +38,8 @@ interface PageSettingsPanelProps {
   onDimensionsChange?: (w: number, h: number) => void;
   onOpenImageSection?: () => void;
   showLockedPagesWarning?: (actionLabel: string, onApplyAll: () => void, onApplySkipping: () => void) => boolean;
-  mode?: 'settings' | 'ai';
-  onModeChange?: (mode: 'settings' | 'ai') => void;
+  mode?: 'settings' | 'ai' | 'chat';
+  onModeChange?: (mode: 'settings' | 'ai' | 'chat') => void;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
