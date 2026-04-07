@@ -389,11 +389,7 @@ const PageSettingsPanel = ({
                   <button
                     onClick={() => {
                       if (s.actionId === 'visual' && onOpenImageSection) onOpenImageSection();
-                      else {
-                        setAiActionFeedback(s.action);
-                        setTimeout(() => setAiActionFeedback(null), 2000);
-                        toast.success(`${s.action} applied`);
-                      }
+                      else handleInsightToChat(s.action, s.desc);
                     }}
                     className="text-[10px] font-bold text-accent hover:underline shrink-0 mt-0.5"
                   >
