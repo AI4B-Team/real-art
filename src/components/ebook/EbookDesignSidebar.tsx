@@ -43,6 +43,12 @@ interface EbookDesignSidebarProps {
   onTranslate?: (scope: 'page' | 'selected' | 'book', language: string) => void;
   onReplaceImage?: ((src: string) => void) | null;
   onAIClick?: () => void;
+  sidebarMode?: 'design' | 'ai';
+  onSidebarModeChange?: (mode: 'design' | 'ai') => void;
+  selectedPageTitle?: string;
+  pageCount?: number;
+  pageIndex?: number;
+  onOpenImageSection?: () => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
