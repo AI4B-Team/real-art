@@ -833,9 +833,9 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* ─── CREATE ─── */}
+      {/* ─── ADD ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
-        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Create</span>
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Add</span>
       </div>
 
       {/* Text */}
@@ -865,8 +865,8 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* Elements */}
-      <SectionHeader id="elements" title="Elements" icon={LayoutGrid} />
+      {/* Components */}
+      <SectionHeader id="elements" title="Components" icon={LayoutGrid} />
       {expandedSections.has('elements') && (
         <div className="px-3 pb-3 pt-2 space-y-3">
           <div className="relative">
@@ -900,9 +900,9 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* ─── UPGRADE ─── */}
+      {/* ─── MEDIA ─── */}
       <div className="px-3 pt-4 pb-1 border-t border-foreground/[0.04]">
-        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Upgrade</span>
+        <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Media</span>
       </div>
 
       {/* Images */}
