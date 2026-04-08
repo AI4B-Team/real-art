@@ -142,7 +142,7 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   onDragEnd={handleDragEnd}
                   onClick={() => onPageSelect(page.id)}
                   className={`flex-1 cursor-pointer rounded-lg overflow-hidden border-2 transition-all ${
-                    selectedPageId === page.id ? 'border-accent shadow-sm' : 'border-transparent hover:border-foreground/[0.1]'
+                    selectedPageId === page.id ? 'border-accent shadow-sm' : 'border-transparent hover:border-accent/40 hover:bg-accent/[0.06]'
                   } ${dragOverIndex === i ? 'border-accent/50' : ''}`}
                 >
                   {/* Thumbnail preview */}
