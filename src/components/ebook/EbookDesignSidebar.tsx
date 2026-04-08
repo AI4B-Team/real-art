@@ -832,10 +832,11 @@ const EbookDesignSidebar = ({
               );
             })}
           </div>
-          <button onClick={() => onChapterAdd(chapters[chapters.length - 1]?.id || '')}
-            className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
-            <Plus className="w-3.5 h-3.5" />Add Page
-          </button>
+          <PageTypePicker onSelect={(type) => onChapterAdd(chapters[chapters.length - 1]?.id || '', type)} side="right" align="center">
+            <button className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+              <Plus className="w-3.5 h-3.5" />Add Page
+            </button>
+          </PageTypePicker>
         </div>
       )}
 
