@@ -433,7 +433,13 @@ const AudioPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any
       {tab === 'stock' ? (
         <div className="space-y-1.5">
           {filtered.map((a, i) => (
-            <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors group">
+            <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors group cursor-grab"
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'audio', label: a.title, data: { title: a.title } }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+            >
               <button onClick={() => setPlayingIdx(playingIdx === i ? null : i)}
                 className="w-10 h-10 rounded-full bg-accent/80 hover:bg-accent flex items-center justify-center shrink-0 transition-colors">
                 <Play className={`w-4 h-4 text-white fill-white ${playingIdx === i ? '' : 'ml-0.5'}`} />
