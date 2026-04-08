@@ -117,7 +117,7 @@ const AIVAPanel = ({ selectedPageId, selectedPageTitle, pageCount = 1, pageIndex
           </div>
           <div className="flex-1 min-w-0">
             <span className="text-xs font-bold text-foreground">AIVA</span>
-            <p className="text-[9px] text-accent/70 truncate italic">✨ Optimizing your {selectedPageTitle || 'page'}…</p>
+            <p className="text-[9px] text-accent/70 truncate">Optimizing your {selectedPageTitle || 'page'}…</p>
           </div>
         </div>
       </div>
