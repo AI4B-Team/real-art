@@ -29,8 +29,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
 
   const selectedIndex = pages.findIndex(p => p.id === selectedPageId);
 
-  const handleAddPage = () => {
-    const newPage: Page = { id: crypto.randomUUID(), title: `Page ${pages.length + 1}`, type: 'chapter' };
+  const handleAddPage = (pageType: Page['type'] = 'chapter') => {
+    const newPage: Page = { id: crypto.randomUUID(), title: `Page ${pages.length + 1}`, type: pageType };
     onPagesChange([...pages, newPage]);
     onPageSelect(newPage.id);
     toast.success('Page added');
