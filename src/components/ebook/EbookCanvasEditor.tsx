@@ -3106,7 +3106,23 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             e.dataTransfer.dropEffect = 'copy';
                             const rect = e.currentTarget.getBoundingClientRect();
                             const yPct = ((e.clientY - rect.top) / rect.height) * 100;
-                            setExternalDropTarget({ pageId: page.id, y: Math.max(0, Math.min(100, yPct)) });
+                            // Snap to element boundaries (top/bottom edges of each element, plus page top/bottom)
+                            const snapPoints = [0];
+                            elems.forEach(el => {
+                              snapPoints.push(el.y);
+                              snapPoints.push(el.y + el.height);
+                            });
+                            snapPoints.push(100);
+                            // Dedupe and sort
+                            const unique = [...new Set(snapPoints)].sort((a, b) => a - b);
+                            // Find nearest snap point
+                            let nearest = unique[0];
+                            let minDist = Math.abs(yPct - nearest);
+                            for (const sp of unique) {
+                              const d = Math.abs(yPct - sp);
+                              if (d < minDist) { minDist = d; nearest = sp; }
+                            }
+                            setExternalDropTarget({ pageId: page.id, y: nearest });
                           }}
                           onDragLeave={(e) => {
                             if (!e.currentTarget.contains(e.relatedTarget as Node)) {
