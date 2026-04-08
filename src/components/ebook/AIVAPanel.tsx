@@ -138,7 +138,7 @@ const AIVAPanel = ({ selectedPageId, selectedPageTitle, pageCount = 1, pageIndex
         )}
 
         {/* Message thread */}
-        <div className="flex-1 overflow-y-auto px-3 py-3 space-y-3">
+        <div className="flex-1 overflow-y-auto no-scrollbar px-3 py-3 space-y-3">
           {currentPageMessages.length === 0 && (
             <div className="text-center py-8">
               <Sparkles className="w-8 h-8 mx-auto text-accent/40 mb-3" />

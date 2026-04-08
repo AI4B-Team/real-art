@@ -127,7 +127,7 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
         </div>
 
         {/* Page thumbnails */}
-        <div className="flex-1 overflow-y-auto p-2.5 space-y-3">
+        <div className="flex-1 overflow-y-auto no-scrollbar p-2.5 space-y-3">
           {pages.map((page, i) => (
             <div key={page.id} className="group relative">
               {/* Page number */}

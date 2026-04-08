@@ -597,7 +597,7 @@ const PageSettingsPanel = ({
           </button>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-2.5 space-y-3">
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar p-2.5 space-y-3">
           {pages.map((page, i) => {
             const isCoverOrBack = page.type === 'cover' || page.type === 'back';
             return (
