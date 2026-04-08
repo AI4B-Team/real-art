@@ -135,9 +135,13 @@
   margin-bottom: 12px;
 }
 
-/* Hide scrollbar for filter bar */
+/* Hide scrollbar */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
+
+/* Hide scrollbar on ebook panels */
+.ebook-panel-scroll::-webkit-scrollbar { display: none; }
+.ebook-panel-scroll { scrollbar-width: none; }
 
 /* Animations */
 @keyframes fadeUp {

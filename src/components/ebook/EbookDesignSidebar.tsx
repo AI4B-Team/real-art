@@ -709,7 +709,7 @@ const EbookDesignSidebar = ({
       </div>
 
       {/* ─── STRUCTURE ─── */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto no-scrollbar">
       <div className="px-3 pt-3 pb-1">
         <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Structure</span>
       </div>

@@ -187,7 +187,7 @@ const PageSettingsPanel = ({
 
     {/* === DIRECTOR TAB === */}
     {rightTab === 'director' && (
-      <div className="flex-1 min-h-0 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
         {/* Performance Snapshot */}
         <div className="px-4 py-3 border-b border-foreground/[0.04]">
           <div className="flex items-center justify-between mb-2">
@@ -294,7 +294,7 @@ const PageSettingsPanel = ({
 
     {/* === FORMAT TAB === */}
     {rightTab === 'format' && (
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
             <div className="px-4 pt-2 pb-4 space-y-3">
@@ -597,7 +597,7 @@ const PageSettingsPanel = ({
           </button>
         </div>
 
-        <div className="flex-1 min-h-0 overflow-y-auto p-2.5 space-y-3">
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar p-2.5 space-y-3">
           {pages.map((page, i) => {
             const isCoverOrBack = page.type === 'cover' || page.type === 'back';
             return (
