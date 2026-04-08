@@ -168,7 +168,7 @@ const PageSettingsPanel = ({
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0">
+      <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0 h-full overflow-hidden">
     {/* Tabs: Director | Format | Pages */}
     <div className="flex border-b border-foreground/[0.04] shrink-0">
       {([
