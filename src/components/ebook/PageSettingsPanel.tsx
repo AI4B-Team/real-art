@@ -78,6 +78,7 @@ const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
   pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange, onOpenImageSection,
   showLockedPagesWarning, sidebarMode = 'design', selectedPageTitle, pageIndex: externalPageIndex, onSendToChat,
+  forceTab,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
