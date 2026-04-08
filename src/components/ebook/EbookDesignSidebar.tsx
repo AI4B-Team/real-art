@@ -21,6 +21,7 @@ import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from '@/components/ui/tooltip';
 import AITextEditMenu, { type AIEditAction } from './AITextEditMenu';
+import PageTypePicker from './PageTypePicker';
 
 interface Chapter {
   id: string;
