@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import {
   ChevronDown, ChevronUp, ChevronLeft, Plus,
   Maximize2, LayoutGrid as LayoutGridIcon, Palette, Square, SlidersHorizontal,
@@ -33,6 +33,7 @@ interface PageSettingsPanelProps {
   selectedPageTitle?: string;
   pageIndex?: number;
   onSendToChat?: (prompt: string) => void;
+  forceTab?: 'pages' | 'format' | 'director' | null;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
@@ -77,6 +78,7 @@ const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
   pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange, onOpenImageSection,
   showLockedPagesWarning, sidebarMode = 'design', selectedPageTitle, pageIndex: externalPageIndex, onSendToChat,
+  forceTab,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
@@ -89,6 +91,11 @@ const PageSettingsPanel = ({
   const [applyTo, setApplyTo] = useState<'current' | 'all'>('current');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rightTab, setRightTab] = useState<'pages' | 'format' | 'director'>('pages');
+
+  // Allow parent to force-switch tab (e.g. when AI assistant opens)
+  useEffect(() => {
+    if (forceTab) setRightTab(forceTab);
+  }, [forceTab]);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
 

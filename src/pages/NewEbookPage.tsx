@@ -1783,6 +1783,7 @@ const NewEbookPage = () => {
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 showLockedPagesWarning={showLockedPagesWarning}
                 sidebarMode={sidebarMode}
+                forceTab={sidebarMode === 'ai' ? 'director' : null}
                 selectedPageTitle={ebookPages.find(p => p.id === selectedPageId)?.title}
                 pageIndex={ebookPages.findIndex(p => p.id === selectedPageId)}
                 onSendToChat={(prompt) => {
