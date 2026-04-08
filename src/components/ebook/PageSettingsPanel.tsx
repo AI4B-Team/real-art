@@ -294,7 +294,7 @@ const PageSettingsPanel = ({
 
     {/* === FORMAT TAB === */}
     {rightTab === 'format' && (
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
             <div className="px-4 pt-2 pb-4 space-y-3">
