@@ -588,12 +588,12 @@ const NewEbookPage = () => {
     toast({ title: "Recording saved! You can now generate your eBook." });
   };
 
-  // For the design tab, we need a full-bleed layout that fills the viewport
+  // For the design tab, fill the space below the global navbar without double-subtracting its height
   const isDesign = activeTab === "design";
 
   return (
     <PageShell>
-      <div className={isDesign ? "flex flex-col h-[calc(100vh-128px)] overflow-hidden" : "max-w-7xl mx-auto px-6 py-6"}>
+      <div className={isDesign ? "flex flex-col h-[calc(100vh-64px)] overflow-hidden" : "max-w-7xl mx-auto px-6 py-6"}>
 
         {/* === DESIGN TAB TOP BAR === */}
         {activeTab === "design" && (
