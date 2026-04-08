@@ -1543,7 +1543,8 @@ const NewEbookPage = () => {
                 selectedChapterId={selectedPageId}
                 onChapterSelect={setSelectedPageId}
                 onChapterAdd={(_afterId, pageType) => {
-                  const newPage = { id: crypto.randomUUID(), title: "New Page", type: (pageType || "chapter") as const };
+                  const pt = (pageType || "chapter") as "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank";
+                  const newPage = { id: crypto.randomUUID(), title: "New Page", type: pt };
                   setEbookPages(prev => [...prev, newPage]);
                   setSelectedPageId(newPage.id);
                 }}
