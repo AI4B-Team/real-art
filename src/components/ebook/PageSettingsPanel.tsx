@@ -168,7 +168,7 @@ const PageSettingsPanel = ({
 
   return (
     <TooltipProvider delayDuration={200}>
-      <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0 min-h-0">
+      <div className="w-80 border-l border-foreground/[0.04] bg-background flex flex-col shrink-0 min-h-0 overflow-hidden">
     {/* Tabs: Director | Format | Pages */}
     <div className="flex border-b border-foreground/[0.04] shrink-0">
       {([
@@ -187,7 +187,7 @@ const PageSettingsPanel = ({
 
     {/* === DIRECTOR TAB === */}
     {rightTab === 'director' && (
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {/* Performance Snapshot */}
         <div className="px-4 py-3 border-b border-foreground/[0.04]">
           <div className="flex items-center justify-between mb-2">
@@ -294,7 +294,7 @@ const PageSettingsPanel = ({
 
     {/* === FORMAT TAB === */}
     {rightTab === 'format' && (
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 min-h-0 overflow-y-auto">
           <SectionToggle id="size" title="Size" icon={Maximize2} />
           {expandedSections.has('size') && (
             <div className="px-4 pt-2 pb-4 space-y-3">
@@ -583,7 +583,7 @@ const PageSettingsPanel = ({
 
     {/* === PAGES TAB === */}
     {rightTab === 'pages' && (
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 min-h-0 flex flex-col">
         {/* Header with Add Page */}
         <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04]">
           <span className="text-sm font-bold text-foreground">Pages</span>
@@ -597,7 +597,7 @@ const PageSettingsPanel = ({
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-2.5 space-y-3">
+        <div className="flex-1 min-h-0 overflow-y-auto p-2.5 space-y-3">
           {pages.map((page, i) => {
             const isCoverOrBack = page.type === 'cover' || page.type === 'back';
             return (
@@ -690,7 +690,7 @@ const PageSettingsPanel = ({
     )}
 
         {/* Bottom navigation */}
-        <div className="border-t border-foreground/[0.04] px-3 py-2 flex items-center justify-center gap-1">
+        <div className="shrink-0 border-t border-foreground/[0.04] px-3 py-2 flex items-center justify-center gap-1">
           <button onClick={() => goTo('first')} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
             <ChevronsLeft className="w-3.5 h-3.5" />
           </button>
