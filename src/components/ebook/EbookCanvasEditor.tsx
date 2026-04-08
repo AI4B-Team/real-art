@@ -1970,7 +1970,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           {isGridView ? (
             /* ─── GRID VIEW ─── */
             <div className="flex h-full flex-1 flex-col overflow-hidden">
-              <div className="flex-1 overflow-auto px-6 pt-6">
+              <div className="flex-1 overflow-auto no-scrollbar px-6 pt-6">
                 <div className="flex flex-wrap content-start gap-y-6 items-start pb-4">
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
