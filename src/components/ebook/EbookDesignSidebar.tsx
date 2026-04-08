@@ -386,7 +386,13 @@ const VideoPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any
       {tab === 'stock' ? (
         <div className="grid grid-cols-2 gap-1.5">
           {filtered.map((v, i) => (
-            <button key={i} onClick={() => { onAddElement?.('video', { src: v.thumb }); toast.success(`${v.title} added`); }}
+            <button key={i}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'video', label: v.title, data: { src: v.thumb } }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onClick={() => { onAddElement?.('video', { src: v.thumb }); toast.success(`${v.title} added`); }}
               className="relative rounded-lg overflow-hidden group aspect-video">
               <img src={`https://images.unsplash.com/${v.thumb}?w=300&h=200&fit=crop&q=80`} alt={v.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
