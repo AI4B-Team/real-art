@@ -1029,66 +1029,12 @@ const NewEbookPage = () => {
           </div>
         )}
 
-        {/* Audio Dialog — Upload or Record */}
-        <Dialog open={showRecordModal} onOpenChange={o => { setShowRecordModal(o); if (!o && isRecording) handleStopRecording(); }}>
-          <DialogContent className="sm:max-w-lg">
-            <DialogHeader>
-              <DialogTitle>Add Audio</DialogTitle>
-            </DialogHeader>
-            <div className="grid grid-cols-2 gap-4 py-4">
-              {/* Upload Audio */}
-              <div className="flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] bg-background">
-                <div className="w-16 h-16 rounded-2xl bg-accent/10 flex items-center justify-center mb-3">
-                  <Upload className="w-7 h-7 text-accent" />
-                </div>
-                <span className="text-sm font-semibold text-foreground mb-3">Upload Audio</span>
-                <p className="text-xs text-muted-foreground text-center mb-4">MP3, WAV, M4A up to 25MB</p>
-                <label className="w-full py-2.5 rounded-xl bg-accent hover:bg-accent/90 text-white font-semibold text-sm flex items-center justify-center gap-2 cursor-pointer transition-colors">
-                  <Upload size={14} />Choose File
-                  <input type="file" accept="audio/*" className="hidden" onChange={e => {
-                    const file = e.target.files?.[0];
-                    if (file) {
-                      addSource("audio", file.name);
-                      setShowRecordModal(false);
-                      toast({ title: "Audio uploaded", description: file.name });
-                    }
-                    if (e.target) e.target.value = "";
-                  }} />
-                </label>
-              </div>
-              {/* Record Audio */}
-              <div className="flex flex-col items-center p-6 rounded-2xl border border-foreground/[0.1] bg-background">
-                <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-3 transition-all ${isRecording ? "bg-destructive/15 animate-pulse" : "bg-destructive/10"}`}>
-                  <Mic className="w-7 h-7 text-destructive" />
-                </div>
-                <span className="text-sm font-semibold text-foreground mb-3">Record Audio</span>
-                {isRecording && (
-                  <>
-                    <div className="flex items-center gap-[3px] mb-2 h-6">
-                      {Array.from({ length: 16 }).map((_, i) => (
-                        <div key={i} className="w-[3px] rounded-full bg-destructive/60" style={{
-                          height: `${6 + Math.random() * 16}px`,
-                          animation: `audio-wave 0.4s ease-in-out ${i * 0.02}s infinite alternate`
-                        }} />
-                      ))}
-                    </div>
-                    <p className="text-xs text-muted-foreground mb-2">Recording...</p>
-                  </>
-                )}
-                {!isRecording && <p className="text-xs text-muted-foreground text-center mb-4">Record directly from your microphone</p>}
-                <button
-                  onClick={isRecording ? handleStopRecording : handleStartRecording}
-                  className={`w-full py-2.5 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-colors ${
-                    isRecording ? "bg-emerald-500 hover:bg-emerald-500/90 text-white" : "bg-destructive hover:bg-destructive/90 text-white"
-                  }`}
-                >
-                  {isRecording ? <><Check size={14} />Stop &amp; Use</> : <><Mic size={14} />Start Recording</>}
-                </button>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog>
-        <style>{`@keyframes audio-wave { 0%, 100% { transform: scaleY(0.4); } 50% { transform: scaleY(1.3); } }`}</style>
+        {/* Audio Recording Modal */}
+        <EbookRecordingModal
+          open={showRecordModal}
+          onClose={() => setShowRecordModal(false)}
+          onComplete={handleRecordingComplete}
+        />
 
         {/* Hidden file input for Upload File card */}
         <input ref={fileInputRef} type="file" accept=".pdf,.doc,.docx,.txt,.rtf,.epub,.md" multiple className="hidden" onChange={e => {
