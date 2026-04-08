@@ -302,6 +302,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const [aiExpandedPageId, setAiExpandedPageId] = useState<string | null>(null);
   const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
+  // External drag-drop state (from sidebar)
+  const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; y: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -3090,7 +3092,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             onPageSelect(page.id);
                             if (page.locked) { setSelectedElementId(null); return; }
                             if (isSelected && canEdit) handleCanvasClick(e);
-                            // Commenting mode: place a comment pin
                             if (accessMode === 'commenting' && isSelected) {
                               const rect = e.currentTarget.getBoundingClientRect();
                               const x = ((e.clientX - rect.left) / rect.width) * 100;
@@ -3099,9 +3100,43 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               setActiveCommentId(null);
                             }
                           }}
+                          onDragOver={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            e.dataTransfer.dropEffect = 'copy';
+                            const rect = e.currentTarget.getBoundingClientRect();
+                            const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+                            setExternalDropTarget({ pageId: page.id, y: Math.max(0, Math.min(100, yPct)) });
+                          }}
+                          onDragLeave={(e) => {
+                            if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                              setExternalDropTarget(null);
+                            }
+                          }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const raw = e.dataTransfer.getData('application/x-ebook-element');
+                            if (!raw) { setExternalDropTarget(null); return; }
+                            try {
+                              const payload = JSON.parse(raw);
+                              const rect = e.currentTarget.getBoundingClientRect();
+                              const xPct = ((e.clientX - rect.left) / rect.width) * 100;
+                              const yPct = ((e.clientY - rect.top) / rect.height) * 100;
+                              onPageSelect(page.id);
+                              // Build element at drop position
+                              const dropX = Math.max(0, Math.min(80, xPct - 15));
+                              const dropY = Math.max(0, Math.min(85, yPct - 5));
+                              setTimeout(() => {
+                                addElement(payload.type || 'text', { ...payload.data, x: dropX, y: dropY });
+                                toast.success(`${payload.label || 'Element'} added`);
+                              }, 0);
+                            } catch { /* invalid data */ }
+                            setExternalDropTarget(null);
+                          }}
                           className={`rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
-                          }`}
+                          } ${externalDropTarget?.pageId === page.id ? 'ring-2 ring-accent/60' : ''}`}
                           style={{
                             width: `${pw * zoom / 100}px`, height: `${ph * zoom / 100}px`,
                             backgroundColor: page.bgColor || '#ffffff',
@@ -3121,6 +3156,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </div>
                             )}
                           </div>
+                          {/* External drag-drop indicator line */}
+                          {externalDropTarget?.pageId === page.id && (
+                            <div
+                              className="absolute left-[5%] right-[5%] pointer-events-none z-[90] transition-all duration-75"
+                              style={{ top: `${externalDropTarget.y}%` }}
+                            >
+                              <div className="relative">
+                                <div className="h-0.5 bg-accent rounded-full shadow-[0_0_8px_hsl(var(--accent)/0.5)]" />
+                                <div className="absolute -left-1.5 -top-1.5 w-3.5 h-3.5 rounded-full bg-accent border-2 border-background shadow-md" />
+                                <div className="absolute -right-1.5 -top-1.5 w-3.5 h-3.5 rounded-full bg-accent border-2 border-background shadow-md" />
+                              </div>
+                            </div>
+                          )}
                           {elems.map(el => renderElement(el, page.id))}
                           {(() => {
                             const selectedImage = elems.find(el => el.id === selectedElementId && el.type === 'image');

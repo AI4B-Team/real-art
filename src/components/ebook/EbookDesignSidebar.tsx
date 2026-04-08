@@ -386,7 +386,13 @@ const VideoPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any
       {tab === 'stock' ? (
         <div className="grid grid-cols-2 gap-1.5">
           {filtered.map((v, i) => (
-            <button key={i} onClick={() => { onAddElement?.('video', { src: v.thumb }); toast.success(`${v.title} added`); }}
+            <button key={i}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'video', label: v.title, data: { src: v.thumb } }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onClick={() => { onAddElement?.('video', { src: v.thumb }); toast.success(`${v.title} added`); }}
               className="relative rounded-lg overflow-hidden group aspect-video">
               <img src={`https://images.unsplash.com/${v.thumb}?w=300&h=200&fit=crop&q=80`} alt={v.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
@@ -427,7 +433,13 @@ const AudioPanel = ({ onAddElement }: { onAddElement?: (type: string, data?: any
       {tab === 'stock' ? (
         <div className="space-y-1.5">
           {filtered.map((a, i) => (
-            <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors group">
+            <div key={i} className="flex items-center gap-3 p-2.5 rounded-lg border border-foreground/[0.06] hover:border-foreground/[0.12] transition-colors group cursor-grab"
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'audio', label: a.title, data: { title: a.title } }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+            >
               <button onClick={() => setPlayingIdx(playingIdx === i ? null : i)}
                 className="w-10 h-10 rounded-full bg-accent/80 hover:bg-accent flex items-center justify-center shrink-0 transition-colors">
                 <Play className={`w-4 h-4 text-white fill-white ${playingIdx === i ? '' : 'ml-0.5'}`} />
@@ -486,7 +498,13 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
       {/* Main interactive types grid */}
       <div className="grid grid-cols-2 gap-2">
         {INTERACTIVE_TYPES.map(item => (
-          <button key={item.id} onClick={() => addInteractive(item.id)}
+          <button key={item.id}
+            draggable
+            onDragStart={(e) => {
+              e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'interactive', label: item.label, data: { interactiveType: item.id } }));
+              e.dataTransfer.effectAllowed = 'copy';
+            }}
+            onClick={() => addInteractive(item.id)}
             className="flex flex-col items-center gap-2 p-4 rounded-xl border border-foreground/[0.08] hover:border-accent/30 hover:shadow-sm transition-all group">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:scale-110"
               style={{ backgroundColor: `${item.color}15` }}>
@@ -505,7 +523,13 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
         <p className="text-xs font-bold text-foreground mb-2">Quick Add Elements</p>
         <div className="space-y-1.5">
           {QUICK_ADD_ELEMENTS.map(item => (
-            <button key={item.id} onClick={() => addInteractive(item.id)}
+            <button key={item.id}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'interactive', label: item.label, data: { interactiveType: item.id } }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onClick={() => addInteractive(item.id)}
               className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.06] hover:border-foreground/[0.12] hover:shadow-sm transition-all group">
               <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
                 style={{ backgroundColor: `${item.color}15` }}>
@@ -848,7 +872,15 @@ const EbookDesignSidebar = ({
             { label: 'Body Text', size: '14px', weight: 'normal' },
             { label: 'Caption', size: '11px', weight: 'normal' },
           ].map(t => (
-            <button key={t.label} onClick={() => { onAddElement?.('text', { content: t.label, fontSize: parseInt(t.size) }); toast.success(`${t.label} added`); }}
+            <button key={t.label}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({
+                  type: 'text', label: t.label, data: { content: t.label, fontSize: parseInt(t.size), fontWeight: t.weight === 'bold' ? 'bold' : 'normal' }
+                }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onClick={() => { onAddElement?.('text', { content: t.label, fontSize: parseInt(t.size) }); toast.success(`${t.label} added`); }}
               className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
               <span style={{ fontSize: t.size, fontWeight: t.weight as any }} className="text-foreground">{t.label}</span>
             </button>
@@ -884,7 +916,15 @@ const EbookDesignSidebar = ({
                   {filtered.map(item => (
                     <Tooltip key={item.id}>
                       <TooltipTrigger asChild>
-                        <button onClick={() => { onAddElement?.(item.id, item); toast.success(`${item.name} added`); }}
+                        <button
+                          draggable
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({
+                              type: item.id, label: item.name, data: item
+                            }));
+                            e.dataTransfer.effectAllowed = 'copy';
+                          }}
+                          onClick={() => { onAddElement?.(item.id, item); toast.success(`${item.name} added`); }}
                           className="flex flex-col items-center gap-0.5 p-2 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/5 transition-colors">
                           <item.icon className="w-4 h-4" style={{ color: item.color }} />
                           <span className="text-[8px] text-muted-foreground truncate w-full text-center">{item.name}</span>
@@ -933,7 +973,19 @@ const EbookDesignSidebar = ({
           {imageTab === 'stock' && (
             <div className="grid grid-cols-3 gap-1.5">
               {STOCK_IMAGES.map((src, i) => (
-                <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
+                <button key={i}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({
+                      type: 'image', label: 'Image', data: { src }
+                    }));
+                    e.dataTransfer.effectAllowed = 'copy';
+                    // Set drag image preview
+                    const img = new Image();
+                    img.src = src;
+                    e.dataTransfer.setDragImage(img, 40, 40);
+                  }}
+                  onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
                   className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
                   <img src={src} alt="" className="w-full h-full object-cover" />
                 </button>
@@ -966,7 +1018,13 @@ const EbookDesignSidebar = ({
               </div>
               <div className="grid grid-cols-3 gap-1.5">
                 {CREATION_IMAGES.map((src, i) => (
-                  <button key={i} onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
+                  <button key={i}
+                    draggable
+                    onDragStart={(e) => {
+                      e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'image', label: 'Image', data: { src } }));
+                      e.dataTransfer.effectAllowed = 'copy';
+                    }}
+                    onClick={() => { if (onReplaceImage) { onReplaceImage(src); } else { onAddElement?.('image', { src }); toast.success('Image added'); } }}
                     className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
                     <img src={src} alt="" className="w-full h-full object-cover" />
                   </button>
@@ -977,7 +1035,13 @@ const EbookDesignSidebar = ({
           {imageTab === 'community' && (
             <div className="grid grid-cols-3 gap-1.5">
               {COMMUNITY_IMAGES.map((src, i) => (
-                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                <button key={i}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'image', label: 'Image', data: { src } }));
+                    e.dataTransfer.effectAllowed = 'copy';
+                  }}
+                  onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
                   className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
                   <img src={src} alt="" className="w-full h-full object-cover" />
                 </button>
