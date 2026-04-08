@@ -145,6 +145,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
                   {/* Thumbnail preview */}
                   <div className="aspect-[3/4] bg-foreground/[0.03] relative">
                     <PageThumbnail elements={getElementsForPage(page, pages, bookTitle)} />
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-accent/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
                     {page.locked && <Lock className="w-3 h-3 text-muted-foreground absolute top-1 right-1" />}
                   </div>
                   {/* Title */}
