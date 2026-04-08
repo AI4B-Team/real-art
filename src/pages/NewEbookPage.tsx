@@ -162,7 +162,7 @@ const ProjectNameInput = ({ value, onChange }: { value: string; onChange: (v: st
         onChange={e => setDraft(e.target.value)}
         onKeyDown={e => { if (e.key === 'Enter') handleSave(); if (e.key === 'Escape') handleCancel(); }}
         autoFocus
-        className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-accent/40 rounded-lg px-3 py-1.5 w-64 focus:outline-none transition-colors"
+        className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-accent/40 rounded-lg px-3 py-1.5 min-w-[20rem] focus:outline-none transition-colors"
       />
       <button onClick={handleSave} className="p-1.5 rounded-lg bg-accent text-white hover:bg-accent/90 transition-colors">
         <Check className="w-3.5 h-3.5" />
