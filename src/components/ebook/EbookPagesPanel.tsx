@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import type { Page } from './EbookCanvasEditor';
 import { getElementsForPage } from './EbookCanvasEditor';
 import PageThumbnail from './PageThumbnail';
+import PageTypePicker from './PageTypePicker';
 
 interface EbookPagesPanelProps {
   pages: Page[];
@@ -28,8 +29,8 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
 
   const selectedIndex = pages.findIndex(p => p.id === selectedPageId);
 
-  const handleAddPage = () => {
-    const newPage: Page = { id: crypto.randomUUID(), title: `Page ${pages.length + 1}`, type: 'chapter' };
+  const handleAddPage = (pageType: Page['type'] = 'chapter') => {
+    const newPage: Page = { id: crypto.randomUUID(), title: `Page ${pages.length + 1}`, type: pageType };
     onPagesChange([...pages, newPage]);
     onPageSelect(newPage.id);
     toast.success('Page added');
@@ -114,9 +115,11 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
         <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
           <span className="text-xs font-bold text-foreground uppercase tracking-wider">Pages</span>
           <div className="flex items-center gap-1">
-            <button onClick={handleAddPage} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
-              <Plus className="w-4 h-4" />
-            </button>
+            <PageTypePicker onSelect={(type) => handleAddPage(type)} side="bottom" align="end">
+              <button className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
+                <Plus className="w-4 h-4" />
+              </button>
+            </PageTypePicker>
             <button onClick={() => setIsCollapsed(true)} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
               <ChevronRight className="w-4 h-4" />
             </button>

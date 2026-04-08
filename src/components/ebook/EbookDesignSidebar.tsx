@@ -21,6 +21,7 @@ import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from '@/components/ui/tooltip';
 import AITextEditMenu, { type AIEditAction } from './AITextEditMenu';
+import PageTypePicker from './PageTypePicker';
 
 interface Chapter {
   id: string;
@@ -33,7 +34,7 @@ interface EbookDesignSidebarProps {
   chapters: Chapter[];
   selectedChapterId: string | null;
   onChapterSelect: (id: string) => void;
-  onChapterAdd: (afterId: string) => void;
+  onChapterAdd: (afterId: string, pageType?: string) => void;
   onChapterTitleEdit: (id: string, newTitle: string) => void;
   onChapterDelete?: (id: string) => void;
   onChapterReorder?: (fromIndex: number, toIndex: number) => void;
@@ -800,11 +801,11 @@ const EbookDesignSidebar = ({
                             </TooltipTrigger><TooltipContent side="top">Move Down</TooltipContent></Tooltip>
                           </>
                         )}
-                        <Tooltip><TooltipTrigger asChild>
-                          <button onClick={e => { e.stopPropagation(); onChapterAdd(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                        <PageTypePicker onSelect={(type) => onChapterAdd(ch.id, type)} side="right" align="start">
+                          <button onClick={e => e.stopPropagation()} className="p-0.5 rounded hover:bg-foreground/[0.08]">
                             <Plus className="w-3.5 h-3.5 text-muted-foreground" />
                           </button>
-                        </TooltipTrigger><TooltipContent side="top">Add Page After</TooltipContent></Tooltip>
+                        </PageTypePicker>
                         <Tooltip><TooltipTrigger asChild>
                           <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
                             <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
@@ -832,10 +833,11 @@ const EbookDesignSidebar = ({
               );
             })}
           </div>
-          <button onClick={() => onChapterAdd(chapters[chapters.length - 1]?.id || '')}
-            className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
-            <Plus className="w-3.5 h-3.5" />Add Page
-          </button>
+          <PageTypePicker onSelect={(type) => onChapterAdd(chapters[chapters.length - 1]?.id || '', type)} side="right" align="center">
+            <button className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+              <Plus className="w-3.5 h-3.5" />Add Page
+            </button>
+          </PageTypePicker>
         </div>
       )}
 
