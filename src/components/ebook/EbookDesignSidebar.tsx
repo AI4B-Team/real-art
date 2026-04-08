@@ -892,7 +892,15 @@ const EbookDesignSidebar = ({
                   {filtered.map(item => (
                     <Tooltip key={item.id}>
                       <TooltipTrigger asChild>
-                        <button onClick={() => { onAddElement?.(item.id, item); toast.success(`${item.name} added`); }}
+                        <button
+                          draggable
+                          onDragStart={(e) => {
+                            e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({
+                              type: item.id, label: item.name, data: item
+                            }));
+                            e.dataTransfer.effectAllowed = 'copy';
+                          }}
+                          onClick={() => { onAddElement?.(item.id, item); toast.success(`${item.name} added`); }}
                           className="flex flex-col items-center gap-0.5 p-2 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/5 transition-colors">
                           <item.icon className="w-4 h-4" style={{ color: item.color }} />
                           <span className="text-[8px] text-muted-foreground truncate w-full text-center">{item.name}</span>
