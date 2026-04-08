@@ -848,7 +848,15 @@ const EbookDesignSidebar = ({
             { label: 'Body Text', size: '14px', weight: 'normal' },
             { label: 'Caption', size: '11px', weight: 'normal' },
           ].map(t => (
-            <button key={t.label} onClick={() => { onAddElement?.('text', { content: t.label, fontSize: parseInt(t.size) }); toast.success(`${t.label} added`); }}
+            <button key={t.label}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({
+                  type: 'text', label: t.label, data: { content: t.label, fontSize: parseInt(t.size), fontWeight: t.weight === 'bold' ? 'bold' : 'normal' }
+                }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onClick={() => { onAddElement?.('text', { content: t.label, fontSize: parseInt(t.size) }); toast.success(`${t.label} added`); }}
               className="w-full text-left px-3 py-2 rounded-lg border border-foreground/[0.06] hover:border-accent/40 transition-colors">
               <span style={{ fontSize: t.size, fontWeight: t.weight as any }} className="text-foreground">{t.label}</span>
             </button>
