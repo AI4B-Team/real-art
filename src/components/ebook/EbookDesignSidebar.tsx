@@ -1011,7 +1011,13 @@ const EbookDesignSidebar = ({
           {imageTab === 'community' && (
             <div className="grid grid-cols-3 gap-1.5">
               {COMMUNITY_IMAGES.map((src, i) => (
-                <button key={i} onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
+                <button key={i}
+                  draggable
+                  onDragStart={(e) => {
+                    e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'image', label: 'Image', data: { src } }));
+                    e.dataTransfer.effectAllowed = 'copy';
+                  }}
+                  onClick={() => { onAddElement?.('image', { src }); toast.success('Image added'); }}
                   className="rounded-lg overflow-hidden border border-foreground/[0.06] hover:border-accent/40 transition-colors aspect-square">
                   <img src={src} alt="" className="w-full h-full object-cover" />
                 </button>
