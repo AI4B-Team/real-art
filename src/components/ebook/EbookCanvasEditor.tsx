@@ -302,6 +302,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [gridMenuOpenId, setGridMenuOpenId] = useState<string | null>(null);
   const [aiExpandedPageId, setAiExpandedPageId] = useState<string | null>(null);
   const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
+  // External drag-drop state (from sidebar)
+  const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; y: number } | null>(null);
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Record<string, HTMLDivElement | null>>({});
