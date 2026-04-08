@@ -570,24 +570,15 @@ const NewEbookPage = () => {
     toast({ title: "Idea generated!" });
   };
 
-  const handleStartRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = recorder;
-      recorder.start();
-      setIsRecording(true);
-      recorder.onstop = () => { stream.getTracks().forEach(t => t.stop()); };
-    } catch { toast({ title: "Microphone access denied", variant: "destructive" }); }
-  };
-
-  const handleStopRecording = () => {
-    mediaRecorderRef.current?.stop();
-    setIsRecording(false);
-    setShowRecordModal(false);
-    addSource("audio", "Voice Recording");
-    toast({ title: "Recording saved! You can now generate your eBook." });
-  };
+  const handleRecordingComplete = useCallback((data: { transcript: string; duration: number; label: string }) => {
+    addSource("audio", data.label);
+    if (data.transcript) {
+      setBookData(prev => ({
+        ...prev,
+        prompt: prev.prompt ? prev.prompt + "\n\n" + data.transcript : data.transcript,
+      }));
+    }
+  }, [addSource]);
 
   // For the design tab, fill the space below the global navbar without double-subtracting its height
   const isDesign = activeTab === "design";
