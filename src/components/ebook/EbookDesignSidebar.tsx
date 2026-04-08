@@ -800,11 +800,11 @@ const EbookDesignSidebar = ({
                             </TooltipTrigger><TooltipContent side="top">Move Down</TooltipContent></Tooltip>
                           </>
                         )}
-                        <Tooltip><TooltipTrigger asChild>
-                          <button onClick={e => { e.stopPropagation(); onChapterAdd(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                        <PageTypePicker onSelect={(type) => onChapterAdd(ch.id, type)} side="right" align="start">
+                          <button onClick={e => e.stopPropagation()} className="p-0.5 rounded hover:bg-foreground/[0.08]">
                             <Plus className="w-3.5 h-3.5 text-muted-foreground" />
                           </button>
-                        </TooltipTrigger><TooltipContent side="top">Add Page After</TooltipContent></Tooltip>
+                        </PageTypePicker>
                         <Tooltip><TooltipTrigger asChild>
                           <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
                             <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
