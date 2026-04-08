@@ -33,6 +33,7 @@ interface PageSettingsPanelProps {
   selectedPageTitle?: string;
   pageIndex?: number;
   onSendToChat?: (prompt: string) => void;
+  forceTab?: 'pages' | 'format' | 'director' | null;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
