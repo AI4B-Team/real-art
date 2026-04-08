@@ -109,14 +109,15 @@ const AIVAPanel = ({ selectedPageId, selectedPageTitle, pageCount = 1, pageIndex
   return (
     <div className="flex flex-col h-full">
       {/* AIVA Header */}
-      <div className="px-3 py-2.5 border-b border-foreground/[0.04] bg-foreground/[0.12] border-l-2 border-l-accent">
-        <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-accent/20 flex items-center justify-center">
-            <Sparkles className="w-3.5 h-3.5 text-accent" />
+      <div className="px-3 py-3 border-b border-accent/10 bg-gradient-to-r from-accent/[0.06] to-accent/[0.02] border-l-2 border-l-accent">
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-accent/15 flex items-center justify-center relative">
+            <Sparkles className="w-4 h-4 text-accent animate-pulse" />
+            <span className="absolute inset-0 rounded-lg bg-accent/10 animate-[pulse_3s_ease-in-out_infinite] pointer-events-none" />
           </div>
           <div className="flex-1 min-w-0">
             <span className="text-xs font-bold text-foreground">AIVA</span>
-            <p className="text-[9px] text-muted-foreground truncate">Working on: {selectedPageTitle || 'Page'}</p>
+            <p className="text-[9px] text-accent/70 truncate italic">✨ Optimizing your {selectedPageTitle || 'page'}…</p>
           </div>
         </div>
       </div>
