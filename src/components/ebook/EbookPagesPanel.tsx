@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import type { Page } from './EbookCanvasEditor';
 import { getElementsForPage } from './EbookCanvasEditor';
 import PageThumbnail from './PageThumbnail';
+import PageTypePicker from './PageTypePicker';
 
 interface EbookPagesPanelProps {
   pages: Page[];
