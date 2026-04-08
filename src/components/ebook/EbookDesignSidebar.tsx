@@ -33,7 +33,7 @@ interface EbookDesignSidebarProps {
   chapters: Chapter[];
   selectedChapterId: string | null;
   onChapterSelect: (id: string) => void;
-  onChapterAdd: (afterId: string) => void;
+  onChapterAdd: (afterId: string, pageType?: string) => void;
   onChapterTitleEdit: (id: string, newTitle: string) => void;
   onChapterDelete?: (id: string) => void;
   onChapterReorder?: (fromIndex: number, toIndex: number) => void;
