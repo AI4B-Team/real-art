@@ -587,14 +587,19 @@ const PageSettingsPanel = ({
         {/* Header with Add Page */}
         <div className="flex items-center justify-between px-3 py-2.5 border-b border-foreground/[0.04]">
           <span className="text-sm font-bold text-foreground">Pages</span>
-          <button onClick={() => {
-            const newPage = { id: crypto.randomUUID(), title: `Page ${pages.length + 1}`, type: 'chapter' as const };
-            onPagesChange([...pages, newPage]);
-            onPageSelect(newPage.id);
-            toast.success('Page added');
-          }} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
-            <Plus className="w-4 h-4" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button onClick={() => {
+                const newPage = { id: crypto.randomUUID(), title: `Page ${pages.length + 1}`, type: 'chapter' as const };
+                onPagesChange([...pages, newPage]);
+                onPageSelect(newPage.id);
+                toast.success('Page added');
+              }} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
+                <Plus className="w-4 h-4" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">Add Page</TooltipContent>
+          </Tooltip>
         </div>
 
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar p-2.5 space-y-3">
