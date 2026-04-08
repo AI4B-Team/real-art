@@ -147,7 +147,7 @@ const ProjectNameInput = ({ value, onChange }: { value: string; onChange: (v: st
       <div className="flex items-center gap-2 pointer-events-auto">
         <span className="text-sm text-muted-foreground">Project Name:</span>
         <button onClick={() => setIsEditing(true)}
-          className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-3 py-1.5 hover:border-foreground/[0.15] transition-colors">
+          className="text-sm font-medium text-foreground bg-foreground/[0.03] border border-foreground/[0.08] rounded-lg px-3 py-1.5 min-w-[20rem] text-left hover:border-foreground/[0.15] transition-colors">
           {value}
         </button>
       </div>
