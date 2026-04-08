@@ -1542,8 +1542,8 @@ const NewEbookPage = () => {
                 chapters={ebookPages.map(p => ({ id: p.id, title: p.title, type: p.type as any }))}
                 selectedChapterId={selectedPageId}
                 onChapterSelect={setSelectedPageId}
-                onChapterAdd={() => {
-                  const newPage = { id: crypto.randomUUID(), title: "New Page", type: "chapter" as const };
+                onChapterAdd={(_afterId, pageType) => {
+                  const newPage = { id: crypto.randomUUID(), title: "New Page", type: (pageType || "chapter") as const };
                   setEbookPages(prev => [...prev, newPage]);
                   setSelectedPageId(newPage.id);
                 }}
