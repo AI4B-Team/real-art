@@ -3156,6 +3156,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </div>
                             )}
                           </div>
+                          {/* External drag-drop indicator line */}
+                          {externalDropTarget?.pageId === page.id && (
+                            <div
+                              className="absolute left-[5%] right-[5%] pointer-events-none z-[90] transition-all duration-75"
+                              style={{ top: `${externalDropTarget.y}%` }}
+                            >
+                              <div className="relative">
+                                <div className="h-0.5 bg-accent rounded-full shadow-[0_0_8px_hsl(var(--accent)/0.5)]" />
+                                <div className="absolute -left-1.5 -top-1.5 w-3.5 h-3.5 rounded-full bg-accent border-2 border-background shadow-md" />
+                                <div className="absolute -right-1.5 -top-1.5 w-3.5 h-3.5 rounded-full bg-accent border-2 border-background shadow-md" />
+                              </div>
+                            </div>
+                          )}
                           {elems.map(el => renderElement(el, page.id))}
                           {(() => {
                             const selectedImage = elems.find(el => el.id === selectedElementId && el.type === 'image');
