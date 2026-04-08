@@ -523,7 +523,13 @@ const InteractivePanel = ({ onAddElement }: { onAddElement?: (type: string, data
         <p className="text-xs font-bold text-foreground mb-2">Quick Add Elements</p>
         <div className="space-y-1.5">
           {QUICK_ADD_ELEMENTS.map(item => (
-            <button key={item.id} onClick={() => addInteractive(item.id)}
+            <button key={item.id}
+              draggable
+              onDragStart={(e) => {
+                e.dataTransfer.setData('application/x-ebook-element', JSON.stringify({ type: 'interactive', label: item.label, data: { interactiveType: item.id } }));
+                e.dataTransfer.effectAllowed = 'copy';
+              }}
+              onClick={() => addInteractive(item.id)}
               className="w-full flex items-center gap-3 p-3 rounded-xl border border-foreground/[0.06] hover:border-foreground/[0.12] hover:shadow-sm transition-all group">
               <div className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
                 style={{ backgroundColor: `${item.color}15` }}>
