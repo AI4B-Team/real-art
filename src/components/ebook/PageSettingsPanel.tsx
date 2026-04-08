@@ -93,7 +93,7 @@ const PageSettingsPanel = ({
   const [rightTab, setRightTab] = useState<'pages' | 'format' | 'director'>('pages');
 
   // Allow parent to force-switch tab (e.g. when AI assistant opens)
-  React.useEffect(() => {
+  useEffect(() => {
     if (forceTab) setRightTab(forceTab);
   }, [forceTab]);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
