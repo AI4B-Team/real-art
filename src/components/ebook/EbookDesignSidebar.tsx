@@ -689,24 +689,6 @@ const EbookDesignSidebar = ({
         <span className="text-[9px] font-bold text-muted-foreground/60 uppercase tracking-[0.12em]">Structure</span>
       </div>
 
-      {/* Templates */}
-      <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
-      {expandedSections.has('templates') && (
-        <div className="px-3 pb-3 pt-2">
-          <div className="grid grid-cols-3 gap-1.5">
-            {TEMPLATES.map(t => (
-              <button key={t.id} onClick={() => toast.success(`${t.name} template applied`)}
-                className="group rounded-lg border border-foreground/[0.06] hover:border-accent/40 overflow-hidden transition-all">
-                <div className="aspect-[3/4] flex items-center justify-center" style={{ backgroundColor: t.color }}>
-                  <Presentation className="w-5 h-5 text-foreground/30" />
-                </div>
-                <p className="text-[10px] font-medium text-center py-1 text-foreground">{t.name}</p>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Content / Chapters */}
       <SectionHeader id="content" title="Content" icon={Layers} />
       {expandedSections.has('content') && (
@@ -830,6 +812,24 @@ const EbookDesignSidebar = ({
             className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
             <Plus className="w-3.5 h-3.5" />Add Page
           </button>
+        </div>
+      )}
+
+      {/* Templates */}
+      <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
+      {expandedSections.has('templates') && (
+        <div className="px-3 pb-3 pt-2">
+          <div className="grid grid-cols-3 gap-1.5">
+            {TEMPLATES.map(t => (
+              <button key={t.id} onClick={() => toast.success(`${t.name} template applied`)}
+                className="group rounded-lg border border-foreground/[0.06] hover:border-accent/40 overflow-hidden transition-all">
+                <div className="aspect-[3/4] flex items-center justify-center" style={{ backgroundColor: t.color }}>
+                  <Presentation className="w-5 h-5 text-foreground/30" />
+                </div>
+                <p className="text-[10px] font-medium text-center py-1 text-foreground">{t.name}</p>
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
