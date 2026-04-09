@@ -62,7 +62,8 @@ Respond ONLY with valid JSON:
   "pages": [
     {
       "title": "string - page heading or subheading",
-      "content": "string - 200-400 words of rich, well-written content for this page. Use paragraphs.",
+      "content": "string - 300-500 words of rich, well-written content for this page. Use multiple paragraphs. Include specific examples, data points, actionable advice, or compelling stories.",
+      "imagePrompt": "string - a detailed prompt to generate a relevant illustration or photo for this page (e.g. 'A professional team brainstorming around a whiteboard in a modern office, warm lighting')",
       "type": "chapter-page"
     }
   ]
@@ -72,33 +73,44 @@ Description: ${chapterDescription}
 Key topics to cover: ${(chapterTopics || []).join(", ")}
 Tone: ${tone || "professional"}
 Target length: approximately ${wordsPerChapter || 2000} words total across all pages.
-Break the content into logical pages (each 200-400 words).`;
+
+IMPORTANT RULES:
+- Break the content into 4-8 logical pages, each with 300-500 words.
+- Each page MUST have substantial, detailed content - never leave pages empty.
+- Write in flowing paragraphs with real substance: examples, statistics, case studies, actionable steps.
+- Each page should also include an imagePrompt describing a relevant visual.
+- Do NOT write placeholder or filler text. Every sentence should add value.`;
 
     } else if (action === "generate-page") {
       systemPrompt = `You are a bestselling author. Write content for a single page of a book titled "${title}". ${langInstruction}
 
 Respond ONLY with valid JSON:
 {
-  "content": "string - 200-400 words of polished, engaging content"
+  "content": "string - 300-500 words of polished, engaging content with multiple paragraphs",
+  "imagePrompt": "string - a detailed prompt to generate a relevant illustration for this page"
 }`;
       userPrompt = `Write content for this page.
 Chapter: ${chapterTitle}
 Page context: ${pageContent || "Continue from previous content"}
-Tone: ${tone || "professional"}`;
+Tone: ${tone || "professional"}
+
+IMPORTANT: Write at least 300 words of substantial content with real examples and actionable advice.`;
 
     } else if (action === "generate-full-book") {
-      // For auto model, use the most powerful model for full book generation
       systemPrompt = `You are a world-class author writing a complete book. Generate the full content broken into chapters and pages. ${langInstruction}
+
+CRITICAL: Every single page MUST contain 300-500 words of real, substantive content. No page should ever be empty or have less than 200 words.
 
 Respond ONLY with valid JSON:
 {
   "chapters": [
     {
-      "title": "string",
+      "title": "string - chapter title",
       "pages": [
         {
-          "title": "string - page heading",
-          "content": "string - 200-400 words of rich content"
+          "title": "string - descriptive page heading",
+          "content": "string - 300-500 words of rich, detailed content with multiple paragraphs. Include examples, data, stories, and actionable advice.",
+          "imagePrompt": "string - a detailed description for generating a relevant image (e.g. 'A diverse team analyzing data dashboards in a bright modern office')"
         }
       ]
     }
@@ -106,9 +118,17 @@ Respond ONLY with valid JSON:
 }`;
       userPrompt = `Write a complete book titled "${title}" about: "${prompt}"
 Tone: ${tone || "professional"}
-Chapters: ${chapters || 8}
+Number of chapters: ${chapters || 8}
 Words per chapter: approximately ${wordsPerChapter || 2000}
-Make it engaging, practical, and well-structured. Each chapter should have 3-6 pages.`;
+
+CRITICAL REQUIREMENTS:
+1. Each chapter MUST have 4-6 content pages.
+2. Every page MUST have 300-500 words of real, substantive content — NEVER leave a page empty or with just a sentence.
+3. Write in flowing paragraphs with specific examples, case studies, statistics, and actionable steps.
+4. Each page must include an imagePrompt for a relevant visual illustration.
+5. Do NOT write generic filler. Every paragraph should teach something valuable.
+6. Use engaging storytelling, real-world examples, and practical frameworks.
+7. Each page title should be a meaningful subheading that describes the content.`;
 
     } else {
       return new Response(JSON.stringify({ error: "Unknown action" }), {
@@ -129,6 +149,7 @@ Make it engaging, practical, and well-structured. Each chapter should have 3-6 p
           { role: "user", content: userPrompt },
         ],
         temperature: 0.7,
+        max_tokens: 16000,
       }),
     });
 
@@ -152,6 +173,11 @@ Make it engaging, practical, and well-structured. Each chapter should have 3-6 p
 
     const data = await response.json();
     const rawContent = data.choices?.[0]?.message?.content || "";
+    const finishReason = data.choices?.[0]?.finish_reason;
+    
+    if (finishReason === "length" || finishReason === "MAX_TOKENS") {
+      console.warn("AI response was truncated due to token limits. finishReason:", finishReason);
+    }
 
     // Extract JSON from the response (handle markdown code blocks)
     let jsonStr = rawContent;
@@ -160,7 +186,7 @@ Make it engaging, practical, and well-structured. Each chapter should have 3-6 p
 
     try {
       const parsed = JSON.parse(jsonStr);
-      return new Response(JSON.stringify({ result: parsed }), {
+      return new Response(JSON.stringify({ result: parsed, truncated: finishReason === "length" || finishReason === "MAX_TOKENS" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     } catch {

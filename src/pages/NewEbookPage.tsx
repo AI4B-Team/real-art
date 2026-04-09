@@ -503,7 +503,7 @@ const NewEbookPage = () => {
           { id: "1", title: bookData.selectedTitle, type: "cover" },
           { id: "2", title: "Table of Contents", type: "toc" },
         ];
-        const contentMap: { pageId: string; content: string }[] = [];
+        const contentMap: { pageId: string; content: string; imagePrompt?: string }[] = [];
         let pageId = 3;
         let totalWords = 0;
         for (const chapter of result.chapters) {
@@ -512,7 +512,7 @@ const NewEbookPage = () => {
             const pid = String(pageId++);
             newPages.push({ id: pid, title: page.title || "Content Page", type: "chapter-page" });
             if (page.content) {
-              contentMap.push({ pageId: pid, content: page.content });
+              contentMap.push({ pageId: pid, content: page.content, imagePrompt: page.imagePrompt });
               totalWords += page.content.split(/\s+/).length;
             }
           }
@@ -537,6 +537,8 @@ const NewEbookPage = () => {
               canvasRef.current.setPageContent(pid, content);
             }
           }
+          // Generate images in background for pages that have image prompts
+          generatePageImages(contentMap);
         }, 800);
       }
       toast({ title: "Your AI-written book is ready!" });
@@ -550,6 +552,34 @@ const NewEbookPage = () => {
       setIsGeneratingBook(false);
     }
   };
+
+  // Generate AI images for pages with imagePrompts (runs in background)
+  const generatePageImages = useCallback(async (contentMap: { pageId: string; content: string; imagePrompt?: string }[]) => {
+    const pagesWithImages = contentMap.filter(p => p.imagePrompt);
+    if (pagesWithImages.length === 0) return;
+
+    // Generate images sequentially to avoid rate limits
+    for (const { pageId: pid, imagePrompt } of pagesWithImages) {
+      try {
+        const { data, error } = await supabase.functions.invoke('generate-ebook-image', {
+          body: { prompt: imagePrompt, style: 'photo' },
+        });
+        if (error || data?.error) {
+          console.warn(`Image gen failed for page ${pid}:`, error?.message || data?.error);
+          continue;
+        }
+        if (data?.imageUrl && canvasRef.current) {
+          // Add image element to the page via canvas ref
+          canvasRef.current.setPageContent(pid, `__IMAGE__${data.imageUrl}`);
+        }
+      } catch (e) {
+        console.warn(`Image gen error for page ${pid}:`, e);
+      }
+      // Small delay between requests to avoid rate limiting
+      await new Promise(r => setTimeout(r, 1500));
+    }
+    sonnerToast.success('AI images added to your book!');
+  }, []);
 
   const handleGenerationComplete = useCallback(() => {
     setIsGeneratingBook(false);
