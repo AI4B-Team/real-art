@@ -172,10 +172,9 @@ const createChapterElements = (num: number, title: string): CanvasElement[] => [
 ];
 
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => [
-  { id: `cp${num}-bg`, type: 'image', x: 0, y: 0, width: 100, height: 100, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length] },
-  { id: `cp${num}-overlay`, type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: 'rgba(0,0,0,0.5)', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: `cp${num}-label`, type: 'text', x: 10, y: 40, width: 80, height: 10, content: `CHAPTER ${num}`, fontSize: 18, fontFamily: 'Georgia', textColor: '#ffffff' },
-  { id: `cp${num}-title`, type: 'text', x: 10, y: 48, width: 80, height: 15, content: title, fontSize: 36, fontFamily: 'Georgia', textColor: '#ffffff' },
+  { id: `cp${num}-title`, type: 'text', x: 8, y: 4, width: 84, height: 6, content: title, fontSize: 16, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold' },
+  { id: `cp${num}-divider`, type: 'shape', x: 8, y: 11, width: 15, height: 0.5, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `cp${num}-body`, type: 'text', x: 8, y: 14, width: 84, height: 82, content: '', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
 ];
 
 const createBackElements = (title: string): CanvasElement[] => [
