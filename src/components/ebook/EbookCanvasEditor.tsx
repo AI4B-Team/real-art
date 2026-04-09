@@ -842,6 +842,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       setPageElements(prev => {
         const page = currentPages.find(p => p.id === pageId);
         const elems = prev[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+
+        // Handle image insertion via __IMAGE__ prefix
+        if (content.startsWith('__IMAGE__')) {
+          const imageUrl = content.slice(9);
+          const imageEl: CanvasElement = {
+            id: `img-${pageId}-${Date.now()}`, type: 'image',
+            x: 8, y: 4, width: 84, height: 30,
+            src: imageUrl,
+          };
+          // Find body text and shift it down to make room
+          const bodyEl = elems.find(e => e.type === 'text' && e.id.includes('body'));
+          if (bodyEl) {
+            const updatedElems = elems.map(e => {
+              if (e.id === bodyEl.id) return { ...e, y: 38, height: Math.max(10, 58) };
+              if (e.id.includes('title')) return e; // keep title at top
+              if (e.id.includes('divider')) return { ...e, y: 36 };
+              return e;
+            });
+            return { ...prev, [pageId]: [imageEl, ...updatedElems] };
+          }
+          return { ...prev, [pageId]: [imageEl, ...elems] };
+        }
+
         // Find existing body text element and update it, or add a new one
         const bodyEl = elems.find(e => e.type === 'text' && e.id.includes('body'));
         if (bodyEl) {
