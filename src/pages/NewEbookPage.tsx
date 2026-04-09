@@ -503,7 +503,7 @@ const NewEbookPage = () => {
           { id: "1", title: bookData.selectedTitle, type: "cover" },
           { id: "2", title: "Table of Contents", type: "toc" },
         ];
-        const contentMap: { pageId: string; content: string }[] = [];
+        const contentMap: { pageId: string; content: string; imagePrompt?: string }[] = [];
         let pageId = 3;
         let totalWords = 0;
         for (const chapter of result.chapters) {
@@ -512,7 +512,7 @@ const NewEbookPage = () => {
             const pid = String(pageId++);
             newPages.push({ id: pid, title: page.title || "Content Page", type: "chapter-page" });
             if (page.content) {
-              contentMap.push({ pageId: pid, content: page.content });
+              contentMap.push({ pageId: pid, content: page.content, imagePrompt: page.imagePrompt });
               totalWords += page.content.split(/\s+/).length;
             }
           }
@@ -537,6 +537,8 @@ const NewEbookPage = () => {
               canvasRef.current.setPageContent(pid, content);
             }
           }
+          // Generate images in background for pages that have image prompts
+          generatePageImages(contentMap);
         }, 800);
       }
       toast({ title: "Your AI-written book is ready!" });
