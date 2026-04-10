@@ -63,10 +63,17 @@ serve(async (req) => {
     }
 
     const data = await response.json();
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+    // Try multiple response structures from different AI models
+    const message = data.choices?.[0]?.message;
+    const imageUrl =
+      message?.images?.[0]?.image_url?.url ||
+      message?.images?.[0]?.url ||
+      message?.image?.url ||
+      (Array.isArray(message?.content) && message.content.find((p: any) => p.type === 'image_url')?.image_url?.url) ||
+      (typeof message?.content === 'string' && message.content.startsWith('http') ? message.content.trim() : null);
 
     if (!imageUrl) {
-      console.error("No image in response:", JSON.stringify(data).substring(0, 500));
+      console.error("No image in response. Keys:", JSON.stringify(Object.keys(message || {})), "Full:", JSON.stringify(data).substring(0, 1000));
       return new Response(JSON.stringify({ error: "No image generated. Try a different prompt." }), {
         status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });

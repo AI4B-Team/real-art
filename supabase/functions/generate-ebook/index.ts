@@ -190,7 +190,7 @@ CRITICAL REQUIREMENTS:
           { role: "user", content: userPrompt },
         ],
         temperature: requestTemperature,
-        max_tokens: 16000,
+      max_tokens: 32000,
       }),
     });
 
@@ -227,6 +227,12 @@ CRITICAL REQUIREMENTS:
     try {
       const parsed = JSON.parse(jsonStr);
 
+      if (action === "generate-chapter" && Array.isArray(parsed.pages)) {
+        parsed.pages = parsed.pages.filter((p: any) =>
+          p && typeof p.title === "string" && typeof p.content === "string" && p.content.trim().length > 30
+        );
+      }
+
       if (action === "generate-outline" && Array.isArray(parsed.titles)) {
         const blockedTitles = new Set(excludedTitles.map(normalizeTitle));
         const seenTitles = new Set<string>();
@@ -245,9 +251,31 @@ CRITICAL REQUIREMENTS:
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     } catch {
-      console.error("Failed to parse AI response as JSON:", jsonStr.substring(0, 500));
-      return new Response(JSON.stringify({ error: "AI returned invalid format. Please try again." }), {
-        status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      console.error("Failed to parse AI response as JSON:", jsonStr.substring(0, 800));
+
+      // Attempt to recover truncated JSON for chapter generation
+      if (action === "generate-chapter" || action === "generate-full-book") {
+        try {
+          // Try to extract complete page objects from truncated JSON
+          const pageMatches = [...jsonStr.matchAll(/\{\s*"title"\s*:\s*"([^"]+)"\s*,\s*"content"\s*:\s*"((?:[^"\\]|\\.)*)"\s*,\s*"imagePrompt"\s*:\s*"((?:[^"\\]|\\.)*)"\s*(?:,\s*"type"\s*:\s*"[^"]*"\s*)?\}/g)];
+          if (pageMatches.length > 0) {
+            const recoveredPages = pageMatches
+              .map(m => ({ title: m[1], content: m[2].replace(/\\n/g, '\n').replace(/\\"/g, '"'), imagePrompt: m[3], type: "chapter-page" }))
+              .filter(p => p.content.trim().length > 30);
+            if (recoveredPages.length > 0) {
+              console.log(`Recovered ${recoveredPages.length} pages from truncated JSON`);
+              return new Response(JSON.stringify({ result: { pages: recoveredPages }, truncated: true }), {
+                headers: { ...corsHeaders, "Content-Type": "application/json" },
+              });
+            }
+          }
+        } catch (recoveryError) {
+          console.error("JSON recovery also failed:", recoveryError);
+        }
+      }
+
+      return new Response(JSON.stringify({ error: "AI returned invalid format. Please try again.", retryable: true }), {
+        status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
   } catch (e) {
