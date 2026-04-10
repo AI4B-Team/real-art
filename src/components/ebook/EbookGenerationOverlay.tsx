@@ -23,6 +23,22 @@ const GENERATION_STEPS: GenerationStep[] = [
   { id: "styling", title: "Applying Styles", description: "Adding finishing touches and visual polish...", icon: Palette, duration: 1500, microcopy: ["Adding finishing touches…", "Polishing your book…", "Final refinements…"] },
 ];
 
+const AI_NARRATION = [
+  "Choosing a high-converting layout…",
+  "Optimizing visual hierarchy…",
+  "Balancing text and imagery…",
+  "Enhancing readability…",
+  "Fine-tuning page flow…",
+  "Analyzing content structure…",
+];
+
+const getProgressLabel = (progress: number): string => {
+  if (progress >= 95) return "Almost ready…";
+  if (progress >= 85) return "Finalizing design…";
+  if (progress >= 70) return "Polishing details…";
+  return `${Math.round(progress)}%`;
+};
+
 interface EbookGenerationOverlayProps {
   isGenerating: boolean;
   bookTitle: string;
