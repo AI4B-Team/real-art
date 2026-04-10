@@ -227,12 +227,17 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
           </div>
         </div>
 
-        {/* Shimmer bar on active step */}
+        {/* AI Narration */}
+        <div className="flex items-center gap-2 mb-6">
+          <Sparkles className="w-4 h-4 text-primary shrink-0" />
+          <RotatingMicrocopy texts={AI_NARRATION} />
+        </div>
+
         {/* Progress bar */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-400">Overall Progress:</span>
-            <span className="text-white font-medium ml-1">{Math.round(overallProgress)}%</span>
+            <span className="text-white font-medium ml-1">{getProgressLabel(overallProgress)}</span>
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden relative">
             <motion.div
@@ -241,7 +246,6 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
               animate={{ width: `${overallProgress}%` }}
               transition={{ duration: 0.3 }}
             />
-            {/* Shimmer effect */}
             <motion.div
               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
               animate={{ x: ["-100%", "200%"] }}
