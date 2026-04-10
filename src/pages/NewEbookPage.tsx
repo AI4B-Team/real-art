@@ -19,7 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
-import EbookCanvasEditor, { type EbookCanvasEditorHandle } from "@/components/ebook/EbookCanvasEditor";
+import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
@@ -744,8 +744,6 @@ const NewEbookPage = () => {
       });
 
       newPages.push({ id: crypto.randomUUID(), title: "Back Cover", type: "back" });
-      setEbookPages(newPages);
-      setSelectedPageId(newPages[0]?.id ?? null);
 
       // Also generate a cover image based on the book topic
       if (shouldGenerateImages) {
@@ -755,6 +753,38 @@ const NewEbookPage = () => {
           imagePrompt: `Professional book cover photograph for "${bookData.selectedTitle}". ${bookDescription || bookData.prompt}. High quality, editorial style, modern.`,
         });
       }
+
+      // Build page elements with AI content pre-populated (no setTimeout needed)
+      const prebuiltElements: Record<string, any[]> = {};
+      newPages.forEach(page => {
+        const defaultElems = getElementsForPage(page as CanvasPage, newPages as CanvasPage[], bookData.selectedTitle);
+        const mapped = contentMap.find(c => c.pageId === page.id);
+        if (mapped && mapped.content) {
+          const bodyEl = defaultElems.find(e => e.type === 'text' && e.id.includes('body'));
+          if (bodyEl) {
+            prebuiltElements[page.id] = defaultElems.map(e =>
+              e.id === bodyEl.id ? { ...e, content: mapped.content } : e
+            );
+          } else {
+            prebuiltElements[page.id] = [
+              ...defaultElems,
+              {
+                id: `body-${page.id}-${Date.now()}`, type: 'text',
+                x: 8, y: 18, width: 84, height: 74,
+                content: mapped.content, fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.6,
+              },
+            ];
+          }
+        } else {
+          prebuiltElements[page.id] = defaultElems;
+        }
+      });
+
+      // Set pages and elements together so the canvas renders content immediately
+      setSavedPageElements(prebuiltElements);
+      localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(prebuiltElements));
+      setEbookPages(newPages);
+      setSelectedPageId(newPages[0]?.id ?? null);
 
       if (newEbook) {
         updateEbook(newEbook.id, {
@@ -770,17 +800,10 @@ const NewEbookPage = () => {
         });
       }
 
-      setTimeout(() => {
-        if (canvasRef.current) {
-          for (const { pageId, content } of contentMap) {
-            canvasRef.current.setPageContent(pageId, content);
-          }
-        }
-
-        if (shouldGenerateImages) {
-          generatePageImages(contentMap);
-        }
-      }, 250);
+      // Generate images in background (these use the ref which is fine for async updates)
+      if (shouldGenerateImages) {
+        setTimeout(() => generatePageImages(contentMap), 500);
+      }
 
       toast({ title: "Your AI-written book is ready!" });
     } catch (e: any) {
