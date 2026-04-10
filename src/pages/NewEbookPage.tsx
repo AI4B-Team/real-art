@@ -225,6 +225,7 @@ const NewEbookPage = () => {
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [accessMode, setAccessMode] = useState<'editing' | 'viewing' | 'commenting' | 'admin'>('editing');
   const [currentEbookId, setCurrentEbookId] = useState<string | null>(() => sessionStorage.getItem("ebook-current-id"));
+  const titleGenerationRequestRef = useRef(0);
 
   const addSource = useCallback((type: "file" | "link" | "audio", label: string) => {
     setAttachedSources(prev => [...prev, { id: `src-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, type, label }]);
@@ -477,9 +478,17 @@ const NewEbookPage = () => {
   const currentTone = TONES.find(t => t.id === bookData.tone);
 
   const toTitleCase = (str: string) => str.split(" ").map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+  const isTitleGenerationVisible = isGenerating && (activeTab === "idea" || activeTab === "generate");
+  const isRegeneratingTitles = isGenerating && activeTab === "generate";
+  const titleGenerationLabel = isRegeneratingTitles
+    ? toTitleCase("generating a fresh batch of titles...")
+    : toTitleCase("generating title ideas...");
 
   const handleGenerate = async () => {
     if (!bookData.prompt.trim()) { toast({ title: "Please describe your topic", variant: "destructive" }); return; }
+    if (isGenerating) return;
+
+    const requestId = ++titleGenerationRequestRef.current;
     setIsGenerating(true);
     setGenerationProgress(0);
 
@@ -489,7 +498,7 @@ const NewEbookPage = () => {
         : [];
 
     // Animate progress bar while waiting
-    const interval = setInterval(() => {
+    const interval = window.setInterval(() => {
       setGenerationProgress(prev => Math.min(prev + Math.random() * 8, 90));
     }, 600);
 
@@ -507,10 +516,11 @@ const NewEbookPage = () => {
         },
       });
 
-      clearInterval(interval);
+      window.clearInterval(interval);
 
       if (error) throw new Error(error.message || 'Generation failed');
       if (data?.error) throw new Error(data.error);
+      if (requestId !== titleGenerationRequestRef.current) return;
 
       const result = data.result;
       const freshTitles = Array.isArray(result?.titles) ? [...result.titles] : [];
@@ -535,13 +545,16 @@ const NewEbookPage = () => {
       setGenerateStep("titles");
       setGenerationProgress(100);
       setActiveTab("generate");
-      toast({ title: "AI-powered outline generated!" });
+      toast({ title: titlesToExclude.length > 0 ? "Fresh title ideas are ready!" : "AI-powered outline generated!" });
     } catch (e: any) {
-      clearInterval(interval);
+      window.clearInterval(interval);
+      if (requestId !== titleGenerationRequestRef.current) return;
       console.error('Generate outline error:', e);
       toast({ title: e.message || "Generation failed", variant: "destructive" });
     } finally {
-      setIsGenerating(false);
+      if (requestId === titleGenerationRequestRef.current) {
+        setIsGenerating(false);
+      }
     }
   };
 
@@ -1029,15 +1042,19 @@ const NewEbookPage = () => {
         )}
 
         {/* Generation progress bar */}
-        {isGenerating && activeTab === "idea" && (
+        {isTitleGenerationVisible && (
           <div className="max-w-3xl mx-auto mb-6 p-4 rounded-xl border border-foreground/[0.08] bg-background">
             <div className="flex items-center gap-3 mb-2">
               <div className="w-9 h-9 rounded-xl bg-accent/10 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-accent animate-pulse" />
+                {isRegeneratingTitles ? <Loader2 className="w-5 h-5 text-accent animate-spin" /> : <Sparkles className="w-5 h-5 text-accent animate-pulse" />}
               </div>
-              <div>
-                <p className="text-sm font-semibold text-foreground">Generating Title Ideas...</p>
-                <p className="text-xs text-muted-foreground">{Math.round(generationProgress)}% complete</p>
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-foreground">{titleGenerationLabel}</p>
+                <div className="flex flex-wrap items-center gap-1.5 text-xs text-muted-foreground">
+                  <span>{Math.round(generationProgress)}% Complete</span>
+                  {isRegeneratingTitles && <span aria-hidden="true">•</span>}
+                  {isRegeneratingTitles && <span>Current Titles Stay Visible Until The New Batch Is Ready.</span>}
+                </div>
               </div>
             </div>
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
@@ -1315,7 +1332,7 @@ const NewEbookPage = () => {
                 <h2 className="text-2xl font-bold text-foreground text-center mb-2">Pick Your Winning Title</h2>
                 <p className="text-sm text-muted-foreground text-center mb-8">Select A Title Or Tweak One To Match Your Voice. You Can Change It Anytime.</p>
 
-                <div key={titleBatchVersion} className="space-y-3 mb-6">
+                <div key={titleBatchVersion} aria-busy={isGenerating} className={`space-y-3 mb-6 transition-opacity ${isGenerating ? "opacity-70" : "opacity-100"}`}>
                   {titleSuggestions.map((title, i) => {
                     const badge = TITLE_BADGES[i % TITLE_BADGES.length];
                     const isSelected = bookData.selectedTitle === title;
@@ -1417,9 +1434,10 @@ const NewEbookPage = () => {
                     <ArrowLeft size={16} />Back
                   </button>
                   <div className="flex items-center gap-3">
-                    <button onClick={() => { handleGenerate(); }}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
-                      <RefreshCw size={14} />Regenerate
+                    <button onClick={handleGenerate} disabled={isGenerating}
+                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                      {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+                      {isGenerating ? "Regenerating..." : "Regenerate"}
                     </button>
                     <button onClick={() => setGenerateStep("chapters")} disabled={!bookData.selectedTitle}
                       className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
@@ -1661,8 +1679,10 @@ const NewEbookPage = () => {
                   </button>
                   <div className="flex items-center gap-3">
                     <button onClick={() => { handleGenerate(); }}
-                      className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
-                      <RefreshCw size={14} />Regenerate
+                    disabled={isGenerating}
+                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors disabled:opacity-60 disabled:cursor-not-allowed">
+                    {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
+                    {isGenerating ? "Regenerating..." : "Regenerate"}
                     </button>
                     <div className="flex flex-col items-center gap-1">
                       <button onClick={handleGenerateBook} disabled={!bookData.selectedTitle}
