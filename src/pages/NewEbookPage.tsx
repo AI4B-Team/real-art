@@ -482,6 +482,11 @@ const NewEbookPage = () => {
     setIsGenerating(true);
     setGenerationProgress(0);
 
+    const titlesToExclude =
+      activeTab === "generate" && titleSuggestions.length > 0
+        ? titleSuggestions.filter(Boolean)
+        : [];
+
     // Animate progress bar while waiting
     const interval = setInterval(() => {
       setGenerationProgress(prev => Math.min(prev + Math.random() * 8, 90));
@@ -497,6 +502,7 @@ const NewEbookPage = () => {
           tone: bookData.tone,
           chapters: bookData.chapters,
           wordsPerChapter: bookData.wordsPerChapter,
+          excludeTitles: titlesToExclude,
         },
       });
 

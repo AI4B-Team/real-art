@@ -14,23 +14,58 @@ const MODEL_MAP: Record<string, string> = {
   "gpt-5-mini": "openai/gpt-5-mini",
 };
 
+const normalizeTitle = (value: string) =>
+  value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { action, prompt, model, language, tone, chapters, wordsPerChapter, title, chapterTitle, chapterDescription, chapterTopics, pageContent, pageCount } = await req.json();
+    const {
+      action,
+      prompt,
+      model,
+      language,
+      tone,
+      chapters,
+      wordsPerChapter,
+      title,
+      chapterTitle,
+      chapterDescription,
+      chapterTopics,
+      pageContent,
+      pageCount,
+      excludeTitles,
+    } = await req.json();
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const resolvedModel = MODEL_MAP[model] || MODEL_MAP["auto"];
+    const resolvedModel = MODEL_MAP[model] || MODEL_MAP.auto;
     const langInstruction = language && language !== "en" ? `Write all content in ${language}.` : "";
+    const excludedTitles = Array.isArray(excludeTitles)
+      ? excludeTitles
+          .filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+          .map((value) => value.trim())
+          .slice(0, 12)
+      : [];
+
+    const excludedTitlesInstruction = excludedTitles.length > 0
+      ? `
+
+Fresh-title requirements:
+- Generate a materially different set of title ideas than the previous batch
+- Do NOT reuse or lightly remix any of these prior titles:
+${excludedTitles.map((value) => `  • ${value}`).join("\n")}
+- Use fresh hooks, lead phrases, metaphors, and positioning angles`
+      : "";
 
     let systemPrompt = "";
     let userPrompt = "";
 
     if (action === "generate-outline") {
       systemPrompt = `You are a world-class book author and content strategist. Generate a detailed book outline with title suggestions and chapter structure. ${langInstruction}
-      
+
 Respond ONLY with valid JSON matching this schema:
 {
   "titles": ["string array of 8-10 creative, compelling title suggestions"],
@@ -52,8 +87,7 @@ Requirements:
 - Words per chapter: approximately ${wordsPerChapter || 2000}
 - Generate 8-10 creative, marketable title suggestions
 - Each chapter should have clear topics and estimated page counts
-- Make the outline practical, actionable, and engaging`;
-
+- Make the outline practical, actionable, and engaging${excludedTitlesInstruction}`;
     } else if (action === "generate-chapter") {
       const targetPageCount = Math.max(1, Math.min(12, Number(pageCount) || 5));
       const wordsPerPage = Math.max(220, Math.round((wordsPerChapter || 2000) / targetPageCount));
@@ -87,7 +121,6 @@ IMPORTANT RULES:
 - Each page should also include an imagePrompt describing a relevant visual that clearly matches that page's exact content, examples, and context.
 - Do not repeat the same image idea across pages unless absolutely necessary.
 - Do NOT write placeholder or filler text. Every sentence should add value.`;
-
     } else if (action === "generate-page") {
       systemPrompt = `You are a bestselling author. Write content for a single page of a book titled "${title}". ${langInstruction}
 
@@ -102,7 +135,6 @@ Page context: ${pageContent || "Continue from previous content"}
 Tone: ${tone || "professional"}
 
 IMPORTANT: Write at least 300 words of substantial content with real examples and actionable advice.`;
-
     } else if (action === "generate-full-book") {
       systemPrompt = `You are a world-class author writing a complete book. Generate the full content broken into chapters and pages. ${langInstruction}
 
@@ -136,12 +168,14 @@ CRITICAL REQUIREMENTS:
 5. Do NOT write generic filler. Every paragraph should teach something valuable.
 6. Use engaging storytelling, real-world examples, and practical frameworks.
 7. Each page title should be a meaningful subheading that describes the content.`;
-
     } else {
       return new Response(JSON.stringify({ error: "Unknown action" }), {
-        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+
+    const requestTemperature = action === "generate-outline" && excludedTitles.length > 0 ? 1 : 0.7;
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -155,7 +189,7 @@ CRITICAL REQUIREMENTS:
           { role: "system", content: systemPrompt },
           { role: "user", content: userPrompt },
         ],
-        temperature: 0.7,
+        temperature: requestTemperature,
         max_tokens: 16000,
       }),
     });
@@ -181,18 +215,32 @@ CRITICAL REQUIREMENTS:
     const data = await response.json();
     const rawContent = data.choices?.[0]?.message?.content || "";
     const finishReason = data.choices?.[0]?.finish_reason;
-    
+
     if (finishReason === "length" || finishReason === "MAX_TOKENS") {
       console.warn("AI response was truncated due to token limits. finishReason:", finishReason);
     }
 
-    // Extract JSON from the response (handle markdown code blocks)
     let jsonStr = rawContent;
     const jsonMatch = rawContent.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (jsonMatch) jsonStr = jsonMatch[1].trim();
 
     try {
       const parsed = JSON.parse(jsonStr);
+
+      if (action === "generate-outline" && Array.isArray(parsed.titles)) {
+        const blockedTitles = new Set(excludedTitles.map(normalizeTitle));
+        const seenTitles = new Set<string>();
+
+        parsed.titles = parsed.titles.filter((value: unknown): value is string => {
+          if (typeof value !== "string") return false;
+          const normalized = normalizeTitle(value);
+          if (!normalized) return false;
+          if (blockedTitles.has(normalized) || seenTitles.has(normalized)) return false;
+          seenTitles.add(normalized);
+          return true;
+        });
+      }
+
       return new Response(JSON.stringify({ result: parsed, truncated: finishReason === "length" || finishReason === "MAX_TOKENS" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
