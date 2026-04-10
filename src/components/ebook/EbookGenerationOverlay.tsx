@@ -174,7 +174,7 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
                           initial={{ opacity: 0 }}
                           animate={{ opacity: [0.5, 1, 0.5] }}
                           transition={{ duration: 2, repeat: Infinity }}
-                          className="text-[10px] text-primary/70 font-medium uppercase tracking-wider"
+                          className="text-xs text-primary font-semibold uppercase tracking-wider"
                         >
                           In Progress
                         </motion.span>
@@ -220,7 +220,7 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden relative">
             <motion.div
-              className="h-full bg-gradient-to-r from-primary/90 to-primary/60 rounded-full"
+              className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
               initial={{ width: 0 }}
               animate={{ width: `${overallProgress}%` }}
               transition={{ duration: 0.3 }}
