@@ -172,9 +172,9 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
                       {isCurrent && (
                         <motion.span
                           initial={{ opacity: 0 }}
-                          animate={{ opacity: [0.5, 1, 0.5] }}
+                          animate={{ opacity: [0.8, 1, 0.8] }}
                           transition={{ duration: 2, repeat: Infinity }}
-                          className="text-xs text-primary font-semibold uppercase tracking-wider"
+                          className="text-[10px] font-semibold uppercase tracking-wider bg-primary/20 text-primary px-2 py-0.5 rounded-md"
                         >
                           In Progress
                         </motion.span>
