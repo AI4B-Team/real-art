@@ -32,11 +32,14 @@ const AI_NARRATION = [
   "Analyzing content structure…",
 ];
 
+const toTitleCase = (value: string) =>
+  value.replace(/\b([a-z])/g, (match) => match.toUpperCase());
+
 const getProgressLabel = (progress: number): string => {
-  if (progress >= 95) return "Almost ready…";
-  if (progress >= 85) return "Finalizing design…";
-  if (progress >= 70) return "Polishing details…";
-  return `${Math.round(progress)}%`;
+  if (progress >= 95) return "Almost Ready…";
+  if (progress >= 85) return "Finalizing Design…";
+  if (progress >= 70) return "Polishing Details…";
+  return `${Math.round(progress)}% Complete`;
 };
 
 interface EbookGenerationOverlayProps {
@@ -62,7 +65,7 @@ const RotatingMicrocopy = ({ texts }: { texts: string[] }) => {
         transition={{ duration: 0.3 }}
         className="text-xs text-gray-500 italic block mt-1"
       >
-        {texts[index]}
+        {toTitleCase(texts[index])}
       </motion.span>
     </AnimatePresence>
   );
