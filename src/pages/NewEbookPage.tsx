@@ -19,7 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
-import EbookCanvasEditor, { type EbookCanvasEditorHandle } from "@/components/ebook/EbookCanvasEditor";
+import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
