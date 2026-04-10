@@ -822,11 +822,6 @@ const NewEbookPage = () => {
     sonnerToast.success('AI images added to your book!');
   }, []);
 
-  const handleGenerationComplete = useCallback(() => {
-    setIsGeneratingBook(false);
-    toast({ title: "Your book is ready!" });
-  }, []);
-
   const handleAutoPrompt = () => {
     const ideas = [
       "How to build a profitable online business in 2026",
@@ -2012,7 +2007,7 @@ const NewEbookPage = () => {
               />
               )}
             </div>
-            <EbookGenerationOverlay isGenerating={isGeneratingBook} bookTitle={bookData.selectedTitle} onComplete={handleGenerationComplete} />
+            <EbookGenerationOverlay isGenerating={isGeneratingBook} bookTitle={bookData.selectedTitle} />
           </div>
         )}
       </div>

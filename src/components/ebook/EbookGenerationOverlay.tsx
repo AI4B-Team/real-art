@@ -45,7 +45,6 @@ const getProgressLabel = (progress: number): string => {
 interface EbookGenerationOverlayProps {
   isGenerating: boolean;
   bookTitle: string;
-  onComplete: () => void;
 }
 
 const RotatingMicrocopy = ({ texts }: { texts: string[] }) => {
@@ -71,7 +70,7 @@ const RotatingMicrocopy = ({ texts }: { texts: string[] }) => {
   );
 };
 
-const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGenerationOverlayProps) => {
+const EbookGenerationOverlay = ({ isGenerating, bookTitle }: EbookGenerationOverlayProps) => {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<string>>(new Set());
   const [overallProgress, setOverallProgress] = useState(0);
@@ -114,7 +113,7 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
     };
 
     runStep();
-  }, [isGenerating, onComplete]);
+  }, [isGenerating]);
 
   if (!isGenerating) return null;
 
@@ -124,7 +123,7 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
           <h2 className="text-2xl font-bold text-white mb-1">Building Your eBook</h2>
-          <p className="text-gray-400 text-sm max-w-2xl mx-auto mb-2 whitespace-nowrap overflow-hidden text-ellipsis">"{bookTitle}"</p>
+          <p className="text-gray-400 text-sm max-w-2xl mx-auto mb-2 break-words">"{bookTitle}"</p>
           <div className="inline-flex items-center gap-1.5 text-xs text-gray-500">
             <Clock className="w-3 h-3" />
             <span>This usually takes 2–4 minutes</span>
