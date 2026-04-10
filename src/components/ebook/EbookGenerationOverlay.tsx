@@ -71,8 +71,8 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
 
     const runStep = () => {
       if (stepIndex >= GENERATION_STEPS.length) {
-        setOverallProgress(100);
-        setTimeout(() => onComplete(), 500);
+        setCurrentStepIndex(GENERATION_STEPS.length - 1);
+        setOverallProgress(96);
         return;
       }
       setCurrentStepIndex(stepIndex);

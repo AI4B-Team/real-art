@@ -223,6 +223,7 @@ const NewEbookPage = () => {
   const [showShareModal, setShowShareModal] = useState(false);
   const [showInviteModal, setShowInviteModal] = useState(false);
   const [accessMode, setAccessMode] = useState<'editing' | 'viewing' | 'commenting' | 'admin'>('editing');
+  const [currentEbookId, setCurrentEbookId] = useState<string | null>(() => sessionStorage.getItem("ebook-current-id"));
 
   const addSource = useCallback((type: "file" | "link" | "audio", label: string) => {
     setAttachedSources(prev => [...prev, { id: `src-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, type, label }]);
@@ -313,6 +314,7 @@ const NewEbookPage = () => {
   const [pageWidth, setPageWidth] = useState(480);
   const [pageHeight, setPageHeight] = useState(640);
   const canvasRef = useRef<EbookCanvasEditorHandle>(null);
+  const projectSaveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [isReplacingImage, setIsReplacingImage] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date>(new Date());
   const [lockedPagesModal, setLockedPagesModal] = useState<{
@@ -321,6 +323,19 @@ const NewEbookPage = () => {
     onUnlockAllAndApply: () => void;
     onProceedSkipping: () => void;
   }>({ open: false, actionLabel: '', onUnlockAllAndApply: () => {}, onProceedSkipping: () => {} });
+
+  const buildSavedProjectSnapshot = useCallback((
+    pages: UnifiedPage[] = ebookPages,
+    elements: Record<string, any[]> = savedPageElements,
+  ) => ({
+    chapters: chapterSequence,
+    description: bookDescription,
+    pages,
+    elements,
+    settings: {
+      ...bookData,
+    },
+  }), [bookData, bookDescription, chapterSequence, ebookPages, savedPageElements]);
 
   const showLockedPagesWarning = useCallback((
     actionLabel: string,
@@ -380,7 +395,39 @@ const NewEbookPage = () => {
     if (state?.book) {
       setActiveTab("design");
       setContentTypeSelected(true);
-      setBookData(prev => ({ ...prev, contentType: "ebook", selectedTitle: state.book.title || "", prompt: state.book.description || "" }));
+      setCurrentEbookId(state.book.id || null);
+
+      const savedProject = state.book.outline || {};
+      const savedSettings = savedProject.settings || {};
+
+      if (Array.isArray(savedProject.pages) && savedProject.pages.length > 0) {
+        setEbookPages(savedProject.pages);
+        setSelectedPageId(savedProject.pages[0]?.id || null);
+      }
+
+      if (savedProject.elements && typeof savedProject.elements === "object") {
+        setSavedPageElements(savedProject.elements);
+        localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(savedProject.elements));
+      }
+
+      if (Array.isArray(savedProject.chapters) && savedProject.chapters.length > 0) {
+        setChapterSequence(savedProject.chapters);
+      }
+
+      if (typeof savedProject.description === "string") {
+        setBookDescription(savedProject.description);
+      }
+
+      setBookData(prev => ({
+        ...prev,
+        ...savedSettings,
+        contentType: "ebook",
+        selectedTitle: state.book.title || savedSettings.selectedTitle || "",
+        prompt: state.book.prompt || savedSettings.prompt || state.book.description || "",
+        tone: state.book.tone || savedSettings.tone || prev.tone,
+        language: state.book.language || savedSettings.language || prev.language,
+        model: state.book.model || savedSettings.model || prev.model,
+      }));
     }
     // Coming from Create page with a prompt — pre-fill and auto-generate
     if (state?.fromCreate && state?.prompt) {
@@ -395,6 +442,35 @@ const NewEbookPage = () => {
       }, 500);
     }
   }, [location.state]);
+
+  useEffect(() => {
+    if (currentEbookId) {
+      sessionStorage.setItem("ebook-current-id", currentEbookId);
+      return;
+    }
+    sessionStorage.removeItem("ebook-current-id");
+  }, [currentEbookId]);
+
+  useEffect(() => {
+    if (!currentEbookId || activeTab !== "design") return;
+    if (currentEbookId.startsWith("demo-") || currentEbookId.startsWith("local-")) return;
+
+    if (projectSaveTimeoutRef.current) {
+      clearTimeout(projectSaveTimeoutRef.current);
+    }
+
+    projectSaveTimeoutRef.current = setTimeout(() => {
+      updateEbook(currentEbookId, {
+        outline: buildSavedProjectSnapshot(),
+      });
+    }, 1000);
+
+    return () => {
+      if (projectSaveTimeoutRef.current) {
+        clearTimeout(projectSaveTimeoutRef.current);
+      }
+    };
+  }, [activeTab, buildSavedProjectSnapshot, currentEbookId, ebookPages, savedPageElements, updateEbook]);
 
   const currentLanguage = LANGUAGES.find(l => l.code === bookData.language);
   const currentTone = TONES.find(t => t.id === bookData.tone);
@@ -459,6 +535,12 @@ const NewEbookPage = () => {
     setActiveTab("design");
     setIsGeneratingBook(true);
 
+    const baseSnapshot = {
+      chapters: chapterSequence,
+      description: bookDescription,
+      settings: { ...bookData },
+    };
+
     // Save ebook to DB/context
     const newEbook = await addEbook({
       title: bookData.selectedTitle,
@@ -475,72 +557,153 @@ const NewEbookPage = () => {
       tone: bookData.tone,
       language: bookData.language,
       model: bookData.model,
-      outline: { chapters: chapterSequence },
+      outline: baseSnapshot,
     });
 
-    // Generate full book content with AI
+    if (newEbook) {
+      setCurrentEbookId(newEbook.id);
+    }
+
     try {
-      const { data, error } = await supabase.functions.invoke('generate-ebook', {
-        body: {
-          action: 'generate-full-book',
-          prompt: bookData.prompt.trim(),
-          title: bookData.selectedTitle,
-          model: bookData.model,
-          language: bookData.language,
-          tone: bookData.tone,
-          chapters: bookData.chapters,
-          wordsPerChapter: bookData.wordsPerChapter,
-        },
-      });
+      const shouldGenerateImages = bookData.includeImages && bookData.chapterContentType !== "text-only";
+      const generatedChapters: {
+        title: string;
+        summary: string;
+        coverImagePrompt?: string;
+        pages: { title: string; content: string; imagePrompt?: string }[];
+      }[] = [];
+      let totalWords = 0;
 
-      if (error) throw new Error(error.message);
-      if (data?.error) throw new Error(data.error);
+      for (const chapter of chapterSequence) {
+        const { data, error } = await supabase.functions.invoke('generate-ebook', {
+          body: {
+            action: 'generate-chapter',
+            title: bookData.selectedTitle,
+            model: bookData.model,
+            language: bookData.language,
+            tone: bookData.tone,
+            wordsPerChapter: bookData.wordsPerChapter,
+            pageCount: chapter.pageCount,
+            chapterTitle: chapter.title,
+            chapterDescription: chapter.description,
+            chapterTopics: chapter.topics,
+          },
+        });
 
-      const result = data.result;
-      if (result?.chapters) {
-        // Build pages from AI-generated content
-        const newPages: { id: string; title: string; type: PageType }[] = [
-          { id: "1", title: bookData.selectedTitle, type: "cover" },
-          { id: "2", title: "Table of Contents", type: "toc" },
-        ];
-        const contentMap: { pageId: string; content: string; imagePrompt?: string }[] = [];
-        let pageId = 3;
-        let totalWords = 0;
-        for (const chapter of result.chapters) {
-          newPages.push({ id: String(pageId++), title: chapter.title, type: "chapter" });
-          for (const page of chapter.pages || []) {
-            const pid = String(pageId++);
-            newPages.push({ id: pid, title: page.title || "Content Page", type: "chapter-page" });
-            if (page.content) {
-              contentMap.push({ pageId: pid, content: page.content, imagePrompt: page.imagePrompt });
-              totalWords += page.content.split(/\s+/).length;
-            }
+        if (error) throw new Error(error.message || `Failed to write ${chapter.title}`);
+        if (data?.error) throw new Error(data.error);
+
+        const chapterPages = ((data?.result?.pages || []) as any[])
+          .map((page: any, index: number) => ({
+            title: typeof page?.title === "string" && page.title.trim() ? page.title.trim() : `${chapter.title} — Part ${index + 1}`,
+            content: typeof page?.content === "string" ? page.content.trim() : "",
+            imagePrompt: shouldGenerateImages && typeof page?.imagePrompt === "string" ? page.imagePrompt.trim() : undefined,
+          }))
+          .filter((page) => page.content.length > 80);
+
+        while (chapterPages.length < chapter.pageCount) {
+          const pageNumber = chapterPages.length + 1;
+          const { data: extraPageData, error: extraPageError } = await supabase.functions.invoke('generate-ebook', {
+            body: {
+              action: 'generate-page',
+              title: bookData.selectedTitle,
+              model: bookData.model,
+              language: bookData.language,
+              tone: bookData.tone,
+              chapterTitle: chapter.title,
+              pageContent: `Write page ${pageNumber} of ${chapter.pageCount} for the chapter "${chapter.title}". Chapter description: ${chapter.description}. Topics to keep covering: ${chapter.topics.join(", ")}. Do not repeat earlier sections.`,
+            },
+          });
+
+          if (extraPageError || extraPageData?.error || !extraPageData?.result?.content) {
+            break;
           }
-        }
-        newPages.push({ id: String(pageId), title: "Back Cover", type: "back" });
-        setEbookPages(newPages);
 
-        // Update ebook with final stats
-        if (newEbook) {
-          updateEbook(newEbook.id, {
-            status: "draft",
-            progress: 100,
-            words: totalWords,
-            chapters: result.chapters.length,
+          chapterPages.push({
+            title: `${chapter.title} — Section ${pageNumber}`,
+            content: extraPageData.result.content.trim(),
+            imagePrompt: shouldGenerateImages && typeof extraPageData.result.imagePrompt === "string"
+              ? extraPageData.result.imagePrompt.trim()
+              : undefined,
           });
         }
 
-        // Populate each page with AI-generated text after canvas renders
-        setTimeout(() => {
-          if (canvasRef.current) {
-            for (const { pageId: pid, content } of contentMap) {
-              canvasRef.current.setPageContent(pid, content);
-            }
-          }
-          // Generate images in background for pages that have image prompts
-          generatePageImages(contentMap);
-        }, 800);
+        if (chapterPages.length === 0) {
+          throw new Error(`No content was generated for "${chapter.title}".`);
+        }
+
+        const finalPages = chapterPages.slice(0, chapter.pageCount);
+        totalWords += finalPages.reduce((sum, page) => sum + page.content.split(/\s+/).filter(Boolean).length, 0);
+
+        generatedChapters.push({
+          title: chapter.title,
+          summary: chapter.description,
+          coverImagePrompt: shouldGenerateImages
+            ? (finalPages[0]?.imagePrompt || `Editorial chapter cover image for "${chapter.title}" in a book about ${bookData.prompt}. ${chapter.description}`)
+            : undefined,
+          pages: finalPages,
+        });
       }
+
+      const newPages: UnifiedPage[] = [
+        { id: crypto.randomUUID(), title: bookData.selectedTitle, type: "cover" },
+        { id: crypto.randomUUID(), title: "Table of Contents", type: "toc" },
+      ];
+      const contentMap: { pageId: string; content: string; imagePrompt?: string }[] = [];
+
+      generatedChapters.forEach((chapter) => {
+        const chapterCoverId = crypto.randomUUID();
+        newPages.push({ id: chapterCoverId, title: chapter.title, type: "chapter" });
+
+        if (chapter.summary?.trim()) {
+          contentMap.push({
+            pageId: chapterCoverId,
+            content: chapter.summary.trim(),
+            imagePrompt: chapter.coverImagePrompt,
+          });
+        }
+
+        chapter.pages.forEach((page, index) => {
+          const pageId = crypto.randomUUID();
+          newPages.push({
+            id: pageId,
+            title: page.title || `${chapter.title} — Section ${index + 1}`,
+            type: "chapter-page",
+          });
+          contentMap.push({ pageId, content: page.content, imagePrompt: page.imagePrompt });
+        });
+      });
+
+      newPages.push({ id: crypto.randomUUID(), title: "Back Cover", type: "back" });
+      setEbookPages(newPages);
+      setSelectedPageId(newPages[0]?.id ?? null);
+
+      if (newEbook) {
+        updateEbook(newEbook.id, {
+          status: "draft",
+          progress: 100,
+          words: totalWords,
+          chapters: generatedChapters.length,
+          outline: {
+            ...baseSnapshot,
+            generatedChapters,
+            pages: newPages,
+          },
+        });
+      }
+
+      setTimeout(() => {
+        if (canvasRef.current) {
+          for (const { pageId, content } of contentMap) {
+            canvasRef.current.setPageContent(pageId, content);
+          }
+        }
+
+        if (shouldGenerateImages) {
+          generatePageImages(contentMap);
+        }
+      }, 250);
+
       toast({ title: "Your AI-written book is ready!" });
     } catch (e: any) {
       console.error('Generate book error:', e);
@@ -770,6 +933,8 @@ const NewEbookPage = () => {
                       localStorage.removeItem(STORAGE_KEY_PAGES);
                       localStorage.removeItem(STORAGE_KEY_ELEMENTS);
                       sessionStorage.removeItem('ebook-last-url');
+                      sessionStorage.removeItem('ebook-current-id');
+                      setCurrentEbookId(null);
                       setEbookPages(getDefaultPages());
                       setSavedPageElements({});
                       setBookData(prev => ({ ...prev, selectedTitle: '', prompt: '' }));

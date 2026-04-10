@@ -163,18 +163,17 @@ const createTocElements = (pages: Page[]): CanvasElement[] => {
 };
 
 const createChapterElements = (num: number, title: string): CanvasElement[] => [
-  { id: `ch${num}-bg`, type: 'shape', x: 0, y: 0, width: 100, height: 30, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: `ch${num}-img`, type: 'image', x: 0, y: 0, width: 100, height: 30, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length] },
-  { id: `ch${num}-num`, type: 'text', x: 10, y: 8, width: 30, height: 10, content: num.toString().padStart(2, '0'), fontSize: 48, fontFamily: 'Georgia', textColor: '#ffffff', zIndex: 2 },
-  { id: `ch${num}-title`, type: 'text', x: 10, y: 33, width: 80, height: 8, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e' },
-  { id: `ch${num}-body`, type: 'text', x: 10, y: 44, width: 80, height: 15, content: 'This section provides a comprehensive overview of our strategic approach, detailing key methodologies and expected outcomes for stakeholders.', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
-  { id: `ch${num}-body2`, type: 'text', x: 10, y: 62, width: 80, height: 20, content: 'Our research indicates significant growth potential in emerging markets. The data suggests a 15% increase in investor confidence over the past quarter.', fontSize: 10, fontFamily: 'Georgia', textColor: '#374151' },
+  { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 6, width: 84, height: 4, content: `Chapter ${num}`, fontSize: 12, fontFamily: 'Inter', textColor: '#0891b2', fontWeight: 'bold' },
+  { id: `ch${num}-title`, type: 'text', x: 8, y: 11, width: 84, height: 12, content: title, fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.15 },
+  { id: `ch${num}-divider`, type: 'shape', x: 8, y: 25, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `ch${num}-img`, type: 'image', x: 8, y: 30, width: 84, height: 26, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length], borderRadius: 4 },
+  { id: `ch${num}-body`, type: 'text', x: 8, y: 60, width: 84, height: 28, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.55 },
 ];
 
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => [
-  { id: `cp${num}-title`, type: 'text', x: 8, y: 4, width: 84, height: 6, content: title, fontSize: 16, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold' },
-  { id: `cp${num}-divider`, type: 'shape', x: 8, y: 11, width: 15, height: 0.5, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: `cp${num}-body`, type: 'text', x: 8, y: 14, width: 84, height: 82, content: '', fontSize: 11, fontFamily: 'Georgia', textColor: '#374151' },
+  { id: `cp${num}-title`, type: 'text', x: 8, y: 6, width: 84, height: 8, content: title, fontSize: 20, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
+  { id: `cp${num}-divider`, type: 'shape', x: 8, y: 15, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `cp${num}-body`, type: 'text', x: 8, y: 18, width: 84, height: 74, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.6 },
 ];
 
 const createBackElements = (title: string): CanvasElement[] => [
@@ -602,7 +601,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (selectedPageId && selectedPageId !== prevSelectedRef.current && !scrollSelectedRef.current) {
       const pageEl = pageRefs.current[selectedPageId];
       if (pageEl) {
-        pageEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     }
     prevSelectedRef.current = selectedPageId;
@@ -846,6 +845,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         // Handle image insertion via __IMAGE__ prefix
         if (content.startsWith('__IMAGE__')) {
           const imageUrl = content.slice(9);
+          const existingImage = elems.find(e => e.type === 'image');
+
+          if (existingImage) {
+            return {
+              ...prev,
+              [pageId]: elems.map(e => e.id === existingImage.id ? { ...e, src: imageUrl, isPlaceholder: false } : e),
+            };
+          }
+
           const imageEl: CanvasElement = {
             id: `img-${pageId}-${Date.now()}`, type: 'image',
             x: 8, y: 4, width: 84, height: 30,
@@ -1383,9 +1391,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               onMouseDown={e => e.stopPropagation()}
               onClick={e => e.stopPropagation()}
               dangerouslySetInnerHTML={{ __html: el.content || '' }}
-              className="w-full h-full overflow-auto p-1 whitespace-pre-wrap outline-none cursor-text"
+              className="w-full h-full overflow-auto p-2 whitespace-pre-wrap outline-none cursor-text"
               style={{
-                fontSize: `${(el.fontSize || 16) * zoom / 100 * 0.5}px`,
+                fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
                 fontFamily: el.fontFamily, color: el.textColor,
                 textAlign: el.textAlign || 'left',
                 fontWeight: el.fontWeight || 'normal',
@@ -1395,8 +1403,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               }}
             />
           ) : (
-            <div className="w-full h-full overflow-hidden p-1 whitespace-pre-wrap" style={{
-              fontSize: `${(el.fontSize || 16) * zoom / 100 * 0.5}px`,
+            <div className="w-full h-full overflow-auto p-2 whitespace-pre-wrap" style={{
+              fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
               fontFamily: el.fontFamily, color: el.textColor,
               textAlign: el.textAlign || 'left',
               fontWeight: el.fontWeight || 'normal',
@@ -3076,28 +3084,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
                             {pageTypeLabel} – {page.type === 'cover' || page.type === 'back' ? (bookTitle || 'Untitled Book') : (page.title || `Page ${pageIndex + 1}`)}
                           </span>
-                          {/* Page issue indicator */}
-                          {(() => {
-                            const hasImages = elems.some(el => el.type === 'image');
-                            const hasIssue = !hasImages && page.type !== 'toc' && page.type !== 'blank';
-                            if (!hasIssue) return null;
-                            return (
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <button
-                                    onClick={() => onPageSettingsToggle?.()}
-                                    className="w-5 h-5 rounded-full bg-amber-500/15 flex items-center justify-center hover:bg-amber-500/25 transition-colors"
-                                  >
-                                    <span className="text-[10px]">⚠️</span>
-                                  </button>
-                                </TooltipTrigger>
-                                <TooltipContent side="right" className="max-w-[200px]">
-                                  <p className="text-xs font-medium">Missing visuals (hurting engagement)</p>
-                                  <p className="text-[10px] text-muted-foreground mt-0.5">Click to view suggestions</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            );
-                          })()}
                         </div>
                         <div className="relative flex items-start gap-2 justify-center">
                         {/* Page number */}
