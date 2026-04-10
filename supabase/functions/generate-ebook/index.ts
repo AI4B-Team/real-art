@@ -41,7 +41,11 @@ serve(async (req) => {
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
-    const resolvedModel = MODEL_MAP[model] || MODEL_MAP.auto;
+    const defaultModel = MODEL_MAP[model] || MODEL_MAP.auto;
+    const resolvedModel =
+      action === "generate-chapter" && (!model || model === "auto")
+        ? "google/gemini-2.5-flash"
+        : defaultModel;
     const langInstruction = language && language !== "en" ? `Write all content in ${language}.` : "";
     const excludedTitles = Array.isArray(excludeTitles)
       ? excludeTitles
