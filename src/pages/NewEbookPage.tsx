@@ -204,6 +204,7 @@ const NewEbookPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [titleSuggestions, setTitleSuggestions] = useState<string[]>([]);
+  const [titleBatchVersion, setTitleBatchVersion] = useState(0);
   const [languageSearch, setLanguageSearch] = useState("");
   const [languageOpen, setLanguageOpen] = useState(false);
   const [isGeneratingBook, setIsGeneratingBook] = useState(false);
@@ -512,7 +513,13 @@ const NewEbookPage = () => {
       if (data?.error) throw new Error(data.error);
 
       const result = data.result;
-      setTitleSuggestions(result.titles || []);
+      const freshTitles = Array.isArray(result?.titles) ? [...result.titles] : [];
+
+      setTitleSuggestions(freshTitles);
+      setTitleBatchVersion(prev => prev + 1);
+      setEditingTitleIndex(null);
+      setShowCustomTitle(false);
+      setCustomTitle("");
       setBookDescription(result.description || '');
       setChapterSequence(
         (result.chapters || []).map((ch: any, i: number) => ({
@@ -947,6 +954,7 @@ const NewEbookPage = () => {
                       setSavedPageElements({});
                       setBookData(prev => ({ ...prev, selectedTitle: '', prompt: '' }));
                       setTitleSuggestions([]);
+                      setTitleBatchVersion(0);
                       setChapterSequence([]);
                       setActiveTab('idea');
                       sonnerToast.success('Book has been reset');
@@ -1307,7 +1315,7 @@ const NewEbookPage = () => {
                 <h2 className="text-2xl font-bold text-foreground text-center mb-2">Pick Your Winning Title</h2>
                 <p className="text-sm text-muted-foreground text-center mb-8">Select A Title Or Tweak One To Match Your Voice. You Can Change It Anytime.</p>
 
-                <div className="space-y-3 mb-6">
+                <div key={titleBatchVersion} className="space-y-3 mb-6">
                   {titleSuggestions.map((title, i) => {
                     const badge = TITLE_BADGES[i % TITLE_BADGES.length];
                     const isSelected = bookData.selectedTitle === title;
@@ -1315,7 +1323,7 @@ const NewEbookPage = () => {
                     const isRecommended = i === 4; // 5th option is "recommended"
 
                     return (
-                      <button key={i} onClick={() => { if (!isEditing) setBookData(prev => ({ ...prev, selectedTitle: title })); }}
+                      <button key={`${titleBatchVersion}-${i}-${title}`} onClick={() => { if (!isEditing) setBookData(prev => ({ ...prev, selectedTitle: title })); }}
                         className={`w-full text-left p-4 rounded-xl border-2 transition-all duration-200 group relative ${
                           isSelected ? "border-accent bg-accent/[0.04] shadow-sm shadow-accent/10 animate-[titleSelect_0.25s_ease-out]"
                           : isRecommended ? "border-amber-200/80 bg-amber-50/30 shadow-[0_0_12px_-3px_rgba(245,185,60,0.15)] hover:border-amber-300/80"
