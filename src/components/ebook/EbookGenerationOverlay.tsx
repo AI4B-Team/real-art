@@ -215,8 +215,8 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
         {/* Progress bar */}
         <div className="space-y-2">
           <div className="flex items-center justify-between text-sm">
-            <span className="text-gray-400">Overall Progress</span>
-            <span className="text-white font-medium">{Math.round(overallProgress)}%</span>
+            <span className="text-gray-400">Overall Progress:</span>
+            <span className="text-white font-medium ml-1">{Math.round(overallProgress)}%</span>
           </div>
           <div className="h-2 bg-white/10 rounded-full overflow-hidden relative">
             <motion.div
