@@ -603,7 +603,10 @@ const NewEbookPage = () => {
       let totalWords = 0;
 
       for (const chapter of chapterSequence) {
-        const { data, error } = await supabase.functions.invoke('generate-ebook', {
+        let chapterResult: { pages?: any[] } | null = null;
+        let chapterFailureReason: string | null = null;
+
+        const initialChapterResponse = await supabase.functions.invoke('generate-ebook', {
           body: {
             action: 'generate-chapter',
             title: bookData.selectedTitle,
@@ -618,37 +621,46 @@ const NewEbookPage = () => {
           },
         });
 
-        if (error) throw new Error(error.message || `Failed to write ${chapter.title}`);
-        if (data?.error) {
-          // Retry once on retryable errors (truncation/parse failures)
-          if (data.retryable) {
-            console.warn(`Retrying chapter "${chapter.title}" due to truncation...`);
-            const retry = await supabase.functions.invoke('generate-ebook', {
-              body: {
-                action: 'generate-chapter',
-                title: bookData.selectedTitle,
-                model: bookData.model,
-                language: bookData.language,
-                tone: bookData.tone,
-                wordsPerChapter: Math.min(bookData.wordsPerChapter, 1200),
-                pageCount: Math.min(chapter.pageCount, 4),
-                chapterTitle: chapter.title,
-                chapterDescription: chapter.description,
-                chapterTopics: chapter.topics,
-              },
-            });
-            if (!retry.error && retry.data?.result?.pages) {
-              // Use retried data below
-              Object.assign(data, retry.data);
-            } else {
-              throw new Error(data.error);
-            }
+        const initialChapterError =
+          initialChapterResponse.error?.message ||
+          initialChapterResponse.data?.error ||
+          null;
+
+        if (!initialChapterError && Array.isArray(initialChapterResponse.data?.result?.pages)) {
+          chapterResult = initialChapterResponse.data.result;
+        } else {
+          chapterFailureReason = initialChapterError || `Failed to write ${chapter.title}`;
+          console.warn(`Chapter generation failed for "${chapter.title}". Falling back to lighter generation.`, chapterFailureReason);
+        }
+
+        if ((!chapterResult?.pages || chapterResult.pages.length === 0) && chapterFailureReason) {
+          const retry = await supabase.functions.invoke('generate-ebook', {
+            body: {
+              action: 'generate-chapter',
+              title: bookData.selectedTitle,
+              model: bookData.model,
+              language: bookData.language,
+              tone: bookData.tone,
+              wordsPerChapter: Math.min(bookData.wordsPerChapter, 1200),
+              pageCount: Math.min(chapter.pageCount, 4),
+              chapterTitle: chapter.title,
+              chapterDescription: chapter.description,
+              chapterTopics: chapter.topics,
+            },
+          });
+
+          const retryError = retry.error?.message || retry.data?.error || null;
+
+          if (!retryError && Array.isArray(retry.data?.result?.pages) && retry.data.result.pages.length > 0) {
+            chapterResult = retry.data.result;
+            chapterFailureReason = null;
           } else {
-            throw new Error(data.error);
+            chapterFailureReason = retryError || chapterFailureReason;
+            console.warn(`Lightweight chapter generation failed for "${chapter.title}". Generating pages individually.`, chapterFailureReason);
           }
         }
 
-        const chapterPages = ((data?.result?.pages || []) as any[])
+        const chapterPages = ((chapterResult?.pages ?? []) as any[])
           .map((page: any, index: number) => ({
             title: typeof page?.title === "string" && page.title.trim() ? page.title.trim() : `${chapter.title} — Part ${index + 1}`,
             content: typeof page?.content === "string" ? page.content.trim() : "",
@@ -658,6 +670,7 @@ const NewEbookPage = () => {
 
         while (chapterPages.length < chapter.pageCount) {
           const pageNumber = chapterPages.length + 1;
+          const coveredSections = chapterPages.map((page) => page.title).join(", ") || "none yet";
           const { data: extraPageData, error: extraPageError } = await supabase.functions.invoke('generate-ebook', {
             body: {
               action: 'generate-page',
@@ -666,11 +679,12 @@ const NewEbookPage = () => {
               language: bookData.language,
               tone: bookData.tone,
               chapterTitle: chapter.title,
-              pageContent: `Write page ${pageNumber} of ${chapter.pageCount} for the chapter "${chapter.title}". Chapter description: ${chapter.description}. Topics to keep covering: ${chapter.topics.join(", ")}. Do not repeat earlier sections.`,
+              pageContent: `Write page ${pageNumber} of ${chapter.pageCount} for the chapter "${chapter.title}". Chapter description: ${chapter.description}. Topics to keep covering: ${chapter.topics.join(", ")}. Avoid repeating these existing section headings: ${coveredSections}.`,
             },
           });
 
           if (extraPageError || extraPageData?.error || !extraPageData?.result?.content) {
+            console.warn(`Page generation failed for "${chapter.title}" page ${pageNumber}.`, extraPageError?.message || extraPageData?.error || "No content returned");
             break;
           }
 
@@ -684,7 +698,7 @@ const NewEbookPage = () => {
         }
 
         if (chapterPages.length === 0) {
-          throw new Error(`No content was generated for "${chapter.title}".`);
+          throw new Error(`No content was generated for "${chapter.title}".${chapterFailureReason ? ` ${chapterFailureReason}` : ""}`);
         }
 
         const finalPages = chapterPages.slice(0, chapter.pageCount);
