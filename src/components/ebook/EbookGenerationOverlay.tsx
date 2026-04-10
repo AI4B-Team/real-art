@@ -100,17 +100,10 @@ const EbookGenerationOverlay = ({ isGenerating, bookTitle, onComplete }: EbookGe
   if (!isGenerating) return null;
 
   return (
-    <div className="absolute inset-0 z-50 bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-sm flex items-center justify-center">
-      <div className="max-w-2xl w-full mx-4">
+    <div className="absolute inset-0 z-50 bg-gradient-to-br from-gray-900/95 via-gray-800/95 to-gray-900/95 backdrop-blur-sm overflow-y-auto">
+      <div className="max-w-2xl w-full mx-auto px-4 py-12 flex flex-col items-center min-h-full justify-center">
         {/* Header */}
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-8">
-          <motion.div
-            animate={{ scale: [1, 1.05, 1] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/80 mb-4 shadow-lg shadow-primary/20"
-          >
-            <BookOpen className="w-8 h-8 text-primary-foreground" />
-          </motion.div>
           <h2 className="text-2xl font-bold text-white mb-1">Building Your eBook</h2>
           <p className="text-gray-400 text-sm max-w-md mx-auto mb-2">"{bookTitle}"</p>
           <div className="inline-flex items-center gap-1.5 text-xs text-gray-500">
