@@ -144,9 +144,9 @@ const STOCK_IMAGES = [
 // ─── Element Generators ────────────────────────────
 const createCoverElements = (title: string): CanvasElement[] => [
   { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 100, src: COVER_IMAGE },
-  { id: 'title-box', type: 'shape', x: 5, y: 65, width: 60, height: 25, fill: 'rgba(255,255,255,0.95)', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: 'title-text', type: 'text', x: 8, y: 68, width: 54, height: 12, content: title || 'STRATEGIC\nINVESTMENT', fontSize: 28, fontFamily: 'Georgia', textColor: '#1a1a2e' },
-  { id: 'subtitle-text', type: 'text', x: 8, y: 82, width: 54, height: 6, content: 'A COMPREHENSIVE GUIDE', fontSize: 14, fontFamily: 'Georgia', textColor: '#0891b2' },
+  { id: 'title-box', type: 'shape', x: 5, y: 58, width: 70, height: 34, fill: 'rgba(255,255,255,0.95)', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: 'title-text', type: 'text', x: 8, y: 61, width: 64, height: 22, content: title || 'STRATEGIC\nINVESTMENT', fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', lineHeight: 1.2 },
+  { id: 'subtitle-text', type: 'text', x: 8, y: 85, width: 64, height: 5, content: 'A COMPREHENSIVE GUIDE', fontSize: 12, fontFamily: 'Georgia', textColor: '#0891b2' },
 ];
 
 const createTocElements = (pages: Page[]): CanvasElement[] => {
