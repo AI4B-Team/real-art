@@ -619,7 +619,34 @@ const NewEbookPage = () => {
         });
 
         if (error) throw new Error(error.message || `Failed to write ${chapter.title}`);
-        if (data?.error) throw new Error(data.error);
+        if (data?.error) {
+          // Retry once on retryable errors (truncation/parse failures)
+          if (data.retryable) {
+            console.warn(`Retrying chapter "${chapter.title}" due to truncation...`);
+            const retry = await supabase.functions.invoke('generate-ebook', {
+              body: {
+                action: 'generate-chapter',
+                title: bookData.selectedTitle,
+                model: bookData.model,
+                language: bookData.language,
+                tone: bookData.tone,
+                wordsPerChapter: Math.min(bookData.wordsPerChapter, 1200),
+                pageCount: Math.min(chapter.pageCount, 4),
+                chapterTitle: chapter.title,
+                chapterDescription: chapter.description,
+                chapterTopics: chapter.topics,
+              },
+            });
+            if (!retry.error && retry.data?.result?.pages) {
+              // Use retried data below
+              Object.assign(data, retry.data);
+            } else {
+              throw new Error(data.error);
+            }
+          } else {
+            throw new Error(data.error);
+          }
+        }
 
         const chapterPages = ((data?.result?.pages || []) as any[])
           .map((page: any, index: number) => ({
@@ -705,6 +732,15 @@ const NewEbookPage = () => {
       newPages.push({ id: crypto.randomUUID(), title: "Back Cover", type: "back" });
       setEbookPages(newPages);
       setSelectedPageId(newPages[0]?.id ?? null);
+
+      // Also generate a cover image based on the book topic
+      if (shouldGenerateImages) {
+        contentMap.unshift({
+          pageId: newPages[0].id,
+          content: '',
+          imagePrompt: `Professional book cover photograph for "${bookData.selectedTitle}". ${bookDescription || bookData.prompt}. High quality, editorial style, modern.`,
+        });
+      }
 
       if (newEbook) {
         updateEbook(newEbook.id, {
