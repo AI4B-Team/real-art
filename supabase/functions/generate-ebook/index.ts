@@ -18,7 +18,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
 
   try {
-    const { action, prompt, model, language, tone, chapters, wordsPerChapter, title, chapterTitle, chapterDescription, chapterTopics, pageContent } = await req.json();
+    const { action, prompt, model, language, tone, chapters, wordsPerChapter, title, chapterTitle, chapterDescription, chapterTopics, pageContent, pageCount } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
@@ -55,15 +55,18 @@ Requirements:
 - Make the outline practical, actionable, and engaging`;
 
     } else if (action === "generate-chapter") {
+      const targetPageCount = Math.max(1, Math.min(12, Number(pageCount) || 5));
+      const wordsPerPage = Math.max(220, Math.round((wordsPerChapter || 2000) / targetPageCount));
+
       systemPrompt = `You are a bestselling author writing a chapter for a book titled "${title}". Write engaging, well-structured content that is informative and keeps readers hooked. ${langInstruction}
 
 Respond ONLY with valid JSON:
 {
   "pages": [
     {
-      "title": "string - page heading or subheading",
-      "content": "string - 300-500 words of rich, well-written content for this page. Use multiple paragraphs. Include specific examples, data points, actionable advice, or compelling stories.",
-      "imagePrompt": "string - a detailed prompt to generate a relevant illustration or photo for this page (e.g. 'A professional team brainstorming around a whiteboard in a modern office, warm lighting')",
+      "title": "string - specific page heading or subheading tied to the exact content on that page",
+      "content": "string - ${wordsPerPage}-${wordsPerPage + 120} words of rich, well-written content for this page. Use multiple paragraphs. Include specific examples, data points, actionable advice, or compelling stories.",
+      "imagePrompt": "string - a detailed prompt to generate a relevant illustration or photo that directly matches the exact topic, subject matter, and examples on this page",
       "type": "chapter-page"
     }
   ]
@@ -73,12 +76,16 @@ Description: ${chapterDescription}
 Key topics to cover: ${(chapterTopics || []).join(", ")}
 Tone: ${tone || "professional"}
 Target length: approximately ${wordsPerChapter || 2000} words total across all pages.
+Target pages: exactly ${targetPageCount}.
 
 IMPORTANT RULES:
-- Break the content into 4-8 logical pages, each with 300-500 words.
+- Return EXACTLY ${targetPageCount} logical pages.
+- Each page should contain roughly ${wordsPerPage}-${wordsPerPage + 120} words so the full chapter lands close to ${wordsPerChapter || 2000} words.
 - Each page MUST have substantial, detailed content - never leave pages empty.
 - Write in flowing paragraphs with real substance: examples, statistics, case studies, actionable steps.
-- Each page should also include an imagePrompt describing a relevant visual.
+- Each page title must be specific to that page section. Avoid generic titles like "Content Page" or "Overview".
+- Each page should also include an imagePrompt describing a relevant visual that clearly matches that page's exact content, examples, and context.
+- Do not repeat the same image idea across pages unless absolutely necessary.
 - Do NOT write placeholder or filler text. Every sentence should add value.`;
 
     } else if (action === "generate-page") {
