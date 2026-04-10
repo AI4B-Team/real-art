@@ -518,6 +518,8 @@ const NewEbookPage = () => {
           pageCount: ch.pageCount || 8,
         }))
       );
+      setBookData(prev => ({ ...prev, selectedTitle: '' }));
+      setGenerateStep("titles");
       setGenerationProgress(100);
       setActiveTab("generate");
       toast({ title: "AI-powered outline generated!" });
