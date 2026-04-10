@@ -1401,7 +1401,7 @@ const NewEbookPage = () => {
                     <ArrowLeft size={16} />Back
                   </button>
                   <div className="flex items-center gap-3">
-                    <button onClick={() => { setTitleSuggestions([]); handleGenerate(); }}
+                    <button onClick={() => { handleGenerate(); }}
                       className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
                       <RefreshCw size={14} />Regenerate
                     </button>
@@ -1644,7 +1644,7 @@ const NewEbookPage = () => {
                     <ArrowLeft size={16} />Back
                   </button>
                   <div className="flex items-center gap-3">
-                    <button onClick={() => { setTitleSuggestions([]); setChapterSequence([]); handleGenerate(); }}
+                    <button onClick={() => { handleGenerate(); }}
                       className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
                       <RefreshCw size={14} />Regenerate
                     </button>
