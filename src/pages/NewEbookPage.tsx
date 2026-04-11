@@ -848,6 +848,7 @@ const NewEbookPage = () => {
             ...baseSnapshot,
             generatedChapters,
             pages: newPages,
+            elements: prebuiltElements,
           },
         });
       }
