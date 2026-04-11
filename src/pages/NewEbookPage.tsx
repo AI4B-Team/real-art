@@ -1566,9 +1566,11 @@ const NewEbookPage = () => {
                 {/* Chapter Cards */}
                 <div className="space-y-3 mb-8">
                   {chapterSequence.map((ch, i) => (
-                    <div key={ch.id} className="rounded-xl border border-foreground/[0.08] bg-background overflow-hidden hover:border-foreground/[0.14] transition-colors">
-                      <div className="flex items-start gap-3 p-5">
-                        <span className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">{i + 1}</span>
+                    <div key={ch.id} className="group/card relative rounded-xl border border-foreground/[0.08] bg-background overflow-hidden hover:border-accent/30 hover:shadow-[0_4px_20px_-6px_hsl(var(--accent)/0.12)] hover:-translate-y-[2px] transition-all duration-200">
+                      {/* Left accent bar */}
+                      <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-accent/0 group-hover/card:bg-accent rounded-l-xl transition-all duration-200" />
+                      <div className="flex items-start gap-3 p-5 pl-6">
+                        <span className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 group-hover/card:bg-accent group-hover/card:text-white transition-colors duration-200">{i + 1}</span>
                         <div className="flex-1 min-w-0">
                           {/* Title — darker, bigger */}
                           <input
@@ -1606,10 +1608,42 @@ const NewEbookPage = () => {
                             </button>
                           </div>
                         </div>
-                        <button onClick={() => setChapterSequence(prev => prev.filter((_, idx) => idx !== i))}
-                          className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground/40 hover:text-destructive transition-colors shrink-0">
-                          <X size={14} />
-                        </button>
+                        <div className="flex flex-col items-center gap-1.5 shrink-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-200">
+                          <button onClick={(e) => { e.stopPropagation(); /* focus the title input */ const input = e.currentTarget.closest('[class*="group/card"]')?.querySelector('input'); input?.focus(); }}
+                            className="p-1.5 rounded-lg hover:bg-accent/10 text-muted-foreground/50 hover:text-accent transition-colors" title="Edit">
+                            <Pencil size={13} />
+                          </button>
+                          <button onClick={async (e) => {
+                            e.stopPropagation();
+                            toast({ title: `Improving "${ch.title}"...` });
+                            try {
+                              const resp = await supabase.functions.invoke("generate-ebook", {
+                                body: {
+                                  action: "generate-outline",
+                                  prompt: `Improve this chapter for the book "${bookData.selectedTitle}": Title: "${ch.title}", Description: "${ch.description}". Make the title more compelling and the description richer with actionable insights. Keep the same topic focus.`,
+                                  model: bookData.model || "auto",
+                                  tone: bookData.tone || "professional",
+                                  language: bookData.language || "en",
+                                  chapters: 1,
+                                  wordsPerChapter: bookData.wordsPerChapter || 1500,
+                                },
+                              });
+                              const result = resp.data?.result;
+                              if (result?.chapters?.[0]) {
+                                const improved = result.chapters[0];
+                                setChapterSequence(prev => prev.map((c, idx) => idx === i ? { ...c, title: improved.title || c.title, description: improved.description || c.description, topics: improved.topics?.length ? improved.topics : c.topics } : c));
+                                toast({ title: "Chapter improved ✨" });
+                              }
+                            } catch { toast({ title: "Improvement failed", variant: "destructive" }); }
+                          }}
+                            className="p-1.5 rounded-lg hover:bg-amber-500/10 text-muted-foreground/50 hover:text-amber-600 transition-colors" title="AI Improve">
+                            <Wand2 size={13} />
+                          </button>
+                          <button onClick={() => setChapterSequence(prev => prev.filter((_, idx) => idx !== i))}
+                            className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-colors" title="Remove">
+                            <X size={13} />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
