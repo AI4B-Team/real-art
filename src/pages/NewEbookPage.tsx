@@ -754,7 +754,7 @@ const NewEbookPage = () => {
         });
       }
 
-      // Build page elements with AI content pre-populated (no setTimeout needed)
+      // Build page elements with AI content pre-populated
       const prebuiltElements: Record<string, any[]> = {};
       newPages.forEach(page => {
         const defaultElems = getElementsForPage(page as CanvasPage, newPages as CanvasPage[], bookData.selectedTitle);
@@ -770,7 +770,7 @@ const NewEbookPage = () => {
               ...defaultElems,
               {
                 id: `body-${page.id}-${Date.now()}`, type: 'text',
-                x: 8, y: 18, width: 84, height: 74,
+                x: 8, y: 24, width: 84, height: 68,
                 content: mapped.content, fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.6,
               },
             ];
@@ -780,7 +780,55 @@ const NewEbookPage = () => {
         }
       });
 
-      // Set pages and elements together so the canvas renders content immediately
+      // Generate ALL images BEFORE showing the book on canvas
+      if (shouldGenerateImages) {
+        const pagesWithImages = contentMap.filter(p => p.imagePrompt);
+        for (const { pageId: pid, imagePrompt } of pagesWithImages) {
+          try {
+            const { data, error } = await supabase.functions.invoke('generate-ebook-image', {
+              body: { prompt: imagePrompt, style: 'photo' },
+            });
+            if (error || data?.error) {
+              console.warn(`Image gen failed for page ${pid}:`, error?.message || data?.error);
+              continue;
+            }
+            if (data?.imageUrl) {
+              const pageElems = prebuiltElements[pid] || [];
+              const existingImage = pageElems.find((e: any) => e.type === 'image');
+              if (existingImage) {
+                prebuiltElements[pid] = pageElems.map((e: any) =>
+                  e.id === existingImage.id ? { ...e, src: data.imageUrl, isPlaceholder: false } : e
+                );
+              } else {
+                const imageEl = {
+                  id: `img-${pid}-${Date.now()}`, type: 'image',
+                  x: 8, y: 4, width: 84, height: 30,
+                  src: data.imageUrl,
+                };
+                const bodyEl = pageElems.find((e: any) => e.type === 'text' && e.id.includes('body'));
+                if (bodyEl) {
+                  prebuiltElements[pid] = [
+                    imageEl,
+                    ...pageElems.map((e: any) => {
+                      if (e.id === bodyEl.id) return { ...e, y: 38, height: Math.max(10, 58) };
+                      if (e.id.includes('divider')) return { ...e, y: 36 };
+                      return e;
+                    }),
+                  ];
+                } else {
+                  prebuiltElements[pid] = [imageEl, ...pageElems];
+                }
+              }
+            }
+          } catch (e) {
+            console.warn(`Image gen error for page ${pid}:`, e);
+          }
+          // Small delay between requests to avoid rate limiting
+          await new Promise(r => setTimeout(r, 1500));
+        }
+      }
+
+      // Set pages and elements together so the canvas renders content + images immediately
       setSavedPageElements(prebuiltElements);
       localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(prebuiltElements));
       setEbookPages(newPages);
@@ -800,11 +848,6 @@ const NewEbookPage = () => {
         });
       }
 
-      // Generate images in background (these use the ref which is fine for async updates)
-      if (shouldGenerateImages) {
-        setTimeout(() => generatePageImages(contentMap), 500);
-      }
-
       toast({ title: "Your AI-written book is ready!" });
     } catch (e: any) {
       console.error('Generate book error:', e);
@@ -817,33 +860,7 @@ const NewEbookPage = () => {
     }
   };
 
-  // Generate AI images for pages with imagePrompts (runs in background)
-  const generatePageImages = useCallback(async (contentMap: { pageId: string; content: string; imagePrompt?: string }[]) => {
-    const pagesWithImages = contentMap.filter(p => p.imagePrompt);
-    if (pagesWithImages.length === 0) return;
 
-    // Generate images sequentially to avoid rate limits
-    for (const { pageId: pid, imagePrompt } of pagesWithImages) {
-      try {
-        const { data, error } = await supabase.functions.invoke('generate-ebook-image', {
-          body: { prompt: imagePrompt, style: 'photo' },
-        });
-        if (error || data?.error) {
-          console.warn(`Image gen failed for page ${pid}:`, error?.message || data?.error);
-          continue;
-        }
-        if (data?.imageUrl && canvasRef.current) {
-          // Add image element to the page via canvas ref
-          canvasRef.current.setPageContent(pid, `__IMAGE__${data.imageUrl}`);
-        }
-      } catch (e) {
-        console.warn(`Image gen error for page ${pid}:`, e);
-      }
-      // Small delay between requests to avoid rate limiting
-      await new Promise(r => setTimeout(r, 1500));
-    }
-    sonnerToast.success('AI images added to your book!');
-  }, []);
 
   const handleAutoPrompt = () => {
     const ideas = [

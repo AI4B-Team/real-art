@@ -144,9 +144,9 @@ const STOCK_IMAGES = [
 // ─── Element Generators ────────────────────────────
 const createCoverElements = (title: string): CanvasElement[] => [
   { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 100, src: COVER_IMAGE },
-  { id: 'title-box', type: 'shape', x: 5, y: 58, width: 70, height: 34, fill: 'rgba(255,255,255,0.95)', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: 'title-text', type: 'text', x: 8, y: 61, width: 64, height: 22, content: title || 'STRATEGIC\nINVESTMENT', fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', lineHeight: 1.2 },
-  { id: 'subtitle-text', type: 'text', x: 8, y: 85, width: 64, height: 5, content: 'A COMPREHENSIVE GUIDE', fontSize: 12, fontFamily: 'Georgia', textColor: '#0891b2' },
+  { id: 'title-box', type: 'shape', x: 5, y: 48, width: 75, height: 46, fill: 'rgba(255,255,255,0.95)', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: 'title-text', type: 'text', x: 8, y: 50, width: 70, height: 34, content: title || 'STRATEGIC\nINVESTMENT', fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', lineHeight: 1.2 },
+  { id: 'subtitle-text', type: 'text', x: 8, y: 88, width: 64, height: 5, content: 'A COMPREHENSIVE GUIDE', fontSize: 12, fontFamily: 'Georgia', textColor: '#0891b2' },
 ];
 
 const createTocElements = (pages: Page[]): CanvasElement[] => {
@@ -164,16 +164,16 @@ const createTocElements = (pages: Page[]): CanvasElement[] => {
 
 const createChapterElements = (num: number, title: string): CanvasElement[] => [
   { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 6, width: 84, height: 4, content: `Chapter ${num}`, fontSize: 12, fontFamily: 'Inter', textColor: '#0891b2', fontWeight: 'bold' },
-  { id: `ch${num}-title`, type: 'text', x: 8, y: 11, width: 84, height: 12, content: title, fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.15 },
-  { id: `ch${num}-divider`, type: 'shape', x: 8, y: 25, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: `ch${num}-img`, type: 'image', x: 8, y: 30, width: 84, height: 26, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length], borderRadius: 4 },
-  { id: `ch${num}-body`, type: 'text', x: 8, y: 60, width: 84, height: 28, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.55 },
+  { id: `ch${num}-title`, type: 'text', x: 8, y: 11, width: 84, height: 18, content: title, fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.15 },
+  { id: `ch${num}-divider`, type: 'shape', x: 8, y: 31, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `ch${num}-img`, type: 'image', x: 8, y: 35, width: 84, height: 26, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length], borderRadius: 4 },
+  { id: `ch${num}-body`, type: 'text', x: 8, y: 65, width: 84, height: 28, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.55 },
 ];
 
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => [
-  { id: `cp${num}-title`, type: 'text', x: 8, y: 6, width: 84, height: 8, content: title, fontSize: 20, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
-  { id: `cp${num}-divider`, type: 'shape', x: 8, y: 15, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: `cp${num}-body`, type: 'text', x: 8, y: 18, width: 84, height: 74, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.6 },
+  { id: `cp${num}-title`, type: 'text', x: 8, y: 6, width: 84, height: 14, content: title, fontSize: 20, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
+  { id: `cp${num}-divider`, type: 'shape', x: 8, y: 21, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
+  { id: `cp${num}-body`, type: 'text', x: 8, y: 24, width: 84, height: 68, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.6 },
 ];
 
 const createBackElements = (title: string): CanvasElement[] => [
