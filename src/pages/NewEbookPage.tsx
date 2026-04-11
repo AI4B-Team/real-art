@@ -1523,9 +1523,69 @@ const NewEbookPage = () => {
                       {isGenerating ? <Loader2 size={14} className="animate-spin" /> : <RefreshCw size={14} />}
                       {isGenerating ? "Regenerating..." : "Regenerate"}
                     </button>
-                    <button onClick={() => setGenerateStep("chapters")} disabled={!bookData.selectedTitle}
+                    <button onClick={async () => {
+                      if (chapterSequence.length > 0) {
+                        setGenerateStep("chapters");
+                      } else {
+                        // Custom title with no outline yet — generate one
+                        setIsGenerating(true);
+                        setGenerationProgress(0);
+                        const interval = window.setInterval(() => {
+                          setGenerationProgress(prev => Math.min(prev + Math.random() * 8, 90));
+                        }, 600);
+                        try {
+                          const { data, error } = await supabase.functions.invoke('generate-ebook', {
+                            body: {
+                              action: 'generate-outline',
+                              prompt: bookData.prompt?.trim() || bookData.selectedTitle,
+                              model: bookData.model,
+                              language: bookData.language,
+                              tone: bookData.tone,
+                              chapters: bookData.chapters,
+                              wordsPerChapter: bookData.wordsPerChapter,
+                              selectedTitle: bookData.selectedTitle,
+                            },
+                          });
+                          window.clearInterval(interval);
+                          if (error) throw new Error(error.message);
+                          if (data?.error) throw new Error(data.error);
+                          const result = data.result;
+                          setBookDescription(result.description || '');
+                          setChapterSequence(
+                            (result.chapters || []).map((ch: any, i: number) => ({
+                              id: `ch-${i + 1}`,
+                              title: ch.title,
+                              description: ch.description,
+                              topics: ch.topics || [],
+                              includeImages: true,
+                              pageCount: ch.pageCount || 8,
+                            }))
+                          );
+                          setGenerationProgress(100);
+                          setGenerateStep("chapters");
+                        } catch (e) {
+                          window.clearInterval(interval);
+                          console.error("Failed to generate outline:", e);
+                          // Fallback: create default chapters
+                          const count = bookData.chapters || 5;
+                          setChapterSequence(
+                            Array.from({ length: count }, (_, i) => ({
+                              id: `ch-${i + 1}`,
+                              title: `Chapter ${i + 1}`,
+                              description: "",
+                              topics: [],
+                              includeImages: true,
+                              pageCount: 8,
+                            }))
+                          );
+                          setGenerateStep("chapters");
+                        } finally {
+                          setIsGenerating(false);
+                        }
+                      }
+                    }} disabled={!bookData.selectedTitle || isGenerating}
                       className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold hover:bg-accent/90 transition-colors disabled:opacity-50">
-                      Continue<ArrowRight size={16} />
+                      {isGenerating ? <><Loader2 size={14} className="animate-spin" />Generating...</> : <>Continue<ArrowRight size={16} /></>}
                     </button>
                   </div>
                 </div>
