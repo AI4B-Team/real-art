@@ -206,7 +206,17 @@ const NewEbookPage = () => {
 
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
 
-  // Persist current ebook editor URL so we can return to it
+  // Scroll to top whenever switching to a non-design (scrollable) tab
+  useEffect(() => {
+    if (activeTab !== "design") {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
+    }
+  }, [activeTab]);
+
   useEffect(() => {
     sessionStorage.setItem("ebook-last-url", location.pathname + location.search);
   }, [location.pathname, location.search, activeTab]);
