@@ -181,6 +181,11 @@ const NewEbookPage = () => {
   const [searchParams] = useSearchParams();
   const { updateEbook, addEbook } = useEbooks();
 
+  // Scroll to top when page loads
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, []);
+
   const initialTab = (() => {
     const tab = searchParams.get("tab");
     if (tab && ["idea", "generate", "design"].includes(tab)) return tab as TabId;
