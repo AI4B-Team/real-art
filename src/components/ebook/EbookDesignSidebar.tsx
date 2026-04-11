@@ -50,6 +50,14 @@ interface EbookDesignSidebarProps {
   pageCount?: number;
   pageIndex?: number;
   onOpenImageSection?: () => void;
+  /** Elements currently on the selected page — used to target existing elements */
+  currentPageElements?: { id: string; type: string; content?: string }[];
+  /** Select an existing element on the canvas */
+  onSelectElement?: (elementId: string) => void;
+  /** Select + enter edit mode on an existing text element */
+  onEditElement?: (elementId: string) => void;
+  /** Select an image element and open its replace overlay */
+  onReplaceElementImage?: (elementId: string) => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
@@ -570,6 +578,7 @@ const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
   onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage, onAIClick,
   sidebarMode = 'design', onSidebarModeChange, selectedPageTitle, pageCount, pageIndex, onOpenImageSection,
+  currentPageElements = [], onSelectElement, onEditElement, onReplaceElementImage,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
@@ -697,42 +706,177 @@ const EbookDesignSidebar = ({
         </div>
         <div className="flex flex-wrap gap-1.5">
           {(() => {
-            const selectedChapter = chapters.find(ch => ch.id === selectedChapterId);
-            const pageType = selectedChapter?.type || 'chapter-page';
-            const actionsByType: Record<string, { label: string; action: () => void }[]> = {
-              'cover': [
-                { label: 'Change Cover Image', action: () => { onOpenImageSection?.(); } },
-                { label: 'Edit Title', action: () => { onAddElement?.('text', { content: 'Title', fontSize: 24 }); toast.success('Title element added'); } },
-                { label: 'Add Subtitle', action: () => { onAddElement?.('text', { content: 'Subtitle', fontSize: 14 }); toast.success('Subtitle added'); } },
-              ],
-              'toc': [
-                { label: 'Refresh TOC', action: () => { toast.success('Table of Contents refreshed'); } },
-                { label: 'Add Chapter', action: () => { if (selectedChapterId) onChapterAdd(selectedChapterId, 'chapter'); } },
-                { label: 'Style TOC', action: () => { onAddElement?.('shape', { shapeType: 'rectangle' }); toast.success('Decoration added'); } },
-              ],
-              'chapter': [
-                { label: 'Edit Chapter Image', action: () => { onOpenImageSection?.(); } },
-                { label: 'Add Body Text', action: () => { onAddElement?.('text', { content: 'Chapter content...', fontSize: 12 }); toast.success('Text added'); } },
-                { label: 'Add Divider', action: () => { onAddElement?.('shape', { shapeType: 'rectangle' }); toast.success('Divider added'); } },
-              ],
-              'chapter-page': [
-                { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Headline', fontSize: 24 }); toast.success('Headline added'); } },
-                { label: 'Add Image', action: () => { onAddElement?.('image'); toast.success('Image added'); } },
-                { label: 'Add Section', action: () => { onAddElement?.('text', { content: 'New section content', fontSize: 14 }); toast.success('Section added'); } },
-              ],
-              'back': [
-                { label: 'Change Background', action: () => { onAddElement?.('shape', { shapeType: 'rectangle' }); toast.success('Background element added'); } },
-                { label: 'Edit Logo Text', action: () => { onAddElement?.('text', { content: 'Logo', fontSize: 26 }); toast.success('Logo text added'); } },
-                { label: 'Add Tagline', action: () => { onAddElement?.('text', { content: 'Tagline', fontSize: 10 }); toast.success('Tagline added'); } },
-              ],
-              'blank': [
-                { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Headline', fontSize: 24 }); toast.success('Headline added'); } },
-                { label: 'Add Image', action: () => { onAddElement?.('image'); toast.success('Image added'); } },
-                { label: 'Add Text Block', action: () => { onAddElement?.('text', { content: 'Text content', fontSize: 12 }); toast.success('Text added'); } },
-              ],
-            };
-            const actions = actionsByType[pageType] || actionsByType['chapter-page'];
-            return actions.map(btn => (
+            const selectedPage = chapters.find(c => c.id === selectedChapterId);
+            const pageType = selectedPage?.type ?? null;
+
+            // Helper: find first element whose id matches a pattern
+            const findEl = (...patterns: string[]) =>
+              currentPageElements.find(e => patterns.some(p => e.id.includes(p)));
+
+            const suggestions: { label: string; action: () => void }[] = [];
+
+            if (pageType === 'cover') {
+              const coverImg = findEl('cover-image', 'cover-img', 'cover-bg');
+              suggestions.push({
+                label: 'Change Cover Image',
+                action: () => {
+                  if (coverImg?.type === 'image' && onReplaceElementImage) {
+                    onReplaceElementImage(coverImg.id);
+                  } else {
+                    onOpenImageSection?.();
+                  }
+                },
+              });
+              const titleEl = findEl('title-text', 'title');
+              suggestions.push({
+                label: 'Edit Title',
+                action: () => {
+                  if (titleEl && onEditElement) {
+                    onEditElement(titleEl.id);
+                  } else {
+                    onAddElement?.('text', { content: bookTitle || 'Your Book Title', fontSize: 28, fontWeight: 'bold' });
+                  }
+                },
+              });
+              const subEl = findEl('subtitle-text', 'subtitle');
+              suggestions.push({
+                label: subEl ? 'Edit Subtitle' : 'Add Subtitle',
+                action: () => {
+                  if (subEl && onEditElement) {
+                    onEditElement(subEl.id);
+                  } else {
+                    onAddElement?.('text', { content: 'A Complete Guide', fontSize: 13, textColor: '#6b7280' });
+                    toast.success('Subtitle added');
+                  }
+                },
+              });
+
+            } else if (pageType === 'toc') {
+              const tocHeader = findEl('toc-header');
+              suggestions.push({
+                label: 'Style Heading',
+                action: () => {
+                  if (tocHeader && onEditElement) {
+                    onEditElement(tocHeader.id);
+                  } else {
+                    onAddElement?.('text', { content: 'TABLE OF CONTENTS', fontSize: 20, fontWeight: 'bold' });
+                    toast.success('Heading added');
+                  }
+                },
+              });
+              suggestions.push({
+                label: 'Add Chapter',
+                action: () => { onChapterAdd(selectedChapterId || '', 'chapter'); toast.success('Chapter added'); },
+              });
+              suggestions.push({
+                label: 'Add Divider',
+                action: () => { onAddElement?.('shape', { shapeType: 'rectangle', width: 80, height: 0.5, fill: '#e2e8f0' }); toast.success('Divider added'); },
+              });
+
+            } else if (pageType === 'chapter') {
+              const chTitle = findEl('-title', 'title');
+              suggestions.push({
+                label: 'Edit Chapter Title',
+                action: () => {
+                  if (chTitle && onEditElement) {
+                    onEditElement(chTitle.id);
+                  } else {
+                    onAddElement?.('text', { content: 'Chapter Title', fontSize: 22, fontWeight: 'bold' });
+                    toast.success('Title added');
+                  }
+                },
+              });
+              const chImg = findEl('-img', 'cover-image');
+              suggestions.push({
+                label: chImg ? 'Change Chapter Image' : 'Add Chapter Image',
+                action: () => {
+                  if (chImg?.type === 'image' && onReplaceElementImage) {
+                    onReplaceElementImage(chImg.id);
+                  } else {
+                    onOpenImageSection?.();
+                  }
+                },
+              });
+              const bodyEl = findEl('-body', 'body');
+              suggestions.push({
+                label: bodyEl?.content ? 'Edit Summary' : 'Add Summary',
+                action: () => {
+                  if (bodyEl && onEditElement) {
+                    onEditElement(bodyEl.id);
+                  } else {
+                    onAddElement?.('text', { content: 'Chapter summary goes here...', fontSize: 13 });
+                    toast.success('Summary added');
+                  }
+                },
+              });
+
+            } else if (pageType === 'chapter-page') {
+              const pageImg = findEl('-img', 'img-', 'image');
+              suggestions.push({
+                label: pageImg ? 'Change Image' : 'Add Image',
+                action: () => {
+                  if (pageImg?.type === 'image' && onReplaceElementImage) {
+                    onReplaceElementImage(pageImg.id);
+                  } else {
+                    onOpenImageSection?.();
+                  }
+                },
+              });
+              const bodyEl = findEl('-body', 'body');
+              suggestions.push({
+                label: 'Edit Content',
+                action: () => {
+                  if (bodyEl && onEditElement) {
+                    onEditElement(bodyEl.id);
+                  } else {
+                    onAddElement?.('text', { content: 'Content goes here...', fontSize: 12 });
+                    toast.success('Content block added');
+                  }
+                },
+              });
+              suggestions.push({
+                label: 'Add Callout Box',
+                action: () => { onAddElement?.('shape', { shapeType: 'rectangle', fill: 'rgba(8,145,178,0.08)', borderRadius: 8 }); toast.success('Callout box added'); },
+              });
+
+            } else if (pageType === 'back') {
+              const backImg = findEl('back-image', 'back-img');
+              suggestions.push({
+                label: backImg ? 'Change Background Image' : 'Add Background Image',
+                action: () => {
+                  if (backImg?.type === 'image' && onReplaceElementImage) {
+                    onReplaceElementImage(backImg.id);
+                  } else {
+                    onOpenImageSection?.();
+                  }
+                },
+              });
+              const tagEl = findEl('back-logo', 'back-tag');
+              suggestions.push({
+                label: tagEl ? 'Edit Tagline' : 'Add Tagline',
+                action: () => {
+                  if (tagEl && onEditElement) {
+                    onEditElement(tagEl.id);
+                  } else {
+                    onAddElement?.('text', { content: 'Thank you for reading.', fontSize: 14 });
+                    toast.success('Tagline added');
+                  }
+                },
+              });
+              suggestions.push({
+                label: 'Add CTA',
+                action: () => { onAddElement?.('text', { content: 'Visit yourwebsite.com', fontSize: 14, fontWeight: 'bold' }); toast.success('CTA added'); },
+              });
+
+            } else {
+              suggestions.push(
+                { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Section Headline', fontSize: 24, fontWeight: 'bold' }); toast.success('Headline added'); } },
+                { label: 'Add Image', action: () => { onOpenImageSection?.(); } },
+                { label: 'Add Body Text', action: () => { onAddElement?.('text', { content: 'Your content goes here...', fontSize: 12 }); toast.success('Body text added'); } },
+              );
+            }
+
+            return suggestions.map(btn => (
               <button key={btn.label} onClick={btn.action}
                 className="px-2.5 py-1.5 rounded-lg bg-accent/[0.06] border border-accent/20 text-[10px] font-semibold text-accent hover:bg-accent/[0.12] transition-colors">
                 {btn.label}

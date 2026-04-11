@@ -19,7 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay, { type LiveGenerationState } from "@/components/ebook/EbookGenerationOverlay";
-import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
+import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, buildTocElements, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
@@ -629,8 +629,21 @@ const NewEbookPage = () => {
       localStorage.removeItem(STORAGE_KEY_PAGES);
       localStorage.removeItem(STORAGE_KEY_ELEMENTS);
       setSavedPageElements({});
+
+      // Pre-populate cover + TOC so the live preview right panel shows immediately
+      const initCoverId = "live-cover";
+      const initTocId = "live-toc";
+      const initPages: CanvasPage[] = [
+        { id: initCoverId, title: bookData.selectedTitle, type: "cover" },
+        { id: initTocId, title: "Table of Contents", type: "toc" },
+      ];
+      const initElems: Record<string, any[]> = {
+        [initCoverId]: getElementsForPage(initPages[0], initPages, bookData.selectedTitle),
+        [initTocId]: buildTocElements(initPages),
+      };
       setLiveGenerationState({
-        pages: [], elements: {},
+        pages: initPages,
+        elements: initElems,
         completedChapterCount: 0,
         totalChapterCount: chapterSequence.length,
         currentChapterTitle: chapterSequence[0]?.title ?? "",
@@ -783,11 +796,16 @@ const NewEbookPage = () => {
         });
 
         // Update live preview after each chapter
+        const liveCoverId = "live-cover";
+        const liveTocId = "live-toc";
         const livePagesSoFar: { id: string; title: string; type: "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank" }[] = [
-          { id: "live-cover", title: bookData.selectedTitle, type: "cover" },
-          { id: "live-toc", title: "Table of Contents", type: "toc" },
+          { id: liveCoverId, title: bookData.selectedTitle, type: "cover" },
+          { id: liveTocId, title: "Table of Contents", type: "toc" },
         ];
-        const liveElemsSoFar: Record<string, any[]> = {};
+        const liveElemsSoFar: Record<string, any[]> = {
+          [liveCoverId]: getElementsForPage({ id: liveCoverId, title: bookData.selectedTitle, type: "cover" } as CanvasPage, livePagesSoFar as CanvasPage[], bookData.selectedTitle),
+          [liveTocId]: buildTocElements(livePagesSoFar as CanvasPage[]),
+        };
         generatedChapters.forEach((ch, ci) => {
           const covId = `live-ch-${ci}`;
           livePagesSoFar.push({ id: covId, title: ch.title, type: "chapter" });
@@ -1974,6 +1992,10 @@ const NewEbookPage = () => {
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
                 onReplaceImage={isReplacingImage ? (src) => canvasRef.current?.replaceImage(src) : null}
+                currentPageElements={selectedPageId ? (savedPageElements[selectedPageId] ?? []) : []}
+                onSelectElement={(id) => canvasRef.current?.selectElement(id)}
+                onEditElement={(id) => canvasRef.current?.editElement(id)}
+                onReplaceElementImage={(id) => canvasRef.current?.triggerReplaceImage(id)}
                 onTranslate={async (scope, language) => {
                   // Check for locked pages when applying to entire book
                   if (scope === 'book') {

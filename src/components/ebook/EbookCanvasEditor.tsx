@@ -343,6 +343,9 @@ export interface EbookCanvasEditorHandle {
   setPageContent: (pageId: string, content: string) => void;
   undo: () => void;
   redo: () => void;
+  selectElement: (elementId: string) => void;
+  editElement: (elementId: string) => void;
+  triggerReplaceImage: (elementId: string) => void;
 }
 
 // ─── Component ─────────────────────────────────────
@@ -1053,6 +1056,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     },
     undo,
     redo,
+    selectElement: (elementId: string) => {
+      setSelectedElementId(elementId);
+      setActiveTool('select');
+    },
+    editElement: (elementId: string) => {
+      setSelectedElementId(elementId);
+      setEditingTextId(elementId);
+      setActiveTool('select');
+    },
+    triggerReplaceImage: (elementId: string) => {
+      setSelectedElementId(elementId);
+      setReplaceModalElementId(elementId);
+    },
   }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId, undo, redo]);
 
   const deleteElement = () => {
