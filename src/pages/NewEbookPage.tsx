@@ -672,7 +672,11 @@ const NewEbookPage = () => {
           }))
           .filter((page) => page.content.length > 80);
 
-        while (chapterPages.length < chapter.pageCount) {
+        // Cap individual page fallback to max 3 extra pages to avoid extremely long generation
+        const maxExtraPages = 3;
+        let extraPagesGenerated = 0;
+        while (chapterPages.length < chapter.pageCount && extraPagesGenerated < maxExtraPages) {
+          extraPagesGenerated++;
           const pageNumber = chapterPages.length + 1;
           const coveredSections = chapterPages.map((page) => page.title).join(", ") || "none yet";
           const { data: extraPageData, error: extraPageError } = await supabase.functions.invoke('generate-ebook', {
