@@ -84,7 +84,10 @@ export const EbookProvider = ({ children }: { children: ReactNode }) => {
 
   const refreshEbooks = useCallback(async () => {
     if (!userId) {
-      setEbooks(DEMO_EBOOKS);
+      setEbooks(prev => {
+        const localBooks = prev.filter(b => b.id.startsWith("local-"));
+        return localBooks.length > 0 ? [...localBooks, ...DEMO_EBOOKS] : DEMO_EBOOKS;
+      });
       return;
     }
     setLoading(true);
@@ -92,11 +95,15 @@ export const EbookProvider = ({ children }: { children: ReactNode }) => {
       const { data, error } = await supabase.from("ebooks").select("*").eq("user_id", userId).order("updated_at", { ascending: false });
       if (error) throw error;
       const dbEbooks = (data || []).map(mapRow);
-      // Show DB ebooks + demo ebooks for unauthenticated feel
-      setEbooks(dbEbooks.length > 0 ? dbEbooks : DEMO_EBOOKS);
+      setEbooks(prev => {
+        const localBooks = prev.filter(b => b.id.startsWith("local-"));
+        if (dbEbooks.length > 0 || localBooks.length > 0) {
+          return [...localBooks, ...dbEbooks];
+        }
+        return DEMO_EBOOKS;
+      });
     } catch (e) {
       console.error("Failed to load ebooks:", e);
-      setEbooks(DEMO_EBOOKS);
     } finally {
       setLoading(false);
     }
