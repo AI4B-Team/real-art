@@ -343,6 +343,9 @@ export interface EbookCanvasEditorHandle {
   setPageContent: (pageId: string, content: string) => void;
   undo: () => void;
   redo: () => void;
+  selectElement: (elementId: string) => void;
+  editElement: (elementId: string) => void;
+  triggerReplaceImage: (elementId: string) => void;
 }
 
 // ─── Component ─────────────────────────────────────
