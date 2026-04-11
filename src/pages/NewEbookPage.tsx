@@ -803,11 +803,11 @@ const NewEbookPage = () => {
             }
             if (data?.imageUrl) {
               const pageElems = prebuiltElements[pid] || [];
-              const existingImage = pageElems.find((e: any) => e.type === 'image');
-              if (existingImage) {
-                prebuiltElements[pid] = pageElems.map((e: any) =>
-                  e.id === existingImage.id ? { ...e, src: data.imageUrl } : e
-                );
+              const imgIdx = pageElems.findIndex((e: any) => e.type === 'image');
+              if (imgIdx !== -1) {
+                const updated = [...pageElems];
+                updated[imgIdx] = { ...updated[imgIdx], src: data.imageUrl };
+                prebuiltElements[pid] = updated;
               }
             }
           } catch (e) {

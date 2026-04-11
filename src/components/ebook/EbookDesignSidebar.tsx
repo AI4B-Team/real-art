@@ -26,7 +26,7 @@ import PageTypePicker from './PageTypePicker';
 interface Chapter {
   id: string;
   title: string;
-  type?: 'cover' | 'back' | 'table of contents' | 'introduction' | 'summary' | null;
+  type?: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back' | 'blank' | null;
 }
 
 interface EbookDesignSidebarProps {
@@ -695,16 +695,49 @@ const EbookDesignSidebar = ({
           <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Recommended Next</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
-          {[
-            { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Headline', fontSize: 24 }); toast.success('Headline added'); } },
-            { label: 'Add Image', action: () => { onAddElement?.('image'); toast.success('Image added'); } },
-            { label: 'Add Section', action: () => { onAddElement?.('text', { content: 'New section content', fontSize: 14 }); toast.success('Section added'); } },
-          ].map(btn => (
-            <button key={btn.label} onClick={btn.action}
-              className="px-2.5 py-1.5 rounded-lg bg-accent/[0.06] border border-accent/20 text-[10px] font-semibold text-accent hover:bg-accent/[0.12] transition-colors">
-              {btn.label}
-            </button>
-          ))}
+          {(() => {
+            const selectedChapter = chapters.find(ch => ch.id === selectedChapterId);
+            const pageType = selectedChapter?.type || 'chapter-page';
+            const actionsByType: Record<string, { label: string; action: () => void }[]> = {
+              'cover': [
+                { label: 'Change Cover Image', action: () => { onOpenImageSection?.(); } },
+                { label: 'Edit Title', action: () => { onAddElement?.('text', { content: 'Title', fontSize: 24 }); toast.success('Title element added'); } },
+                { label: 'Add Subtitle', action: () => { onAddElement?.('text', { content: 'Subtitle', fontSize: 14 }); toast.success('Subtitle added'); } },
+              ],
+              'toc': [
+                { label: 'Refresh TOC', action: () => { toast.success('Table of Contents refreshed'); } },
+                { label: 'Add Chapter', action: () => { if (selectedChapterId) onChapterAdd(selectedChapterId, 'chapter'); } },
+                { label: 'Style TOC', action: () => { onAddElement?.('shape', { shapeType: 'rectangle' }); toast.success('Decoration added'); } },
+              ],
+              'chapter': [
+                { label: 'Edit Chapter Image', action: () => { onOpenImageSection?.(); } },
+                { label: 'Add Body Text', action: () => { onAddElement?.('text', { content: 'Chapter content...', fontSize: 12 }); toast.success('Text added'); } },
+                { label: 'Add Divider', action: () => { onAddElement?.('shape', { shapeType: 'rectangle' }); toast.success('Divider added'); } },
+              ],
+              'chapter-page': [
+                { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Headline', fontSize: 24 }); toast.success('Headline added'); } },
+                { label: 'Add Image', action: () => { onAddElement?.('image'); toast.success('Image added'); } },
+                { label: 'Add Section', action: () => { onAddElement?.('text', { content: 'New section content', fontSize: 14 }); toast.success('Section added'); } },
+              ],
+              'back': [
+                { label: 'Change Background', action: () => { onAddElement?.('shape', { shapeType: 'rectangle' }); toast.success('Background element added'); } },
+                { label: 'Edit Logo Text', action: () => { onAddElement?.('text', { content: 'Logo', fontSize: 26 }); toast.success('Logo text added'); } },
+                { label: 'Add Tagline', action: () => { onAddElement?.('text', { content: 'Tagline', fontSize: 10 }); toast.success('Tagline added'); } },
+              ],
+              'blank': [
+                { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Headline', fontSize: 24 }); toast.success('Headline added'); } },
+                { label: 'Add Image', action: () => { onAddElement?.('image'); toast.success('Image added'); } },
+                { label: 'Add Text Block', action: () => { onAddElement?.('text', { content: 'Text content', fontSize: 12 }); toast.success('Text added'); } },
+              ],
+            };
+            const actions = actionsByType[pageType] || actionsByType['chapter-page'];
+            return actions.map(btn => (
+              <button key={btn.label} onClick={btn.action}
+                className="px-2.5 py-1.5 rounded-lg bg-accent/[0.06] border border-accent/20 text-[10px] font-semibold text-accent hover:bg-accent/[0.12] transition-colors">
+                {btn.label}
+              </button>
+            ));
+          })()}
         </div>
       </div>
 

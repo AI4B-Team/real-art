@@ -206,22 +206,31 @@ const createCoverElements = (title: string): CanvasElement[] => {
 
 export const buildTocElements = (pages: Page[]): CanvasElement[] => {
   const chapterPages = pages.filter(p => p.type === 'chapter');
-  const maxItems = Math.min(chapterPages.length, 12);
-  const itemSpacing = maxItems > 8 ? 6 : 7;
-  return [
-    { id: 'toc-header', type: 'text', x: 10, y: 6, width: 80, height: 7, content: 'TABLE OF CONTENTS', fontSize: 20, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold' },
-    { id: 'toc-line', type: 'shape', x: 10, y: 15, width: 18, height: 0.8, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
-    ...chapterPages.slice(0, maxItems).map((page, i) => {
-      const pageNum = pages.indexOf(page) + 1;
-      const dots = '.'.repeat(Math.max(2, 28 - page.title.length));
-      return {
-        id: `toc-item${i}`, type: 'text' as const,
-        x: 10, y: 20 + i * itemSpacing, width: 80, height: itemSpacing - 0.5,
-        content: `${String(i + 1).padStart(2, '0')}  ${page.title}  ${dots}  ${pageNum}`,
-        fontSize: 11, fontFamily: 'Georgia', textColor: i % 2 === 0 ? '#1f2937' : '#374151',
-      };
-    }),
+  const maxItems = Math.min(chapterPages.length, 14);
+  const startY = 20;
+  const itemSpacing = maxItems > 10 ? 5.2 : maxItems > 7 ? 6.2 : 7.5;
+
+  const elements: CanvasElement[] = [
+    { id: 'toc-header', type: 'text', x: 8, y: 5, width: 84, height: 8, content: 'TABLE OF CONTENTS', fontSize: 18, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold' } as CanvasElement,
+    { id: 'toc-accent', type: 'shape', x: 8, y: 14, width: 14, height: 0.8, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' } as CanvasElement,
   ];
+
+  chapterPages.slice(0, maxItems).forEach((page, i) => {
+    const pageNum = pages.indexOf(page) + 1;
+    const y = startY + i * itemSpacing;
+    // Chapter number
+    elements.push({ id: `toc-num${i}`, type: 'text', x: 8, y, width: 8, height: itemSpacing - 0.5, content: String(i + 1).padStart(2, '0'), fontSize: 10, fontFamily: 'Inter', textColor: '#0891b2', fontWeight: 'bold' } as CanvasElement);
+    // Chapter title
+    elements.push({ id: `toc-title${i}`, type: 'text', x: 17, y, width: 68, height: itemSpacing - 0.5, content: page.title, fontSize: 11, fontFamily: 'Georgia', textColor: '#1f2937' } as CanvasElement);
+    // Page number — right-aligned
+    elements.push({ id: `toc-page${i}`, type: 'text', x: 86, y, width: 7, height: itemSpacing - 0.5, content: String(pageNum), fontSize: 10, fontFamily: 'Inter', textColor: '#6b7280', textAlign: 'right' } as CanvasElement);
+    // Subtle separator line
+    if (i < maxItems - 1) {
+      elements.push({ id: `toc-sep${i}`, type: 'shape', x: 17, y: y + itemSpacing - 0.8, width: 76, height: 0.25, fill: '#e5e7eb', stroke: 'transparent', shapeType: 'rectangle' } as CanvasElement);
+    }
+  });
+
+  return elements;
 };
 
 const createTocElements = (pages: Page[]): CanvasElement[] => buildTocElements(pages);
@@ -348,9 +357,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   useEffect(() => { if (!onPagesChange) setInternalPages(pages); }, [pages, onPagesChange]);
 
   // Sync bookTitle to cover and back cover elements when it changes
+  // Uses setPageElementsRaw to avoid triggering onPageElementsChange feedback loop
   useEffect(() => {
     if (!bookTitle) return;
-    setPageElements(prev => {
+    setPageElementsRaw(prev => {
       const updated = { ...prev };
       let changed = false;
       currentPages.forEach(page => {
@@ -376,6 +386,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   }, [bookTitle, currentPages]);
 
   // Auto-sync TOC page whenever pages are added, removed, renamed, or reordered
+  // Uses setPageElementsRaw to avoid triggering onPageElementsChange feedback loop
   const tocSyncKeyRef = useRef('');
   useEffect(() => {
     const tocPage = currentPages.find(p => p.type === 'toc');
@@ -386,7 +397,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       .join('|');
     if (tocKey === tocSyncKeyRef.current) return;
     tocSyncKeyRef.current = tocKey;
-    setPageElements(prev => ({
+    setPageElementsRaw(prev => ({
       ...prev,
       [tocPage.id]: buildTocElements(currentPages),
     }));
