@@ -257,6 +257,7 @@ const NewEbookPage = () => {
   const [isGeneratingBook, setIsGeneratingBook] = useState(false);
   const [liveGenerationState, setLiveGenerationState] = useState<LiveGenerationState | null>(null);
   const [chapterSequence, setChapterSequence] = useState<ChapterData[]>([]);
+  const [improvingChapterIdx, setImprovingChapterIdx] = useState<number | null>(null);
   const [bookDescription, setBookDescription] = useState("");
   const [generateStep, setGenerateStep] = useState<"titles" | "chapters">("titles");
   const [editingTitleIndex, setEditingTitleIndex] = useState<number | null>(null);
