@@ -19,7 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay, { type LiveGenerationState } from "@/components/ebook/EbookGenerationOverlay";
-import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
+import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, buildTocElements, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
@@ -629,8 +629,21 @@ const NewEbookPage = () => {
       localStorage.removeItem(STORAGE_KEY_PAGES);
       localStorage.removeItem(STORAGE_KEY_ELEMENTS);
       setSavedPageElements({});
+
+      // Pre-populate cover + TOC so the live preview right panel shows immediately
+      const initCoverId = "live-cover";
+      const initTocId = "live-toc";
+      const initPages: CanvasPage[] = [
+        { id: initCoverId, title: bookData.selectedTitle, type: "cover" },
+        { id: initTocId, title: "Table of Contents", type: "toc" },
+      ];
+      const initElems: Record<string, any[]> = {
+        [initCoverId]: getElementsForPage(initPages[0], initPages, bookData.selectedTitle),
+        [initTocId]: buildTocElements(initPages),
+      };
       setLiveGenerationState({
-        pages: [], elements: {},
+        pages: initPages,
+        elements: initElems,
         completedChapterCount: 0,
         totalChapterCount: chapterSequence.length,
         currentChapterTitle: chapterSequence[0]?.title ?? "",
