@@ -836,12 +836,27 @@ const EbookDesignSidebar = ({
                 </span>
               )}
               {!isCoverOrBack && (
-                <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[80px] group-hover:opacity-100 group-hover:pointer-events-auto transition-[max-width,opacity] duration-150">
-                  <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[120px] group-hover:opacity-100 group-hover:pointer-events-auto transition-[max-width,opacity] duration-150">
+                  {onChapterReorder && globalIdx > 0 && (
+                    <button onClick={e => { e.stopPropagation(); onChapterReorder(globalIdx, globalIdx - 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move up">
+                      <ChevronUp className="w-3 h-3 text-muted-foreground" />
+                    </button>
+                  )}
+                  {onChapterReorder && globalIdx < chapters.length - 1 && (
+                    <button onClick={e => { e.stopPropagation(); onChapterReorder(globalIdx, globalIdx + 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move down">
+                      <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                    </button>
+                  )}
+                  <PageTypePicker onSelect={(type) => onChapterAdd(ch.id, type)} side="right" align="center">
+                    <button onClick={e => e.stopPropagation()} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Add page after">
+                      <Plus className="w-3 h-3 text-muted-foreground" />
+                    </button>
+                  </PageTypePicker>
+                  <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Rename">
                     <Pencil className="w-3 h-3 text-muted-foreground" />
                   </button>
                   {onChapterDelete && (
-                    <button onClick={e => { e.stopPropagation(); onChapterDelete(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                    <button onClick={e => { e.stopPropagation(); onChapterDelete(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Delete">
                       <Trash2 className="w-3 h-3 text-muted-foreground hover:text-destructive" />
                     </button>
                   )}
@@ -901,10 +916,30 @@ const EbookDesignSidebar = ({
                         {group.pages.length}
                       </span>
                     )}
-                    <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[60px] group-hover:opacity-100 group-hover:pointer-events-auto transition-[max-width,opacity] duration-150">
-                      <button onClick={e => { e.stopPropagation(); handleStartEdit(group.cover); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                    <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[120px] group-hover:opacity-100 group-hover:pointer-events-auto transition-[max-width,opacity] duration-150">
+                      {onChapterReorder && group.coverGlobalIdx > 0 && (
+                        <button onClick={e => { e.stopPropagation(); onChapterReorder(group.coverGlobalIdx, group.coverGlobalIdx - 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move up">
+                          <ChevronUp className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      )}
+                      {onChapterReorder && group.coverGlobalIdx < chapters.length - 1 && (
+                        <button onClick={e => { e.stopPropagation(); onChapterReorder(group.coverGlobalIdx, group.coverGlobalIdx + 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move down">
+                          <ChevronDown className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      )}
+                      <PageTypePicker onSelect={(type) => onChapterAdd(group.cover.id, type)} side="right" align="center">
+                        <button onClick={e => e.stopPropagation()} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Add page after">
+                          <Plus className="w-3 h-3 text-muted-foreground" />
+                        </button>
+                      </PageTypePicker>
+                      <button onClick={e => { e.stopPropagation(); handleStartEdit(group.cover); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Rename">
                         <Pencil className="w-3 h-3 text-muted-foreground" />
                       </button>
+                      {onChapterDelete && (
+                        <button onClick={e => { e.stopPropagation(); onChapterDelete(group.cover.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Delete">
+                          <Trash2 className="w-3 h-3 text-muted-foreground hover:text-destructive" />
+                        </button>
+                      )}
                     </div>
                     <span className={`text-[10px] font-mono shrink-0 w-4 text-right ${
                       isSelected ? 'text-accent' : 'text-muted-foreground/50'
