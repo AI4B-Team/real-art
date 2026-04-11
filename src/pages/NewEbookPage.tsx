@@ -294,13 +294,13 @@ const NewEbookPage = () => {
 
   // Persist pages to localStorage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_PAGES, JSON.stringify(ebookPages));
+    try { localStorage.setItem(STORAGE_KEY_PAGES, JSON.stringify(ebookPages)); } catch {}
   }, [ebookPages]);
 
   // Callback when canvas elements change
   const handlePageElementsChange = useCallback((elements: Record<string, any[]>) => {
     setSavedPageElements(elements);
-    localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(elements));
+    try { localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(elements)); } catch {}
     setLastSaved(new Date());
   }, []);
 
