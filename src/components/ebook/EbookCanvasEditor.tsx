@@ -125,7 +125,6 @@ const PAGE_ACTIONS = [
 
 const FONTS = ['Inter', 'Playfair Display', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Georgia', 'Merriweather'];
 const FONT_SIZES = [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36, 48, 64, 72];
-const COVER_IMAGE = 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop';
 const STOCK_IMAGES = [
   'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop',
@@ -139,48 +138,158 @@ const STOCK_IMAGES = [
   'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&auto=format&fit=crop',
   'https://images.unsplash.com/photo-1497215728101-856f4ea42174?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1526628953301-3e589a6a8b74?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1493612276216-ee3925520721?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1434626881859-194d67b2b86f?w=600&auto=format&fit=crop',
+  'https://images.unsplash.com/photo-1513258496099-48168024aec0?w=600&auto=format&fit=crop',
+];
+
+// ─── Image Seeding (different image per book/chapter, consistent for same title) ───
+const strHash = (s: string): number => {
+  let h = 5381;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) + h) ^ s.charCodeAt(i);
+  return (h >>> 0);
+};
+const seededImage = (seed: string, offset = 0): string =>
+  STOCK_IMAGES[(strHash(seed) + offset) % STOCK_IMAGES.length];
+
+// ─── Cover palette/layout variants ───
+const COVER_PALETTES = [
+  { bg: '#1a1a2e', accent: '#0891b2', text: '#ffffff', sub: '#94a3b8' },
+  { bg: '#0f172a', accent: '#7c3aed', text: '#f1f5f9', sub: '#94a3b8' },
+  { bg: '#064e3b', accent: '#34d399', text: '#ecfdf5', sub: '#6ee7b7' },
+  { bg: '#1e1b4b', accent: '#f59e0b', text: '#fef3c7', sub: '#fbbf24' },
+  { bg: '#1f2937', accent: '#ef4444', text: '#ffffff', sub: '#fca5a5' },
+  { bg: '#0c4a6e', accent: '#38bdf8', text: '#f0f9ff', sub: '#7dd3fc' },
 ];
 
 // ─── Element Generators ────────────────────────────
-const createCoverElements = (title: string): CanvasElement[] => [
-  { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 100, src: COVER_IMAGE },
-  { id: 'title-box', type: 'shape', x: 5, y: 48, width: 75, height: 46, fill: 'rgba(255,255,255,0.95)', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: 'title-text', type: 'text', x: 8, y: 50, width: 70, height: 34, content: title || 'STRATEGIC\nINVESTMENT', fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', lineHeight: 1.2 },
-  { id: 'subtitle-text', type: 'text', x: 8, y: 88, width: 64, height: 5, content: 'A COMPREHENSIVE GUIDE', fontSize: 12, fontFamily: 'Georgia', textColor: '#0891b2' },
-];
+const createCoverElements = (title: string): CanvasElement[] => {
+  const imgSrc = seededImage(title + '-cover');
+  const layoutVariant = strHash(title + '-layout') % 3;
+  const palette = COVER_PALETTES[strHash(title) % COVER_PALETTES.length];
+  if (layoutVariant === 0) {
+    return [
+      { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 62, src: imgSrc },
+      { id: 'cover-panel', type: 'shape', x: 0, y: 60, width: 100, height: 40, fill: palette.bg, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'cover-accent', type: 'shape', x: 0, y: 60, width: 30, height: 1.2, fill: palette.accent, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'title-text', type: 'text', x: 6, y: 64, width: 88, height: 24, content: title || 'Untitled Book', fontSize: 22, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.25, fontWeight: 'bold' },
+      { id: 'subtitle-text', type: 'text', x: 6, y: 91, width: 60, height: 5, content: 'A COMPLETE GUIDE', fontSize: 10, fontFamily: 'Inter', textColor: palette.sub },
+    ];
+  } else if (layoutVariant === 1) {
+    const stripeColor = palette.accent;
+    return [
+      { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 100, src: imgSrc },
+      { id: 'cover-overlay', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: 'rgba(0,0,0,0.55)', stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'cover-stripe', type: 'shape', x: 0, y: 0, width: 5, height: 100, fill: stripeColor, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'title-text', type: 'text', x: 9, y: 30, width: 82, height: 40, content: title || 'Untitled Book', fontSize: 26, fontFamily: 'Georgia', textColor: '#ffffff', lineHeight: 1.2, fontWeight: 'bold' },
+      { id: 'subtitle-text', type: 'text', x: 9, y: 73, width: 60, height: 5, content: 'THE DEFINITIVE GUIDE', fontSize: 10, fontFamily: 'Inter', textColor: stripeColor },
+    ];
+  } else {
+    return [
+      { id: 'cover-bg', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: palette.bg, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'title-text', type: 'text', x: 8, y: 10, width: 84, height: 32, content: title || 'Untitled Book', fontSize: 24, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.25, fontWeight: 'bold' },
+      { id: 'cover-accent', type: 'shape', x: 8, y: 44, width: 22, height: 1.2, fill: palette.accent, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'subtitle-text', type: 'text', x: 8, y: 47, width: 60, height: 5, content: 'A COMPREHENSIVE GUIDE', fontSize: 10, fontFamily: 'Inter', textColor: palette.sub },
+      { id: 'cover-image', type: 'image', x: 0, y: 54, width: 100, height: 46, src: imgSrc },
+    ];
+  }
+};
 
-const createTocElements = (pages: Page[]): CanvasElement[] => {
+export const buildTocElements = (pages: Page[]): CanvasElement[] => {
   const chapterPages = pages.filter(p => p.type === 'chapter');
+  const maxItems = Math.min(chapterPages.length, 12);
+  const itemSpacing = maxItems > 8 ? 6 : 7;
   return [
-    { id: 'toc-header', type: 'text', x: 10, y: 8, width: 80, height: 8, content: 'TABLE OF CONTENTS', fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e' },
-    { id: 'toc-line', type: 'shape', x: 10, y: 18, width: 20, height: 1, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
-    ...chapterPages.map((page, i) => ({
-      id: `toc-item${i}`, type: 'text' as const, x: 10, y: 25 + i * 7, width: 80, height: 5,
-      content: `${String(i + 1).padStart(2, '0')}. ${page.title} ${'·'.repeat(30)} ${pages.indexOf(page) + 1}`,
-      fontSize: 12, fontFamily: 'Georgia', textColor: '#374151',
-    })),
+    { id: 'toc-header', type: 'text', x: 10, y: 6, width: 80, height: 7, content: 'TABLE OF CONTENTS', fontSize: 20, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold' },
+    { id: 'toc-line', type: 'shape', x: 10, y: 15, width: 18, height: 0.8, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
+    ...chapterPages.slice(0, maxItems).map((page, i) => {
+      const pageNum = pages.indexOf(page) + 1;
+      const dots = '.'.repeat(Math.max(2, 28 - page.title.length));
+      return {
+        id: `toc-item${i}`, type: 'text' as const,
+        x: 10, y: 20 + i * itemSpacing, width: 80, height: itemSpacing - 0.5,
+        content: `${String(i + 1).padStart(2, '0')}  ${page.title}  ${dots}  ${pageNum}`,
+        fontSize: 11, fontFamily: 'Georgia', textColor: i % 2 === 0 ? '#1f2937' : '#374151',
+      };
+    }),
   ];
 };
 
-const createChapterElements = (num: number, title: string): CanvasElement[] => [
-  { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 6, width: 84, height: 4, content: `Chapter ${num}`, fontSize: 12, fontFamily: 'Inter', textColor: '#0891b2', fontWeight: 'bold' },
-  { id: `ch${num}-title`, type: 'text', x: 8, y: 11, width: 84, height: 18, content: title, fontSize: 24, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.15 },
-  { id: `ch${num}-divider`, type: 'shape', x: 8, y: 31, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: `ch${num}-img`, type: 'image', x: 8, y: 35, width: 84, height: 26, src: STOCK_IMAGES[(num - 1) % STOCK_IMAGES.length], borderRadius: 4 },
-  { id: `ch${num}-body`, type: 'text', x: 8, y: 65, width: 84, height: 28, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.55 },
+const createTocElements = (pages: Page[]): CanvasElement[] => buildTocElements(pages);
+
+const CHAPTER_PALETTES = [
+  { accent: '#0891b2', eyebrow: '#0891b2' },
+  { accent: '#7c3aed', eyebrow: '#7c3aed' },
+  { accent: '#059669', eyebrow: '#059669' },
+  { accent: '#d97706', eyebrow: '#d97706' },
+  { accent: '#dc2626', eyebrow: '#dc2626' },
+  { accent: '#2563eb', eyebrow: '#2563eb' },
 ];
 
-const createChapterPageElements = (num: number, title: string): CanvasElement[] => [
-  { id: `cp${num}-title`, type: 'text', x: 8, y: 6, width: 84, height: 14, content: title, fontSize: 20, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
-  { id: `cp${num}-divider`, type: 'shape', x: 8, y: 21, width: 18, height: 0.6, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: `cp${num}-body`, type: 'text', x: 8, y: 24, width: 84, height: 68, content: '', fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.6 },
+const createChapterElements = (num: number, title: string): CanvasElement[] => {
+  const imgSrc = seededImage(title + num + '-chapter', num * 3);
+  const pal = CHAPTER_PALETTES[(num - 1) % CHAPTER_PALETTES.length];
+  const layoutVariant = strHash(title) % 2;
+
+  if (layoutVariant === 0) {
+    return [
+      { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 5, width: 50, height: 4, content: `Chapter ${num}`, fontSize: 11, fontFamily: 'Inter', textColor: pal.eyebrow, fontWeight: 'bold' },
+      { id: `ch${num}-title`, type: 'text', x: 8, y: 10, width: 84, height: 22, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
+      { id: `ch${num}-divider`, type: 'shape', x: 8, y: 33, width: 15, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: `ch${num}-img`, type: 'image', x: 8, y: 37, width: 84, height: 44, src: imgSrc, borderRadius: 6 },
+      { id: `ch${num}-body`, type: 'text', x: 8, y: 84, width: 84, height: 12, content: '', fontSize: 12, fontFamily: 'Georgia', textColor: '#6b7280', lineHeight: 1.5 },
+    ];
+  } else {
+    return [
+      { id: `ch${num}-img`, type: 'image', x: 0, y: 0, width: 100, height: 65, src: imgSrc },
+      { id: `ch${num}-overlay`, type: 'shape', x: 0, y: 48, width: 100, height: 17, fill: 'rgba(0,0,0,0.6)', stroke: 'transparent', shapeType: 'rectangle' },
+      { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 50, width: 50, height: 5, content: `Chapter ${num}`, fontSize: 10, fontFamily: 'Inter', textColor: pal.accent, fontWeight: 'bold' },
+      { id: `ch${num}-title`, type: 'text', x: 8, y: 56, width: 84, height: 9, content: title, fontSize: 18, fontFamily: 'Georgia', textColor: '#ffffff', fontWeight: 'bold', lineHeight: 1.15 },
+      { id: `ch${num}-divider`, type: 'shape', x: 8, y: 68, width: 15, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: `ch${num}-body`, type: 'text', x: 8, y: 71, width: 84, height: 22, content: '', fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.5 },
+    ];
+  }
+};
+
+const createChapterPageElements = (num: number, title: string): CanvasElement[] => {
+  const pal = CHAPTER_PALETTES[(num - 1) % CHAPTER_PALETTES.length];
+  return [
+    { id: `cp${num}-title`, type: 'text', x: 8, y: 4, width: 78, height: 10, content: title, fontSize: 16, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
+    { id: `cp${num}-divider`, type: 'shape', x: 8, y: 15.5, width: 12, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
+    { id: `cp${num}-body`, type: 'text', x: 8, y: 18, width: 84, height: 74, content: '', fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.65 },
+    { id: `cp${num}-pagenum`, type: 'text', x: 82, y: 95, width: 10, height: 4, content: `${num}`, fontSize: 10, fontFamily: 'Inter', textColor: '#9ca3af', textAlign: 'right' },
+  ];
+};
+
+const BACK_PALETTES = [
+  { bg: '#0d4f4f', accent: '#34d399', text: '#ffffff', sub: '#6ee7b7' },
+  { bg: '#1a1a2e', accent: '#818cf8', text: '#f1f5f9', sub: '#a5b4fc' },
+  { bg: '#1e1b4b', accent: '#fbbf24', text: '#fef9c3', sub: '#fde68a' },
+  { bg: '#0f172a', accent: '#38bdf8', text: '#e0f2fe', sub: '#7dd3fc' },
+  { bg: '#064e3b', accent: '#86efac', text: '#dcfce7', sub: '#bbf7d0' },
 ];
 
-const createBackElements = (title: string): CanvasElement[] => [
-  { id: 'back-bg', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: '#0d4f4f', stroke: 'transparent', shapeType: 'rectangle' },
-  { id: 'back-logo', type: 'text', x: 15, y: 40, width: 70, height: 10, content: title || 'Untitled Book', fontSize: 28, fontFamily: 'Georgia', textColor: '#ffffff', textAlign: 'center' },
-  { id: 'back-tag', type: 'text', x: 25, y: 52, width: 50, height: 6, content: 'Creative Excellence', fontSize: 12, fontFamily: 'Georgia', textColor: '#94a3b8', textAlign: 'center' },
-];
+const createBackElements = (title: string): CanvasElement[] => {
+  const pal = BACK_PALETTES[strHash(title + '-back') % BACK_PALETTES.length];
+  const imgSrc = seededImage(title + '-back', 5);
+  return [
+    { id: 'back-bg', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: pal.bg, stroke: 'transparent', shapeType: 'rectangle' },
+    { id: 'back-image', type: 'image', x: 0, y: 0, width: 100, height: 45, src: imgSrc },
+    { id: 'back-overlay', type: 'shape', x: 0, y: 30, width: 100, height: 15, fill: `${pal.bg}cc`, stroke: 'transparent', shapeType: 'rectangle' },
+    { id: 'back-accent', type: 'shape', x: 10, y: 48, width: 20, height: 0.8, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
+    { id: 'back-logo', type: 'text', x: 10, y: 52, width: 80, height: 14, content: title || 'Untitled Book', fontSize: 20, fontFamily: 'Georgia', textColor: pal.text, fontWeight: 'bold', lineHeight: 1.2 },
+    { id: 'back-tag', type: 'text', x: 10, y: 70, width: 80, height: 8, content: 'Thank you for reading. We hope this guide empowers your journey.', fontSize: 11, fontFamily: 'Georgia', textColor: pal.sub, lineHeight: 1.5 },
+  ];
+};
 
 export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: string): CanvasElement[] => {
   const chapterPages = allPages.filter(p => p.type === 'chapter');
