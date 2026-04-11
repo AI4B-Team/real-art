@@ -217,7 +217,16 @@ CRITICAL REQUIREMENTS:
       });
     }
 
-    const data = await response.json();
+    const responseText = await response.text();
+    let data: any;
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      console.error("AI gateway returned non-JSON:", responseText.substring(0, 500));
+      return new Response(JSON.stringify({ error: "AI returned an empty or invalid response. Please try again.", retryable: true }), {
+        status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const rawContent = data.choices?.[0]?.message?.content || "";
     const finishReason = data.choices?.[0]?.finish_reason;
 
