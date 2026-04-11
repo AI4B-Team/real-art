@@ -1137,8 +1137,8 @@ const NewEbookPage = () => {
             </div>
             <div className="flex-1" />
             <div className="flex items-center gap-2">
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={15} /></button></TooltipTrigger><TooltipContent>Undo</TooltipContent></Tooltip>
-              <Tooltip><TooltipTrigger asChild><button className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={15} /></button></TooltipTrigger><TooltipContent>Redo</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><button onClick={() => canvasRef.current?.undo()} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Undo2 size={15} /></button></TooltipTrigger><TooltipContent>Undo (⌘Z)</TooltipContent></Tooltip>
+              <Tooltip><TooltipTrigger asChild><button onClick={() => canvasRef.current?.redo()} className="p-1.5 rounded-lg hover:bg-foreground/[0.05] text-muted"><Redo2 size={15} /></button></TooltipTrigger><TooltipContent>Redo (⌘⇧Z)</TooltipContent></Tooltip>
               <div className="w-px h-5 bg-foreground/[0.08] mx-0.5" />
               <Tooltip><TooltipTrigger asChild><button onClick={() => setFindReplaceMode(prev => prev === 'find' ? null : 'find')} className={`p-1.5 rounded-lg hover:bg-foreground/[0.05] ${findReplaceMode === 'find' ? 'text-accent bg-accent/10' : 'text-muted'}`}><Search size={15} /></button></TooltipTrigger><TooltipContent>Find</TooltipContent></Tooltip>
               <Tooltip><TooltipTrigger asChild><button onClick={() => setFindReplaceMode(prev => prev === 'find-replace' ? null : 'find-replace')} className={`p-1.5 rounded-lg hover:bg-foreground/[0.05] ${findReplaceMode === 'find-replace' ? 'text-accent bg-accent/10' : 'text-muted'}`}><ArrowRightLeft size={15} /></button></TooltipTrigger><TooltipContent>Find &amp; Replace (⌘H)</TooltipContent></Tooltip>

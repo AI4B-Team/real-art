@@ -1038,7 +1038,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         return { ...prev, [pageId]: [...elems, newEl] };
       });
     },
-  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId]);
+    undo,
+    redo,
+  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId, undo, redo]);
 
   const deleteElement = () => {
     if (!selectedElementId || !selectedPage || isPageLocked) return;
