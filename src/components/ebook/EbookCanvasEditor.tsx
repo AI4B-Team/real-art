@@ -1056,6 +1056,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     },
     undo,
     redo,
+    selectElement: (elementId: string) => {
+      setSelectedElementId(elementId);
+      setActiveTool('select');
+    },
+    editElement: (elementId: string) => {
+      setSelectedElementId(elementId);
+      setEditingTextId(elementId);
+      setActiveTool('select');
+    },
+    triggerReplaceImage: (elementId: string) => {
+      setSelectedElementId(elementId);
+      setReplaceModalElementId(elementId);
+    },
   }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId, undo, redo]);
 
   const deleteElement = () => {
