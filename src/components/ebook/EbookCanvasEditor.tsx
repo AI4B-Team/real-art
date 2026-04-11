@@ -835,7 +835,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         e.preventDefault();
         const step = e.shiftKey ? 5 : 1;
         const el = currentElements.find(el => el.id === selectedElementId);
-        if (!el || el.locked || isPageLocked) return;
+        if (!el || el.locked) return;
         const updates: Partial<CanvasElement> = {};
         if (e.key === 'ArrowUp')    updates.y = Math.max(0, el.y - step);
         if (e.key === 'ArrowDown')  updates.y = Math.min(100 - el.height, el.y + step);
@@ -846,7 +846,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [undo, redo, selectedElementId, editingTextId, currentElements, isPageLocked]);
+  }, [undo, redo, selectedElementId, editingTextId, currentElements]);
 
   const selectedElement = currentElements.find(e => e.id === selectedElementId);
 
