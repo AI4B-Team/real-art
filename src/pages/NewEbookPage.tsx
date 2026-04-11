@@ -19,8 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
-import EbookCanvasEditor, { type EbookCanvasEditorHandle, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
-import { buildGeneratedBookLayout, type GeneratedChapterInput } from "@/lib/ebookGenerationLayout";
+import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
@@ -568,6 +567,11 @@ const NewEbookPage = () => {
     setActiveTab("design");
     setIsGeneratingBook(true);
 
+    // Clear stale cached pages/elements from any previous book
+    localStorage.removeItem(STORAGE_KEY_PAGES);
+    localStorage.removeItem(STORAGE_KEY_ELEMENTS);
+    setSavedPageElements({});
+
     const baseSnapshot = {
       chapters: chapterSequence,
       description: bookDescription,
@@ -653,7 +657,6 @@ const NewEbookPage = () => {
               chapterTopics: chapter.topics,
             },
           });
-
           const retryError = retry.error?.message || retry.data?.error || null;
 
           if (!retryError && Array.isArray(retry.data?.result?.pages) && retry.data.result.pages.length > 0) {
@@ -673,7 +676,6 @@ const NewEbookPage = () => {
           }))
           .filter((page) => page.content.length > 80);
 
-        // Cap individual page fallback to max 3 extra pages to avoid extremely long generation
         const maxExtraPages = 3;
         let extraPagesGenerated = 0;
         while (chapterPages.length < chapter.pageCount && extraPagesGenerated < maxExtraPages) {
@@ -723,33 +725,98 @@ const NewEbookPage = () => {
         });
       }
 
-      // Use the layout engine to build pages with unique theme, proper pagination, and SVG placeholders
-      const layoutInput: GeneratedChapterInput[] = generatedChapters.map(ch => ({
-        title: ch.title,
-        summary: ch.summary,
-        coverImagePrompt: ch.coverImagePrompt,
-        pages: ch.pages,
-      }));
+      // Build pages with splitContent for proper pagination
+      const newPages: UnifiedPage[] = [
+        { id: crypto.randomUUID(), title: bookData.selectedTitle, type: "cover" },
+        { id: crypto.randomUUID(), title: "Table of Contents", type: "toc" },
+      ];
+      const contentMap: { pageId: string; content: string; imagePrompt?: string }[] = [];
 
-      const layout = buildGeneratedBookLayout({
-        bookTitle: bookData.selectedTitle,
-        bookDescription: bookDescription || bookData.prompt,
-        prompt: bookData.prompt,
-        generatedChapters: layoutInput,
-        includeImages: shouldGenerateImages,
+      // Split long content into page-sized chunks (~160 words each)
+      const MAX_WORDS_PER_CANVAS_PAGE = 160;
+      const splitContent = (text: string): string[] => {
+        const words = text.split(/\s+/).filter(Boolean);
+        if (words.length <= MAX_WORDS_PER_CANVAS_PAGE) return [text];
+        const chunks: string[] = [];
+        for (let i = 0; i < words.length; i += MAX_WORDS_PER_CANVAS_PAGE) {
+          chunks.push(words.slice(i, i + MAX_WORDS_PER_CANVAS_PAGE).join(' '));
+        }
+        return chunks;
+      };
+
+      generatedChapters.forEach((chapter) => {
+        const chapterCoverId = crypto.randomUUID();
+        newPages.push({ id: chapterCoverId, title: chapter.title, type: "chapter" });
+
+        if (chapter.summary?.trim()) {
+          contentMap.push({
+            pageId: chapterCoverId,
+            content: chapter.summary.trim(),
+            imagePrompt: chapter.coverImagePrompt,
+          });
+        }
+
+        chapter.pages.forEach((page, index) => {
+          const chunks = splitContent(page.content);
+          chunks.forEach((chunk, chunkIdx) => {
+            const pageId = crypto.randomUUID();
+            const baseTitle = page.title || `${chapter.title} - Part ${index + 1}`;
+            newPages.push({
+              id: pageId,
+              title: chunkIdx === 0 ? baseTitle : `${baseTitle} (cont.)`,
+              type: "chapter-page",
+            });
+            contentMap.push({
+              pageId,
+              content: chunk,
+              // Only the first chunk of each page gets the image
+              imagePrompt: chunkIdx === 0 ? page.imagePrompt : undefined,
+            });
+          });
+        });
       });
 
-      const newPages: UnifiedPage[] = layout.pages.map(p => ({
-        id: p.id,
-        title: p.title,
-        type: p.type,
-      }));
+      newPages.push({ id: crypto.randomUUID(), title: "Back Cover", type: "back" });
 
-      const prebuiltElements: Record<string, any[]> = { ...layout.elementsByPage };
+      // Also generate a cover image
+      if (shouldGenerateImages) {
+        contentMap.unshift({
+          pageId: newPages[0].id,
+          content: '',
+          imagePrompt: `Professional book cover photograph for "${bookData.selectedTitle}". ${bookDescription || bookData.prompt}. High quality, editorial style, modern.`,
+        });
+      }
+
+      // Build page elements with AI content pre-populated
+      const prebuiltElements: Record<string, any[]> = {};
+      newPages.forEach(page => {
+        const defaultElems = getElementsForPage(page as CanvasPage, newPages as CanvasPage[], bookData.selectedTitle);
+        const mapped = contentMap.find(c => c.pageId === page.id);
+        if (mapped && mapped.content) {
+          const bodyEl = defaultElems.find(e => e.type === 'text' && e.id.includes('body'));
+          if (bodyEl) {
+            prebuiltElements[page.id] = defaultElems.map(e =>
+              e.id === bodyEl.id ? { ...e, content: mapped.content } : e
+            );
+          } else {
+            prebuiltElements[page.id] = [
+              ...defaultElems,
+              {
+                id: `body-${page.id}-${Date.now()}`, type: 'text',
+                x: 8, y: 24, width: 84, height: 68,
+                content: mapped.content, fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.65,
+              },
+            ];
+          }
+        } else {
+          prebuiltElements[page.id] = defaultElems;
+        }
+      });
 
       // Generate images in parallel batches (max 12)
-      if (shouldGenerateImages && layout.imageTasks.length > 0) {
-        const limited = layout.imageTasks.slice(0, 12);
+      if (shouldGenerateImages) {
+        const pagesWithImages = contentMap.filter(p => p.imagePrompt);
+        const limited = pagesWithImages.slice(0, Math.min(pagesWithImages.length, 12));
         const BATCH_SIZE = 4;
 
         const generateOneImage = async ({ pageId: pid, imagePrompt }: { pageId: string; imagePrompt: string }) => {
@@ -768,6 +835,21 @@ const NewEbookPage = () => {
                 prebuiltElements[pid] = pageElems.map((e: any) =>
                   e.id === existingImage.id ? { ...e, src: data.imageUrl, isPlaceholder: false } : e
                 );
+              } else {
+                const imageEl = {
+                  id: `img-${pid}-${Date.now()}`, type: 'image',
+                  x: 8, y: 4, width: 84, height: 30,
+                  src: data.imageUrl,
+                };
+                const bodyEl = pageElems.find((e: any) => e.type === 'text' && e.id.includes('body'));
+                if (bodyEl) {
+                  prebuiltElements[pid] = pageElems.map((e: any) =>
+                    e.id === bodyEl.id ? { ...e, y: 36, height: 56 } : e
+                  );
+                  prebuiltElements[pid].unshift(imageEl);
+                } else {
+                  prebuiltElements[pid] = [...pageElems, imageEl];
+                }
               }
             }
           } catch (e) {
@@ -777,11 +859,11 @@ const NewEbookPage = () => {
 
         for (let i = 0; i < limited.length; i += BATCH_SIZE) {
           const batch = limited.slice(i, i + BATCH_SIZE);
-          await Promise.all(batch.map(item => generateOneImage(item)));
+          await Promise.all(batch.map(item => item.imagePrompt ? generateOneImage({ pageId: item.pageId, imagePrompt: item.imagePrompt }) : Promise.resolve()));
         }
       }
 
-      // Set pages and elements together so the canvas renders content + images immediately
+      // Set pages and elements
       setSavedPageElements(prebuiltElements);
       try {
         localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(prebuiltElements));
