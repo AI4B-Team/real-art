@@ -257,6 +257,7 @@ const NewEbookPage = () => {
   const [isGeneratingBook, setIsGeneratingBook] = useState(false);
   const [liveGenerationState, setLiveGenerationState] = useState<LiveGenerationState | null>(null);
   const [chapterSequence, setChapterSequence] = useState<ChapterData[]>([]);
+  const [improvingChapterIdx, setImprovingChapterIdx] = useState<number | null>(null);
   const [bookDescription, setBookDescription] = useState("");
   const [generateStep, setGenerateStep] = useState<"titles" | "chapters">("titles");
   const [editingTitleIndex, setEditingTitleIndex] = useState<number | null>(null);
@@ -1674,7 +1675,14 @@ const NewEbookPage = () => {
                 {/* Chapter Cards */}
                 <div className="space-y-3 mb-8">
                   {chapterSequence.map((ch, i) => (
-                    <div key={ch.id} className="group/card relative rounded-xl border border-foreground/[0.08] bg-background overflow-hidden hover:border-accent/30 hover:shadow-[0_4px_20px_-6px_hsl(var(--accent)/0.12)] hover:-translate-y-[2px] transition-all duration-200">
+                    <div key={ch.id} className={`group/card relative rounded-xl border bg-background overflow-hidden transition-all duration-200 ${improvingChapterIdx === i ? 'border-amber-500/40 shadow-[0_4px_20px_-6px_hsl(40_95%_55%/0.2)]' : 'border-foreground/[0.08] hover:border-accent/30 hover:shadow-[0_4px_20px_-6px_hsl(var(--accent)/0.12)] hover:-translate-y-[2px]'}`}>
+                      {/* Loading shimmer overlay */}
+                      {improvingChapterIdx === i && (
+                        <div className="absolute inset-0 z-10 pointer-events-none">
+                          <div className="absolute inset-0 bg-amber-500/[0.03] animate-pulse" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/[0.06] to-transparent animate-[shimmer_1.5s_infinite]" style={{ backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
+                        </div>
+                      )}
                       {/* Left accent bar */}
                       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-accent/0 group-hover/card:bg-accent rounded-l-xl transition-all duration-200" />
                       <div className="flex items-start gap-3 p-5 pl-6">
@@ -1721,9 +1729,9 @@ const NewEbookPage = () => {
                             className="p-1.5 rounded-lg hover:bg-accent/10 text-muted-foreground/50 hover:text-accent transition-colors" title="Edit">
                             <Pencil size={13} />
                           </button>
-                          <button onClick={async (e) => {
+                          <button disabled={improvingChapterIdx !== null} onClick={async (e) => {
                             e.stopPropagation();
-                            toast({ title: `Improving "${ch.title}"...` });
+                            setImprovingChapterIdx(i);
                             try {
                               const resp = await supabase.functions.invoke("generate-ebook", {
                                 body: {
@@ -1742,10 +1750,10 @@ const NewEbookPage = () => {
                                 setChapterSequence(prev => prev.map((c, idx) => idx === i ? { ...c, title: improved.title || c.title, description: improved.description || c.description, topics: improved.topics?.length ? improved.topics : c.topics } : c));
                                 toast({ title: "Chapter improved ✨" });
                               }
-                            } catch { toast({ title: "Improvement failed", variant: "destructive" }); }
+                            } catch { toast({ title: "Improvement failed", variant: "destructive" }); } finally { setImprovingChapterIdx(null); }
                           }}
-                            className="p-1.5 rounded-lg hover:bg-amber-500/10 text-muted-foreground/50 hover:text-amber-600 transition-colors" title="AI Improve">
-                            <Wand2 size={13} />
+                            className={`p-1.5 rounded-lg transition-colors ${improvingChapterIdx === i ? 'bg-amber-500/20 text-amber-600' : 'hover:bg-amber-500/10 text-muted-foreground/50 hover:text-amber-600'}`} title="AI Improve">
+                            {improvingChapterIdx === i ? <Loader2 size={13} className="animate-spin" /> : <Wand2 size={13} />}
                           </button>
                           <button onClick={() => setChapterSequence(prev => prev.filter((_, idx) => idx !== i))}
                             className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-colors" title="Remove">
