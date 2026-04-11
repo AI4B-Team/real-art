@@ -1428,7 +1428,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     };
     const typeBadgeColor = el.type === 'shape' ? 'bg-destructive' : el.type === 'interactive' ? 'bg-purple-500' : 'bg-blue-500';
     const TypeBadge = () => isSelected ? (
-      <div className={`absolute -top-6 left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-30 whitespace-nowrap`}>
+      <div className={`absolute -top-6 left-0 ${typeBadgeColor} text-white text-xs font-semibold px-2 py-0.5 rounded-sm shadow-sm z-30 whitespace-nowrap pointer-events-none`}>
         {getTypeLabel()}
       </div>
     ) : null;
@@ -1585,7 +1585,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               }}
             />
           ) : (
-            <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap select-none" style={{
+            <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap select-none pointer-events-none" style={{
               background: 'transparent',
               fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
               fontFamily: el.fontFamily, color: el.textColor,
