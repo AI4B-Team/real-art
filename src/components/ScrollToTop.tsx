@@ -7,7 +7,9 @@ export const ScrollToTop = () => {
 
   useEffect(() => {
     if (navType !== "POP") {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
     }
   }, [pathname, navType]);
 
