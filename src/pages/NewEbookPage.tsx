@@ -1729,9 +1729,9 @@ const NewEbookPage = () => {
                             className="p-1.5 rounded-lg hover:bg-accent/10 text-muted-foreground/50 hover:text-accent transition-colors" title="Edit">
                             <Pencil size={13} />
                           </button>
-                          <button onClick={async (e) => {
+                          <button disabled={improvingChapterIdx !== null} onClick={async (e) => {
                             e.stopPropagation();
-                            toast({ title: `Improving "${ch.title}"...` });
+                            setImprovingChapterIdx(i);
                             try {
                               const resp = await supabase.functions.invoke("generate-ebook", {
                                 body: {
@@ -1750,10 +1750,10 @@ const NewEbookPage = () => {
                                 setChapterSequence(prev => prev.map((c, idx) => idx === i ? { ...c, title: improved.title || c.title, description: improved.description || c.description, topics: improved.topics?.length ? improved.topics : c.topics } : c));
                                 toast({ title: "Chapter improved ✨" });
                               }
-                            } catch { toast({ title: "Improvement failed", variant: "destructive" }); }
+                            } catch { toast({ title: "Improvement failed", variant: "destructive" }); } finally { setImprovingChapterIdx(null); }
                           }}
-                            className="p-1.5 rounded-lg hover:bg-amber-500/10 text-muted-foreground/50 hover:text-amber-600 transition-colors" title="AI Improve">
-                            <Wand2 size={13} />
+                            className={`p-1.5 rounded-lg transition-colors ${improvingChapterIdx === i ? 'bg-amber-500/20 text-amber-600' : 'hover:bg-amber-500/10 text-muted-foreground/50 hover:text-amber-600'}`} title="AI Improve">
+                            {improvingChapterIdx === i ? <Loader2 size={13} className="animate-spin" /> : <Wand2 size={13} />}
                           </button>
                           <button onClick={() => setChapterSequence(prev => prev.filter((_, idx) => idx !== i))}
                             className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground/50 hover:text-destructive transition-colors" title="Remove">
