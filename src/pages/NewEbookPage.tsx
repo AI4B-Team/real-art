@@ -567,41 +567,43 @@ const NewEbookPage = () => {
     setActiveTab("design");
     setIsGeneratingBook(true);
 
-    // Clear stale cached pages/elements from any previous book
-    localStorage.removeItem(STORAGE_KEY_PAGES);
-    localStorage.removeItem(STORAGE_KEY_ELEMENTS);
-    setSavedPageElements({});
-
-    const baseSnapshot = {
-      chapters: chapterSequence,
-      description: bookDescription,
-      settings: { ...bookData },
-    };
-
-    // Save ebook to DB/context
-    const newEbook = await addEbook({
-      title: bookData.selectedTitle,
-      description: bookDescription,
-      chapters: chapterSequence.length,
-      words: 0,
-      status: "generating",
-      createdAt: new Date().toISOString().split("T")[0],
-      updatedAt: new Date().toISOString().split("T")[0],
-      coverColor: "#6366F1",
-      tags: [],
-      progress: 10,
-      prompt: bookData.prompt,
-      tone: bookData.tone,
-      language: bookData.language,
-      model: bookData.model,
-      outline: baseSnapshot,
-    });
-
-    if (newEbook) {
-      setCurrentEbookId(newEbook.id);
-    }
+    let newEbook: any = null;
 
     try {
+      // Clear stale cached pages/elements from any previous book
+      localStorage.removeItem(STORAGE_KEY_PAGES);
+      localStorage.removeItem(STORAGE_KEY_ELEMENTS);
+      setSavedPageElements({});
+
+      const baseSnapshot = {
+        chapters: chapterSequence,
+        description: bookDescription,
+        settings: { ...bookData },
+      };
+
+      // Save ebook to DB/context
+      newEbook = await addEbook({
+        title: bookData.selectedTitle,
+        description: bookDescription,
+        chapters: chapterSequence.length,
+        words: 0,
+        status: "generating",
+        createdAt: new Date().toISOString().split("T")[0],
+        updatedAt: new Date().toISOString().split("T")[0],
+        coverColor: "#6366F1",
+        tags: [],
+        progress: 10,
+        prompt: bookData.prompt,
+        tone: bookData.tone,
+        language: bookData.language,
+        model: bookData.model,
+        outline: baseSnapshot,
+      });
+
+      if (newEbook) {
+        setCurrentEbookId(newEbook.id);
+      }
+
       const shouldGenerateImages = bookData.includeImages && bookData.chapterContentType !== "text-only";
       const generatedChapters: {
         title: string;
@@ -639,7 +641,7 @@ const NewEbookPage = () => {
           chapterResult = initialChapterResponse.data.result;
         } else {
           chapterFailureReason = initialChapterError || `Failed to write ${chapter.title}`;
-          console.warn(`Chapter generation failed for "${chapter.title}". Falling back to lighter generation.`, chapterFailureReason);
+          console.warn(`Chapter generation failed for "${chapter.title}". Falling back.`, chapterFailureReason);
         }
 
         if ((!chapterResult?.pages || chapterResult.pages.length === 0) && chapterFailureReason) {
@@ -664,7 +666,6 @@ const NewEbookPage = () => {
             chapterFailureReason = null;
           } else {
             chapterFailureReason = retryError || chapterFailureReason;
-            console.warn(`Lightweight chapter generation failed for "${chapter.title}". Generating pages individually.`, chapterFailureReason);
           }
         }
 
@@ -690,15 +691,11 @@ const NewEbookPage = () => {
               language: bookData.language,
               tone: bookData.tone,
               chapterTitle: chapter.title,
-              pageContent: `Write page ${pageNumber} of ${chapter.pageCount} for the chapter "${chapter.title}". Chapter description: ${chapter.description}. Topics to keep covering: ${chapter.topics.join(", ")}. Avoid repeating these existing section headings: ${coveredSections}.`,
+              pageContent: `Write page ${pageNumber} of ${chapter.pageCount} for the chapter "${chapter.title}". Chapter description: ${chapter.description}. Topics: ${chapter.topics.join(", ")}. Avoid repeating: ${coveredSections}.`,
             },
           });
 
-          if (extraPageError || extraPageData?.error || !extraPageData?.result?.content) {
-            console.warn(`Page generation failed for "${chapter.title}" page ${pageNumber}.`, extraPageError?.message || extraPageData?.error || "No content returned");
-            break;
-          }
-
+          if (extraPageError || extraPageData?.error || !extraPageData?.result?.content) break;
           chapterPages.push({
             title: `${chapter.title} — Section ${pageNumber}`,
             content: extraPageData.result.content.trim(),
@@ -725,98 +722,21 @@ const NewEbookPage = () => {
         });
       }
 
-      // Build pages with splitContent for proper pagination
-      const newPages: UnifiedPage[] = [
-        { id: crypto.randomUUID(), title: bookData.selectedTitle, type: "cover" },
-        { id: crypto.randomUUID(), title: "Table of Contents", type: "toc" },
-      ];
-      const contentMap: { pageId: string; content: string; imagePrompt?: string }[] = [];
-
-      // Split long content into page-sized chunks (~160 words each)
-      const MAX_WORDS_PER_CANVAS_PAGE = 160;
-      const splitContent = (text: string): string[] => {
-        const words = text.split(/\s+/).filter(Boolean);
-        if (words.length <= MAX_WORDS_PER_CANVAS_PAGE) return [text];
-        const chunks: string[] = [];
-        for (let i = 0; i < words.length; i += MAX_WORDS_PER_CANVAS_PAGE) {
-          chunks.push(words.slice(i, i + MAX_WORDS_PER_CANVAS_PAGE).join(' '));
-        }
-        return chunks;
-      };
-
-      generatedChapters.forEach((chapter) => {
-        const chapterCoverId = crypto.randomUUID();
-        newPages.push({ id: chapterCoverId, title: chapter.title, type: "chapter" });
-
-        if (chapter.summary?.trim()) {
-          contentMap.push({
-            pageId: chapterCoverId,
-            content: chapter.summary.trim(),
-            imagePrompt: chapter.coverImagePrompt,
-          });
-        }
-
-        chapter.pages.forEach((page, index) => {
-          const chunks = splitContent(page.content);
-          chunks.forEach((chunk, chunkIdx) => {
-            const pageId = crypto.randomUUID();
-            const baseTitle = page.title || `${chapter.title} - Part ${index + 1}`;
-            newPages.push({
-              id: pageId,
-              title: chunkIdx === 0 ? baseTitle : `${baseTitle} (cont.)`,
-              type: "chapter-page",
-            });
-            contentMap.push({
-              pageId,
-              content: chunk,
-              // Only the first chunk of each page gets the image
-              imagePrompt: chunkIdx === 0 ? page.imagePrompt : undefined,
-            });
-          });
-        });
+      // Use the new layout engine for unique themes, pagination, and variety
+      const { buildGeneratedBookLayout } = await import("@/lib/ebookGenerationLayout");
+      const layout = buildGeneratedBookLayout({
+        bookTitle: bookData.selectedTitle,
+        bookDescription: bookDescription || bookData.prompt,
+        prompt: bookData.prompt,
+        generatedChapters,
+        includeImages: shouldGenerateImages,
       });
 
-      newPages.push({ id: crypto.randomUUID(), title: "Back Cover", type: "back" });
-
-      // Also generate a cover image
-      if (shouldGenerateImages) {
-        contentMap.unshift({
-          pageId: newPages[0].id,
-          content: '',
-          imagePrompt: `Professional book cover photograph for "${bookData.selectedTitle}". ${bookDescription || bookData.prompt}. High quality, editorial style, modern.`,
-        });
-      }
-
-      // Build page elements with AI content pre-populated
-      const prebuiltElements: Record<string, any[]> = {};
-      newPages.forEach(page => {
-        const defaultElems = getElementsForPage(page as CanvasPage, newPages as CanvasPage[], bookData.selectedTitle);
-        const mapped = contentMap.find(c => c.pageId === page.id);
-        if (mapped && mapped.content) {
-          const bodyEl = defaultElems.find(e => e.type === 'text' && e.id.includes('body'));
-          if (bodyEl) {
-            prebuiltElements[page.id] = defaultElems.map(e =>
-              e.id === bodyEl.id ? { ...e, content: mapped.content } : e
-            );
-          } else {
-            prebuiltElements[page.id] = [
-              ...defaultElems,
-              {
-                id: `body-${page.id}-${Date.now()}`, type: 'text',
-                x: 8, y: 24, width: 84, height: 68,
-                content: mapped.content, fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.65,
-              },
-            ];
-          }
-        } else {
-          prebuiltElements[page.id] = defaultElems;
-        }
-      });
+      const prebuiltElements: Record<string, any[]> = { ...layout.elementsByPage };
 
       // Generate images in parallel batches (max 12)
-      if (shouldGenerateImages) {
-        const pagesWithImages = contentMap.filter(p => p.imagePrompt);
-        const limited = pagesWithImages.slice(0, Math.min(pagesWithImages.length, 12));
+      if (shouldGenerateImages && layout.imageTasks.length > 0) {
+        const limited = layout.imageTasks.slice(0, 12);
         const BATCH_SIZE = 4;
 
         const generateOneImage = async ({ pageId: pid, imagePrompt }: { pageId: string; imagePrompt: string }) => {
@@ -833,23 +753,8 @@ const NewEbookPage = () => {
               const existingImage = pageElems.find((e: any) => e.type === 'image');
               if (existingImage) {
                 prebuiltElements[pid] = pageElems.map((e: any) =>
-                  e.id === existingImage.id ? { ...e, src: data.imageUrl, isPlaceholder: false } : e
+                  e.id === existingImage.id ? { ...e, src: data.imageUrl } : e
                 );
-              } else {
-                const imageEl = {
-                  id: `img-${pid}-${Date.now()}`, type: 'image',
-                  x: 8, y: 4, width: 84, height: 30,
-                  src: data.imageUrl,
-                };
-                const bodyEl = pageElems.find((e: any) => e.type === 'text' && e.id.includes('body'));
-                if (bodyEl) {
-                  prebuiltElements[pid] = pageElems.map((e: any) =>
-                    e.id === bodyEl.id ? { ...e, y: 36, height: 56 } : e
-                  );
-                  prebuiltElements[pid].unshift(imageEl);
-                } else {
-                  prebuiltElements[pid] = [...pageElems, imageEl];
-                }
               }
             }
           } catch (e) {
@@ -859,7 +764,7 @@ const NewEbookPage = () => {
 
         for (let i = 0; i < limited.length; i += BATCH_SIZE) {
           const batch = limited.slice(i, i + BATCH_SIZE);
-          await Promise.all(batch.map(item => item.imagePrompt ? generateOneImage({ pageId: item.pageId, imagePrompt: item.imagePrompt }) : Promise.resolve()));
+          await Promise.all(batch.map(item => generateOneImage(item)));
         }
       }
 
@@ -870,8 +775,8 @@ const NewEbookPage = () => {
       } catch (storageErr) {
         console.warn("localStorage quota exceeded, skipping cache:", storageErr);
       }
-      setEbookPages(newPages);
-      setSelectedPageId(newPages[0]?.id ?? null);
+      setEbookPages(layout.pages);
+      setSelectedPageId(layout.pages[0]?.id ?? null);
 
       if (newEbook) {
         updateEbook(newEbook.id, {
@@ -882,7 +787,7 @@ const NewEbookPage = () => {
           outline: {
             ...baseSnapshot,
             generatedChapters,
-            pages: newPages,
+            pages: layout.pages,
             elements: prebuiltElements,
           },
         });
