@@ -796,11 +796,16 @@ const NewEbookPage = () => {
         });
 
         // Update live preview after each chapter
+        const liveCoverId = "live-cover";
+        const liveTocId = "live-toc";
         const livePagesSoFar: { id: string; title: string; type: "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank" }[] = [
-          { id: "live-cover", title: bookData.selectedTitle, type: "cover" },
-          { id: "live-toc", title: "Table of Contents", type: "toc" },
+          { id: liveCoverId, title: bookData.selectedTitle, type: "cover" },
+          { id: liveTocId, title: "Table of Contents", type: "toc" },
         ];
-        const liveElemsSoFar: Record<string, any[]> = {};
+        const liveElemsSoFar: Record<string, any[]> = {
+          [liveCoverId]: getElementsForPage({ id: liveCoverId, title: bookData.selectedTitle, type: "cover" } as CanvasPage, livePagesSoFar as CanvasPage[], bookData.selectedTitle),
+          [liveTocId]: buildTocElements(livePagesSoFar as CanvasPage[]),
+        };
         generatedChapters.forEach((ch, ci) => {
           const covId = `live-ch-${ci}`;
           livePagesSoFar.push({ id: covId, title: ch.title, type: "chapter" });
