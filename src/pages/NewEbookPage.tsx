@@ -784,17 +784,21 @@ const NewEbookPage = () => {
         }
       });
 
-      // Generate ALL images BEFORE showing the book on canvas
+      // Generate images in parallel batches (max 12 images: cover + 1 per chapter + a few extras)
       if (shouldGenerateImages) {
         const pagesWithImages = contentMap.filter(p => p.imagePrompt);
-        for (const { pageId: pid, imagePrompt } of pagesWithImages) {
+        // Prioritize: cover first, then first page of each chapter, then others
+        const limited = pagesWithImages.slice(0, Math.min(pagesWithImages.length, 12));
+        const BATCH_SIZE = 4;
+
+        const generateOneImage = async ({ pageId: pid, imagePrompt }: { pageId: string; imagePrompt: string }) => {
           try {
             const { data, error } = await supabase.functions.invoke('generate-ebook-image', {
               body: { prompt: imagePrompt, style: 'photo' },
             });
             if (error || data?.error) {
               console.warn(`Image gen failed for page ${pid}:`, error?.message || data?.error);
-              continue;
+              return;
             }
             if (data?.imageUrl) {
               const pageElems = prebuiltElements[pid] || [];
@@ -827,8 +831,12 @@ const NewEbookPage = () => {
           } catch (e) {
             console.warn(`Image gen error for page ${pid}:`, e);
           }
-          // Small delay between requests to avoid rate limiting
-          await new Promise(r => setTimeout(r, 1500));
+        };
+
+        // Process in parallel batches of BATCH_SIZE
+        for (let i = 0; i < limited.length; i += BATCH_SIZE) {
+          const batch = limited.slice(i, i + BATCH_SIZE);
+          await Promise.all(batch.map(item => item.imagePrompt ? generateOneImage({ pageId: item.pageId, imagePrompt: item.imagePrompt }) : Promise.resolve()));
         }
       }
 
