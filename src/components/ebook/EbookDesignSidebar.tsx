@@ -50,6 +50,14 @@ interface EbookDesignSidebarProps {
   pageCount?: number;
   pageIndex?: number;
   onOpenImageSection?: () => void;
+  /** Elements currently on the selected page — used to target existing elements */
+  currentPageElements?: { id: string; type: string; content?: string }[];
+  /** Select an existing element on the canvas */
+  onSelectElement?: (elementId: string) => void;
+  /** Select + enter edit mode on an existing text element */
+  onEditElement?: (elementId: string) => void;
+  /** Select an image element and open its replace overlay */
+  onReplaceElementImage?: (elementId: string) => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
