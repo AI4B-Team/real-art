@@ -836,7 +836,7 @@ const NewEbookPage = () => {
         // Process in parallel batches of BATCH_SIZE
         for (let i = 0; i < limited.length; i += BATCH_SIZE) {
           const batch = limited.slice(i, i + BATCH_SIZE);
-          await Promise.all(batch.map(generateOneImage));
+          await Promise.all(batch.map(item => item.imagePrompt ? generateOneImage({ pageId: item.pageId, imagePrompt: item.imagePrompt }) : Promise.resolve()));
         }
       }
 
