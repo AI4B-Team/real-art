@@ -1533,7 +1533,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               }}
             />
           ) : (
-            <div className="w-full h-full overflow-auto p-2 whitespace-pre-wrap" style={{
+            <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap" style={{
               fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
               fontFamily: el.fontFamily, color: el.textColor,
               textAlign: el.textAlign || 'left',
