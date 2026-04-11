@@ -2188,7 +2188,7 @@ const NewEbookPage = () => {
               />
               )}
             </div>
-            <EbookGenerationOverlay isGenerating={isGeneratingBook} bookTitle={bookData.selectedTitle} />
+            <EbookGenerationOverlay isGenerating={isGeneratingBook} bookTitle={bookData.selectedTitle} liveState={liveGenerationState} />
           </div>
         )}
       </div>
