@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import {
-  ChevronDown, ChevronUp, Layers, FileText, Image as ImageIcon,
+  ChevronDown, ChevronUp, ChevronRight, Layers, FileText, Image as ImageIcon,
   Plus, Pencil, Search, Sparkles, Send, Upload, Loader2,
   Type, QrCode, Video, Music, Table, CheckSquare,
   Square, Circle, Triangle, Star, Hexagon, Diamond, Pentagon,
@@ -11,7 +11,7 @@ import {
   MonitorPlay, AudioLines, MousePointerClick, Layers3, Languages,
   Shuffle, SlidersHorizontal, Play, Users, Library,
   Brain, Award, BookOpen, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch,
-  Palette,
+  Palette, BookMarked, AlignLeft, ImagePlus,
 } from 'lucide-react';
 import AIVAPanel from './AIVAPanel';
 import { toast } from 'sonner';
@@ -749,130 +749,190 @@ const EbookDesignSidebar = ({
 
       {/* Content / Chapters */}
       <SectionHeader id="content" title="Content" icon={Layers} />
-      {expandedSections.has('content') && (
-        <div className="px-3 pb-3">
-          {/* Outline header */}
-          <div className="flex items-center justify-between px-2 py-1.5 mb-1">
-            <div className="flex items-center gap-1.5 text-muted-foreground">
-              <GripVertical className="w-3 h-3" />
-              <span className="text-[10px] font-semibold uppercase tracking-wider">Outline</span>
+      {expandedSections.has('content') && (() => {
+        // Build grouped structure from flat chapters array
+        type OutlineGroup =
+          | { kind: 'special'; page: typeof chapters[0]; globalIdx: number }
+          | { kind: 'chapter'; cover: typeof chapters[0]; coverGlobalIdx: number; pages: { page: typeof chapters[0]; globalIdx: number }[] };
+
+        const groups: OutlineGroup[] = [];
+        let currentChapterGroup: Extract<OutlineGroup, { kind: 'chapter' }> | null = null;
+
+        chapters.forEach((ch, i) => {
+          const t = ch.type;
+          if (t === 'cover' || t === 'toc' || t === 'back') {
+            if (currentChapterGroup) { groups.push(currentChapterGroup); currentChapterGroup = null; }
+            groups.push({ kind: 'special', page: ch, globalIdx: i });
+          } else if (t === 'chapter') {
+            if (currentChapterGroup) groups.push(currentChapterGroup);
+            currentChapterGroup = { kind: 'chapter', cover: ch, coverGlobalIdx: i, pages: [] };
+          } else if (t === 'chapter-page') {
+            if (currentChapterGroup) {
+              currentChapterGroup.pages.push({ page: ch, globalIdx: i });
+            } else {
+              groups.push({ kind: 'special', page: ch, globalIdx: i });
+            }
+          } else {
+            if (currentChapterGroup) { groups.push(currentChapterGroup); currentChapterGroup = null; }
+            groups.push({ kind: 'special', page: ch, globalIdx: i });
+          }
+        });
+        if (currentChapterGroup) groups.push(currentChapterGroup);
+
+        // Track which chapter groups are open
+        const [openChapters, setOpenChapters] = useState<Set<string>>(new Set());
+        const toggleChapter = (id: string) =>
+          setOpenChapters(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
+
+        // Page-type icon + colour
+        const typeConfig: Record<string, { icon: React.ComponentType<{className?: string}>; color: string; label: string }> = {
+          cover:          { icon: ImagePlus,  color: 'text-violet-400',          label: 'Cover' },
+          toc:            { icon: ListChecks, color: 'text-sky-400',             label: 'TOC' },
+          chapter:        { icon: BookMarked, color: 'text-accent',              label: 'Ch.' },
+          'chapter-page': { icon: AlignLeft,  color: 'text-foreground/50',       label: 'Page' },
+          back:           { icon: BookOpen,   color: 'text-rose-400',            label: 'Back' },
+          blank:          { icon: FileText,   color: 'text-muted-foreground',    label: 'Blank' },
+        };
+
+        const renderPageRow = (
+          ch: typeof chapters[0],
+          globalIdx: number,
+          opts: { indent?: boolean; isCont?: boolean; pageNumOverride?: number } = {}
+        ) => {
+          const isSelected = selectedChapterId === ch.id;
+          const isCoverOrBack = ch.type === 'cover' || ch.type === 'back';
+          const cfg = typeConfig[ch.type ?? ''] ?? typeConfig['blank'];
+          const TypeIcon = cfg.icon;
+          const pageNum = opts.pageNumOverride ?? (globalIdx + 1);
+
+          const isCont = opts.isCont || ch.title.endsWith('(cont.)') || /\(cont\.\s*\d*\)$/.test(ch.title);
+          const displayTitle = ch.title
+            .replace(/\s*\(cont\.\s*\d*\)\s*$/, '')
+            .replace(/\s*\(Continued\s*\d*\)\s*$/i, '');
+
+          return (
+            <div key={ch.id}
+              onClick={() => onChapterSelect(ch.id)}
+              className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all cursor-pointer ${
+                opts.indent ? 'ml-3' : ''
+              } ${
+                isSelected
+                  ? 'bg-accent/[0.08] border border-accent/25'
+                  : 'hover:bg-foreground/[0.03] border border-transparent'
+              }`}>
+              {isCoverOrBack
+                ? <Lock className="w-3 h-3 text-muted-foreground/40 shrink-0" />
+                : <GripVertical className="w-3 h-3 text-muted-foreground shrink-0 cursor-grab opacity-0 group-hover:opacity-40" />
+              }
+              <TypeIcon className={`w-3 h-3 shrink-0 ${cfg.color}`} />
+              <span className={`flex-1 min-w-0 text-[11px] font-medium truncate ${
+                isSelected ? 'text-accent' : 'text-foreground/80'
+              }`}>
+                {displayTitle || ch.title}
+              </span>
+              {isCont && (
+                <span className="text-[8px] font-bold uppercase tracking-wide text-muted-foreground/40 bg-foreground/[0.04] px-1 rounded shrink-0">
+                  cont.
+                </span>
+              )}
+              {!isCoverOrBack && (
+                <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[80px] group-hover:opacity-100 group-hover:pointer-events-auto transition-[max-width,opacity] duration-150">
+                  <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                    <Pencil className="w-3 h-3 text-muted-foreground" />
+                  </button>
+                  {onChapterDelete && (
+                    <button onClick={e => { e.stopPropagation(); onChapterDelete(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                      <Trash2 className="w-3 h-3 text-muted-foreground hover:text-destructive" />
+                    </button>
+                  )}
+                </div>
+              )}
+              <span className={`text-[10px] font-mono shrink-0 w-4 text-right ${
+                isSelected ? 'text-accent' : 'text-muted-foreground/50'
+              }`}>{pageNum}</span>
             </div>
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Page #</span>
-          </div>
-          <div className="space-y-0.5">
-            {chapters.map((ch, i) => {
-              const isSelected = selectedChapterId === ch.id;
-              const isSpecial = ['cover', 'back', 'table of contents', 'introduction', 'summary'].includes(ch.type || '');
-              const isCoverOrBack = ch.type === 'cover' || ch.type === 'back';
-              const isDragged = draggedIndex === i;
-              const isDropTarget = dragOverIndex === i && draggedIndex !== null && draggedIndex !== i;
-              const dropAbove = isDropTarget && draggedIndex !== null && draggedIndex > i;
-              const dropBelow = isDropTarget && draggedIndex !== null && draggedIndex < i;
+          );
+        };
+
+        return (
+          <div className="px-3 pb-3 space-y-0.5">
+            {/* Column header */}
+            <div className="flex items-center justify-between px-2 py-1 mb-0.5">
+              <span className="text-[9px] font-bold text-muted-foreground/50 uppercase tracking-[0.12em]">Outline</span>
+              <span className="text-[9px] font-bold text-muted-foreground/50 uppercase tracking-[0.12em]">#</span>
+            </div>
+
+            {groups.map((group) => {
+              if (group.kind === 'special') {
+                return renderPageRow(group.page, group.globalIdx);
+              }
+
+              const isOpen = openChapters.has(group.cover.id);
+              const isSelected = selectedChapterId === group.cover.id;
+              const hasPages = group.pages.length > 0;
+
               return (
-                <div key={ch.id} className="relative">
-                  {/* Drop indicator line — above */}
-                  {dropAbove && (
-                    <div className="absolute -top-0.5 left-2 right-2 h-0.5 bg-accent rounded-full z-10" />
-                  )}
+                <div key={group.cover.id}>
+                  {/* Chapter header row */}
                   <div
-                    draggable={!isCoverOrBack}
-                    onDragStart={() => { if (!isCoverOrBack) handleDragStart(i); }}
-                    onDragOver={e => handleDragOver(e, i)}
-                    onDragEnd={handleDragEnd}
-                    onDragLeave={() => { if (dragOverIndex === i) setDragOverIndex(null); }}
-                    onClick={() => onChapterSelect(ch.id)}
-                    className={`group flex items-center gap-2 px-2 py-2 rounded-lg transition-all cursor-pointer ${
-                      isDragged ? 'opacity-40 scale-95 bg-accent/5 border border-accent/20' :
-                      isSelected ? 'bg-accent/[0.08] border border-accent/30' : 'hover:bg-foreground/[0.03] border border-transparent'
-                    } ${isDropTarget ? 'bg-accent/[0.06]' : ''}`}>
-                  {/* Drag handle or lock icon for cover/back */}
-                  {isCoverOrBack ? (
-                    <Lock className="w-3.5 h-3.5 text-muted-foreground/50 shrink-0" />
-                  ) : (
-                    <GripVertical className={`w-3.5 h-3.5 text-muted-foreground shrink-0 cursor-grab ${isSelected ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`} />
-                  )}
-                  {/* Page number */}
-                  <span className={`text-xs font-semibold shrink-0 w-5 text-center ${
-                    isSelected ? 'text-accent' : 'text-muted-foreground'
-                  }`}>{i + 1}</span>
-                  {/* Title */}
-                  {editingChapterId === ch.id ? (
-                    <div className="flex-1 flex items-center gap-1">
-                      <Input value={editingValue} onChange={e => setEditingValue(e.target.value)}
-                        onKeyDown={e => { if (e.key === 'Enter') handleSaveEdit(); if (e.key === 'Escape') setEditingChapterId(null); }}
-                        className="h-6 text-xs flex-1" autoFocus />
-                      <button onClick={handleSaveEdit} className="p-0.5 rounded bg-accent text-white"><Check className="w-3 h-3" /></button>
-                      <button onClick={() => setEditingChapterId(null)} className="p-0.5 rounded bg-foreground/[0.1]"><X className="w-3 h-3" /></button>
+                    onClick={() => { onChapterSelect(group.cover.id); if (hasPages) toggleChapter(group.cover.id); }}
+                    className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all cursor-pointer ${
+                      isSelected
+                        ? 'bg-accent/[0.08] border border-accent/25'
+                        : 'hover:bg-foreground/[0.03] border border-transparent'
+                    }`}>
+                    <button
+                      onClick={e => { e.stopPropagation(); if (hasPages) toggleChapter(group.cover.id); }}
+                      className={`w-3.5 h-3.5 flex items-center justify-center shrink-0 rounded transition-transform ${
+                        isOpen ? 'rotate-90' : ''
+                      } ${hasPages ? 'text-muted-foreground hover:text-foreground' : 'text-transparent pointer-events-none'}`}>
+                      <ChevronRight className="w-3 h-3" />
+                    </button>
+                    <BookMarked className={`w-3 h-3 shrink-0 ${isSelected ? 'text-accent' : 'text-accent/70'}`} />
+                    <span className={`flex-1 min-w-0 text-[11px] font-semibold truncate ${
+                      isSelected ? 'text-accent' : 'text-foreground/90'
+                    }`}>
+                      {group.cover.title}
+                    </span>
+                    {hasPages && (
+                      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${
+                        isSelected ? 'bg-accent/15 text-accent' : 'bg-foreground/[0.06] text-muted-foreground/60'
+                      }`}>
+                        {group.pages.length}
+                      </span>
+                    )}
+                    <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[60px] group-hover:opacity-100 group-hover:pointer-events-auto transition-[max-width,opacity] duration-150">
+                      <button onClick={e => { e.stopPropagation(); handleStartEdit(group.cover); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
+                        <Pencil className="w-3 h-3 text-muted-foreground" />
+                      </button>
                     </div>
-                  ) : (
-                    <>
-                      <div className="flex-1 min-w-0">
-                        {isSpecial ? (
-                          <span className="block text-xs font-medium text-foreground bg-foreground/[0.05] px-2 py-0.5 rounded whitespace-nowrap overflow-hidden text-ellipsis">
-                            {ch.title}
-                          </span>
-                        ) : (
-                          <span className="block text-xs font-medium text-foreground whitespace-nowrap overflow-hidden text-ellipsis">
-                            {ch.title}
-                          </span>
-                        )}
-                      </div>
-                      {/* Hover action buttons */}
-                      {!isCoverOrBack && (
-                      <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[132px] group-hover:opacity-100 group-hover:ml-1 group-hover:pointer-events-auto transition-[max-width,opacity,margin] duration-200">
-                        {onChapterReorder && (
-                          <>
-                            <Tooltip><TooltipTrigger asChild>
-                              <button onClick={e => { e.stopPropagation(); if (i > 0) onChapterReorder(i, i - 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
-                                <ChevronUp className="w-3.5 h-3.5 text-muted-foreground" />
-                              </button>
-                            </TooltipTrigger><TooltipContent side="top">Move Up</TooltipContent></Tooltip>
-                            <Tooltip><TooltipTrigger asChild>
-                              <button onClick={e => { e.stopPropagation(); if (i < chapters.length - 1) onChapterReorder(i, i + 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
-                                <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" />
-                              </button>
-                            </TooltipTrigger><TooltipContent side="top">Move Down</TooltipContent></Tooltip>
-                          </>
-                        )}
-                        <PageTypePicker onSelect={(type) => onChapterAdd(ch.id, type)} side="right" align="start">
-                          <button onClick={e => e.stopPropagation()} className="p-0.5 rounded hover:bg-foreground/[0.08]">
-                            <Plus className="w-3.5 h-3.5 text-muted-foreground" />
-                          </button>
-                        </PageTypePicker>
-                        <Tooltip><TooltipTrigger asChild>
-                          <button onClick={e => { e.stopPropagation(); handleStartEdit(ch); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
-                            <Pencil className="w-3.5 h-3.5 text-muted-foreground" />
-                          </button>
-                        </TooltipTrigger><TooltipContent side="top">Edit Title</TooltipContent></Tooltip>
-                        {onChapterDelete && (
-                          <Tooltip><TooltipTrigger asChild>
-                            <button onClick={e => { e.stopPropagation(); onChapterDelete(ch.id); }} className="p-0.5 rounded hover:bg-foreground/[0.08]">
-                              <Trash2 className="w-3.5 h-3.5 text-muted-foreground hover:text-destructive" />
-                            </button>
-                          </TooltipTrigger><TooltipContent side="top">Delete Page</TooltipContent></Tooltip>
-                        )}
-                      </div>
-                      )}
-                      {/* Page number on right */}
-                      <span className={`text-[10px] font-medium shrink-0 w-5 text-right ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>{i + 1}</span>
-                    </>
-                  )}
+                    <span className={`text-[10px] font-mono shrink-0 w-4 text-right ${
+                      isSelected ? 'text-accent' : 'text-muted-foreground/50'
+                    }`}>{group.coverGlobalIdx + 1}</span>
                   </div>
-                  {/* Drop indicator line — below */}
-                  {dropBelow && (
-                    <div className="absolute -bottom-0.5 left-2 right-2 h-0.5 bg-accent rounded-full z-10" />
+
+                  {/* Nested content pages */}
+                  {isOpen && hasPages && (
+                    <div className="ml-3 mt-0.5 space-y-0.5 pl-2 border-l border-foreground/[0.06]">
+                      {group.pages.map(({ page, globalIdx }) => {
+                        const isCont = page.title.endsWith('(cont.)') || /\(cont\.\s*\d*\)$/.test(page.title) || /\(Continued\s*\d*\)/i.test(page.title);
+                        return renderPageRow(page, globalIdx, { isCont });
+                      })}
+                    </div>
                   )}
                 </div>
               );
             })}
+
+            {/* Add page button */}
+            <PageTypePicker onSelect={(type) => onChapterAdd(chapters[chapters.length - 1]?.id || '', type)} side="right" align="center">
+              <button className="w-full flex items-center justify-center gap-1.5 px-3 py-2 mt-1 rounded-lg border border-dashed border-foreground/[0.1] hover:border-accent/30 hover:bg-accent/[0.02] text-muted-foreground hover:text-accent text-[11px] font-medium transition-all">
+                <Plus className="w-3.5 h-3.5" />Add Page
+              </button>
+            </PageTypePicker>
           </div>
-          <PageTypePicker onSelect={(type) => onChapterAdd(chapters[chapters.length - 1]?.id || '', type)} side="right" align="center">
-            <button className="w-full mt-3 flex items-center justify-center gap-1.5 py-2.5 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
-              <Plus className="w-3.5 h-3.5" />Add Page
-            </button>
-          </PageTypePicker>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Templates */}
       <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
