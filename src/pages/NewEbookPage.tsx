@@ -1675,7 +1675,14 @@ const NewEbookPage = () => {
                 {/* Chapter Cards */}
                 <div className="space-y-3 mb-8">
                   {chapterSequence.map((ch, i) => (
-                    <div key={ch.id} className="group/card relative rounded-xl border border-foreground/[0.08] bg-background overflow-hidden hover:border-accent/30 hover:shadow-[0_4px_20px_-6px_hsl(var(--accent)/0.12)] hover:-translate-y-[2px] transition-all duration-200">
+                    <div key={ch.id} className={`group/card relative rounded-xl border bg-background overflow-hidden transition-all duration-200 ${improvingChapterIdx === i ? 'border-amber-500/40 shadow-[0_4px_20px_-6px_hsl(40_95%_55%/0.2)]' : 'border-foreground/[0.08] hover:border-accent/30 hover:shadow-[0_4px_20px_-6px_hsl(var(--accent)/0.12)] hover:-translate-y-[2px]'}`}>
+                      {/* Loading shimmer overlay */}
+                      {improvingChapterIdx === i && (
+                        <div className="absolute inset-0 z-10 pointer-events-none">
+                          <div className="absolute inset-0 bg-amber-500/[0.03] animate-pulse" />
+                          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-amber-500/[0.06] to-transparent animate-[shimmer_1.5s_infinite]" style={{ backgroundSize: '200% 100%', animation: 'shimmer 1.5s infinite' }} />
+                        </div>
+                      )}
                       {/* Left accent bar */}
                       <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-accent/0 group-hover/card:bg-accent rounded-l-xl transition-all duration-200" />
                       <div className="flex items-start gap-3 p-5 pl-6">
