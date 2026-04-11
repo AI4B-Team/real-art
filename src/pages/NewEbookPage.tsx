@@ -19,7 +19,8 @@ import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
-import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
+import EbookCanvasEditor, { type EbookCanvasEditorHandle, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
+import { buildGeneratedBookLayout, type GeneratedChapterInput } from "@/lib/ebookGenerationLayout";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
 import EbookInviteModal from "@/components/ebook/EbookInviteModal";
@@ -293,13 +294,13 @@ const NewEbookPage = () => {
 
   // Persist pages to localStorage
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY_PAGES, JSON.stringify(ebookPages));
+    try { localStorage.setItem(STORAGE_KEY_PAGES, JSON.stringify(ebookPages)); } catch {}
   }, [ebookPages]);
 
   // Callback when canvas elements change
   const handlePageElementsChange = useCallback((elements: Record<string, any[]>) => {
     setSavedPageElements(elements);
-    localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(elements));
+    try { localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(elements)); } catch {}
     setLastSaved(new Date());
   }, []);
 
@@ -722,77 +723,33 @@ const NewEbookPage = () => {
         });
       }
 
-      const newPages: UnifiedPage[] = [
-        { id: crypto.randomUUID(), title: bookData.selectedTitle, type: "cover" },
-        { id: crypto.randomUUID(), title: "Table of Contents", type: "toc" },
-      ];
-      const contentMap: { pageId: string; content: string; imagePrompt?: string }[] = [];
+      // Use the layout engine to build pages with unique theme, proper pagination, and SVG placeholders
+      const layoutInput: GeneratedChapterInput[] = generatedChapters.map(ch => ({
+        title: ch.title,
+        summary: ch.summary,
+        coverImagePrompt: ch.coverImagePrompt,
+        pages: ch.pages,
+      }));
 
-      generatedChapters.forEach((chapter) => {
-        const chapterCoverId = crypto.randomUUID();
-        newPages.push({ id: chapterCoverId, title: chapter.title, type: "chapter" });
-
-        if (chapter.summary?.trim()) {
-          contentMap.push({
-            pageId: chapterCoverId,
-            content: chapter.summary.trim(),
-            imagePrompt: chapter.coverImagePrompt,
-          });
-        }
-
-        chapter.pages.forEach((page, index) => {
-          const pageId = crypto.randomUUID();
-          newPages.push({
-            id: pageId,
-            title: page.title || `${chapter.title} — Section ${index + 1}`,
-            type: "chapter-page",
-          });
-          contentMap.push({ pageId, content: page.content, imagePrompt: page.imagePrompt });
-        });
+      const layout = buildGeneratedBookLayout({
+        bookTitle: bookData.selectedTitle,
+        bookDescription: bookDescription || bookData.prompt,
+        prompt: bookData.prompt,
+        generatedChapters: layoutInput,
+        includeImages: shouldGenerateImages,
       });
 
-      newPages.push({ id: crypto.randomUUID(), title: "Back Cover", type: "back" });
+      const newPages: UnifiedPage[] = layout.pages.map(p => ({
+        id: p.id,
+        title: p.title,
+        type: p.type,
+      }));
 
-      // Also generate a cover image based on the book topic
-      if (shouldGenerateImages) {
-        contentMap.unshift({
-          pageId: newPages[0].id,
-          content: '',
-          imagePrompt: `Professional book cover photograph for "${bookData.selectedTitle}". ${bookDescription || bookData.prompt}. High quality, editorial style, modern.`,
-        });
-      }
+      const prebuiltElements: Record<string, any[]> = { ...layout.elementsByPage };
 
-      // Build page elements with AI content pre-populated
-      const prebuiltElements: Record<string, any[]> = {};
-      newPages.forEach(page => {
-        const defaultElems = getElementsForPage(page as CanvasPage, newPages as CanvasPage[], bookData.selectedTitle);
-        const mapped = contentMap.find(c => c.pageId === page.id);
-        if (mapped && mapped.content) {
-          const bodyEl = defaultElems.find(e => e.type === 'text' && e.id.includes('body'));
-          if (bodyEl) {
-            prebuiltElements[page.id] = defaultElems.map(e =>
-              e.id === bodyEl.id ? { ...e, content: mapped.content } : e
-            );
-          } else {
-            prebuiltElements[page.id] = [
-              ...defaultElems,
-              {
-                id: `body-${page.id}-${Date.now()}`, type: 'text',
-                x: 8, y: 24, width: 84, height: 68,
-                content: mapped.content, fontSize: 13, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.6,
-              },
-            ];
-          }
-        } else {
-          prebuiltElements[page.id] = defaultElems;
-        }
-      });
-
-      // Generate images in parallel batches (max 12 images: cover + 1 per chapter + a few extras)
-      if (shouldGenerateImages) {
-        const pagesWithImages = contentMap.filter(p => p.imagePrompt);
-        // Prioritize: cover first, then first page of each chapter, then others
-        const limited = pagesWithImages.slice(0, Math.min(pagesWithImages.length, 12));
+      // Generate images in parallel batches (max 12)
+      if (shouldGenerateImages && layout.imageTasks.length > 0) {
+        const limited = layout.imageTasks.slice(0, 12);
         const BATCH_SIZE = 4;
 
         const generateOneImage = async ({ pageId: pid, imagePrompt }: { pageId: string; imagePrompt: string }) => {
@@ -811,25 +768,6 @@ const NewEbookPage = () => {
                 prebuiltElements[pid] = pageElems.map((e: any) =>
                   e.id === existingImage.id ? { ...e, src: data.imageUrl, isPlaceholder: false } : e
                 );
-              } else {
-                const imageEl = {
-                  id: `img-${pid}-${Date.now()}`, type: 'image',
-                  x: 8, y: 4, width: 84, height: 30,
-                  src: data.imageUrl,
-                };
-                const bodyEl = pageElems.find((e: any) => e.type === 'text' && e.id.includes('body'));
-                if (bodyEl) {
-                  prebuiltElements[pid] = [
-                    imageEl,
-                    ...pageElems.map((e: any) => {
-                      if (e.id === bodyEl.id) return { ...e, y: 38, height: Math.max(10, 58) };
-                      if (e.id.includes('divider')) return { ...e, y: 36 };
-                      return e;
-                    }),
-                  ];
-                } else {
-                  prebuiltElements[pid] = [imageEl, ...pageElems];
-                }
               }
             }
           } catch (e) {
@@ -837,16 +775,19 @@ const NewEbookPage = () => {
           }
         };
 
-        // Process in parallel batches of BATCH_SIZE
         for (let i = 0; i < limited.length; i += BATCH_SIZE) {
           const batch = limited.slice(i, i + BATCH_SIZE);
-          await Promise.all(batch.map(item => item.imagePrompt ? generateOneImage({ pageId: item.pageId, imagePrompt: item.imagePrompt }) : Promise.resolve()));
+          await Promise.all(batch.map(item => generateOneImage(item)));
         }
       }
 
       // Set pages and elements together so the canvas renders content + images immediately
       setSavedPageElements(prebuiltElements);
-      localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(prebuiltElements));
+      try {
+        localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(prebuiltElements));
+      } catch (storageErr) {
+        console.warn("localStorage quota exceeded, skipping cache:", storageErr);
+      }
       setEbookPages(newPages);
       setSelectedPageId(newPages[0]?.id ?? null);
 
