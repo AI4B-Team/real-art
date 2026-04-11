@@ -125,6 +125,12 @@ const TABS: { id: TabId; label: string; icon: React.ComponentType<{ className?: 
   { id: "design", label: "Design", icon: Palette },
 ];
 
+const scrollPageToTop = () => {
+  window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+};
+
 export interface ChapterData {
   id: string;
   title: string;
@@ -186,9 +192,7 @@ const NewEbookPage = () => {
   useEffect(() => {
     // Use rAF to ensure DOM has painted before scrolling
     scrollToTopRef.current = requestAnimationFrame(() => {
-      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
+      scrollPageToTop();
     });
     return () => {
       if (scrollToTopRef.current) cancelAnimationFrame(scrollToTopRef.current);
@@ -210,9 +214,7 @@ const NewEbookPage = () => {
   useEffect(() => {
     if (activeTab !== "design") {
       requestAnimationFrame(() => {
-        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
-        document.documentElement.scrollTop = 0;
-        document.body.scrollTop = 0;
+        scrollPageToTop();
       });
     }
   }, [activeTab]);
