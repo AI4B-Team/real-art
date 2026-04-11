@@ -860,33 +860,7 @@ const NewEbookPage = () => {
     }
   };
 
-  // Generate AI images for pages with imagePrompts (runs in background)
-  const generatePageImages = useCallback(async (contentMap: { pageId: string; content: string; imagePrompt?: string }[]) => {
-    const pagesWithImages = contentMap.filter(p => p.imagePrompt);
-    if (pagesWithImages.length === 0) return;
 
-    // Generate images sequentially to avoid rate limits
-    for (const { pageId: pid, imagePrompt } of pagesWithImages) {
-      try {
-        const { data, error } = await supabase.functions.invoke('generate-ebook-image', {
-          body: { prompt: imagePrompt, style: 'photo' },
-        });
-        if (error || data?.error) {
-          console.warn(`Image gen failed for page ${pid}:`, error?.message || data?.error);
-          continue;
-        }
-        if (data?.imageUrl && canvasRef.current) {
-          // Add image element to the page via canvas ref
-          canvasRef.current.setPageContent(pid, `__IMAGE__${data.imageUrl}`);
-        }
-      } catch (e) {
-        console.warn(`Image gen error for page ${pid}:`, e);
-      }
-      // Small delay between requests to avoid rate limiting
-      await new Promise(r => setTimeout(r, 1500));
-    }
-    sonnerToast.success('AI images added to your book!');
-  }, []);
 
   const handleAutoPrompt = () => {
     const ideas = [
