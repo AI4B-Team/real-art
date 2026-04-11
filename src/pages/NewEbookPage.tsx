@@ -859,7 +859,7 @@ const NewEbookPage = () => {
 
         for (let i = 0; i < limited.length; i += BATCH_SIZE) {
           const batch = limited.slice(i, i + BATCH_SIZE);
-          await Promise.all(batch.map(item => generateOneImage(item)));
+          await Promise.all(batch.filter((item): item is { pageId: string; imagePrompt: string } => !!item.imagePrompt).map(item => generateOneImage(item)));
         }
       }
 
