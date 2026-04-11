@@ -176,31 +176,39 @@ const createCoverElements = (title: string): CanvasElement[] => {
   const imgSrc = seededImage(title + '-cover');
   const layoutVariant = strHash(title + '-layout') % 3;
   const palette = COVER_PALETTES[strHash(title) % COVER_PALETTES.length];
+
   if (layoutVariant === 0) {
+    // Layout 0: Image fills top 58%, solid panel owns bottom 42%
+    // Text lives entirely on the solid panel → 100% face-safe
     return [
-      { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 62, src: imgSrc },
-      { id: 'cover-panel', type: 'shape', x: 0, y: 60, width: 100, height: 40, fill: palette.bg, stroke: 'transparent', shapeType: 'rectangle' },
-      { id: 'cover-accent', type: 'shape', x: 0, y: 60, width: 30, height: 1.2, fill: palette.accent, stroke: 'transparent', shapeType: 'rectangle' },
-      { id: 'title-text', type: 'text', x: 6, y: 64, width: 88, height: 24, content: title || 'Untitled Book', fontSize: 22, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.25, fontWeight: 'bold' },
-      { id: 'subtitle-text', type: 'text', x: 6, y: 91, width: 60, height: 5, content: 'A COMPLETE GUIDE', fontSize: 10, fontFamily: 'Inter', textColor: palette.sub },
-    ];
+      { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 60, src: imgSrc },
+      { id: 'cover-panel', type: 'shape', x: 0, y: 58, width: 100, height: 42, fill: palette.bg, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'cover-accent', type: 'shape', x: 6, y: 61, width: 22, height: 1.2, fill: palette.accent, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'title-text', type: 'text', x: 6, y: 64, width: 88, height: 22, content: title || 'Untitled Book', fontSize: 20, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.25, fontWeight: 'bold' },
+      { id: 'subtitle-text', type: 'text', x: 6, y: 89, width: 60, height: 5, content: 'A COMPLETE GUIDE', fontSize: 9, fontFamily: 'Inter', textColor: palette.sub },
+    ] as CanvasElement[];
   } else if (layoutVariant === 1) {
+    // Layout 1: Full-bleed image + SOLID opaque bottom band for text
+    // Band starts at 60% so faces (typically in top 55%) are fully visible
     const stripeColor = palette.accent;
     return [
       { id: 'cover-image', type: 'image', x: 0, y: 0, width: 100, height: 100, src: imgSrc },
-      { id: 'cover-overlay', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: 'rgba(0,0,0,0.55)', stroke: 'transparent', shapeType: 'rectangle' },
-      { id: 'cover-stripe', type: 'shape', x: 0, y: 0, width: 5, height: 100, fill: stripeColor, stroke: 'transparent', shapeType: 'rectangle' },
-      { id: 'title-text', type: 'text', x: 9, y: 30, width: 82, height: 40, content: title || 'Untitled Book', fontSize: 26, fontFamily: 'Georgia', textColor: '#ffffff', lineHeight: 1.2, fontWeight: 'bold' },
-      { id: 'subtitle-text', type: 'text', x: 9, y: 73, width: 60, height: 5, content: 'THE DEFINITIVE GUIDE', fontSize: 10, fontFamily: 'Inter', textColor: stripeColor },
-    ];
+      { id: 'cover-band', type: 'shape', x: 0, y: 60, width: 100, height: 40, fill: palette.bg, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'cover-stripe', type: 'shape', x: 0, y: 60, width: 4, height: 40, fill: stripeColor, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'cover-rule', type: 'shape', x: 0, y: 60, width: 100, height: 0.5, fill: stripeColor, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'title-text', type: 'text', x: 8, y: 63, width: 84, height: 22, content: title || 'Untitled Book', fontSize: 20, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.2, fontWeight: 'bold' },
+      { id: 'subtitle-text', type: 'text', x: 8, y: 87, width: 60, height: 5, content: 'THE DEFINITIVE GUIDE', fontSize: 9, fontFamily: 'Inter', textColor: stripeColor },
+    ] as CanvasElement[];
   } else {
+    // Layout 2: Solid colour fills entire top 52%, image is bottom 48%
+    // Text is above on solid bg — image below
     return [
       { id: 'cover-bg', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: palette.bg, stroke: 'transparent', shapeType: 'rectangle' },
-      { id: 'title-text', type: 'text', x: 8, y: 10, width: 84, height: 32, content: title || 'Untitled Book', fontSize: 24, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.25, fontWeight: 'bold' },
-      { id: 'cover-accent', type: 'shape', x: 8, y: 44, width: 22, height: 1.2, fill: palette.accent, stroke: 'transparent', shapeType: 'rectangle' },
-      { id: 'subtitle-text', type: 'text', x: 8, y: 47, width: 60, height: 5, content: 'A COMPREHENSIVE GUIDE', fontSize: 10, fontFamily: 'Inter', textColor: palette.sub },
-      { id: 'cover-image', type: 'image', x: 0, y: 54, width: 100, height: 46, src: imgSrc },
-    ];
+      { id: 'title-text', type: 'text', x: 8, y: 8, width: 84, height: 30, content: title || 'Untitled Book', fontSize: 22, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.25, fontWeight: 'bold' },
+      { id: 'cover-accent', type: 'shape', x: 8, y: 41, width: 20, height: 1.2, fill: palette.accent, stroke: 'transparent', shapeType: 'rectangle' },
+      { id: 'subtitle-text', type: 'text', x: 8, y: 44, width: 60, height: 5, content: 'A COMPREHENSIVE GUIDE', fontSize: 9, fontFamily: 'Inter', textColor: palette.sub },
+      { id: 'cover-image', type: 'image', x: 0, y: 52, width: 100, height: 48, src: imgSrc },
+    ] as CanvasElement[];
   }
 };
 
