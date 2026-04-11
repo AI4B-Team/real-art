@@ -125,10 +125,21 @@ const TABS: { id: TabId; label: string; icon: React.ComponentType<{ className?: 
   { id: "design", label: "Design", icon: Palette },
 ];
 
-const scrollPageToTop = () => {
+const SCROLLABLE_OVERFLOW_VALUES = new Set(["auto", "scroll", "overlay"]);
+
+const scrollPageToTop = (anchor?: HTMLElement | null) => {
   window.scrollTo({ top: 0, left: 0, behavior: "auto" });
   document.documentElement.scrollTop = 0;
   document.body.scrollTop = 0;
+
+  let current = anchor?.parentElement ?? null;
+  while (current) {
+    const { overflowY } = window.getComputedStyle(current);
+    if (SCROLLABLE_OVERFLOW_VALUES.has(overflowY) && current.scrollHeight > current.clientHeight) {
+      current.scrollTop = 0;
+    }
+    current = current.parentElement;
+  }
 };
 
 export interface ChapterData {
@@ -187,17 +198,21 @@ const NewEbookPage = () => {
   const [searchParams] = useSearchParams();
   const { updateEbook, addEbook } = useEbooks();
 
-  // Scroll to top when page loads or tab changes (non-design tabs)
   const scrollToTopRef = useRef<ReturnType<typeof requestAnimationFrame>>();
-  useEffect(() => {
-    // Use rAF to ensure DOM has painted before scrolling
-    scrollToTopRef.current = requestAnimationFrame(() => {
-      scrollPageToTop();
-    });
-    return () => {
-      if (scrollToTopRef.current) cancelAnimationFrame(scrollToTopRef.current);
-    };
+  const pageTopRef = useRef<HTMLDivElement>(null);
+
+  const cancelScheduledScrollReset = useCallback(() => {
+    if (scrollToTopRef.current) cancelAnimationFrame(scrollToTopRef.current);
   }, []);
+
+  const scheduleScrollReset = useCallback(() => {
+    cancelScheduledScrollReset();
+    scrollToTopRef.current = requestAnimationFrame(() => {
+      scrollToTopRef.current = requestAnimationFrame(() => {
+        scrollPageToTop(pageTopRef.current);
+      });
+    });
+  }, [cancelScheduledScrollReset]);
 
 
   const initialTab = (() => {
@@ -210,14 +225,18 @@ const NewEbookPage = () => {
 
   const [activeTab, setActiveTab] = useState<TabId>(initialTab);
 
+  useEffect(() => {
+    scheduleScrollReset();
+    return cancelScheduledScrollReset;
+  }, [cancelScheduledScrollReset, scheduleScrollReset]);
+
   // Scroll to top whenever switching to a non-design (scrollable) tab
   useEffect(() => {
     if (activeTab !== "design") {
-      requestAnimationFrame(() => {
-        scrollPageToTop();
-      });
+      scheduleScrollReset();
     }
-  }, [activeTab]);
+    return cancelScheduledScrollReset;
+  }, [activeTab, cancelScheduledScrollReset, scheduleScrollReset]);
 
   useEffect(() => {
     sessionStorage.setItem("ebook-last-url", location.pathname + location.search);
@@ -254,6 +273,13 @@ const NewEbookPage = () => {
   const [accessMode, setAccessMode] = useState<'editing' | 'viewing' | 'commenting' | 'admin'>('editing');
   const [currentEbookId, setCurrentEbookId] = useState<string | null>(() => sessionStorage.getItem("ebook-current-id"));
   const titleGenerationRequestRef = useRef(0);
+
+  useEffect(() => {
+    if (activeTab === "generate" && !isGenerating) {
+      scheduleScrollReset();
+    }
+    return cancelScheduledScrollReset;
+  }, [activeTab, cancelScheduledScrollReset, generateStep, isGenerating, scheduleScrollReset]);
 
   const addSource = useCallback((type: "file" | "link" | "audio", label: string) => {
     setAttachedSources(prev => [...prev, { id: `src-${Date.now()}-${Math.random().toString(36).slice(2,6)}`, type, label }]);
@@ -861,6 +887,7 @@ const NewEbookPage = () => {
 
   return (
     <PageShell>
+      <div ref={pageTopRef} aria-hidden="true" className="h-0" />
       <div className={isDesign ? "flex flex-col h-[calc(100vh-64px)] overflow-hidden" : "max-w-7xl mx-auto px-6 py-6"}>
 
         {/* === DESIGN TAB TOP BAR === */}
