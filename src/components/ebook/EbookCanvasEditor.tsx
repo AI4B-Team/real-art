@@ -341,6 +341,8 @@ export interface EbookCanvasEditorHandle {
   isReplacingImage: () => boolean;
   replaceImage: (src: string) => void;
   setPageContent: (pageId: string, content: string) => void;
+  undo: () => void;
+  redo: () => void;
 }
 
 // ─── Component ─────────────────────────────────────
@@ -1036,7 +1038,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         return { ...prev, [pageId]: [...elems, newEl] };
       });
     },
-  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId]);
+    undo,
+    redo,
+  }), [selectedPage, currentElements, currentPages, pageElements, bookTitle, replaceModalElementId, undo, redo]);
 
   const deleteElement = () => {
     if (!selectedElementId || !selectedPage || isPageLocked) return;
