@@ -204,6 +204,7 @@ const NewEbookPage = () => {
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [titleSuggestions, setTitleSuggestions] = useState<string[]>([]);
+  const [recommendedTitleIndex, setRecommendedTitleIndex] = useState<number>(0);
   const [titleBatchVersion, setTitleBatchVersion] = useState(0);
   const [languageSearch, setLanguageSearch] = useState("");
   const [languageOpen, setLanguageOpen] = useState(false);
@@ -524,8 +525,11 @@ const NewEbookPage = () => {
 
       const result = data.result;
       const freshTitles = Array.isArray(result?.titles) ? [...result.titles] : [];
+      const recIdx = typeof result?.recommendedIndex === "number" && result.recommendedIndex >= 0 && result.recommendedIndex < freshTitles.length
+        ? result.recommendedIndex : 0;
 
       setTitleSuggestions(freshTitles);
+      setRecommendedTitleIndex(recIdx);
       setTitleBatchVersion(prev => prev + 1);
       setEditingTitleIndex(null);
       setShowCustomTitle(false);
@@ -1422,7 +1426,7 @@ const NewEbookPage = () => {
                     const badge = TITLE_BADGES[i % TITLE_BADGES.length];
                     const isSelected = bookData.selectedTitle === title;
                     const isEditing = editingTitleIndex === i;
-                    const isRecommended = i === 4; // 5th option is "recommended"
+                    const isRecommended = i === recommendedTitleIndex;
 
                     return (
                       <button key={`${titleBatchVersion}-${i}-${title}`} onClick={() => { if (!isEditing) setBookData(prev => ({ ...prev, selectedTitle: title })); }}
