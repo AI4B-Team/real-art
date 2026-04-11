@@ -781,7 +781,6 @@ const EbookDesignSidebar = ({
         if (currentChapterGroup) groups.push(currentChapterGroup);
 
         // Track which chapter groups are open
-        const [openChapters, setOpenChapters] = useState<Set<string>>(new Set());
         const toggleChapter = (id: string) =>
           setOpenChapters(prev => { const s = new Set(prev); s.has(id) ? s.delete(id) : s.add(id); return s; });
 
