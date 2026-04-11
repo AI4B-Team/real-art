@@ -1992,6 +1992,10 @@ const NewEbookPage = () => {
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
                 onReplaceImage={isReplacingImage ? (src) => canvasRef.current?.replaceImage(src) : null}
+                currentPageElements={selectedPageId ? (savedPageElements[selectedPageId] ?? []) : []}
+                onSelectElement={(id) => canvasRef.current?.selectElement(id)}
+                onEditElement={(id) => canvasRef.current?.editElement(id)}
+                onReplaceElementImage={(id) => canvasRef.current?.triggerReplaceImage(id)}
                 onTranslate={async (scope, language) => {
                   // Check for locked pages when applying to entire book
                   if (scope === 'book') {
