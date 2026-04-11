@@ -1585,7 +1585,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               }}
             />
           ) : (
-            <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap select-none" style={{
+            <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap select-none pointer-events-none" style={{
               background: 'transparent',
               fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
               fontFamily: el.fontFamily, color: el.textColor,
