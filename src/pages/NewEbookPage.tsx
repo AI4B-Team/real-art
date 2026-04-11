@@ -181,9 +181,18 @@ const NewEbookPage = () => {
   const [searchParams] = useSearchParams();
   const { updateEbook, addEbook } = useEbooks();
 
-  // Scroll to top when page loads
+  // Scroll to top when page loads or tab changes (non-design tabs)
+  const scrollToTopRef = useRef<ReturnType<typeof requestAnimationFrame>>();
   useEffect(() => {
-    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    // Use rAF to ensure DOM has painted before scrolling
+    scrollToTopRef.current = requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+    });
+    return () => {
+      if (scrollToTopRef.current) cancelAnimationFrame(scrollToTopRef.current);
+    };
   }, []);
 
   const initialTab = (() => {
