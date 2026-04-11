@@ -582,6 +582,7 @@ const EbookDesignSidebar = ({
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+  const [openChapters, setOpenChapters] = useState<Set<string>>(new Set());
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Respond to external openSection prop
