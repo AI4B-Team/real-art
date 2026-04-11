@@ -18,7 +18,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { toast } from "@/hooks/use-toast";
 import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
-import EbookGenerationOverlay from "@/components/ebook/EbookGenerationOverlay";
+import EbookGenerationOverlay, { type LiveGenerationState } from "@/components/ebook/EbookGenerationOverlay";
 import EbookCanvasEditor, { type EbookCanvasEditorHandle, getElementsForPage, type Page as CanvasPage } from "@/components/ebook/EbookCanvasEditor";
 import EbookDesignSidebar from "@/components/ebook/EbookDesignSidebar";
 import EbookShareModal from "@/components/ebook/EbookShareModal";
@@ -255,6 +255,7 @@ const NewEbookPage = () => {
   const [languageSearch, setLanguageSearch] = useState("");
   const [languageOpen, setLanguageOpen] = useState(false);
   const [isGeneratingBook, setIsGeneratingBook] = useState(false);
+  const [liveGenerationState, setLiveGenerationState] = useState<LiveGenerationState | null>(null);
   const [chapterSequence, setChapterSequence] = useState<ChapterData[]>([]);
   const [bookDescription, setBookDescription] = useState("");
   const [generateStep, setGenerateStep] = useState<"titles" | "chapters">("titles");
@@ -627,6 +628,12 @@ const NewEbookPage = () => {
       localStorage.removeItem(STORAGE_KEY_PAGES);
       localStorage.removeItem(STORAGE_KEY_ELEMENTS);
       setSavedPageElements({});
+      setLiveGenerationState({
+        pages: [], elements: {},
+        completedChapterCount: 0,
+        totalChapterCount: chapterSequence.length,
+        currentChapterTitle: chapterSequence[0]?.title ?? "",
+      });
 
       const baseSnapshot = {
         chapters: chapterSequence,
@@ -773,6 +780,46 @@ const NewEbookPage = () => {
             : undefined,
           pages: finalPages,
         });
+
+        // Update live preview after each chapter
+        const livePagesSoFar: { id: string; title: string; type: "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank" }[] = [
+          { id: "live-cover", title: bookData.selectedTitle, type: "cover" },
+          { id: "live-toc", title: "Table of Contents", type: "toc" },
+        ];
+        const liveElemsSoFar: Record<string, any[]> = {};
+        generatedChapters.forEach((ch, ci) => {
+          const covId = `live-ch-${ci}`;
+          livePagesSoFar.push({ id: covId, title: ch.title, type: "chapter" });
+          liveElemsSoFar[covId] = getElementsForPage(
+            { id: covId, title: ch.title, type: "chapter" } as CanvasPage,
+            livePagesSoFar as CanvasPage[],
+            bookData.selectedTitle,
+          );
+          ch.pages.slice(0, 2).forEach((pg, pi) => {
+            const pgId = `live-pg-${ci}-${pi}`;
+            livePagesSoFar.push({ id: pgId, title: pg.title, type: "chapter-page" });
+            const defElems = getElementsForPage(
+              { id: pgId, title: pg.title, type: "chapter-page" } as CanvasPage,
+              livePagesSoFar as CanvasPage[],
+              bookData.selectedTitle,
+            );
+            const bodyIdx = defElems.findIndex((e: any) => e.type === "text" && e.id.includes("body"));
+            if (bodyIdx >= 0 && pg.content) {
+              const updated = [...defElems];
+              updated[bodyIdx] = { ...updated[bodyIdx], content: pg.content.split(/\s+/).slice(0, 60).join(" ") + "…" };
+              liveElemsSoFar[pgId] = updated;
+            } else {
+              liveElemsSoFar[pgId] = defElems;
+            }
+          });
+        });
+        setLiveGenerationState({
+          pages: livePagesSoFar,
+          elements: liveElemsSoFar,
+          completedChapterCount: generatedChapters.length,
+          totalChapterCount: chapterSequence.length,
+          currentChapterTitle: chapterSequence[generatedChapters.length]?.title ?? "",
+        });
       }
 
       // Use the new layout engine for unique themes, pagination, and variety
@@ -855,6 +902,7 @@ const NewEbookPage = () => {
       toast({ title: e.message || "Book generation failed. The outline is still available.", variant: "destructive" });
     } finally {
       setIsGeneratingBook(false);
+      setLiveGenerationState(null);
     }
   };
 
