@@ -73,6 +73,7 @@ ${excludedTitles.map((value) => `  • ${value}`).join("\n")}
 Respond ONLY with valid JSON matching this schema:
 {
   "titles": ["string array of 8-10 creative, compelling title suggestions"],
+  "recommendedIndex": number (0-based index of the single best title - pick the one with the strongest market appeal, clarity, and hook. It does NOT have to be the last one. Vary your pick.),
   "description": "string - a compelling 1-2 sentence book description",
   "chapters": [
     {
