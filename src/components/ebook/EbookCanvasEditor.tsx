@@ -832,10 +832,23 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         e.preventDefault();
         redo();
       }
+      // Arrow key movement for selected element
+      if (selectedElementId && !editingTextId && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+        e.preventDefault();
+        const step = e.shiftKey ? 5 : 1;
+        const el = currentElements.find(el => el.id === selectedElementId);
+        if (!el || el.locked) return;
+        const updates: Partial<CanvasElement> = {};
+        if (e.key === 'ArrowUp')    updates.y = Math.max(0, el.y - step);
+        if (e.key === 'ArrowDown')  updates.y = Math.min(100 - el.height, el.y + step);
+        if (e.key === 'ArrowLeft')  updates.x = Math.max(0, el.x - step);
+        if (e.key === 'ArrowRight') updates.x = Math.min(100 - el.width, el.x + step);
+        updateElement(el.id, updates);
+      }
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [undo, redo]);
+  }, [undo, redo, selectedElementId, editingTextId, currentElements]);
 
   const selectedElement = currentElements.find(e => e.id === selectedElementId);
 
@@ -1523,7 +1536,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
     if (el.type === 'text') {
       return (
-        <div key={el.id} className={`${selectionBorder}`} style={style}
+        <div key={el.id} className={`${selectionBorder} group/text`} style={{ ...style, minHeight: 20 }}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onClick={() => { if (isPageLocked) return; if (isSelected && !isEditing) { setEditingTextId(el.id); } }}
@@ -1556,7 +1569,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               }}
             />
           ) : (
-            <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap" style={{
+            <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap select-none" style={{
+              background: 'transparent',
               fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
               fontFamily: el.fontFamily, color: el.textColor,
               textAlign: el.textAlign || 'left',
