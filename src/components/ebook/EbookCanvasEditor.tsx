@@ -375,6 +375,23 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     });
   }, [bookTitle, currentPages]);
 
+  // Auto-sync TOC page whenever pages are added, removed, renamed, or reordered
+  const tocSyncKeyRef = useRef('');
+  useEffect(() => {
+    const tocPage = currentPages.find(p => p.type === 'toc');
+    if (!tocPage) return;
+    const tocKey = currentPages
+      .filter(p => p.type === 'chapter')
+      .map((p, i) => `${i}:${p.title}:${currentPages.indexOf(p)}`)
+      .join('|');
+    if (tocKey === tocSyncKeyRef.current) return;
+    tocSyncKeyRef.current = tocKey;
+    setPageElements(prev => ({
+      ...prev,
+      [tocPage.id]: buildTocElements(currentPages),
+    }));
+  }, [currentPages]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
