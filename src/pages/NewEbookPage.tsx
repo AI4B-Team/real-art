@@ -195,6 +195,17 @@ const NewEbookPage = () => {
     };
   }, []);
 
+  // Also scroll to top whenever switching to a non-design (scrollable) tab
+  useEffect(() => {
+    if (activeTab !== "design") {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
+    }
+  }, [activeTab]);
+
   const initialTab = (() => {
     const tab = searchParams.get("tab");
     if (tab && ["idea", "generate", "design"].includes(tab)) return tab as TabId;
