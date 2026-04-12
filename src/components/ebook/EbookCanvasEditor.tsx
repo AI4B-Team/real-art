@@ -1111,7 +1111,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const newPages = [...currentPages];
     newPages.splice(idx + 1, 0, dup);
     setPages(newPages);
-    setPageElements(prev => ({ ...prev, [dup.id]: [...(prev[pageId] || getElementsForPage(page, currentPages, bookTitle))] }));
+    setPageElements(prev => ({ ...prev, [dup.id]: [...resolvePageElements(prev, page, currentPages, bookTitle)] }));
     onPageSelect(dup.id);
     toast.success('Page duplicated');
   };
@@ -1190,7 +1190,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         const next = { ...prev };
         updates.forEach(({ pageId, elementId, content }) => {
           const page = currentPages.find(p => p.id === pageId);
-          const elems = next[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+          const elems = page ? resolvePageElements(next, page, currentPages, bookTitle) : (next[pageId] || []);
           next[pageId] = elems.map(e => e.id === elementId ? { ...e, content } : e);
         });
         return next;
@@ -1207,7 +1207,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     setPageContent: (pageId: string, content: string) => {
       setPageElements(prev => {
         const page = currentPages.find(p => p.id === pageId);
-        const elems = prev[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+        const elems = page ? resolvePageElements(prev, page, currentPages, bookTitle) : (prev[pageId] || []);
 
         // Handle image insertion via __IMAGE__ prefix
         if (content.startsWith('__IMAGE__')) {
@@ -1394,7 +1394,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     e.preventDefault();
     e.stopPropagation();
     const page = currentPages.find(p => p.id === pageId);
-    const elems = pageElements[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+    const elems = page ? resolvePageElements(pageElements, page, currentPages, bookTitle) : (pageElements[pageId] || []);
     
     // Find all elements whose bounding box contains the click point
     const pageEl = pageRefs.current[pageId];
