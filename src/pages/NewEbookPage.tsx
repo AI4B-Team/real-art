@@ -1003,7 +1003,7 @@ const NewEbookPage = () => {
       // Include all content pages nested under this chapter
       ...ebookPages
         .slice(group.startIndex + 1, group.endIndex + 1)
-        .map(p => ({ id: p.id, title: p.title, type: p.type as "chapter-page" | "blank" })),
+        .map(p => ({ id: p.id, title: p.title || "(continued)", type: p.type as "chapter-page" | "blank" })),
     ]),
     ...(backPage ? [{ id: backPage.id, title: "Back Cover", type: "back" as const }] : []),
   ];
