@@ -954,7 +954,7 @@ const EbookDesignSidebar = ({
       <div className="px-3 pt-3 pb-2 border-b border-foreground/[0.04]">
         <div className="flex items-center gap-1.5 mb-2">
           <Sparkles className="w-3 h-3 text-primary" />
-          <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Make It Yours</span>
+          <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Final Review</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {(() => {
