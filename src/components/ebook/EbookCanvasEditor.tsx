@@ -427,14 +427,13 @@ const BACK_PALETTES = [
 
 const createBackElements = (title: string): CanvasElement[] => {
   const pal = BACK_PALETTES[strHash(title + '-back') % BACK_PALETTES.length];
-  const imgSrc = seededImage(title + '-back', 5);
   return [
     { id: 'back-bg', type: 'shape', x: 0, y: 0, width: 100, height: 100, fill: pal.bg, stroke: 'transparent', shapeType: 'rectangle' },
-    { id: 'back-image', type: 'image', x: 0, y: 0, width: 100, height: 45, src: imgSrc },
-    { id: 'back-overlay', type: 'shape', x: 0, y: 30, width: 100, height: 15, fill: `${pal.bg}cc`, stroke: 'transparent', shapeType: 'rectangle' },
-    { id: 'back-accent', type: 'shape', x: 10, y: 48, width: 20, height: 0.8, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
-    { id: 'back-logo', type: 'text', x: 10, y: 52, width: 80, height: 14, content: title || 'How to Use the eBook Creator', fontSize: 20, fontFamily: 'Georgia', textColor: pal.text, fontWeight: 'bold', lineHeight: 1.2 },
-    { id: 'back-tag', type: 'text', x: 10, y: 70, width: 80, height: 8, content: 'You now have everything you need to create, design, and publish beautiful AI-powered books. Happy creating!', fontSize: 11, fontFamily: 'Georgia', textColor: pal.sub, lineHeight: 1.5 },
+    { id: 'back-accent', type: 'shape', x: 38, y: 28, width: 24, height: 0.8, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
+    { id: 'back-blurb', type: 'text', x: 12, y: 32, width: 76, height: 22, content: 'This book was crafted to give you practical, actionable insights you can apply right away. Whether you\'re just getting started or looking to level up, these pages were designed with your success in mind.', fontSize: 11, fontFamily: 'Georgia', textColor: pal.sub, lineHeight: 1.7, textAlign: 'center' },
+    { id: 'back-rule', type: 'shape', x: 40, y: 58, width: 20, height: 0.4, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
+    { id: 'back-logo', type: 'text', x: 15, y: 62, width: 70, height: 8, content: title || 'Untitled', fontSize: 14, fontFamily: 'Georgia', textColor: pal.text, fontWeight: 'bold', lineHeight: 1.3, textAlign: 'center' },
+    { id: 'back-tag', type: 'text', x: 20, y: 73, width: 60, height: 5, content: 'Thank you for reading', fontSize: 10, fontFamily: 'Inter', textColor: pal.sub, textAlign: 'center' },
   ];
 };
 
