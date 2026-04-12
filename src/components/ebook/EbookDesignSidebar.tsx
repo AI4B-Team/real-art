@@ -867,8 +867,8 @@ const EbookDesignSidebar = ({
       {/* ─── Smart Action Row ─── */}
       <div className="px-3 pt-3 pb-2 border-b border-foreground/[0.04]">
         <div className="flex items-center gap-1.5 mb-2">
-          <Sparkles className="w-3 h-3 text-accent" />
-          <span className="text-[10px] font-bold text-accent uppercase tracking-wider">Recommended Next</span>
+          <Sparkles className="w-3 h-3 text-primary" />
+          <span className="text-[10px] font-bold text-primary uppercase tracking-wider">Make It Yours</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {(() => {
@@ -884,7 +884,7 @@ const EbookDesignSidebar = ({
             if (pageType === 'cover') {
               const coverImg = findEl('cover-image', 'cover-img', 'cover-bg');
               suggestions.push({
-                label: 'Change Cover Image',
+                label: 'Try a different cover style',
                 action: () => {
                   if (coverImg?.type === 'image' && onReplaceElementImage) {
                     onReplaceElementImage(coverImg.id);
@@ -895,7 +895,7 @@ const EbookDesignSidebar = ({
               });
               const titleEl = findEl('title-text', 'title');
               suggestions.push({
-                label: 'Edit Title',
+                label: 'Explore alternative titles',
                 action: () => {
                   if (titleEl && onEditElement) {
                     onEditElement(titleEl.id);
@@ -906,7 +906,7 @@ const EbookDesignSidebar = ({
               });
               const subEl = findEl('subtitle-text', 'subtitle');
               suggestions.push({
-                label: subEl ? 'Edit Subtitle' : 'Add Subtitle',
+                label: subEl ? 'Refine your subtitle' : 'Add a subtitle for impact',
                 action: () => {
                   if (subEl && onEditElement) {
                     onEditElement(subEl.id);
@@ -920,7 +920,7 @@ const EbookDesignSidebar = ({
             } else if (pageType === 'toc') {
               const tocHeader = findEl('toc-header');
               suggestions.push({
-                label: 'Style Heading',
+                label: 'Elevate your heading',
                 action: () => {
                   if (tocHeader && onEditElement) {
                     onEditElement(tocHeader.id);
@@ -931,18 +931,18 @@ const EbookDesignSidebar = ({
                 },
               });
               suggestions.push({
-                label: 'Add Chapter',
+                label: 'Add another chapter',
                 action: () => { onChapterAdd(selectedChapterId || '', 'chapter'); toast.success('Chapter added'); },
               });
               suggestions.push({
-                label: 'Add Divider',
+                label: 'Add a visual divider',
                 action: () => { onAddElement?.('shape', { shapeType: 'rectangle', width: 80, height: 0.5, fill: '#e2e8f0' }); toast.success('Divider added'); },
               });
 
             } else if (pageType === 'chapter') {
               const chTitle = findEl('-title', 'title');
               suggestions.push({
-                label: 'Edit Chapter Title',
+                label: 'Refine chapter title',
                 action: () => {
                   if (chTitle && onEditElement) {
                     onEditElement(chTitle.id);
@@ -954,7 +954,7 @@ const EbookDesignSidebar = ({
               });
               const chImg = findEl('-img', 'cover-image');
               suggestions.push({
-                label: chImg ? 'Change Chapter Image' : 'Add Chapter Image',
+                label: chImg ? 'Try a different image' : 'Add a visual',
                 action: () => {
                   if (chImg?.type === 'image' && onReplaceElementImage) {
                     onReplaceElementImage(chImg.id);
@@ -965,7 +965,7 @@ const EbookDesignSidebar = ({
               });
               const bodyEl = findEl('-body', 'body');
               suggestions.push({
-                label: bodyEl?.content ? 'Edit Summary' : 'Add Summary',
+                label: bodyEl?.content ? 'Polish the summary' : 'Add an intro summary',
                 action: () => {
                   if (bodyEl && onEditElement) {
                     onEditElement(bodyEl.id);
@@ -979,7 +979,7 @@ const EbookDesignSidebar = ({
             } else if (pageType === 'chapter-page') {
               const pageImg = findEl('-img', 'img-', 'image');
               suggestions.push({
-                label: pageImg ? 'Change Image' : 'Add Image',
+                label: pageImg ? 'Swap in a new image' : 'Add a visual',
                 action: () => {
                   if (pageImg?.type === 'image' && onReplaceElementImage) {
                     onReplaceElementImage(pageImg.id);
@@ -990,7 +990,7 @@ const EbookDesignSidebar = ({
               });
               const bodyEl = findEl('-body', 'body');
               suggestions.push({
-                label: 'Edit Content',
+                label: 'Refine this content',
                 action: () => {
                   if (bodyEl && onEditElement) {
                     onEditElement(bodyEl.id);
@@ -1001,14 +1001,14 @@ const EbookDesignSidebar = ({
                 },
               });
               suggestions.push({
-                label: 'Add Callout Box',
+                label: 'Highlight with a callout',
                 action: () => { onAddElement?.('shape', { shapeType: 'rectangle', fill: 'rgba(8,145,178,0.08)', borderRadius: 8 }); toast.success('Callout box added'); },
               });
 
             } else if (pageType === 'back') {
               const backImg = findEl('back-image', 'back-img');
               suggestions.push({
-                label: backImg ? 'Change Background Image' : 'Add Background Image',
+                label: backImg ? 'Try a different background' : 'Add a background image',
                 action: () => {
                   if (backImg?.type === 'image' && onReplaceElementImage) {
                     onReplaceElementImage(backImg.id);
@@ -1019,7 +1019,7 @@ const EbookDesignSidebar = ({
               });
               const tagEl = findEl('back-logo', 'back-tag');
               suggestions.push({
-                label: tagEl ? 'Edit Tagline' : 'Add Tagline',
+                label: tagEl ? 'Polish your tagline' : 'Add a memorable tagline',
                 action: () => {
                   if (tagEl && onEditElement) {
                     onEditElement(tagEl.id);
@@ -1030,21 +1030,21 @@ const EbookDesignSidebar = ({
                 },
               });
               suggestions.push({
-                label: 'Add CTA',
-                action: () => { onAddElement?.('text', { content: 'Visit yourwebsite.com', fontSize: 14, fontWeight: 'bold' }); toast.success('CTA added'); },
+                label: 'Add a call-to-action',
+                action: () => { onAddElement?.('text', { content: 'Visit yourwebsite.com', fontSize: 14, fontWeight: 'bold' }); toast.success('Call-to-action added'); },
               });
 
             } else {
               suggestions.push(
-                { label: 'Add Headline', action: () => { onAddElement?.('text', { content: 'Section Headline', fontSize: 24, fontWeight: 'bold' }); toast.success('Headline added'); } },
-                { label: 'Add Image', action: () => { onOpenImageSection?.(); } },
-                { label: 'Add Body Text', action: () => { onAddElement?.('text', { content: 'Your content goes here...', fontSize: 12 }); toast.success('Body text added'); } },
+                { label: 'Add a headline', action: () => { onAddElement?.('text', { content: 'Section Headline', fontSize: 24, fontWeight: 'bold' }); toast.success('Headline added'); } },
+                { label: 'Add a visual', action: () => { onOpenImageSection?.(); } },
+                { label: 'Add body text', action: () => { onAddElement?.('text', { content: 'Your content goes here...', fontSize: 12 }); toast.success('Body text added'); } },
               );
             }
 
             return suggestions.map(btn => (
               <button key={btn.label} onClick={btn.action}
-                className="px-2.5 py-1.5 rounded-lg bg-accent/[0.06] border border-accent/20 text-[10px] font-semibold text-accent hover:bg-accent/[0.12] transition-colors">
+                className="px-2.5 py-1.5 rounded-lg bg-primary/[0.06] border border-primary/20 text-[10px] font-semibold text-primary hover:bg-primary/[0.12] transition-colors">
                 {btn.label}
               </button>
             ));
