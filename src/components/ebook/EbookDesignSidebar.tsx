@@ -809,6 +809,7 @@ const EbookDesignSidebar = ({
   const [imageTab, setImageTab] = useState<'stock' | 'creations' | 'community' | 'uploads'>('stock');
   const [imagePrompt, setImagePrompt] = useState('');
   const [elementSearch, setElementSearch] = useState('');
+  const [expandedElementCats, setExpandedElementCats] = useState<Set<string>>(new Set());
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
