@@ -7,6 +7,27 @@
 import type { CanvasElement, Page } from "@/components/ebook/EbookCanvasEditor";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
+export type TemplateNiche =
+  | "Business" | "Health" | "Creative" | "Education" | "Technology"
+  | "Lifestyle" | "Finance" | "Marketing" | "Self-Help" | "Fiction"
+  | "General";
+
+export const TEMPLATE_NICHES: TemplateNiche[] = [
+  "Business", "Health", "Creative", "Education", "Technology",
+  "Lifestyle", "Finance", "Marketing", "Self-Help", "Fiction", "General",
+];
+
+export interface TemplatePalette {
+  bg: string;
+  accent: string;
+  accent2: string;
+  heading: string;
+  text: string;
+  bodyText: string;
+  muted: string;
+  surface: string;
+}
+
 export interface EbookTemplate {
   id: string;
   name: string;
@@ -14,6 +35,12 @@ export interface EbookTemplate {
   previewBg: string;
   previewAccent: string;
   orientation: "portrait" | "landscape" | "both";
+  niche: TemplateNiche;
+  palette: TemplatePalette;
+  titleFont: string;
+  bodyFont: string;
+  coverVariant: 1 | 2 | 3 | 4 | 5;
+  contentVariant: 1 | 2 | 3;
   buildPage: (
     page: Page,
     allPages: Page[],
