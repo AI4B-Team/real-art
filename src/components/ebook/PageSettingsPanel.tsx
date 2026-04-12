@@ -614,13 +614,15 @@ const PageSettingsPanel = ({
         <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar p-2.5 space-y-3">
           {pages.map((page, i) => {
             const isCoverOrBack = page.type === 'cover' || page.type === 'back';
+            const numberablePages = pages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back');
+            const contentPageNum = isCoverOrBack || page.type === 'toc' ? null : numberablePages.indexOf(page) + 1;
             return (
               <div key={page.id} className="group relative">
                 <div className="flex items-start gap-1.5">
                   {/* Left column: page number + action buttons stacked vertically */}
                   <div className="flex flex-col items-center shrink-0 w-7 pt-1">
                     <span className={`text-xs font-medium ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
-                      {i + 1}
+                      {contentPageNum ?? '–'}
                     </span>
                     {/* Action buttons below page number — visible on hover */}
                     <div className="flex flex-col gap-0.5 mt-1 opacity-0 group-hover:opacity-100 transition-opacity">
