@@ -631,23 +631,27 @@ const NewEbookPage = () => {
       localStorage.removeItem(STORAGE_KEY_ELEMENTS);
       setSavedPageElements({});
 
-      // Pre-populate cover + TOC so the live preview right panel shows immediately
-      const initCoverId = "live-cover";
-      const initTocId = "live-toc";
-      const initPages: CanvasPage[] = [
-        { id: initCoverId, title: bookData.selectedTitle, type: "cover" },
-        { id: initTocId, title: "Table of Contents", type: "toc" },
-      ];
-      const initElems: Record<string, any[]> = {
-        [initCoverId]: getElementsForPage(initPages[0], initPages, bookData.selectedTitle),
-        [initTocId]: buildTocElements(initPages),
-      };
-      setLiveGenerationState({
-        pages: initPages,
-        elements: initElems,
-        completedChapterCount: 0,
-        totalChapterCount: chapterSequence.length,
-        currentChapterTitle: chapterSequence[0]?.title ?? "",
+      // Stable theme seed — same for initial + every per-chapter update
+      const liveThemeSeed = `${bookData.selectedTitle}-${bookData.prompt}`;
+
+      // Pre-populate cover + TOC immediately using the layout engine
+      const { buildGeneratedBookLayout } = await import("@/lib/ebookGenerationLayout");
+      const initLayout = buildGeneratedBookLayout({
+        bookTitle: bookData.selectedTitle,
+        bookDescription: bookDescription || bookData.prompt,
+        prompt: bookData.prompt,
+        generatedChapters: [],
+        includeImages: false,
+        themeSeed: liveThemeSeed,
+      });
+      flushSync(() => {
+        setLiveGenerationState({
+          pages: initLayout.pages,
+          elements: initLayout.elementsByPage,
+          completedChapterCount: 0,
+          totalChapterCount: chapterSequence.length,
+          currentChapterTitle: chapterSequence[0]?.title ?? "",
+        });
       });
 
       const baseSnapshot = {
@@ -796,54 +800,27 @@ const NewEbookPage = () => {
           pages: finalPages,
         });
 
-        // Update live preview after each chapter
-        const liveCoverId = "live-cover";
-        const liveTocId = "live-toc";
-        const livePagesSoFar: { id: string; title: string; type: "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank" }[] = [
-          { id: liveCoverId, title: bookData.selectedTitle, type: "cover" },
-          { id: liveTocId, title: "Table of Contents", type: "toc" },
-        ];
-        const liveElemsSoFar: Record<string, any[]> = {
-          [liveCoverId]: getElementsForPage({ id: liveCoverId, title: bookData.selectedTitle, type: "cover" } as CanvasPage, livePagesSoFar as CanvasPage[], bookData.selectedTitle),
-          [liveTocId]: buildTocElements(livePagesSoFar as CanvasPage[]),
-        };
-        generatedChapters.forEach((ch, ci) => {
-          const covId = `live-ch-${ci}`;
-          livePagesSoFar.push({ id: covId, title: ch.title, type: "chapter" });
-          liveElemsSoFar[covId] = getElementsForPage(
-            { id: covId, title: ch.title, type: "chapter" } as CanvasPage,
-            livePagesSoFar as CanvasPage[],
-            bookData.selectedTitle,
-          );
-          ch.pages.slice(0, 2).forEach((pg, pi) => {
-            const pgId = `live-pg-${ci}-${pi}`;
-            livePagesSoFar.push({ id: pgId, title: pg.title, type: "chapter-page" });
-            const defElems = getElementsForPage(
-              { id: pgId, title: pg.title, type: "chapter-page" } as CanvasPage,
-              livePagesSoFar as CanvasPage[],
-              bookData.selectedTitle,
-            );
-            const bodyIdx = defElems.findIndex((e: any) => e.type === "text" && e.id.includes("body"));
-            if (bodyIdx >= 0 && pg.content) {
-              const updated = [...defElems];
-              updated[bodyIdx] = { ...updated[bodyIdx], content: pg.content.split(/\s+/).slice(0, 60).join(" ") + "…" };
-              liveElemsSoFar[pgId] = updated;
-            } else {
-              liveElemsSoFar[pgId] = defElems;
-            }
-          });
+        // Update live preview after each chapter — flushSync forces immediate render
+        const liveLayout = buildGeneratedBookLayout({
+          bookTitle: bookData.selectedTitle,
+          bookDescription: bookDescription || bookData.prompt,
+          prompt: bookData.prompt,
+          generatedChapters,
+          includeImages: false,
+          themeSeed: liveThemeSeed,
         });
-        setLiveGenerationState({
-          pages: livePagesSoFar,
-          elements: liveElemsSoFar,
-          completedChapterCount: generatedChapters.length,
-          totalChapterCount: chapterSequence.length,
-          currentChapterTitle: chapterSequence[generatedChapters.length]?.title ?? "",
+        flushSync(() => {
+          setLiveGenerationState({
+            pages: liveLayout.pages,
+            elements: liveLayout.elementsByPage,
+            completedChapterCount: generatedChapters.length,
+            totalChapterCount: chapterSequence.length,
+            currentChapterTitle: chapterSequence[generatedChapters.length]?.title ?? "",
+          });
         });
       }
 
-      // Use the new layout engine for unique themes, pagination, and variety
-      const { buildGeneratedBookLayout } = await import("@/lib/ebookGenerationLayout");
+      // Final layout with fresh random theme
       const layout = buildGeneratedBookLayout({
         bookTitle: bookData.selectedTitle,
         bookDescription: bookDescription || bookData.prompt,
