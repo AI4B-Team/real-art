@@ -67,6 +67,8 @@ interface EbookDesignSidebarProps {
   onReplaceElementImage?: (elementId: string) => void;
   /** Apply a named template to the entire book */
   onApplyTemplate?: (templateId: string) => void;
+  /** Pages for the TemplateGallery preview */
+  pages?: import('./EbookCanvasEditor').Page[];
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
