@@ -126,6 +126,9 @@ const editorial: EbookTemplate = {
   previewBg: "#09090b",
   previewAccent: "#fafafa",
   orientation: "portrait",
+  niche: "Creative",
+  palette: { bg: "#09090b", accent: "#fafafa", accent2: "#a1a1aa", heading: "#fafafa", text: "#d4d4d8", bodyText: "#a1a1aa", muted: "#52525b", surface: "#18181b" },
+  titleFont: "Playfair Display", bodyFont: "Inter", coverVariant: 1, contentVariant: 1,
   buildPage(page, allPages, bookTitle) {
     const bg = "#09090b";
     const fg = "#fafafa";
@@ -188,6 +191,9 @@ const nordic: EbookTemplate = {
   previewBg: "#f5f3ef",
   previewAccent: "#2d5a27",
   orientation: "both",
+  niche: "Lifestyle",
+  palette: { bg: "#f5f3ef", accent: "#2d5a27", accent2: "#a3b18a", heading: "#1b1b18", text: "#3a3a36", bodyText: "#57574f", muted: "#a8a29e", surface: "#e7e5e0" },
+  titleFont: "DM Serif Display", bodyFont: "DM Sans", coverVariant: 3, contentVariant: 2,
   buildPage(page, allPages, bookTitle) {
     const green = "#2d5a27";
     const sage = "#8fad79";
@@ -245,6 +251,9 @@ const luxe: EbookTemplate = {
   previewBg: "#0c1425",
   previewAccent: "#d4a745",
   orientation: "portrait",
+  niche: "Business",
+  palette: { bg: "#0c1425", accent: "#d4a745", accent2: "#f5d98c", heading: "#f5f0e1", text: "#c9bfa6", bodyText: "#a09882", muted: "#3d3a35", surface: "#1a2236" },
+  titleFont: "Cormorant Garamond", bodyFont: "Lato", coverVariant: 4, contentVariant: 1,
   buildPage(page, allPages, bookTitle) {
     const navy = "#0c1425";
     const gold = "#d4a745";
@@ -311,6 +320,9 @@ const slate: EbookTemplate = {
   previewBg: "#0f172a",
   previewAccent: "#3b82f6",
   orientation: "both",
+  niche: "Technology",
+  palette: { bg: "#0f172a", accent: "#3b82f6", accent2: "#60a5fa", heading: "#f1f5f9", text: "#cbd5e1", bodyText: "#94a3b8", muted: "#475569", surface: "#1e293b" },
+  titleFont: "Space Grotesk", bodyFont: "Inter", coverVariant: 2, contentVariant: 3,
   buildPage(page, allPages, bookTitle) {
     const dark = "#0f172a";
     const blue = "#3b82f6";
@@ -370,6 +382,9 @@ const terra: EbookTemplate = {
   previewBg: "#fdf6ee",
   previewAccent: "#c0522a",
   orientation: "portrait",
+  niche: "Health",
+  palette: { bg: "#fdf6ee", accent: "#c0522a", accent2: "#e8976b", heading: "#3b1f0b", text: "#5c3d1e", bodyText: "#7a5c3e", muted: "#c4b5a3", surface: "#f0e6d8" },
+  titleFont: "Libre Baskerville", bodyFont: "Source Sans Pro", coverVariant: 1, contentVariant: 2,
   buildPage(page, allPages, bookTitle) {
     const rust = "#c0522a";
     const cream = "#fdf6ee";
@@ -428,6 +443,9 @@ const split: EbookTemplate = {
   previewBg: "#faf5ff",
   previewAccent: "#7c3aed",
   orientation: "landscape",
+  niche: "Marketing",
+  palette: { bg: "#faf5ff", accent: "#7c3aed", accent2: "#a78bfa", heading: "#1e1b4b", text: "#3b3473", bodyText: "#6d63a8", muted: "#c4b5d9", surface: "#ede9fe" },
+  titleFont: "Poppins", bodyFont: "Inter", coverVariant: 5, contentVariant: 1,
   buildPage(page, allPages, bookTitle) {
     const violet = "#7c3aed";
     const lt = "#faf5ff";
@@ -486,6 +504,9 @@ const broadsheet: EbookTemplate = {
   previewBg: "#fafaf9",
   previewAccent: "#dc2626",
   orientation: "portrait",
+  niche: "Education",
+  palette: { bg: "#fafaf9", accent: "#dc2626", accent2: "#f87171", heading: "#0c0a09", text: "#292524", bodyText: "#57534e", muted: "#a8a29e", surface: "#f5f5f4" },
+  titleFont: "Merriweather", bodyFont: "Source Serif Pro", coverVariant: 2, contentVariant: 3,
   buildPage(page, allPages, bookTitle) {
     const black = "#0c0a09";
     const white = "#fafaf9";
@@ -554,6 +575,9 @@ const pastel: EbookTemplate = {
   previewBg: "#f5f3ff",
   previewAccent: "#8b5cf6",
   orientation: "both",
+  niche: "Self-Help",
+  palette: { bg: "#f5f3ff", accent: "#8b5cf6", accent2: "#a78bfa", heading: "#1e1b4b", text: "#4c1d95", bodyText: "#6d28d9", muted: "#c4b5d9", surface: "#ede9fe" },
+  titleFont: "Nunito", bodyFont: "Nunito Sans", coverVariant: 3, contentVariant: 2,
   buildPage(page, allPages, bookTitle) {
     const lav = "#f5f3ff";
     const mint = "#d1fae5";
@@ -614,6 +638,9 @@ const mono: EbookTemplate = {
   previewBg: "#ffffff",
   previewAccent: "#000000",
   orientation: "portrait",
+  niche: "General",
+  palette: { bg: "#ffffff", accent: "#000000", accent2: "#737373", heading: "#000000", text: "#171717", bodyText: "#404040", muted: "#a3a3a3", surface: "#f5f5f5" },
+  titleFont: "JetBrains Mono", bodyFont: "IBM Plex Mono", coverVariant: 4, contentVariant: 3,
   buildPage(page, allPages, bookTitle) {
     const bk = "#000000";
     const wh = "#ffffff";
@@ -673,6 +700,9 @@ const aurora: EbookTemplate = {
   previewBg: "#0f172a",
   previewAccent: "#06b6d4",
   orientation: "portrait",
+  niche: "Technology",
+  palette: { bg: "#0f172a", accent: "#06b6d4", accent2: "#6366f1", heading: "#f0fdfa", text: "#ccfbf1", bodyText: "#99f6e4", muted: "#475569", surface: "#1e293b" },
+  titleFont: "Outfit", bodyFont: "Inter", coverVariant: 1, contentVariant: 1,
   buildPage(page, allPages, bookTitle) {
     const deep = "#0f172a";
     const teal = "#06b6d4";
@@ -738,6 +768,9 @@ const rose: EbookTemplate = {
   previewBg: "#fff1f2",
   previewAccent: "#e11d48",
   orientation: "portrait",
+  niche: "Lifestyle",
+  palette: { bg: "#fff1f2", accent: "#e11d48", accent2: "#fda4af", heading: "#1c1917", text: "#44403c", bodyText: "#78716c", muted: "#d6d3d1", surface: "#fce7f3" },
+  titleFont: "Cormorant Garamond", bodyFont: "Lora", coverVariant: 5, contentVariant: 2,
   buildPage(page, allPages, bookTitle) {
     const blush = "#fff1f2";
     const pink = "#e11d48";
@@ -796,6 +829,9 @@ const sage: EbookTemplate = {
   previewBg: "#f5f5f0",
   previewAccent: "#65a30d",
   orientation: "portrait",
+  niche: "Health",
+  palette: { bg: "#f5f5f0", accent: "#65a30d", accent2: "#a3e635", heading: "#1a2e05", text: "#365314", bodyText: "#4d7c0f", muted: "#a8a29e", surface: "#ecfccb" },
+  titleFont: "Fraunces", bodyFont: "Work Sans", coverVariant: 3, contentVariant: 1,
   buildPage(page, allPages, bookTitle) {
     const sageGreen = "#65a30d";
     const sageMuted = "#a3e635";
