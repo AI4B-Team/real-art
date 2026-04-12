@@ -3431,7 +3431,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               <div className="h-[2px] bg-accent/70 rounded-full" />
                             </div>
                           )}
-                          {elems.map(el => renderElement(el, page.id))}
+                          {elems.map(el => renderElement(el, page.id, isPageDarkBg(page.id)))}
                           {(() => {
                             const selectedImage = elems.find(el => el.id === selectedElementId && el.type === 'image');
                             return selectedImage ? renderSelectedImageActions(selectedImage, page.id) : null;
