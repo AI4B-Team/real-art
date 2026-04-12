@@ -4,7 +4,9 @@ import {
   Plus, Pencil, Search, Sparkles, Send, Upload, Loader2,
   Type, QrCode, Video, Music, Table, CheckSquare,
   Square, Circle, Triangle, Star, Hexagon, Diamond, Pentagon,
-  ArrowRight, ArrowDown, BarChart3, LineChart, PieChart,
+  ArrowRight, ArrowDown, ArrowUp, ArrowLeft, ChevronsRight, Move,
+  BarChart3, LineChart, PieChart, AreaChart, CircleDot, TrendingUp as TrendingUpIcon, Activity, Radar, Filter,
+  Grid3X3, List, ListOrdered, Columns2,
   Smile, Tag, StickyNote, ExternalLink, MapPin,
   GripVertical, Trash2, X, Check, Lock,
   LayoutGrid, LayoutTemplate, Presentation,
@@ -12,6 +14,9 @@ import {
   Shuffle, SlidersHorizontal, Play, Users, Library,
   Brain, Award, BookOpen, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch,
   Palette, BookMarked, AlignLeft, ImagePlus,
+  Sun, ThumbsUp, MessageSquare, Clock, Calendar, Settings, Share2,
+  UserPlus, Pointer, Maximize2, Volume2, FileDown, Link2,
+  Info, ListTree, Timer, Images, Hash, CodeSquare,
 } from 'lucide-react';
 import AIVAPanel from './AIVAPanel';
 import { toast } from 'sonner';
