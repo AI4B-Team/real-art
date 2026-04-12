@@ -10,6 +10,13 @@ const PageThumbnail = ({ elements, className = '' }: PageThumbnailProps) => {
     <div className={`relative w-full h-full overflow-hidden bg-white ${className}`}>
       {elements.map(el => {
         if (el.type === 'image') {
+          if ((el as any).isPlaceholder || !el.src) {
+            return (
+              <div key={el.id} className="absolute bg-muted/30 border border-dashed border-muted-foreground/20" style={{
+                left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
+              }} />
+            );
+          }
           return (
             <div key={el.id} className="absolute overflow-hidden" style={{
               left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
