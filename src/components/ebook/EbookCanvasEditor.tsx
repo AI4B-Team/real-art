@@ -258,26 +258,16 @@ const CHAPTER_PALETTES = [
 const createChapterElements = (num: number, title: string): CanvasElement[] => {
   const imgSrc = seededImage(title + num + '-chapter', num * 3);
   const pal = CHAPTER_PALETTES[(num - 1) % CHAPTER_PALETTES.length];
-  const layoutVariant = strHash(title) % 2;
 
-  if (layoutVariant === 0) {
-    return [
-      { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 5, width: 50, height: 4, content: `Chapter ${num}`, fontSize: 11, fontFamily: 'Inter', textColor: pal.eyebrow, fontWeight: 'bold' },
-      { id: `ch${num}-title`, type: 'text', x: 8, y: 10, width: 84, height: 22, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
-      { id: `ch${num}-divider`, type: 'shape', x: 8, y: 33, width: 15, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
-      { id: `ch${num}-img`, type: 'image', x: 8, y: 37, width: 84, height: 44, src: imgSrc, borderRadius: 6 },
-      { id: `ch${num}-body`, type: 'text', x: 8, y: 84, width: 84, height: 12, content: '', fontSize: 12, fontFamily: 'Georgia', textColor: '#6b7280', lineHeight: 1.5 },
-    ];
-  } else {
-    return [
-      { id: `ch${num}-img`, type: 'image', x: 0, y: 0, width: 100, height: 65, src: imgSrc },
-      { id: `ch${num}-overlay`, type: 'shape', x: 0, y: 48, width: 100, height: 17, fill: 'rgba(0,0,0,0.6)', stroke: 'transparent', shapeType: 'rectangle' },
-      { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 50, width: 50, height: 5, content: `Chapter ${num}`, fontSize: 10, fontFamily: 'Inter', textColor: pal.accent, fontWeight: 'bold' },
-      { id: `ch${num}-title`, type: 'text', x: 8, y: 56, width: 84, height: 9, content: title, fontSize: 18, fontFamily: 'Georgia', textColor: '#ffffff', fontWeight: 'bold', lineHeight: 1.15 },
-      { id: `ch${num}-divider`, type: 'shape', x: 8, y: 68, width: 15, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
-      { id: `ch${num}-body`, type: 'text', x: 8, y: 71, width: 84, height: 22, content: '', fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.5 },
-    ];
-  }
+  // Chapter covers always use a full-page image with overlay text
+  return [
+    { id: `ch${num}-img`, type: 'image', x: 0, y: 0, width: 100, height: 100, src: imgSrc },
+    { id: `ch${num}-overlay`, type: 'shape', x: 0, y: 55, width: 100, height: 45, fill: 'rgba(0,0,0,0.55)', stroke: 'transparent', shapeType: 'rectangle' },
+    { id: `ch${num}-eyebrow`, type: 'text', x: 8, y: 60, width: 50, height: 5, content: `Chapter ${num}`, fontSize: 11, fontFamily: 'Inter', textColor: pal.accent, fontWeight: 'bold' },
+    { id: `ch${num}-title`, type: 'text', x: 8, y: 66, width: 84, height: 14, content: title, fontSize: 22, fontFamily: 'Georgia', textColor: '#ffffff', fontWeight: 'bold', lineHeight: 1.15 },
+    { id: `ch${num}-divider`, type: 'shape', x: 8, y: 82, width: 15, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
+    { id: `ch${num}-body`, type: 'text', x: 8, y: 85, width: 84, height: 10, content: '', fontSize: 11, fontFamily: 'Georgia', textColor: 'rgba(255,255,255,0.75)', lineHeight: 1.4 },
+  ];
 };
 
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => {
