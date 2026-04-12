@@ -3849,25 +3849,28 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
                                             {/* Scrollable middle area */}
                                             <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
-                                            {/* Smart Suggestions */}
-                                            <div className="px-3 py-2.5 space-y-2 border-b border-foreground/[0.06]">
-                                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Here's What I'd Fix First…</p>
+                                            {/* Smart Enhancements */}
+                                            <div className="px-3 pt-2.5 pb-1">
+                                              <p className="text-[11px] font-medium text-foreground/70">This page is strong. Here's how to make it exceptional:</p>
+                                            </div>
+                                            <div className="px-3 py-1.5 space-y-1 border-b border-foreground/[0.06]">
+                                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Smart Enhancements</p>
                                               {[
-                                                { severity: 'critical' as const, title: 'Weak headline detected', cta: 'Rewrite Headline', color: 'text-amber-600 bg-amber-500/10' },
-                                                { severity: 'warning' as const, title: 'Missing visuals', cta: 'Add Visual', color: 'text-destructive bg-destructive/10' },
-                                                { severity: 'info' as const, title: 'Text too dense', cta: 'Simplify', color: 'text-blue-600 bg-blue-500/10' },
+                                                { severity: 'opportunity' as const, title: 'Your headline is clear — want a more attention-grabbing version?', cta: 'Try Stronger Headline', color: 'text-amber-600 bg-amber-500/10' },
+                                                { severity: 'visual' as const, title: 'This section could pop more with a supporting visual', cta: 'Add Image', color: 'text-accent bg-accent/10' },
+                                                { severity: 'readability' as const, title: 'This section can be easier to scan and retain', cta: 'Improve Readability', color: 'text-blue-600 bg-blue-500/10' },
                                               ].map((nudge, i) => (
                                                 <button key={i} onClick={() => {
-                                                  if (nudge.cta === 'Add Visual') {
+                                                  if (nudge.cta === 'Add Image') {
                                                     onOpenImageSection?.();
                                                   } else {
-                                                    handleContextualAI(nudge.cta === 'Rewrite Headline' ? 'rewrite' : 'shorten');
+                                                    handleContextualAI(nudge.cta === 'Try Stronger Headline' ? 'rewrite' : 'shorten');
                                                   }
                                                 }}
                                                   className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-foreground/[0.03] transition-colors text-left">
-                                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${nudge.severity === 'critical' ? 'bg-destructive' : nudge.severity === 'warning' ? 'bg-amber-500' : 'bg-blue-500'}`} />
-                                                  <span className="text-[11px] text-foreground flex-1">{nudge.title}</span>
-                                                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md ${nudge.color}`}>{nudge.cta}</span>
+                                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${nudge.severity === 'opportunity' ? 'bg-amber-500' : nudge.severity === 'visual' ? 'bg-accent' : 'bg-blue-500'}`} />
+                                                  <span className="text-[11px] text-foreground/80 flex-1 leading-snug">{nudge.title}</span>
+                                                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 ${nudge.color}`}>{nudge.cta}</span>
                                                 </button>
                                               ))}
                                             </div>
