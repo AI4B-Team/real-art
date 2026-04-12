@@ -1492,37 +1492,37 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             onMouseDown={e => handleElementMouseDown(e, el, pageId)}
             onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
             <TypeBadge />
-            <div className="w-full h-full bg-foreground/[0.04] border-2 border-dashed border-foreground/10 flex flex-col items-center justify-center p-4 rounded-lg">
-              <p className="text-sm font-medium text-muted-foreground mb-3 text-center">Select A Recommended Image</p>
-              <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
-                {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
-                  <div key={idx} className="relative group">
-                    <button
-                      onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
-                      className="w-20 h-20 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
-                      <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
-                    </button>
-                    <button
-                      onClick={e => { e.stopPropagation(); setPreviewImageSrc(imgSrc); }}
-                      className="absolute top-1 right-1 w-6 h-6 bg-background/80 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-background">
-                      <Eye className="w-3 h-3 text-foreground" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
-                  className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 flex items-center gap-2 transition-colors">
-                  <Upload className="w-4 h-4" />Upload Image
-                </button>
-                <button
-                  onClick={e => { e.stopPropagation(); setReplaceModalElementId(null); }}
-                  className="px-4 py-2 bg-foreground/10 text-foreground text-sm font-medium rounded-lg hover:bg-foreground/15 flex items-center gap-2 transition-colors">
-                  <X className="w-4 h-4" />Cancel
-                </button>
-              </div>
-            </div>
+             <div className={`w-full h-full ${darkBg ? 'bg-white/[0.08] border-white/20' : 'bg-foreground/[0.04] border-foreground/10'} border-2 border-dashed flex flex-col items-center justify-center p-4 rounded-lg`}>
+               <p className={`text-sm font-medium mb-3 text-center ${darkBg ? 'text-white/70' : 'text-muted-foreground'}`}>Select A Recommended Image</p>
+               <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
+                 {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
+                   <div key={idx} className="relative group">
+                     <button
+                       onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
+                       className="w-20 h-20 rounded-lg border-2 border-transparent hover:border-accent overflow-hidden transition-all duration-200 hover:scale-105 hover:shadow-lg">
+                       <img src={imgSrc} alt={`Suggestion ${idx + 1}`} className="w-full h-full object-cover" draggable={false} />
+                     </button>
+                     <button
+                       onClick={e => { e.stopPropagation(); setPreviewImageSrc(imgSrc); }}
+                       className={`absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity ${darkBg ? 'bg-white/80 hover:bg-white' : 'bg-background/80 hover:bg-background'}`}>
+                       <Eye className={`w-3 h-3 ${darkBg ? 'text-black' : 'text-foreground'}`} />
+                     </button>
+                   </div>
+                 ))}
+               </div>
+               <div className="flex items-center gap-2">
+                 <button
+                   onClick={e => { e.stopPropagation(); replaceImageInputRef.current?.click(); }}
+                   className="px-4 py-2 bg-accent text-white text-sm font-medium rounded-lg hover:bg-accent/90 flex items-center gap-2 transition-colors">
+                   <Upload className="w-4 h-4" />Upload Image
+                 </button>
+                 <button
+                   onClick={e => { e.stopPropagation(); setReplaceModalElementId(null); }}
+                   className={`px-4 py-2 text-sm font-medium rounded-lg flex items-center gap-2 transition-colors ${darkBg ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-foreground/10 text-foreground hover:bg-foreground/15'}`}>
+                   <X className="w-4 h-4" />Cancel
+                 </button>
+               </div>
+             </div>
             {isSelected && renderResizeHandles(el)}
           </div>
         );
