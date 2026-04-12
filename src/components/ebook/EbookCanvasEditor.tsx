@@ -3314,7 +3314,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {currentPages.map((page, pageIndex) => {
                     const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
-                    const pageTypeLabel = page.type === 'cover' ? 'Cover' : page.type === 'toc' ? 'Table of Contents' : page.type === 'back' ? 'Back Cover' : page.type === 'chapter' ? 'Chapter Cover' : page.type === 'chapter-page' ? 'Chapter Page' : 'Page';
+                    const pageTypeLabel = page.type === 'cover' ? 'Cover' : page.type === 'toc' ? 'Table of Contents' : page.type === 'back' ? 'Back Cover' : page.type === 'chapter' ? 'Chapter Cover' : page.type === 'chapter-page' ? 'Content Page' : 'Page';
                     return (
                       <div key={page.id} data-page-id={page.id} ref={el => { pageRefs.current[page.id] = el; }} className={`relative flex flex-col items-center transition-all duration-300 ${aiExpandedPageId === page.id ? '-translate-x-[200px]' : ''}`}>
                         {/* Page label above page — hidden when an element is selected on this page */}
