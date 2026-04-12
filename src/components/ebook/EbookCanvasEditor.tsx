@@ -859,7 +859,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     let count = 0;
     const newPageElements = { ...pageElements };
     currentPages.forEach(page => {
-      const elems = newPageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      const elems = resolvePageElements(newPageElements, page, currentPages, bookTitle);
       let changed = false;
       const updated = elems.map(el => {
         if (el.type === 'text' && el.content && el.content.toLowerCase().includes(findQuery.toLowerCase())) {
@@ -997,8 +997,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const selectedPage = currentPages.find(p => p.id === selectedPageId) || currentPages[0];
 
   // Init elements for current page
-  const currentElements = pageElements[selectedPage?.id || ''] ||
-    (selectedPage ? getElementsForPage(selectedPage, currentPages, bookTitle) : []);
+  const currentElements = selectedPage
+    ? resolvePageElements(pageElements, selectedPage, currentPages, bookTitle)
+    : [];
 
   const updateElements = useCallback((pageId: string, newElements: CanvasElement[], skipUndo = false) => {
     if (!skipUndo) {
