@@ -1203,7 +1203,7 @@ const EbookDesignSidebar = ({
               return (
                 <div key={group.cover.id}>
                   {/* Chapter header row */}
-                  <div
+                  <div data-outline-id={group.cover.id}
                     onClick={() => { onChapterSelect(group.cover.id); if (hasPages) toggleChapter(group.cover.id); }}
                     className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all cursor-pointer ${
                       isSelected
