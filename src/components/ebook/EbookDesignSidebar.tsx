@@ -1359,7 +1359,7 @@ const EbookDesignSidebar = ({
       )}
 
       {/* Components */}
-      <SectionHeader id="elements" title="Components" icon={LayoutGrid} />
+      <SectionHeader id="elements" title="Elements" icon={LayoutGrid} />
       {expandedSections.has('elements') && (
         <div className="px-3 pb-3 pt-2 space-y-3">
           <div className="relative">
