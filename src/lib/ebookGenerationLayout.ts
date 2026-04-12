@@ -530,14 +530,16 @@ export const buildGeneratedBookLayout = ({
   prompt,
   generatedChapters,
   includeImages,
+  themeSeed,
 }: {
   bookTitle: string;
   bookDescription: string;
   prompt: string;
   generatedChapters: GeneratedChapterInput[];
   includeImages: boolean;
+  themeSeed?: string;
 }): GeneratedBookLayout => {
-  const theme = createTheme(`${bookTitle}-${prompt}-${Date.now()}-${crypto.randomUUID()}`);
+  const theme = createTheme(themeSeed ?? `${bookTitle}-${prompt}-${Date.now()}-${crypto.randomUUID()}`);
   const pages: Page[] = [];
   const elementsByPage: Record<string, CanvasElement[]> = {};
   const imageTasks: GeneratedImageTask[] = [];
