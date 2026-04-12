@@ -469,7 +469,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         if (el.type === 'text' && (el.id.includes('body') || el.id.includes('-body')) && (!el.content || el.content.trim() === '')) {
           changed = true;
           const idx = parseInt(el.id.replace(/\D/g, '') || '0', 10);
-          return { ...el, content: SAMPLE_CONTENT_PAGES[idx % SAMPLE_CONTENT_PAGES.length] };
+          return { ...el, content: TUTORIAL_CONTENT[TUTORIAL_CONTENT_KEYS[idx % TUTORIAL_CONTENT_KEYS.length]] };
         }
         return el;
       });
