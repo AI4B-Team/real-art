@@ -80,7 +80,7 @@ const PageSettingsPanel = ({
   pages, selectedPageId, onPageSelect, onPagesChange, onGridViewToggle, bookTitle = '',
   pageWidth: externalWidth = 480, pageHeight: externalHeight = 640, onDimensionsChange, onOpenImageSection,
   showLockedPagesWarning, sidebarMode = 'design', selectedPageTitle, pageIndex: externalPageIndex, onSendToChat,
-  forceTab,
+  forceTab, pageElements: externalPageElements,
 }: PageSettingsPanelProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(['size']));
@@ -690,7 +690,7 @@ const PageSettingsPanel = ({
                     } ${dragOverIndex === i ? 'border-accent/50' : ''}`}
                   >
                     <div className="aspect-[3/4] bg-foreground/[0.03] relative">
-                      <PageThumbnail elements={getElementsForPage(page, pages, bookTitle)} />
+                      <PageThumbnail elements={externalPageElements?.[page.id] || getElementsForPage(page, pages, bookTitle)} />
                       {page.locked && <Lock className="w-3 h-3 text-muted-foreground absolute top-1 right-1" />}
                     </div>
                     <p className="text-[10px] font-medium text-foreground truncate px-1.5 py-1 bg-background">{page.title}</p>
