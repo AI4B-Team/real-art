@@ -2412,8 +2412,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           <div className="flex items-center gap-1 text-muted-foreground">
                             <PageIcon className="w-3 h-3" />
                             <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>
-                              {page.type !== 'cover' && page.type !== 'back'
-                                ? currentPages.filter(p => p.type !== 'cover' && p.type !== 'back').indexOf(page) + 1
+                              {page.type !== 'cover' && page.type !== 'toc' && page.type !== 'back'
+                                ? currentPages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back').indexOf(page) + 1
                                 : '–'}
                             </span>
                           </div>
@@ -3326,9 +3326,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         <div className="relative flex items-start gap-2 justify-center">
                         {/* Page number */}
                         <div className="w-8 shrink-0 pt-2">
-                          {page.type !== 'cover' && page.type !== 'back' ? (
+                          {page.type !== 'cover' && page.type !== 'toc' && page.type !== 'back' ? (
                             <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
-                              {currentPages.filter(p => p.type !== 'cover' && p.type !== 'back').indexOf(page) + 1}
+                              {currentPages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back').indexOf(page) + 1}
                             </p>
                           ) : (
                             <p className="text-[10px] font-medium text-center text-muted-foreground/40">–</p>

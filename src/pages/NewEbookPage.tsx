@@ -991,8 +991,10 @@ const NewEbookPage = () => {
     ...(backPage ? [{ id: backPage.id, title: "Back Cover", type: "back" as const }] : []),
   ];
 
-  // Actual canvas page numbers (1-based) keyed by page ID
-  const pageNumberMap = new Map(ebookPages.map((p, i) => [p.id, i + 1]));
+  // Actual canvas page numbers (1-based) keyed by page ID — excludes cover, toc, back
+  const numberablePages = ebookPages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back');
+  const pageNumberMap = new Map<string, number>();
+  numberablePages.forEach((p, i) => pageNumberMap.set(p.id, i + 1));
 
   // Since sidebarChapters now includes all pages, the selected sidebar item IS the
   // selected canvas page — no need to map content pages to their chapter cover.
