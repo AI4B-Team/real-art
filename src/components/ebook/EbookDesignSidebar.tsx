@@ -1128,10 +1128,10 @@ const EbookDesignSidebar = ({
       {expandedSections.has('templates') && (
         <div className="px-3 pb-3 pt-2">
           <div className="grid grid-cols-3 gap-1.5">
-            {TEMPLATES.map(t => (
-              <button key={t.id} onClick={() => toast.success(`${t.name} template applied`)}
+            {TMPL_DEFS.map(t => (
+              <button key={t.id} onClick={() => onApplyTemplate?.(t.id)}
                 className="group rounded-lg border border-foreground/[0.06] hover:border-accent/40 overflow-hidden transition-all">
-                <div className="aspect-[3/4] flex items-center justify-center" style={{ backgroundColor: t.color }}>
+                <div className="aspect-[3/4] flex items-center justify-center" style={{ backgroundColor: t.bg }}>
                   <Presentation className="w-5 h-5 text-foreground/30" />
                 </div>
                 <p className="text-[10px] font-medium text-center py-1 text-foreground">{t.name}</p>
