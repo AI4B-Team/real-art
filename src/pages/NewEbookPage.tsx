@@ -963,28 +963,34 @@ const NewEbookPage = () => {
 
   const chapterGroups = buildChapterGroups(ebookPages);
   const coverPage = ebookPages.find((page) => page.type === "cover");
+  const tocPage = ebookPages.find((page) => page.type === "toc");
   const backPage = ebookPages.find((page) => page.type === "back");
+
+  // Include ALL pages in canvas order so page numbers are always accurate.
+  // Chapter rows use chapterSequence titles (from the generate outline) when available.
   const sidebarChapters = [
     ...(coverPage ? [{ id: coverPage.id, title: "Cover", type: "cover" as const }] : []),
-    ...chapterGroups.map((group, index) => ({
-      id: group.cover.id,
-      title: chapterSequence[index]?.title || group.cover.title,
-      type: "chapter" as const,
-    })),
+    ...(tocPage ? [{ id: tocPage.id, title: "Table of Contents", type: "toc" as const }] : []),
+    ...chapterGroups.flatMap((group, groupIdx) => [
+      {
+        id: group.cover.id,
+        title: chapterSequence[groupIdx]?.title || group.cover.title,
+        type: "chapter" as const,
+      },
+      // Include all content pages nested under this chapter
+      ...ebookPages
+        .slice(group.startIndex + 1, group.endIndex + 1)
+        .map(p => ({ id: p.id, title: p.title, type: p.type as "chapter-page" | "blank" })),
+    ]),
     ...(backPage ? [{ id: backPage.id, title: "Back Cover", type: "back" as const }] : []),
   ];
 
-  const selectedSidebarChapterId = (() => {
-    const currentPage = ebookPages.find((page) => page.id === selectedPageId);
-    if (!currentPage) return null;
-    if (currentPage.type === "cover" || currentPage.type === "back" || currentPage.type === "chapter") {
-      return currentPage.id;
-    }
-    if (currentPage.type === "chapter-page" || currentPage.type === "blank") {
-      return chapterGroups.find((group) => group.pageIds.includes(currentPage.id))?.cover.id || null;
-    }
-    return null;
-  })();
+  // Actual canvas page numbers (1-based) keyed by page ID
+  const pageNumberMap = new Map(ebookPages.map((p, i) => [p.id, i + 1]));
+
+  // Since sidebarChapters now includes all pages, the selected sidebar item IS the
+  // selected canvas page — no need to map content pages to their chapter cover.
+  const selectedSidebarChapterId = selectedPageId;
 
   const handleSidebarChapterAdd = (afterId: string, pageType?: string) => {
     const pt = (pageType || "chapter") as "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank";
@@ -1053,29 +1059,25 @@ const NewEbookPage = () => {
     }
   };
 
-  const handleSidebarChapterReorder = (from: number, to: number) => {
-    const chapterOffset = coverPage ? 1 : 0;
-    const fromChapterIndex = from - chapterOffset;
-    const toChapterIndex = to - chapterOffset;
-    if (
-      fromChapterIndex < 0 ||
-      toChapterIndex < 0 ||
-      fromChapterIndex >= chapterGroups.length ||
-      toChapterIndex >= chapterGroups.length
-    ) {
-      return;
-    }
+  const handleSidebarChapterReorder = (fromSidebarIdx: number, toSidebarIdx: number) => {
+    // Look up which chapter group each sidebar index belongs to by page ID
+    const fromPageId = sidebarChapters[fromSidebarIdx]?.id;
+    const toPageId = sidebarChapters[toSidebarIdx]?.id;
+    const fromGroupIdx = chapterGroups.findIndex(g => g.cover.id === fromPageId);
+    const toGroupIdx = chapterGroups.findIndex(g => g.cover.id === toPageId);
 
-    setChapterSequence((prev) => moveArrayItem(prev, fromChapterIndex, toChapterIndex));
-    setEbookPages((prev) => {
+    if (fromGroupIdx < 0 || toGroupIdx < 0 || fromGroupIdx === toGroupIdx) return;
+
+    setChapterSequence(prev => moveArrayItem(prev, fromGroupIdx, toGroupIdx));
+    setEbookPages(prev => {
       const groups = buildChapterGroups(prev);
       if (groups.length === 0) return prev;
       const firstChapterStart = groups[0].startIndex;
       const lastChapterEnd = groups[groups.length - 1].endIndex;
       const prefix = prev.slice(0, firstChapterStart);
       const suffix = prev.slice(lastChapterEnd + 1);
-      const chapterBlocks = groups.map((group) => prev.slice(group.startIndex, group.endIndex + 1));
-      return [...prefix, ...moveArrayItem(chapterBlocks, fromChapterIndex, toChapterIndex).flat(), ...suffix];
+      const chapterBlocks = groups.map(group => prev.slice(group.startIndex, group.endIndex + 1));
+      return [...prefix, ...moveArrayItem(chapterBlocks, fromGroupIdx, toGroupIdx).flat(), ...suffix];
     });
   };
 
@@ -2089,10 +2091,7 @@ const NewEbookPage = () => {
                 bookTitle={bookData.selectedTitle}
                 chapters={sidebarChapters}
                 selectedChapterId={selectedSidebarChapterId}
-                onChapterSelect={(id) => {
-                  const chapterGroup = chapterGroups.find((group) => group.cover.id === id);
-                  setSelectedPageId(chapterGroup?.cover.id || id);
-                }}
+                onChapterSelect={(id) => setSelectedPageId(id)}
                 onChapterAdd={handleSidebarChapterAdd}
                 onChapterTitleEdit={handleSidebarChapterTitleEdit}
                 onChapterDelete={handleSidebarChapterDelete}
@@ -2102,8 +2101,9 @@ const NewEbookPage = () => {
                 sidebarMode={sidebarMode}
                 onSidebarModeChange={setSidebarMode}
                 selectedPageTitle={ebookPages.find(p => p.id === selectedPageId)?.title}
-                pageCount={sidebarChapters.length}
-                pageIndex={sidebarChapters.findIndex(p => p.id === selectedSidebarChapterId)}
+                pageCount={ebookPages.length}
+                pageIndex={ebookPages.findIndex(p => p.id === selectedPageId)}
+                pageNumberMap={pageNumberMap}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
