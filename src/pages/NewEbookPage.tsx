@@ -1009,7 +1009,7 @@ const NewEbookPage = () => {
         : ebookPages.length;
     const newPage = {
       id: crypto.randomUUID(),
-      title: pt === "chapter" ? `Chapter ${chapterSequence.length + 1}` : "New Page",
+      title: pt === "chapter" ? `Chapter ${chapterSequence.length + 1}` : pt === "chapter-page" ? "Content Page" : pt === "blank" ? "Blank Page" : "New Page",
       type: pt,
     };
 
