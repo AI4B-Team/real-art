@@ -294,11 +294,34 @@ const TUTORIAL_CONTENT: Record<string, string> = {
   'Exporting Your Finished Book': "When your book is complete, you have several options for sharing and distribution.\n\nThe Share button in the top toolbar opens a modal where you can generate a public link, invite collaborators with different permission levels (Editing, Viewing, Commenting), or copy the book to your clipboard. Collaborators can work on the book simultaneously with real-time sync.\n\nFor PDF export, click the Download button to generate a high-quality PDF that preserves all your layouts, fonts, images, and design elements exactly as they appear on the canvas. The export process handles page sizing, margins, and bleed areas automatically.\n\nYou can also duplicate your entire project from the projects listing page — useful for creating variations or A/B testing different designs. Each duplicate is fully independent and can be modified without affecting the original.\n\nThe projects listing page serves as your dashboard, showing all your books with their status (Draft, Published, Generating), word count, chapter count, and last-modified date. From here you can open any book to continue editing, or start a fresh project.",
 };
 
+const TUTORIAL_CONTINUATION: Record<string, string> = {
+  'Your First AI-Generated Book': "The projects listing page acts as your home base. Every book you create appears here with its current status, word count, chapter count, and a thumbnail of the cover. You can open any project to continue editing, duplicate it to create a variation, or delete projects you no longer need.\n\nWhen you return to a project, the editor restores your exact state — scroll position, selected page, panel layout, and all unsaved edits are preserved. The auto-save system continuously writes your changes so you never lose work, even if you close the browser accidentally.\n\nFor collaborative projects, multiple people can work on the same book simultaneously. Each collaborator's cursor and selection are visible in real time, and changes merge automatically without conflicts. Use the Invite button in the top toolbar to add team members with different permission levels.\n\nTip: Start with a clear, specific prompt for the best results. Instead of \"Write a book about marketing,\" try \"A practical guide to social media marketing for small business owners, covering Instagram, TikTok, and LinkedIn strategies with real-world case studies.\" The more context you provide, the more tailored and useful the generated content will be.\n\nYou can also use the \"Rebuild My Book\" option at any time to regenerate content with different settings — change the tone from professional to conversational, increase the word count, or switch from text-only to text with images. The AI will rewrite the entire book while preserving your structural outline.",
+};
+
 const TUTORIAL_CONTENT_KEYS = Object.keys(TUTORIAL_CONTENT);
 
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => {
   const pal = CHAPTER_PALETTES[(num - 1) % CHAPTER_PALETTES.length];
-  const sampleText = TUTORIAL_CONTENT[title] || TUTORIAL_CONTENT[TUTORIAL_CONTENT_KEYS[(num - 1) % TUTORIAL_CONTENT_KEYS.length]];
+  const isContinuation = !title || title.trim() === '';
+
+  // For continuation pages, find the previous page's title to get continuation content
+  let sampleText: string;
+  if (isContinuation) {
+    // Use continuation content keyed by previous content page title, or fall back
+    const contKeys = Object.keys(TUTORIAL_CONTINUATION);
+    sampleText = TUTORIAL_CONTINUATION[contKeys[(num - 1) % contKeys.length]] || TUTORIAL_CONTENT[TUTORIAL_CONTENT_KEYS[(num - 1) % TUTORIAL_CONTENT_KEYS.length]];
+  } else {
+    sampleText = TUTORIAL_CONTENT[title] || TUTORIAL_CONTENT[TUTORIAL_CONTENT_KEYS[(num - 1) % TUTORIAL_CONTENT_KEYS.length]];
+  }
+
+  if (isContinuation) {
+    // No title, no divider — body starts near the top
+    return [
+      { id: `cp${num}-body`, type: 'text', x: 8, y: 5, width: 84, height: 88, content: sampleText, fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.65 },
+      { id: `cp${num}-pagenum`, type: 'text', x: 82, y: 95, width: 10, height: 4, content: `${num}`, fontSize: 10, fontFamily: 'Inter', textColor: '#9ca3af', textAlign: 'right' },
+    ];
+  }
+
   return [
     { id: `cp${num}-title`, type: 'text', x: 8, y: 4, width: 78, height: 10, content: title, fontSize: 16, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
     { id: `cp${num}-divider`, type: 'shape', x: 8, y: 15.5, width: 12, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
