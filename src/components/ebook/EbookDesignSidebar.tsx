@@ -4,7 +4,9 @@ import {
   Plus, Pencil, Search, Sparkles, Send, Upload, Loader2,
   Type, QrCode, Video, Music, Table, CheckSquare,
   Square, Circle, Triangle, Star, Hexagon, Diamond, Pentagon,
-  ArrowRight, ArrowDown, BarChart3, LineChart, PieChart,
+  ArrowRight, ArrowDown, ArrowUp, ArrowLeft, ChevronsRight, Move,
+  BarChart3, LineChart, PieChart, AreaChart, CircleDot, TrendingUp as TrendingUpIcon, Activity, Radar, Filter,
+  Grid3X3, List, ListOrdered, Columns2,
   Smile, Tag, StickyNote, ExternalLink, MapPin,
   GripVertical, Trash2, X, Check, Lock,
   LayoutGrid, LayoutTemplate, Presentation,
@@ -12,6 +14,9 @@ import {
   Shuffle, SlidersHorizontal, Play, Users, Library,
   Brain, Award, BookOpen, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch,
   Palette, BookMarked, AlignLeft, ImagePlus,
+  Sun, ThumbsUp, MessageSquare, Clock, Calendar, Settings, Share2,
+  UserPlus, Pointer, Maximize2, Volume2, FileDown, Link2,
+  Info, ListTree, Timer, Images, Hash, CodeSquare,
 } from 'lucide-react';
 import AIVAPanel from './AIVAPanel';
 import { toast } from 'sonner';
@@ -207,15 +212,36 @@ const TMPL_DEFS: TmplDef[] = [
   },
 ];
 
+// Browse categories with solid colorful icons
+const BROWSE_CATEGORIES = [
+  { id: 'widgets', name: 'Widgets', bgColor: 'bg-emerald-100', iconColor: 'text-emerald-600', icon: LayoutGrid },
+  { id: 'shapes', name: 'Shapes', bgColor: 'bg-violet-100', iconColor: 'text-violet-600', icon: Hexagon },
+  { id: 'icons', name: 'Icons', bgColor: 'bg-blue-100', iconColor: 'text-blue-600', icon: Sun },
+  { id: 'charts', name: 'Charts', bgColor: 'bg-pink-100', iconColor: 'text-pink-600', icon: BarChart3 },
+  { id: 'tables', name: 'Tables', bgColor: 'bg-orange-100', iconColor: 'text-orange-600', icon: Table },
+  { id: 'stickers', name: 'Stickers', bgColor: 'bg-yellow-100', iconColor: 'text-yellow-600', icon: Smile },
+];
+
+// Ordered category keys for rendering
+const ELEMENT_CATEGORY_ORDER = ['widgets', 'shapes', 'linesArrows', 'icons', 'charts', 'tables', 'stickers', 'buttons', 'actions'];
+
 const ELEMENT_CATEGORIES: Record<string, { title: string; items: { id: string; name: string; icon: any; color: string }[] }> = {
   widgets: {
     title: 'Widgets',
     items: [
+      { id: 'text-to-image', name: 'AI Image', icon: ImagePlus, color: '#A855F7' },
+      { id: 'map', name: 'Map', icon: MapPin, color: '#EF4444' },
       { id: 'table-widget', name: 'Table', icon: Table, color: '#10B981' },
+      { id: 'page-no', name: 'Page Number', icon: Hash, color: '#6B7280' },
+      { id: 'embed', name: 'Embed', icon: CodeSquare, color: '#3B82F6' },
+      { id: 'tooltip', name: 'Tooltip', icon: Info, color: '#06B6D4' },
+      { id: 'auto-toc', name: 'Auto TOC', icon: ListTree, color: '#8B5CF6' },
       { id: 'qr-code', name: 'QR Code', icon: QrCode, color: '#1F2937' },
-      { id: 'video-player', name: 'Video', icon: Video, color: '#EF4444' },
-      { id: 'checklist', name: 'Checklist', icon: CheckSquare, color: '#3B82F6' },
-    ],
+      { id: 'countdown', name: 'Countdown', icon: Timer, color: '#EF4444' },
+      { id: 'quiz', name: 'Quiz', icon: HelpCircle, color: '#F59E0B' },
+      { id: 'slideshow', name: 'Slideshow', icon: Images, color: '#EC4899' },
+      { id: 'video-player', name: 'Video Player', icon: Play, color: '#EF4444' },
+    ]
   },
   shapes: {
     title: 'Shapes',
@@ -227,14 +253,35 @@ const ELEMENT_CATEGORIES: Record<string, { title: string; items: { id: string; n
       { id: 'star', name: 'Star', icon: Star, color: '#FBBF24' },
       { id: 'diamond', name: 'Diamond', icon: Diamond, color: '#EC4899' },
       { id: 'pentagon', name: 'Pentagon', icon: Pentagon, color: '#6366F1' },
-    ],
+    ]
   },
-  arrows: {
+  linesArrows: {
     title: 'Lines & Arrows',
     items: [
       { id: 'arrow-right', name: 'Arrow Right', icon: ArrowRight, color: '#F97316' },
       { id: 'arrow-down', name: 'Arrow Down', icon: ArrowDown, color: '#F97316' },
-    ],
+      { id: 'arrow-up', name: 'Arrow Up', icon: ArrowUp, color: '#F97316' },
+      { id: 'arrow-left', name: 'Arrow Left', icon: ArrowLeft, color: '#F97316' },
+      { id: 'chevron-right', name: 'Chevron', icon: ChevronsRight, color: '#8B5CF6' },
+      { id: 'move-arrows', name: 'Move', icon: Move, color: '#FBBF24' },
+    ]
+  },
+  icons: {
+    title: 'Icons',
+    items: [
+      { id: 'sun', name: 'Sun', icon: Sun, color: '#F59E0B' },
+      { id: 'smile', name: 'Smile', icon: Smile, color: '#FBBF24' },
+      { id: 'star-icon', name: 'Star', icon: Star, color: '#FBBF24' },
+      { id: 'check', name: 'Check', icon: Check, color: '#10B981' },
+      { id: 'info', name: 'Info', icon: Info, color: '#3B82F6' },
+      { id: 'help', name: 'Help', icon: HelpCircle, color: '#8B5CF6' },
+      { id: 'thumbs-up', name: 'Like', icon: ThumbsUp, color: '#3B82F6' },
+      { id: 'message', name: 'Message', icon: MessageSquare, color: '#10B981' },
+      { id: 'clock', name: 'Clock', icon: Clock, color: '#F59E0B' },
+      { id: 'calendar', name: 'Calendar', icon: Calendar, color: '#8B5CF6' },
+      { id: 'settings', name: 'Settings', icon: Settings, color: '#6B7280' },
+      { id: 'share', name: 'Share', icon: Share2, color: '#3B82F6' },
+    ]
   },
   charts: {
     title: 'Charts',
@@ -242,16 +289,54 @@ const ELEMENT_CATEGORIES: Record<string, { title: string; items: { id: string; n
       { id: 'bar-chart', name: 'Bar Chart', icon: BarChart3, color: '#3B82F6' },
       { id: 'line-chart', name: 'Line Chart', icon: LineChart, color: '#10B981' },
       { id: 'pie-chart', name: 'Pie Chart', icon: PieChart, color: '#F59E0B' },
-    ],
+      { id: 'area-chart', name: 'Area Chart', icon: AreaChart, color: '#8B5CF6' },
+      { id: 'donut-chart', name: 'Donut Chart', icon: CircleDot, color: '#EC4899' },
+      { id: 'trending-chart', name: 'Trending', icon: TrendingUpIcon, color: '#10B981' },
+      { id: 'gauge-chart', name: 'Gauge', icon: Activity, color: '#F97316' },
+      { id: 'radar-chart', name: 'Radar', icon: Radar, color: '#6366F1' },
+      { id: 'funnel-chart', name: 'Funnel', icon: Filter, color: '#14B8A6' },
+    ]
+  },
+  tables: {
+    title: 'Tables & Data',
+    items: [
+      { id: 'basic-table', name: 'Basic Table', icon: Table, color: '#10B981' },
+      { id: 'data-grid', name: 'Data Grid', icon: Grid3X3, color: '#3B82F6' },
+      { id: 'list', name: 'List', icon: List, color: '#6B7280' },
+      { id: 'ordered-list', name: 'Numbered List', icon: ListOrdered, color: '#8B5CF6' },
+      { id: 'checklist', name: 'Checklist', icon: ListChecks, color: '#10B981' },
+      { id: 'columns-layout', name: 'Columns', icon: Columns2, color: '#06B6D4' },
+    ]
   },
   stickers: {
-    title: 'Stickers',
+    title: 'Stickers & Badges',
     items: [
       { id: 'emoji-smile', name: 'Happy', icon: Smile, color: '#FBBF24' },
+      { id: 'emoji-star', name: 'Star', icon: Star, color: '#FBBF24' },
+      { id: 'verified', name: 'Verified', icon: Check, color: '#10B981' },
       { id: 'tag', name: 'Tag', icon: Tag, color: '#F59E0B' },
-      { id: 'note', name: 'Note', icon: StickyNote, color: '#FBBF24' },
       { id: 'sparkles', name: 'Sparkles', icon: Sparkles, color: '#A855F7' },
-    ],
+      { id: 'note', name: 'Note', icon: StickyNote, color: '#FBBF24' },
+    ]
+  },
+  buttons: {
+    title: 'Buttons',
+    items: [
+      { id: 'button-primary', name: 'Primary', icon: MousePointerClick, color: '#3B82F6' },
+      { id: 'button-signup', name: 'Sign Up', icon: UserPlus, color: '#10B981' },
+      { id: 'button-cta', name: 'CTA', icon: Pointer, color: '#EC4899' },
+    ]
+  },
+  actions: {
+    title: 'Actions & Hotspots',
+    items: [
+      { id: 'action-link', name: 'Open Link', icon: ExternalLink, color: '#3B82F6' },
+      { id: 'action-page', name: 'Go to Page', icon: FileText, color: '#8B5CF6' },
+      { id: 'action-popup', name: 'Popup', icon: Maximize2, color: '#F59E0B' },
+      { id: 'action-audio', name: 'Play Audio', icon: Volume2, color: '#EC4899' },
+      { id: 'action-download', name: 'Download', icon: FileDown, color: '#10B981' },
+      { id: 'hotspot-link', name: 'Link Hotspot', icon: Link2, color: '#06B6D4' },
+    ]
   },
 };
 
@@ -1358,22 +1443,56 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* Components */}
+      {/* Elements */}
       <SectionHeader id="elements" title="Elements" icon={LayoutGrid} />
       {expandedSections.has('elements') && (
-        <div className="px-3 pb-3 pt-2 space-y-3">
+        <div className="px-3 pb-3 pt-2 space-y-4">
+          {/* Search */}
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <input type="text" value={elementSearch} onChange={e => setElementSearch(e.target.value)}
-              placeholder="Search elements..." className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
+              placeholder="Press [Enter] to Search" className="w-full pl-8 pr-3 py-2 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
           </div>
-          {Object.entries(ELEMENT_CATEGORIES).map(([key, cat]) => {
-            const filtered = cat.items.filter(i => !elementSearch || i.name.toLowerCase().includes(elementSearch.toLowerCase()));
+
+          {/* Browse Categories - Colorful Icon Grid */}
+          {!elementSearch && (
+            <div className="mb-2">
+              <p className="text-xs font-semibold text-foreground mb-3">Browse Categories</p>
+              <div className="grid grid-cols-3 gap-3">
+                {BROWSE_CATEGORIES.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      const el = document.getElementById(`element-category-${category.id}`);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="group flex flex-col items-center gap-2 cursor-pointer"
+                  >
+                    <div className={`w-16 h-16 ${category.bgColor} rounded-2xl flex items-center justify-center shadow-sm transition-all duration-300 group-hover:shadow-lg group-hover:scale-110`}>
+                      <category.icon className={`w-7 h-7 ${category.iconColor} transition-transform duration-300 group-hover:scale-110`} />
+                    </div>
+                    <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                      {category.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Element Categories - Ordered lists */}
+          {ELEMENT_CATEGORY_ORDER.map((key) => {
+            const category = ELEMENT_CATEGORIES[key];
+            if (!category) return null;
+            const filtered = category.items.filter(i => !elementSearch || i.name.toLowerCase().includes(elementSearch.toLowerCase()));
             if (filtered.length === 0) return null;
             return (
-              <div key={key}>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{cat.title}</p>
-                <div className="grid grid-cols-4 gap-1">
+              <div key={key} id={`element-category-${key}`} className="scroll-mt-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-semibold text-foreground">{category.title}</p>
+                  <button className="text-xs text-accent hover:text-accent/80 font-medium">More</button>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
                   {filtered.map(item => (
                     <Tooltip key={item.id}>
                       <TooltipTrigger asChild>
@@ -1386,9 +1505,9 @@ const EbookDesignSidebar = ({
                             e.dataTransfer.effectAllowed = 'copy';
                           }}
                           onClick={() => { onAddElement?.(item.id, item); toast.success(`${item.name} added`); }}
-                          className="flex flex-col items-center gap-0.5 p-2 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/5 transition-colors">
-                          <item.icon className="w-4 h-4" style={{ color: item.color }} />
-                          <span className="text-[8px] text-muted-foreground truncate w-full text-center">{item.name}</span>
+                          className="group flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg border border-foreground/[0.08] hover:border-accent/40 hover:bg-accent/[0.04] transition-all">
+                          <item.icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" style={{ color: item.color }} />
+                          <span className="text-xs font-medium text-muted-foreground text-center leading-tight group-hover:text-accent">{item.name}</span>
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>{item.name}</TooltipContent>
