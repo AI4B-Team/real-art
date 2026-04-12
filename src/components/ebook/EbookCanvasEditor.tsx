@@ -3889,9 +3889,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                 ))}
                                               </div>
                                             </div>
+                                            </div>
 
-                                            {/* Prompt input */}
-                                            <div className="px-3 py-2.5">
+                                            {/* Prompt input — pinned to bottom */}
+                                            <div className="px-3 py-2.5 shrink-0 border-t border-foreground/[0.06]">
                                               <div className="flex items-start gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
                                                 <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
                                                 <textarea
@@ -3899,11 +3900,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                   onChange={e => {
                                                     setContextualAIPrompt(e.target.value);
                                                     e.target.style.height = 'auto';
-                                                    e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+                                                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
                                                   }}
                                                   onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
                                                   placeholder="Ask AI anything about this page..."
-                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
+                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-none overflow-auto"
                                                   style={{ minHeight: '24px' }}
                                                   ref={(el) => {
                                                     if (!el) return;
