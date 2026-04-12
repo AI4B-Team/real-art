@@ -2137,6 +2137,7 @@ const NewEbookPage = () => {
                 onSelectElement={(id) => canvasRef.current?.selectElement(id)}
                 onEditElement={(id) => canvasRef.current?.editElement(id)}
                 onReplaceElementImage={(id) => canvasRef.current?.triggerReplaceImage(id)}
+                pages={ebookPages as any}
                 onApplyTemplate={async (templateId) => {
                   try {
                     const { getTemplate } = await import("@/lib/ebookTemplates");
