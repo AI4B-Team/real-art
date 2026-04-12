@@ -223,8 +223,11 @@ export const buildTocElements = (pages: Page[]): CanvasElement[] => {
     { id: 'toc-accent', type: 'shape', x: 8, y: 14, width: 14, height: 0.8, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' } as CanvasElement,
   ];
 
+  // Compute content page number (exclude cover, toc, back from numbering)
+  const numberablePages = pages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back');
+
   chapterPages.slice(0, maxItems).forEach((page, i) => {
-    const pageNum = pages.indexOf(page) + 1;
+    const pageNum = numberablePages.indexOf(page) + 1;
     const y = startY + i * itemSpacing;
     // Chapter number
     elements.push({ id: `toc-num${i}`, type: 'text', x: 8, y, width: 8, height: itemSpacing - 0.5, content: String(i + 1).padStart(2, '0'), fontSize: 10, fontFamily: 'Inter', textColor: '#0891b2', fontWeight: 'bold' } as CanvasElement);
@@ -2360,7 +2363,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           </div>
                           <div className="flex items-center gap-1 text-muted-foreground">
                             <PageIcon className="w-3 h-3" />
-                            <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>{pageIndex + 1}</span>
+                            <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>
+                              {page.type !== 'cover' && page.type !== 'back'
+                                ? currentPages.filter(p => p.type !== 'cover' && p.type !== 'back').indexOf(page) + 1
+                                : '–'}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -3271,9 +3278,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         <div className="relative flex items-start gap-2 justify-center">
                         {/* Page number */}
                         <div className="w-8 shrink-0 pt-2">
-                          <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
-                            {pageIndex + 1}
-                          </p>
+                          {page.type !== 'cover' && page.type !== 'back' ? (
+                            <p className={`text-[10px] font-medium text-center ${isSelected ? 'text-accent' : 'text-muted-foreground'}`}>
+                              {currentPages.filter(p => p.type !== 'cover' && p.type !== 'back').indexOf(page) + 1}
+                            </p>
+                          ) : (
+                            <p className="text-[10px] font-medium text-center text-muted-foreground/40">–</p>
+                          )}
                         </div>
                         {/* Page canvas */}
                         <div
@@ -3482,7 +3493,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           )}
 
                           <div className="absolute bottom-2 left-0 right-0 text-center pointer-events-none" style={{ zIndex: 0 }}>
-                            <span className="text-[10px] text-muted-foreground">{pageIndex + 1}</span>
+                            <span className="text-[10px] text-muted-foreground">
+                              {page.type !== 'cover' && page.type !== 'back'
+                                ? currentPages.filter(p => p.type !== 'cover' && p.type !== 'back').indexOf(page) + 1
+                                : ''}
+                            </span>
                           </div>
                         </div>
                         {/* Page action buttons - shown for selected page in edit modes */}

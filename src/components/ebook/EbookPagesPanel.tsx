@@ -132,9 +132,13 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
             <div key={page.id} className="group relative">
               {/* Page number */}
               <div className="flex items-start gap-2">
-                <span className={`text-xs font-medium mt-1 w-5 text-right shrink-0 ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
-                  {i + 1}
-                </span>
+                {page.type !== 'cover' && page.type !== 'back' ? (
+                  <span className={`text-xs font-medium mt-1 w-5 text-right shrink-0 ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
+                    {pages.filter(p => p.type !== 'cover' && p.type !== 'back').indexOf(page) + 1}
+                  </span>
+                ) : (
+                  <span className="w-5 shrink-0" />
+                )}
                 <div
                   draggable={page.type !== 'cover' && page.type !== 'back'}
                   onDragStart={() => { if (page.type !== 'cover' && page.type !== 'back') handleDragStart(i); }}

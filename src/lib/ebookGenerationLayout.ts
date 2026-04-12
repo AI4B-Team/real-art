@@ -325,19 +325,23 @@ const createTocElements = (pages: Page[], theme: BookTheme): CanvasElement[] => 
       stroke: "transparent",
       shapeType: "rectangle",
     },
-    ...chapterPages.map((page, index) => ({
-      id: `toc-item-${page.id}`,
-      type: "text" as const,
-      x: 10,
-      y: 25 + index * gap,
-      width: 80,
-      height: 5,
-      content: `${String(index + 1).padStart(2, "0")}. ${page.title} ${"·".repeat(28)} ${pages.indexOf(page) + 1}`,
-      fontSize: 12,
-      fontFamily: theme.bodyFont,
-      textColor: theme.palette.body,
-      lineHeight: 1.35,
-    })),
+    ...chapterPages.map((page, index) => {
+      const numberablePages = pages.filter((p) => p.type !== "cover" && p.type !== "toc" && p.type !== "back");
+      const pageNum = numberablePages.indexOf(page) + 1;
+      return {
+        id: `toc-item-${page.id}`,
+        type: "text" as const,
+        x: 10,
+        y: 25 + index * gap,
+        width: 80,
+        height: 5,
+        content: `${String(index + 1).padStart(2, "0")}. ${page.title} ${"·".repeat(28)} ${pageNum}`,
+        fontSize: 12,
+        fontFamily: theme.bodyFont,
+        textColor: theme.palette.body,
+        lineHeight: 1.35,
+      };
+    }),
   ];
 };
 
