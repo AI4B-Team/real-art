@@ -5,7 +5,7 @@ export type PageTypeOption = "chapter" | "chapter-page" | "blank";
 
 export const PAGE_TYPE_OPTIONS: { type: PageTypeOption; label: string; description: string; icon: string }[] = [
   { type: "chapter", label: "Chapter Cover", description: "Full image with chapter number & title", icon: "📖" },
-  { type: "chapter-page", label: "Chapter Content", description: "Top image with text content below", icon: "📄" },
+  { type: "chapter-page", label: "Content Page", description: "Text content with title and body", icon: "📄" },
   { type: "blank", label: "Blank Page", description: "Empty page to design from scratch", icon: "📃" },
 ];
 

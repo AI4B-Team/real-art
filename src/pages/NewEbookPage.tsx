@@ -1009,7 +1009,7 @@ const NewEbookPage = () => {
         : ebookPages.length;
     const newPage = {
       id: crypto.randomUUID(),
-      title: pt === "chapter" ? `Chapter ${chapterSequence.length + 1}` : "New Page",
+      title: pt === "chapter" ? `Chapter ${chapterSequence.length + 1}` : pt === "chapter-page" ? "Content Page" : pt === "blank" ? "Blank Page" : "New Page",
       type: pt,
     };
 
@@ -2125,7 +2125,23 @@ const NewEbookPage = () => {
                     if (!template) { toast({ title: "Template not found", variant: "destructive" }); return; }
                     const newElements: Record<string, any[]> = {};
                     ebookPages.forEach(page => {
-                      newElements[page.id] = template.buildPage(page as any, ebookPages as any, bookData.selectedTitle, bookDescription);
+                      const freshElements = template.buildPage(page as any, ebookPages as any, bookData.selectedTitle, bookDescription);
+                      // Preserve existing text content (body, title) from old elements
+                      const oldElements = savedPageElements[page.id] || [];
+                      if (oldElements.length > 0) {
+                        // Map old content by element role (body, title, etc.)
+                        const oldBody = oldElements.find((e: any) => e.id === 'body-text' || e.id?.includes('-body') || (e.id === 'body' && e.type === 'text'));
+                        const oldTitle = oldElements.find((e: any) => (e.id === 'page-title' || e.id?.includes('-title')) && e.type === 'text');
+                        freshElements.forEach((el: any) => {
+                          if ((el.id === 'body' || el.id === 'body-text' || el.id?.includes('-body')) && el.type === 'text' && !el.content && oldBody?.content) {
+                            el.content = oldBody.content;
+                          }
+                          if ((el.id === 'title' || el.id?.includes('-title') || el.id === 'page-title') && el.type === 'text' && oldTitle?.content && page.type === 'chapter-page') {
+                            el.content = oldTitle.content;
+                          }
+                        });
+                      }
+                      newElements[page.id] = freshElements;
                     });
                     setSavedPageElements(newElements);
                     try { localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(newElements)); } catch {}
