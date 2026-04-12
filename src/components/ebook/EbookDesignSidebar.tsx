@@ -50,6 +50,8 @@ interface EbookDesignSidebarProps {
   pageCount?: number;
   pageIndex?: number;
   onOpenImageSection?: () => void;
+  /** Actual canvas page numbers (1-based) keyed by page ID — ensures numbers match the canvas */
+  pageNumberMap?: Map<string, number>;
   /** Elements currently on the selected page — used to target existing elements */
   currentPageElements?: { id: string; type: string; content?: string }[];
   /** Select an existing element on the canvas */
@@ -947,7 +949,7 @@ const EbookDesignSidebar = ({
           const isCoverOrBack = ch.type === 'cover' || ch.type === 'back';
           const cfg = typeConfig[ch.type ?? ''] ?? typeConfig['blank'];
           const TypeIcon = cfg.icon;
-          const pageNum = isCoverOrBack ? null : (opts.pageNumOverride ?? (globalIdx + 1));
+          const pageNum = isCoverOrBack ? null : (opts.pageNumOverride ?? (pageNumberMap?.get(ch.id) ?? (globalIdx + 1)));
 
           const isCont = opts.isCont || ch.title.endsWith('(cont.)') || /\(cont\.\s*\d*\)$/.test(ch.title);
           const displayTitle = ch.title
