@@ -1187,7 +1187,7 @@ const EbookDesignSidebar = ({
                       } ${hasPages ? 'text-muted-foreground hover:text-foreground' : 'text-transparent pointer-events-none'}`}>
                       <ChevronRight className="w-3 h-3" />
                     </button>
-                    <BookMarked className={`w-3 h-3 shrink-0 ${isSelected ? 'text-accent' : 'text-accent/70'}`} />
+                    <BookOpen className={`w-3 h-3 shrink-0 ${isSelected ? 'text-accent' : 'text-accent/70'}`} />
                     <span className={`flex-1 min-w-0 text-[11px] font-semibold truncate ${
                       isSelected ? 'text-accent' : 'text-foreground/90'
                     }`}>
