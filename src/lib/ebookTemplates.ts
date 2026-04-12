@@ -142,9 +142,11 @@ const editorial: EbookTemplate = {
       ];
       case "back": return [
         rect("bg", 0, 0, 100, 100, bg),
-        rect("strip", 0, 44, 100, 12, "#18181b"),
-        txt("title", bookTitle, 8, 46, 84, 8, { fontSize: 20, fontFamily: "Playfair Display", textColor: fg, fontWeight: "bold" }),
-        txt("tag", "FIN", 8, 88, 20, 4, { fontSize: 9, fontFamily: "Inter", textColor: dim }),
+        rect("accent", 38, 26, 24, 0.6, "#18181b"),
+        txt("blurb", "A thoughtfully crafted guide designed to deliver practical insights and actionable strategies.", 14, 30, 72, 18, { fontSize: 11, fontFamily: "Georgia", textColor: dim, lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.3, dim),
+        txt("title", bookTitle, 14, 56, 72, 8, { fontSize: 14, fontFamily: "Playfair Display", textColor: fg, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 14, 66, 72, 5, { fontSize: 9, fontFamily: "Inter", textColor: dim, textAlign: "center" }),
       ];
       default: return [];
     }
@@ -197,9 +199,11 @@ const nordic: EbookTemplate = {
       ];
       case "back": return [
         rect("bg", 0, 0, 100, 100, green),
-        txt("title", bookTitle, 10, 40, 80, 12, { fontSize: 22, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 35, 55, 30, 0.5, sage),
-        txt("tag", "Thank you for reading", 10, 59, 80, 5, { fontSize: 10, fontFamily: "Inter", textColor: "rgba(255,255,255,0.65)", textAlign: "center" }),
+        rect("accent", 38, 26, 24, 0.5, sage),
+        txt("blurb", "Written with intention and care — may these pages guide you toward clarity and purpose.", 14, 30, 72, 18, { fontSize: 11, fontFamily: "Georgia", textColor: "rgba(255,255,255,0.7)", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, sage),
+        txt("title", bookTitle, 14, 56, 72, 8, { fontSize: 14, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 14, 66, 72, 5, { fontSize: 9, fontFamily: "Inter", textColor: "rgba(255,255,255,0.5)", textAlign: "center" }),
       ];
       default: return [];
     }
@@ -261,9 +265,11 @@ const luxe: EbookTemplate = {
         rect("fb", 8, 92, 84, 0.4, gold),
         rect("fl", 8, 8, 0.4, 84, gold),
         rect("fr", 91.6, 8, 0.4, 84, gold),
-        txt("title", bookTitle, 14, 40, 72, 12, { fontSize: 22, fontFamily: "Playfair Display", textColor: cream, fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 38, 54, 24, 0.4, gold),
-        txt("tag", "THANK YOU", 14, 58, 72, 5, { fontSize: 8, fontFamily: "Inter", textColor: gold, fontWeight: "bold", textAlign: "center" }),
+        rect("accent", 38, 26, 24, 0.4, gold),
+        txt("blurb", "An exclusive collection of premium insights — crafted for those who demand excellence in every detail.", 16, 30, 68, 18, { fontSize: 11, fontFamily: "Playfair Display", textColor: "rgba(245,240,225,0.7)", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, gold),
+        txt("title", bookTitle, 16, 56, 68, 8, { fontSize: 14, fontFamily: "Playfair Display", textColor: cream, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 16, 66, 68, 5, { fontSize: 8, fontFamily: "Inter", textColor: gold, textAlign: "center" }),
       ];
       default: return [];
     }
@@ -318,9 +324,11 @@ const slate: EbookTemplate = {
       ];
       case "back": return [
         rect("bg", 0, 0, 100, 100, dark),
-        rect("accent", 0, 46, 100, 8, blue),
-        txt("title", bookTitle, 8, 48, 84, 5, { fontSize: 16, fontFamily: "Inter", textColor: light, fontWeight: "bold" }),
-        txt("tag", "Thank you for reading", 8, 68, 50, 4, { fontSize: 9, fontFamily: "Inter", textColor: muted }),
+        rect("accent", 38, 26, 24, 0.6, blue),
+        txt("blurb", "Built for builders. The ideas in these pages are designed to help you ship faster and think clearer.", 12, 30, 76, 18, { fontSize: 11, fontFamily: "Inter", textColor: muted, lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, blue),
+        txt("title", bookTitle, 12, 56, 76, 8, { fontSize: 14, fontFamily: "Inter", textColor: light, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 12, 66, 76, 5, { fontSize: 9, fontFamily: "Inter", textColor: muted, textAlign: "center" }),
       ];
       default: return [];
     }
@@ -373,10 +381,12 @@ const terra: EbookTemplate = {
         txt("pnum", "", 86, 95, 8, 4, { fontSize: 8, fontFamily: "Inter", textColor: rust, textAlign: "right" }),
       ];
       case "back": return [
-        rect("bg", 0, 0, 100, 100, rust),
-        txt("title", bookTitle, 10, 40, 80, 12, { fontSize: 20, fontFamily: "Georgia", textColor: cream, fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 35, 55, 30, 0.5, sand),
-        txt("tag", "Thank you for reading", 10, 59, 80, 5, { fontSize: 10, fontFamily: "Inter", textColor: "rgba(255,255,255,0.65)", textAlign: "center" }),
+        rect("bg", 0, 0, 100, 100, cream),
+        rect("accent", 38, 26, 24, 0.6, rust),
+        txt("blurb", "Grounded in real-world experience and written with warmth — we hope this book brings you both knowledge and inspiration.", 14, 30, 72, 18, { fontSize: 11, fontFamily: "Georgia", textColor: "#78716c", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, rust),
+        txt("title", bookTitle, 14, 56, 72, 8, { fontSize: 14, fontFamily: "Georgia", textColor: rust, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 14, 66, 72, 5, { fontSize: 9, fontFamily: "Inter", textColor: "rgba(120,113,108,0.7)", textAlign: "center" }),
       ];
       default: return [];
     }
@@ -428,10 +438,13 @@ const split: EbookTemplate = {
         txt("pnum", "", 86, 95, 8, 4, { fontSize: 8, fontFamily: "Inter", textColor: violet, textAlign: "right" }),
       ];
       case "back": return [
-        rect("left", 0, 0, 50, 100, dark),
-        rect("right", 50, 0, 50, 100, violet),
-        txt("title", bookTitle, 5, 38, 42, 16, { fontSize: 20, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold" }),
-        txt("tag", "Thank you", 5, 58, 40, 6, { fontSize: 10, fontFamily: "Inter", textColor: "rgba(255,255,255,0.5)" }),
+        rect("bg", 0, 0, 100, 100, dark),
+        rect("stripe", 0, 0, 4, 100, violet),
+        rect("accent", 38, 26, 24, 0.5, "rgba(255,255,255,0.2)"),
+        txt("blurb", "Two perspectives. One mission. This book distills complex ideas into clear, actionable strategies you can use today.", 12, 30, 76, 18, { fontSize: 11, fontFamily: "Georgia", textColor: "rgba(255,255,255,0.6)", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, violet),
+        txt("title", bookTitle, 12, 56, 76, 8, { fontSize: 14, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 12, 66, 76, 5, { fontSize: 9, fontFamily: "Inter", textColor: "rgba(255,255,255,0.4)", textAlign: "center" }),
       ];
       default: return [];
     }
@@ -495,9 +508,11 @@ const broadsheet: EbookTemplate = {
         rect("bg", 0, 0, 100, 100, white),
         rect("rt", 0, 0, 100, 1.2, red),
         rect("rb", 0, 98.8, 100, 1.2, red),
-        txt("title", bookTitle.toUpperCase(), 4, 42, 92, 12, { fontSize: 24, fontFamily: "Georgia", textColor: black, fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 30, 56, 40, 0.4, black),
-        txt("tag", "A DEFINITIVE GUIDE", 4, 60, 92, 4, { fontSize: 8, fontFamily: "Inter", textColor: black, fontWeight: "bold", textAlign: "center" }),
+        rect("accent", 38, 26, 24, 0.4, black),
+        txt("blurb", "Every story matters. This publication was assembled with editorial precision to deliver the facts, insights, and perspectives you need.", 10, 30, 80, 18, { fontSize: 11, fontFamily: "Georgia", textColor: "#57534e", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, black),
+        txt("title", bookTitle.toUpperCase(), 10, 56, 80, 8, { fontSize: 12, fontFamily: "Georgia", textColor: black, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "A DEFINITIVE GUIDE", 10, 66, 80, 4, { fontSize: 8, fontFamily: "Inter", textColor: "#78716c", fontWeight: "bold", textAlign: "center" }),
       ];
       default: return [];
     }
@@ -553,9 +568,11 @@ const pastel: EbookTemplate = {
         rect("bg", 0, 0, 100, 100, violet),
         circle("b1", -16, -16, 60, "#7c3aed"),
         circle("b2", 74, 74, 50, "#0d9488"),
-        rect("card", 12, 32, 76, 36, "#ffffff", { borderRadius: 14 } as any),
-        txt("title", bookTitle, 16, 38, 68, 14, { fontSize: 18, fontFamily: "Georgia", textColor: dark, fontWeight: "bold", textAlign: "center" }),
-        txt("tag", "Thank you for reading ✦", 16, 56, 68, 6, { fontSize: 10, fontFamily: "Inter", textColor: violet, textAlign: "center" }),
+        rect("card", 12, 26, 76, 48, "#ffffff", { borderRadius: 14 } as any),
+        txt("blurb", "Made with love and a sprinkle of AI magic. We hope you enjoyed every page as much as we enjoyed creating it for you.", 18, 30, 64, 16, { fontSize: 11, fontFamily: "Georgia", textColor: "#52525b", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 50, 20, 0.3, violet),
+        txt("title", bookTitle, 18, 54, 64, 8, { fontSize: 14, fontFamily: "Georgia", textColor: dark, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading ✦", 18, 64, 64, 6, { fontSize: 10, fontFamily: "Inter", textColor: violet, textAlign: "center" }),
       ];
       default: return [];
     }
@@ -610,9 +627,11 @@ const mono: EbookTemplate = {
       ];
       case "back": return [
         rect("bg", 0, 0, 100, 100, bk),
-        txt("title", bookTitle.toUpperCase(), 8, 42, 84, 10, { fontSize: 22, fontFamily: "Inter", textColor: wh, fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 35, 54, 30, 0.3, gy),
-        txt("tag", "END", 8, 58, 84, 4, { fontSize: 9, fontFamily: "Inter", textColor: gy, textAlign: "center" }),
+        rect("accent", 38, 26, 24, 0.3, gy),
+        txt("blurb", "Stripped to the essentials. No filler. No fluff. Just the signal.", 14, 30, 72, 18, { fontSize: 11, fontFamily: "Inter", textColor: gy, lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.3, gy),
+        txt("title", bookTitle.toUpperCase(), 14, 56, 72, 8, { fontSize: 12, fontFamily: "Inter", textColor: wh, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "END", 14, 66, 72, 4, { fontSize: 9, fontFamily: "Inter", textColor: gy, textAlign: "center" }),
       ];
       default: return [];
     }
@@ -673,9 +692,11 @@ const aurora: EbookTemplate = {
         rect("bg", 0, 0, 100, 100, deep),
         circle("g1", -10, 30, 60, "rgba(6,182,212,0.14)"),
         circle("g2", 60, 60, 50, "rgba(99,102,241,0.12)"),
-        txt("title", bookTitle, 10, 40, 80, 12, { fontSize: 20, fontFamily: "Inter", textColor: fg, fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 38, 55, 24, 0.4, teal),
-        txt("tag", "Thank you", 10, 59, 80, 4, { fontSize: 9, fontFamily: "Inter", textColor: "rgba(240,253,250,0.45)", textAlign: "center" }),
+        rect("accent", 38, 26, 24, 0.4, teal),
+        txt("blurb", "Ideas that glow in the dark. We built this book to light the way forward — may it spark something brilliant in you.", 14, 30, 72, 18, { fontSize: 11, fontFamily: "Inter", textColor: "rgba(240,253,250,0.55)", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, teal),
+        txt("title", bookTitle, 14, 56, 72, 8, { fontSize: 14, fontFamily: "Inter", textColor: fg, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 14, 66, 72, 4, { fontSize: 9, fontFamily: "Inter", textColor: "rgba(240,253,250,0.35)", textAlign: "center" }),
       ];
       default: return [];
     }
@@ -729,9 +750,11 @@ const rose: EbookTemplate = {
       case "back": return [
         rect("bg", 0, 0, 100, 100, charcoal),
         circle("glow", 50, 40, 50, "rgba(225,29,72,0.1)"),
-        txt("title", bookTitle, 10, 40, 80, 12, { fontSize: 22, fontFamily: "Playfair Display", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 38, 55, 24, 0.4, pinkSoft),
-        txt("tag", "Thank you for reading", 10, 59, 80, 5, { fontSize: 10, fontFamily: "Inter", textColor: "rgba(255,255,255,0.5)", textAlign: "center" }),
+        rect("accent", 38, 26, 24, 0.4, pinkSoft),
+        txt("blurb", "Beauty lives in the details. This book was designed to inspire, empower, and leave you feeling a little more confident in your craft.", 14, 30, 72, 18, { fontSize: 11, fontFamily: "Playfair Display", textColor: "rgba(255,255,255,0.55)", lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, pinkSoft),
+        txt("title", bookTitle, 14, 56, 72, 8, { fontSize: 14, fontFamily: "Playfair Display", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 14, 66, 72, 5, { fontSize: 9, fontFamily: "Inter", textColor: "rgba(255,255,255,0.4)", textAlign: "center" }),
       ];
       default: return [];
     }
@@ -787,10 +810,12 @@ const sage: EbookTemplate = {
         txt("pnum", "", 86, 95, 8, 4, { fontSize: 8, fontFamily: "Inter", textColor: sageGreen, textAlign: "right" }),
       ];
       case "back": return [
-        rect("bg", 0, 0, 100, 100, sageGreen),
-        txt("title", bookTitle, 10, 40, 80, 12, { fontSize: 22, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 38, 55, 24, 0.4, "rgba(255,255,255,0.4)"),
-        txt("tag", "Thank you for reading", 10, 59, 80, 5, { fontSize: 10, fontFamily: "Inter", textColor: "rgba(255,255,255,0.65)", textAlign: "center" }),
+        rect("bg", 0, 0, 100, 100, linen),
+        rect("accent", 38, 26, 24, 0.5, sageGreen),
+        txt("blurb", "Rooted in nature, written with care. We hope this book helps you grow — one page at a time.", 14, 30, 72, 18, { fontSize: 11, fontFamily: "Georgia", textColor: text, lineHeight: 1.7, textAlign: "center" }),
+        rect("rule", 40, 52, 20, 0.4, sageMuted),
+        txt("title", bookTitle, 14, 56, 72, 8, { fontSize: 14, fontFamily: "Georgia", textColor: sageGreen, fontWeight: "bold", textAlign: "center" }),
+        txt("tag", "Thank you for reading", 14, 66, 72, 5, { fontSize: 9, fontFamily: "Inter", textColor: "rgba(54,83,20,0.5)", textAlign: "center" }),
       ];
       default: return [];
     }
