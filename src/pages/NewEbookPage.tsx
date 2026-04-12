@@ -2349,11 +2349,10 @@ const NewEbookPage = () => {
                 forceTab={sidebarMode === 'ai' ? 'director' : null}
                 selectedPageTitle={ebookPages.find(p => p.id === selectedPageId)?.title}
                 pageIndex={ebookPages.findIndex(p => p.id === selectedPageId)}
+                pageElements={savedPageElements}
                 onSendToChat={(prompt) => {
                   setSidebarMode('ai');
                   setIsLeftPanelCollapsed(false);
-                  // Small delay to let panel render, then we'd need a ref-based approach
-                  // For now, the user can see the prompt suggestion in the left panel
                 }}
               />
               )}
