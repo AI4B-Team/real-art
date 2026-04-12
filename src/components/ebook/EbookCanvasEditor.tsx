@@ -31,6 +31,7 @@ import AITextEditMenu, { type AIEditAction } from '@/components/ebook/AITextEdit
 import { supabase } from '@/integrations/supabase/client';
 import { WORKSPACE_MEMBERS } from '@/lib/workspaceMembers';
 import { useAIPageContext } from './useAIPageContext';
+import { getContextualImages, gatherPageText } from '@/lib/contextualImageSuggestions';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
