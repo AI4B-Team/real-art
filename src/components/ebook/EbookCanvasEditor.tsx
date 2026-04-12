@@ -1651,9 +1651,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
             <TypeBadge />
              <div className={`w-full h-full ${darkBg ? 'bg-white/[0.08] border-white/20' : 'bg-foreground/[0.04] border-foreground/10'} border-2 border-dashed flex flex-col items-center justify-center p-4 rounded-lg`}>
-               <p className={`text-sm font-medium mb-3 text-center ${darkBg ? 'text-white/70' : 'text-muted-foreground'}`}>Select A Recommended Image</p>
-               <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
-                 {STOCK_IMAGES.slice(0, 3).map((imgSrc, idx) => (
+                <p className={`text-sm font-medium mb-3 text-center ${darkBg ? 'text-white/70' : 'text-muted-foreground'}`}>Select A Recommended Image</p>
+                <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
+                  {getContextualImages({
+                    bookTitle,
+                    pageTitle: selectedPage?.title,
+                    pageType: selectedPage?.type,
+                    surroundingText: gatherPageText(pageElements[selectedPage?.id || ''] || []),
+                    excludeSrcs: [el.src || ''],
+                    count: 3,
+                  }).map((imgSrc, idx) => (
                    <div key={idx} className="relative group">
                      <button
                        onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image selected'); }}
@@ -1712,8 +1719,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           {isSelected && replaceModalElementId === el.id && (
             <div className="absolute inset-0 bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center p-6 z-[10]" onClick={e => e.stopPropagation()} onMouseDown={e => e.stopPropagation()}>
               <p className="text-sm font-medium text-foreground mb-3 text-center">Select A Recommended Image</p>
-              <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
-                {STOCK_IMAGES.filter(src => src !== el.src).slice(0, 3).map((imgSrc, idx) => (
+               <div className="flex flex-wrap gap-3 mb-4 justify-center max-w-[95%]">
+                {getContextualImages({
+                    bookTitle,
+                    pageTitle: selectedPage?.title,
+                    pageType: selectedPage?.type,
+                    surroundingText: gatherPageText(pageElements[selectedPage?.id || ''] || []),
+                    excludeSrcs: [el.src || ''],
+                    count: 3,
+                  }).map((imgSrc, idx) => (
                   <div key={idx} className="relative group">
                     <button
                       onClick={e => { e.stopPropagation(); updateElement(el.id, { src: imgSrc, isPlaceholder: false }); toast.success('Image replaced'); setReplaceModalElementId(null); }}
@@ -2232,7 +2246,14 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const isSmall = el.width < 25 || el.height < 25;
     const isFullPage = el.width >= 90 && el.height >= 90;
     const isReplacing = replaceModalElementId === el.id;
-    const suggestions = STOCK_IMAGES.filter(src => src !== el.src).slice(0, 3);
+    const suggestions = getContextualImages({
+      bookTitle,
+      pageTitle: selectedPage?.title,
+      pageType: selectedPage?.type,
+      surroundingText: gatherPageText(pageElements[selectedPage?.id || ''] || []),
+      excludeSrcs: [el.src || ''],
+      count: 3,
+    });
     const left = `${el.x + el.width / 2}%`;
     const top = `${el.y + el.height / 2}%`;
 
