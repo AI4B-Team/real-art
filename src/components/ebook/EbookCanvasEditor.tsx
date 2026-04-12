@@ -47,6 +47,8 @@ export interface Page {
   layout?: string;
 }
 
+export type ImageWrapMode = 'in-front' | 'behind' | 'square' | 'tight' | 'top-bottom';
+
 export interface CanvasElement {
   id: string;
   type: 'image' | 'shape' | 'text' | 'interactive';
@@ -72,6 +74,9 @@ export interface CanvasElement {
   shadowX?: number; shadowY?: number; shadowBlur?: number; shadowColor?: string;
   objectFit?: 'cover' | 'contain' | 'fill';
   linkUrl?: string;
+  // Text wrapping around images
+  wrapMode?: ImageWrapMode;
+  wrapMargin?: number; // margin in % around the image for text wrapping
 }
 
 export type AccessMode = 'editing' | 'viewing' | 'commenting' | 'admin';
