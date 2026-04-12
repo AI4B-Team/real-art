@@ -459,6 +459,17 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
   }
 };
 
+/** Return stored elements if non-empty, otherwise generate defaults.
+ *  Blank pages intentionally have 0 elements, so skip fallback for them. */
+const resolvePageElements = (
+  stored: Record<string, CanvasElement[]>,
+  page: Page, allPages: Page[], bookTitle: string,
+): CanvasElement[] => {
+  const elems = stored[page.id];
+  if (elems && (elems.length > 0 || page.type === 'blank')) return elems;
+  return getElementsForPage(page, allPages, bookTitle);
+};
+
 const PAGE_TYPE_OPTIONS: { type: Page['type']; label: string; description: string; icon: string }[] = [
   { type: 'chapter', label: 'Chapter Cover', description: 'Full image with chapter number & title', icon: '📖' },
   { type: 'chapter-page', label: 'Content Page', description: 'Text content with title and body', icon: '📄' },
@@ -783,7 +794,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const q = findQuery.toLowerCase();
     const matches: { pageId: string; elementId: string; indices: number[] }[] = [];
     currentPages.forEach(page => {
-      const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
       elems.forEach(el => {
         if (el.type === 'text' && el.content) {
           const content = el.content.toLowerCase();
@@ -833,7 +844,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (findMatches.length === 0 || !findQuery.trim()) return;
     const match = findMatches[currentMatchIndex];
     if (!match) return;
-    const elems = pageElements[match.pageId] || getElementsForPage(currentPages.find(p => p.id === match.pageId)!, currentPages, bookTitle);
+    const matchPage = currentPages.find(p => p.id === match.pageId)!;
+    const elems = resolvePageElements(pageElements, matchPage, currentPages, bookTitle);
     const el = elems.find(e => e.id === match.elementId);
     if (!el || !el.content) return;
     const newContent = el.content.substring(0, match.indices[0]) + replaceQuery + el.content.substring(match.indices[0] + findQuery.length);
@@ -847,7 +859,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     let count = 0;
     const newPageElements = { ...pageElements };
     currentPages.forEach(page => {
-      const elems = newPageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      const elems = resolvePageElements(newPageElements, page, currentPages, bookTitle);
       let changed = false;
       const updated = elems.map(el => {
         if (el.type === 'text' && el.content && el.content.toLowerCase().includes(findQuery.toLowerCase())) {
@@ -985,8 +997,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const selectedPage = currentPages.find(p => p.id === selectedPageId) || currentPages[0];
 
   // Init elements for current page
-  const currentElements = pageElements[selectedPage?.id || ''] ||
-    (selectedPage ? getElementsForPage(selectedPage, currentPages, bookTitle) : []);
+  const currentElements = selectedPage
+    ? resolvePageElements(pageElements, selectedPage, currentPages, bookTitle)
+    : [];
 
   const updateElements = useCallback((pageId: string, newElements: CanvasElement[], skipUndo = false) => {
     if (!skipUndo) {
@@ -1098,7 +1111,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const newPages = [...currentPages];
     newPages.splice(idx + 1, 0, dup);
     setPages(newPages);
-    setPageElements(prev => ({ ...prev, [dup.id]: [...(prev[pageId] || getElementsForPage(page, currentPages, bookTitle))] }));
+    setPageElements(prev => ({ ...prev, [dup.id]: [...resolvePageElements(prev, page, currentPages, bookTitle)] }));
     onPageSelect(dup.id);
     toast.success('Page duplicated');
   };
@@ -1163,7 +1176,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       const pagesToScan = scope === 'page' && selectedPage ? [selectedPage] : currentPages;
       const results: { pageId: string; elementId: string; content: string }[] = [];
       pagesToScan.forEach(page => {
-        const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+        const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
         elems.forEach(el => {
           if (el.type === 'text' && el.content) {
             results.push({ pageId: page.id, elementId: el.id, content: el.content });
@@ -1177,7 +1190,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         const next = { ...prev };
         updates.forEach(({ pageId, elementId, content }) => {
           const page = currentPages.find(p => p.id === pageId);
-          const elems = next[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+          const elems = page ? resolvePageElements(next, page, currentPages, bookTitle) : (next[pageId] || []);
           next[pageId] = elems.map(e => e.id === elementId ? { ...e, content } : e);
         });
         return next;
@@ -1194,7 +1207,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     setPageContent: (pageId: string, content: string) => {
       setPageElements(prev => {
         const page = currentPages.find(p => p.id === pageId);
-        const elems = prev[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+        const elems = page ? resolvePageElements(prev, page, currentPages, bookTitle) : (prev[pageId] || []);
 
         // Handle image insertion via __IMAGE__ prefix
         if (content.startsWith('__IMAGE__')) {
@@ -1381,7 +1394,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     e.preventDefault();
     e.stopPropagation();
     const page = currentPages.find(p => p.id === pageId);
-    const elems = pageElements[pageId] || (page ? getElementsForPage(page, currentPages, bookTitle) : []);
+    const elems = page ? resolvePageElements(pageElements, page, currentPages, bookTitle) : (pageElements[pageId] || []);
     
     // Find all elements whose bounding box contains the click point
     const pageEl = pageRefs.current[pageId];
@@ -2485,7 +2498,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               <div className="flex-1 overflow-auto no-scrollbar px-6 pt-6">
                 <div className="flex flex-wrap content-start gap-y-6 items-start pb-4">
                   {currentPages.map((page, pageIndex) => {
-                    const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+                    const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     const getPageTypeIcon = () => {
                       switch (page.type) {
@@ -3598,7 +3611,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               <div ref={scrollContainerRef} className="flex-1 overflow-auto no-scrollbar py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
                 <div className="flex flex-col items-center gap-8" style={{ marginLeft: panelOffset }} onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
                   {currentPages.map((page, pageIndex) => {
-                    const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+                    const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     const pageTypeLabel = page.type === 'cover' ? 'Cover' : page.type === 'toc' ? 'Table of Contents' : page.type === 'back' ? 'Back Cover' : page.type === 'chapter' ? 'Chapter Cover' : page.type === 'chapter-page' ? 'Content Page' : 'Page';
                     return (
