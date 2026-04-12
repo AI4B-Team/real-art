@@ -116,14 +116,13 @@ const editorial: EbookTemplate = {
         ...tocRows(allPages, 24, 7, 11, "#aaaaaa", "Inter", 10),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, "#0a0a0a"),
-        rect("num-bg", 8, 8, 20, 20, "#ffffff"),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 55, 100, 45, "rgba(10,10,10,0.75)"),
         txt("num", String(allPages.filter(p => p.type === "chapter").indexOf(page) + 1).padStart(2, "0"),
-          8, 8, 20, 20, { fontSize: 28, fontFamily: "Georgia", textColor: "#000000", fontWeight: "bold", textAlign: "center" }),
-        rect("rule", 8, 34, 84, 0.4, "#333333"),
-        txt("title", page.title, 8, 36, 84, 38, { fontSize: 28, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", lineHeight: 1.1 }),
-        rect("accent", 8, 78, 30, 0.8, "#ffffff"),
-        txt("desc", "Read this chapter carefully", 8, 82, 84, 10, { fontSize: 11, fontFamily: "Inter", textColor: "#666666" }),
+          8, 60, 20, 8, { fontSize: 28, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold" }),
+        rect("rule", 8, 70, 30, 0.4, "#ffffff"),
+        txt("title", page.title, 8, 72, 84, 14, { fontSize: 24, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", lineHeight: 1.1 }),
+        txt("desc", "", 8, 88, 84, 8, { fontSize: 11, fontFamily: "Inter", textColor: "rgba(255,255,255,0.6)" }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, "#0a0a0a"),
@@ -176,12 +175,12 @@ const nordic: EbookTemplate = {
         rect("foot", 0, 96, 100, 4, green),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, pale),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 55, 100, 45, "rgba(26,35,24,0.8)"),
         rect("left", 0, 0, 8, 100, green),
-        txt("num", `0${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 12, 8, 30, 14, { fontSize: 40, fontFamily: "Georgia", textColor: green, fontWeight: "bold" }),
-        rect("rule", 12, 26, 80, 0.6, green),
-        txt("title", page.title, 12, 30, 80, 30, { fontSize: 22, fontFamily: "Georgia", textColor: ink, fontWeight: "bold", lineHeight: 1.2 }),
-        img("cover-img", 12, 64, 76, 28, "", { borderRadius: 3 } as any),
+        txt("num", `0${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 12, 60, 30, 10, { fontSize: 36, fontFamily: "Georgia", textColor: "#7fad79", fontWeight: "bold" }),
+        rect("rule", 12, 72, 80, 0.6, "#7fad79"),
+        txt("title", page.title, 12, 75, 80, 16, { fontSize: 22, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", lineHeight: 1.2 }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, pale),
@@ -238,13 +237,13 @@ const luxe: EbookTemplate = {
         rect("foot-rule", 8, 92, 84, 0.5, gold),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, navy),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 0, 100, 100, "rgba(15,27,53,0.7)"),
         rect("gold-l", 8, 8, 0.8, 84, gold),
         rect("gold-t", 8, 8, 84, 0.8, gold),
-        txt("num", `Chapter ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 14, 18, 72, 7, { fontSize: 11, fontFamily: "Inter", textColor: gold, fontWeight: "bold", textAlign: "center" }),
-        rect("rule-c", 30, 28, 40, 0.5, gold),
-        txt("title", page.title, 12, 31, 76, 36, { fontSize: 24, fontFamily: "Georgia", textColor: cream, fontWeight: "bold", lineHeight: 1.12, textAlign: "center" }),
-        img("img", 20, 70, 60, 20, "", { borderRadius: 2 } as any),
+        txt("num", `Chapter ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 14, 60, 72, 7, { fontSize: 11, fontFamily: "Inter", textColor: gold, fontWeight: "bold", textAlign: "center" }),
+        rect("rule-c", 30, 69, 40, 0.5, gold),
+        txt("title", page.title, 12, 72, 76, 18, { fontSize: 24, fontFamily: "Georgia", textColor: cream, fontWeight: "bold", lineHeight: 1.12, textAlign: "center" }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, cream),
@@ -303,14 +302,12 @@ const slate: EbookTemplate = {
         rect("foot", 0, 96, 100, 4, blue),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, dark),
-        rect("stripe", 0, 0, 100, 50, "#253045"),
-        img("img", 0, 0, 100, 50, ""),
-        rect("img-overlay", 0, 35, 100, 15, "rgba(30,37,48,0.85)"),
-        txt("num", `${String(allPages.filter(p => p.type === "chapter").indexOf(page) + 1).padStart(2, "0")}`, 8, 36, 25, 12, { fontSize: 28, fontFamily: "Inter", textColor: blue, fontWeight: "bold" }),
-        rect("rule", 8, 52, 84, 0.4, blue),
-        txt("title", page.title, 8, 55, 84, 28, { fontSize: 22, fontFamily: "Inter", textColor: light, fontWeight: "bold", lineHeight: 1.15 }),
-        txt("sub", "Read on to discover key insights", 8, 86, 70, 6, { fontSize: 10, fontFamily: "Inter", textColor: muted }),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 55, 100, 45, "rgba(30,37,48,0.85)"),
+        txt("num", `${String(allPages.filter(p => p.type === "chapter").indexOf(page) + 1).padStart(2, "0")}`, 8, 60, 25, 10, { fontSize: 28, fontFamily: "Inter", textColor: blue, fontWeight: "bold" }),
+        rect("rule", 8, 72, 84, 0.4, blue),
+        txt("title", page.title, 8, 75, 84, 14, { fontSize: 22, fontFamily: "Inter", textColor: light, fontWeight: "bold", lineHeight: 1.15 }),
+        txt("sub", "", 8, 90, 70, 6, { fontSize: 10, fontFamily: "Inter", textColor: muted }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, light),
@@ -365,13 +362,12 @@ const terra: EbookTemplate = {
         rect("foot-rule", 8, 92, 84, 0.6, terracotta),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, cream),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 55, 100, 45, "rgba(60,30,10,0.75)"),
         rect("terra-left", 0, 0, 10, 100, terracotta),
-        circle("dec-big", -10, 60, 50, sand),
-        txt("num", `0${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 14, 6, 30, 18, { fontSize: 46, fontFamily: "Georgia", textColor: terracotta, fontWeight: "bold" }),
-        rect("rule", 14, 28, 78, 0.6, terracotta),
-        txt("title", page.title, 14, 32, 78, 28, { fontSize: 22, fontFamily: "Georgia", textColor: ink, fontWeight: "bold", lineHeight: 1.2 }),
-        img("img", 14, 64, 72, 26, "", { borderRadius: 6 } as any),
+        txt("num", `0${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 14, 60, 30, 12, { fontSize: 40, fontFamily: "Georgia", textColor: sand, fontWeight: "bold" }),
+        rect("rule", 14, 74, 78, 0.6, sand),
+        txt("title", page.title, 14, 77, 78, 16, { fontSize: 22, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", lineHeight: 1.2 }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, cream),
@@ -425,13 +421,12 @@ const split: EbookTemplate = {
         ...tocRows(allPages, 8, 7, 12, dark, "Inter", 10).map(e => ({ ...e, x: 44, width: 52 })),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, lt),
-        rect("header-bar", 0, 0, 100, 35, violet),
-        txt("num", `CH ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 5, 5, 20, 12, { fontSize: 10, fontFamily: "Inter", textColor: "rgba(255,255,255,0.5)", fontWeight: "bold" }),
-        txt("title", page.title, 5, 10, 90, 20, { fontSize: 26, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", lineHeight: 1.1 }),
-        rect("left-col-rule", 48, 38, 0.4, 58, mid),
-        img("img", 2, 38, 44, 54, "", { borderRadius: 4 } as any),
-        txt("desc", "Chapter overview", 52, 40, 44, 50, { fontSize: 11, fontFamily: "Inter", textColor: dark, lineHeight: 1.6 }),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 55, 100, 45, "rgba(30,10,60,0.8)"),
+        txt("num", `CH ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 8, 60, 20, 6, { fontSize: 10, fontFamily: "Inter", textColor: "rgba(255,255,255,0.5)", fontWeight: "bold" }),
+        txt("title", page.title, 8, 67, 84, 16, { fontSize: 26, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", lineHeight: 1.1 }),
+        rect("rule", 8, 85, 30, 0.4, violet),
+        txt("desc", "", 8, 88, 84, 8, { fontSize: 11, fontFamily: "Inter", textColor: "rgba(255,255,255,0.6)", lineHeight: 1.6 }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, lt),
@@ -491,16 +486,14 @@ const newspaper: EbookTemplate = {
         rect("foot-rule", 4, 92, 92, 0.4, black),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, white),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 55, 100, 45, "rgba(255,255,255,0.92)"),
         rect("rule-t", 0, 0, 100, 1.5, red),
-        txt("section", `CHAPTER ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 4, 4, 92, 5, { fontSize: 8, fontFamily: "Inter", textColor: red, fontWeight: "bold" }),
-        rect("rule2", 4, 11, 92, 0.4, black),
-        txt("title", page.title, 4, 14, 92, 24, { fontSize: 28, fontFamily: "Georgia", textColor: black, fontWeight: "bold", lineHeight: 1.08 }),
-        rect("rule3", 4, 40, 92, 0.8, black),
-        img("img", 4, 43, 55, 34, ""),
-        rect("col-rule", 62, 43, 0.3, 34, black),
-        txt("summary", "In this chapter we explore the key themes and ideas that define this section of the book.", 64, 43, 34, 34, { fontSize: 10, fontFamily: "Georgia", textColor: black, lineHeight: 1.6 }),
-        rect("rule4", 4, 79, 92, 0.4, black),
+        txt("section", `CHAPTER ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 4, 58, 92, 5, { fontSize: 8, fontFamily: "Inter", textColor: red, fontWeight: "bold" }),
+        rect("rule2", 4, 64, 92, 0.4, black),
+        txt("title", page.title, 4, 67, 92, 18, { fontSize: 28, fontFamily: "Georgia", textColor: black, fontWeight: "bold", lineHeight: 1.08 }),
+        rect("rule3", 4, 87, 92, 0.8, black),
+        txt("summary", "", 4, 89, 92, 8, { fontSize: 10, fontFamily: "Georgia", textColor: black, lineHeight: 1.6 }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, white),
@@ -559,13 +552,11 @@ const pastel: EbookTemplate = {
         circle("dec-foot", -5, 90, 20, mint),
       ];
       case "chapter": return [
-        rect("bg", 0, 0, 100, 100, lav),
-        circle("blob", 70, -20, 60, "#ddd6fe"),
-        circle("blob2", -10, 70, 50, mint),
-        rect("num-pill", 8, 8, 18, 8, violet, { borderRadius: 8 } as any),
-        txt("num", `Chapter ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 8, 8, 18, 8, { fontSize: 9, fontFamily: "Inter", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
-        txt("title", page.title, 8, 20, 84, 28, { fontSize: 24, fontFamily: "Georgia", textColor: dark, fontWeight: "bold", lineHeight: 1.15 }),
-        img("img", 8, 52, 84, 36, "", { borderRadius: 10 } as any),
+        img("chapter-img", 0, 0, 100, 100, ""),
+        rect("overlay", 0, 55, 100, 45, "rgba(30,0,60,0.7)"),
+        rect("num-pill", 8, 60, 18, 8, violet, { borderRadius: 8 } as any),
+        txt("num", `Chapter ${allPages.filter(p => p.type === "chapter").indexOf(page) + 1}`, 8, 60, 18, 8, { fontSize: 9, fontFamily: "Inter", textColor: "#ffffff", fontWeight: "bold", textAlign: "center" }),
+        txt("title", page.title, 8, 72, 84, 18, { fontSize: 24, fontFamily: "Georgia", textColor: "#ffffff", fontWeight: "bold", lineHeight: 1.15 }),
       ];
       case "chapter-page": return [
         rect("bg", 0, 0, 100, 100, "#faf9ff"),
