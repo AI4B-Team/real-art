@@ -584,7 +584,7 @@ const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
   onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage, onAIClick,
   sidebarMode = 'design', onSidebarModeChange, selectedPageTitle, pageCount, pageIndex, onOpenImageSection,
-  pageNumberMap, currentPageElements = [], onSelectElement, onEditElement, onReplaceElementImage,
+  pageNumberMap, currentPageElements = [], onSelectElement, onEditElement, onReplaceElementImage, onApplyTemplate,
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
