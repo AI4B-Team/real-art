@@ -34,6 +34,8 @@ interface PageSettingsPanelProps {
   pageIndex?: number;
   onSendToChat?: (prompt: string) => void;
   forceTab?: 'pages' | 'format' | 'director' | null;
+  /** Real canvas elements keyed by page ID — used for accurate thumbnails */
+  pageElements?: Record<string, import('./EbookCanvasEditor').CanvasElement[]>;
 }
 
 type BgTab = 'color' | 'pattern' | 'image';
