@@ -1637,8 +1637,82 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     }
 
     if (el.type === 'text') {
+      // Calculate wrap floats from sibling images on the same page
+      const pageElems = pageId ? (pageElements[pageId] || []) : [];
+      const wrapImages = pageElems.filter(
+        sibling => sibling.type === 'image' && sibling.id !== el.id &&
+        sibling.wrapMode && sibling.wrapMode !== 'in-front' && sibling.wrapMode !== 'behind'
+      );
+
+      // Build CSS float elements for images that overlap this text element
+      const wrapFloats: React.ReactNode[] = [];
+      wrapImages.forEach((img) => {
+        const margin = img.wrapMargin ?? 2;
+        // Convert image coords relative to this text element's bounds
+        const relLeft = ((img.x - el.x) / el.width) * 100;
+        const relTop = ((img.y - el.y) / el.height) * 100;
+        const relWidth = (img.width / el.width) * 100;
+        const relHeight = (img.height / el.height) * 100;
+        const marginW = (margin / el.width) * 100;
+        const marginH = (margin / el.height) * 100;
+
+        // Check overlap
+        const imgRight = img.x + img.width;
+        const imgBottom = img.y + img.height;
+        const elRight = el.x + el.width;
+        const elBottom = el.y + el.height;
+        if (imgRight + margin <= el.x || img.x - margin >= elRight) return;
+        if (imgBottom + margin <= el.y || img.y - margin >= elBottom) return;
+
+        if (img.wrapMode === 'top-bottom') {
+          // Insert a full-width spacer at the image's vertical position
+          wrapFloats.push(
+            <div key={`wrap-tb-${img.id}`} style={{
+              width: '100%',
+              height: `${relHeight + marginH * 2}%`,
+              float: 'left' as const,
+              clear: 'both' as const,
+              marginTop: `${Math.max(0, relTop - marginH)}%`,
+            }} />
+          );
+        } else {
+          // Square or tight: float left or right based on position
+          const isLeftSide = img.x + img.width / 2 < el.x + el.width / 2;
+          const floatW = relWidth + marginW * 2;
+          const floatH = relHeight + marginH * 2;
+          wrapFloats.push(
+            <div key={`wrap-sq-${img.id}`} style={{
+              width: `${Math.min(floatW, 100)}%`,
+              height: `${Math.min(floatH, 100)}%`,
+              float: isLeftSide ? 'left' : 'right',
+              marginTop: `${Math.max(0, relTop - marginH)}%`,
+              shapeOutside: img.wrapMode === 'tight'
+                ? `inset(${marginH}% ${marginW}% ${marginH}% ${marginW}% round ${img.borderRadius || 0}px)`
+                : undefined,
+              shapeMargin: img.wrapMode === 'tight' ? `${margin * 0.3}%` : undefined,
+            } as React.CSSProperties} />
+          );
+        }
+      });
+
+      // For 'behind' mode images, render text with higher z-index
+      const hasBehindImage = pageElems.some(
+        sibling => sibling.type === 'image' && sibling.wrapMode === 'behind'
+      );
+      const textZIndex = hasBehindImage ? Math.max((el.zIndex ?? 1), 10) : el.zIndex;
+
+      const textStyle: React.CSSProperties = {
+        fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
+        fontFamily: el.fontFamily, color: el.textColor,
+        textAlign: el.textAlign || 'left',
+        fontWeight: el.fontWeight || 'normal',
+        fontStyle: el.fontStyle || 'normal',
+        textDecoration: el.textDecoration || 'none',
+        lineHeight: el.lineHeight ?? 1.5,
+      };
+
       return (
-        <div key={el.id} className={`${selectionBorder} group/text`} style={{ ...style, minHeight: 20 }}
+        <div key={el.id} className={`${selectionBorder} group/text`} style={{ ...style, minHeight: 20, zIndex: textZIndex ?? style.zIndex }}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onClick={() => { if (isPageLocked) return; if (isSelected && !isEditing) { setEditingTextId(el.id); } }}
@@ -1658,31 +1732,24 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               onKeyDown={e => { if (e.key === 'Escape') { if (editableTextRef.current) updateElement(el.id, { content: editableTextRef.current.innerHTML }); setEditingTextId(null); } }}
               onMouseDown={e => e.stopPropagation()}
               onClick={e => e.stopPropagation()}
-              dangerouslySetInnerHTML={{ __html: el.content || '' }}
               className="w-full h-full overflow-auto p-2 whitespace-pre-wrap outline-none cursor-text"
-              style={{
-                fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
-                fontFamily: el.fontFamily, color: el.textColor,
-                textAlign: el.textAlign || 'left',
-                fontWeight: el.fontWeight || 'normal',
-                fontStyle: el.fontStyle || 'normal',
-                textDecoration: el.textDecoration || 'none',
-                lineHeight: el.lineHeight ?? 1.5,
-              }}
-            />
+              style={textStyle}
+            >
+              {wrapFloats}
+              <span dangerouslySetInnerHTML={{ __html: el.content || '' }} />
+            </div>
           ) : (
             <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap select-none pointer-events-none" style={{
-              background: 'transparent',
-              fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
-              fontFamily: el.fontFamily, color: el.textColor,
-              textAlign: el.textAlign || 'left',
-              fontWeight: el.fontWeight || 'normal',
-              fontStyle: el.fontStyle || 'normal',
-              textDecoration: el.textDecoration || 'none',
-              lineHeight: el.lineHeight ?? 1.5,
+              background: 'transparent', ...textStyle,
             }}>
+              {wrapFloats}
               <span style={{ backgroundColor: el.highlightColor || 'transparent', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' }} dangerouslySetInnerHTML={{ __html: el.content || '' }} />
             </div>
+          )}
+          {isSelected && renderResizeHandles(el)}
+        </div>
+      );
+    }
           )}
           {isSelected && renderResizeHandles(el)}
         </div>
