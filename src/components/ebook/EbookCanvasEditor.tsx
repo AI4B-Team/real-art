@@ -1750,11 +1750,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         </div>
       );
     }
-          )}
-          {isSelected && renderResizeHandles(el)}
-        </div>
-      );
-    }
+
+
 
     // Interactive elements
     if (el.type === 'interactive') {
