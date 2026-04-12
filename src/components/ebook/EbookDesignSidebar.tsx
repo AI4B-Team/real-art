@@ -947,7 +947,7 @@ const EbookDesignSidebar = ({
           const isCoverOrBack = ch.type === 'cover' || ch.type === 'back';
           const cfg = typeConfig[ch.type ?? ''] ?? typeConfig['blank'];
           const TypeIcon = cfg.icon;
-          const pageNum = opts.pageNumOverride ?? (globalIdx + 1);
+          const pageNum = isCoverOrBack ? null : (opts.pageNumOverride ?? (globalIdx + 1));
 
           const isCont = opts.isCont || ch.title.endsWith('(cont.)') || /\(cont\.\s*\d*\)$/.test(ch.title);
           const displayTitle = ch.title

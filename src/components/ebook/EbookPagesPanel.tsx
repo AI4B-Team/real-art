@@ -211,7 +211,9 @@ const EbookPagesPanel = ({ pages, selectedPageId, onPageSelect, onPagesChange, o
             <ChevronLeft className="w-3.5 h-3.5" />
           </button>
           <span className="text-xs text-muted-foreground px-1.5">
-            <span className="font-medium text-foreground">{selectedIndex + 1}</span> /{pages.length}
+            <span className="font-medium text-foreground">
+              {pages[selectedIndex]?.type === 'cover' || pages[selectedIndex]?.type === 'back' ? '–' : selectedIndex + 1}
+            </span> /{pages.length}
           </span>
           <button onClick={() => goTo('next')} className="p-1 rounded text-muted-foreground hover:text-foreground hover:bg-foreground/[0.05]">
             <ChevronRight className="w-3.5 h-3.5" />
