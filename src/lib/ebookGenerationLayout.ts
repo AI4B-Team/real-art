@@ -351,7 +351,11 @@ const createChapterCoverElements = (
   summary: string,
   theme: BookTheme,
 ): CanvasElement[] => {
-  const imageHeight = theme.chapterImageHeight;
+  const imageHeight = Math.min(theme.chapterImageHeight, 36);
+  const titleY = imageHeight + 4;
+  const titleH = 10;
+  const dividerY = titleY + titleH + 2;
+  const bodyY = dividerY + 3;
   return [
     {
       id: "chapter-image",
@@ -380,9 +384,9 @@ const createChapterCoverElements = (
       id: "chapter-title",
       type: "text",
       x: 12,
-      y: imageHeight + 6,
+      y: titleY,
       width: 76,
-      height: 12,
+      height: titleH,
       content: title,
       fontSize: 22,
       fontFamily: theme.titleFont,
@@ -394,9 +398,9 @@ const createChapterCoverElements = (
       id: "chapter-divider",
       type: "shape",
       x: 12,
-      y: imageHeight + 21,
+      y: dividerY,
       width: theme.dividerWidth,
-      height: 0.8,
+      height: 0.6,
       fill: theme.palette.accent,
       stroke: "transparent",
       shapeType: "rectangle",
@@ -405,9 +409,9 @@ const createChapterCoverElements = (
       id: "body-text",
       type: "text",
       x: 12,
-      y: imageHeight + 26,
+      y: bodyY,
       width: 74,
-      height: 18,
+      height: Math.max(94 - bodyY, 18),
       content: truncateWords(summary, 48),
       fontSize: 11,
       fontFamily: theme.bodyFont,
@@ -423,9 +427,13 @@ const createContentPageElements = (
   theme: BookTheme,
   includeImage: boolean,
 ): CanvasElement[] => {
-  const imageHeight = includeImage ? theme.contentImageHeight : 0;
-  const bodyY = includeImage ? imageHeight + 12 : 20;
-  const bodyHeight = includeImage ? 52 : 66;
+  // Tighter image for content pages — keep it modest so text has room
+  const imageHeight = includeImage ? Math.min(theme.contentImageHeight, 30) : 0;
+  const titleY = includeImage ? imageHeight + 8 : 8;
+  const titleH = 8;
+  const dividerY = titleY + titleH + 2;
+  const bodyY = dividerY + 3;
+  const bodyHeight = 94 - bodyY;
 
   return [
     ...(includeImage
@@ -434,10 +442,11 @@ const createContentPageElements = (
             id: "page-image",
             type: "image" as const,
             x: 8,
-            y: 6,
+            y: 4,
             width: 84,
             height: imageHeight,
-            src: createImagePlaceholder(theme.palette, "content", "Contextual image loading"),
+            src: "",
+            isPlaceholder: true,
             borderRadius: 3,
           },
         ]
@@ -446,11 +455,11 @@ const createContentPageElements = (
       id: "page-title",
       type: "text",
       x: 12,
-      y: includeImage ? imageHeight + 3 : 8,
+      y: titleY,
       width: 72,
-      height: 10,
+      height: titleH,
       content: title,
-      fontSize: 21,
+      fontSize: 18,
       fontFamily: theme.titleFont,
       textColor: theme.palette.text,
       fontWeight: "bold",
@@ -460,9 +469,9 @@ const createContentPageElements = (
       id: "page-divider",
       type: "shape",
       x: 12,
-      y: includeImage ? imageHeight + 14 : 18,
+      y: dividerY,
       width: theme.dividerWidth,
-      height: 0.8,
+      height: 0.6,
       fill: theme.palette.accent,
       stroke: "transparent",
       shapeType: "rectangle",

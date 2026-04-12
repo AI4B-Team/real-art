@@ -1066,11 +1066,11 @@ const EbookDesignSidebar = ({
 
         // Page-type icon + colour
         const typeConfig: Record<string, { icon: React.ComponentType<{className?: string}>; color: string; label: string }> = {
-          cover:          { icon: BookOpen,   color: 'text-violet-400',          label: 'Cover' },
+          cover:          { icon: BookMarked, color: 'text-violet-400',          label: 'Cover' },
           toc:            { icon: ListChecks, color: 'text-sky-400',             label: 'TOC' },
-          chapter:        { icon: BookMarked, color: 'text-accent',              label: 'Ch.' },
+          chapter:        { icon: BookOpen,   color: 'text-accent',              label: 'Ch.' },
           'chapter-page': { icon: AlignLeft,  color: 'text-foreground/50',       label: 'Page' },
-          back:           { icon: BookOpen,   color: 'text-violet-400',          label: 'Back' },
+          back:           { icon: BookMarked, color: 'text-violet-400',          label: 'Back' },
           blank:          { icon: FileText,   color: 'text-muted-foreground',    label: 'Blank' },
         };
 
