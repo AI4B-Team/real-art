@@ -66,15 +66,145 @@ interface EbookDesignSidebarProps {
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
 
-const TMPL_DEFS = [
-  { id: 'editorial', name: 'Editorial', desc: 'Bold black, stark contrast', bg: '#0a0a0a', accent: '#ffffff', badge: 'P' },
-  { id: 'nordic', name: 'Nordic', desc: 'Forest green, minimal', bg: '#f0f4f0', accent: '#2d5a27', badge: 'B' },
-  { id: 'luxe', name: 'Luxe', desc: 'Navy & gold, premium', bg: '#0f1b35', accent: '#c9a84c', badge: 'P' },
-  { id: 'slate', name: 'Slate', desc: 'Tech blue, clean grid', bg: '#1e2530', accent: '#3b82f6', badge: 'B' },
-  { id: 'terra', name: 'Terra', desc: 'Terracotta, earthy warm', bg: '#e8d5c4', accent: '#c0522a', badge: 'P' },
-  { id: 'split', name: 'Split', desc: 'Two-column landscape', bg: '#f8f4ff', accent: '#7c3aed', badge: 'L' },
-  { id: 'newspaper', name: 'Newspaper', desc: 'Classic broadsheet grid', bg: '#fafafa', accent: '#111111', badge: 'P' },
-  { id: 'pastel', name: 'Pastel', desc: 'Soft lavender & mint', bg: '#ede9fe', accent: '#7c3aed', badge: 'B' },
+type SvgEl = { type: 'rect'; x: number; y: number; w: number; h: number; fill: string; rx?: number; op?: number }
+  | { type: 'circle'; x: number; y: number; r: number; fill: string; op?: number }
+  | { type: 'text'; x: number; y: number; fs: number; fill: string; txt: string; bold?: boolean; op?: number };
+
+interface TmplDef { id: string; name: string; desc: string; bg: string; accent: string; preview: SvgEl[] }
+
+const TMPL_DEFS: TmplDef[] = [
+  {
+    id: 'editorial', name: 'Editorial', desc: 'Bold black, stark contrast',
+    bg: '#0a0a0a', accent: '#ffffff',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#0a0a0a' },
+      { type: 'rect', x: 4, y: 14, w: 52, h: 0.8, fill: '#ffffff', op: 0.9 },
+      { type: 'text', x: 4, y: 12, fs: 5, fill: '#666', txt: 'DEFINITIVE GUIDE' },
+      { type: 'text', x: 4, y: 26, fs: 9, fill: '#fff', txt: 'Title', bold: true },
+      { type: 'text', x: 4, y: 37, fs: 6.5, fill: '#fff', txt: 'Goes Here', bold: true },
+      { type: 'rect', x: 4, y: 50, w: 52, h: 0.5, fill: '#444' },
+      { type: 'rect', x: 4, y: 54, w: 40, h: 1.5, fill: '#fff', op: 0.4 },
+      { type: 'rect', x: 4, y: 58, w: 52, h: 1.5, fill: '#fff', op: 0.25 },
+      { type: 'rect', x: 4, y: 62, w: 44, h: 1.5, fill: '#fff', op: 0.2 },
+      { type: 'rect', x: 4, y: 73, w: 18, h: 2, fill: '#fff', op: 0.9 },
+    ],
+  },
+  {
+    id: 'nordic', name: 'Nordic', desc: 'Forest green, Scandi minimal',
+    bg: '#f0f4f0', accent: '#2d5a27',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#f0f4f0' },
+      { type: 'rect', x: 0, y: 0, w: 12, h: 80, fill: '#2d5a27' },
+      { type: 'rect', x: 0, y: 0, w: 60, h: 16, fill: '#2d5a27' },
+      { type: 'text', x: 15, y: 11, fs: 5, fill: '#f0f4f0', txt: 'Nordic Guide', bold: true },
+      { type: 'rect', x: 15, y: 22, w: 38, h: 0.8, fill: '#2d5a27' },
+      { type: 'text', x: 15, y: 30, fs: 7.5, fill: '#1a2318', txt: 'Book Title', bold: true },
+      { type: 'rect', x: 15, y: 48, w: 36, h: 18, fill: '#d4e8d4', rx: 2 },
+      { type: 'rect', x: 15, y: 70, w: 28, h: 1.5, fill: '#7fad79', op: 0.8 },
+    ],
+  },
+  {
+    id: 'luxe', name: 'Luxe', desc: 'Navy & gold, premium',
+    bg: '#0f1b35', accent: '#c9a84c',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#0f1b35' },
+      { type: 'rect', x: 4, y: 4, w: 52, h: 0.6, fill: '#c9a84c' },
+      { type: 'rect', x: 4, y: 75.4, w: 52, h: 0.6, fill: '#c9a84c' },
+      { type: 'rect', x: 4, y: 4, w: 0.6, h: 72, fill: '#c9a84c' },
+      { type: 'rect', x: 55.4, y: 4, w: 0.6, h: 72, fill: '#c9a84c' },
+      { type: 'circle', x: 4, y: 4, r: 1.5, fill: '#c9a84c' },
+      { type: 'circle', x: 56, y: 4, r: 1.5, fill: '#c9a84c' },
+      { type: 'circle', x: 4, y: 76, r: 1.5, fill: '#c9a84c' },
+      { type: 'circle', x: 56, y: 76, r: 1.5, fill: '#c9a84c' },
+      { type: 'text', x: 14, y: 34, fs: 7, fill: '#f9f5ec', txt: 'Book Title', bold: true },
+      { type: 'text', x: 14, y: 44, fs: 5.5, fill: '#f9f5ec', txt: 'Goes Here', bold: true },
+      { type: 'rect', x: 20, y: 50, w: 20, h: 0.6, fill: '#c9a84c' },
+      { type: 'text', x: 16, y: 56, fs: 4.5, fill: '#c9a84c', txt: 'A PREMIUM GUIDE' },
+    ],
+  },
+  {
+    id: 'slate', name: 'Slate', desc: 'Tech blue, clean grid',
+    bg: '#1e2530', accent: '#3b82f6',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#1e2530' },
+      { type: 'rect', x: 0, y: 0, w: 4, h: 80, fill: '#3b82f6' },
+      { type: 'rect', x: 4, y: 0, w: 56, h: 22, fill: '#253045' },
+      { type: 'text', x: 8, y: 8, fs: 4.5, fill: '#3b82f6', txt: 'GUIDE', bold: true },
+      { type: 'rect', x: 8, y: 10, w: 44, h: 0.5, fill: '#3b82f6' },
+      { type: 'text', x: 8, y: 18, fs: 7, fill: '#f8fafc', txt: 'Book Title', bold: true },
+      { type: 'rect', x: 8, y: 28, w: 44, h: 22, fill: '#2d3748', rx: 2 },
+      { type: 'rect', x: 8, y: 54, w: 44, h: 1.5, fill: '#f8fafc', op: 0.3 },
+      { type: 'rect', x: 8, y: 58, w: 36, h: 1.5, fill: '#f8fafc', op: 0.2 },
+      { type: 'rect', x: 8, y: 62, w: 44, h: 1.5, fill: '#f8fafc', op: 0.18 },
+      { type: 'rect', x: 8, y: 72, w: 6, h: 1.2, fill: '#3b82f6' },
+    ],
+  },
+  {
+    id: 'terra', name: 'Terra', desc: 'Terracotta, earthy warm',
+    bg: '#fdf6ee', accent: '#c0522a',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#fdf6ee' },
+      { type: 'circle', x: -4, y: -4, r: 18, fill: '#e8c4a8', op: 0.7 },
+      { type: 'rect', x: 6, y: 6, w: 48, h: 30, fill: '#e8d5c4', rx: 4 },
+      { type: 'rect', x: 10, y: 40, w: 40, h: 30, fill: '#fff', rx: 4 },
+      { type: 'text', x: 12, y: 52, fs: 7, fill: '#3d2010', txt: 'Book Title', bold: true },
+      { type: 'rect', x: 12, y: 55, w: 12, h: 0.8, fill: '#c0522a' },
+      { type: 'text', x: 12, y: 62, fs: 5, fill: '#c0522a', txt: 'A Complete Guide' },
+      { type: 'circle', x: 50, y: 72, r: 8, fill: '#e8c4a8', op: 0.5 },
+    ],
+  },
+  {
+    id: 'split', name: 'Split', desc: 'Two-column landscape',
+    bg: '#f8f4ff', accent: '#7c3aed',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#f8f4ff' },
+      { type: 'rect', x: 0, y: 0, w: 26, h: 80, fill: '#7c3aed' },
+      { type: 'text', x: 3, y: 22, fs: 6.5, fill: '#ffffff', txt: 'Book', bold: true },
+      { type: 'text', x: 3, y: 31, fs: 6.5, fill: '#ffffff', txt: 'Title', bold: true },
+      { type: 'rect', x: 3, y: 36, w: 14, h: 0.7, fill: '#c4b5fd', op: 0.7 },
+      { type: 'text', x: 3, y: 44, fs: 4.5, fill: 'rgba(255,255,255,0.6)', txt: 'A complete' },
+      { type: 'text', x: 3, y: 50, fs: 4.5, fill: 'rgba(255,255,255,0.6)', txt: 'guide' },
+      { type: 'rect', x: 28, y: 4, w: 28, h: 72, fill: '#ede9fe', rx: 3 },
+      { type: 'rect', x: 30, y: 8, w: 24, h: 16, fill: '#ddd6fe', rx: 2 },
+      { type: 'rect', x: 30, y: 28, w: 24, h: 1.5, fill: '#7c3aed', op: 0.5 },
+      { type: 'rect', x: 30, y: 32, w: 20, h: 1.5, fill: '#7c3aed', op: 0.35 },
+      { type: 'rect', x: 30, y: 36, w: 24, h: 1.5, fill: '#7c3aed', op: 0.25 },
+    ],
+  },
+  {
+    id: 'newspaper', name: 'Newspaper', desc: 'Classic broadsheet',
+    bg: '#fafafa', accent: '#111111',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#fafafa' },
+      { type: 'rect', x: 0, y: 0, w: 60, h: 12, fill: '#111111' },
+      { type: 'rect', x: 0, y: 12, w: 60, h: 1.2, fill: '#cc1a1a' },
+      { type: 'text', x: 8, y: 9, fs: 7, fill: '#ffffff', txt: 'THE GUIDE', bold: true },
+      { type: 'rect', x: 4, y: 16, w: 52, h: 0.4, fill: '#111', op: 0.4 },
+      { type: 'rect', x: 4, y: 19, w: 52, h: 20, fill: '#e8e8e8' },
+      { type: 'rect', x: 4, y: 42, w: 52, h: 0.4, fill: '#111', op: 0.5 },
+      { type: 'text', x: 4, y: 50, fs: 5.5, fill: '#111', txt: 'Headline Story', bold: true },
+      { type: 'rect', x: 4, y: 53, w: 52, h: 0.3, fill: '#111', op: 0.3 },
+      { type: 'rect', x: 30, y: 56, w: 0.4, h: 18, fill: '#111', op: 0.3 },
+      { type: 'rect', x: 4, y: 56, w: 24, h: 1.2, fill: '#111', op: 0.2 },
+      { type: 'rect', x: 4, y: 59, w: 24, h: 1.2, fill: '#111', op: 0.2 },
+      { type: 'rect', x: 32, y: 56, w: 24, h: 1.2, fill: '#111', op: 0.2 },
+      { type: 'rect', x: 32, y: 59, w: 24, h: 1.2, fill: '#111', op: 0.2 },
+    ],
+  },
+  {
+    id: 'pastel', name: 'Pastel', desc: 'Soft lavender & mint',
+    bg: '#ede9fe', accent: '#7c3aed',
+    preview: [
+      { type: 'rect', x: 0, y: 0, w: 60, h: 80, fill: '#ede9fe' },
+      { type: 'circle', x: -4, y: -4, r: 20, fill: '#ddd6fe', op: 0.8 },
+      { type: 'circle', x: 55, y: 60, r: 24, fill: '#d1fae5', op: 0.7 },
+      { type: 'rect', x: 6, y: 18, w: 48, h: 44, fill: '#ffffff', rx: 8 },
+      { type: 'text', x: 14, y: 34, fs: 6.5, fill: '#1e1b4b', txt: 'Book Title', bold: true },
+      { type: 'text', x: 14, y: 43, fs: 5.5, fill: '#1e1b4b', txt: 'Goes Here', bold: true },
+      { type: 'rect', x: 16, y: 50, w: 28, h: 6, fill: '#7c3aed', rx: 8 },
+      { type: 'text', x: 23, y: 54.5, fs: 4, fill: '#ffffff', txt: 'Get the Guide' },
+    ],
+  },
 ];
 
 const ELEMENT_CATEGORIES: Record<string, { title: string; items: { id: string; name: string; icon: any; color: string }[] }> = {
@@ -1127,14 +1257,31 @@ const EbookDesignSidebar = ({
       <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
       {expandedSections.has('templates') && (
         <div className="px-3 pb-3 pt-2">
-          <div className="grid grid-cols-3 gap-1.5">
+          <p className="text-[9px] text-muted-foreground/50 mb-2.5">
+            Click any template to apply it to your entire book
+          </p>
+          <div className="grid grid-cols-2 gap-2">
             {TMPL_DEFS.map(t => (
-              <button key={t.id} onClick={() => onApplyTemplate?.(t.id)}
-                className="group rounded-lg border border-foreground/[0.06] hover:border-accent/40 overflow-hidden transition-all">
-                <div className="aspect-[3/4] flex items-center justify-center" style={{ backgroundColor: t.bg }}>
-                  <Presentation className="w-5 h-5 text-foreground/30" />
+              <button key={t.id}
+                onClick={() => onApplyTemplate?.(t.id)}
+                className="group rounded-xl border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:shadow-lg text-left focus:outline-none focus:border-accent">
+                {/* SVG thumbnail */}
+                <div className="aspect-[3/4] overflow-hidden">
+                  <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
+                    <rect width="60" height="80" fill={t.bg} />
+                    {t.preview.map((el, i) => {
+                      if (el.type === 'rect') return <rect key={i} x={el.x} y={el.y} width={el.w} height={el.h} fill={el.fill} rx={el.rx ?? 0} opacity={el.op ?? 1} />;
+                      if (el.type === 'circle') return <circle key={i} cx={el.x} cy={el.y} r={el.r} fill={el.fill} opacity={el.op ?? 1} />;
+                      if (el.type === 'text') return <text key={i} x={el.x} y={el.y} fontSize={el.fs} fill={el.fill} fontWeight={el.bold ? 'bold' : 'normal'} opacity={el.op ?? 1} fontFamily="Georgia, serif">{el.txt}</text>;
+                      return null;
+                    })}
+                    <rect width="60" height="80" fill={t.accent} opacity="0" className="group-hover:opacity-20" style={{ transition: 'opacity 0.2s' }} />
+                  </svg>
                 </div>
-                <p className="text-[10px] font-medium text-center py-1 text-foreground">{t.name}</p>
+                <div className="px-2 py-1.5 bg-background border-t border-foreground/[0.06]">
+                  <p className="text-[10px] font-semibold text-foreground">{t.name}</p>
+                  <p className="text-[9px] text-muted-foreground/55 truncate">{t.desc}</p>
+                </div>
               </button>
             ))}
           </div>
