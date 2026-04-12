@@ -1563,8 +1563,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         );
       }
 
+      // Adjust z-index based on wrap mode
+      const imgZIndex = el.wrapMode === 'behind' ? 0 : el.wrapMode === 'in-front' ? 20 : (el.zIndex ?? 1);
+
       return (
-        <div key={el.id} className={`${selectionBorder}`} style={style}
+        <div key={el.id} className={`${selectionBorder}`} style={{ ...style, zIndex: imgZIndex }}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
