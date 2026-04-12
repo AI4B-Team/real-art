@@ -576,7 +576,8 @@ export const buildGeneratedBookLayout = ({
     }
 
     chapter.pages.forEach((page) => {
-      const segments = paginateTextContent(page.content, includeImages ? 280 : 280);
+      const hasPageImage = includeImages && Boolean(page.imagePrompt);
+      const segments = paginateTextContent(page.content, hasPageImage ? 180 : 280);
 
       segments.forEach((segment, segmentIndex) => {
         const pageId = crypto.randomUUID();
