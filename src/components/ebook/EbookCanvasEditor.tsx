@@ -3832,7 +3832,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     {/* Expanded AI panel — unified brain */}
                                     <div className={`absolute left-full top-0 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
                                       <div className="flex flex-col bg-background/95 backdrop-blur-md rounded-2xl border border-foreground/[0.08] shadow-lg whitespace-nowrap overflow-hidden"
-                                        style={{ width: '320px', maxHeight: `${ph * zoom}px` }}>
+                                        style={{ width: '320px', maxHeight: `${ph * zoom / 100}px` }}>
                                         {aiUpdatedFeedback ? (
                                           <div className="flex items-center justify-center gap-2 py-4 animate-in fade-in-0 duration-300">
                                             <Sparkles className="w-4 h-4 text-emerald-500" />
