@@ -2112,6 +2112,24 @@ const NewEbookPage = () => {
                 onSelectElement={(id) => canvasRef.current?.selectElement(id)}
                 onEditElement={(id) => canvasRef.current?.editElement(id)}
                 onReplaceElementImage={(id) => canvasRef.current?.triggerReplaceImage(id)}
+                onApplyTemplate={async (templateId) => {
+                  try {
+                    const { getTemplate } = await import("@/lib/ebookTemplates");
+                    const template = getTemplate(templateId);
+                    if (!template) { toast({ title: "Template not found", variant: "destructive" }); return; }
+                    const newElements: Record<string, any[]> = {};
+                    ebookPages.forEach(page => {
+                      newElements[page.id] = template.buildPage(page as any, ebookPages as any, bookData.selectedTitle, bookDescription);
+                    });
+                    setSavedPageElements(newElements);
+                    try { localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(newElements)); } catch {}
+                    const name = templateId.charAt(0).toUpperCase() + templateId.slice(1);
+                    toast({ title: `✦ ${name} template applied to all ${ebookPages.length} pages` });
+                  } catch (e) {
+                    console.error("Template apply error:", e);
+                    toast({ title: "Failed to apply template", variant: "destructive" });
+                  }
+                }}
                 onTranslate={async (scope, language) => {
                   // Check for locked pages when applying to entire book
                   if (scope === 'book') {
