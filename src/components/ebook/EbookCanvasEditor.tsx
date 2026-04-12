@@ -223,8 +223,11 @@ export const buildTocElements = (pages: Page[]): CanvasElement[] => {
     { id: 'toc-accent', type: 'shape', x: 8, y: 14, width: 14, height: 0.8, fill: '#0891b2', stroke: 'transparent', shapeType: 'rectangle' } as CanvasElement,
   ];
 
+  // Compute content page number (exclude cover, toc, back from numbering)
+  const numberablePages = pages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back');
+
   chapterPages.slice(0, maxItems).forEach((page, i) => {
-    const pageNum = pages.indexOf(page) + 1;
+    const pageNum = numberablePages.indexOf(page) + 1;
     const y = startY + i * itemSpacing;
     // Chapter number
     elements.push({ id: `toc-num${i}`, type: 'text', x: 8, y, width: 8, height: itemSpacing - 0.5, content: String(i + 1).padStart(2, '0'), fontSize: 10, fontFamily: 'Inter', textColor: '#0891b2', fontWeight: 'bold' } as CanvasElement);
