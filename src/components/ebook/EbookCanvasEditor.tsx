@@ -3104,6 +3104,46 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           className="mt-2 text-xs text-accent hover:underline">Remove Shadow</button>
                       </PopoverContent>
                     </Popover>
+                    {/* Text Wrap */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className={`p-1.5 rounded hover:bg-foreground/[0.05] flex items-center gap-0.5 ${selectedElement.wrapMode && selectedElement.wrapMode !== 'in-front' ? 'text-accent' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <LayoutGrid className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Text Wrapping</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Text Wrapping</p>
+                        <div className="flex flex-col gap-0.5">
+                          {([
+                            { mode: 'in-front' as const, label: 'In Front of Text', desc: 'Image covers text' },
+                            { mode: 'behind' as const, label: 'Behind Text', desc: 'Text covers image' },
+                            { mode: 'square' as const, label: 'Square', desc: 'Wrap around bounding box' },
+                            { mode: 'tight' as const, label: 'Tight', desc: 'Wrap close to image' },
+                            { mode: 'top-bottom' as const, label: 'Top and Bottom', desc: 'Text above & below only' },
+                          ]).map(opt => (
+                            <button key={opt.mode} onClick={() => updateElement(selectedElement.id, { wrapMode: opt.mode })}
+                              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${(selectedElement.wrapMode || 'in-front') === opt.mode ? 'bg-accent/10 text-accent' : 'hover:bg-foreground/[0.04]'}`}>
+                              <span className="text-xs font-medium block">{opt.label}</span>
+                              <span className="text-[10px] text-muted-foreground">{opt.desc}</span>
+                            </button>
+                          ))}
+                        </div>
+                        <div className="border-t border-foreground/[0.06] mt-2 pt-2">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-medium text-foreground">Wrap Margin</span>
+                            <span className="text-[10px] text-muted-foreground">{selectedElement.wrapMargin ?? 2}%</span>
+                          </div>
+                          <Slider
+                            value={[selectedElement.wrapMargin ?? 2]}
+                            onValueChange={([v]) => updateElement(selectedElement.id, { wrapMargin: v })}
+                            min={0} max={10} step={0.5} className="w-full"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
                     <Tooltip>
                       <Popover>
                         <TooltipTrigger asChild>
