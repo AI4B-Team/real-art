@@ -1130,7 +1130,7 @@ const EbookDesignSidebar = ({
 
             return suggestions.map(btn => (
               <button key={btn.label} onClick={btn.action}
-                className="px-2.5 py-1.5 rounded-lg bg-primary/[0.06] border border-primary/20 text-[10px] font-semibold text-primary hover:bg-primary/[0.12] transition-colors">
+                className="px-2.5 py-1.5 rounded-lg bg-accent/10 border border-accent/20 text-[10px] font-semibold text-accent hover:bg-accent/20 transition-colors">
                 {btn.label}
               </button>
             ));
