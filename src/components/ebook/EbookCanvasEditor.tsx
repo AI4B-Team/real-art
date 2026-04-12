@@ -844,7 +844,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (findMatches.length === 0 || !findQuery.trim()) return;
     const match = findMatches[currentMatchIndex];
     if (!match) return;
-    const elems = pageElements[match.pageId] || getElementsForPage(currentPages.find(p => p.id === match.pageId)!, currentPages, bookTitle);
+    const matchPage = currentPages.find(p => p.id === match.pageId)!;
+    const elems = resolvePageElements(pageElements, matchPage, currentPages, bookTitle);
     const el = elems.find(e => e.id === match.elementId);
     if (!el || !el.content) return;
     const newContent = el.content.substring(0, match.indices[0]) + replaceQuery + el.content.substring(match.indices[0] + findQuery.length);
