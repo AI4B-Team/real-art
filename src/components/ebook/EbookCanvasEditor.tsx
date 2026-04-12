@@ -630,6 +630,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
   // External drag-drop state (from sidebar)
   const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; y: number } | null>(null);
+
+  // ─── Shared AI Context Engine ─────────────────────────
+  const selectedPageObj = currentPages.find(p => p.id === selectedPageId);
+  const selectedPageElements = pageElements[selectedPageId || ''] || [];
+  const floatingAiCtx = useAIPageContext(
+    selectedPageObj?.type ?? null,
+    selectedPageElements.length > 0,
+    selectedPageElements.length,
+    selectedPageElements.some(e => e.type === 'image' && !e.isPlaceholder),
+    selectedPageElements.some(e => e.type === 'text' && (e.fontSize || 12) >= 18),
+    selectedPageElements.filter(e => e.type === 'text').reduce((acc, e) => acc + (e.content?.split(/\s+/).length || 0), 0),
+  );
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Record<string, HTMLDivElement | null>>({});
