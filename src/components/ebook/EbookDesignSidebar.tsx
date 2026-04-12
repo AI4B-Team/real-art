@@ -1121,7 +1121,7 @@ const EbookDesignSidebar = ({
             .replace(/\s*\(Continued\s*\d*\)\s*$/i, '');
 
           return (
-            <div key={ch.id}
+            <div key={ch.id} data-outline-id={ch.id}
               onClick={() => onChapterSelect(ch.id)}
               className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all cursor-pointer ${
                 opts.indent ? 'ml-3' : ''
