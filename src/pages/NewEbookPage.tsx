@@ -303,7 +303,7 @@ const NewEbookPage = () => {
     chapters: 8,
     wordsPerChapter: 1500,
     includeImages: true,
-    selectedTitle: "",
+    selectedTitle: "How to Use the eBook Creator",
     model: "auto",
   });
   const [showBookSettingsDialog, setShowBookSettingsDialog] = useState(false);
@@ -319,13 +319,19 @@ const NewEbookPage = () => {
   const getDefaultPages = (): UnifiedPage[] => [
     { id: "1", title: "Cover", type: "cover" },
     { id: "2", title: "Table of Contents", type: "toc" },
-    { id: "3", title: "Introduction", type: "chapter" },
-    { id: "4", title: "Content Page", type: "chapter-page" },
-    { id: "5", title: "Executive Summary", type: "chapter" },
-    { id: "6", title: "Content Page", type: "chapter-page" },
-    { id: "7", title: "Market Analysis", type: "chapter" },
-    { id: "8", title: "Content Page", type: "chapter-page" },
-    { id: "9", title: "Back Cover", type: "back" },
+    { id: "3", title: "Getting Started", type: "chapter" },
+    { id: "4", title: "Your First AI-Generated Book", type: "chapter-page" },
+    { id: "5", title: "Customizing Your Outline", type: "chapter-page" },
+    { id: "6", title: "The Canvas Editor", type: "chapter" },
+    { id: "7", title: "Working with Text & Images", type: "chapter-page" },
+    { id: "8", title: "Page Management", type: "chapter-page" },
+    { id: "9", title: "Templates & Themes", type: "chapter" },
+    { id: "10", title: "Applying & Switching Templates", type: "chapter-page" },
+    { id: "11", title: "AI Tools & Assistant", type: "chapter" },
+    { id: "12", title: "Using the AI Writing Tools", type: "chapter-page" },
+    { id: "13", title: "Publishing & Sharing", type: "chapter" },
+    { id: "14", title: "Exporting Your Finished Book", type: "chapter-page" },
+    { id: "15", title: "Back Cover", type: "back" },
   ];
 
   const STORAGE_KEY_PAGES = "ebook_pages_data";
