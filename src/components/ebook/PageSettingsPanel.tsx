@@ -106,7 +106,7 @@ const PageSettingsPanel = ({
   const selectedPage = pages.find(p => p.id === selectedPageId);
 
   // Shared AI context — same brain as floating assistant & left panel
-  const currentElements = pageElements?.[selectedPageId || ''] || [];
+  const currentElements = externalPageElements?.[selectedPageId || ''] || [];
   const aiCtx = useAIPageContext(
     selectedPage?.type ?? null,
     currentElements.length > 0,
