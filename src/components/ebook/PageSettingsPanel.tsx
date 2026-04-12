@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
   ChevronDown, ChevronUp, ChevronLeft, Plus,
   Maximize2, LayoutGrid as LayoutGridIcon, Palette, Square, SlidersHorizontal,
@@ -7,7 +7,9 @@ import {
   MinusCircle, ArrowDownToLine, Check, Sparkles, RefreshCw,
   PenTool, Layers, Wand2, Type, Mic, Globe,
   Lock, Unlock, GripVertical, Copy, Trash2, Files,
+  CheckCircle2, TrendingUp,
 } from 'lucide-react';
+import { useAIPageContext } from './useAIPageContext';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from '@/components/ui/tooltip';
