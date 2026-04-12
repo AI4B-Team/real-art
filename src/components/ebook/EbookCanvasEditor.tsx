@@ -185,7 +185,7 @@ const createCoverElements = (title: string): CanvasElement[] => {
       { id: 'cover-panel', type: 'shape', x: 0, y: 58, width: 100, height: 42, fill: palette.bg, stroke: 'transparent', shapeType: 'rectangle' },
       { id: 'cover-accent', type: 'shape', x: 6, y: 61, width: 22, height: 1.2, fill: palette.accent, stroke: 'transparent', shapeType: 'rectangle' },
       { id: 'title-text', type: 'text', x: 6, y: 64, width: 88, height: 22, content: title || 'Untitled Book', fontSize: 20, fontFamily: 'Georgia', textColor: palette.text, lineHeight: 1.25, fontWeight: 'bold' },
-      { id: 'subtitle-text', type: 'text', x: 6, y: 89, width: 60, height: 5, content: 'A COMPLETE GUIDE', fontSize: 9, fontFamily: 'Inter', textColor: palette.sub },
+      { id: 'subtitle-text', type: 'text', x: 6, y: 89, width: 60, height: 5, content: 'YOUR COMPLETE TUTORIAL GUIDE', fontSize: 9, fontFamily: 'Inter', textColor: palette.sub },
     ] as CanvasElement[];
   } else if (layoutVariant === 1) {
     // Layout 1: Full-bleed image + SOLID opaque bottom band for text
@@ -318,8 +318,8 @@ const createBackElements = (title: string): CanvasElement[] => {
     { id: 'back-image', type: 'image', x: 0, y: 0, width: 100, height: 45, src: imgSrc },
     { id: 'back-overlay', type: 'shape', x: 0, y: 30, width: 100, height: 15, fill: `${pal.bg}cc`, stroke: 'transparent', shapeType: 'rectangle' },
     { id: 'back-accent', type: 'shape', x: 10, y: 48, width: 20, height: 0.8, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
-    { id: 'back-logo', type: 'text', x: 10, y: 52, width: 80, height: 14, content: title || 'Untitled Book', fontSize: 20, fontFamily: 'Georgia', textColor: pal.text, fontWeight: 'bold', lineHeight: 1.2 },
-    { id: 'back-tag', type: 'text', x: 10, y: 70, width: 80, height: 8, content: 'Thank you for reading. We hope this guide empowers your journey.', fontSize: 11, fontFamily: 'Georgia', textColor: pal.sub, lineHeight: 1.5 },
+    { id: 'back-logo', type: 'text', x: 10, y: 52, width: 80, height: 14, content: title || 'How to Use the eBook Creator', fontSize: 20, fontFamily: 'Georgia', textColor: pal.text, fontWeight: 'bold', lineHeight: 1.2 },
+    { id: 'back-tag', type: 'text', x: 10, y: 70, width: 80, height: 8, content: 'You now have everything you need to create, design, and publish beautiful AI-powered books. Happy creating!', fontSize: 11, fontFamily: 'Georgia', textColor: pal.sub, lineHeight: 1.5 },
   ];
 };
 
