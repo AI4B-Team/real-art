@@ -2363,7 +2363,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           </div>
                           <div className="flex items-center gap-1 text-muted-foreground">
                             <PageIcon className="w-3 h-3" />
-                            <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>{pageIndex + 1}</span>
+                            <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>
+                              {page.type !== 'cover' && page.type !== 'back'
+                                ? currentPages.filter(p => p.type !== 'cover' && p.type !== 'back').indexOf(page) + 1
+                                : '–'}
+                            </span>
                           </div>
                         </div>
                       </div>
