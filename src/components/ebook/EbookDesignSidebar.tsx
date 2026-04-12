@@ -1443,22 +1443,56 @@ const EbookDesignSidebar = ({
         </div>
       )}
 
-      {/* Components */}
+      {/* Elements */}
       <SectionHeader id="elements" title="Elements" icon={LayoutGrid} />
       {expandedSections.has('elements') && (
-        <div className="px-3 pb-3 pt-2 space-y-3">
+        <div className="px-3 pb-3 pt-2 space-y-4">
+          {/* Search */}
           <div className="relative">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
             <input type="text" value={elementSearch} onChange={e => setElementSearch(e.target.value)}
-              placeholder="Search elements..." className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
+              placeholder="Press [Enter] to Search" className="w-full pl-8 pr-3 py-2 text-xs rounded-lg border border-foreground/[0.08] bg-foreground/[0.02] focus:outline-none focus:border-accent/40" />
           </div>
-          {Object.entries(ELEMENT_CATEGORIES).map(([key, cat]) => {
-            const filtered = cat.items.filter(i => !elementSearch || i.name.toLowerCase().includes(elementSearch.toLowerCase()));
+
+          {/* Browse Categories - Colorful Icon Grid */}
+          {!elementSearch && (
+            <div className="mb-2">
+              <p className="text-xs font-semibold text-foreground mb-3">Browse Categories</p>
+              <div className="grid grid-cols-3 gap-3">
+                {BROWSE_CATEGORIES.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => {
+                      const el = document.getElementById(`element-category-${category.id}`);
+                      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }}
+                    className="group flex flex-col items-center gap-2 cursor-pointer"
+                  >
+                    <div className={`w-16 h-16 ${category.bgColor} rounded-2xl flex items-center justify-center shadow-sm transition-all duration-300 group-hover:shadow-lg group-hover:scale-110`}>
+                      <category.icon className={`w-7 h-7 ${category.iconColor} transition-transform duration-300 group-hover:scale-110`} />
+                    </div>
+                    <span className="text-xs font-medium text-muted-foreground group-hover:text-foreground transition-colors">
+                      {category.name}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Element Categories - Ordered lists */}
+          {ELEMENT_CATEGORY_ORDER.map((key) => {
+            const category = ELEMENT_CATEGORIES[key];
+            if (!category) return null;
+            const filtered = category.items.filter(i => !elementSearch || i.name.toLowerCase().includes(elementSearch.toLowerCase()));
             if (filtered.length === 0) return null;
             return (
-              <div key={key}>
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">{cat.title}</p>
-                <div className="grid grid-cols-4 gap-1">
+              <div key={key} id={`element-category-${key}`} className="scroll-mt-4">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="text-sm font-semibold text-foreground">{category.title}</p>
+                  <button className="text-xs text-accent hover:text-accent/80 font-medium">More</button>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
                   {filtered.map(item => (
                     <Tooltip key={item.id}>
                       <TooltipTrigger asChild>
@@ -1471,9 +1505,9 @@ const EbookDesignSidebar = ({
                             e.dataTransfer.effectAllowed = 'copy';
                           }}
                           onClick={() => { onAddElement?.(item.id, item); toast.success(`${item.name} added`); }}
-                          className="flex flex-col items-center gap-0.5 p-2 rounded-lg border border-foreground/[0.04] hover:border-accent/30 hover:bg-accent/5 transition-colors">
-                          <item.icon className="w-4 h-4" style={{ color: item.color }} />
-                          <span className="text-[8px] text-muted-foreground truncate w-full text-center">{item.name}</span>
+                          className="group flex flex-col items-center justify-center gap-1.5 p-3 rounded-lg border border-foreground/[0.08] hover:border-accent/40 hover:bg-accent/[0.04] transition-all">
+                          <item.icon className="w-5 h-5 transition-transform duration-200 group-hover:scale-110" style={{ color: item.color }} />
+                          <span className="text-xs font-medium text-muted-foreground text-center leading-tight group-hover:text-accent">{item.name}</span>
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>{item.name}</TooltipContent>
