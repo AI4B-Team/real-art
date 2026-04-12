@@ -1099,7 +1099,7 @@ const EbookDesignSidebar = ({
           cover:          { icon: BookMarked, color: 'text-violet-400',          label: 'Cover' },
           toc:            { icon: ListChecks, color: 'text-sky-400',             label: 'TOC' },
           chapter:        { icon: BookOpen,   color: 'text-accent',              label: 'Ch.' },
-          'chapter-page': { icon: AlignLeft,  color: 'text-foreground/50',       label: 'Page' },
+          'chapter-page': { icon: AlignLeft,  color: 'text-foreground/50',       label: 'Content' },
           back:           { icon: BookMarked, color: 'text-violet-400',          label: 'Back' },
           blank:          { icon: FileText,   color: 'text-muted-foreground',    label: 'Blank' },
         };

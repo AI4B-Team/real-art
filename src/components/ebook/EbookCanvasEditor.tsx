@@ -333,7 +333,7 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
 
 const PAGE_TYPE_OPTIONS: { type: Page['type']; label: string; description: string; icon: string }[] = [
   { type: 'chapter', label: 'Chapter Cover', description: 'Full image with chapter number & title', icon: '📖' },
-  { type: 'chapter-page', label: 'Chapter Content', description: 'Top image with text content below', icon: '📄' },
+  { type: 'chapter-page', label: 'Content Page', description: 'Text content with title and body', icon: '📄' },
   { type: 'blank', label: 'Blank Page', description: 'Empty page to design from scratch', icon: '📃' },
 ];
 
@@ -888,7 +888,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const insertPageAt = (index: number, pageType: Page['type'] = 'chapter') => {
     const titleMap: Record<string, string> = {
       'chapter': 'Chapter Cover',
-      'chapter-page': 'Chapter Content',
+      'chapter-page': 'Content Page',
       'blank': 'Blank Page',
     };
     const newPage: Page = { id: crypto.randomUUID(), title: titleMap[pageType] || 'New Page', type: pageType, locked: false };
