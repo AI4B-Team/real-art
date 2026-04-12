@@ -303,7 +303,7 @@ const NewEbookPage = () => {
     chapters: 8,
     wordsPerChapter: 1500,
     includeImages: true,
-    selectedTitle: "",
+    selectedTitle: "How to Use the eBook Creator",
     model: "auto",
   });
   const [showBookSettingsDialog, setShowBookSettingsDialog] = useState(false);
