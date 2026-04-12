@@ -943,6 +943,7 @@ const EbookDesignSidebar = ({
           globalIdx: number,
           opts: { indent?: boolean; isCont?: boolean; pageNumOverride?: number } = {}
         ) => {
+          const isSelected = selectedChapterId === ch.id;
           const isCoverOrBack = ch.type === 'cover' || ch.type === 'back';
           const cfg = typeConfig[ch.type ?? ''] ?? typeConfig['blank'];
           const TypeIcon = cfg.icon;
