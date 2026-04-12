@@ -445,7 +445,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
-  const [pageElements, setPageElementsRaw] = useState<Record<string, CanvasElement[]>>(initialPageElements || {});
+  // Backfill empty body text elements with sample content so users can see formatting
+  const backfillEmptyBodies = useCallback((elements: Record<string, CanvasElement[]>): Record<string, CanvasElement[]> => {
+    let changed = false;
+    const patched: Record<string, CanvasElement[]> = {};
+    for (const [pageId, elems] of Object.entries(elements)) {
+      const patchedElems = elems.map((el, _i) => {
+        if (el.type === 'text' && (el.id.includes('body') || el.id.includes('-body')) && (!el.content || el.content.trim() === '')) {
+          changed = true;
+          const idx = parseInt(el.id.replace(/\D/g, '') || '0', 10);
+          return { ...el, content: SAMPLE_CONTENT_PAGES[idx % SAMPLE_CONTENT_PAGES.length] };
+        }
+        return el;
+      });
+      patched[pageId] = patchedElems;
+    }
+    return changed ? patched : elements;
+  }, []);
+
+  const [pageElements, setPageElementsRaw] = useState<Record<string, CanvasElement[]>>(() => backfillEmptyBodies(initialPageElements || {}));
   const setPageElements: typeof setPageElementsRaw = useCallback((update) => {
     setPageElementsRaw(prev => {
       const next = typeof update === 'function' ? update(prev) : update;
@@ -455,8 +473,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   }, [onPageElementsChange]);
   useEffect(() => {
     if (!initialPageElements) return;
-    setPageElementsRaw(initialPageElements);
-  }, [initialPageElements]);
+    setPageElementsRaw(backfillEmptyBodies(initialPageElements));
+  }, [initialPageElements, backfillEmptyBodies]);
   const [dragState, setDragState] = useState<{ id: string; startX: number; startY: number; elemX: number; elemY: number } | null>(null);
   const [resizeState, setResizeState] = useState<{ id: string; handle: string; startX: number; startY: number; elemX: number; elemY: number; elemW: number; elemH: number } | null>(null);
   const [rotateState, setRotateState] = useState<{ id: string; centerX: number; centerY: number; startAngle: number; elemRotation: number } | null>(null);
