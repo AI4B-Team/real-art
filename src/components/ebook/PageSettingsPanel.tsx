@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useCallback, useEffect, useMemo } from 'react';
 import {
   ChevronDown, ChevronUp, ChevronLeft, Plus,
   Maximize2, LayoutGrid as LayoutGridIcon, Palette, Square, SlidersHorizontal,
@@ -7,7 +7,9 @@ import {
   MinusCircle, ArrowDownToLine, Check, Sparkles, RefreshCw,
   PenTool, Layers, Wand2, Type, Mic, Globe,
   Lock, Unlock, GripVertical, Copy, Trash2, Files,
+  CheckCircle2, TrendingUp,
 } from 'lucide-react';
+import { useAIPageContext } from './useAIPageContext';
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from '@/components/ui/tooltip';
@@ -103,6 +105,17 @@ const PageSettingsPanel = ({
 
   const selectedPage = pages.find(p => p.id === selectedPageId);
 
+  // Shared AI context — same brain as floating assistant & left panel
+  const currentElements = externalPageElements?.[selectedPageId || ''] || [];
+  const aiCtx = useAIPageContext(
+    selectedPage?.type ?? null,
+    currentElements.length > 0,
+    currentElements.length,
+    currentElements.some(e => e.type === 'image' && !e.isPlaceholder),
+    currentElements.some(e => e.type === 'text' && (e.fontSize || 12) >= 18),
+    currentElements.filter(e => e.type === 'text').reduce((acc, e) => acc + (e.content?.split(/\s+/).length || 0), 0),
+  );
+
   const updatePage = useCallback((pageId: string, patch: Partial<Page>) => {
     onPagesChange(pages.map(p => p.id === pageId ? { ...p, ...patch } : p));
   }, [pages, onPagesChange]);
@@ -197,27 +210,35 @@ const PageSettingsPanel = ({
     {/* === DIRECTOR TAB === */}
     {rightTab === 'director' && (
       <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
-        {/* Performance Snapshot */}
+        {/* Performance Snapshot — synced with shared AI context */}
         <div className="px-4 py-3 border-b border-foreground/[0.04]">
           <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Page Performance</span>
             <div className="flex items-center gap-1.5">
-              <span className="text-2xl font-black text-foreground leading-none">82</span>
+              <span className="text-2xl font-black text-foreground leading-none">{aiCtx.score}</span>
               <span className="text-[10px] text-muted-foreground">/100</span>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 w-fit mb-2">
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-            <span className="text-[10px] font-semibold text-amber-600">Good, but underperforming</span>
+          <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full w-fit mb-2 ${
+            aiCtx.state === 'ready' ? 'bg-emerald-500/10 border border-emerald-500/20' :
+            aiCtx.state === 'strong' ? 'bg-amber-500/10 border border-amber-500/20' :
+            'bg-blue-500/10 border border-blue-500/20'
+          }`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${
+              aiCtx.state === 'ready' ? 'bg-emerald-500' : aiCtx.state === 'strong' ? 'bg-amber-500' : 'bg-blue-500'
+            }`} />
+            <span className={`text-[10px] font-semibold ${
+              aiCtx.state === 'ready' ? 'text-emerald-600' : aiCtx.state === 'strong' ? 'text-amber-600' : 'text-blue-600'
+            }`}>{aiCtx.stateLabel}</span>
           </div>
           <p className="text-[11px] text-muted-foreground leading-snug italic">
-            "This page is visually strong but lacks a clear hook and engagement driver."
+            "{aiCtx.stateDescription}"
           </p>
           <div className="mt-3 space-y-1.5">
             {[
-              { label: 'Readability', score: 88 },
-              { label: 'Engagement', score: 76 },
-              { label: 'Visual Balance', score: 82 },
+              { label: 'Readability', score: aiCtx.readability },
+              { label: 'Engagement', score: aiCtx.engagement },
+              { label: 'Visual Balance', score: aiCtx.visualBalance },
             ].map(m => {
               const barColor = m.score >= 85 ? 'bg-emerald-500' : m.score >= 70 ? 'bg-amber-500' : 'bg-destructive';
               return (
@@ -233,36 +254,64 @@ const PageSettingsPanel = ({
           </div>
         </div>
 
-        {/* Priority Fixes */}
-        <div className="border-b border-foreground/[0.04]">
-          <div className="flex items-center justify-between px-4 py-2">
-            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">Priority Fixes</span>
-            <span className="text-[10px] font-bold text-destructive bg-destructive/10 px-2 py-0.5 rounded-full">3 Items</span>
-          </div>
-          <div className="px-3 pb-3 space-y-2">
-            {[
-              { icon: Target, color: 'text-amber-500', bg: 'bg-amber-500/10', title: 'Weak headline — low keyword impact', desc: 'Stronger headlines get 2× more reads.', action: 'Rewrite' },
-              { icon: Eye, color: 'text-destructive', bg: 'bg-destructive/10', title: 'Missing visual hierarchy', desc: 'No clear focal point hurting engagement by 40%.', action: 'Add Visual' },
-              { icon: FileText, color: 'text-blue-500', bg: 'bg-blue-500/10', title: 'Text too dense', desc: 'Break into shorter sections for 25% better readability.', action: 'Simplify' },
-            ].map((s, i) => (
-              <div key={i} className="p-2.5 rounded-xl bg-foreground/[0.02] border border-foreground/[0.06] flex items-start gap-2">
-                <div className={`p-1 rounded-md ${s.bg} mt-0.5 shrink-0`}>
-                  <s.icon className={`w-3.5 h-3.5 ${s.color}`} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[11px] font-semibold text-foreground leading-tight">{s.title}</p>
-                  <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug">{s.desc}</p>
-                </div>
-                <button
-                  onClick={() => onSendToChat?.(`${s.action}: ${s.desc}`)}
-                  className="text-[10px] font-bold text-accent hover:underline shrink-0 mt-0.5"
-                >
-                  {s.action} →
-                </button>
+        {/* Smart Enhancements — replaces "Priority Fixes" */}
+        {aiCtx.state === 'ready' ? (
+          <div className="px-4 py-4 border-b border-foreground/[0.04]">
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+              <span className="text-[11px] font-bold text-emerald-600">Ready to Publish</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-snug">
+              Everything looks solid. You're good to go.
+            </p>
+            {aiCtx.enhancements.length > 0 && (
+              <div className="mt-3">
+                <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5">Optional Enhancements</p>
+                {aiCtx.enhancements.map(e => (
+                  <button key={e.id} onClick={() => onSendToChat?.(`${e.cta}: ${e.subtitle}`)}
+                    className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-foreground/[0.03] transition-colors text-left mt-1">
+                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${e.dotColor}`} />
+                    <span className="text-[11px] text-foreground/70 flex-1">{e.title}</span>
+                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 ${e.color} ${e.bgColor}`}>{e.cta}</span>
+                  </button>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="border-b border-foreground/[0.04]">
+            <div className="flex items-center justify-between px-4 py-2">
+              <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                {aiCtx.state === 'strong' ? 'Smart Enhancements' : 'Opportunities'}
+              </span>
+              <span className="text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded-full">
+                {aiCtx.enhancements.length} {aiCtx.enhancements.length === 1 ? 'Item' : 'Items'}
+              </span>
+            </div>
+            <div className="px-3 pb-3 space-y-2">
+              {aiCtx.enhancements.map((e, i) => (
+                <div key={e.id} className={`p-2.5 rounded-xl border flex items-start gap-2 ${
+                  e.isPrimary ? 'bg-accent/[0.03] border-accent/20' : 'bg-foreground/[0.02] border-foreground/[0.06]'
+                }`}>
+                  <div className={`p-1 rounded-md ${e.bgColor} mt-0.5 shrink-0`}>
+                    {e.category === 'headline' ? <Target className={`w-3.5 h-3.5 ${e.color}`} /> :
+                     e.category === 'visual' ? <Eye className={`w-3.5 h-3.5 ${e.color}`} /> :
+                     e.category === 'readability' ? <FileText className={`w-3.5 h-3.5 ${e.color}`} /> :
+                     <Layers className={`w-3.5 h-3.5 ${e.color}`} />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-[11px] font-semibold text-foreground leading-tight line-clamp-1">{e.cta}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug line-clamp-1">{e.subtitle}</p>
+                  </div>
+                  <button onClick={() => onSendToChat?.(`${e.cta}: ${e.subtitle}`)}
+                    className="text-[10px] font-bold text-accent hover:underline shrink-0 mt-0.5">
+                    {e.cta.split(' ').slice(0, 2).join(' ')} →
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Quick Actions */}
         <div className="px-3 py-3">

@@ -30,6 +30,7 @@ import { toast } from 'sonner';
 import AITextEditMenu, { type AIEditAction } from '@/components/ebook/AITextEditMenu';
 import { supabase } from '@/integrations/supabase/client';
 import { WORKSPACE_MEMBERS } from '@/lib/workspaceMembers';
+import { useAIPageContext } from './useAIPageContext';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
@@ -629,6 +630,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
   // External drag-drop state (from sidebar)
   const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; y: number } | null>(null);
+
+  // ─── Shared AI Context Engine ─────────────────────────
+  const selectedPageObj = currentPages.find(p => p.id === selectedPageId);
+  const selectedPageElements = pageElements[selectedPageId || ''] || [];
+  const floatingAiCtx = useAIPageContext(
+    selectedPageObj?.type ?? null,
+    selectedPageElements.length > 0,
+    selectedPageElements.length,
+    selectedPageElements.some(e => e.type === 'image' && !e.isPlaceholder),
+    selectedPageElements.some(e => e.type === 'text' && (e.fontSize || 12) >= 18),
+    selectedPageElements.filter(e => e.type === 'text').reduce((acc, e) => acc + (e.content?.split(/\s+/).length || 0), 0),
+  );
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const pageRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -3840,40 +3853,61 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                           </div>
                                         ) : (
                                           <>
-                                            {/* Header */}
+                                            {/* Header with confidence score */}
                                             <div className="flex items-center gap-2 px-3.5 py-2.5 border-b border-foreground/[0.06]">
                                               <Sparkles className="w-3.5 h-3.5 text-accent" />
                                               <span className="text-[11px] font-bold text-foreground">AI Assistant</span>
-                                              <span className="ml-auto text-[9px] text-muted-foreground">Page {pageIndex + 1}</span>
+                                              <div className="ml-auto flex items-center gap-1.5">
+                                                <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full ${
+                                                  floatingAiCtx.state === 'ready' ? 'bg-emerald-500/10 text-emerald-600' :
+                                                  floatingAiCtx.state === 'strong' ? 'bg-amber-500/10 text-amber-600' :
+                                                  'bg-blue-500/10 text-blue-600'
+                                                }`}>{floatingAiCtx.score}</span>
+                                              </div>
                                             </div>
 
                                             {/* Scrollable middle area */}
                                             <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
-                                            {/* Smart Enhancements */}
+
+                                            {/* State-aware header */}
                                             <div className="px-3 pt-2.5 pb-1">
-                                              <p className="text-[11px] font-medium text-foreground/70">This page is strong. Here's how to make it exceptional:</p>
+                                              {floatingAiCtx.state === 'ready' ? (
+                                                <div className="flex items-center gap-1.5">
+                                                  <Check className="w-3.5 h-3.5 text-emerald-500" />
+                                                  <p className="text-[11px] font-semibold text-emerald-600">Ready to Publish</p>
+                                                </div>
+                                              ) : (
+                                                <p className="text-[11px] font-medium text-foreground/70">{floatingAiCtx.stateDescription}</p>
+                                              )}
                                             </div>
-                                            <div className="px-3 py-1.5 space-y-1 border-b border-foreground/[0.06]">
-                                              <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Smart Enhancements</p>
-                                              {[
-                                                { severity: 'opportunity' as const, title: 'Your headline is clear — want a more attention-grabbing version?', cta: 'Try Stronger Headline', color: 'text-amber-600 bg-amber-500/10' },
-                                                { severity: 'visual' as const, title: 'This section could pop more with a supporting visual', cta: 'Add Image', color: 'text-accent bg-accent/10' },
-                                                { severity: 'readability' as const, title: 'This section can be easier to scan and retain', cta: 'Improve Readability', color: 'text-blue-600 bg-blue-500/10' },
-                                              ].map((nudge, i) => (
-                                                <button key={i} onClick={() => {
-                                                  if (nudge.cta === 'Add Image') {
-                                                    onOpenImageSection?.();
-                                                  } else {
-                                                    handleContextualAI(nudge.cta === 'Try Stronger Headline' ? 'rewrite' : 'shorten');
-                                                  }
-                                                }}
-                                                  className="w-full flex items-center gap-2 px-2.5 py-2 rounded-lg hover:bg-foreground/[0.03] transition-colors text-left">
-                                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${nudge.severity === 'opportunity' ? 'bg-amber-500' : nudge.severity === 'visual' ? 'bg-accent' : 'bg-blue-500'}`} />
-                                                  <span className="text-[11px] text-foreground/80 flex-1 leading-snug">{nudge.title}</span>
-                                                  <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 ${nudge.color}`}>{nudge.cta}</span>
-                                                </button>
-                                              ))}
-                                            </div>
+
+                                            {/* Enhancement cards */}
+                                            {floatingAiCtx.enhancements.length > 0 && (
+                                              <div className="px-3 py-1.5 space-y-1.5 border-b border-foreground/[0.06]">
+                                                <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
+                                                  {floatingAiCtx.state === 'ready' ? 'Optional Enhancements' : 'Smart Enhancements'}
+                                                </p>
+                                                {floatingAiCtx.enhancements.map((nudge) => (
+                                                  <button key={nudge.id} onClick={() => {
+                                                    if (nudge.ctaAction === 'add-image') {
+                                                      onOpenImageSection?.();
+                                                    } else {
+                                                      handleContextualAI(nudge.ctaAction === 'rewrite' ? 'rewrite' : 'shorten');
+                                                    }
+                                                  }}
+                                                    className={`w-full flex items-start gap-2 px-2.5 py-2 rounded-xl transition-colors text-left ${
+                                                      nudge.isPrimary ? 'bg-accent/[0.04] border border-accent/15 hover:bg-accent/[0.07]' : 'hover:bg-foreground/[0.03]'
+                                                    }`}>
+                                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1.5 ${nudge.dotColor}`} />
+                                                    <div className="flex-1 min-w-0">
+                                                      <span className="text-[10px] font-semibold text-foreground line-clamp-1">{nudge.cta}</span>
+                                                      <span className="text-[10px] text-muted-foreground line-clamp-1 block">{nudge.subtitle}</span>
+                                                    </div>
+                                                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 mt-0.5 ${nudge.color} ${nudge.bgColor}`}>Go</span>
+                                                  </button>
+                                                ))}
+                                              </div>
+                                            )}
 
                                             {/* Quick Actions grid */}
                                             <div className="px-3 py-2.5 border-b border-foreground/[0.06]">
