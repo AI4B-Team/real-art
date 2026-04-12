@@ -729,6 +729,36 @@ const EbookDesignSidebar = ({
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [openChapters, setOpenChapters] = useState<Set<string>>(new Set());
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const outlineScrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-expand chapter group & scroll sidebar when selected page changes
+  useEffect(() => {
+    if (!selectedChapterId) return;
+    // Find if the selected page is a chapter-page inside a chapter group
+    for (let i = 0; i < chapters.length; i++) {
+      const ch = chapters[i];
+      if (ch.id === selectedChapterId && ch.type === 'chapter-page') {
+        // Walk backwards to find the parent chapter cover
+        for (let j = i - 1; j >= 0; j--) {
+          if (chapters[j].type === 'chapter') {
+            setOpenChapters(prev => {
+              if (prev.has(chapters[j].id)) return prev;
+              const s = new Set(prev);
+              s.add(chapters[j].id);
+              return s;
+            });
+            break;
+          }
+        }
+        break;
+      }
+    }
+    // Scroll the selected row into view after a short delay for DOM update
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-outline-id="${selectedChapterId}"]`);
+      if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }, [selectedChapterId, chapters]);
 
   // Respond to external openSection prop
   useEffect(() => {
@@ -1066,11 +1096,11 @@ const EbookDesignSidebar = ({
 
         // Page-type icon + colour
         const typeConfig: Record<string, { icon: React.ComponentType<{className?: string}>; color: string; label: string }> = {
-          cover:          { icon: BookOpen,   color: 'text-violet-400',          label: 'Cover' },
+          cover:          { icon: BookMarked, color: 'text-violet-400',          label: 'Cover' },
           toc:            { icon: ListChecks, color: 'text-sky-400',             label: 'TOC' },
-          chapter:        { icon: BookMarked, color: 'text-accent',              label: 'Ch.' },
+          chapter:        { icon: BookOpen,   color: 'text-accent',              label: 'Ch.' },
           'chapter-page': { icon: AlignLeft,  color: 'text-foreground/50',       label: 'Page' },
-          back:           { icon: BookOpen,   color: 'text-violet-400',          label: 'Back' },
+          back:           { icon: BookMarked, color: 'text-violet-400',          label: 'Back' },
           blank:          { icon: FileText,   color: 'text-muted-foreground',    label: 'Blank' },
         };
 
@@ -1091,7 +1121,7 @@ const EbookDesignSidebar = ({
             .replace(/\s*\(Continued\s*\d*\)\s*$/i, '');
 
           return (
-            <div key={ch.id}
+            <div key={ch.id} data-outline-id={ch.id}
               onClick={() => onChapterSelect(ch.id)}
               className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all cursor-pointer ${
                 opts.indent ? 'ml-3' : ''
@@ -1173,7 +1203,7 @@ const EbookDesignSidebar = ({
               return (
                 <div key={group.cover.id}>
                   {/* Chapter header row */}
-                  <div
+                  <div data-outline-id={group.cover.id}
                     onClick={() => { onChapterSelect(group.cover.id); if (hasPages) toggleChapter(group.cover.id); }}
                     className={`group flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all cursor-pointer ${
                       isSelected
@@ -1187,7 +1217,7 @@ const EbookDesignSidebar = ({
                       } ${hasPages ? 'text-muted-foreground hover:text-foreground' : 'text-transparent pointer-events-none'}`}>
                       <ChevronRight className="w-3 h-3" />
                     </button>
-                    <BookMarked className={`w-3 h-3 shrink-0 ${isSelected ? 'text-accent' : 'text-accent/70'}`} />
+                    <BookOpen className={`w-3 h-3 shrink-0 ${isSelected ? 'text-accent' : 'text-accent/70'}`} />
                     <span className={`flex-1 min-w-0 text-[11px] font-semibold truncate ${
                       isSelected ? 'text-accent' : 'text-foreground/90'
                     }`}>
