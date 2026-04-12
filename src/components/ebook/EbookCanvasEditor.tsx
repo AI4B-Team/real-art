@@ -794,7 +794,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const q = findQuery.toLowerCase();
     const matches: { pageId: string; elementId: string; indices: number[] }[] = [];
     currentPages.forEach(page => {
-      const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+      const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
       elems.forEach(el => {
         if (el.type === 'text' && el.content) {
           const content = el.content.toLowerCase();
@@ -1174,7 +1174,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       const pagesToScan = scope === 'page' && selectedPage ? [selectedPage] : currentPages;
       const results: { pageId: string; elementId: string; content: string }[] = [];
       pagesToScan.forEach(page => {
-        const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+        const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
         elems.forEach(el => {
           if (el.type === 'text' && el.content) {
             results.push({ pageId: page.id, elementId: el.id, content: el.content });
@@ -2496,7 +2496,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               <div className="flex-1 overflow-auto no-scrollbar px-6 pt-6">
                 <div className="flex flex-wrap content-start gap-y-6 items-start pb-4">
                   {currentPages.map((page, pageIndex) => {
-                    const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+                    const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     const getPageTypeIcon = () => {
                       switch (page.type) {
@@ -3609,7 +3609,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               <div ref={scrollContainerRef} className="flex-1 overflow-auto no-scrollbar py-8 px-4 relative" onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
                 <div className="flex flex-col items-center gap-8" style={{ marginLeft: panelOffset }} onClick={(e) => { if (e.target === e.currentTarget) { setSelectedElementId(null); setEditingTextId(null); if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); } } }}>
                   {currentPages.map((page, pageIndex) => {
-                    const elems = pageElements[page.id] || getElementsForPage(page, currentPages, bookTitle);
+                    const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
                     const pageTypeLabel = page.type === 'cover' ? 'Cover' : page.type === 'toc' ? 'Table of Contents' : page.type === 'back' ? 'Back Cover' : page.type === 'chapter' ? 'Chapter Cover' : page.type === 'chapter-page' ? 'Content Page' : 'Page';
                     return (
