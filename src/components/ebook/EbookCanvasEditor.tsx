@@ -47,6 +47,8 @@ export interface Page {
   layout?: string;
 }
 
+export type ImageWrapMode = 'in-front' | 'behind' | 'square' | 'tight' | 'top-bottom';
+
 export interface CanvasElement {
   id: string;
   type: 'image' | 'shape' | 'text' | 'interactive';
@@ -72,6 +74,9 @@ export interface CanvasElement {
   shadowX?: number; shadowY?: number; shadowBlur?: number; shadowColor?: string;
   objectFit?: 'cover' | 'contain' | 'fill';
   linkUrl?: string;
+  // Text wrapping around images
+  wrapMode?: ImageWrapMode;
+  wrapMargin?: number; // margin in % around the image for text wrapping
 }
 
 export type AccessMode = 'editing' | 'viewing' | 'commenting' | 'admin';
@@ -1558,8 +1563,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         );
       }
 
+      // Adjust z-index based on wrap mode
+      const imgZIndex = el.wrapMode === 'behind' ? 0 : el.wrapMode === 'in-front' ? 20 : (el.zIndex ?? 1);
+
       return (
-        <div key={el.id} className={`${selectionBorder}`} style={style}
+        <div key={el.id} className={`${selectionBorder}`} style={{ ...style, zIndex: imgZIndex }}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onDoubleClick={() => replaceImageInputRef.current?.click()}>
@@ -1632,8 +1640,82 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     }
 
     if (el.type === 'text') {
+      // Calculate wrap floats from sibling images on the same page
+      const pageElems = pageId ? (pageElements[pageId] || []) : [];
+      const wrapImages = pageElems.filter(
+        sibling => sibling.type === 'image' && sibling.id !== el.id &&
+        sibling.wrapMode && sibling.wrapMode !== 'in-front' && sibling.wrapMode !== 'behind'
+      );
+
+      // Build CSS float elements for images that overlap this text element
+      const wrapFloats: React.ReactNode[] = [];
+      wrapImages.forEach((img) => {
+        const margin = img.wrapMargin ?? 2;
+        // Convert image coords relative to this text element's bounds
+        const relLeft = ((img.x - el.x) / el.width) * 100;
+        const relTop = ((img.y - el.y) / el.height) * 100;
+        const relWidth = (img.width / el.width) * 100;
+        const relHeight = (img.height / el.height) * 100;
+        const marginW = (margin / el.width) * 100;
+        const marginH = (margin / el.height) * 100;
+
+        // Check overlap
+        const imgRight = img.x + img.width;
+        const imgBottom = img.y + img.height;
+        const elRight = el.x + el.width;
+        const elBottom = el.y + el.height;
+        if (imgRight + margin <= el.x || img.x - margin >= elRight) return;
+        if (imgBottom + margin <= el.y || img.y - margin >= elBottom) return;
+
+        if (img.wrapMode === 'top-bottom') {
+          // Insert a full-width spacer at the image's vertical position
+          wrapFloats.push(
+            <div key={`wrap-tb-${img.id}`} style={{
+              width: '100%',
+              height: `${relHeight + marginH * 2}%`,
+              float: 'left' as const,
+              clear: 'both' as const,
+              marginTop: `${Math.max(0, relTop - marginH)}%`,
+            }} />
+          );
+        } else {
+          // Square or tight: float left or right based on position
+          const isLeftSide = img.x + img.width / 2 < el.x + el.width / 2;
+          const floatW = relWidth + marginW * 2;
+          const floatH = relHeight + marginH * 2;
+          wrapFloats.push(
+            <div key={`wrap-sq-${img.id}`} style={{
+              width: `${Math.min(floatW, 100)}%`,
+              height: `${Math.min(floatH, 100)}%`,
+              float: isLeftSide ? 'left' : 'right',
+              marginTop: `${Math.max(0, relTop - marginH)}%`,
+              shapeOutside: img.wrapMode === 'tight'
+                ? `inset(${marginH}% ${marginW}% ${marginH}% ${marginW}% round ${img.borderRadius || 0}px)`
+                : undefined,
+              shapeMargin: img.wrapMode === 'tight' ? `${margin * 0.3}%` : undefined,
+            } as React.CSSProperties} />
+          );
+        }
+      });
+
+      // For 'behind' mode images, render text with higher z-index
+      const hasBehindImage = pageElems.some(
+        sibling => sibling.type === 'image' && sibling.wrapMode === 'behind'
+      );
+      const textZIndex = hasBehindImage ? Math.max((el.zIndex ?? 1), 10) : el.zIndex;
+
+      const textStyle: React.CSSProperties = {
+        fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
+        fontFamily: el.fontFamily, color: el.textColor,
+        textAlign: el.textAlign || 'left',
+        fontWeight: el.fontWeight || 'normal',
+        fontStyle: el.fontStyle || 'normal',
+        textDecoration: el.textDecoration || 'none',
+        lineHeight: el.lineHeight ?? 1.5,
+      };
+
       return (
-        <div key={el.id} className={`${selectionBorder} group/text`} style={{ ...style, minHeight: 20 }}
+        <div key={el.id} className={`${selectionBorder} group/text`} style={{ ...style, minHeight: 20, zIndex: textZIndex ?? style.zIndex }}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
           onContextMenu={e => handleElementContextMenu(e, el, pageId)}
           onClick={() => { if (isPageLocked) return; if (isSelected && !isEditing) { setEditingTextId(el.id); } }}
@@ -1653,29 +1735,17 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               onKeyDown={e => { if (e.key === 'Escape') { if (editableTextRef.current) updateElement(el.id, { content: editableTextRef.current.innerHTML }); setEditingTextId(null); } }}
               onMouseDown={e => e.stopPropagation()}
               onClick={e => e.stopPropagation()}
-              dangerouslySetInnerHTML={{ __html: el.content || '' }}
               className="w-full h-full overflow-auto p-2 whitespace-pre-wrap outline-none cursor-text"
-              style={{
-                fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
-                fontFamily: el.fontFamily, color: el.textColor,
-                textAlign: el.textAlign || 'left',
-                fontWeight: el.fontWeight || 'normal',
-                fontStyle: el.fontStyle || 'normal',
-                textDecoration: el.textDecoration || 'none',
-                lineHeight: el.lineHeight ?? 1.5,
-              }}
-            />
+              style={textStyle}
+            >
+              {wrapFloats}
+              <span dangerouslySetInnerHTML={{ __html: el.content || '' }} />
+            </div>
           ) : (
             <div className="w-full h-full overflow-hidden p-2 whitespace-pre-wrap select-none pointer-events-none" style={{
-              background: 'transparent',
-              fontSize: `${(el.fontSize || 16) * zoom / 100}px`,
-              fontFamily: el.fontFamily, color: el.textColor,
-              textAlign: el.textAlign || 'left',
-              fontWeight: el.fontWeight || 'normal',
-              fontStyle: el.fontStyle || 'normal',
-              textDecoration: el.textDecoration || 'none',
-              lineHeight: el.lineHeight ?? 1.5,
+              background: 'transparent', ...textStyle,
             }}>
+              {wrapFloats}
               <span style={{ backgroundColor: el.highlightColor || 'transparent', boxDecorationBreak: 'clone', WebkitBoxDecorationBreak: 'clone' }} dangerouslySetInnerHTML={{ __html: el.content || '' }} />
             </div>
           )}
@@ -1683,6 +1753,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         </div>
       );
     }
+
+
 
     // Interactive elements
     if (el.type === 'interactive') {
@@ -3097,6 +3169,46 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         </div>
                         <button onClick={() => updateElement(selectedElement.id, { shadowX: 0, shadowY: 0, shadowBlur: 0, shadowColor: '#000000' })}
                           className="mt-2 text-xs text-accent hover:underline">Remove Shadow</button>
+                      </PopoverContent>
+                    </Popover>
+                    {/* Text Wrap */}
+                    <Popover>
+                      <Tooltip><TooltipTrigger asChild>
+                        <PopoverTrigger asChild>
+                          <button className={`p-1.5 rounded hover:bg-foreground/[0.05] flex items-center gap-0.5 ${selectedElement.wrapMode && selectedElement.wrapMode !== 'in-front' ? 'text-accent' : 'text-muted-foreground hover:text-foreground'}`}>
+                            <LayoutGrid className="w-3.5 h-3.5" />
+                            <ChevronDown className="w-2.5 h-2.5 opacity-60" />
+                          </button>
+                        </PopoverTrigger>
+                      </TooltipTrigger><TooltipContent>Text Wrapping</TooltipContent></Tooltip>
+                      <PopoverContent className="w-56 p-3" align="center">
+                        <p className="text-xs font-semibold text-foreground mb-2">Text Wrapping</p>
+                        <div className="flex flex-col gap-0.5">
+                          {([
+                            { mode: 'in-front' as const, label: 'In Front of Text', desc: 'Image covers text' },
+                            { mode: 'behind' as const, label: 'Behind Text', desc: 'Text covers image' },
+                            { mode: 'square' as const, label: 'Square', desc: 'Wrap around bounding box' },
+                            { mode: 'tight' as const, label: 'Tight', desc: 'Wrap close to image' },
+                            { mode: 'top-bottom' as const, label: 'Top and Bottom', desc: 'Text above & below only' },
+                          ]).map(opt => (
+                            <button key={opt.mode} onClick={() => updateElement(selectedElement.id, { wrapMode: opt.mode })}
+                              className={`w-full text-left px-3 py-2 rounded-lg transition-colors ${(selectedElement.wrapMode || 'in-front') === opt.mode ? 'bg-accent/10 text-accent' : 'hover:bg-foreground/[0.04]'}`}>
+                              <span className="text-xs font-medium block">{opt.label}</span>
+                              <span className="text-[10px] text-muted-foreground">{opt.desc}</span>
+                            </button>
+                          ))}
+                        </div>
+                        <div className="border-t border-foreground/[0.06] mt-2 pt-2">
+                          <div className="flex items-center justify-between mb-1">
+                            <span className="text-[10px] font-medium text-foreground">Wrap Margin</span>
+                            <span className="text-[10px] text-muted-foreground">{selectedElement.wrapMargin ?? 2}%</span>
+                          </div>
+                          <Slider
+                            value={[selectedElement.wrapMargin ?? 2]}
+                            onValueChange={([v]) => updateElement(selectedElement.id, { wrapMargin: v })}
+                            min={0} max={10} step={0.5} className="w-full"
+                          />
+                        </div>
                       </PopoverContent>
                     </Popover>
                     <Tooltip>
