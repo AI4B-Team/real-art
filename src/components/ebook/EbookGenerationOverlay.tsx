@@ -155,15 +155,29 @@ const LivePreview = ({
 }: {
   pages: Page[]; elements: Record<string, CanvasElement[]>; bookTitle: string;
 }) => {
-  const [focusIdx, setFocusIdx] = useState(0);
-  const prevLen = useRef(0);
+  const [rightIdx, setRightIdx] = useState(0);
+  const autoTimer = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  const coverPage = pages.find(p => p.type === 'cover') || pages[0];
+  const otherPages = pages.filter(p => p !== coverPage);
+
+  // Auto-cycle right panel every 2.4s
   useEffect(() => {
-    if (pages.length > prevLen.current) {
-      setFocusIdx(pages.length - 1);
-      prevLen.current = pages.length;
+    if (otherPages.length <= 1) return;
+    autoTimer.current = setInterval(() => {
+      setRightIdx(prev => (prev + 1) % otherPages.length);
+    }, 2400);
+    return () => { if (autoTimer.current) clearInterval(autoTimer.current); };
+  }, [otherPages.length]);
+
+  // When new pages arrive, show the latest
+  const prevLen = useRef(0);
+  useEffect(() => {
+    if (otherPages.length > prevLen.current && otherPages.length > 0) {
+      setRightIdx(otherPages.length - 1);
     }
-  }, [pages.length]);
+    prevLen.current = otherPages.length;
+  }, [otherPages.length]);
 
   if (pages.length === 0) {
     return (
@@ -179,10 +193,7 @@ const LivePreview = ({
     );
   }
 
-  const focused = pages[focusIdx] ?? pages[pages.length - 1];
-  const focusedElems = elements[focused.id] || [];
-  const prevPage = focusIdx > 0 ? pages[focusIdx - 1] : null;
-  const nextPage = focusIdx < pages.length - 1 ? pages[focusIdx + 1] : null;
+  const rightPage = otherPages[rightIdx] ?? otherPages[0];
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center gap-5 px-4">
@@ -190,67 +201,64 @@ const LivePreview = ({
       <div className="flex items-center gap-3">
         <div className="h-px w-8 bg-white/20" />
         <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">
-          Page {focusIdx + 1} of {pages.length}
+          Page {rightPage ? (pages.indexOf(rightPage) + 1) : 1} of {pages.length}
         </span>
         <div className="h-px w-8 bg-white/20" />
       </div>
 
       {/* Page title */}
-      <motion.p key={focused.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
-        className="text-xs font-medium text-white/60 text-center max-w-[220px] truncate">
-        {focused.title || "Untitled Page"}
+      <motion.p key={rightPage?.id ?? coverPage?.id} initial={{ opacity: 0, y: 4 }} animate={{ opacity: 1, y: 0 }}
+        className="text-xs font-medium text-white/60 text-center max-w-[280px] truncate">
+        {rightPage?.title || coverPage?.title || "Untitled Page"}
       </motion.p>
 
-      {/* Three-page carousel */}
-      <div className="flex items-center gap-4">
-        {/* Prev ghost */}
-        <div className="flex flex-col items-center gap-1.5" style={{ opacity: prevPage ? 1 : 0 }}>
-          {prevPage && (
-            <button onClick={() => setFocusIdx(f => f - 1)} className="hover:scale-105 transition-transform">
-              <div style={{ transform: "scale(0.62)", transformOrigin: "top center" }}>
-                <MiniPage page={prevPage} elements={elements[prevPage.id] || []} bookTitle={bookTitle} allPages={pages} dimmed />
-              </div>
-            </button>
-          )}
-        </div>
+      {/* Cover (left) + flipping page (right) */}
+      <div className="flex items-end gap-3">
+        {/* Cover — pinned left, slightly smaller */}
+        {coverPage && (
+          <div className="relative">
+            <div style={{ transform: "scale(0.72)", transformOrigin: "bottom right" }}>
+              <MiniPage page={coverPage} elements={elements[coverPage.id] || []} bookTitle={bookTitle} allPages={pages} />
+            </div>
+            <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 bg-white/10 rounded-full px-2 py-0.5">
+              <span className="text-[8px] font-bold text-white/50 uppercase tracking-wider">Cover</span>
+            </div>
+          </div>
+        )}
 
-        {/* Focus page */}
-        <AnimatePresence mode="wait">
-          <motion.div key={focused.id}
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: -10 }}
-            transition={{ duration: 0.3 }}>
-            <MiniPage page={focused} elements={focusedElems} bookTitle={bookTitle} allPages={pages} />
-          </motion.div>
-        </AnimatePresence>
-
-        {/* Next ghost */}
-        <div className="flex flex-col items-center gap-1.5" style={{ opacity: nextPage ? 1 : 0 }}>
-          {nextPage && (
-            <button onClick={() => setFocusIdx(f => f + 1)} className="hover:scale-105 transition-transform">
-              <div style={{ transform: "scale(0.62)", transformOrigin: "top center" }}>
-                <MiniPage page={nextPage} elements={elements[nextPage.id] || []} bookTitle={bookTitle} allPages={pages} dimmed />
-              </div>
-            </button>
-          )}
-        </div>
+        {/* Right — animated page flip */}
+        {rightPage && (
+          <div className="relative" style={{ perspective: "800px" }}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={rightPage.id}
+                initial={{ rotateY: -90, opacity: 0 }}
+                animate={{ rotateY: 0, opacity: 1 }}
+                exit={{ rotateY: 90, opacity: 0 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                style={{ transformOrigin: "left center" }}
+              >
+                <MiniPage page={rightPage} elements={elements[rightPage.id] || []} bookTitle={bookTitle} allPages={pages} />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        )}
       </div>
 
-      {/* Nav buttons + dot strip */}
+      {/* Nav dots + arrows */}
       <div className="flex items-center gap-3">
-        <button onClick={() => setFocusIdx(f => Math.max(0, f - 1))} disabled={focusIdx === 0}
+        <button onClick={() => setRightIdx(f => Math.max(0, f - 1))} disabled={rightIdx === 0 || otherPages.length === 0}
           className="w-7 h-7 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:border-white/30 hover:text-white/80 disabled:opacity-30 transition-all">
           <ChevronLeft className="w-3.5 h-3.5" />
         </button>
         <div className="flex gap-1">
-          {pages.slice(0, 12).map((_, i) => (
-            <button key={i} onClick={() => setFocusIdx(i)}
-              className={`rounded-full transition-all ${i === focusIdx ? "w-3 h-1.5 bg-emerald-400" : "w-1.5 h-1.5 bg-white/20 hover:bg-white/40"}`} />
+          {otherPages.slice(0, 12).map((_, i) => (
+            <button key={i} onClick={() => setRightIdx(i)}
+              className={`rounded-full transition-all ${i === rightIdx ? "w-3 h-1.5 bg-emerald-400" : "w-1.5 h-1.5 bg-white/20 hover:bg-white/40"}`} />
           ))}
-          {pages.length > 12 && <span className="text-[9px] text-white/30 ml-1">+{pages.length - 12}</span>}
+          {otherPages.length > 12 && <span className="text-[9px] text-white/30 ml-1">+{otherPages.length - 12}</span>}
         </div>
-        <button onClick={() => setFocusIdx(f => Math.min(pages.length - 1, f + 1))} disabled={focusIdx >= pages.length - 1}
+        <button onClick={() => setRightIdx(f => Math.min(otherPages.length - 1, f + 1))} disabled={rightIdx >= otherPages.length - 1 || otherPages.length === 0}
           className="w-7 h-7 rounded-full border border-white/15 flex items-center justify-center text-white/50 hover:border-white/30 hover:text-white/80 disabled:opacity-30 transition-all">
           <ChevronRight className="w-3.5 h-3.5" />
         </button>
