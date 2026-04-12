@@ -2109,36 +2109,23 @@ const NewEbookPage = () => {
               {!isGridView && !isLeftPanelCollapsed && !showBookSettingsDialog && (
               <EbookDesignSidebar
                 bookTitle={bookData.selectedTitle}
-                chapters={ebookPages.map(p => ({ id: p.id, title: p.title, type: p.type as any }))}
-                selectedChapterId={selectedPageId}
-                onChapterSelect={setSelectedPageId}
-                onChapterAdd={(_afterId, pageType) => {
-                  const pt = (pageType || "chapter") as "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank";
-                  const newPage = { id: crypto.randomUUID(), title: "New Page", type: pt };
-                  setEbookPages(prev => [...prev, newPage]);
-                  setSelectedPageId(newPage.id);
+                chapters={sidebarChapters}
+                selectedChapterId={selectedSidebarChapterId}
+                onChapterSelect={(id) => {
+                  const chapterGroup = chapterGroups.find((group) => group.cover.id === id);
+                  setSelectedPageId(chapterGroup?.cover.id || id);
                 }}
-                onChapterTitleEdit={(id, title) => setEbookPages(prev => prev.map(p => p.id === id ? { ...p, title } : p))}
-                onChapterDelete={id => {
-                  if (ebookPages.length <= 1) return;
-                  setEbookPages(prev => prev.filter(p => p.id !== id));
-                  if (selectedPageId === id) setSelectedPageId(ebookPages[0]?.id || null);
-                }}
-                onChapterReorder={(from, to) => {
-                  setEbookPages(prev => {
-                    const arr = [...prev];
-                    const [moved] = arr.splice(from, 1);
-                    arr.splice(to, 0, moved);
-                    return arr;
-                  });
-                }}
+                onChapterAdd={handleSidebarChapterAdd}
+                onChapterTitleEdit={handleSidebarChapterTitleEdit}
+                onChapterDelete={handleSidebarChapterDelete}
+                onChapterReorder={handleSidebarChapterReorder}
                 onSectionChange={handleSidebarSectionChange}
                 onAIClick={() => setSidebarMode('ai')}
                 sidebarMode={sidebarMode}
                 onSidebarModeChange={setSidebarMode}
                 selectedPageTitle={ebookPages.find(p => p.id === selectedPageId)?.title}
-                pageCount={ebookPages.length}
-                pageIndex={ebookPages.findIndex(p => p.id === selectedPageId)}
+                pageCount={sidebarChapters.length}
+                pageIndex={sidebarChapters.findIndex(p => p.id === selectedSidebarChapterId)}
                 onOpenImageSection={() => { setSidebarOpenSection('image'); setTimeout(() => setSidebarOpenSection(null), 100); }}
                 openSection={sidebarOpenSection as any}
                 onAddElement={(type, data) => canvasRef.current?.addElement(type, data)}
