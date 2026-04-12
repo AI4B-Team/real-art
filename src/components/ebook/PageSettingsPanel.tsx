@@ -105,6 +105,17 @@ const PageSettingsPanel = ({
 
   const selectedPage = pages.find(p => p.id === selectedPageId);
 
+  // Shared AI context — same brain as floating assistant & left panel
+  const currentElements = pageElements?.[selectedPageId || ''] || [];
+  const aiCtx = useAIPageContext(
+    selectedPage?.type ?? null,
+    currentElements.length > 0,
+    currentElements.length,
+    currentElements.some(e => e.type === 'image' && !e.isPlaceholder),
+    currentElements.some(e => e.type === 'text' && (e.fontSize || 12) >= 18),
+    currentElements.filter(e => e.type === 'text').reduce((acc, e) => acc + (e.content?.split(/\s+/).length || 0), 0),
+  );
+
   const updatePage = useCallback((pageId: string, patch: Partial<Page>) => {
     onPagesChange(pages.map(p => p.id === pageId ? { ...p, ...patch } : p));
   }, [pages, onPagesChange]);
