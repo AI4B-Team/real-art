@@ -60,17 +60,21 @@ interface EbookDesignSidebarProps {
   onEditElement?: (elementId: string) => void;
   /** Select an image element and open its replace overlay */
   onReplaceElementImage?: (elementId: string) => void;
+  /** Apply a named template to the entire book */
+  onApplyTemplate?: (templateId: string) => void;
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
 
-const TEMPLATES = [
-  { id: 'minimal', name: 'Minimal', color: '#f1f5f9' },
-  { id: 'modern', name: 'Modern', color: '#dbeafe' },
-  { id: 'classic', name: 'Classic', color: '#fef3c7' },
-  { id: 'bold', name: 'Bold', color: '#fce7f3' },
-  { id: 'elegant', name: 'Elegant', color: '#1e293b' },
-  { id: 'nature', name: 'Nature', color: '#dcfce7' },
+const TMPL_DEFS = [
+  { id: 'editorial', name: 'Editorial', desc: 'Bold black, stark contrast', bg: '#0a0a0a', accent: '#ffffff', badge: 'P' },
+  { id: 'nordic', name: 'Nordic', desc: 'Forest green, minimal', bg: '#f0f4f0', accent: '#2d5a27', badge: 'B' },
+  { id: 'luxe', name: 'Luxe', desc: 'Navy & gold, premium', bg: '#0f1b35', accent: '#c9a84c', badge: 'P' },
+  { id: 'slate', name: 'Slate', desc: 'Tech blue, clean grid', bg: '#1e2530', accent: '#3b82f6', badge: 'B' },
+  { id: 'terra', name: 'Terra', desc: 'Terracotta, earthy warm', bg: '#e8d5c4', accent: '#c0522a', badge: 'P' },
+  { id: 'split', name: 'Split', desc: 'Two-column landscape', bg: '#f8f4ff', accent: '#7c3aed', badge: 'L' },
+  { id: 'newspaper', name: 'Newspaper', desc: 'Classic broadsheet grid', bg: '#fafafa', accent: '#111111', badge: 'P' },
+  { id: 'pastel', name: 'Pastel', desc: 'Soft lavender & mint', bg: '#ede9fe', accent: '#7c3aed', badge: 'B' },
 ];
 
 const ELEMENT_CATEGORIES: Record<string, { title: string; items: { id: string; name: string; icon: any; color: string }[] }> = {
