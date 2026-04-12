@@ -270,12 +270,19 @@ const createChapterElements = (num: number, title: string): CanvasElement[] => {
   ];
 };
 
+const SAMPLE_CONTENT_PAGES = [
+  "Every great endeavor begins with a single step — a moment of clarity that transforms ambiguity into action. In this section, we explore the foundational principles that underpin success across industries and disciplines.\n\nUnderstanding these core concepts is essential before diving into the tactical details. Whether you're a seasoned professional or just starting out, this framework provides the scaffolding you need to build something meaningful and lasting.\n\nThe journey ahead is both challenging and rewarding. By committing to continuous learning and adapting your approach based on real-world feedback, you position yourself to thrive in an ever-changing landscape.",
+  "Building on the foundations laid in the previous section, we now turn our attention to practical strategies that can be implemented immediately. The gap between theory and practice is where most people stumble.\n\nConsider the following approach: start small, measure results, and iterate quickly. This lean methodology has been proven across thousands of case studies and remains the gold standard for modern execution.\n\nAs you progress through this material, take note of the patterns that emerge. These recurring themes are not coincidental — they reflect universal truths about how value is created and sustained over time.",
+  "The landscape is constantly evolving, and staying ahead requires both vigilance and flexibility. In this chapter, we examine the forces shaping the future and how to position yourself advantageously.\n\nData-driven decision making has become the cornerstone of competitive advantage. Organizations that harness insights effectively outperform their peers by significant margins across every measurable dimension.\n\nYet technology alone is not sufficient. The human element — creativity, empathy, and strategic thinking — remains irreplaceable. The most successful practitioners blend analytical rigor with intuitive understanding to achieve extraordinary outcomes.",
+];
+
 const createChapterPageElements = (num: number, title: string): CanvasElement[] => {
   const pal = CHAPTER_PALETTES[(num - 1) % CHAPTER_PALETTES.length];
+  const sampleText = SAMPLE_CONTENT_PAGES[(num - 1) % SAMPLE_CONTENT_PAGES.length];
   return [
     { id: `cp${num}-title`, type: 'text', x: 8, y: 4, width: 78, height: 10, content: title, fontSize: 16, fontFamily: 'Georgia', textColor: '#1a1a2e', fontWeight: 'bold', lineHeight: 1.2 },
     { id: `cp${num}-divider`, type: 'shape', x: 8, y: 15.5, width: 12, height: 0.6, fill: pal.accent, stroke: 'transparent', shapeType: 'rectangle' },
-    { id: `cp${num}-body`, type: 'text', x: 8, y: 18, width: 84, height: 74, content: '', fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.65 },
+    { id: `cp${num}-body`, type: 'text', x: 8, y: 18, width: 84, height: 74, content: sampleText, fontSize: 12, fontFamily: 'Georgia', textColor: '#374151', lineHeight: 1.65 },
     { id: `cp${num}-pagenum`, type: 'text', x: 82, y: 95, width: 10, height: 4, content: `${num}`, fontSize: 10, fontFamily: 'Inter', textColor: '#9ca3af', textAlign: 'right' },
   ];
 };
