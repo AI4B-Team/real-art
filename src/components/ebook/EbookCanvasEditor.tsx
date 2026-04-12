@@ -419,6 +419,32 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     }));
   }, [currentPages]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Auto-sync page number elements whenever pages are reordered, added, or removed
+  const pageNumSyncKeyRef = useRef('');
+  useEffect(() => {
+    const pageNumKey = currentPages.map(p => p.id).join('|');
+    if (pageNumKey === pageNumSyncKeyRef.current) return;
+    pageNumSyncKeyRef.current = pageNumKey;
+    setPageElementsRaw(prev => {
+      const updated = { ...prev };
+      let changed = false;
+      currentPages.forEach((page, canvasIdx) => {
+        const elems = updated[page.id];
+        if (!elems) return;
+        const newPageNum = String(canvasIdx + 1);
+        const updatedElems = elems.map(el => {
+          if ((el.id.endsWith('-pagenum') || el.id === 'page-number') && el.content !== newPageNum) {
+            changed = true;
+            return { ...el, content: newPageNum };
+          }
+          return el;
+        });
+        if (changed) updated[page.id] = updatedElems;
+      });
+      return changed ? updated : prev;
+    });
+  }, [currentPages]); // eslint-disable-line react-hooks/exhaustive-deps
+
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);

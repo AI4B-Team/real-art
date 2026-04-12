@@ -1093,7 +1093,7 @@ const EbookDesignSidebar = ({
                     </div>
                     <span className={`text-[10px] font-mono shrink-0 w-4 text-right ${
                       isSelected ? 'text-accent' : 'text-muted-foreground/50'
-                    }`}>{chapterNumber}</span>
+                    }`}>{pageNumberMap?.get(group.cover.id) ?? chapterNumber}</span>
                   </div>
 
                   {/* Nested content pages */}
