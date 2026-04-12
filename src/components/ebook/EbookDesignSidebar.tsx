@@ -1487,14 +1487,29 @@ const EbookDesignSidebar = ({
             if (!category) return null;
             const filtered = category.items.filter(i => !elementSearch || i.name.toLowerCase().includes(elementSearch.toLowerCase()));
             if (filtered.length === 0) return null;
+            const isExpanded = expandedElementCats.has(key) || !!elementSearch;
+            const PREVIEW_COUNT = 6;
+            const visible = isExpanded ? filtered : filtered.slice(0, PREVIEW_COUNT);
+            const hasMore = filtered.length > PREVIEW_COUNT;
             return (
               <div key={key} id={`element-category-${key}`} className="scroll-mt-4">
                 <div className="flex items-center justify-between mb-2">
                   <p className="text-sm font-semibold text-foreground">{category.title}</p>
-                  <button className="text-xs text-accent hover:text-accent/80 font-medium">More</button>
+                  {hasMore && (
+                    <button
+                      onClick={() => setExpandedElementCats(prev => {
+                        const next = new Set(prev);
+                        if (next.has(key)) next.delete(key); else next.add(key);
+                        return next;
+                      })}
+                      className="text-xs text-accent hover:text-accent/80 font-medium"
+                    >
+                      {isExpanded ? 'Less' : 'More'}
+                    </button>
+                  )}
                 </div>
                 <div className="grid grid-cols-3 gap-2">
-                  {filtered.map(item => (
+                  {visible.map(item => (
                     <Tooltip key={item.id}>
                       <TooltipTrigger asChild>
                         <button
