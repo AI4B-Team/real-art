@@ -967,14 +967,20 @@ const NewEbookPage = () => {
   const backPage = ebookPages.find((page) => page.type === "back");
 
   // Include ALL pages in canvas order so page numbers are always accurate.
-  // Chapter rows use chapterSequence titles (from the generate outline) when available.
+  // Build a title lookup from chapterSequence keyed by chapter group index,
+  // but prefer the actual page title from ebookPages when available.
+  const chapterSeqTitleByGroupIdx = new Map(
+    chapterSequence.map((ch, idx) => [idx, ch.title])
+  );
+
   const sidebarChapters = [
     ...(coverPage ? [{ id: coverPage.id, title: "Cover", type: "cover" as const }] : []),
     ...(tocPage ? [{ id: tocPage.id, title: "Table of Contents", type: "toc" as const }] : []),
     ...chapterGroups.flatMap((group, groupIdx) => [
       {
         id: group.cover.id,
-        title: chapterSequence[groupIdx]?.title || group.cover.title,
+        // Use page's own title first (set during generation), then chapterSequence fallback
+        title: group.cover.title || chapterSeqTitleByGroupIdx.get(groupIdx) || `Chapter ${groupIdx + 1}`,
         type: "chapter" as const,
       },
       // Include all content pages nested under this chapter
