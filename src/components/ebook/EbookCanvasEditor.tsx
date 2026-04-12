@@ -3847,6 +3847,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                               <span className="ml-auto text-[9px] text-muted-foreground">Page {pageIndex + 1}</span>
                                             </div>
 
+                                            {/* Scrollable middle area */}
+                                            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
                                             {/* Smart Suggestions */}
                                             <div className="px-3 py-2.5 space-y-2 border-b border-foreground/[0.06]">
                                               <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Here's What I'd Fix First…</p>
