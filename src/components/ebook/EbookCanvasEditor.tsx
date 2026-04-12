@@ -459,6 +459,17 @@ export const getElementsForPage = (page: Page, allPages: Page[], bookTitle: stri
   }
 };
 
+/** Return stored elements if non-empty, otherwise generate defaults.
+ *  Blank pages intentionally have 0 elements, so skip fallback for them. */
+const resolvePageElements = (
+  stored: Record<string, CanvasElement[]>,
+  page: Page, allPages: Page[], bookTitle: string,
+): CanvasElement[] => {
+  const elems = stored[page.id];
+  if (elems && (elems.length > 0 || page.type === 'blank')) return elems;
+  return getElementsForPage(page, allPages, bookTitle);
+};
+
 const PAGE_TYPE_OPTIONS: { type: Page['type']; label: string; description: string; icon: string }[] = [
   { type: 'chapter', label: 'Chapter Cover', description: 'Full image with chapter number & title', icon: '📖' },
   { type: 'chapter-page', label: 'Content Page', description: 'Text content with title and body', icon: '📄' },
