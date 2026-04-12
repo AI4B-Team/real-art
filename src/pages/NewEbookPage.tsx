@@ -468,11 +468,21 @@ const NewEbookPage = () => {
       if (Array.isArray(savedProject.pages) && savedProject.pages.length > 0) {
         setEbookPages(savedProject.pages);
         setSelectedPageId(savedProject.pages[0]?.id || null);
+      } else if (state.book.id === "demo-tutorial") {
+        // Load default tutorial pages for the demo book
+        const defaultPages = getDefaultPages();
+        setEbookPages(defaultPages);
+        setSelectedPageId(defaultPages[0]?.id || null);
+        localStorage.setItem(STORAGE_KEY_PAGES, JSON.stringify(defaultPages));
       }
 
-      if (savedProject.elements && typeof savedProject.elements === "object") {
+      if (savedProject.elements && typeof savedProject.elements === "object" && Object.keys(savedProject.elements).length > 0) {
         setSavedPageElements(savedProject.elements);
         localStorage.setItem(STORAGE_KEY_ELEMENTS, JSON.stringify(savedProject.elements));
+      } else if (state.book.id === "demo-tutorial") {
+        // Clear stale elements so canvas generates fresh tutorial content
+        setSavedPageElements({});
+        localStorage.removeItem(STORAGE_KEY_ELEMENTS);
       }
 
       if (Array.isArray(savedProject.chapters) && savedProject.chapters.length > 0) {
