@@ -949,7 +949,158 @@ const NewEbookPage = () => {
     }
   }, [addSource]);
 
-  // For the design tab, fill the space below the global navbar without double-subtracting its height
+  const buildChapterGroups = (pages: UnifiedPage[]) => {
+    const groups: { cover: UnifiedPage; startIndex: number; endIndex: number; pageIds: string[] }[] = [];
+    let current: { cover: UnifiedPage; startIndex: number; endIndex: number; pageIds: string[] } | null = null;
+
+    pages.forEach((page, index) => {
+      if (page.type === "chapter") {
+        if (current) groups.push(current);
+        current = { cover: page, startIndex: index, endIndex: index, pageIds: [page.id] };
+        return;
+      }
+
+      if (current && page.type !== "cover" && page.type !== "toc" && page.type !== "back") {
+        current.endIndex = index;
+        current.pageIds.push(page.id);
+        return;
+      }
+
+      if (current) {
+        groups.push(current);
+        current = null;
+      }
+    });
+
+    if (current) groups.push(current);
+    return groups;
+  };
+
+  const moveArrayItem = <T,>(items: T[], from: number, to: number) => {
+    const next = [...items];
+    const [moved] = next.splice(from, 1);
+    next.splice(to, 0, moved);
+    return next;
+  };
+
+  const chapterGroups = buildChapterGroups(ebookPages);
+  const coverPage = ebookPages.find((page) => page.type === "cover");
+  const backPage = ebookPages.find((page) => page.type === "back");
+  const sidebarChapters = [
+    ...(coverPage ? [{ id: coverPage.id, title: "Cover", type: "cover" as const }] : []),
+    ...chapterGroups.map((group, index) => ({
+      id: group.cover.id,
+      title: chapterSequence[index]?.title || group.cover.title,
+      type: "chapter" as const,
+    })),
+    ...(backPage ? [{ id: backPage.id, title: "Back Cover", type: "back" as const }] : []),
+  ];
+
+  const selectedSidebarChapterId = (() => {
+    const currentPage = ebookPages.find((page) => page.id === selectedPageId);
+    if (!currentPage) return null;
+    if (currentPage.type === "cover" || currentPage.type === "back" || currentPage.type === "chapter") {
+      return currentPage.id;
+    }
+    if (currentPage.type === "chapter-page" || currentPage.type === "blank") {
+      return chapterGroups.find((group) => group.pageIds.includes(currentPage.id))?.cover.id || null;
+    }
+    return null;
+  })();
+
+  const handleSidebarChapterAdd = (afterId: string, pageType?: string) => {
+    const pt = (pageType || "chapter") as "cover" | "toc" | "chapter" | "chapter-page" | "back" | "blank";
+    const groupIndex = chapterGroups.findIndex((group) => group.cover.id === afterId);
+    const afterPageIndex = ebookPages.findIndex((page) => page.id === afterId);
+    const insertIndex = groupIndex !== -1
+      ? chapterGroups[groupIndex].endIndex + 1
+      : afterPageIndex >= 0
+        ? afterPageIndex + 1
+        : ebookPages.length;
+    const newPage = {
+      id: crypto.randomUUID(),
+      title: pt === "chapter" ? `Chapter ${chapterSequence.length + 1}` : "New Page",
+      type: pt,
+    };
+
+    setEbookPages((prev) => {
+      const next = [...prev];
+      next.splice(insertIndex, 0, newPage);
+      return next;
+    });
+
+    if (pt === "chapter") {
+      const insertChapterAt = groupIndex !== -1 ? groupIndex + 1 : chapterSequence.length;
+      setChapterSequence((prev) => {
+        const next = [...prev];
+        next.splice(insertChapterAt, 0, {
+          id: `ch-${Date.now()}`,
+          title: newPage.title,
+          description: "New chapter",
+          topics: [],
+          includeImages: bookData.chapterContentType !== "text-only",
+          pageCount: 8,
+        });
+        return next;
+      });
+    }
+
+    setSelectedPageId(newPage.id);
+  };
+
+  const handleSidebarChapterTitleEdit = (id: string, title: string) => {
+    setEbookPages((prev) => prev.map((page) => page.id === id ? { ...page, title } : page));
+    const chapterIndex = chapterGroups.findIndex((group) => group.cover.id === id);
+    if (chapterIndex !== -1) {
+      setChapterSequence((prev) => prev.map((chapter, index) => index === chapterIndex ? { ...chapter, title } : chapter));
+    }
+  };
+
+  const handleSidebarChapterDelete = (id: string) => {
+    const groupIndex = chapterGroups.findIndex((group) => group.cover.id === id);
+    if (groupIndex !== -1) {
+      const removeIds = new Set(chapterGroups[groupIndex].pageIds);
+      setEbookPages((prev) => prev.filter((page) => !removeIds.has(page.id)));
+      setChapterSequence((prev) => prev.filter((_, index) => index !== groupIndex));
+      if (selectedPageId && removeIds.has(selectedPageId)) {
+        setSelectedPageId(ebookPages.find((page) => !removeIds.has(page.id))?.id || null);
+      }
+      return;
+    }
+
+    if (ebookPages.length <= 1) return;
+    setEbookPages((prev) => prev.filter((page) => page.id !== id));
+    if (selectedPageId === id) {
+      setSelectedPageId(ebookPages.find((page) => page.id !== id)?.id || null);
+    }
+  };
+
+  const handleSidebarChapterReorder = (from: number, to: number) => {
+    const chapterOffset = coverPage ? 1 : 0;
+    const fromChapterIndex = from - chapterOffset;
+    const toChapterIndex = to - chapterOffset;
+    if (
+      fromChapterIndex < 0 ||
+      toChapterIndex < 0 ||
+      fromChapterIndex >= chapterGroups.length ||
+      toChapterIndex >= chapterGroups.length
+    ) {
+      return;
+    }
+
+    setChapterSequence((prev) => moveArrayItem(prev, fromChapterIndex, toChapterIndex));
+    setEbookPages((prev) => {
+      const groups = buildChapterGroups(prev);
+      if (groups.length === 0) return prev;
+      const firstChapterStart = groups[0].startIndex;
+      const lastChapterEnd = groups[groups.length - 1].endIndex;
+      const prefix = prev.slice(0, firstChapterStart);
+      const suffix = prev.slice(lastChapterEnd + 1);
+      const chapterBlocks = groups.map((group) => prev.slice(group.startIndex, group.endIndex + 1));
+      return [...prefix, ...moveArrayItem(chapterBlocks, fromChapterIndex, toChapterIndex).flat(), ...suffix];
+    });
+  };
+
   const isDesign = activeTab === "design";
 
   return (
