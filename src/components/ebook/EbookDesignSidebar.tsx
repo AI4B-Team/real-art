@@ -729,6 +729,36 @@ const EbookDesignSidebar = ({
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [openChapters, setOpenChapters] = useState<Set<string>>(new Set());
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const outlineScrollRef = useRef<HTMLDivElement>(null);
+
+  // Auto-expand chapter group & scroll sidebar when selected page changes
+  useEffect(() => {
+    if (!selectedChapterId) return;
+    // Find if the selected page is a chapter-page inside a chapter group
+    for (let i = 0; i < chapters.length; i++) {
+      const ch = chapters[i];
+      if (ch.id === selectedChapterId && ch.type === 'chapter-page') {
+        // Walk backwards to find the parent chapter cover
+        for (let j = i - 1; j >= 0; j--) {
+          if (chapters[j].type === 'chapter') {
+            setOpenChapters(prev => {
+              if (prev.has(chapters[j].id)) return prev;
+              const s = new Set(prev);
+              s.add(chapters[j].id);
+              return s;
+            });
+            break;
+          }
+        }
+        break;
+      }
+    }
+    // Scroll the selected row into view after a short delay for DOM update
+    requestAnimationFrame(() => {
+      const el = document.querySelector(`[data-outline-id="${selectedChapterId}"]`);
+      if (el) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+  }, [selectedChapterId, chapters]);
 
   // Respond to external openSection prop
   useEffect(() => {
