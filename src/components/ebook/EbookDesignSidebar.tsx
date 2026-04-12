@@ -1021,7 +1021,7 @@ const EbookDesignSidebar = ({
               <span className="text-[9px] font-bold text-muted-foreground/50 uppercase tracking-[0.12em]">#</span>
             </div>
 
-            {groups.map((group) => {
+            {groups.map((group, groupIndex) => {
               if (group.kind === 'special') {
                 return renderPageRow(group.page, group.globalIdx);
               }
@@ -1029,6 +1029,10 @@ const EbookDesignSidebar = ({
               const isOpen = openChapters.has(group.cover.id);
               const isSelected = selectedChapterId === group.cover.id;
               const hasPages = group.pages.length > 0;
+              const chapterNumber = groups
+                .slice(0, groupIndex + 1)
+                .filter((g): g is Extract<OutlineGroup, { kind: 'chapter' }> => g.kind === 'chapter')
+                .length;
 
               return (
                 <div key={group.cover.id}>
@@ -1087,7 +1091,7 @@ const EbookDesignSidebar = ({
                     </div>
                     <span className={`text-[10px] font-mono shrink-0 w-4 text-right ${
                       isSelected ? 'text-accent' : 'text-muted-foreground/50'
-                    }`}>{group.coverGlobalIdx + 1}</span>
+                    }`}>{chapterNumber}</span>
                   </div>
 
                   {/* Nested content pages */}
