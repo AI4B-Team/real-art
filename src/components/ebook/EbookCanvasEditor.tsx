@@ -1426,8 +1426,30 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     setDragOverPageIndex(null);
   };
 
+  // ─── Dark background detection helper ────────
+  const isPageDarkBg = useCallback((pageId: string) => {
+    const elems = pageElements[pageId] || [];
+    // Check for a large background shape with a dark fill
+    const bgEl = elems.find(e => e.type === 'shape' && e.id === 'bg' && e.width >= 90 && e.height >= 90);
+    if (!bgEl?.fill) return false;
+    // Parse hex or hsl to determine lightness
+    const fill = bgEl.fill;
+    if (fill.startsWith('#')) {
+      const hex = fill.replace('#', '');
+      const r = parseInt(hex.substring(0, 2), 16);
+      const g = parseInt(hex.substring(2, 4), 16);
+      const b = parseInt(hex.substring(4, 6), 16);
+      return (r * 0.299 + g * 0.587 + b * 0.114) < 128;
+    }
+    if (fill.includes('hsl')) {
+      const match = fill.match(/(\d+(?:\.\d+)?)\s*%\s*\)/);
+      if (match) return parseFloat(match[1]) < 40;
+    }
+    return false;
+  }, [pageElements]);
+
   // ─── Render Element ───────────────────────────
-  const renderElement = (el: CanvasElement, pageId?: string) => {
+  const renderElement = (el: CanvasElement, pageId?: string, darkBg = false) => {
     // Hide all non-replacing elements when replace mode is active
     if (replaceModalElementId && el.id !== replaceModalElementId) return null;
     const isSelected = selectedElementId === el.id;
