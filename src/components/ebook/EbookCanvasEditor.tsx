@@ -3831,8 +3831,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     </Tooltip>
                                     {/* Expanded AI panel — unified brain */}
                                     <div className={`absolute left-full top-0 ml-2 transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${isAiOpen ? 'opacity-100 translate-x-0 pointer-events-auto' : 'opacity-0 -translate-x-4 pointer-events-none'}`}>
-                                      <div className="flex flex-col bg-background/95 backdrop-blur-md rounded-2xl border border-foreground/[0.08] shadow-lg whitespace-nowrap"
-                                        style={{ width: '320px' }}>
+                                      <div className="flex flex-col bg-background/95 backdrop-blur-md rounded-2xl border border-foreground/[0.08] shadow-lg whitespace-nowrap overflow-hidden"
+                                        style={{ width: '320px', maxHeight: `${ph * zoom / 100}px` }}>
                                         {aiUpdatedFeedback ? (
                                           <div className="flex items-center justify-center gap-2 py-4 animate-in fade-in-0 duration-300">
                                             <Sparkles className="w-4 h-4 text-emerald-500" />
@@ -3847,6 +3847,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                               <span className="ml-auto text-[9px] text-muted-foreground">Page {pageIndex + 1}</span>
                                             </div>
 
+                                            {/* Scrollable middle area */}
+                                            <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
                                             {/* Smart Suggestions */}
                                             <div className="px-3 py-2.5 space-y-2 border-b border-foreground/[0.06]">
                                               <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">Here's What I'd Fix First…</p>
@@ -3887,9 +3889,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                 ))}
                                               </div>
                                             </div>
+                                            </div>
 
-                                            {/* Prompt input */}
-                                            <div className="px-3 py-2.5">
+                                            {/* Prompt input — pinned to bottom */}
+                                            <div className="px-3 py-2.5 shrink-0 border-t border-foreground/[0.06]">
                                               <div className="flex items-start gap-1.5 border border-foreground/[0.06] rounded-xl px-2.5 py-1.5 bg-foreground/[0.02]">
                                                 <Sparkles className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
                                                 <textarea
@@ -3897,23 +3900,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                   onChange={e => {
                                                     setContextualAIPrompt(e.target.value);
                                                     e.target.style.height = 'auto';
-                                                    e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
+                                                    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
                                                   }}
                                                   onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey && contextualAIPrompt.trim()) { e.preventDefault(); handleContextualAI('custom'); } }}
                                                   placeholder="Ask AI anything about this page..."
-                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-y overflow-auto"
-                                                  style={{ minHeight: '24px' }}
-                                                  ref={(el) => {
-                                                    if (!el) return;
-                                                    const updateMax = () => {
-                                                      const rect = el.getBoundingClientRect();
-                                                      const remaining = window.innerHeight - rect.top - 20;
-                                                      el.style.maxHeight = Math.max(24, remaining) + 'px';
-                                                    };
-                                                    updateMax();
-                                                    const ro = new ResizeObserver(updateMax);
-                                                    ro.observe(el);
-                                                  }}
+                                                  className="bg-transparent text-xs text-foreground placeholder:text-muted-foreground/50 outline-none w-full resize-none overflow-auto"
+                                                  style={{ minHeight: '24px', maxHeight: '120px' }}
                                                   rows={1}
                                                 />
                                               </div>
