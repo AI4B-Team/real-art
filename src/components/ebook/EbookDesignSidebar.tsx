@@ -27,6 +27,7 @@ import {
 } from '@/components/ui/tooltip';
 import AITextEditMenu, { type AIEditAction } from './AITextEditMenu';
 import PageTypePicker from './PageTypePicker';
+import { TemplateGallery } from './TemplateGallery';
 
 interface Chapter {
   id: string;
@@ -67,6 +68,8 @@ interface EbookDesignSidebarProps {
   onReplaceElementImage?: (elementId: string) => void;
   /** Apply a named template to the entire book */
   onApplyTemplate?: (templateId: string) => void;
+  /** Pages for the TemplateGallery preview */
+  pages?: import('./EbookCanvasEditor').Page[];
 }
 
 type SectionId = 'templates' | 'content' | 'image' | 'text' | 'video' | 'audio' | 'elements' | 'interactive' | 'mockups' | 'translate';
@@ -799,7 +802,7 @@ const EbookDesignSidebar = ({
   bookTitle, chapters, selectedChapterId, onChapterSelect, onChapterAdd,
   onChapterTitleEdit, onChapterDelete, onChapterReorder, onAddElement, onSectionChange, openSection, onTranslate, onReplaceImage, onAIClick,
   sidebarMode = 'design', onSidebarModeChange, selectedPageTitle, pageCount, pageIndex, onOpenImageSection,
-  pageNumberMap, currentPageElements = [], onSelectElement, onEditElement, onReplaceElementImage, onApplyTemplate,
+  pageNumberMap, currentPageElements = [], onSelectElement, onEditElement, onReplaceElementImage, onApplyTemplate, pages = [],
 }: EbookDesignSidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [expandedSections, setExpandedSections] = useState<Set<SectionId>>(new Set(['content']));
@@ -1372,35 +1375,12 @@ const EbookDesignSidebar = ({
       {/* Templates */}
       <SectionHeader id="templates" title="Templates" icon={LayoutTemplate} />
       {expandedSections.has('templates') && (
-        <div className="px-3 pb-3 pt-2">
-          <p className="text-[9px] text-muted-foreground/50 mb-2.5">
-            Click any template to apply it to your entire book
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            {TMPL_DEFS.map(t => (
-              <button key={t.id}
-                onClick={() => onApplyTemplate?.(t.id)}
-                className="group rounded-xl border-2 border-transparent hover:border-accent overflow-hidden transition-all hover:shadow-lg text-left focus:outline-none focus:border-accent">
-                {/* SVG thumbnail */}
-                <div className="aspect-[3/4] overflow-hidden">
-                  <svg viewBox="0 0 60 80" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                    <rect width="60" height="80" fill={t.bg} />
-                    {t.preview.map((el, i) => {
-                      if (el.type === 'rect') return <rect key={i} x={el.x} y={el.y} width={el.w} height={el.h} fill={el.fill} rx={el.rx ?? 0} opacity={el.op ?? 1} />;
-                      if (el.type === 'circle') return <circle key={i} cx={el.x} cy={el.y} r={el.r} fill={el.fill} opacity={el.op ?? 1} />;
-                      if (el.type === 'text') return <text key={i} x={el.x} y={el.y} fontSize={el.fs} fill={el.fill} fontWeight={el.bold ? 'bold' : 'normal'} opacity={el.op ?? 1} fontFamily="Georgia, serif">{el.txt}</text>;
-                      return null;
-                    })}
-                    <rect width="60" height="80" fill={t.accent} opacity="0" className="group-hover:opacity-20" style={{ transition: 'opacity 0.2s' }} />
-                  </svg>
-                </div>
-                <div className="px-2 py-1.5 bg-background border-t border-foreground/[0.06]">
-                  <p className="text-[10px] font-semibold text-foreground">{t.name}</p>
-                  <p className="text-[9px] text-muted-foreground/55 truncate">{t.desc}</p>
-                </div>
-              </button>
-            ))}
-          </div>
+        <div className="px-3 pb-3 pt-2" style={{ maxHeight: 480, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+          <TemplateGallery
+            bookTitle={bookTitle}
+            pages={pages as any}
+            onApply={async (templateId) => { onApplyTemplate?.(templateId); }}
+          />
         </div>
       )}
 
