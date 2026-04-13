@@ -106,7 +106,10 @@ const PageSettingsPanel = ({
   const selectedPage = pages.find(p => p.id === selectedPageId);
 
   // Shared AI context — same brain as floating assistant & left panel
-  const currentElements = externalPageElements?.[selectedPageId || ''] || [];
+  const storedElements = externalPageElements?.[selectedPageId || ''] || [];
+  const currentElements = storedElements.length > 0
+    ? storedElements
+    : (selectedPage ? getElementsForPage(selectedPage, pages, bookTitle || '') : []);
   // hasImages: count any image element with a src OR a placeholder slot on the page.
   // Template-generated images start as isPlaceholder=true but ARE intentionally placed.
   const hasImages = currentElements.some(e => e.type === 'image' && (e.src || e.isPlaceholder));

@@ -645,7 +645,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   // ─── Shared AI Context Engine ─────────────────────────
   const selectedPageObj = currentPages.find(p => p.id === selectedPageId);
-  const selectedPageElements = pageElements[selectedPageId || ''] || [];
+  const storedElements = pageElements[selectedPageId || ''] || [];
+  const selectedPageElements = storedElements.length > 0
+    ? storedElements
+    : (selectedPageObj ? getElementsForPage(selectedPageObj, currentPages, bookTitle) : []);
   // hasImages: placeholder images ARE intentionally placed — count them
   const floatingHasImages = selectedPageElements.some(e => e.type === 'image' && (e.src || e.isPlaceholder));
   // hasHeadline: fontSize>=16 OR id matches title/heading keywords
