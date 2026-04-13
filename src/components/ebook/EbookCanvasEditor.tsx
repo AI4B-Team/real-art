@@ -2699,8 +2699,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </Popover>
                             </div>
                           </div>
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <PageIcon className="w-3 h-3" />
+                          <div className="flex items-center gap-1">
+                            <PageIcon className={`w-3 h-3 ${
+                              page.type === 'cover' || page.type === 'back' ? 'text-violet-400' :
+                              page.type === 'toc' ? 'text-sky-400' :
+                              page.type === 'chapter' ? 'text-accent' :
+                              'text-muted-foreground'
+                            }`} />
                             <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>
                               {page.type !== 'cover' && page.type !== 'toc' && page.type !== 'back'
                                 ? currentPages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back').indexOf(page) + 1
