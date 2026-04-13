@@ -965,16 +965,32 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   // Scroll to selected page when it changes (unless triggered by scroll observer)
   const prevSelectedRef = useRef<string | null>(null);
+  const prevGridViewRef = useRef(isGridView);
   useEffect(() => {
-    if (selectedPageId && selectedPageId !== prevSelectedRef.current && !scrollSelectedRef.current) {
-      const pageEl = pageRefs.current[selectedPageId];
-      if (pageEl) {
-        pageEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (isGridView) {
+      prevGridViewRef.current = true;
+      return;
+    }
+    const comingFromGrid = prevGridViewRef.current;
+    prevGridViewRef.current = false;
+
+    if (selectedPageId && (selectedPageId !== prevSelectedRef.current || comingFromGrid) && !scrollSelectedRef.current) {
+      // When coming from grid view, pages need time to mount before we can scroll
+      const doScroll = () => {
+        const pageEl = pageRefs.current[selectedPageId];
+        if (pageEl) {
+          pageEl.scrollIntoView({ behavior: comingFromGrid ? 'instant' as ScrollBehavior : 'smooth', block: 'start' });
+        }
+      };
+      if (comingFromGrid) {
+        requestAnimationFrame(() => requestAnimationFrame(doScroll));
+      } else {
+        doScroll();
       }
     }
     prevSelectedRef.current = selectedPageId;
     scrollSelectedRef.current = false;
-  }, [selectedPageId]);
+  }, [selectedPageId, isGridView]);
 
   // On mount, scroll to top so cover page is fully visible
   const hasInitialScrolled = useRef(false);
