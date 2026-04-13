@@ -135,7 +135,7 @@ const PreviewModal = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.92, y: 24 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-2xl bg-[#0f1421] rounded-2xl overflow-hidden shadow-2xl"
+        className="relative w-full max-w-2xl bg-background rounded-2xl overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
