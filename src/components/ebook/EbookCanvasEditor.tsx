@@ -11,7 +11,7 @@ import {
   GripVertical, MoreHorizontal, FileText, MessageSquare,
   Crop, RefreshCw, Paintbrush, SlidersVertical, Droplets,
   Square as SquareIcon, Link2, Layers, Move, Monitor, Pencil,
-  Sparkles, EyeOff, Download, Files, CircleDot, Eclipse, Eye,
+  Sparkles, EyeOff, Download, Files, CircleDot, Eclipse, Eye, BookMarked,
   BoxSelect, Maximize2, ArrowUpDown, Upload, Highlighter, LayoutGrid, Target, MinusCircle,
 } from 'lucide-react';
 import {
@@ -2517,11 +2517,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     const isSelected = page.id === selectedPageId;
                     const getPageTypeIcon = () => {
                       switch (page.type) {
-                        case 'cover': return FileText;
-                        case 'toc': return FileText;
-                        case 'chapter': return FileText;
-                        case 'chapter-page': return MessageSquare;
-                        case 'back': return FileText;
+                        case 'cover': return BookMarked;
+                        case 'toc': return ListChecks;
+                        case 'chapter': return BookOpen;
+                        case 'chapter-page': return AlignLeft;
+                        case 'back': return BookMarked;
+                        case 'blank': return FileText;
                         default: return FileText;
                       }
                     };
@@ -2698,8 +2699,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </Popover>
                             </div>
                           </div>
-                          <div className="flex items-center gap-1 text-muted-foreground">
-                            <PageIcon className="w-3 h-3" />
+                          <div className="flex items-center gap-1">
+                            <PageIcon className={`w-3 h-3 ${
+                              page.type === 'cover' || page.type === 'back' ? 'text-violet-400' :
+                              page.type === 'toc' ? 'text-sky-400' :
+                              page.type === 'chapter' ? 'text-accent' :
+                              'text-muted-foreground'
+                            }`} />
                             <span className={`text-xs font-medium ${isSelected ? 'text-accent' : ''}`}>
                               {page.type !== 'cover' && page.type !== 'toc' && page.type !== 'back'
                                 ? currentPages.filter(p => p.type !== 'cover' && p.type !== 'toc' && p.type !== 'back').indexOf(page) + 1
