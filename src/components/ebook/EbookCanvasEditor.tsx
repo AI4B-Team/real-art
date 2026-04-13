@@ -969,25 +969,51 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   useEffect(() => {
     if (isGridView) {
       prevGridViewRef.current = true;
+      scrollSelectedRef.current = false;
+      isScrollingRef.current = false;
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+        scrollTimeoutRef.current = null;
+      }
       return;
     }
+
     const comingFromGrid = prevGridViewRef.current;
     prevGridViewRef.current = false;
+    const targetPageId = selectedPageId;
+    const shouldScrollToSelection = Boolean(
+      targetPageId &&
+      (targetPageId !== prevSelectedRef.current || comingFromGrid) &&
+      (!scrollSelectedRef.current || comingFromGrid)
+    );
 
-    if (selectedPageId && (selectedPageId !== prevSelectedRef.current || comingFromGrid) && !scrollSelectedRef.current) {
-      // When coming from grid view, pages need time to mount before we can scroll
+    if (shouldScrollToSelection && targetPageId) {
+      scrollSelectedRef.current = false;
+      if (comingFromGrid) {
+        isScrollingRef.current = true;
+      }
+
       const doScroll = () => {
-        const pageEl = pageRefs.current[selectedPageId];
+        const pageEl = pageRefs.current[targetPageId];
         if (pageEl) {
           pageEl.scrollIntoView({ behavior: comingFromGrid ? 'instant' as ScrollBehavior : 'smooth', block: 'start' });
         }
+        if (comingFromGrid) {
+          requestAnimationFrame(() => {
+            if (!scrollTimeoutRef.current) {
+              isScrollingRef.current = false;
+            }
+          });
+        }
       };
+
       if (comingFromGrid) {
         requestAnimationFrame(() => requestAnimationFrame(doScroll));
       } else {
         doScroll();
       }
     }
+
     prevSelectedRef.current = selectedPageId;
     scrollSelectedRef.current = false;
   }, [selectedPageId, isGridView]);
