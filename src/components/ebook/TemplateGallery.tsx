@@ -135,23 +135,23 @@ const PreviewModal = ({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.92, y: 24 }}
         transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-        className="relative w-full max-w-2xl bg-[#0f1421] rounded-2xl overflow-hidden shadow-2xl"
+        className="relative w-full max-w-2xl bg-background rounded-2xl overflow-hidden shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded-full"
                 style={{ background: p.accent + "30", color: p.accent }}>
                 {template.niche}
               </span>
-              <h2 className="text-white font-bold text-base">{template.name}</h2>
+              <h2 className="text-foreground font-bold text-base">{template.name}</h2>
             </div>
-            <p className="text-white/40 text-xs mt-0.5">{template.description}</p>
+            <p className="text-muted-foreground text-xs mt-0.5">{template.description}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors">
-            <X className="w-4 h-4 text-white/60" />
+          <button onClick={onClose} className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors">
+            <X className="w-4 h-4 text-muted-foreground" />
           </button>
         </div>
 
@@ -162,10 +162,10 @@ const PreviewModal = ({
             {previewTypes.map((type, i) => (
               <button key={type} onClick={() => setPageIdx(i)}
                 className={`w-14 h-[75px] rounded-lg overflow-hidden border-2 transition-all ${
-                  i === pageIdx ? "border-white/60 scale-105" : "border-transparent opacity-50 hover:opacity-80"
+                  i === pageIdx ? "border-foreground/60 scale-105" : "border-transparent opacity-50 hover:opacity-80"
                 }`}>
                 <TemplateThumbnail tpl={template} size="sm" />
-                <div className="text-[7px] text-center text-white/50 mt-0.5">{previewLabels[i]}</div>
+                <div className="text-[7px] text-center text-muted-foreground mt-0.5">{previewLabels[i]}</div>
               </button>
             ))}
           </div>
@@ -224,35 +224,35 @@ const PreviewModal = ({
                 </div>
               </motion.div>
             </AnimatePresence>
-            <p className="text-white/40 text-[10px]">{previewLabels[pageIdx]}</p>
+            <p className="text-muted-foreground text-[10px]">{previewLabels[pageIdx]}</p>
           </div>
 
           {/* Details panel */}
           <div className="w-40 flex flex-col gap-4 shrink-0">
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-2">Palette</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-2">Palette</p>
               <div className="grid grid-cols-4 gap-1">
                 {[p.bg, p.accent, p.heading, p.surface, p.accent2, p.muted, p.bodyText, p.text].map((c, i) => (
-                  <div key={i} className="w-6 h-6 rounded" style={{ background: c, border: "1px solid rgba(255,255,255,0.1)" }} />
+                  <div key={i} className="w-6 h-6 rounded" style={{ background: c, border: "1px solid hsl(var(--border))" }} />
                 ))}
               </div>
             </div>
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1.5">Typography</p>
-              <p className="text-[10px] text-white/60">Heading: <span className="text-white/80">{template.titleFont}</span></p>
-              <p className="text-[10px] text-white/60">Body: <span className="text-white/80">{template.bodyFont}</span></p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Typography</p>
+              <p className="text-[10px] text-muted-foreground">Heading: <span className="text-foreground">{template.titleFont}</span></p>
+              <p className="text-[10px] text-muted-foreground">Body: <span className="text-foreground">{template.bodyFont}</span></p>
             </div>
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-wider text-white/40 mb-1.5">Layout</p>
-              <p className="text-[10px] text-white/60">Cover: <span className="text-white/80">Style {template.coverVariant}</span></p>
-              <p className="text-[10px] text-white/60">Pages: <span className="text-white/80">Style {template.contentVariant}</span></p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mb-1.5">Layout</p>
+              <p className="text-[10px] text-muted-foreground">Cover: <span className="text-foreground">Style {template.coverVariant}</span></p>
+              <p className="text-[10px] text-muted-foreground">Pages: <span className="text-foreground">Style {template.contentVariant}</span></p>
             </div>
           </div>
         </div>
 
         {/* Footer actions */}
         <div className="px-6 pb-5 flex items-center justify-between">
-          <p className="text-white/30 text-xs">Applies to all pages instantly</p>
+          <p className="text-muted-foreground/60 text-xs">Applies to all pages instantly</p>
           <motion.button
             onClick={onApply}
             disabled={applying}
