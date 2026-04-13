@@ -150,8 +150,8 @@ const PreviewModal = ({
             </div>
             <p className="text-muted-foreground text-xs mt-0.5">{template.description}</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 rounded-full bg-muted hover:bg-muted/80 flex items-center justify-center transition-colors">
-            <X className="w-4 h-4 text-muted-foreground" />
+          <button onClick={onClose} className="w-8 h-8 rounded-lg bg-foreground/10 hover:bg-foreground/20 flex items-center justify-center transition-colors">
+            <X className="w-4 h-4 text-foreground" />
           </button>
         </div>
 
@@ -256,8 +256,7 @@ const PreviewModal = ({
           <motion.button
             onClick={onApply}
             disabled={applying}
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-bold transition-all disabled:opacity-70"
-            style={{ background: applying ? p.muted : p.accent, color: p.bg }}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all disabled:opacity-70 bg-primary text-primary-foreground hover:bg-primary/90"
             whileHover={{ scale: applying ? 1 : 1.03 }}
             whileTap={{ scale: 0.97 }}>
             {applying ? (
