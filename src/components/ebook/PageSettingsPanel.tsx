@@ -107,13 +107,29 @@ const PageSettingsPanel = ({
 
   // Shared AI context — same brain as floating assistant & left panel
   const currentElements = externalPageElements?.[selectedPageId || ''] || [];
+  // hasImages: count any image element with a src OR a placeholder slot on the page.
+  // Template-generated images start as isPlaceholder=true but ARE intentionally placed.
+  const hasImages = currentElements.some(e => e.type === 'image' && (e.src || e.isPlaceholder));
+
+  // hasHeadline: large font text OR element ID contains a title/heading keyword
+  const hasHeadline = currentElements.some(e =>
+    e.type === 'text' && (
+      (e.fontSize || 0) >= 16 ||
+      /title|heading|headline|header|chapter-title|masthead/i.test(e.id || '')
+    ) && (e.content || '').trim().length > 0
+  );
+
+  const bodyWords = currentElements
+    .filter(e => e.type === 'text')
+    .reduce((acc, e) => acc + (e.content?.split(/\s+/).filter(Boolean).length || 0), 0);
+
   const aiCtx = useAIPageContext(
     selectedPage?.type ?? null,
     currentElements.length > 0,
     currentElements.length,
-    currentElements.some(e => e.type === 'image' && !e.isPlaceholder),
-    currentElements.some(e => e.type === 'text' && (e.fontSize || 12) >= 18),
-    currentElements.filter(e => e.type === 'text').reduce((acc, e) => acc + (e.content?.split(/\s+/).length || 0), 0),
+    hasImages,
+    hasHeadline,
+    bodyWords,
   );
 
   const updatePage = useCallback((pageId: string, patch: Partial<Page>) => {
