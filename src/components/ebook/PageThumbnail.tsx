@@ -25,7 +25,6 @@ const PageThumbnail = ({ elements, className = '' }: PageThumbnailProps) => {
           if (!parent) return;
           const scale = parent.clientWidth / CANVAS_W;
           node.style.setProperty('--thumb-scale', String(scale));
-          // Re-measure on resize
           const ro = new ResizeObserver(() => {
             const s = parent.clientWidth / CANVAS_W;
             node.style.setProperty('--thumb-scale', String(s));
@@ -39,12 +38,15 @@ const PageThumbnail = ({ elements, className = '' }: PageThumbnailProps) => {
               return (
                 <div key={el.id} className="absolute bg-muted/30 border border-dashed border-muted-foreground/20" style={{
                   left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
+                  opacity: el.opacity ?? 1,
                 }} />
               );
             }
             return (
               <div key={el.id} className="absolute overflow-hidden" style={{
                 left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
+                opacity: el.opacity ?? 1,
+                borderRadius: el.borderRadius || 0,
               }}>
                 <img src={el.src} alt="" className="w-full h-full object-cover" loading="lazy" />
               </div>
@@ -54,7 +56,10 @@ const PageThumbnail = ({ elements, className = '' }: PageThumbnailProps) => {
             return (
               <div key={el.id} className="absolute" style={{
                 left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`,
-                backgroundColor: el.fill, borderRadius: el.shapeType === 'circle' ? '50%' : undefined,
+                backgroundColor: el.fill || '#3b82f6',
+                border: el.stroke && el.stroke !== 'transparent' ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined,
+                borderRadius: el.shapeType === 'circle' ? '50%' : (el.borderRadius ?? 0),
+                opacity: el.opacity ?? 1,
               }} />
             );
           }
@@ -66,9 +71,12 @@ const PageThumbnail = ({ elements, className = '' }: PageThumbnailProps) => {
                 fontFamily: el.fontFamily,
                 color: el.textColor,
                 fontWeight: el.fontWeight || 'normal',
+                fontStyle: el.fontStyle || 'normal',
+                textDecoration: el.textDecoration || 'none',
                 textAlign: el.textAlign || 'left',
-                lineHeight: 1.2,
+                lineHeight: el.lineHeight ?? 1.5,
                 whiteSpace: 'pre-wrap',
+                opacity: el.opacity ?? 1,
               }}>
                 {el.content}
               </div>

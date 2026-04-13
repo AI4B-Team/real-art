@@ -2603,19 +2603,34 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
                             style={{ aspectRatio: `${pw}/${ph}` }}
                           >
-                            <div className="w-full h-full relative">
-                              <div className="absolute inset-0">
+                            <div className="w-full h-full relative overflow-hidden">
+                              <div
+                                className="absolute top-0 left-0 origin-top-left"
+                                style={{ width: pw, height: ph }}
+                                ref={(node) => {
+                                  if (!node) return;
+                                  const parent = node.parentElement;
+                                  if (!parent) return;
+                                  const s = parent.clientWidth / pw;
+                                  node.style.transform = `scale(${s})`;
+                                }}
+                              >
                                 {elems.map(el => {
-                                  if (el.type === 'image') return (
-                                    <div key={el.id} className="absolute overflow-hidden" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%` }}>
-                                      <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
-                                    </div>
-                                  );
+                                  if (el.type === 'image') {
+                                    if ((el as any).isPlaceholder || !el.src) return (
+                                      <div key={el.id} className="absolute bg-muted/30 border border-dashed border-muted-foreground/20" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, opacity: el.opacity ?? 1 }} />
+                                    );
+                                    return (
+                                      <div key={el.id} className="absolute overflow-hidden" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, opacity: el.opacity ?? 1, borderRadius: el.borderRadius || 0 }}>
+                                        <img src={el.src} alt="" className="w-full h-full object-cover" draggable={false} />
+                                      </div>
+                                    );
+                                  }
                                   if (el.type === 'shape') return (
-                                    <div key={el.id} className="absolute" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, backgroundColor: el.fill, borderRadius: el.shapeType === 'circle' ? '50%' : undefined }} />
+                                    <div key={el.id} className="absolute" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, backgroundColor: el.fill || '#3b82f6', border: el.stroke && el.stroke !== 'transparent' ? `${el.strokeWidth || 1}px solid ${el.stroke}` : undefined, borderRadius: el.shapeType === 'circle' ? '50%' : (el.borderRadius ?? 0), opacity: el.opacity ?? 1 }} />
                                   );
                                   if (el.type === 'text') return (
-                                    <div key={el.id} className="absolute overflow-hidden" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, fontSize: `${Math.max(4, (el.fontSize || 16) * 0.3)}px`, fontFamily: el.fontFamily, color: el.textColor, fontWeight: el.fontWeight || 'normal', textAlign: el.textAlign || 'left', lineHeight: 1.2 }}>
+                                    <div key={el.id} className="absolute overflow-hidden" style={{ left: `${el.x}%`, top: `${el.y}%`, width: `${el.width}%`, height: `${el.height}%`, fontSize: `${el.fontSize || 16}px`, fontFamily: el.fontFamily, color: el.textColor, fontWeight: el.fontWeight || 'normal', fontStyle: el.fontStyle || 'normal', textDecoration: el.textDecoration || 'none', textAlign: el.textAlign || 'left', lineHeight: el.lineHeight ?? 1.5, whiteSpace: 'pre-wrap', opacity: el.opacity ?? 1 }}>
                                       {el.content}
                                     </div>
                                   );
