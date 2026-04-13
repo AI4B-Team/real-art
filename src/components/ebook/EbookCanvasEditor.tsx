@@ -646,13 +646,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   // ─── Shared AI Context Engine ─────────────────────────
   const selectedPageObj = currentPages.find(p => p.id === selectedPageId);
   const selectedPageElements = pageElements[selectedPageId || ''] || [];
+  // hasImages: placeholder images ARE intentionally placed — count them
+  const floatingHasImages = selectedPageElements.some(e => e.type === 'image' && (e.src || e.isPlaceholder));
+  // hasHeadline: fontSize>=16 OR id matches title/heading keywords
+  const floatingHasHeadline = selectedPageElements.some(e =>
+    e.type === 'text' && (
+      (e.fontSize || 0) >= 16 ||
+      /title|heading|headline|header|chapter-title|masthead/i.test(e.id || '')
+    ) && (e.content || '').trim().length > 0
+  );
+  const floatingBodyWords = selectedPageElements
+    .filter(e => e.type === 'text')
+    .reduce((acc, e) => acc + (e.content?.split(/\s+/).filter(Boolean).length || 0), 0);
   const floatingAiCtx = useAIPageContext(
     selectedPageObj?.type ?? null,
     selectedPageElements.length > 0,
     selectedPageElements.length,
-    selectedPageElements.some(e => e.type === 'image' && !e.isPlaceholder),
-    selectedPageElements.some(e => e.type === 'text' && (e.fontSize || 12) >= 18),
-    selectedPageElements.filter(e => e.type === 'text').reduce((acc, e) => acc + (e.content?.split(/\s+/).length || 0), 0),
+    floatingHasImages,
+    floatingHasHeadline,
+    floatingBodyWords,
   );
   const canvasRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);

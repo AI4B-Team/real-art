@@ -1,7 +1,9 @@
 import { useMemo } from 'react';
 
-// ─── Shared AI Context Engine ─────────────────────────
+// ■■■ Shared AI Context Engine ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
 // Single brain powering all AI surfaces (left panel, floating assistant, right director)
+// RULE: Only suggest what's genuinely missing or genuinely improvable.
+//       Never suggest adding something that already exists on the page.
 
 export type PageState = 'strong' | 'improvement' | 'ready';
 
@@ -11,11 +13,11 @@ export interface AIEnhancement {
   title: string;
   subtitle: string;
   cta: string;
-  ctaAction: string; // action key to route
-  color: string; // tailwind text class
-  bgColor: string; // tailwind bg class
-  dotColor: string; // tailwind bg class for dot
-  isPrimary?: boolean; // highlight one primary suggestion
+  ctaAction: string;
+  color: string;
+  bgColor: string;
+  dotColor: string;
+  isPrimary?: boolean;
 }
 
 export interface AIPageContext {
@@ -27,13 +29,9 @@ export interface AIPageContext {
   engagement: number;
   visualBalance: number;
   enhancements: AIEnhancement[];
-  maxEnhancements: number; // progressive disclosure limit
+  maxEnhancements: number;
 }
 
-/**
- * Derives a unified AI context for a given page.
- * All AI surfaces consume this — same brain, different presentation.
- */
 export function useAIPageContext(
   pageType: string | null,
   hasElements: boolean,
@@ -43,107 +41,136 @@ export function useAIPageContext(
   bodyWordCount: number,
 ): AIPageContext {
   return useMemo(() => {
-    // ─── Score Calculation ─────────────────────────
-    let readability = 88;
-    let engagement = 76;
-    let visualBalance = 82;
 
-    // Adjust based on content signals
-    if (!hasHeadline) engagement -= 15;
-    if (!hasImages) visualBalance -= 20;
-    if (bodyWordCount > 300) readability -= 10;
-    if (bodyWordCount < 20 && pageType !== 'cover' && pageType !== 'toc') readability -= 5;
-    if (elementCount < 2) visualBalance -= 10;
+    // ■■ Page-type-specific baselines ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    const isCover   = pageType === 'cover';
+    const isToc     = pageType === 'toc';
+    const isBack    = pageType === 'back';
+    const isChapter = pageType === 'chapter';
+    const isContent = pageType === 'chapter-page';
+    const isSpecial = isCover || isToc || isBack;
 
-    // Clamp
+    // ■■ Baselines (start high — only subtract for real problems) ■■■■■■■■■■■■
+    let readability = 90;
+    let engagement  = 82;
+    let visualBalance = 88;
+
+    // --- Readability ---
+    if (isContent && bodyWordCount > 320) readability -= 12;
+    if (isContent && bodyWordCount < 30 && hasElements) readability -= 8;
+    if (isToc && elementCount > 18) readability -= 5;
+
+    // --- Engagement ---
+    if ((isChapter || isContent) && !hasHeadline) engagement -= 20;
+    if (isCover && !hasHeadline) engagement -= 25;
+    if (isContent && bodyWordCount < 10 && hasElements) engagement -= 15;
+
+    // --- Visual balance ---
+    if (isCover && !hasImages) visualBalance -= 18;
+    if (isChapter && !hasImages) visualBalance -= 12;
+    if (isContent && !hasImages) visualBalance -= 6;
+    if (elementCount < 2 && !isSpecial) visualBalance -= 12;
+    if (elementCount > 14) visualBalance -= 8;
+
+    // Clamp all scores
     readability = Math.max(40, Math.min(100, readability));
     engagement = Math.max(40, Math.min(100, engagement));
     visualBalance = Math.max(40, Math.min(100, visualBalance));
 
-    const score = Math.round((readability * 0.35 + engagement * 0.4 + visualBalance * 0.25));
+    const score = Math.round(readability * 0.35 + engagement * 0.40 + visualBalance * 0.25);
 
-    // ─── State Determination ─────────────────────────
+    // ■■ State ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     let state: PageState;
     let stateLabel: string;
     let stateDescription: string;
 
-    if (score >= 85) {
+    if (score >= 88) {
       state = 'ready';
       stateLabel = 'Ready to Publish';
-      stateDescription = 'Everything looks solid. You\'re good to go.';
-    } else if (score >= 65) {
+      stateDescription = "This page looks great. No issues found.";
+    } else if (score >= 70) {
       state = 'strong';
       stateLabel = 'Looking Strong';
-      stateDescription = 'This page is strong. Here\'s how to make it exceptional:';
+      stateDescription = "This page is solid. A couple of optional tweaks below:";
     } else {
       state = 'improvement';
       stateLabel = 'Can Be Improved';
-      stateDescription = 'This page has potential. Here are a few ways to strengthen it:';
+      stateDescription = "A few things would make this page stronger:";
     }
 
-    // ─── Enhancements (context-aware) ─────────────────────────
+    // ■■ Enhancements — ONLY push genuine gaps ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     const enhancements: AIEnhancement[] = [];
 
-    // Headline enhancement
-    if (!hasHeadline || score < 90) {
+    // 1. HEADLINE — only suggest if it's genuinely missing
+    if (!hasHeadline && (isCover || isChapter || isContent)) {
       enhancements.push({
         id: 'headline',
         category: 'headline',
-        title: hasHeadline
-          ? 'Your headline is clear — want a more attention-grabbing version?'
-          : 'Adding a headline could boost engagement significantly',
-        subtitle: hasHeadline ? 'Try a variation with more emotional pull' : 'A strong headline sets the tone for the entire page',
-        cta: hasHeadline ? 'Try Stronger Headline' : 'Add Headline',
-        ctaAction: hasHeadline ? 'rewrite' : 'add-headline',
+        title: isCover
+          ? 'No title found on this cover — add one to anchor the design'
+          : 'This page is missing a headline',
+        subtitle: 'A strong headline immediately tells readers what to expect',
+        cta: 'Add Headline',
+        ctaAction: 'add-headline',
         color: 'text-amber-600',
         bgColor: 'bg-amber-500/10',
         dotColor: 'bg-amber-500',
-        isPrimary: !hasHeadline,
+        isPrimary: true,
       });
     }
 
-    // Visual enhancement
-    if (!hasImages || score < 90) {
+    // 2. IMAGE — only suggest if genuinely missing AND it matters for this page type
+    if (!hasImages && (isCover || isChapter)) {
       enhancements.push({
         id: 'visual',
         category: 'visual',
-        title: hasImages
-          ? 'This section works well — could pop more with an additional visual'
-          : 'A supporting visual could increase clarity and engagement',
-        subtitle: hasImages ? 'Explore alternate imagery options' : 'Images help readers retain 65% more information',
-        cta: hasImages ? 'Explore Visuals' : 'Add Image',
+        title: isCover
+          ? 'Cover has no image — visuals dramatically increase first impressions'
+          : 'Chapter cover has no image — a visual helps introduce the topic',
+        subtitle: 'Readers are 65% more likely to engage with image-rich pages',
+        cta: 'Add Image',
         ctaAction: 'add-image',
         color: 'text-accent',
         bgColor: 'bg-accent/10',
         dotColor: 'bg-accent',
-        isPrimary: !hasImages && hasHeadline,
+        isPrimary: !hasHeadline ? false : true,
       });
     }
 
-    // Readability enhancement
-    if (bodyWordCount > 200 || score < 85) {
+    // 3. READABILITY — only if body text is genuinely problematic
+    if (isContent && bodyWordCount > 320) {
       enhancements.push({
         id: 'readability',
         category: 'readability',
-        title: bodyWordCount > 300
-          ? 'This section introduces several ideas — breaking it up could improve retention'
-          : 'Layout is clean — could improve scannability slightly',
-        subtitle: bodyWordCount > 300 ? 'Shorter paragraphs are easier to digest' : 'Small formatting tweaks can boost readability',
-        cta: 'Improve Readability',
+        title: 'This page has a lot of text — consider breaking it up',
+        subtitle: 'Shorter paragraphs improve reading speed and retention',
+        cta: 'Simplify',
         ctaAction: 'shorten',
+        color: 'text-blue-600',
+        bgColor: 'bg-blue-500/10',
+        dotColor: 'bg-blue-500',
+      });
+    } else if (isContent && bodyWordCount < 30 && hasElements) {
+      enhancements.push({
+        id: 'readability',
+        category: 'readability',
+        title: 'This content page appears to have very little text',
+        subtitle: 'Add body content to give readers something substantive to read',
+        cta: 'Add Content',
+        ctaAction: 'add-body',
         color: 'text-blue-600',
         bgColor: 'bg-blue-500/10',
         dotColor: 'bg-blue-500',
       });
     }
 
-    // Structure enhancement (only in improvement state)
-    if (state === 'improvement' && elementCount < 3) {
+    // 4. STRUCTURE — only on improvement pages with very few elements
+    if (state === 'improvement' && elementCount < 2 && !isSpecial) {
       enhancements.push({
         id: 'structure',
         category: 'structure',
-        title: 'Adding visual hierarchy could make this page more engaging',
-        subtitle: 'Headings, dividers, and spacing guide the reader\'s eye',
+        title: 'This page seems mostly empty',
+        subtitle: 'Add headings, text, and visuals to build out the layout',
         cta: 'Add Structure',
         ctaAction: 'add-structure',
         color: 'text-violet-600',
@@ -152,16 +179,16 @@ export function useAIPageContext(
       });
     }
 
-    // Mark first as primary if none set
+    // ■■ Mark first as primary if none set ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
     if (enhancements.length > 0 && !enhancements.some(e => e.isPrimary)) {
       enhancements[0].isPrimary = true;
     }
 
-    // ─── Progressive Disclosure ─────────────────────────
-    // Ready state: max 2 optional enhancements
-    // Strong state: max 3
-    // Improvement state: show all (max 4)
-    const maxEnhancements = state === 'ready' ? 2 : state === 'strong' ? 3 : 4;
+    // ■■ Progressive disclosure limits ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+    // Ready: 0 suggestions (page is good — don't fabricate problems)
+    // Strong: max 2 (only real improvement opportunities)
+    // Improvement: max 3
+    const maxEnhancements = state === 'ready' ? 0 : state === 'strong' ? 2 : 3;
 
     return {
       score,
