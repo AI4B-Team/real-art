@@ -2688,6 +2688,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               </PopoverContent>
             </Popover>
           </div>
+        )}
 
         {/* Canvas Area */}
         <div className="flex-1 bg-foreground/[0.03] flex flex-col overflow-hidden">
