@@ -3820,6 +3820,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
                             {pageTypeLabel} – {page.type === 'cover' || page.type === 'back' ? (bookTitle || 'Untitled Book') : (page.title || `Page ${pageIndex + 1}`)}
                           </span>
+                          {page.hidden && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted text-muted-foreground text-[10px] font-medium border border-foreground/[0.06]">
+                              <EyeOff className="w-3 h-3" /> Hidden
+                            </span>
+                          )}
                         </div>
                         <div className="relative flex items-start gap-2 justify-center">
                         {/* Page number */}
