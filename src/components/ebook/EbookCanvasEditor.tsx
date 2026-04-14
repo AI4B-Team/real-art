@@ -40,6 +40,7 @@ export interface Page {
   type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back' | 'blank';
   thumbnail?: string;
   locked?: boolean;
+  hidden?: boolean;
   bgColor?: string;
   bgPattern?: string;
   bgImage?: string;
