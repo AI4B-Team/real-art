@@ -2831,6 +2831,14 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                 </div>
                               </div>
                             )}
+                            {page.locked && !page.hidden && (
+                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-black/10 pointer-events-none">
+                                <div className="flex items-center gap-1 bg-black backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                                  <Lock className="w-3 h-3 text-white" />
+                                  <span className="text-[10px] font-semibold text-white">Locked Page</span>
+                                </div>
+                              </div>
+                            )}
                             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                               <Popover open={gridMenuOpenId === page.id} onOpenChange={(open) => setGridMenuOpenId(open ? page.id : null)}>
                                 <PopoverTrigger asChild>
