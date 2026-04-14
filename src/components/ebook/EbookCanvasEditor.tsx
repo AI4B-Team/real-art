@@ -4007,10 +4007,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
                           {/* Hidden page overlay */}
                           {page.hidden && !page.locked && (
-                            <div className="absolute inset-0 z-[80] flex items-center justify-center bg-background/50 pointer-events-none rounded-lg">
-                              <div className="flex items-center gap-1.5 bg-muted/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-foreground/[0.1]">
-                                <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
-                                <span className="text-xs font-medium text-muted-foreground">Hidden from readers</span>
+                            <div className="absolute inset-0 z-[80] flex items-center justify-center bg-foreground/20 pointer-events-none rounded-lg">
+                              <div className="flex items-center gap-1.5 bg-foreground/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md">
+                                <EyeOff className="w-4 h-4 text-background" />
+                                <span className="text-sm font-semibold text-background">Hidden from readers</span>
                               </div>
                             </div>
                           )}
