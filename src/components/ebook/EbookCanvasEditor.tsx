@@ -40,6 +40,7 @@ export interface Page {
   type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back' | 'blank';
   thumbnail?: string;
   locked?: boolean;
+  hidden?: boolean;
   bgColor?: string;
   bgPattern?: string;
   bgImage?: string;
@@ -2742,7 +2743,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             onClick={() => handleGridPageOpen(page.id)}
                             className={`group relative w-full bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                               isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
-                            } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
+                            } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''} ${page.hidden ? 'opacity-50' : ''}`}
                             style={{ aspectRatio: `${pw}/${ph}` }}
                           >
                             <div className="w-full h-full relative overflow-hidden">
@@ -2817,11 +2818,17 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                       ))}
                                     </PopoverContent>
                                   </Popover>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); toast.info('Hide page coming soon'); setGridMenuOpenId(null); }}
+                                   <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setPages(currentPages.map(p => p.id === page.id ? { ...p, hidden: !p.hidden } : p));
+                                      toast.success(page.hidden ? 'Page visible again' : 'Page hidden from readers');
+                                      setGridMenuOpenId(null);
+                                    }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
                                   >
-                                    <EyeOff className="w-4 h-4" /> Hide
+                                    {page.hidden ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    {page.hidden ? 'Show' : 'Hide'}
                                   </button>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); toast.info('Download page coming soon'); setGridMenuOpenId(null); }}
