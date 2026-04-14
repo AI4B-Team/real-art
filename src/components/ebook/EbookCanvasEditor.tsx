@@ -3852,8 +3852,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             {pageTypeLabel} – {page.type === 'cover' || page.type === 'back' ? (bookTitle || 'Untitled Book') : (page.title || `Page ${pageIndex + 1}`)}
                           </span>
                           {page.hidden && (
-                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted text-muted-foreground text-[10px] font-medium border border-foreground/[0.06]">
-                              <EyeOff className="w-3 h-3" /> Hidden
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-foreground/80 text-background text-[10px] font-semibold shadow-sm">
+                              <EyeOff className="w-3 h-3" /> Hidden Page
                             </span>
                           )}
                         </div>
@@ -4010,7 +4010,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             <div className="absolute inset-0 z-[80] flex items-center justify-center bg-foreground/20 pointer-events-none rounded-lg">
                               <div className="flex items-center gap-1.5 bg-foreground/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md">
                                 <EyeOff className="w-4 h-4 text-background" />
-                                <span className="text-sm font-semibold text-background">Hidden from readers</span>
+                                <span className="text-sm font-semibold text-background">Hidden Page</span>
                               </div>
                             </div>
                           )}
