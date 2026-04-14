@@ -2877,7 +2877,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     {page.hidden ? 'Show' : 'Hide'}
                                   </button>
                                   <button
-                                    onClick={(e) => { e.stopPropagation(); toast.info('Download page coming soon'); setGridMenuOpenId(null); }}
+                                    onClick={(e) => { e.stopPropagation(); handleDownloadPage(page.id); setGridMenuOpenId(null); }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
                                   >
                                     <Download className="w-4 h-4" /> Download
@@ -3934,6 +3934,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             } catch { /* invalid data */ }
                             setExternalDropTarget(null);
                           }}
+                          data-page-canvas
                           className={`rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
                           } ${externalDropTarget?.pageId === page.id ? 'ring-2 ring-accent/60' : ''}`}
