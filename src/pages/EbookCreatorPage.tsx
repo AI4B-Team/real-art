@@ -319,9 +319,6 @@ const EbookCreatorPage = () => {
                             <button onClick={e => { e.stopPropagation(); navigate("/ebook-creator/new?tab=design", { state: { book } }); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><Edit className="w-4.5 h-4.5" /></button>
                           </TooltipTrigger><TooltipContent>Edit</TooltipContent></Tooltip>
                           <Tooltip><TooltipTrigger asChild>
-                            <button onClick={e => { e.stopPropagation(); navigate("/ebook-creator/new?tab=design", { state: { book } }); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><Palette className="w-4.5 h-4.5" /></button>
-                          </TooltipTrigger><TooltipContent>Design</TooltipContent></Tooltip>
-                          <Tooltip><TooltipTrigger asChild>
                             <button onClick={e => { e.stopPropagation(); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><Download className="w-4.5 h-4.5" /></button>
                           </TooltipTrigger><TooltipContent>Export</TooltipContent></Tooltip>
                           <div className="relative">
