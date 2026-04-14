@@ -1290,6 +1290,34 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     setPages(currentPages.map(p => p.id === selectedPageId ? { ...p, locked: !p.locked } : p));
   };
 
+  const handleDownloadPage = async (targetPageId?: string) => {
+    const pageId = targetPageId || selectedPageId;
+    const page = currentPages.find(p => p.id === pageId);
+    if (!page) return;
+    const pageEl = pageRefs.current[pageId];
+    if (!pageEl) { toast.error('Page not found'); return; }
+    // Find the inner canvas div (the one with fixed pw/ph dimensions)
+    const canvasDiv = pageEl.querySelector('[data-page-canvas]') as HTMLElement;
+    if (!canvasDiv) { toast.error('Could not capture page'); return; }
+    toast.loading('Capturing page...', { id: 'download-page' });
+    try {
+      const canvas = await html2canvas(canvasDiv, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: page.bgColor || '#ffffff',
+        width: pw,
+        height: ph,
+      });
+      const link = document.createElement('a');
+      link.download = `${(page.title || 'page').replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast.success('Page downloaded!', { id: 'download-page' });
+    } catch {
+      toast.error('Failed to capture page', { id: 'download-page' });
+    }
+  };
+
   const handlePageAction = (actionId: string) => {
     switch (actionId) {
       case 'ai': onPageSettingsToggle?.(); break;
