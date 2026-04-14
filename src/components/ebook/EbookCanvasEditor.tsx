@@ -2833,10 +2833,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </div>
                             )}
                             {page.locked && !page.hidden && (
-                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-black/10 pointer-events-none">
-                                <div className="flex items-center gap-1 bg-black backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
-                                  <Lock className="w-3 h-3 text-white" />
-                                  <span className="text-[10px] font-semibold text-white">Locked Page</span>
+                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-foreground/[0.03] pointer-events-none">
+                                <div className="flex items-center gap-1.5 bg-accent/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-accent">
+                                  <Lock className="w-3.5 h-3.5 text-white" />
+                                  <span className="text-xs font-medium text-white">Page Locked</span>
                                 </div>
                               </div>
                             )}
