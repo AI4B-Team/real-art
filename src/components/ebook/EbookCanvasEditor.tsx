@@ -2882,6 +2882,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     {page.hidden ? 'Show' : 'Hide'}
                                   </button>
                                   <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setPages(currentPages.map(p => p.id === page.id ? { ...p, locked: !p.locked } : p));
+                                      toast.success(page.locked ? 'Page unlocked' : 'Page locked');
+                                      setGridMenuOpenId(null);
+                                    }}
+                                    className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                  >
+                                    {page.locked ? <Unlock className="w-4 h-4" /> : <Lock className="w-4 h-4" />}
+                                    {page.locked ? 'Unlock Page' : 'Lock Page'}
+                                  </button>
+                                  <button
                                     onClick={(e) => { e.stopPropagation(); handleDownloadPage(page.id); setGridMenuOpenId(null); }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
                                   >
