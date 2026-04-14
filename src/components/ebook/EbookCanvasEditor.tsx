@@ -3946,7 +3946,16 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             </div>
                           )}
 
-                          {/* Comment pins */}
+                          {/* Hidden page overlay */}
+                          {page.hidden && !page.locked && (
+                            <div className="absolute inset-0 z-[80] flex items-center justify-center bg-background/50 pointer-events-none rounded-lg">
+                              <div className="flex items-center gap-1.5 bg-muted/90 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-sm border border-foreground/[0.1]">
+                                <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
+                                <span className="text-xs font-medium text-muted-foreground">Hidden from readers</span>
+                              </div>
+                            </div>
+                          )}
+
                           {canComment && pageComments.filter(c => c.pageId === page.id).map((c, ci) => (
                             <div key={c.id}
                               className="absolute z-[60] pointer-events-auto cursor-pointer group"
