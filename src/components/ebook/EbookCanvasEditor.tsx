@@ -2743,7 +2743,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           }}
                         >
                           {/* Red drop indicator line */}
-                          <div className={`absolute inset-y-2 left-1/2 -translate-x-1/2 w-0.5 rounded-full bg-destructive transition-all duration-150 ${dragOverPageIndex === pageIndex && draggedPageIndex !== null ? 'opacity-100' : 'opacity-0'}`} />
+                          <div className={`absolute inset-y-2 left-1/2 -translate-x-1/2 w-1 rounded-full bg-accent transition-all duration-150 ${dragOverPageIndex === pageIndex && draggedPageIndex !== null ? 'opacity-100 scale-x-100' : 'opacity-0 scale-x-0'}`} />
+                          {/* Top/bottom dots */}
+                          <div className={`absolute top-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-accent transition-all duration-150 ${dragOverPageIndex === pageIndex && draggedPageIndex !== null ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`} />
+                          <div className={`absolute bottom-1 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full bg-accent transition-all duration-150 ${dragOverPageIndex === pageIndex && draggedPageIndex !== null ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`} />
                           {/* Add page button (only when not dragging) */}
                           <Popover>
                             <PopoverTrigger asChild>
