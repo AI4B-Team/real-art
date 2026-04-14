@@ -40,6 +40,7 @@ export interface Page {
   type: 'cover' | 'toc' | 'chapter' | 'chapter-page' | 'back' | 'blank';
   thumbnail?: string;
   locked?: boolean;
+  hidden?: boolean;
   bgColor?: string;
   bgPattern?: string;
   bgImage?: string;
@@ -124,6 +125,7 @@ const PAGE_ACTIONS = [
   { id: 'add', icon: Plus, label: 'Add Page' },
   { id: 'duplicate', icon: Copy, label: 'Duplicate Page' },
   { id: 'lock', icon: Unlock, label: 'Lock Page' },
+  { id: 'hide', icon: EyeOff, label: 'Hide Page' },
   { id: 'delete', icon: Trash2, label: 'Delete Page' },
   { id: 'moveUp', icon: ChevronUp, label: 'Move Page Up' },
   { id: 'moveDown', icon: ChevronDown, label: 'Move Page Down' },
@@ -1295,6 +1297,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       case 'moveUp': handleMovePage('up'); break;
       case 'moveDown': handleMovePage('down'); break;
       case 'lock': handleToggleLock(); break;
+      case 'hide':
+        if (selectedPage) {
+          setPages(currentPages.map(p => p.id === selectedPageId ? { ...p, hidden: !p.hidden } : p));
+          toast.success(selectedPage.hidden ? 'Page visible again' : 'Page hidden from readers');
+        }
+        break;
       case 'settings':
         if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); }
         onPageSettingsToggle?.();
@@ -2742,7 +2750,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             onClick={() => handleGridPageOpen(page.id)}
                             className={`group relative w-full bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                               isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
-                            } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
+                            } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''} ${page.hidden ? 'opacity-50' : ''}`}
                             style={{ aspectRatio: `${pw}/${ph}` }}
                           >
                             <div className="w-full h-full relative overflow-hidden">
@@ -2780,6 +2788,14 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                 })}
                               </div>
                             </div>
+                            {page.hidden && (
+                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-background/60 pointer-events-none">
+                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted border border-foreground/[0.08] shadow-sm">
+                                  <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
+                                  <span className="text-[10px] font-semibold text-muted-foreground">Hidden</span>
+                                </div>
+                              </div>
+                            )}
                             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                               <Popover open={gridMenuOpenId === page.id} onOpenChange={(open) => setGridMenuOpenId(open ? page.id : null)}>
                                 <PopoverTrigger asChild>
@@ -2817,11 +2833,17 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                       ))}
                                     </PopoverContent>
                                   </Popover>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); toast.info('Hide page coming soon'); setGridMenuOpenId(null); }}
+                                   <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setPages(currentPages.map(p => p.id === page.id ? { ...p, hidden: !p.hidden } : p));
+                                      toast.success(page.hidden ? 'Page visible again' : 'Page hidden from readers');
+                                      setGridMenuOpenId(null);
+                                    }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
                                   >
-                                    <EyeOff className="w-4 h-4" /> Hide
+                                    {page.hidden ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                                    {page.hidden ? 'Show' : 'Hide'}
                                   </button>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); toast.info('Download page coming soon'); setGridMenuOpenId(null); }}
@@ -3798,6 +3820,11 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           <span className={`text-[11px] font-medium ${isSelected ? 'text-foreground/70' : 'text-muted-foreground/60'}`}>
                             {pageTypeLabel} – {page.type === 'cover' || page.type === 'back' ? (bookTitle || 'Untitled Book') : (page.title || `Page ${pageIndex + 1}`)}
                           </span>
+                          {page.hidden && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-muted text-muted-foreground text-[10px] font-medium border border-foreground/[0.06]">
+                              <EyeOff className="w-3 h-3" /> Hidden
+                            </span>
+                          )}
                         </div>
                         <div className="relative flex items-start gap-2 justify-center">
                         {/* Page number */}
@@ -4032,8 +4059,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             {PAGE_ACTIONS.map(action => {
                               const currentSelectedPage = currentPages.find(p => p.id === selectedPageId);
                               const isLocked = action.id === 'lock' && currentSelectedPage?.locked;
-                              const Icon = isLocked ? Lock : action.icon;
-                              const label = isLocked ? 'Unlock Page' : action.label;
+                              const isHidden = action.id === 'hide' && currentSelectedPage?.hidden;
+                              const Icon = isLocked ? Lock : isHidden ? Eye : action.icon;
+                              const label = isLocked ? 'Unlock Page' : isHidden ? 'Show Page' : action.label;
                               if (action.id === 'ai') {
                                 const isAiOpen = aiExpandedPageId === page.id;
                                 return (
