@@ -3051,13 +3051,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               </div>
               {/* Bottom actions */}
               <div className="shrink-0 flex justify-end gap-3 px-6 pb-4 pt-3 bg-gradient-to-t from-background via-background to-transparent">
-                <button onClick={onGridViewToggle} className="px-6 py-2.5 rounded-lg border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
+                <button onClick={handleGridCancel} className="px-6 py-2.5 rounded-lg border border-foreground/[0.1] text-sm font-medium hover:bg-foreground/[0.04] transition-colors">
                   Cancel
                 </button>
-                <button onClick={onGridViewToggle} className="px-6 py-2.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors">
+                <button onClick={handleGridConfirm} className="px-6 py-2.5 rounded-lg bg-accent text-white text-sm font-medium hover:bg-accent/90 transition-colors">
                   Confirm
                 </button>
               </div>
+
+              {/* Cancel confirmation dialog */}
+              {showGridCancelConfirm && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                  <div className="bg-background rounded-xl border border-foreground/[0.08] shadow-2xl p-6 max-w-sm w-full mx-4">
+                    <h3 className="text-sm font-bold text-foreground mb-1.5">Discard Changes?</h3>
+                    <p className="text-xs text-muted-foreground mb-5 leading-relaxed">
+                      Any changes you made in grid view — reordering, hiding, locking, or deleting pages — will not be saved.
+                    </p>
+                    <div className="flex justify-end gap-2.5">
+                      <button onClick={() => setShowGridCancelConfirm(false)} className="px-4 py-2 rounded-lg border border-foreground/[0.1] text-xs font-medium hover:bg-foreground/[0.04] transition-colors">
+                        Keep Editing
+                      </button>
+                      <button onClick={handleGridCancelConfirm} className="px-4 py-2 rounded-lg bg-accent text-white text-xs font-semibold hover:bg-accent/90 transition-colors">
+                        Discard Changes
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             /* ─── NORMAL VIEW ─── */
