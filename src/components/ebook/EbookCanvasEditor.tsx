@@ -32,6 +32,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { WORKSPACE_MEMBERS } from '@/lib/workspaceMembers';
 import { useAIPageContext } from './useAIPageContext';
 import { getContextualImages, gatherPageText } from '@/lib/contextualImageSuggestions';
+import html2canvas from 'html2canvas';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
@@ -126,6 +127,7 @@ const PAGE_ACTIONS = [
   { id: 'duplicate', icon: Copy, label: 'Duplicate Page' },
   { id: 'lock', icon: Unlock, label: 'Lock Page' },
   { id: 'hide', icon: EyeOff, label: 'Hide Page' },
+  { id: 'download', icon: Download, label: 'Download Page' },
   { id: 'delete', icon: Trash2, label: 'Delete Page' },
   { id: 'moveUp', icon: ChevronUp, label: 'Move Page Up' },
   { id: 'moveDown', icon: ChevronDown, label: 'Move Page Down' },
@@ -1288,6 +1290,34 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     setPages(currentPages.map(p => p.id === selectedPageId ? { ...p, locked: !p.locked } : p));
   };
 
+  const handleDownloadPage = async (targetPageId?: string) => {
+    const pageId = targetPageId || selectedPageId;
+    const page = currentPages.find(p => p.id === pageId);
+    if (!page) return;
+    const pageEl = pageRefs.current[pageId];
+    if (!pageEl) { toast.error('Page not found'); return; }
+    // Find the inner canvas div (the one with fixed pw/ph dimensions)
+    const canvasDiv = pageEl.querySelector('[data-page-canvas]') as HTMLElement;
+    if (!canvasDiv) { toast.error('Could not capture page'); return; }
+    toast.loading('Capturing page...', { id: 'download-page' });
+    try {
+      const canvas = await html2canvas(canvasDiv, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: page.bgColor || '#ffffff',
+        width: pw,
+        height: ph,
+      });
+      const link = document.createElement('a');
+      link.download = `${(page.title || 'page').replace(/[^a-zA-Z0-9]/g, '_')}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+      toast.success('Page downloaded!', { id: 'download-page' });
+    } catch {
+      toast.error('Failed to capture page', { id: 'download-page' });
+    }
+  };
+
   const handlePageAction = (actionId: string) => {
     switch (actionId) {
       case 'ai': onPageSettingsToggle?.(); break;
@@ -1297,6 +1327,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       case 'moveUp': handleMovePage('up'); break;
       case 'moveDown': handleMovePage('down'); break;
       case 'lock': handleToggleLock(); break;
+      case 'download': handleDownloadPage(); break;
       case 'hide':
         if (selectedPage) {
           setPages(currentPages.map(p => p.id === selectedPageId ? { ...p, hidden: !p.hidden } : p));
@@ -2846,7 +2877,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     {page.hidden ? 'Show' : 'Hide'}
                                   </button>
                                   <button
-                                    onClick={(e) => { e.stopPropagation(); toast.info('Download page coming soon'); setGridMenuOpenId(null); }}
+                                    onClick={(e) => { e.stopPropagation(); handleDownloadPage(page.id); setGridMenuOpenId(null); }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
                                   >
                                     <Download className="w-4 h-4" /> Download
@@ -3903,6 +3934,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             } catch { /* invalid data */ }
                             setExternalDropTarget(null);
                           }}
+                          data-page-canvas
                           className={`rounded-lg shadow-lg relative cursor-pointer transition-shadow ${isSelected ? 'overflow-visible' : 'overflow-hidden'} ${
                             isSelected ? 'ring-2 ring-accent shadow-2xl' : 'border border-foreground/[0.06] hover:shadow-xl'
                           } ${externalDropTarget?.pageId === page.id ? 'ring-2 ring-accent/60' : ''}`}
