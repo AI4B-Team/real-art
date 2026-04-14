@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, useEffect, forwardRef, useImperativeHandle } from 'react';
+import { useState, useRef, useCallback, useEffect, useLayoutEffect, forwardRef, useImperativeHandle } from 'react';
 import {
   MousePointer2, Type, Square, Circle, Image as ImageIcon, ImagePlus,
   Brain, CheckSquare, BookOpen, Award, TrendingUp, HelpCircle, Zap, ListChecks, GitBranch, Shuffle as ShuffleIcon,
@@ -677,8 +677,32 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const isScrollingRef = useRef(false);
   const scrollSelectedRef = useRef(false); // true when page was selected via scroll observer
   const scrollTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingGridTargetRef = useRef<string | null>(null);
+  const gridNavigationFrameRef = useRef<number | null>(null);
   const findInputRef = useRef<HTMLInputElement>(null);
   const editableTextRef = useRef<HTMLDivElement>(null);
+
+  const cancelPendingGridNavigation = useCallback(() => {
+    if (gridNavigationFrameRef.current !== null) {
+      cancelAnimationFrame(gridNavigationFrameRef.current);
+      gridNavigationFrameRef.current = null;
+    }
+  }, []);
+
+  const handleGridPageOpen = useCallback((pageId: string) => {
+    cancelPendingGridNavigation();
+    pendingGridTargetRef.current = pageId;
+    scrollSelectedRef.current = false;
+    isScrollingRef.current = true;
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+      scrollTimeoutRef.current = null;
+    }
+    onPageSelect(pageId);
+    onGridViewToggle?.();
+  }, [cancelPendingGridNavigation, onPageSelect, onGridViewToggle]);
+
+  useEffect(() => () => cancelPendingGridNavigation(), [cancelPendingGridNavigation]);
 
   // Helper: apply execCommand to selected text inside contentEditable
   const applyRichTextCommand = (command: string, value?: string) => {
@@ -901,7 +925,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (isScrollingRef.current) return;
+        if (isScrollingRef.current || pendingGridTargetRef.current) return;
         let bestEntry: IntersectionObserverEntry | null = null;
         let bestRatio = 0;
         entries.forEach(entry => {
@@ -938,6 +962,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       if (scrollTimeoutRef.current) clearTimeout(scrollTimeoutRef.current);
       scrollTimeoutRef.current = setTimeout(() => {
         isScrollingRef.current = false;
+        if (pendingGridTargetRef.current) {
+          return;
+        }
         // After scroll stops, find the most visible page
         const containerRect = container.getBoundingClientRect();
         const containerCenter = containerRect.top + containerRect.height / 2;
@@ -966,11 +993,13 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   // Scroll to selected page when it changes (unless triggered by scroll observer)
   const prevSelectedRef = useRef<string | null>(null);
   const prevGridViewRef = useRef(isGridView);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isGridView) {
       prevGridViewRef.current = true;
+      pendingGridTargetRef.current = null;
       scrollSelectedRef.current = false;
       isScrollingRef.current = false;
+      cancelPendingGridNavigation();
       if (scrollTimeoutRef.current) {
         clearTimeout(scrollTimeoutRef.current);
         scrollTimeoutRef.current = null;
@@ -980,7 +1009,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
     const comingFromGrid = prevGridViewRef.current;
     prevGridViewRef.current = false;
-    const targetPageId = selectedPageId;
+    const targetPageId = pendingGridTargetRef.current ?? selectedPageId;
     const shouldScrollToSelection = Boolean(
       targetPageId &&
       (targetPageId !== prevSelectedRef.current || comingFromGrid) &&
@@ -990,33 +1019,77 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (shouldScrollToSelection && targetPageId) {
       scrollSelectedRef.current = false;
       if (comingFromGrid) {
+        pendingGridTargetRef.current = targetPageId;
         isScrollingRef.current = true;
       }
 
-      const doScroll = () => {
-        const pageEl = pageRefs.current[targetPageId];
-        if (pageEl) {
-          pageEl.scrollIntoView({ behavior: comingFromGrid ? 'instant' as ScrollBehavior : 'smooth', block: 'start' });
+      let attempts = 0;
+      const maxAttempts = comingFromGrid ? 18 : 6;
+
+      const releaseGridSelectionLock = () => {
+        pendingGridTargetRef.current = null;
+        isScrollingRef.current = false;
+        if (scrollTimeoutRef.current) {
+          clearTimeout(scrollTimeoutRef.current);
+          scrollTimeoutRef.current = null;
         }
+        cancelPendingGridNavigation();
+      };
+
+      const waitForTargetAlignment = () => {
+        const container = scrollContainerRef.current;
+        const pageEl = pageRefs.current[targetPageId];
+        if (!container || !pageEl) {
+          releaseGridSelectionLock();
+          return;
+        }
+
+        const topDelta = Math.abs(pageEl.getBoundingClientRect().top - container.getBoundingClientRect().top);
+        if (topDelta <= 4 || attempts >= maxAttempts) {
+          releaseGridSelectionLock();
+          return;
+        }
+
+        attempts += 1;
+        pageEl.scrollIntoView({ behavior: 'instant' as ScrollBehavior, block: 'start' });
+        gridNavigationFrameRef.current = requestAnimationFrame(waitForTargetAlignment);
+      };
+
+      const scrollWhenReady = () => {
+        const pageEl = pageRefs.current[targetPageId];
+        if (!pageEl) {
+          if (attempts >= maxAttempts) {
+            releaseGridSelectionLock();
+            return;
+          }
+
+          attempts += 1;
+          gridNavigationFrameRef.current = requestAnimationFrame(scrollWhenReady);
+          return;
+        }
+
+        pageEl.scrollIntoView({
+          behavior: comingFromGrid ? 'instant' as ScrollBehavior : 'smooth',
+          block: 'start',
+        });
+
         if (comingFromGrid) {
-          requestAnimationFrame(() => {
-            if (!scrollTimeoutRef.current) {
-              isScrollingRef.current = false;
-            }
-          });
+          attempts = 0;
+          gridNavigationFrameRef.current = requestAnimationFrame(waitForTargetAlignment);
+        } else {
+          cancelPendingGridNavigation();
         }
       };
 
-      if (comingFromGrid) {
-        requestAnimationFrame(() => requestAnimationFrame(doScroll));
-      } else {
-        doScroll();
-      }
+      cancelPendingGridNavigation();
+      scrollWhenReady();
     }
 
-    prevSelectedRef.current = selectedPageId;
+    prevSelectedRef.current = targetPageId ?? selectedPageId;
     scrollSelectedRef.current = false;
-  }, [selectedPageId, isGridView]);
+
+    return cancelPendingGridNavigation;
+  }, [selectedPageId, isGridView, cancelPendingGridNavigation]);
 
   // On mount, scroll to top so cover page is fully visible
   const hasInitialScrolled = useRef(false);
@@ -2640,7 +2713,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                           }}
                         >
                           <div
-                            onClick={() => { onPageSelect(page.id); onGridViewToggle?.(); }}
+                            onClick={() => handleGridPageOpen(page.id)}
                             className={`group relative w-full bg-white rounded-lg overflow-hidden cursor-pointer transition-all duration-200 ${
                               isSelected ? 'ring-2 ring-accent shadow-lg' : 'border border-foreground/[0.08] hover:shadow-md hover:border-accent/40'
                             } ${draggedPageIndex === pageIndex ? 'opacity-50 scale-95' : ''}`}
