@@ -32,6 +32,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { WORKSPACE_MEMBERS } from '@/lib/workspaceMembers';
 import { useAIPageContext } from './useAIPageContext';
 import { getContextualImages, gatherPageText } from '@/lib/contextualImageSuggestions';
+import html2canvas from 'html2canvas';
 
 // ─── Types ─────────────────────────────────────────
 export interface Page {
@@ -126,6 +127,7 @@ const PAGE_ACTIONS = [
   { id: 'duplicate', icon: Copy, label: 'Duplicate Page' },
   { id: 'lock', icon: Unlock, label: 'Lock Page' },
   { id: 'hide', icon: EyeOff, label: 'Hide Page' },
+  { id: 'download', icon: Download, label: 'Download Page' },
   { id: 'delete', icon: Trash2, label: 'Delete Page' },
   { id: 'moveUp', icon: ChevronUp, label: 'Move Page Up' },
   { id: 'moveDown', icon: ChevronDown, label: 'Move Page Down' },
