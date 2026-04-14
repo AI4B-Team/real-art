@@ -2781,6 +2781,14 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                 })}
                               </div>
                             </div>
+                            {page.hidden && (
+                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-background/60 pointer-events-none">
+                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted border border-foreground/[0.08] shadow-sm">
+                                  <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
+                                  <span className="text-[10px] font-semibold text-muted-foreground">Hidden</span>
+                                </div>
+                              </div>
+                            )}
                             <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                               <Popover open={gridMenuOpenId === page.id} onOpenChange={(open) => setGridMenuOpenId(open ? page.id : null)}>
                                 <PopoverTrigger asChild>
