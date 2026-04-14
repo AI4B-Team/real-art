@@ -2101,36 +2101,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       );
     }
 
-  // Snapshot pages when entering grid view
-  useEffect(() => {
-    if (isGridView) {
-      setGridPagesSnapshot(JSON.parse(JSON.stringify(currentPages)));
-      setShowGridCancelConfirm(false);
-    } else {
-      setGridPagesSnapshot(null);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isGridView]);
-
-  const handleGridCancel = useCallback(() => {
-    setShowGridCancelConfirm(true);
-  }, []);
-
-  const handleGridCancelConfirm = useCallback(() => {
-    if (gridPagesSnapshot) {
-      setPages(gridPagesSnapshot);
-      toast.success('Changes discarded');
-    }
-    setShowGridCancelConfirm(false);
-    onGridViewToggle?.();
-  }, [gridPagesSnapshot, setPages, onGridViewToggle]);
-
-  const handleGridConfirm = useCallback(() => {
-    toast.success('Changes saved');
-    onGridViewToggle?.();
-  }, [onGridViewToggle]);
-
-
 
     // Interactive elements
     if (el.type === 'interactive') {
