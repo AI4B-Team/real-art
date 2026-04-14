@@ -629,6 +629,8 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [showPageSettings, setShowPageSettings] = useState(false);
   const [draggedPageIndex, setDraggedPageIndex] = useState<number | null>(null);
   const [dragOverPageIndex, setDragOverPageIndex] = useState<number | null>(null);
+  const [gridPagesSnapshot, setGridPagesSnapshot] = useState<Page[] | null>(null);
+  const [showGridCancelConfirm, setShowGridCancelConfirm] = useState(false);
   const [showAIEditModal, setShowAIEditModal] = useState(false);
   const [replaceModalElementId, setReplaceModalElementIdRaw] = useState<string | null>(null);
   const setReplaceModalElementId = useCallback((id: string | null) => {
