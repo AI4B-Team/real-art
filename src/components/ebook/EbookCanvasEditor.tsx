@@ -1297,6 +1297,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       case 'moveUp': handleMovePage('up'); break;
       case 'moveDown': handleMovePage('down'); break;
       case 'lock': handleToggleLock(); break;
+      case 'hide':
+        if (selectedPage) {
+          setPages(currentPages.map(p => p.id === selectedPageId ? { ...p, hidden: !p.hidden } : p));
+          toast.success(selectedPage.hidden ? 'Page visible again' : 'Page hidden from readers');
+        }
+        break;
       case 'settings':
         if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); }
         onPageSettingsToggle?.();
