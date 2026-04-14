@@ -1327,6 +1327,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       case 'moveUp': handleMovePage('up'); break;
       case 'moveDown': handleMovePage('down'); break;
       case 'lock': handleToggleLock(); break;
+      case 'download': handleDownloadPage(); break;
       case 'hide':
         if (selectedPage) {
           setPages(currentPages.map(p => p.id === selectedPageId ? { ...p, hidden: !p.hidden } : p));
