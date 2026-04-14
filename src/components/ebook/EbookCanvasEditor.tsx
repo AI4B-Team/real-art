@@ -2696,7 +2696,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             /* ─── GRID VIEW ─── */
             <div className="flex h-full flex-1 flex-col overflow-hidden">
               <div className="flex-1 overflow-auto no-scrollbar px-6 pt-6">
-                <div className="flex flex-wrap content-start gap-y-6 items-start pb-4">
+                <div className="flex flex-wrap justify-center content-start gap-y-6 items-start pb-4">
                   {currentPages.map((page, pageIndex) => {
                     const elems = resolvePageElements(pageElements, page, currentPages, bookTitle);
                     const isSelected = page.id === selectedPageId;
