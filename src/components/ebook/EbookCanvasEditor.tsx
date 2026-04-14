@@ -1106,21 +1106,47 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
   // Compute a base scale so 100% zoom fits the full page in the container
   const [fitScale, setFitScale] = useState(1);
-  useEffect(() => {
+  useLayoutEffect(() => {
+    if (isGridView) return;
     const container = scrollContainerRef.current;
     if (!container) return;
+
+    let frameId: number | null = null;
+
     const computeFit = () => {
-      const cw = container.clientWidth - 80; // padding + page label
-      const ch = container.clientHeight - 64; // vertical padding
+      const liveContainer = scrollContainerRef.current;
+      if (!liveContainer) return;
+
+      const cw = liveContainer.clientWidth - 80; // padding + page label
+      const ch = liveContainer.clientHeight - 64; // vertical padding
+      if (cw <= 0 || ch <= 0) return;
+
       const scaleW = cw / pw;
       const scaleH = ch / ph;
-      setFitScale(Math.min(scaleW, scaleH, 1.5));
+      const nextScale = Math.min(scaleW, scaleH, 1.5);
+      if (!Number.isFinite(nextScale) || nextScale <= 0) return;
+
+      setFitScale(nextScale);
     };
-    computeFit();
-    const ro = new ResizeObserver(computeFit);
+
+    frameId = requestAnimationFrame(computeFit);
+
+    const ro = new ResizeObserver(() => {
+      if (frameId !== null) {
+        cancelAnimationFrame(frameId);
+      }
+      frameId = requestAnimationFrame(computeFit);
+    });
+
     ro.observe(container);
-    return () => ro.disconnect();
-  }, [pw, ph]);
+
+    return () => {
+      if (frameId !== null) {
+        cancelAnimationFrame(frameId);
+      }
+      ro.disconnect();
+    };
+  }, [isGridView, pw, ph]);
 
   const zoom = zoomPct * fitScale;
 
