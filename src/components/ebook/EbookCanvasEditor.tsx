@@ -2787,7 +2787,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                     <MoreHorizontal className="w-4 h-4" />
                                   </button>
                                 </PopoverTrigger>
-                                <PopoverContent className="w-48 p-1.5" align="end" side="bottom">
+                                <PopoverContent className="z-[10050] w-48 p-1.5" align="start" side="bottom" sideOffset={8} collisionPadding={24}>
                                   <button
                                     onClick={(e) => { e.stopPropagation(); handleDuplicatePageById(page.id); setGridMenuOpenId(null); }}
                                     className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
@@ -2803,7 +2803,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                         <Plus className="w-4 h-4" /> Add Page After
                                       </button>
                                     </PopoverTrigger>
-                                    <PopoverContent className="w-56 p-2" side="right" align="start">
+                                    <PopoverContent className="z-[10050] w-56 p-2" side="right" align="start" sideOffset={8} collisionPadding={24}>
                                       <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1.5 px-1">Page Type</p>
                                       {PAGE_TYPE_OPTIONS.map(opt => (
                                         <button key={opt.type} onClick={(e) => { e.stopPropagation(); insertPageAt(pageIndex + 1, opt.type); setGridMenuOpenId(null); }}
