@@ -2652,10 +2652,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                     selectedPageId === page.id ? 'border-accent bg-accent/5' : 'border-transparent hover:bg-foreground/[0.03]'
                   } ${dragOverPageIndex === i ? 'border-accent/50 bg-accent/10' : ''}`}>
                   {/* Thumbnail */}
-                  <div className={`bg-foreground/[0.04] rounded overflow-hidden mb-1.5 ${isGridView ? 'aspect-[3/4]' : 'h-12'} flex items-center justify-center`}>
+                  <div className={`relative bg-foreground/[0.04] rounded overflow-hidden mb-1.5 ${isGridView ? 'aspect-[3/4]' : 'h-12'} flex items-center justify-center`}>
                     <span className={`text-[9px] font-bold ${selectedPageId === page.id ? 'text-accent' : 'text-muted-foreground'}`}>
                       {page.type === 'cover' ? '📕' : page.type === 'toc' ? '📋' : page.type === 'back' ? '📘' : page.type === 'blank' ? '📃' : page.type === 'chapter-page' ? '📄' : '📖'}
                     </span>
+                    {page.hidden && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-foreground/20 pointer-events-none">
+                        <div className="flex items-center gap-1 bg-foreground/80 backdrop-blur-sm px-1.5 py-0.5 rounded-lg shadow-sm">
+                          <EyeOff className="w-2.5 h-2.5 text-background" />
+                          <span className="text-[8px] font-semibold text-background">Hidden Page</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <p className="text-[10px] font-medium text-foreground truncate">{page.title}</p>
                   {page.locked && <Lock className="w-2.5 h-2.5 text-muted-foreground" />}
@@ -2820,10 +2828,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </div>
                             </div>
                             {page.hidden && (
-                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-background/60 pointer-events-none">
-                                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-muted border border-foreground/[0.08] shadow-sm">
-                                  <EyeOff className="w-3.5 h-3.5 text-muted-foreground" />
-                                  <span className="text-[10px] font-semibold text-muted-foreground">Hidden</span>
+                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-foreground/20 pointer-events-none">
+                                <div className="flex items-center gap-1.5 bg-foreground/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md">
+                                  <EyeOff className="w-4 h-4 text-background" />
+                                  <span className="text-sm font-semibold text-background">Hidden Page</span>
                                 </div>
                               </div>
                             )}
