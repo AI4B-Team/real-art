@@ -2840,12 +2840,6 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                   </button>
                                 </PopoverTrigger>
                                 <PopoverContent className="z-[10050] w-48 p-1.5" align="start" side="bottom" sideOffset={8} collisionPadding={24}>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); handleDuplicatePageById(page.id); setGridMenuOpenId(null); }}
-                                    className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
-                                  >
-                                    <Files className="w-4 h-4" /> Duplicate
-                                  </button>
                                   <Popover>
                                     <PopoverTrigger asChild>
                                       <button
@@ -2869,6 +2863,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                       ))}
                                     </PopoverContent>
                                   </Popover>
+                                  <button
+                                    onClick={(e) => { e.stopPropagation(); handleDuplicatePageById(page.id); setGridMenuOpenId(null); }}
+                                    className="w-full px-3 py-2 text-left text-sm rounded-lg hover:bg-foreground/[0.04] flex items-center gap-3 transition-colors"
+                                  >
+                                    <Files className="w-4 h-4" /> Duplicate
+                                  </button>
                                    <button
                                     onClick={(e) => {
                                       e.stopPropagation();
