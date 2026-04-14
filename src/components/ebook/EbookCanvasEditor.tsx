@@ -2663,6 +2663,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                       <EyeOff className="w-2.5 h-2.5" /> Hidden Page
                     </span>
                   )}
+                  {page.locked && <Lock className="w-2.5 h-2.5 text-muted-foreground" />}
                 </div>
               ))}
             </div>
