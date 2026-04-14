@@ -4194,7 +4194,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                         }}
                                           className={`w-8 h-8 rounded-lg flex items-center justify-center transition-colors relative ${isAiOpen ? 'bg-accent/20 text-accent' : 'bg-accent/10 hover:bg-accent/20 text-accent'}`}>
                                           <Sparkles className="w-4 h-4" />
-                                          {!isAiOpen && (
+                                          {!isAiOpen && floatingAiCtx.state === 'improvement' && page.id === selectedPageId && (
                                             <span className="absolute inset-0 rounded-lg animate-ai-glow pointer-events-none" />
                                           )}
                                         </button>
