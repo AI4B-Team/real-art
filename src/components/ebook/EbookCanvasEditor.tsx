@@ -4054,8 +4054,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             {PAGE_ACTIONS.map(action => {
                               const currentSelectedPage = currentPages.find(p => p.id === selectedPageId);
                               const isLocked = action.id === 'lock' && currentSelectedPage?.locked;
-                              const Icon = isLocked ? Lock : action.icon;
-                              const label = isLocked ? 'Unlock Page' : action.label;
+                              const isHidden = action.id === 'hide' && currentSelectedPage?.hidden;
+                              const Icon = isLocked ? Lock : isHidden ? Eye : action.icon;
+                              const label = isLocked ? 'Unlock Page' : isHidden ? 'Show Page' : action.label;
                               if (action.id === 'ai') {
                                 const isAiOpen = aiExpandedPageId === page.id;
                                 return (
