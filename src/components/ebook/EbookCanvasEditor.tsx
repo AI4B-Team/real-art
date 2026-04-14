@@ -2825,9 +2825,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </div>
                             </div>
                             {page.hidden && (
-                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-foreground/20 pointer-events-none">
-                                <div className="flex items-center gap-1.5 bg-foreground/80 backdrop-blur-sm px-3 py-1.5 rounded-lg shadow-md">
-                                  <EyeOff className="w-3.5 h-3.5 text-background" />
+                              <div className="absolute inset-0 z-[5] flex items-center justify-center bg-foreground/10 pointer-events-none">
+                                <div className="flex items-center gap-1 bg-foreground/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                                  <EyeOff className="w-3 h-3 text-background" />
                                   <span className="text-[10px] font-semibold text-background">Hidden Page</span>
                                 </div>
                               </div>
@@ -4012,10 +4012,10 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
 
                           {/* Hidden page overlay */}
                           {page.hidden && !page.locked && (
-                            <div className="absolute inset-0 z-[80] flex items-center justify-center bg-foreground/20 pointer-events-none rounded-lg">
-                              <div className="flex items-center gap-1.5 bg-foreground/80 backdrop-blur-sm px-4 py-2 rounded-lg shadow-md">
-                                <EyeOff className="w-4 h-4 text-background" />
-                                <span className="text-sm font-semibold text-background">Hidden Page</span>
+                            <div className="absolute inset-0 z-[80] flex items-center justify-center bg-foreground/10 pointer-events-none rounded-lg">
+                              <div className="flex items-center gap-1 bg-foreground/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm">
+                                <EyeOff className="w-3 h-3 text-background" />
+                                <span className="text-[10px] font-semibold text-background">Hidden Page</span>
                               </div>
                             </div>
                           )}
