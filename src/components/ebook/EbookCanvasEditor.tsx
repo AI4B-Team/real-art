@@ -2379,11 +2379,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {cards.slice(0, 3).map((card: any, i: number) => (
                     <div key={i} className="rounded-lg border flex flex-col items-center justify-center text-center p-[4%]"
                       style={{ borderColor: `${color}30`, backgroundColor: `${color}08` }}>
-                      <span style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#1F2937' }}>{card.front}</span>
-                      <span style={{ fontSize: scaledFont(8), color: '#9CA3AF', marginTop: '4%' }}>Click to flip</span>
+                      <EditableCell value={card.front} style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#1F2937' }}
+                        onSave={v => { const newCards = [...cards]; newCards[i] = { ...newCards[i], front: v }; updateElement(el.id, { interactiveData: { ...data, cards: newCards } }); }} />
+                      {isEditingThis ? (
+                        <EditableCell value={card.back} style={{ fontSize: scaledFont(8), color: '#6B7280', marginTop: '4%' }}
+                          onSave={v => { const newCards = [...cards]; newCards[i] = { ...newCards[i], back: v }; updateElement(el.id, { interactiveData: { ...data, cards: newCards } }); }} />
+                      ) : (
+                        <span style={{ fontSize: scaledFont(8), color: '#9CA3AF', marginTop: '4%' }}>Click to flip</span>
+                      )}
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, cards: [...cards, { front: 'New Term', back: 'Definition' }] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Card</button>
+                    {cards.length > 1 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, cards: cards.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Card</button>}
+                  </div>
+                )}
               </div>
             );
           }
