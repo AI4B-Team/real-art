@@ -639,6 +639,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   }, [onReplaceStateChange]);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
+  const [processingActionId, setProcessingActionId] = useState<string | null>(null);
   const [contextualAIPrompt, setContextualAIPrompt] = useState('');
   const [aiUpdatedFeedback, setAiUpdatedFeedback] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
@@ -1688,13 +1689,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const prompt = action === 'custom' ? contextualAIPrompt.trim() : undefined;
     if (action === 'custom' && !prompt) return;
 
+    setProcessingActionId(action);
+    setIsAIProcessing(true);
+
+    const currentPageId = selectedPageId || currentPages[0]?.id;
+    const pageElems = currentPageId ? (pageElements[currentPageId] || []) : [];
+
     // If no element is selected but user typed a custom prompt, treat as a general page question
     if (!selectedElement && action === 'custom') {
-      setIsAIProcessing(true);
       try {
-        // Gather all text content from the current page for context
-        const currentPageId = selectedPageId || currentPages[0]?.id;
-        const pageElems = currentPageId ? (pageElements[currentPageId] || []) : [];
         const pageTextContent = pageElems
           .filter(el => el.type === 'text' && el.content)
           .map(el => el.content)
@@ -1714,13 +1717,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           toast.error(data.error);
         }
       } catch (e: any) { toast.error(e.message || 'AI request failed'); }
-      finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
+      finally { setIsAIProcessing(false); setProcessingActionId(null); setContextualAIPrompt(''); }
       return;
     }
 
-    if (!selectedElement) return;
-    if (selectedElement.type === 'text' && selectedElement.content) {
-      setIsAIProcessing(true);
+    // If a specific text element is selected, apply to that element
+    if (selectedElement?.type === 'text' && selectedElement.content) {
       try {
         const actionMap: Record<string, string> = { rewrite: 'improve-writing', improve: 'improve-writing', shorten: 'make-shorter', expand: 'make-longer' };
         const { data, error } = await supabase.functions.invoke('ai-text-edit', {
@@ -1735,10 +1737,47 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         }
         else if (data?.error) toast.error(data.error);
       } catch (e: any) { toast.error(e.message || 'AI edit failed'); }
-      finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
-    } else if (selectedElement.type === 'image') {
+      finally { setIsAIProcessing(false); setProcessingActionId(null); setContextualAIPrompt(''); }
+      return;
+    }
+
+    // No element selected + non-custom action → apply to ALL text elements on the page
+    if (!selectedElement && currentPageId) {
+      const textElems = pageElems.filter(el => el.type === 'text' && el.content && el.content.length > 10);
+      if (textElems.length === 0) {
+        toast.info('No text content on this page to modify');
+        setIsAIProcessing(false);
+        setProcessingActionId(null);
+        return;
+      }
+      try {
+        const actionMap: Record<string, string> = { rewrite: 'improve-writing', improve: 'improve-writing', shorten: 'make-shorter', expand: 'make-longer' };
+        let updatedCount = 0;
+        for (const el of textElems) {
+          const { data, error } = await supabase.functions.invoke('ai-text-edit', {
+            body: { text: el.content, action: actionMap[action] || 'improve-writing' },
+          });
+          if (error) throw error;
+          if (data?.result) {
+            updateElement(el.id, { content: data.result });
+            updatedCount++;
+          }
+        }
+        if (updatedCount > 0) {
+          setAiUpdatedFeedback(true);
+          setTimeout(() => setAiUpdatedFeedback(false), 2500);
+          toast.success(`${updatedCount} text block${updatedCount > 1 ? 's' : ''} updated by AI ✨`);
+        }
+      } catch (e: any) { toast.error(e.message || 'AI edit failed'); }
+      finally { setIsAIProcessing(false); setProcessingActionId(null); setContextualAIPrompt(''); }
+      return;
+    }
+
+    if (selectedElement?.type === 'image') {
       toast.info('AI image editing coming soon');
     }
+    setIsAIProcessing(false);
+    setProcessingActionId(null);
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
@@ -4675,25 +4714,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                 <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
                                                   {floatingAiCtx.state === 'ready' ? 'Optional Enhancements' : 'Smart Enhancements'}
                                                 </p>
-                                                {floatingAiCtx.enhancements.map((nudge) => (
-                                                  <button key={nudge.id} onClick={() => {
-                                                    if (nudge.ctaAction === 'add-image') {
-                                                      onOpenImageSection?.();
-                                                    } else {
-                                                      handleContextualAI(nudge.ctaAction === 'rewrite' ? 'rewrite' : 'shorten');
-                                                    }
-                                                  }}
-                                                    className={`w-full flex items-start gap-2 px-2.5 py-2 rounded-xl transition-colors text-left ${
-                                                      nudge.isPrimary ? 'bg-accent/[0.04] border border-accent/15 hover:bg-accent/[0.07]' : 'hover:bg-foreground/[0.03]'
-                                                    }`}>
-                                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1.5 ${nudge.dotColor}`} />
-                                                    <div className="flex-1 min-w-0">
-                                                      <span className="text-[10px] font-semibold text-foreground line-clamp-1">{nudge.cta}</span>
-                                                      <span className="text-[10px] text-muted-foreground line-clamp-1 block">{nudge.subtitle}</span>
-                                                    </div>
-                                                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 mt-0.5 ${nudge.color} ${nudge.bgColor}`}>Go</span>
-                                                  </button>
-                                                ))}
+                                                {floatingAiCtx.enhancements.map((nudge) => {
+                                                  const nudgeActionId = nudge.ctaAction === 'rewrite' ? 'rewrite' : (nudge.ctaAction === 'add-image' ? 'add-image' : 'shorten');
+                                                  const isProcessingThis = isAIProcessing && processingActionId === nudgeActionId;
+                                                  return (
+                                                    <button key={nudge.id} disabled={isAIProcessing} onClick={() => {
+                                                      if (nudge.ctaAction === 'add-image') {
+                                                        onOpenImageSection?.();
+                                                      } else {
+                                                        handleContextualAI(nudgeActionId);
+                                                      }
+                                                    }}
+                                                      className={`w-full flex items-start gap-2 px-2.5 py-2 rounded-xl transition-all text-left disabled:opacity-50 ${
+                                                        nudge.isPrimary ? 'bg-accent/[0.04] border border-accent/15 hover:bg-accent/[0.07]' : 'hover:bg-foreground/[0.03]'
+                                                      } ${isProcessingThis ? 'scale-[0.98]' : ''}`}>
+                                                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1.5 ${nudge.dotColor}`} />
+                                                      <div className="flex-1 min-w-0">
+                                                        <span className="text-[10px] font-semibold text-foreground line-clamp-1">{nudge.cta}</span>
+                                                        <span className="text-[10px] text-muted-foreground line-clamp-1 block">{nudge.subtitle}</span>
+                                                      </div>
+                                                      {isProcessingThis ? (
+                                                        <Loader2 className="w-3.5 h-3.5 text-accent animate-spin shrink-0 mt-0.5" />
+                                                      ) : (
+                                                        <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 mt-0.5 ${nudge.color} ${nudge.bgColor}`}>Go</span>
+                                                      )}
+                                                    </button>
+                                                  );
+                                                })}
                                               </div>
                                             )}
 
@@ -4707,8 +4754,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                   { id: 'expand', label: 'Detail', icon: FileText },
                                                 ].map(btn => (
                                                   <button key={btn.id} onClick={() => handleContextualAI(btn.id)} disabled={isAIProcessing}
-                                                    className="flex flex-col items-center gap-1 py-2 rounded-lg hover:bg-accent/[0.06] transition-colors disabled:opacity-40">
-                                                    <btn.icon className="w-3.5 h-3.5 text-accent" />
+                                                    className={`flex flex-col items-center gap-1 py-2 rounded-lg transition-all disabled:opacity-40 ${processingActionId === btn.id ? 'bg-accent/10 scale-95' : 'hover:bg-accent/[0.06]'}`}>
+                                                    {processingActionId === btn.id ? (
+                                                      <Loader2 className="w-3.5 h-3.5 text-accent animate-spin" />
+                                                    ) : (
+                                                      <btn.icon className="w-3.5 h-3.5 text-accent" />
+                                                    )}
                                                     <span className="text-[9px] font-medium text-muted-foreground">{btn.label}</span>
                                                   </button>
                                                 ))}
