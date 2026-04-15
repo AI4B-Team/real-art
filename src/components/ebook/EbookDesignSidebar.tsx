@@ -1237,17 +1237,17 @@ const EbookDesignSidebar = ({
               {!isCoverOrBack && (
                 <div className="flex items-center gap-0.5 shrink-0 max-w-0 opacity-0 overflow-hidden pointer-events-none group-hover:max-w-[120px] group-hover:opacity-100 group-hover:pointer-events-auto transition-[max-width,opacity] duration-150">
                   {onChapterReorder && globalIdx > 0 && (
-                    <button onClick={e => { e.stopPropagation(); onChapterReorder(globalIdx, globalIdx - 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move up">
+                    <button onClick={e => { e.stopPropagation(); onChapterReorder(globalIdx, globalIdx - 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move Up">
                       <ChevronUp className="w-3 h-3 text-muted-foreground" />
                     </button>
                   )}
                   {onChapterReorder && globalIdx < chapters.length - 1 && (
-                    <button onClick={e => { e.stopPropagation(); onChapterReorder(globalIdx, globalIdx + 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move down">
+                    <button onClick={e => { e.stopPropagation(); onChapterReorder(globalIdx, globalIdx + 1); }} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Move Down">
                       <ChevronDown className="w-3 h-3 text-muted-foreground" />
                     </button>
                   )}
                   <PageTypePicker onSelect={(type) => onChapterAdd(ch.id, type)} side="right" align="center">
-                    <button onClick={e => e.stopPropagation()} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Add page after">
+                    <button onClick={e => e.stopPropagation()} className="p-0.5 rounded hover:bg-foreground/[0.08]" title="Add Page After">
                       <Plus className="w-3 h-3 text-muted-foreground" />
                     </button>
                   </PageTypePicker>
