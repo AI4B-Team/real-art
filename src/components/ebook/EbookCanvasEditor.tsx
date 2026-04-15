@@ -2453,10 +2453,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         style={{ width: scaledFont(14), height: scaledFont(14), borderColor: i === 0 ? color : '#D1D5DB', backgroundColor: i === 0 ? color : 'transparent', borderRadius: '3px' }}>
                         {i === 0 && <Check style={{ width: scaledFont(10), height: scaledFont(10), color: '#fff' }} />}
                       </div>
-                      <span style={{ fontSize: scaledFont(10), color: i === 0 ? '#9CA3AF' : '#374151', textDecoration: i === 0 ? 'line-through' : 'none' }}>{item}</span>
+                      <EditableCell value={item} style={{ fontSize: scaledFont(10), color: i === 0 ? '#9CA3AF' : '#374151', textDecoration: i === 0 ? 'line-through' : 'none' }}
+                        onSave={v => { const newItems = [...items]; newItems[i] = v; updateElement(el.id, { interactiveData: { ...data, items: newItems } }); }} />
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: [...items, 'New item'] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Item</button>
+                    {items.length > 1 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: items.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Item</button>}
+                  </div>
+                )}
               </div>
             );
           }
