@@ -591,6 +591,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
+  const [editingInteractiveId, setEditingInteractiveId] = useState<string | null>(null);
   // Backfill empty body text elements with sample content so users can see formatting
   const backfillEmptyBodies = useCallback((elements: Record<string, CanvasElement[]>): Record<string, CanvasElement[]> => {
     let changed = false;
@@ -1785,6 +1786,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
       setEditingTextId(null);
+      setEditingInteractiveId(null);
       if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); }
 
       if (activeTool === 'text') {
@@ -1849,6 +1851,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     }
 
     setSelectedElementId(el.id);
+    if (editingInteractiveId && editingInteractiveId !== el.id) setEditingInteractiveId(null);
     // Push undo snapshot once before drag begins
     setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
     setRedoStack([]);
@@ -2322,7 +2325,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (el.type === 'interactive') {
       const iType = el.interactiveType || 'flashcards';
       const data = el.interactiveData || {};
+      const isEditingThis = editingInteractiveId === el.id;
       const scaledFont = (size: number) => `${size * zoom / 100 * 0.5}px`;
+
+      // Helper to make a cell editable
+      const EditableCell = ({ value, onSave, style: cellStyle, className: cellCn }: { value: string; onSave: (v: string) => void; style?: React.CSSProperties; className?: string }) => {
+        if (!isEditingThis) return <span style={cellStyle} className={cellCn}>{value}</span>;
+        return (
+          <span
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={e => onSave(e.currentTarget.textContent || '')}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); (e.target as HTMLElement).blur(); } e.stopPropagation(); }}
+            onMouseDown={e => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
+            style={{ ...cellStyle, cursor: 'text', outline: 'none', borderBottom: '1px dashed #a78bfa', minWidth: 20, display: 'inline-block' }}
+            className={cellCn}
+          >{value}</span>
+        );
+      };
 
       const INTERACTIVE_ICONS: Record<string, typeof Brain> = {
         flashcards: Brain, quiz: CheckSquare, course: BookOpen, certificate: Award,
@@ -2360,11 +2381,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {cards.slice(0, 3).map((card: any, i: number) => (
                     <div key={i} className="rounded-lg border flex flex-col items-center justify-center text-center p-[4%]"
                       style={{ borderColor: `${color}30`, backgroundColor: `${color}08` }}>
-                      <span style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#1F2937' }}>{card.front}</span>
-                      <span style={{ fontSize: scaledFont(8), color: '#9CA3AF', marginTop: '4%' }}>Click to flip</span>
+                      <EditableCell value={card.front} style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#1F2937' }}
+                        onSave={v => { const newCards = [...cards]; newCards[i] = { ...newCards[i], front: v }; updateElement(el.id, { interactiveData: { ...data, cards: newCards } }); }} />
+                      {isEditingThis ? (
+                        <EditableCell value={card.back} style={{ fontSize: scaledFont(8), color: '#6B7280', marginTop: '4%' }}
+                          onSave={v => { const newCards = [...cards]; newCards[i] = { ...newCards[i], back: v }; updateElement(el.id, { interactiveData: { ...data, cards: newCards } }); }} />
+                      ) : (
+                        <span style={{ fontSize: scaledFont(8), color: '#9CA3AF', marginTop: '4%' }}>Click to flip</span>
+                      )}
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, cards: [...cards, { front: 'New Term', back: 'Definition' }] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Card</button>
+                    {cards.length > 1 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, cards: cards.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Card</button>}
+                  </div>
+                )}
               </div>
             );
           }
@@ -2378,17 +2413,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   <CheckSquare style={{ width: scaledFont(16), height: scaledFont(16), color }} />
                   <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>{iType === 'quiz' ? 'Quiz' : 'Knowledge Check'}</span>
                 </div>
-                <p style={{ fontSize: scaledFont(11), color: '#1F2937', fontWeight: 500, marginBottom: '3%' }}>{question}</p>
+                <div style={{ marginBottom: '3%' }}>
+                  <EditableCell value={question} style={{ fontSize: scaledFont(11), color: '#1F2937', fontWeight: 500 }}
+                    onSave={v => updateElement(el.id, { interactiveData: { ...data, question: v } })} />
+                </div>
                 <div className="flex flex-col gap-[2%] flex-1">
                   {options.map((opt: string, i: number) => (
                     <div key={i} className="rounded-lg border px-[3%] py-[2%] flex items-center gap-[2%]"
                       style={{ borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' }}>
                       <div className="rounded-full border-2 flex items-center justify-center shrink-0"
                         style={{ width: scaledFont(14), height: scaledFont(14), borderColor: '#D1D5DB' }} />
-                      <span style={{ fontSize: scaledFont(10), color: '#374151' }}>{opt}</span>
+                      <EditableCell value={opt} style={{ fontSize: scaledFont(10), color: '#374151' }}
+                        onSave={v => { const newOpts = [...options]; newOpts[i] = v; updateElement(el.id, { interactiveData: { ...data, options: newOpts } }); }} />
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, options: [...options, 'New Option'] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Option</button>
+                    {options.length > 2 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, options: options.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Option</button>}
+                  </div>
+                )}
               </div>
             );
           }
@@ -2408,10 +2455,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                         style={{ width: scaledFont(14), height: scaledFont(14), borderColor: i === 0 ? color : '#D1D5DB', backgroundColor: i === 0 ? color : 'transparent', borderRadius: '3px' }}>
                         {i === 0 && <Check style={{ width: scaledFont(10), height: scaledFont(10), color: '#fff' }} />}
                       </div>
-                      <span style={{ fontSize: scaledFont(10), color: i === 0 ? '#9CA3AF' : '#374151', textDecoration: i === 0 ? 'line-through' : 'none' }}>{item}</span>
+                      <EditableCell value={item} style={{ fontSize: scaledFont(10), color: i === 0 ? '#9CA3AF' : '#374151', textDecoration: i === 0 ? 'line-through' : 'none' }}
+                        onSave={v => { const newItems = [...items]; newItems[i] = v; updateElement(el.id, { interactiveData: { ...data, items: newItems } }); }} />
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: [...items, 'New item'] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Item</button>
+                    {items.length > 1 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: items.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Item</button>}
+                  </div>
+                )}
               </div>
             );
           }
@@ -2697,19 +2753,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           // ── Tables & Data ──
           case 'basic-table':
           case 'data-grid': {
-            const rows = [['Name', 'Value', 'Status'], ['Item A', '120', 'Active'], ['Item B', '85', 'Pending'], ['Item C', '210', 'Active']];
+            const defaultRows = [['Name', 'Value', 'Status'], ['Item A', '120', 'Active'], ['Item B', '85', 'Pending'], ['Item C', '210', 'Active']];
+            const rows: string[][] = data.rows || defaultRows;
             return (
               <div className="w-full h-full flex flex-col p-[3%]">
                 <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '3%' }}>{iType === 'data-grid' ? 'Data Grid' : 'Table'}</span>
                 <div className="flex-1 overflow-hidden rounded border" style={{ borderColor: '#E5E7EB' }}>
-                  {rows.map((row, ri) => (
+                  {rows.map((row: string[], ri: number) => (
                     <div key={ri} className="flex" style={{ backgroundColor: ri === 0 ? '#F3F4F6' : '#fff', borderBottom: ri < rows.length - 1 ? '1px solid #E5E7EB' : undefined }}>
-                      {row.map((cell, ci) => (
-                        <div key={ci} className="flex-1 px-[2%] py-[1.5%]" style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}>{cell}</div>
+                      {row.map((cell: string, ci: number) => (
+                        <div key={ci} className="flex-1 px-[2%] py-[1.5%]">
+                          <EditableCell value={cell} style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}
+                            onSave={v => { const newRows = rows.map(r => [...r]); newRows[ri][ci] = v; updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }} />
+                        </div>
                       ))}
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); const newRows = [...rows.map(r => [...r]), rows[0].map(() => '')]; updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Row</button>
+                    <button onClick={e => { e.stopPropagation(); const newRows = rows.map(r => [...r, '']); updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Col</button>
+                    {rows.length > 2 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, rows: rows.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Row</button>}
+                  </div>
+                )}
               </div>
             );
           }
@@ -2724,10 +2794,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {items.map((item: string, i: number) => (
                     <div key={i} className="flex items-center gap-[2%]">
                       <span style={{ fontSize: scaledFont(10), color: color, fontWeight: 600, minWidth: scaledFont(14) }}>{isOrdered ? `${i+1}.` : '•'}</span>
-                      <span style={{ fontSize: scaledFont(10), color: '#374151' }}>{item}</span>
+                      <EditableCell value={item} style={{ fontSize: scaledFont(10), color: '#374151' }}
+                        onSave={v => { const newItems = [...items]; newItems[i] = v; updateElement(el.id, { interactiveData: { ...data, items: newItems } }); }} />
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: [...items, 'New item'] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Item</button>
+                    {items.length > 1 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: items.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Item</button>}
+                  </div>
+                )}
               </div>
             );
           }
@@ -2798,19 +2877,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             );
           }
           case 'table-widget': {
-            const rows = [['Col A', 'Col B'], ['Data 1', 'Data 2'], ['Data 3', 'Data 4']];
+            const defaultRows = [['Col A', 'Col B'], ['Data 1', 'Data 2'], ['Data 3', 'Data 4']];
+            const rows: string[][] = data.rows || defaultRows;
             return (
               <div className="w-full h-full flex flex-col p-[3%]">
                 <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '3%' }}>Table</span>
                 <div className="flex-1 overflow-hidden rounded border" style={{ borderColor: '#E5E7EB' }}>
-                  {rows.map((row, ri) => (
+                  {rows.map((row: string[], ri: number) => (
                     <div key={ri} className="flex" style={{ backgroundColor: ri === 0 ? '#F3F4F6' : '#fff', borderBottom: '1px solid #E5E7EB' }}>
-                      {row.map((cell, ci) => (
-                        <div key={ci} className="flex-1 px-[3%] py-[2%]" style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}>{cell}</div>
+                      {row.map((cell: string, ci: number) => (
+                        <div key={ci} className="flex-1 px-[3%] py-[2%]">
+                          <EditableCell value={cell} style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}
+                            onSave={v => { const newRows = rows.map(r => [...r]); newRows[ri][ci] = v; updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }} />
+                        </div>
                       ))}
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); const newRows = [...rows.map(r => [...r]), rows[0].map(() => '')]; updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Row</button>
+                    <button onClick={e => { e.stopPropagation(); const newRows = rows.map(r => [...r, '']); updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Col</button>
+                    {rows.length > 2 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, rows: rows.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Row</button>}
+                  </div>
+                )}
               </div>
             );
           }
@@ -2904,11 +2997,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
-          onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
+          onContextMenu={e => handleElementContextMenu(e, el, pageId)}
+          onClick={() => { if (isPageLocked) return; if (isSelected && editingInteractiveId !== el.id) { setEditingInteractiveId(el.id); } }}
+          onDoubleClick={() => { if (isPageLocked) return; setEditingInteractiveId(el.id); setSelectedElementId(el.id); }}>
           <TypeBadge />
           <div className="w-full h-full overflow-hidden rounded-lg bg-white shadow-sm">
             {renderInteractiveContent()}
           </div>
+          {isSelected && editingInteractiveId === el.id && (
+            <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-[10px] font-medium px-2 py-0.5 rounded shadow-sm whitespace-nowrap z-30 pointer-events-none">
+              Editing — click cells to modify
+            </div>
+          )}
           {isSelected && renderResizeHandles(el)}
         </div>
       );
