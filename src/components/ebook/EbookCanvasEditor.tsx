@@ -1373,22 +1373,170 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   };
   const isPageLocked = selectedPage?.locked === true;
 
+  // ─── Element Type Resolver ─────────────────────
+  // Maps sidebar element IDs (e.g. 'rectangle', 'bar-chart', 'button-primary') to
+  // proper CanvasElement types with sensible defaults.
+  const resolveElementType = (rawType: string, extra?: Partial<CanvasElement>): { type: CanvasElement['type']; extra: Partial<CanvasElement> } => {
+    const merged: Partial<CanvasElement> = { ...extra };
+
+    // ── Shapes ──
+    const SHAPE_MAP: Record<string, Partial<CanvasElement>> = {
+      rectangle: { shapeType: 'rectangle', fill: '#8B5CF6', stroke: '#6D28D9', strokeWidth: 1, width: 30, height: 20, borderRadius: 4 },
+      ellipse:   { shapeType: 'circle',    fill: '#3B82F6', stroke: '#1D4ED8', strokeWidth: 1, width: 20, height: 20 },
+      triangle:  { shapeType: 'rectangle', fill: '#F59E0B', stroke: '#D97706', strokeWidth: 0, width: 20, height: 18, borderRadius: 0,
+                   content: '▲', fontSize: 48, textColor: '#F59E0B' },
+      hexagon:   { shapeType: 'rectangle', fill: '#14B8A6', stroke: '#0D9488', strokeWidth: 1, width: 20, height: 18, borderRadius: 8 },
+      star:      { shapeType: 'rectangle', fill: '#FBBF24', stroke: '#F59E0B', strokeWidth: 0, width: 18, height: 18, borderRadius: 0,
+                   content: '★', fontSize: 48, textColor: '#FBBF24' },
+      diamond:   { shapeType: 'rectangle', fill: '#EC4899', stroke: '#DB2777', strokeWidth: 1, width: 18, height: 22, borderRadius: 0,
+                   content: '◆', fontSize: 48, textColor: '#EC4899' },
+      pentagon:  { shapeType: 'rectangle', fill: '#6366F1', stroke: '#4F46E5', strokeWidth: 1, width: 20, height: 20, borderRadius: 6 },
+    };
+    if (SHAPE_MAP[rawType]) {
+      return { type: 'shape', extra: { ...SHAPE_MAP[rawType], ...merged } };
+    }
+
+    // ── Triangle / Star / Diamond → render as interactive with SVG content ──
+    if (rawType === 'triangle' || rawType === 'star' || rawType === 'diamond') {
+      const SYMBOL_ELEMENTS: Record<string, { svg: string; color: string }> = {
+        triangle: { svg: '▲', color: '#F59E0B' },
+        star:     { svg: '★', color: '#FBBF24' },
+        diamond:  { svg: '◆', color: '#EC4899' },
+      };
+      const s = SYMBOL_ELEMENTS[rawType];
+      return { type: 'text', extra: { content: s.svg, fontSize: 64, textColor: s.color, textAlign: 'center', width: 15, height: 12, ...merged } };
+    }
+
+    // ── Lines & Arrows ──
+    const ARROW_MAP: Record<string, string> = {
+      'arrow-right': '→', 'arrow-down': '↓', 'arrow-up': '↑', 'arrow-left': '←',
+      'chevron-right': '»', 'move-arrows': '✥',
+    };
+    if (ARROW_MAP[rawType]) {
+      return { type: 'text', extra: { content: ARROW_MAP[rawType], fontSize: 36, textColor: rawType.startsWith('arrow') ? '#F97316' : rawType === 'chevron-right' ? '#8B5CF6' : '#FBBF24', textAlign: 'center', width: 10, height: 8, fontWeight: 'bold', ...merged } };
+    }
+
+    // ── Icons ──
+    const ICON_MAP: Record<string, { symbol: string; color: string }> = {
+      sun: { symbol: '☀', color: '#F59E0B' },
+      smile: { symbol: '☺', color: '#FBBF24' },
+      'star-icon': { symbol: '☆', color: '#FBBF24' },
+      check: { symbol: '✓', color: '#10B981' },
+      info: { symbol: 'ℹ', color: '#3B82F6' },
+      help: { symbol: '?', color: '#8B5CF6' },
+      'thumbs-up': { symbol: '👍', color: '#3B82F6' },
+      message: { symbol: '💬', color: '#10B981' },
+      clock: { symbol: '🕐', color: '#F59E0B' },
+      calendar: { symbol: '📅', color: '#8B5CF6' },
+      settings: { symbol: '⚙', color: '#6B7280' },
+      share: { symbol: '🔗', color: '#3B82F6' },
+    };
+    if (ICON_MAP[rawType]) {
+      const ic = ICON_MAP[rawType];
+      return { type: 'text', extra: { content: ic.symbol, fontSize: 42, textColor: ic.color, textAlign: 'center', width: 10, height: 10, ...merged } };
+    }
+
+    // ── Stickers & Badges ──
+    const STICKER_MAP: Record<string, { symbol: string; color: string }> = {
+      'emoji-smile': { symbol: '😊', color: '#FBBF24' },
+      'emoji-star': { symbol: '⭐', color: '#FBBF24' },
+      verified: { symbol: '✅', color: '#10B981' },
+      tag: { symbol: '🏷️', color: '#F59E0B' },
+      sparkles: { symbol: '✨', color: '#A855F7' },
+      note: { symbol: '📝', color: '#FBBF24' },
+    };
+    if (STICKER_MAP[rawType]) {
+      const st = STICKER_MAP[rawType];
+      return { type: 'text', extra: { content: st.symbol, fontSize: 48, textColor: st.color, textAlign: 'center', width: 10, height: 10, ...merged } };
+    }
+
+    // ── Charts ──
+    const CHART_TYPES = ['bar-chart', 'line-chart', 'pie-chart', 'area-chart', 'donut-chart', 'trending-chart', 'gauge-chart', 'radar-chart', 'funnel-chart'];
+    if (CHART_TYPES.includes(rawType)) {
+      return { type: 'interactive', extra: { interactiveType: rawType, width: 55, height: 35, ...merged } };
+    }
+
+    // ── Tables & Data ──
+    const TABLE_TYPES = ['basic-table', 'data-grid', 'list', 'ordered-list', 'checklist', 'columns-layout'];
+    if (TABLE_TYPES.includes(rawType)) {
+      if (rawType === 'checklist') {
+        return { type: 'interactive', extra: { interactiveType: 'checklist', width: 50, height: 30, ...merged } };
+      }
+      return { type: 'interactive', extra: { interactiveType: rawType, width: 55, height: 35, ...merged } };
+    }
+
+    // ── Buttons ──
+    const BUTTON_MAP: Record<string, { label: string; bg: string }> = {
+      'button-primary': { label: 'Click Here', bg: '#3B82F6' },
+      'button-signup': { label: 'Sign Up', bg: '#10B981' },
+      'button-cta': { label: 'Get Started', bg: '#EC4899' },
+    };
+    if (BUTTON_MAP[rawType]) {
+      const btn = BUTTON_MAP[rawType];
+      return { type: 'interactive', extra: { interactiveType: rawType, interactiveData: { label: btn.label, bg: btn.bg }, width: 30, height: 8, ...merged } };
+    }
+
+    // ── Actions & Hotspots ──
+    const ACTION_TYPES = ['action-link', 'action-page', 'action-popup', 'action-audio', 'action-download', 'hotspot-link'];
+    if (ACTION_TYPES.includes(rawType)) {
+      return { type: 'interactive', extra: { interactiveType: rawType, width: 30, height: 8, ...merged } };
+    }
+
+    // ── Widgets ──
+    const WIDGET_MAP: Record<string, Partial<CanvasElement>> = {
+      'text-to-image': { width: 40, height: 30 },
+      map: { width: 50, height: 35 },
+      'table-widget': { width: 55, height: 30 },
+      'page-no': { width: 10, height: 5 },
+      embed: { width: 55, height: 35 },
+      tooltip: { width: 25, height: 8 },
+      'auto-toc': { width: 55, height: 45 },
+      'qr-code': { width: 18, height: 18 },
+      countdown: { width: 35, height: 15 },
+      quiz: { width: 55, height: 35 },
+      slideshow: { width: 55, height: 35 },
+      'video-player': { width: 55, height: 35 },
+    };
+    if (WIDGET_MAP[rawType]) {
+      if (rawType === 'text-to-image') {
+        return { type: 'image', extra: { isPlaceholder: true, ...WIDGET_MAP[rawType], ...merged } };
+      }
+      if (rawType === 'page-no') {
+        return { type: 'text', extra: { content: '#', fontSize: 11, textColor: '#6B7280', textAlign: 'center', ...WIDGET_MAP[rawType], ...merged } };
+      }
+      if (rawType === 'quiz') {
+        return { type: 'interactive', extra: { interactiveType: 'quiz', ...WIDGET_MAP[rawType], ...merged } };
+      }
+      return { type: 'interactive', extra: { interactiveType: rawType, ...WIDGET_MAP[rawType], ...merged } };
+    }
+
+    // ── Fallback: pass through as-is if it's already a valid canvas type ──
+    const VALID_TYPES: CanvasElement['type'][] = ['image', 'shape', 'text', 'interactive'];
+    if (VALID_TYPES.includes(rawType as any)) {
+      return { type: rawType as CanvasElement['type'], extra: merged };
+    }
+
+    // Unknown → interactive with fallback rendering
+    return { type: 'interactive', extra: { interactiveType: rawType, width: 40, height: 25, ...merged } };
+  };
+
   // ─── Element Actions ──────────────────────────
-  const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
+  const addElement = (rawType: string, extra?: Partial<CanvasElement>) => {
     if (isPageLocked) { toast.error('This page is locked. Unlock it to make changes.'); return; }
+    const { type, extra: resolvedExtra } = resolveElementType(rawType, extra);
     // Stagger position so new elements don't fully overlap existing ones
     const sameTypeCount = currentElements.filter(el => el.type === type).length;
     const offset = (sameTypeCount % 5) * 5;
-    const baseX = extra?.x ?? (20 + offset);
-    const baseY = extra?.y ?? (20 + offset);
+    const baseX = resolvedExtra?.x ?? (20 + offset);
+    const baseY = resolvedExtra?.y ?? (20 + offset);
     const newEl: CanvasElement = {
       id: crypto.randomUUID(), type, x: baseX, y: baseY,
-      width: type === 'interactive' ? 60 : (type === 'image' ? 40 : 30),
-      height: type === 'text' ? 10 : (type === 'interactive' ? 30 : 25),
+      width: resolvedExtra?.width ?? (type === 'interactive' ? 60 : (type === 'image' ? 40 : 30)),
+      height: resolvedExtra?.height ?? (type === 'text' ? 10 : (type === 'interactive' ? 30 : 25)),
       ...(type === 'text' ? { content: 'New Text', fontSize: 16, fontFamily: 'Inter', textColor: '#1a1a2e' } : {}),
       ...(type === 'shape' ? { fill: '#3b82f6', stroke: '#1e40af', strokeWidth: 1, shapeType: 'rectangle' } : {}),
       ...(type === 'image' ? { src: STOCK_IMAGES[0] } : {}),
-      ...extra,
+      ...resolvedExtra,
     };
     const pageId = selectedPage?.id || '';
     updateElements(pageId, [...currentElements, newEl]);
@@ -2409,6 +2557,298 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
               </div>
             );
           }
+          // ── Charts ──
+          case 'bar-chart': {
+            const bars = [65, 45, 80, 55, 70, 40];
+            return (
+              <div className="w-full h-full flex flex-col p-[4%]">
+                <div className="flex items-center gap-[2%] mb-[4%]">
+                  <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151' }}>Bar Chart</span>
+                </div>
+                <div className="flex-1 flex items-end gap-[3%] px-[2%]">
+                  {bars.map((v, i) => (
+                    <div key={i} className="flex-1 flex flex-col items-center justify-end h-full">
+                      <div className="w-full rounded-t" style={{ height: `${v}%`, backgroundColor: ['#3B82F6','#60A5FA','#93C5FD','#3B82F6','#60A5FA','#93C5FD'][i], minHeight: 2 }} />
+                      <span style={{ fontSize: scaledFont(7), color: '#9CA3AF', marginTop: '4%' }}>{String.fromCharCode(65+i)}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'line-chart': {
+            return (
+              <div className="w-full h-full flex flex-col p-[4%]">
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '4%' }}>Line Chart</span>
+                <div className="flex-1 flex items-center justify-center" style={{ border: '1px solid #E5E7EB', borderRadius: 6, backgroundColor: '#F9FAFB' }}>
+                  <svg viewBox="0 0 100 50" style={{ width: '90%', height: '70%' }}>
+                    <polyline points="5,40 20,25 35,30 50,15 65,20 80,8 95,12" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                    <polyline points="5,42 20,35 35,38 50,28 65,32 80,22 95,25" fill="none" stroke="#10B98140" strokeWidth="1.5" strokeDasharray="3,3"/>
+                  </svg>
+                </div>
+              </div>
+            );
+          }
+          case 'pie-chart': {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center p-[4%]">
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '4%' }}>Pie Chart</span>
+                <svg viewBox="0 0 42 42" style={{ width: '55%', maxHeight: '65%' }}>
+                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#3B82F6" strokeWidth="8" strokeDasharray="40 60" strokeDashoffset="25"/>
+                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#F59E0B" strokeWidth="8" strokeDasharray="25 75" strokeDashoffset="85"/>
+                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#10B981" strokeWidth="8" strokeDasharray="20 80" strokeDashoffset="60"/>
+                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#EC4899" strokeWidth="8" strokeDasharray="15 85" strokeDashoffset="40"/>
+                </svg>
+              </div>
+            );
+          }
+          case 'area-chart': {
+            return (
+              <div className="w-full h-full flex flex-col p-[4%]">
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '4%' }}>Area Chart</span>
+                <div className="flex-1 flex items-center justify-center" style={{ borderRadius: 6, backgroundColor: '#F9FAFB', border: '1px solid #E5E7EB' }}>
+                  <svg viewBox="0 0 100 50" style={{ width: '90%', height: '70%' }}>
+                    <polygon points="5,45 20,30 35,35 50,18 65,22 80,10 95,15 95,45" fill="#8B5CF620" stroke="#8B5CF6" strokeWidth="2"/>
+                  </svg>
+                </div>
+              </div>
+            );
+          }
+          case 'donut-chart': {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center p-[4%]">
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '4%' }}>Donut Chart</span>
+                <svg viewBox="0 0 42 42" style={{ width: '50%', maxHeight: '60%' }}>
+                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#EC4899" strokeWidth="5" strokeDasharray="40 60" strokeDashoffset="25"/>
+                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#F59E0B" strokeWidth="5" strokeDasharray="30 70" strokeDashoffset="85"/>
+                  <circle cx="21" cy="21" r="15.9" fill="transparent" stroke="#10B981" strokeWidth="5" strokeDasharray="30 70" strokeDashoffset="55"/>
+                </svg>
+                <span style={{ fontSize: scaledFont(14), fontWeight: 700, color: '#374151', position: 'absolute' }}>72%</span>
+              </div>
+            );
+          }
+          case 'trending-chart': {
+            return (
+              <div className="w-full h-full flex flex-col p-[4%]">
+                <div className="flex items-center gap-[2%] mb-[3%]">
+                  <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151' }}>Trending</span>
+                  <span style={{ fontSize: scaledFont(10), color: '#10B981', fontWeight: 600, marginLeft: 'auto' }}>↑ 24%</span>
+                </div>
+                <div className="flex-1 flex items-center justify-center" style={{ borderRadius: 6, backgroundColor: '#F0FDF4', border: '1px solid #BBF7D0' }}>
+                  <svg viewBox="0 0 100 40" style={{ width: '90%', height: '60%' }}>
+                    <polyline points="5,35 15,30 25,32 40,20 55,22 70,12 85,8 95,5" fill="none" stroke="#10B981" strokeWidth="2.5" strokeLinecap="round"/>
+                  </svg>
+                </div>
+              </div>
+            );
+          }
+          case 'gauge-chart':
+          case 'radar-chart':
+          case 'funnel-chart': {
+            const chartLabels: Record<string, string> = { 'gauge-chart': 'Gauge', 'radar-chart': 'Radar', 'funnel-chart': 'Funnel' };
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center p-[4%]" style={{ backgroundColor: `${color}08`, borderRadius: 8 }}>
+                <Icon style={{ width: scaledFont(28), height: scaledFont(28), color, marginBottom: '3%' }} />
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151' }}>{chartLabels[iType]}</span>
+                <span style={{ fontSize: scaledFont(9), color: '#9CA3AF' }}>Chart Widget</span>
+              </div>
+            );
+          }
+
+          // ── Tables & Data ──
+          case 'basic-table':
+          case 'data-grid': {
+            const rows = [['Name', 'Value', 'Status'], ['Item A', '120', 'Active'], ['Item B', '85', 'Pending'], ['Item C', '210', 'Active']];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '3%' }}>{iType === 'data-grid' ? 'Data Grid' : 'Table'}</span>
+                <div className="flex-1 overflow-hidden rounded border" style={{ borderColor: '#E5E7EB' }}>
+                  {rows.map((row, ri) => (
+                    <div key={ri} className="flex" style={{ backgroundColor: ri === 0 ? '#F3F4F6' : '#fff', borderBottom: ri < rows.length - 1 ? '1px solid #E5E7EB' : undefined }}>
+                      {row.map((cell, ci) => (
+                        <div key={ci} className="flex-1 px-[2%] py-[1.5%]" style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}>{cell}</div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'list':
+          case 'ordered-list': {
+            const items = data.items || ['First item', 'Second item', 'Third item', 'Fourth item'];
+            const isOrdered = iType === 'ordered-list';
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '3%' }}>{isOrdered ? 'Numbered List' : 'List'}</span>
+                <div className="flex flex-col gap-[2%]">
+                  {items.map((item: string, i: number) => (
+                    <div key={i} className="flex items-center gap-[2%]">
+                      <span style={{ fontSize: scaledFont(10), color: color, fontWeight: 600, minWidth: scaledFont(14) }}>{isOrdered ? `${i+1}.` : '•'}</span>
+                      <span style={{ fontSize: scaledFont(10), color: '#374151' }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'columns-layout': {
+            return (
+              <div className="w-full h-full flex gap-[3%] p-[3%]">
+                {['Column 1', 'Column 2'].map((col, i) => (
+                  <div key={i} className="flex-1 rounded-lg border-2 border-dashed flex flex-col items-center justify-center p-[2%]" style={{ borderColor: '#D1D5DB' }}>
+                    <span style={{ fontSize: scaledFont(10), fontWeight: 600, color: '#9CA3AF' }}>{col}</span>
+                    <span style={{ fontSize: scaledFont(8), color: '#D1D5DB', marginTop: '2%' }}>Drop content here</span>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+
+          // ── Buttons ──
+          case 'button-primary':
+          case 'button-signup':
+          case 'button-cta': {
+            const btnData = data || {};
+            const btnLabel = btnData.label || (iType === 'button-primary' ? 'Click Here' : iType === 'button-signup' ? 'Sign Up' : 'Get Started');
+            const btnBg = btnData.bg || (iType === 'button-primary' ? '#3B82F6' : iType === 'button-signup' ? '#10B981' : '#EC4899');
+            return (
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="px-[8%] py-[3%] rounded-lg text-white font-semibold flex items-center justify-center" style={{ backgroundColor: btnBg, fontSize: scaledFont(13), minWidth: '60%', textAlign: 'center' }}>
+                  {btnLabel}
+                </div>
+              </div>
+            );
+          }
+
+          // ── Actions & Hotspots ──
+          case 'action-link':
+          case 'action-page':
+          case 'action-popup':
+          case 'action-audio':
+          case 'action-download':
+          case 'hotspot-link': {
+            const actionLabels: Record<string, string> = {
+              'action-link': '🔗 Open Link', 'action-page': '📄 Go to Page',
+              'action-popup': '💬 Popup', 'action-audio': '🔊 Play Audio',
+              'action-download': '⬇ Download', 'hotspot-link': '🔗 Link Hotspot',
+            };
+            const actionColors: Record<string, string> = {
+              'action-link': '#3B82F6', 'action-page': '#8B5CF6',
+              'action-popup': '#F59E0B', 'action-audio': '#EC4899',
+              'action-download': '#10B981', 'hotspot-link': '#06B6D4',
+            };
+            return (
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="px-[6%] py-[2%] rounded-lg border-2 border-dashed flex items-center gap-[3%]"
+                  style={{ borderColor: actionColors[iType] || '#6B7280', backgroundColor: `${actionColors[iType] || '#6B7280'}10`, fontSize: scaledFont(11), color: actionColors[iType] || '#374151', fontWeight: 500 }}>
+                  {actionLabels[iType] || 'Action'}
+                </div>
+              </div>
+            );
+          }
+
+          // ── Widgets ──
+          case 'map': {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center" style={{ backgroundColor: '#E5E7EB', borderRadius: 8 }}>
+                <span style={{ fontSize: scaledFont(28) }}>📍</span>
+                <span style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#374151', marginTop: '2%' }}>Map</span>
+                <span style={{ fontSize: scaledFont(8), color: '#9CA3AF' }}>Location widget</span>
+              </div>
+            );
+          }
+          case 'table-widget': {
+            const rows = [['Col A', 'Col B'], ['Data 1', 'Data 2'], ['Data 3', 'Data 4']];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '3%' }}>Table</span>
+                <div className="flex-1 overflow-hidden rounded border" style={{ borderColor: '#E5E7EB' }}>
+                  {rows.map((row, ri) => (
+                    <div key={ri} className="flex" style={{ backgroundColor: ri === 0 ? '#F3F4F6' : '#fff', borderBottom: '1px solid #E5E7EB' }}>
+                      {row.map((cell, ci) => (
+                        <div key={ci} className="flex-1 px-[3%] py-[2%]" style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}>{cell}</div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          case 'embed': {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center" style={{ backgroundColor: '#F3F4F6', borderRadius: 8, border: '2px dashed #D1D5DB' }}>
+                <span style={{ fontSize: scaledFont(24) }}>🔲</span>
+                <span style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#374151', marginTop: '2%' }}>Embed</span>
+                <span style={{ fontSize: scaledFont(8), color: '#9CA3AF' }}>Paste URL to embed</span>
+              </div>
+            );
+          }
+          case 'tooltip': {
+            return (
+              <div className="w-full h-full flex items-center justify-center">
+                <div className="px-[6%] py-[2%] rounded-lg flex items-center gap-[3%]" style={{ backgroundColor: '#F3F4F6', border: '1px solid #E5E7EB', fontSize: scaledFont(10), color: '#374151' }}>
+                  <span style={{ fontSize: scaledFont(12), color: '#06B6D4' }}>ℹ</span>
+                  Hover for info
+                </div>
+              </div>
+            );
+          }
+          case 'auto-toc': {
+            const tocItems = ['Chapter 1: Introduction', 'Chapter 2: Getting Started', 'Chapter 3: Advanced Topics', 'Chapter 4: Conclusion'];
+            return (
+              <div className="w-full h-full flex flex-col p-[3%]">
+                <span style={{ fontSize: scaledFont(14), fontWeight: 700, color: '#374151', marginBottom: '4%' }}>Table of Contents</span>
+                {tocItems.map((item, i) => (
+                  <div key={i} className="flex items-center justify-between py-[1.5%]" style={{ borderBottom: '1px dotted #E5E7EB' }}>
+                    <span style={{ fontSize: scaledFont(10), color: '#374151' }}>{item}</span>
+                    <span style={{ fontSize: scaledFont(9), color: '#9CA3AF' }}>{i + 1}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+          case 'qr-code': {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center p-[4%]" style={{ backgroundColor: '#fff' }}>
+                <div style={{ width: '70%', aspectRatio: '1', backgroundColor: '#F3F4F6', border: '2px solid #E5E7EB', borderRadius: 4, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: scaledFont(8), color: '#9CA3AF', textAlign: 'center' }}>QR Code</span>
+                </div>
+              </div>
+            );
+          }
+          case 'countdown': {
+            return (
+              <div className="w-full h-full flex items-center justify-center gap-[3%]">
+                {['12', '34', '56'].map((n, i) => (
+                  <div key={i} className="flex flex-col items-center">
+                    <div style={{ fontSize: scaledFont(20), fontWeight: 700, color: '#374151', backgroundColor: '#F3F4F6', borderRadius: 6, padding: `${scaledFont(4)} ${scaledFont(8)}` }}>{n}</div>
+                    <span style={{ fontSize: scaledFont(7), color: '#9CA3AF', marginTop: '4%' }}>{['hrs', 'min', 'sec'][i]}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+          case 'slideshow': {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center" style={{ backgroundColor: '#F9FAFB', borderRadius: 8, border: '1px solid #E5E7EB' }}>
+                <span style={{ fontSize: scaledFont(24) }}>🖼️</span>
+                <span style={{ fontSize: scaledFont(11), fontWeight: 600, color: '#374151', marginTop: '2%' }}>Slideshow</span>
+                <span style={{ fontSize: scaledFont(8), color: '#9CA3AF' }}>Image carousel</span>
+              </div>
+            );
+          }
+          case 'video-player': {
+            return (
+              <div className="w-full h-full flex flex-col items-center justify-center" style={{ backgroundColor: '#111', borderRadius: 8 }}>
+                <div style={{ width: scaledFont(36), height: scaledFont(36), borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <span style={{ fontSize: scaledFont(18), color: '#fff', marginLeft: '3px' }}>▶</span>
+                </div>
+                <span style={{ fontSize: scaledFont(9), color: '#9CA3AF', marginTop: '3%' }}>Video Player</span>
+              </div>
+            );
+          }
+
           default: {
             return (
               <div className="w-full h-full flex flex-col items-center justify-center p-[3%]"
