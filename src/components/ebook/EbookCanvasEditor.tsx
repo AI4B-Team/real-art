@@ -2757,10 +2757,19 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   {items.map((item: string, i: number) => (
                     <div key={i} className="flex items-center gap-[2%]">
                       <span style={{ fontSize: scaledFont(10), color: color, fontWeight: 600, minWidth: scaledFont(14) }}>{isOrdered ? `${i+1}.` : '•'}</span>
-                      <span style={{ fontSize: scaledFont(10), color: '#374151' }}>{item}</span>
+                      <EditableCell value={item} style={{ fontSize: scaledFont(10), color: '#374151' }}
+                        onSave={v => { const newItems = [...items]; newItems[i] = v; updateElement(el.id, { interactiveData: { ...data, items: newItems } }); }} />
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: [...items, 'New item'] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Item</button>
+                    {items.length > 1 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, items: items.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Item</button>}
+                  </div>
+                )}
               </div>
             );
           }
