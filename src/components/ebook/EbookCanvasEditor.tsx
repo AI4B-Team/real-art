@@ -1373,22 +1373,170 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   };
   const isPageLocked = selectedPage?.locked === true;
 
+  // ─── Element Type Resolver ─────────────────────
+  // Maps sidebar element IDs (e.g. 'rectangle', 'bar-chart', 'button-primary') to
+  // proper CanvasElement types with sensible defaults.
+  const resolveElementType = (rawType: string, extra?: Partial<CanvasElement>): { type: CanvasElement['type']; extra: Partial<CanvasElement> } => {
+    const merged: Partial<CanvasElement> = { ...extra };
+
+    // ── Shapes ──
+    const SHAPE_MAP: Record<string, Partial<CanvasElement>> = {
+      rectangle: { shapeType: 'rectangle', fill: '#8B5CF6', stroke: '#6D28D9', strokeWidth: 1, width: 30, height: 20, borderRadius: 4 },
+      ellipse:   { shapeType: 'circle',    fill: '#3B82F6', stroke: '#1D4ED8', strokeWidth: 1, width: 20, height: 20 },
+      triangle:  { shapeType: 'rectangle', fill: '#F59E0B', stroke: '#D97706', strokeWidth: 0, width: 20, height: 18, borderRadius: 0,
+                   content: '▲', fontSize: 48, textColor: '#F59E0B' },
+      hexagon:   { shapeType: 'rectangle', fill: '#14B8A6', stroke: '#0D9488', strokeWidth: 1, width: 20, height: 18, borderRadius: 8 },
+      star:      { shapeType: 'rectangle', fill: '#FBBF24', stroke: '#F59E0B', strokeWidth: 0, width: 18, height: 18, borderRadius: 0,
+                   content: '★', fontSize: 48, textColor: '#FBBF24' },
+      diamond:   { shapeType: 'rectangle', fill: '#EC4899', stroke: '#DB2777', strokeWidth: 1, width: 18, height: 22, borderRadius: 0,
+                   content: '◆', fontSize: 48, textColor: '#EC4899' },
+      pentagon:  { shapeType: 'rectangle', fill: '#6366F1', stroke: '#4F46E5', strokeWidth: 1, width: 20, height: 20, borderRadius: 6 },
+    };
+    if (SHAPE_MAP[rawType]) {
+      return { type: 'shape', extra: { ...SHAPE_MAP[rawType], ...merged } };
+    }
+
+    // ── Triangle / Star / Diamond → render as interactive with SVG content ──
+    if (rawType === 'triangle' || rawType === 'star' || rawType === 'diamond') {
+      const SYMBOL_ELEMENTS: Record<string, { svg: string; color: string }> = {
+        triangle: { svg: '▲', color: '#F59E0B' },
+        star:     { svg: '★', color: '#FBBF24' },
+        diamond:  { svg: '◆', color: '#EC4899' },
+      };
+      const s = SYMBOL_ELEMENTS[rawType];
+      return { type: 'text', extra: { content: s.svg, fontSize: 64, textColor: s.color, textAlign: 'center', width: 15, height: 12, ...merged } };
+    }
+
+    // ── Lines & Arrows ──
+    const ARROW_MAP: Record<string, string> = {
+      'arrow-right': '→', 'arrow-down': '↓', 'arrow-up': '↑', 'arrow-left': '←',
+      'chevron-right': '»', 'move-arrows': '✥',
+    };
+    if (ARROW_MAP[rawType]) {
+      return { type: 'text', extra: { content: ARROW_MAP[rawType], fontSize: 36, textColor: rawType.startsWith('arrow') ? '#F97316' : rawType === 'chevron-right' ? '#8B5CF6' : '#FBBF24', textAlign: 'center', width: 10, height: 8, fontWeight: 'bold', ...merged } };
+    }
+
+    // ── Icons ──
+    const ICON_MAP: Record<string, { symbol: string; color: string }> = {
+      sun: { symbol: '☀', color: '#F59E0B' },
+      smile: { symbol: '☺', color: '#FBBF24' },
+      'star-icon': { symbol: '☆', color: '#FBBF24' },
+      check: { symbol: '✓', color: '#10B981' },
+      info: { symbol: 'ℹ', color: '#3B82F6' },
+      help: { symbol: '?', color: '#8B5CF6' },
+      'thumbs-up': { symbol: '👍', color: '#3B82F6' },
+      message: { symbol: '💬', color: '#10B981' },
+      clock: { symbol: '🕐', color: '#F59E0B' },
+      calendar: { symbol: '📅', color: '#8B5CF6' },
+      settings: { symbol: '⚙', color: '#6B7280' },
+      share: { symbol: '🔗', color: '#3B82F6' },
+    };
+    if (ICON_MAP[rawType]) {
+      const ic = ICON_MAP[rawType];
+      return { type: 'text', extra: { content: ic.symbol, fontSize: 42, textColor: ic.color, textAlign: 'center', width: 10, height: 10, ...merged } };
+    }
+
+    // ── Stickers & Badges ──
+    const STICKER_MAP: Record<string, { symbol: string; color: string }> = {
+      'emoji-smile': { symbol: '😊', color: '#FBBF24' },
+      'emoji-star': { symbol: '⭐', color: '#FBBF24' },
+      verified: { symbol: '✅', color: '#10B981' },
+      tag: { symbol: '🏷️', color: '#F59E0B' },
+      sparkles: { symbol: '✨', color: '#A855F7' },
+      note: { symbol: '📝', color: '#FBBF24' },
+    };
+    if (STICKER_MAP[rawType]) {
+      const st = STICKER_MAP[rawType];
+      return { type: 'text', extra: { content: st.symbol, fontSize: 48, textColor: st.color, textAlign: 'center', width: 10, height: 10, ...merged } };
+    }
+
+    // ── Charts ──
+    const CHART_TYPES = ['bar-chart', 'line-chart', 'pie-chart', 'area-chart', 'donut-chart', 'trending-chart', 'gauge-chart', 'radar-chart', 'funnel-chart'];
+    if (CHART_TYPES.includes(rawType)) {
+      return { type: 'interactive', extra: { interactiveType: rawType, width: 55, height: 35, ...merged } };
+    }
+
+    // ── Tables & Data ──
+    const TABLE_TYPES = ['basic-table', 'data-grid', 'list', 'ordered-list', 'checklist', 'columns-layout'];
+    if (TABLE_TYPES.includes(rawType)) {
+      if (rawType === 'checklist') {
+        return { type: 'interactive', extra: { interactiveType: 'checklist', width: 50, height: 30, ...merged } };
+      }
+      return { type: 'interactive', extra: { interactiveType: rawType, width: 55, height: 35, ...merged } };
+    }
+
+    // ── Buttons ──
+    const BUTTON_MAP: Record<string, { label: string; bg: string }> = {
+      'button-primary': { label: 'Click Here', bg: '#3B82F6' },
+      'button-signup': { label: 'Sign Up', bg: '#10B981' },
+      'button-cta': { label: 'Get Started', bg: '#EC4899' },
+    };
+    if (BUTTON_MAP[rawType]) {
+      const btn = BUTTON_MAP[rawType];
+      return { type: 'interactive', extra: { interactiveType: rawType, interactiveData: { label: btn.label, bg: btn.bg }, width: 30, height: 8, ...merged } };
+    }
+
+    // ── Actions & Hotspots ──
+    const ACTION_TYPES = ['action-link', 'action-page', 'action-popup', 'action-audio', 'action-download', 'hotspot-link'];
+    if (ACTION_TYPES.includes(rawType)) {
+      return { type: 'interactive', extra: { interactiveType: rawType, width: 30, height: 8, ...merged } };
+    }
+
+    // ── Widgets ──
+    const WIDGET_MAP: Record<string, Partial<CanvasElement>> = {
+      'text-to-image': { width: 40, height: 30 },
+      map: { width: 50, height: 35 },
+      'table-widget': { width: 55, height: 30 },
+      'page-no': { width: 10, height: 5 },
+      embed: { width: 55, height: 35 },
+      tooltip: { width: 25, height: 8 },
+      'auto-toc': { width: 55, height: 45 },
+      'qr-code': { width: 18, height: 18 },
+      countdown: { width: 35, height: 15 },
+      quiz: { width: 55, height: 35 },
+      slideshow: { width: 55, height: 35 },
+      'video-player': { width: 55, height: 35 },
+    };
+    if (WIDGET_MAP[rawType]) {
+      if (rawType === 'text-to-image') {
+        return { type: 'image', extra: { isPlaceholder: true, ...WIDGET_MAP[rawType], ...merged } };
+      }
+      if (rawType === 'page-no') {
+        return { type: 'text', extra: { content: '#', fontSize: 11, textColor: '#6B7280', textAlign: 'center', ...WIDGET_MAP[rawType], ...merged } };
+      }
+      if (rawType === 'quiz') {
+        return { type: 'interactive', extra: { interactiveType: 'quiz', ...WIDGET_MAP[rawType], ...merged } };
+      }
+      return { type: 'interactive', extra: { interactiveType: rawType, ...WIDGET_MAP[rawType], ...merged } };
+    }
+
+    // ── Fallback: pass through as-is if it's already a valid canvas type ──
+    const VALID_TYPES: CanvasElement['type'][] = ['image', 'shape', 'text', 'interactive'];
+    if (VALID_TYPES.includes(rawType as any)) {
+      return { type: rawType as CanvasElement['type'], extra: merged };
+    }
+
+    // Unknown → interactive with fallback rendering
+    return { type: 'interactive', extra: { interactiveType: rawType, width: 40, height: 25, ...merged } };
+  };
+
   // ─── Element Actions ──────────────────────────
-  const addElement = (type: CanvasElement['type'], extra?: Partial<CanvasElement>) => {
+  const addElement = (rawType: string, extra?: Partial<CanvasElement>) => {
     if (isPageLocked) { toast.error('This page is locked. Unlock it to make changes.'); return; }
+    const { type, extra: resolvedExtra } = resolveElementType(rawType, extra);
     // Stagger position so new elements don't fully overlap existing ones
     const sameTypeCount = currentElements.filter(el => el.type === type).length;
     const offset = (sameTypeCount % 5) * 5;
-    const baseX = extra?.x ?? (20 + offset);
-    const baseY = extra?.y ?? (20 + offset);
+    const baseX = resolvedExtra?.x ?? (20 + offset);
+    const baseY = resolvedExtra?.y ?? (20 + offset);
     const newEl: CanvasElement = {
       id: crypto.randomUUID(), type, x: baseX, y: baseY,
-      width: type === 'interactive' ? 60 : (type === 'image' ? 40 : 30),
-      height: type === 'text' ? 10 : (type === 'interactive' ? 30 : 25),
+      width: resolvedExtra?.width ?? (type === 'interactive' ? 60 : (type === 'image' ? 40 : 30)),
+      height: resolvedExtra?.height ?? (type === 'text' ? 10 : (type === 'interactive' ? 30 : 25)),
       ...(type === 'text' ? { content: 'New Text', fontSize: 16, fontFamily: 'Inter', textColor: '#1a1a2e' } : {}),
       ...(type === 'shape' ? { fill: '#3b82f6', stroke: '#1e40af', strokeWidth: 1, shapeType: 'rectangle' } : {}),
       ...(type === 'image' ? { src: STOCK_IMAGES[0] } : {}),
-      ...extra,
+      ...resolvedExtra,
     };
     const pageId = selectedPage?.id || '';
     updateElements(pageId, [...currentElements, newEl]);
