@@ -591,6 +591,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [activeTool, setActiveTool] = useState('select');
   const [selectedElementId, setSelectedElementId] = useState<string | null>(null);
   const [editingTextId, setEditingTextId] = useState<string | null>(null);
+  const [editingInteractiveId, setEditingInteractiveId] = useState<string | null>(null);
   // Backfill empty body text elements with sample content so users can see formatting
   const backfillEmptyBodies = useCallback((elements: Record<string, CanvasElement[]>): Record<string, CanvasElement[]> => {
     let changed = false;
