@@ -647,7 +647,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [aiExpandedPageId, setAiExpandedPageId] = useState<string | null>(null);
   const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
   // External drag-drop state (from sidebar)
-  const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; y: number } | null>(null);
+  const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; x: number; y: number } | null>(null);
 
   // ─── Shared AI Context Engine ─────────────────────────
   const selectedPageObj = currentPages.find(p => p.id === selectedPageId);
