@@ -647,7 +647,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   const [aiExpandedPageId, setAiExpandedPageId] = useState<string | null>(null);
   const [previewImageSrc, setPreviewImageSrc] = useState<string | null>(null);
   // External drag-drop state (from sidebar)
-  const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; y: number } | null>(null);
+  const [externalDropTarget, setExternalDropTarget] = useState<{ pageId: string; x: number; y: number } | null>(null);
 
   // ─── Shared AI Context Engine ─────────────────────────
   const selectedPageObj = currentPages.find(p => p.id === selectedPageId);
@@ -4407,24 +4407,9 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                             e.stopPropagation();
                             e.dataTransfer.dropEffect = 'copy';
                             const rect = e.currentTarget.getBoundingClientRect();
+                            const xPct = ((e.clientX - rect.left) / rect.width) * 100;
                             const yPct = ((e.clientY - rect.top) / rect.height) * 100;
-                            // Snap to element boundaries (top/bottom edges of each element, plus page top/bottom)
-                            const snapPoints = [0];
-                            elems.forEach(el => {
-                              snapPoints.push(el.y);
-                              snapPoints.push(el.y + el.height);
-                            });
-                            snapPoints.push(100);
-                            // Dedupe and sort
-                            const unique = [...new Set(snapPoints)].sort((a, b) => a - b);
-                            // Find nearest snap point
-                            let nearest = unique[0];
-                            let minDist = Math.abs(yPct - nearest);
-                            for (const sp of unique) {
-                              const d = Math.abs(yPct - sp);
-                              if (d < minDist) { minDist = d; nearest = sp; }
-                            }
-                            setExternalDropTarget({ pageId: page.id, y: nearest });
+                            setExternalDropTarget({ pageId: page.id, x: xPct, y: yPct });
                           }}
                           onDragLeave={(e) => {
                             if (!e.currentTarget.contains(e.relatedTarget as Node)) {
@@ -4475,14 +4460,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </div>
                             )}
                           </div>
-                          {/* External drag-drop indicator line */}
+                          {/* External drag-drop crosshair indicator */}
                           {externalDropTarget?.pageId === page.id && (
-                            <div
-                              className="absolute left-[5%] right-[5%] pointer-events-none z-[90] transition-all duration-75"
-                              style={{ top: `${externalDropTarget.y}%` }}
-                            >
-                              <div className="h-[2px] bg-accent/70 rounded-full" />
-                            </div>
+                            <>
+                              <div className="absolute pointer-events-none z-[90]" style={{ top: `${externalDropTarget.y}%`, left: 0, right: 0 }}>
+                                <div className="h-[2px] bg-accent/60 rounded-full" />
+                              </div>
+                              <div className="absolute pointer-events-none z-[90]" style={{ left: `${externalDropTarget.x}%`, top: 0, bottom: 0 }}>
+                                <div className="w-[2px] h-full bg-accent/60 rounded-full" />
+                              </div>
+                              <div className="absolute w-3 h-3 rounded-full border-2 border-accent bg-accent/20 pointer-events-none z-[91] -translate-x-1/2 -translate-y-1/2"
+                                style={{ left: `${externalDropTarget.x}%`, top: `${externalDropTarget.y}%` }} />
+                            </>
                           )}
                           {elems.map(el => renderElement(el, page.id, isPageDarkBg(page.id)))}
                           {(() => {
