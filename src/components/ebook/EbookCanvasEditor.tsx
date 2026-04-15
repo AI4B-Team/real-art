@@ -4460,14 +4460,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                               </div>
                             )}
                           </div>
-                          {/* External drag-drop indicator line */}
+                          {/* External drag-drop crosshair indicator */}
                           {externalDropTarget?.pageId === page.id && (
-                            <div
-                              className="absolute left-[5%] right-[5%] pointer-events-none z-[90] transition-all duration-75"
-                              style={{ top: `${externalDropTarget.y}%` }}
-                            >
-                              <div className="h-[2px] bg-accent/70 rounded-full" />
-                            </div>
+                            <>
+                              <div className="absolute pointer-events-none z-[90]" style={{ top: `${externalDropTarget.y}%`, left: 0, right: 0 }}>
+                                <div className="h-[2px] bg-accent/60 rounded-full" />
+                              </div>
+                              <div className="absolute pointer-events-none z-[90]" style={{ left: `${externalDropTarget.x}%`, top: 0, bottom: 0 }}>
+                                <div className="w-[2px] h-full bg-accent/60 rounded-full" />
+                              </div>
+                              <div className="absolute w-3 h-3 rounded-full border-2 border-accent bg-accent/20 pointer-events-none z-[91] -translate-x-1/2 -translate-y-1/2"
+                                style={{ left: `${externalDropTarget.x}%`, top: `${externalDropTarget.y}%` }} />
+                            </>
                           )}
                           {elems.map(el => renderElement(el, page.id, isPageDarkBg(page.id)))}
                           {(() => {
