@@ -2875,19 +2875,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
             );
           }
           case 'table-widget': {
-            const rows = [['Col A', 'Col B'], ['Data 1', 'Data 2'], ['Data 3', 'Data 4']];
+            const defaultRows = [['Col A', 'Col B'], ['Data 1', 'Data 2'], ['Data 3', 'Data 4']];
+            const rows: string[][] = data.rows || defaultRows;
             return (
               <div className="w-full h-full flex flex-col p-[3%]">
                 <span style={{ fontSize: scaledFont(12), fontWeight: 600, color: '#374151', marginBottom: '3%' }}>Table</span>
                 <div className="flex-1 overflow-hidden rounded border" style={{ borderColor: '#E5E7EB' }}>
-                  {rows.map((row, ri) => (
+                  {rows.map((row: string[], ri: number) => (
                     <div key={ri} className="flex" style={{ backgroundColor: ri === 0 ? '#F3F4F6' : '#fff', borderBottom: '1px solid #E5E7EB' }}>
-                      {row.map((cell, ci) => (
-                        <div key={ci} className="flex-1 px-[3%] py-[2%]" style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}>{cell}</div>
+                      {row.map((cell: string, ci: number) => (
+                        <div key={ci} className="flex-1 px-[3%] py-[2%]">
+                          <EditableCell value={cell} style={{ fontSize: scaledFont(9), color: ri === 0 ? '#374151' : '#6B7280', fontWeight: ri === 0 ? 600 : 400 }}
+                            onSave={v => { const newRows = rows.map(r => [...r]); newRows[ri][ci] = v; updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }} />
+                        </div>
                       ))}
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); const newRows = [...rows.map(r => [...r]), rows[0].map(() => '')]; updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Row</button>
+                    <button onClick={e => { e.stopPropagation(); const newRows = rows.map(r => [...r, '']); updateElement(el.id, { interactiveData: { ...data, rows: newRows } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Col</button>
+                    {rows.length > 2 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, rows: rows.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Row</button>}
+                  </div>
+                )}
               </div>
             );
           }
