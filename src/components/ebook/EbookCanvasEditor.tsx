@@ -1851,6 +1851,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     }
 
     setSelectedElementId(el.id);
+    if (editingInteractiveId && editingInteractiveId !== el.id) setEditingInteractiveId(null);
     // Push undo snapshot once before drag begins
     setUndoStack(prev => [...prev.slice(-50), { ...pageElements }]);
     setRedoStack([]);
