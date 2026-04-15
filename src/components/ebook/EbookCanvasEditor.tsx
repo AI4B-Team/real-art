@@ -2323,7 +2323,25 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (el.type === 'interactive') {
       const iType = el.interactiveType || 'flashcards';
       const data = el.interactiveData || {};
+      const isEditingThis = editingInteractiveId === el.id;
       const scaledFont = (size: number) => `${size * zoom / 100 * 0.5}px`;
+
+      // Helper to make a cell editable
+      const EditableCell = ({ value, onSave, style: cellStyle, className: cellCn }: { value: string; onSave: (v: string) => void; style?: React.CSSProperties; className?: string }) => {
+        if (!isEditingThis) return <span style={cellStyle} className={cellCn}>{value}</span>;
+        return (
+          <span
+            contentEditable
+            suppressContentEditableWarning
+            onBlur={e => onSave(e.currentTarget.textContent || '')}
+            onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); (e.target as HTMLElement).blur(); } e.stopPropagation(); }}
+            onMouseDown={e => e.stopPropagation()}
+            onClick={e => e.stopPropagation()}
+            style={{ ...cellStyle, cursor: 'text', outline: 'none', borderBottom: '1px dashed #a78bfa', minWidth: 20, display: 'inline-block' }}
+            className={cellCn}
+          >{value}</span>
+        );
+      };
 
       const INTERACTIVE_ICONS: Record<string, typeof Brain> = {
         flashcards: Brain, quiz: CheckSquare, course: BookOpen, certificate: Award,
