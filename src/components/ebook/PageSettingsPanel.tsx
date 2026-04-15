@@ -700,7 +700,7 @@ const PageSettingsPanel = ({
                             <Plus className="w-3 h-3" />
                           </button>
                         </TooltipTrigger>
-                        <TooltipContent side="left">Add Page</TooltipContent>
+                        <TooltipContent side="left">Add Page After</TooltipContent>
                       </Tooltip>
                       <Tooltip>
                         <TooltipTrigger asChild>
