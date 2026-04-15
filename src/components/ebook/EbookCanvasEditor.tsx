@@ -4746,8 +4746,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                   { id: 'expand', label: 'Detail', icon: FileText },
                                                 ].map(btn => (
                                                   <button key={btn.id} onClick={() => handleContextualAI(btn.id)} disabled={isAIProcessing}
-                                                    className="flex flex-col items-center gap-1 py-2 rounded-lg hover:bg-accent/[0.06] transition-colors disabled:opacity-40">
-                                                    <btn.icon className="w-3.5 h-3.5 text-accent" />
+                                                    className={`flex flex-col items-center gap-1 py-2 rounded-lg transition-all disabled:opacity-40 ${processingActionId === btn.id ? 'bg-accent/10 scale-95' : 'hover:bg-accent/[0.06]'}`}>
+                                                    {processingActionId === btn.id ? (
+                                                      <Loader2 className="w-3.5 h-3.5 text-accent animate-spin" />
+                                                    ) : (
+                                                      <btn.icon className="w-3.5 h-3.5 text-accent" />
+                                                    )}
                                                     <span className="text-[9px] font-medium text-muted-foreground">{btn.label}</span>
                                                   </button>
                                                 ))}
