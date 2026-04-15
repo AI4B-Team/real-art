@@ -2411,17 +2411,29 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                   <CheckSquare style={{ width: scaledFont(16), height: scaledFont(16), color }} />
                   <span style={{ fontSize: scaledFont(13), fontWeight: 600, color }}>{iType === 'quiz' ? 'Quiz' : 'Knowledge Check'}</span>
                 </div>
-                <p style={{ fontSize: scaledFont(11), color: '#1F2937', fontWeight: 500, marginBottom: '3%' }}>{question}</p>
+                <div style={{ marginBottom: '3%' }}>
+                  <EditableCell value={question} style={{ fontSize: scaledFont(11), color: '#1F2937', fontWeight: 500 }}
+                    onSave={v => updateElement(el.id, { interactiveData: { ...data, question: v } })} />
+                </div>
                 <div className="flex flex-col gap-[2%] flex-1">
                   {options.map((opt: string, i: number) => (
                     <div key={i} className="rounded-lg border px-[3%] py-[2%] flex items-center gap-[2%]"
                       style={{ borderColor: '#E5E7EB', backgroundColor: '#F9FAFB' }}>
                       <div className="rounded-full border-2 flex items-center justify-center shrink-0"
                         style={{ width: scaledFont(14), height: scaledFont(14), borderColor: '#D1D5DB' }} />
-                      <span style={{ fontSize: scaledFont(10), color: '#374151' }}>{opt}</span>
+                      <EditableCell value={opt} style={{ fontSize: scaledFont(10), color: '#374151' }}
+                        onSave={v => { const newOpts = [...options]; newOpts[i] = v; updateElement(el.id, { interactiveData: { ...data, options: newOpts } }); }} />
                     </div>
                   ))}
                 </div>
+                {isEditingThis && (
+                  <div className="flex gap-1 mt-1">
+                    <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, options: [...options, 'New Option'] } }); }}
+                      className="text-purple-500 hover:bg-purple-50 rounded px-1" style={{ fontSize: scaledFont(8) }}>+ Option</button>
+                    {options.length > 2 && <button onClick={e => { e.stopPropagation(); updateElement(el.id, { interactiveData: { ...data, options: options.slice(0, -1) } }); }}
+                      className="text-destructive hover:bg-destructive/10 rounded px-1" style={{ fontSize: scaledFont(8) }}>- Option</button>}
+                  </div>
+                )}
               </div>
             );
           }
