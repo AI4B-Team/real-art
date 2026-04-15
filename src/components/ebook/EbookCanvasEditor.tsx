@@ -1786,6 +1786,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     if (e.target === canvasRef.current || (e.target as HTMLElement).dataset.canvas === 'bg') {
       setSelectedElementId(null);
       setEditingTextId(null);
+      setEditingInteractiveId(null);
       if (aiExpandedPageId) { setAiExpandedPageId(null); onAiPanelToggle?.(false); }
 
       if (activeTool === 'text') {
