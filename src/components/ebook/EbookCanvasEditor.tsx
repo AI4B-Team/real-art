@@ -4714,25 +4714,33 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
                                                 <p className="text-[9px] font-bold text-muted-foreground uppercase tracking-wider">
                                                   {floatingAiCtx.state === 'ready' ? 'Optional Enhancements' : 'Smart Enhancements'}
                                                 </p>
-                                                {floatingAiCtx.enhancements.map((nudge) => (
-                                                  <button key={nudge.id} onClick={() => {
-                                                    if (nudge.ctaAction === 'add-image') {
-                                                      onOpenImageSection?.();
-                                                    } else {
-                                                      handleContextualAI(nudge.ctaAction === 'rewrite' ? 'rewrite' : 'shorten');
-                                                    }
-                                                  }}
-                                                    className={`w-full flex items-start gap-2 px-2.5 py-2 rounded-xl transition-colors text-left ${
-                                                      nudge.isPrimary ? 'bg-accent/[0.04] border border-accent/15 hover:bg-accent/[0.07]' : 'hover:bg-foreground/[0.03]'
-                                                    }`}>
-                                                    <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1.5 ${nudge.dotColor}`} />
-                                                    <div className="flex-1 min-w-0">
-                                                      <span className="text-[10px] font-semibold text-foreground line-clamp-1">{nudge.cta}</span>
-                                                      <span className="text-[10px] text-muted-foreground line-clamp-1 block">{nudge.subtitle}</span>
-                                                    </div>
-                                                    <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 mt-0.5 ${nudge.color} ${nudge.bgColor}`}>Go</span>
-                                                  </button>
-                                                ))}
+                                                {floatingAiCtx.enhancements.map((nudge) => {
+                                                  const nudgeActionId = nudge.ctaAction === 'rewrite' ? 'rewrite' : (nudge.ctaAction === 'add-image' ? 'add-image' : 'shorten');
+                                                  const isProcessingThis = isAIProcessing && processingActionId === nudgeActionId;
+                                                  return (
+                                                    <button key={nudge.id} disabled={isAIProcessing} onClick={() => {
+                                                      if (nudge.ctaAction === 'add-image') {
+                                                        onOpenImageSection?.();
+                                                      } else {
+                                                        handleContextualAI(nudgeActionId);
+                                                      }
+                                                    }}
+                                                      className={`w-full flex items-start gap-2 px-2.5 py-2 rounded-xl transition-all text-left disabled:opacity-50 ${
+                                                        nudge.isPrimary ? 'bg-accent/[0.04] border border-accent/15 hover:bg-accent/[0.07]' : 'hover:bg-foreground/[0.03]'
+                                                      } ${isProcessingThis ? 'scale-[0.98]' : ''}`}>
+                                                      <span className={`w-1.5 h-1.5 rounded-full shrink-0 mt-1.5 ${nudge.dotColor}`} />
+                                                      <div className="flex-1 min-w-0">
+                                                        <span className="text-[10px] font-semibold text-foreground line-clamp-1">{nudge.cta}</span>
+                                                        <span className="text-[10px] text-muted-foreground line-clamp-1 block">{nudge.subtitle}</span>
+                                                      </div>
+                                                      {isProcessingThis ? (
+                                                        <Loader2 className="w-3.5 h-3.5 text-accent animate-spin shrink-0 mt-0.5" />
+                                                      ) : (
+                                                        <span className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md shrink-0 mt-0.5 ${nudge.color} ${nudge.bgColor}`}>Go</span>
+                                                      )}
+                                                    </button>
+                                                  );
+                                                })}
                                               </div>
                                             )}
 
