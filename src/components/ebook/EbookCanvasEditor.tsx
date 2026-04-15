@@ -639,6 +639,7 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
   }, [onReplaceStateChange]);
   const [aiEditPrompt, setAIEditPrompt] = useState('');
   const [isAIProcessing, setIsAIProcessing] = useState(false);
+  const [processingActionId, setProcessingActionId] = useState<string | null>(null);
   const [contextualAIPrompt, setContextualAIPrompt] = useState('');
   const [aiUpdatedFeedback, setAiUpdatedFeedback] = useState(false);
   const [gridInsertHover, setGridInsertHover] = useState<number | null>(null);
