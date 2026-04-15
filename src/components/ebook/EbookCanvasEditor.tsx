@@ -1689,13 +1689,15 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
     const prompt = action === 'custom' ? contextualAIPrompt.trim() : undefined;
     if (action === 'custom' && !prompt) return;
 
+    setProcessingActionId(action);
+    setIsAIProcessing(true);
+
+    const currentPageId = selectedPageId || currentPages[0]?.id;
+    const pageElems = currentPageId ? (pageElements[currentPageId] || []) : [];
+
     // If no element is selected but user typed a custom prompt, treat as a general page question
     if (!selectedElement && action === 'custom') {
-      setIsAIProcessing(true);
       try {
-        // Gather all text content from the current page for context
-        const currentPageId = selectedPageId || currentPages[0]?.id;
-        const pageElems = currentPageId ? (pageElements[currentPageId] || []) : [];
         const pageTextContent = pageElems
           .filter(el => el.type === 'text' && el.content)
           .map(el => el.content)
@@ -1715,13 +1717,12 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
           toast.error(data.error);
         }
       } catch (e: any) { toast.error(e.message || 'AI request failed'); }
-      finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
+      finally { setIsAIProcessing(false); setProcessingActionId(null); setContextualAIPrompt(''); }
       return;
     }
 
-    if (!selectedElement) return;
-    if (selectedElement.type === 'text' && selectedElement.content) {
-      setIsAIProcessing(true);
+    // If a specific text element is selected, apply to that element
+    if (selectedElement?.type === 'text' && selectedElement.content) {
       try {
         const actionMap: Record<string, string> = { rewrite: 'improve-writing', improve: 'improve-writing', shorten: 'make-shorter', expand: 'make-longer' };
         const { data, error } = await supabase.functions.invoke('ai-text-edit', {
@@ -1736,10 +1737,47 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
         }
         else if (data?.error) toast.error(data.error);
       } catch (e: any) { toast.error(e.message || 'AI edit failed'); }
-      finally { setIsAIProcessing(false); setContextualAIPrompt(''); }
-    } else if (selectedElement.type === 'image') {
+      finally { setIsAIProcessing(false); setProcessingActionId(null); setContextualAIPrompt(''); }
+      return;
+    }
+
+    // No element selected + non-custom action → apply to ALL text elements on the page
+    if (!selectedElement && currentPageId) {
+      const textElems = pageElems.filter(el => el.type === 'text' && el.content && el.content.length > 10);
+      if (textElems.length === 0) {
+        toast.info('No text content on this page to modify');
+        setIsAIProcessing(false);
+        setProcessingActionId(null);
+        return;
+      }
+      try {
+        const actionMap: Record<string, string> = { rewrite: 'improve-writing', improve: 'improve-writing', shorten: 'make-shorter', expand: 'make-longer' };
+        let updatedCount = 0;
+        for (const el of textElems) {
+          const { data, error } = await supabase.functions.invoke('ai-text-edit', {
+            body: { text: el.content, action: actionMap[action] || 'improve-writing' },
+          });
+          if (error) throw error;
+          if (data?.result) {
+            updateElement(el.id, { content: data.result });
+            updatedCount++;
+          }
+        }
+        if (updatedCount > 0) {
+          setAiUpdatedFeedback(true);
+          setTimeout(() => setAiUpdatedFeedback(false), 2500);
+          toast.success(`${updatedCount} text block${updatedCount > 1 ? 's' : ''} updated by AI ✨`);
+        }
+      } catch (e: any) { toast.error(e.message || 'AI edit failed'); }
+      finally { setIsAIProcessing(false); setProcessingActionId(null); setContextualAIPrompt(''); }
+      return;
+    }
+
+    if (selectedElement?.type === 'image') {
       toast.info('AI image editing coming soon');
     }
+    setIsAIProcessing(false);
+    setProcessingActionId(null);
   };
 
   const handleCanvasClick = (e: React.MouseEvent) => {
