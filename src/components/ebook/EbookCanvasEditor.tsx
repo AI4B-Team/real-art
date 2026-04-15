@@ -2905,11 +2905,18 @@ const EbookCanvasEditor = forwardRef<EbookCanvasEditorHandle, EbookCanvasEditorP
       return (
         <div key={el.id} className={`${selectionBorder}`} style={style}
           onMouseDown={e => handleElementMouseDown(e, el, pageId)}
-          onContextMenu={e => handleElementContextMenu(e, el, pageId)}>
+          onContextMenu={e => handleElementContextMenu(e, el, pageId)}
+          onClick={() => { if (isPageLocked) return; if (isSelected && editingInteractiveId !== el.id) { setEditingInteractiveId(el.id); } }}
+          onDoubleClick={() => { if (isPageLocked) return; setEditingInteractiveId(el.id); setSelectedElementId(el.id); }}>
           <TypeBadge />
           <div className="w-full h-full overflow-hidden rounded-lg bg-white shadow-sm">
             {renderInteractiveContent()}
           </div>
+          {isSelected && editingInteractiveId === el.id && (
+            <div className="absolute -bottom-7 left-1/2 -translate-x-1/2 bg-purple-500 text-white text-[10px] font-medium px-2 py-0.5 rounded shadow-sm whitespace-nowrap z-30 pointer-events-none">
+              Editing — click cells to modify
+            </div>
+          )}
           {isSelected && renderResizeHandles(el)}
         </div>
       );
