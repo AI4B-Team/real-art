@@ -461,7 +461,12 @@ const EbookCreatorPage = () => {
                       <Book className="w-12 h-12 text-white/80" />
                     </div>
                   )}
-                  <div className="absolute top-3 right-3"><StatusBadge status={book.status} /></div>
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                    <StatusBadge status={book.status} />
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-card/95 backdrop-blur-sm rounded-lg shadow-sm">
+                      <BookActionsMenu book={book} onAction={handleBookAction} />
+                    </div>
+                  </div>
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-foreground truncate group-hover:text-accent transition-colors">{book.title}</h3>
