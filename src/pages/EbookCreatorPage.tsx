@@ -6,6 +6,8 @@ import {
   Clock, FileText, Layers, X, Check, Sparkles, Filter,
   Grid, List, Calendar, Copy, MoreVertical, Palette,
   Mic, Lightbulb, Cpu, Link2, Rss, Headphones, ChevronDown,
+  FileText as FileTextIcon, BookOpen, Code2, QrCode, Share2,
+  FolderInput, History, Info,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
