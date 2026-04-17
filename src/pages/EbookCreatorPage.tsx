@@ -6,6 +6,8 @@ import {
   Clock, FileText, Layers, X, Check, Sparkles, Filter,
   Grid, List, Calendar, Copy, MoreVertical, Palette,
   Mic, Lightbulb, Cpu, Link2, Rss, Headphones, ChevronDown,
+  FileText as FileTextIcon, BookOpen, Code2, QrCode, Share2,
+  FolderInput, History, Info,
 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -31,6 +33,63 @@ const ProgressBar = ({ progress }: { progress: number }) => (
   <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
     <div className="h-full rounded-full transition-all duration-500 bg-accent" style={{ width: `${Math.min(progress, 100)}%` }} />
   </div>
+);
+
+const BookActionsMenu = ({
+  book, onAction, align = "end",
+}: {
+  book: Ebook;
+  onAction: (action: string, book: Ebook) => void;
+  align?: "start" | "end";
+}) => (
+  <Popover>
+    <PopoverTrigger asChild>
+      <button
+        onClick={e => e.stopPropagation()}
+        className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"
+      >
+        <MoreVertical className="w-4.5 h-4.5" />
+      </button>
+    </PopoverTrigger>
+    <PopoverContent
+      align={align}
+      sideOffset={6}
+      className="w-56 p-1.5"
+      onClick={e => e.stopPropagation()}
+    >
+      {[
+        { id: "open-pdf", label: "Open PDF", icon: FileTextIcon },
+        { id: "open-flipbook", label: "Open PDF in flipbook", icon: BookOpen },
+        { id: "embed", label: "Generate flipbook embed code", icon: Code2 },
+        { id: "qr", label: "Generate QR code", icon: QrCode },
+        { id: "share", label: "Share", icon: Share2 },
+        { divider: true, id: "d1" },
+        { id: "move", label: "Move", icon: FolderInput },
+        { id: "duplicate", label: "Duplicate", icon: Copy },
+        { id: "history", label: "Version history", icon: History },
+        { id: "info", label: "Project information", icon: Info },
+        { divider: true, id: "d2" },
+        { id: "delete", label: "Delete", icon: Trash2, danger: true },
+      ].map(item =>
+        item.divider ? (
+          <div key={item.id} className="my-1 h-px bg-foreground/[0.06]" />
+        ) : (
+          <button
+            key={item.id}
+            onClick={e => { e.stopPropagation(); onAction(item.id, book); }}
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+              item.danger
+                ? "text-destructive hover:bg-destructive/10"
+                : "text-foreground hover:bg-foreground/[0.04]"
+            }`}
+          >
+            {item.icon && <item.icon className="w-4 h-4 shrink-0" />}
+            <span className="truncate">{item.label}</span>
+          </button>
+        )
+      )}
+    </PopoverContent>
+  </Popover>
 );
 
 const EbookCreatorPage = () => {
@@ -65,10 +124,48 @@ const EbookCreatorPage = () => {
     toast({ title: "eBook duplicated" });
   };
 
+  const handleBookAction = (action: string, book: Ebook) => {
+    switch (action) {
+      case "open-pdf":
+        toast({ title: "Opening PDF…", description: book.title });
+        break;
+      case "open-flipbook":
+        toast({ title: "Opening in flipbook…", description: book.title });
+        break;
+      case "embed":
+        navigator.clipboard?.writeText(`<iframe src="${window.location.origin}/ebook-creator/share/${book.id}" width="800" height="600" frameborder="0"></iframe>`);
+        toast({ title: "Embed code copied" });
+        break;
+      case "qr":
+        toast({ title: "QR code generated", description: book.title });
+        break;
+      case "share":
+        navigator.clipboard?.writeText(`${window.location.origin}/ebook-creator/share/${book.id}`);
+        toast({ title: "Share link copied" });
+        break;
+      case "move":
+        toast({ title: "Move to folder", description: "Folder picker coming soon" });
+        break;
+      case "duplicate":
+        duplicateEbook(book);
+        break;
+      case "history":
+        toast({ title: "Version history", description: book.title });
+        break;
+      case "info":
+        toast({ title: book.title, description: `${book.chapters} chapters · ${(book.words / 1000).toFixed(1)}k words · ${book.status}` });
+        break;
+      case "delete":
+        setDeleteConfirmBook(book);
+        break;
+    }
+  };
+
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return `${String(date.getMonth() + 1).padStart(2, "0")}/${String(date.getDate()).padStart(2, "0")}/${date.getFullYear()}`;
   };
+
 
   return (
     <PageShell>
@@ -321,15 +418,7 @@ const EbookCreatorPage = () => {
                           <Tooltip><TooltipTrigger asChild>
                             <button onClick={e => { e.stopPropagation(); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><Download className="w-4.5 h-4.5" /></button>
                           </TooltipTrigger><TooltipContent>Export</TooltipContent></Tooltip>
-                          <div className="relative">
-                            <button onClick={e => { e.stopPropagation(); setShowDropdown(showDropdown === book.id ? null : book.id); }} className="p-2 text-muted-foreground hover:text-foreground border border-transparent hover:border-foreground/[0.12] hover:bg-foreground/[0.04] rounded-lg transition-all"><MoreVertical className="w-4.5 h-4.5" /></button>
-                            {showDropdown === book.id && (
-                              <div className="absolute right-0 top-full mt-1 w-40 bg-popover border border-foreground/[0.08] rounded-xl shadow-lg py-1 z-10">
-                                <button onClick={e => { e.stopPropagation(); duplicateEbook(book); }} className="w-full px-4 py-2 text-left text-sm text-foreground hover:bg-foreground/[0.04] flex items-center gap-2"><Copy className="w-4 h-4" />Duplicate</button>
-                                <button onClick={e => { e.stopPropagation(); setDeleteConfirmBook(book); setShowDropdown(null); }} className="w-full px-4 py-2 text-left text-sm text-destructive hover:bg-destructive/10 flex items-center gap-2"><Trash2 className="w-4 h-4" />Delete</button>
-                              </div>
-                            )}
-                          </div>
+                          <BookActionsMenu book={book} onAction={handleBookAction} />
                         </div>
                         <StatusBadge status={book.status} />
                       </div>
@@ -372,7 +461,12 @@ const EbookCreatorPage = () => {
                       <Book className="w-12 h-12 text-white/80" />
                     </div>
                   )}
-                  <div className="absolute top-3 right-3"><StatusBadge status={book.status} /></div>
+                  <div className="absolute top-3 right-3 flex items-center gap-1.5">
+                    <StatusBadge status={book.status} />
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-card/95 backdrop-blur-sm rounded-lg shadow-sm">
+                      <BookActionsMenu book={book} onAction={handleBookAction} />
+                    </div>
+                  </div>
                 </div>
                 <div className="p-4">
                   <h3 className="font-semibold text-foreground truncate group-hover:text-accent transition-colors">{book.title}</h3>
