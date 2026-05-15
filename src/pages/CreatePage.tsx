@@ -242,7 +242,7 @@ type UserCreation = {
   liked: boolean;
 };
 
-const PROCESSING_IMAGE_URL = "pending://image-generation";
+const PROCESSING_IMAGE_URL = "https://placehold.co/800x800/f1f5f9/94a3b8?text=Processing...";
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
