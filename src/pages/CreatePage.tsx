@@ -3932,10 +3932,39 @@ function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
 
   if (isPending) {
     return (
-      <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.04] border border-foreground/[0.08] aspect-square flex flex-col items-center justify-center text-center px-4">
-        <Loader2 className="w-7 h-7 text-accent animate-spin mb-2" />
-        <p className="text-[0.78rem] font-semibold text-foreground">Processing…</p>
-        <p className="text-[0.7rem] text-muted line-clamp-2 mt-1">{item.title || "Your Creation"}</p>
+      <div className="group relative rounded-2xl overflow-hidden aspect-square border border-foreground/[0.08] bg-[linear-gradient(135deg,hsl(var(--background)),hsl(var(--muted)/0.4))]">
+        {/* Animated gradient mesh background */}
+        <div className="absolute inset-0 opacity-70">
+          <div className="absolute -inset-[20%] bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.35),transparent_55%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.25),transparent_55%)] animate-[spin_14s_linear_infinite]" />
+        </div>
+        {/* Shimmer sweep */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute -inset-y-4 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-foreground/[0.08] to-transparent skew-x-12 animate-[shimmer_2.2s_ease-in-out_infinite]" />
+        </div>
+        {/* Content */}
+        <div className="relative h-full w-full flex flex-col items-center justify-center text-center px-5 z-10">
+          <div className="relative mb-4">
+            <div className="absolute inset-0 rounded-full bg-accent/30 blur-xl animate-pulse" />
+            <div className="relative w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-accent/30 flex items-center justify-center shadow-[0_8px_24px_-6px_hsl(var(--accent)/0.4)]">
+              <Sparkles className="w-5 h-5 text-accent animate-pulse" />
+            </div>
+          </div>
+          <p className="text-[0.82rem] font-display font-semibold text-foreground tracking-tight flex items-center gap-1">
+            Crafting Your Vision
+            <span className="inline-flex gap-0.5 ml-0.5">
+              <span className="w-1 h-1 rounded-full bg-accent animate-[bounce_1s_infinite_0ms]" />
+              <span className="w-1 h-1 rounded-full bg-accent animate-[bounce_1s_infinite_150ms]" />
+              <span className="w-1 h-1 rounded-full bg-accent animate-[bounce_1s_infinite_300ms]" />
+            </span>
+          </p>
+          <p className="text-[0.7rem] text-muted line-clamp-2 mt-1.5 max-w-[85%] italic">
+            "{item.title || "Your creation"}"
+          </p>
+          {/* Progress bar */}
+          <div className="absolute bottom-4 left-5 right-5 h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
+            <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-accent/60 via-accent to-accent/60 animate-[slide_1.8s_ease-in-out_infinite]" />
+          </div>
+        </div>
       </div>
     );
   }
