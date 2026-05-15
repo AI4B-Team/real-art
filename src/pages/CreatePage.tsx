@@ -99,7 +99,7 @@ import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import SaveTemplateModal, { loadSavedTemplates, type SavedTemplate } from "@/components/create/SaveTemplateModal";
-import { SAMPLE_CREATIONS, SAMPLE_FAVORITES, SAMPLE_COLLECTIONS, SAMPLE_COMMUNITY, SAMPLE_TEMPLATES } from "@/lib/sampleGalleryData";
+import { SAMPLE_FAVORITES, SAMPLE_COLLECTIONS, SAMPLE_COMMUNITY, SAMPLE_TEMPLATES } from "@/lib/sampleGalleryData";
 import { WORKSPACE_MEMBERS } from "@/lib/workspaceMembers";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
 import { useAtMention } from "@/hooks/useAtMention";
@@ -241,6 +241,8 @@ type UserCreation = {
   created_at: string;
   liked: boolean;
 };
+
+const PROCESSING_IMAGE_URL = "pending://image-generation";
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
