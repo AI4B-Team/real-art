@@ -4653,15 +4653,13 @@ export default App;`}</code>
                 <Loader2 className="w-7 h-7 text-muted animate-spin mx-auto mb-3" />
                 <p className="text-[0.84rem] text-muted">Loading your creations…</p>
               </div>
+            ) : filteredCreations.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-[0.84rem] text-muted">No creations yet. Generate something above to get started.</p>
+              </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {(filteredCreations.length > 0 ? filteredCreations : []).map((item, i) => <CreationCard key={item.id} item={item} idx={i} />)}
-                {SAMPLE_CREATIONS.map((s, i) => (
-                  <Link key={s.id} to={`/image/${i}`} className="group relative rounded-2xl overflow-hidden block no-underline">
-                    <img src={`https://images.unsplash.com/${s.photo}?w=400&h=400&fit=crop&q=80`} alt={s.title} className="w-full aspect-square object-cover" />
-                    <ImageCardOverlay index={i} photo={s.photo} title={s.title} />
-                  </Link>
-                ))}
+                {filteredCreations.map((item, i) => <CreationCard key={item.id} item={item} idx={i} />)}
               </div>
             )}
           </div>
