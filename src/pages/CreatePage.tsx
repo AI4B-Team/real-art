@@ -898,39 +898,23 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     }
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = () => {
     if (!prompt.trim()) { textareaRef.current?.focus(); return; }
     const currentPrompt = prompt;
     const currentType = selectedType;
     const currentSubMode = selectedSubMode;
-    setIsGenerating(true);
-    let resultImageUrl: string | undefined;
-    try {
-      if (currentType === "image" && selectedModel === "GPT Image-2") {
-        const ratioMap: Record<string, string> = { "1:1": "1:1", "9:16": "9:16", "16:9": "16:9", "4:3": "4:3", "3:4": "3:4" };
-        const aspect_ratio = ratioMap[selectedRatio] || "auto";
-        const { data, error } = await supabase.functions.invoke("kie-image-generate", {
-          body: { prompt: currentPrompt, aspect_ratio },
-        });
-        if (error || data?.error) {
-          toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
-          setIsGenerating(false);
-          return;
-        }
-        resultImageUrl = data?.imageUrl;
-      } else {
-        await new Promise(r => setTimeout(r, 2000));
-      }
-    } catch (e) {
-      toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
-      setIsGenerating(false);
-      return;
-    }
-    setIsGenerating(false);
-    onGenerate({ type: currentType, prompt: currentPrompt, subMode: currentSubMode, imageUrl: resultImageUrl });
-    if (currentType !== "app") {
-      toast({ title: "Generation complete!", description: "Your creation is ready below." });
-    }
+    const useKie = currentType === "image" && selectedModel === "GPT Image-2";
+    const ratioMap: Record<string, string> = { "1:1": "1:1", "9:16": "9:16", "16:9": "16:9", "4:3": "4:3", "3:4": "3:4" };
+    const aspect_ratio = ratioMap[selectedRatio] || "auto";
+    onGenerate({
+      type: currentType,
+      prompt: currentPrompt,
+      subMode: currentSubMode,
+      kie: useKie ? { aspect_ratio } : undefined,
+    });
+    // Reset prompt immediately so the user can compose another generation
+    setPrompt("");
+    if (editorRef.current) editorRef.current.innerHTML = "";
   };
 
   const { isListening, isSupported, startListening, cancel: cancelSpeech, accept: acceptSpeech, currentTranscript } = useSpeech();
