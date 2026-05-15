@@ -241,6 +241,13 @@ type UserCreation = {
   type: MediaFilter;
   created_at: string;
   liked: boolean;
+  prompt?: string;
+  model?: string;
+  aspect_ratio?: string;
+  width?: number;
+  height?: number;
+  is_public?: boolean;
+  bookmarked?: boolean;
 };
 
 const PROCESSING_IMAGE_URL = "https://placehold.co/800x800/f1f5f9/94a3b8?text=Processing...";
