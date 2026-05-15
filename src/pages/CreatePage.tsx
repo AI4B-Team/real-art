@@ -341,7 +341,7 @@ function AudioWaveAnimation({ small }: { small?: boolean } = {}) {
 
 /* ─── PromptBox ──────────────────────────────────────────────── */
 
-function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null }) => void; onModeChange?: (type: ContentType | null, subMode: string | null) => void; onSaveTemplate?: (defaults: { contentType: string | null; subMode: string | null; model: string; style: string; ratio: string; prompt: string; number: number; duration: string; resolution: string; references: { src: string }[] }) => void }) {
+function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (info: { type: ContentType | null; prompt: string; subMode: string | null; imageUrl?: string }) => void; onModeChange?: (type: ContentType | null, subMode: string | null) => void; onSaveTemplate?: (defaults: { contentType: string | null; subMode: string | null; model: string; style: string; ratio: string; prompt: string; number: number; duration: string; resolution: string; references: { src: string }[] }) => void }) {
   const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedType, setSelectedType] = useState<ContentType | null>(() => {
@@ -904,9 +904,30 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     const currentType = selectedType;
     const currentSubMode = selectedSubMode;
     setIsGenerating(true);
-    await new Promise(r => setTimeout(r, 2000));
+    let resultImageUrl: string | undefined;
+    try {
+      if (currentType === "image" && selectedModel === "GPT Image-2") {
+        const ratioMap: Record<string, string> = { "1:1": "1:1", "9:16": "9:16", "16:9": "16:9", "4:3": "4:3", "3:4": "3:4" };
+        const aspect_ratio = ratioMap[selectedRatio] || "auto";
+        const { data, error } = await supabase.functions.invoke("kie-image-generate", {
+          body: { prompt: currentPrompt, aspect_ratio },
+        });
+        if (error || data?.error) {
+          toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
+          setIsGenerating(false);
+          return;
+        }
+        resultImageUrl = data?.imageUrl;
+      } else {
+        await new Promise(r => setTimeout(r, 2000));
+      }
+    } catch (e) {
+      toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
+      setIsGenerating(false);
+      return;
+    }
     setIsGenerating(false);
-    onGenerate({ type: currentType, prompt: currentPrompt, subMode: currentSubMode });
+    onGenerate({ type: currentType, prompt: currentPrompt, subMode: currentSubMode, imageUrl: resultImageUrl });
     if (currentType !== "app") {
       toast({ title: "Generation complete!", description: "Your creation is ready below." });
     }
@@ -3985,7 +4006,7 @@ export default function CreatePage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [appConversation, appIsThinking]);
 
-  const handleGenerate = async ({ type, prompt, subMode }: { type: ContentType | null; prompt: string; subMode: string | null }) => {
+  const handleGenerate = async ({ type, prompt, subMode, imageUrl }: { type: ContentType | null; prompt: string; subMode: string | null; imageUrl?: string }) => {
     // Ebook: redirect to Ebook Creator app with prompt data
     if (type === "document" && subMode === "ebook") {
       navigate("/ebook-creator/new?source=ai-generate", {
@@ -4036,7 +4057,7 @@ export default function CreatePage() {
           }
 
           if (collectionId) {
-            const placeholderUrl = `https://picsum.photos/seed/${Date.now()}/800/800`;
+            const placeholderUrl = imageUrl || `https://picsum.photos/seed/${Date.now()}/800/800`;
             const creationType = type || "image";
             await supabase.from("collection_images").insert({
               collection_id: collectionId,
