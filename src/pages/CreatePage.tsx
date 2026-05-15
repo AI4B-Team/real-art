@@ -4258,7 +4258,11 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
                 alt={prompt}
                 onLoad={(e) => {
                   const img = e.currentTarget;
-                  if (img.naturalWidth && img.naturalHeight) setDims({ w: img.naturalWidth, h: img.naturalHeight });
+                  if (img.naturalWidth && img.naturalHeight) {
+                    const nextDims = { w: img.naturalWidth, h: img.naturalHeight };
+                    setDims(nextDims);
+                    rememberCreationMeta(item.id, { width: nextDims.w, height: nextDims.h });
+                  }
                 }}
                 style={{ transform: `scale(${zoom / 100})` }}
                 className="relative max-h-[78vh] max-w-full object-contain rounded-xl shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.4)] transition-transform duration-200"
@@ -4311,7 +4315,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
               <div className="px-5 py-4 border-b border-foreground/[0.06] space-y-2.5 text-[0.82rem]">
                 {[
                   ["Created:", created],
-                  ["Model:", item.model || "Flux Pro"],
+                  ["Model:", item.model || "Kie AI"],
                   ["Dimensions:", dimensionsText],
                   ["Aspect Ratio:", aspectRatio],
                 ].map(([k, v]) => (
