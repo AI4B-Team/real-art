@@ -3986,7 +3986,7 @@ function CreationCard({ item, idx, handlers }: { item: UserCreation; idx?: numbe
     );
   }
 
-  return <CreationCardWithModal item={item} cardIndex={cardIndex} photo={photo} />;
+  return <CreationCardWithModal item={item} cardIndex={cardIndex} photo={photo} handlers={handlers} />;
 }
 
 function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation; cardIndex: number; photo?: string }) {
