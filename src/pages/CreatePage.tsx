@@ -4079,14 +4079,8 @@ export default function CreatePage() {
       }
     }
   };
-          }
-        }
-      } catch (e) {
-        console.error("Failed to save creation:", e);
-      }
-      setGenerated(prev => !prev);
-    }
-  };
+
+
 
   const handleAppFollowUp = () => {
     if (!appBuilderInput.trim()) return;
