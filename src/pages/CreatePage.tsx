@@ -914,7 +914,7 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     });
     // Reset prompt immediately so the user can compose another generation
     setPrompt("");
-    if (editorRef.current) editorRef.current.innerHTML = "";
+    if (textareaRef.current) textareaRef.current.innerHTML = "";
   };
 
   const { isListening, isSupported, startListening, cancel: cancelSpeech, accept: acceptSpeech, currentTranscript } = useSpeech();
