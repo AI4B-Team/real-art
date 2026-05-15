@@ -166,7 +166,12 @@ function FsaosDemoInner() {
             Refresh
           </Button>
         </div>
-        {list.isLoading && (
+        {scopeError && (
+          <p className="text-sm text-destructive font-['DM_Sans']">
+            Scope Init Failed: {scopeError}
+          </p>
+        )}
+        {list.isLoading && !scopeError && (
           <p className="text-sm text-muted-foreground font-['DM_Sans']">
             Loading…
           </p>
