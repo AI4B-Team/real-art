@@ -4100,10 +4100,20 @@ export default function CreatePage() {
             toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
             if (persistedId) await supabase.from("collection_images").delete().eq("id", persistedId);
             setCreations(prev => prev.filter(item => item.id !== displayId));
+            try {
+              const raw = localStorage.getItem("guestCreations");
+              if (raw) {
+                const list: UserCreation[] = JSON.parse(raw);
+                localStorage.setItem("guestCreations", JSON.stringify(list.filter(i => i.id !== displayId)));
+              }
+            } catch {}
             return;
           }
           if (persistedId) await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", persistedId);
           setCreations(prev => prev.map(item => item.id === displayId ? { ...item, image_url: data.imageUrl } : item));
+          if (!persistedId && optimisticCreation) {
+            persistGuestCreation({ ...optimisticCreation, id: displayId, image_url: data.imageUrl });
+          }
           toast({ title: "Generation complete!", description: "Your image is ready below." });
           if (persistedId) setGenerated(p => !p);
         } catch (e) {
