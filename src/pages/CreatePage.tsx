@@ -16,8 +16,9 @@ import {
   Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
   Github, Smile, Rss, ShoppingCart,
   Minus, Settings, Upload, ArrowLeftRight, Briefcase, GraduationCap, RotateCcw,
-  Link as LinkChain,
+  Link as LinkChain, Printer, Share2, Trash2, Maximize2,
 } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const ChainLinkIcon = ({ size = 14, className = "" }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
