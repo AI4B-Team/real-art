@@ -4030,7 +4030,7 @@ export default function CreatePage() {
         setAppPreviewContent(prompt);
       }, 3000);
     } else {
-      const isPending = type === "image" && !imageUrl;
+      const isPending = (type === "image" || !type) && !imageUrl;
       const optimisticId = `processing-${Date.now()}`;
       const optimisticCreation: UserCreation | null = isPending ? {
         id: optimisticId,
@@ -4043,6 +4043,7 @@ export default function CreatePage() {
 
       if (optimisticCreation) {
         setActiveTab("creations");
+        setMediaFilter("all");
         setLoadingCreations(false);
         setCreations(prev => [optimisticCreation, ...prev]);
       }
