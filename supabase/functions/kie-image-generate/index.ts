@@ -76,8 +76,8 @@ Deno.serve(async (req) => {
         });
       }
       if (state === "fail" || state === "failed") {
-        return new Response(JSON.stringify({ error: data.failMsg || "Generation failed" }), {
-          status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
+        return new Response(JSON.stringify({ error: data.failMsg || "Generation failed", failCode: data.failCode || null }), {
+          status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
     }
