@@ -3923,9 +3923,20 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
 
 function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
   const cardIndex = idx ?? (parseInt(item.id, 10) || 0);
+  const isPending = item.image_url.includes("placehold.co") && item.image_url.includes("Generating");
   const photo = item.image_url.includes("unsplash.com")
     ? item.image_url.replace(/https:\/\/images\.unsplash\.com\//, "").split("?")[0]
     : undefined;
+
+  if (isPending) {
+    return (
+      <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.04] aspect-square flex flex-col items-center justify-center text-center px-4">
+        <Loader2 className="w-7 h-7 text-primary animate-spin mb-2" />
+        <p className="text-[0.78rem] font-semibold text-foreground">Generating…</p>
+        <p className="text-[0.7rem] text-muted line-clamp-2 mt-1">{item.title || "Your creation"}</p>
+      </div>
+    );
+  }
 
   return (
     <Link to={`/image/${cardIndex}`} className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03] block no-underline">
