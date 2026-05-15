@@ -4503,7 +4503,8 @@ export default function CreatePage() {
             return;
           }
           if (persistedId) await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", persistedId);
-          setCreations(prev => prev.map(item => item.id === displayId ? { ...item, image_url: data.imageUrl } : item));
+          if (persistedId) rememberCreationMeta(persistedId, { model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto" });
+          setCreations(prev => prev.map(item => item.id === displayId ? { ...item, image_url: data.imageUrl, model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto" } : item));
           if (!persistedId && optimisticCreation) {
             persistGuestCreation({ ...optimisticCreation, id: displayId, image_url: data.imageUrl });
           }
@@ -4561,7 +4562,8 @@ export default function CreatePage() {
           return;
         }
         if (inserted?.id && optimisticCreation) {
-          setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id } : item));
+          rememberCreationMeta(inserted.id, { prompt, model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto", liked: false, bookmarked: false });
+          setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id, model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto" } : item));
         }
 
         // Background: call image generation and update row when ready
