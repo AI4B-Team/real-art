@@ -4482,6 +4482,46 @@ export default function CreatePage() {
 
 
 
+  const creationHandlers: CreationCardHandlers = {
+    onDelete: async (id: string) => {
+      setCreations(prev => prev.filter(c => c.id !== id));
+      try {
+        const raw = localStorage.getItem("guestCreations");
+        if (raw) {
+          const list: UserCreation[] = JSON.parse(raw);
+          localStorage.setItem("guestCreations", JSON.stringify(list.filter(i => i.id !== id)));
+        }
+      } catch {}
+      if (!id.startsWith("processing-")) {
+        try { await supabase.from("collection_images").delete().eq("id", id); } catch {}
+      }
+      toast({ title: "Deleted" });
+    },
+    onUse: (p: string) => {
+      const params = new URLSearchParams(window.location.search);
+      params.set("prompt", p);
+      navigate(`/create?${params.toString()}`, { replace: true });
+    },
+    onRecreate: (item: UserCreation) => {
+      void handleGenerate({
+        type: "image",
+        prompt: item.prompt || item.title || "",
+        subMode: null,
+        model: item.model,
+        aspectRatio: item.aspect_ratio,
+      });
+    },
+    onTogglePublic: async (id: string, next: boolean) => {
+      if (id.startsWith("processing-")) return;
+      try {
+        const { data: img } = await supabase.from("collection_images").select("collection_id").eq("id", id).maybeSingle();
+        if (img?.collection_id) {
+          await supabase.from("collections").update({ is_public: next }).eq("id", img.collection_id);
+        }
+      } catch {}
+    },
+  };
+
   const handleAppFollowUp = () => {
     if (!appBuilderInput.trim()) return;
     const msg = appBuilderInput.trim();
