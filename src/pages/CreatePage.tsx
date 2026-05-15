@@ -778,6 +778,19 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     }
   }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Listen for external prompt loads (Use button on creation modal)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (typeof detail === "string") {
+        setPrompt(detail);
+        setTimeout(() => textareaRef.current?.focus(), 0);
+      }
+    };
+    window.addEventListener("create:setPrompt", handler);
+    return () => window.removeEventListener("create:setPrompt", handler);
+  }, []);
+
 
   // Notify parent of mode changes
   useEffect(() => {
