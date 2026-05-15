@@ -1708,6 +1708,8 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
                       ? ["V5 (Best)", "V4.5+ (Rich)", "V4.5 All", "V4.5 (Fast)", "V4 (Basic)"]
                       : selectedType === "audio" && selectedSubMode === "voiceover"
                       ? ["Auto", "Eleven Turbo v2.5", "Eleven Multilingual v2"]
+                      : selectedType === "image"
+                      ? ["Auto", "GPT Image-2", "Nano Banana 2", "Flux Pro", "Imagen 4 Ultra", "Seedream 4.0", "Sora Storyboard"]
                       : ["Auto", "Sora Storyboard"]
                     ).map(m => (
                       <button key={m} type="button" onClick={() => { setSelectedModel(m); setModelOpen(false); }}
