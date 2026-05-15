@@ -99,7 +99,7 @@ import CharacterPanel from "@/components/create/CharacterPanel";
 import StoryScenesPanel, { makeScene, type StoryScene } from "@/components/create/StoryScenesPanel";
 import ImageCardOverlay from "@/components/ImageCardOverlay";
 import SaveTemplateModal, { loadSavedTemplates, type SavedTemplate } from "@/components/create/SaveTemplateModal";
-import { SAMPLE_CREATIONS, SAMPLE_FAVORITES, SAMPLE_COLLECTIONS, SAMPLE_COMMUNITY, SAMPLE_TEMPLATES } from "@/lib/sampleGalleryData";
+import { SAMPLE_FAVORITES, SAMPLE_COLLECTIONS, SAMPLE_COMMUNITY, SAMPLE_TEMPLATES } from "@/lib/sampleGalleryData";
 import { WORKSPACE_MEMBERS } from "@/lib/workspaceMembers";
 import { PROMPT_SAMPLE_ASSETS, PROMPT_CHIP_ICONS, createChipElement, makeUploadedImageChip, type AssetChip } from "@/lib/promptChips";
 import { useAtMention } from "@/hooks/useAtMention";
@@ -241,6 +241,8 @@ type UserCreation = {
   created_at: string;
   liked: boolean;
 };
+
+const PROCESSING_IMAGE_URL = "https://placehold.co/800x800/f1f5f9/94a3b8?text=Processing...";
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
@@ -3923,17 +3925,17 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
 
 function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
   const cardIndex = idx ?? (parseInt(item.id, 10) || 0);
-  const isPending = item.image_url.includes("placehold.co") && item.image_url.includes("Generating");
+  const isPending = item.image_url === PROCESSING_IMAGE_URL;
   const photo = item.image_url.includes("unsplash.com")
     ? item.image_url.replace(/https:\/\/images\.unsplash\.com\//, "").split("?")[0]
     : undefined;
 
   if (isPending) {
     return (
-      <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.04] aspect-square flex flex-col items-center justify-center text-center px-4">
-        <Loader2 className="w-7 h-7 text-primary animate-spin mb-2" />
-        <p className="text-[0.78rem] font-semibold text-foreground">Generating…</p>
-        <p className="text-[0.7rem] text-muted line-clamp-2 mt-1">{item.title || "Your creation"}</p>
+      <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.04] border border-foreground/[0.08] aspect-square flex flex-col items-center justify-center text-center px-4">
+        <Loader2 className="w-7 h-7 text-accent animate-spin mb-2" />
+        <p className="text-[0.78rem] font-semibold text-foreground">Processing…</p>
+        <p className="text-[0.7rem] text-muted line-clamp-2 mt-1">{item.title || "Your Creation"}</p>
       </div>
     );
   }
@@ -4028,10 +4030,54 @@ export default function CreatePage() {
         setAppPreviewContent(prompt);
       }, 3000);
     } else {
-      // Save creation to database — insert immediately with a pending state, then resolve in background
+      const isPending = (type === "image" || !type) && !imageUrl;
+      const optimisticId = `processing-${Date.now()}`;
+      const optimisticCreation: UserCreation | null = isPending ? {
+        id: optimisticId,
+        image_url: PROCESSING_IMAGE_URL,
+        title: prompt.slice(0, 100) || "Image Creation",
+        type: "image",
+        created_at: new Date().toISOString(),
+        liked: false,
+      } : null;
+
+      if (optimisticCreation) {
+        setActiveTab("creations");
+        setMediaFilter("all");
+        setLoadingCreations(false);
+        setCreations(prev => [optimisticCreation, ...prev]);
+      }
+
+      const runImageGeneration = async (displayId: string, persistedId?: string) => {
+        try {
+          const { data, error } = await supabase.functions.invoke("kie-image-generate", {
+            body: { prompt, aspect_ratio: kie?.aspect_ratio || "auto" },
+          });
+          if (error || data?.error || !data?.imageUrl) {
+            toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
+            if (persistedId) await supabase.from("collection_images").delete().eq("id", persistedId);
+            setCreations(prev => prev.filter(item => item.id !== displayId));
+            return;
+          }
+          if (persistedId) await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", persistedId);
+          setCreations(prev => prev.map(item => item.id === displayId ? { ...item, image_url: data.imageUrl } : item));
+          toast({ title: "Generation complete!", description: "Your image is ready below." });
+          if (persistedId) setGenerated(p => !p);
+        } catch (e) {
+          console.error("kie generation failed:", e);
+          toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
+          if (persistedId) await supabase.from("collection_images").delete().eq("id", persistedId);
+          setCreations(prev => prev.filter(item => item.id !== displayId));
+        }
+      };
+
+      // Save creation to database — show a processing card immediately, then resolve in background
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { setGenerated(p => !p); return; }
+        if (!user) {
+          if (isPending && optimisticCreation) void runImageGeneration(optimisticId);
+          return;
+        }
 
         // Get or create a default "My Creations" collection
         let collectionId: string | null = null;
@@ -4047,46 +4093,38 @@ export default function CreatePage() {
             .select("id").single();
           if (newCol) collectionId = newCol.id;
         }
-        if (!collectionId) return;
+        if (!collectionId) {
+          if (isPending && optimisticCreation) void runImageGeneration(optimisticId);
+          return;
+        }
 
-        const isPending = !!kie && !imageUrl;
         const placeholderUrl = imageUrl || (isPending
-          ? `https://placehold.co/800x800/f1f5f9/94a3b8?text=Generating...`
+          ? PROCESSING_IMAGE_URL
           : `https://picsum.photos/seed/${Date.now()}/800/800`);
         const creationType = type || "image";
-        const { data: inserted } = await supabase.from("collection_images").insert({
+        const { data: inserted, error: insertError } = await supabase.from("collection_images").insert({
           collection_id: collectionId,
           user_id: user.id,
           image_url: placeholderUrl,
           title: prompt.slice(0, 100) || `${creationType} creation`,
           image_prompt: prompt,
         }).select("id").single();
-        setGenerated(p => !p);
+        if (insertError || !inserted?.id) {
+          if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
+          toast({ title: "Generation failed", description: insertError?.message || "Please try again.", variant: "destructive" });
+          return;
+        }
+        if (inserted?.id && optimisticCreation) {
+          setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id } : item));
+        }
 
-        // Background: call kie.ai for GPT Image-2 and update row when ready
-        if (isPending && inserted?.id && kie) {
-          (async () => {
-            try {
-              const { data, error } = await supabase.functions.invoke("kie-image-generate", {
-                body: { prompt, aspect_ratio: kie.aspect_ratio },
-              });
-              if (error || data?.error || !data?.imageUrl) {
-                toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
-                await supabase.from("collection_images").delete().eq("id", inserted.id);
-                setGenerated(p => !p);
-                return;
-              }
-              await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", inserted.id);
-              toast({ title: "Generation complete!", description: "Your image is ready below." });
-              setGenerated(p => !p);
-            } catch (e) {
-              console.error("kie generation failed:", e);
-              toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
-            }
-          })();
+        // Background: call image generation and update row when ready
+        if (isPending && inserted?.id) {
+          void runImageGeneration(inserted.id, inserted.id);
         }
       } catch (e) {
         console.error("Failed to save creation:", e);
+        if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
       }
     }
   };
