@@ -4082,6 +4082,15 @@ export default function CreatePage() {
         setCreations(prev => [optimisticCreation, ...prev]);
       }
 
+      const persistGuestCreation = (c: UserCreation) => {
+        try {
+          const raw = localStorage.getItem("guestCreations");
+          const list: UserCreation[] = raw ? JSON.parse(raw) : [];
+          const next = [c, ...list.filter(i => i.id !== c.id)].slice(0, 100);
+          localStorage.setItem("guestCreations", JSON.stringify(next));
+        } catch {}
+      };
+
       const runImageGeneration = async (displayId: string, persistedId?: string) => {
         try {
           const { data, error } = await supabase.functions.invoke("kie-image-generate", {
