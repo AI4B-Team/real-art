@@ -277,6 +277,27 @@ const NewEbookPage = () => {
   const [currentEbookId, setCurrentEbookId] = useState<string | null>(() => sessionStorage.getItem("ebook-current-id"));
   const titleGenerationRequestRef = useRef(0);
 
+  // Brand profile integration
+  const [brandActive, setBrandActive] = useState<boolean>(() => {
+    try { return localStorage.getItem("brand_profile_use") === "true"; } catch { return false; }
+  });
+  const [showBrandDialog, setShowBrandDialog] = useState(false);
+  const isBrandProfileSetup = () => {
+    try { return localStorage.getItem("brand_profile_complete") === "true"; } catch { return false; }
+  };
+  const handleBrandClick = () => {
+    if (!isBrandProfileSetup()) {
+      setShowBrandDialog(true);
+      return;
+    }
+    setBrandActive(prev => {
+      const next = !prev;
+      try { localStorage.setItem("brand_profile_use", String(next)); } catch {}
+      sonnerToast.success(next ? "Brand voice will be applied" : "Brand voice disabled");
+      return next;
+    });
+  };
+
   useEffect(() => {
     if (activeTab === "generate" && !isGenerating) {
       scheduleScrollReset();
