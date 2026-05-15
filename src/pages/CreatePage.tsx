@@ -86,6 +86,7 @@ import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import { toast as sonnerToast } from "sonner";
 import PageShell from "@/components/PageShell";
 import ReferencePanel from "@/components/create/ReferencePanel";
 import FramePanel from "@/components/create/FramePanel";
