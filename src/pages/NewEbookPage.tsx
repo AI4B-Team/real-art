@@ -277,6 +277,27 @@ const NewEbookPage = () => {
   const [currentEbookId, setCurrentEbookId] = useState<string | null>(() => sessionStorage.getItem("ebook-current-id"));
   const titleGenerationRequestRef = useRef(0);
 
+  // Brand profile integration
+  const [brandActive, setBrandActive] = useState<boolean>(() => {
+    try { return localStorage.getItem("brand_profile_use") === "true"; } catch { return false; }
+  });
+  const [showBrandDialog, setShowBrandDialog] = useState(false);
+  const isBrandProfileSetup = () => {
+    try { return localStorage.getItem("brand_profile_complete") === "true"; } catch { return false; }
+  };
+  const handleBrandClick = () => {
+    if (!isBrandProfileSetup()) {
+      setShowBrandDialog(true);
+      return;
+    }
+    setBrandActive(prev => {
+      const next = !prev;
+      try { localStorage.setItem("brand_profile_use", String(next)); } catch {}
+      sonnerToast.success(next ? "Brand voice will be applied" : "Brand voice disabled");
+      return next;
+    });
+  };
+
   useEffect(() => {
     if (activeTab === "generate" && !isGenerating) {
       scheduleScrollReset();
@@ -1494,6 +1515,22 @@ const NewEbookPage = () => {
                   </PopoverContent>
                 </Popover>
 
+                {/* Brand */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={handleBrandClick}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${brandActive ? "bg-accent text-white" : "bg-foreground/[0.05] text-foreground hover:bg-foreground/[0.08]"}`}>
+                      <Palette size={13} />
+                      Brand{brandActive ? ": On" : ""}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {isBrandProfileSetup()
+                      ? (brandActive ? "Using your brand voice & style" : "Apply your brand voice & style")
+                      : "Set up your brand profile to write in your voice"}
+                  </TooltipContent>
+                </Tooltip>
+
                 <div className="flex-1" />
                 {/* Send button */}
                 <button id="ghost-ink-generate-btn" onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
@@ -2399,6 +2436,39 @@ const NewEbookPage = () => {
       </div>
       <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
       <EbookInviteModal open={showInviteModal} onOpenChange={setShowInviteModal} />
+      <Dialog open={showBrandDialog} onOpenChange={setShowBrandDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Palette className="w-5 h-5 text-accent" />
+              Set Up Your Brand Profile
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <p className="text-sm text-muted-foreground">
+              You don't have a brand profile yet. A brand profile lets the AI write your eBook in your unique voice, tone, and style — using your colors, fonts, and audience details.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              You can still create eBooks without one — but setting it up makes every book feel unmistakably yours.
+            </p>
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowBrandDialog(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-foreground/[0.05] transition-colors"
+              >
+                Maybe Later
+              </button>
+              <button
+                onClick={() => { setShowBrandDialog(false); navigate("/brand"); }}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white hover:bg-accent/90 transition-colors flex items-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Create Brand Profile
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       <LockedPagesModal
         open={lockedPagesModal.open}
         onOpenChange={(open) => setLockedPagesModal(prev => ({ ...prev, open }))}
