@@ -4207,20 +4207,33 @@ export default function CreatePage() {
     setAppBuildingVersion(0);
   };
 
-  // Fetch real user creations from DB
+  // Fetch real user creations from DB (and guest creations from localStorage)
   useEffect(() => {
     let cancelled = false;
+    const loadGuest = (): UserCreation[] => {
+      try {
+        const raw = localStorage.getItem("guestCreations");
+        if (!raw) return [];
+        return (JSON.parse(raw) as UserCreation[]).filter(c => c.image_url && !c.image_url.includes("placehold.co"));
+      } catch { return []; }
+    };
     const fetchCreations = async () => {
       setLoadingCreations(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) { setCreations([]); setLoadingCreations(false); return; }
+      if (!user) {
+        if (!cancelled) { setCreations(loadGuest()); setLoadingCreations(false); }
+        return;
+      }
       const { data } = await supabase
         .from("collection_images")
         .select("id, image_url, title, created_at")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (!cancelled && data) {
-        setCreations(data.map(r => ({ ...r, type: "image" as MediaFilter, liked: false })));
+        const rows = data
+          .filter(r => r.image_url && !r.image_url.includes("placehold.co"))
+          .map(r => ({ ...r, type: "image" as MediaFilter, liked: false }));
+        setCreations(rows);
       }
       if (!cancelled) setLoadingCreations(false);
     };
