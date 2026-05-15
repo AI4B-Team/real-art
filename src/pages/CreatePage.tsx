@@ -920,6 +920,8 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
       type: currentType,
       prompt: currentPrompt,
       subMode: currentSubMode,
+      model: selectedModel,
+      aspectRatio: selectedRatio,
       kie: useKie ? { aspect_ratio } : undefined,
     });
     // Reset prompt immediately so the user can compose another generation
