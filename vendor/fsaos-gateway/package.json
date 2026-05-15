@@ -1,0 +1,46 @@
+{
+  "name": "@fsaos/gateway",
+  "version": "1.0.0",
+  "description": "FSAOS Gateway SDK — VFS hooks, session management, realtime, and cache layer. Built as an IIFE bundle for dispatch worker injection.",
+  "type": "module",
+  "main": "dist/gateway.js",
+  "module": "src/index.ts",
+  "types": "dist/gateway.d.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "require": "./dist/gateway.js",
+      "default": "./dist/gateway.js"
+    }
+  },
+  "scripts": {
+    "build": "node build.mjs",
+    "build:dev": "node build.mjs --dev",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@supabase/supabase-js": "^2.103.2",
+    "@tanstack/react-query": "^5.99.0",
+    "react": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "@supabase/supabase-js": {
+      "optional": true
+    },
+    "@tanstack/react-query": {
+      "optional": false
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.9.3"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}
