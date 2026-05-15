@@ -4038,12 +4038,32 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       return d.toLocaleDateString();
     } catch { return "Just now"; }
   })();
-  const aspectRatio = item.aspect_ratio || (dims ? (() => {
-    const g = (a: number, b: number): number => b ? g(b, a % b) : a;
-    const d = g(dims.w, dims.h);
-    return `${dims.w / d}:${dims.h / d}`;
-  })() : "—");
-  const dimensionsText = dims ? `${dims.w}×${dims.h} px` : "—";
+  const formatRatio = (w: number, h: number) => {
+    const r = w / h;
+    const COMMON: { ratio: number; label: string }[] = [
+      { ratio: 1, label: "1:1" },
+      { ratio: 4 / 3, label: "4:3" },
+      { ratio: 3 / 4, label: "3:4" },
+      { ratio: 3 / 2, label: "3:2" },
+      { ratio: 2 / 3, label: "2:3" },
+      { ratio: 16 / 9, label: "16:9" },
+      { ratio: 9 / 16, label: "9:16" },
+      { ratio: 21 / 9, label: "21:9" },
+      { ratio: 5 / 4, label: "5:4" },
+      { ratio: 4 / 5, label: "4:5" },
+    ];
+    let best = COMMON[0];
+    let diff = Math.abs(r - best.ratio);
+    for (const c of COMMON) {
+      const d = Math.abs(r - c.ratio);
+      if (d < diff) { diff = d; best = c; }
+    }
+    return diff / r < 0.04 ? best.label : `${r.toFixed(2)}:1`;
+  };
+  const aspectRatio = (item.aspect_ratio && /^\d+:\d+$/.test(item.aspect_ratio) && item.aspect_ratio.split(":").every(n => Number(n) <= 32))
+    ? item.aspect_ratio
+    : (dims ? formatRatio(dims.w, dims.h) : "—");
+  const dimensionsText = dims ? `${dims.w} × ${dims.h} px` : "—";
 
   const downloadImage = async () => {
     try {
