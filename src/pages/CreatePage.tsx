@@ -778,6 +778,19 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     }
   }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Listen for external prompt loads (Use button on creation modal)
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const detail = (e as CustomEvent<string>).detail;
+      if (typeof detail === "string") {
+        setPrompt(detail);
+        setTimeout(() => textareaRef.current?.focus(), 0);
+      }
+    };
+    window.addEventListener("create:setPrompt", handler);
+    return () => window.removeEventListener("create:setPrompt", handler);
+  }, []);
+
 
   // Notify parent of mode changes
   useEffect(() => {
@@ -4038,12 +4051,32 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       return d.toLocaleDateString();
     } catch { return "Just now"; }
   })();
-  const aspectRatio = item.aspect_ratio || (dims ? (() => {
-    const g = (a: number, b: number): number => b ? g(b, a % b) : a;
-    const d = g(dims.w, dims.h);
-    return `${dims.w / d}:${dims.h / d}`;
-  })() : "—");
-  const dimensionsText = dims ? `${dims.w}×${dims.h} px` : "—";
+  const formatRatio = (w: number, h: number) => {
+    const r = w / h;
+    const COMMON: { ratio: number; label: string }[] = [
+      { ratio: 1, label: "1:1" },
+      { ratio: 4 / 3, label: "4:3" },
+      { ratio: 3 / 4, label: "3:4" },
+      { ratio: 3 / 2, label: "3:2" },
+      { ratio: 2 / 3, label: "2:3" },
+      { ratio: 16 / 9, label: "16:9" },
+      { ratio: 9 / 16, label: "9:16" },
+      { ratio: 21 / 9, label: "21:9" },
+      { ratio: 5 / 4, label: "5:4" },
+      { ratio: 4 / 5, label: "4:5" },
+    ];
+    let best = COMMON[0];
+    let diff = Math.abs(r - best.ratio);
+    for (const c of COMMON) {
+      const d = Math.abs(r - c.ratio);
+      if (d < diff) { diff = d; best = c; }
+    }
+    return diff / r < 0.04 ? best.label : `${r.toFixed(2)}:1`;
+  };
+  const aspectRatio = (item.aspect_ratio && /^\d+:\d+$/.test(item.aspect_ratio) && item.aspect_ratio.split(":").every(n => Number(n) <= 32))
+    ? item.aspect_ratio
+    : (dims ? formatRatio(dims.w, dims.h) : "—");
+  const dimensionsText = dims ? `${dims.w} × ${dims.h} px` : "—";
 
   const downloadImage = async () => {
     try {
@@ -4126,34 +4159,42 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
   const handleUse = () => {
     handlers?.onUse?.(prompt);
     setOpen(false);
+    toast({ title: "Prompt loaded", description: "Ready in the prompt box above." });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRecreate = () => {
     handlers?.onRecreate?.(item);
     setOpen(false);
+    toast({ title: "Recreating…", description: "A new variation is being generated." });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleEdit = () => {
     setOpen(false);
+    toast({ title: "Opening editor…" });
     navigate(`/editor?image=${encodeURIComponent(item.image_url)}&prompt=${encodeURIComponent(prompt)}`);
   };
 
   const handleUpscale = async () => {
     toast({ title: "Upscaling…", description: "This may take a moment." });
-    const { processImage } = await import("@/lib/aiToolsApi");
-    const res = await processImage("upscale", item.image_url);
-    if (res.error || !res.imageUrl) {
-      toast({ title: "Upscale failed", description: res.error || "Try again later.", variant: "destructive" });
-      return;
+    try {
+      const { processImage } = await import("@/lib/aiToolsApi");
+      const res = await processImage("upscale", item.image_url);
+      if (res.error || !res.imageUrl) {
+        toast({ title: "Upscale failed", description: res.error || "Try again later.", variant: "destructive" });
+        return;
+      }
+      toast({ title: "Upscaled!", description: "Opening result in new tab." });
+      window.open(res.imageUrl, "_blank", "noopener");
+    } catch (e) {
+      toast({ title: "Upscale failed", description: e instanceof Error ? e.message : "Try again later.", variant: "destructive" });
     }
-    toast({ title: "Upscaled!", description: "Opening result in new tab." });
-    window.open(res.imageUrl, "_blank", "noopener");
   };
 
   const handleAnimate = () => {
     setOpen(false);
+    toast({ title: "Switching to video mode" });
     navigate(`/create?type=video&prompt=${encodeURIComponent(prompt)}`);
   };
 
@@ -4523,9 +4564,7 @@ export default function CreatePage() {
       toast({ title: "Deleted" });
     },
     onUse: (p: string) => {
-      const params = new URLSearchParams(window.location.search);
-      params.set("prompt", p);
-      navigate(`/create?${params.toString()}`, { replace: true });
+      window.dispatchEvent(new CustomEvent("create:setPrompt", { detail: p }));
     },
     onRecreate: (item: UserCreation) => {
       void handleGenerate({
