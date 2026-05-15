@@ -71,7 +71,39 @@ Deno.serve(async (req) => {
             status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" },
           });
         }
-        return new Response(JSON.stringify({ imageUrl, taskId }), {
+        // Upload generated image to Lovable Cloud storage so we own the asset
+        let storedUrl = imageUrl;
+        try {
+          const supabaseUrl = Deno.env.get("SUPABASE_URL");
+          const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+          if (supabaseUrl && serviceKey) {
+            const imgRes = await fetch(imageUrl);
+            if (imgRes.ok) {
+              const contentType = imgRes.headers.get("content-type") || "image/png";
+              const ext = contentType.includes("jpeg") ? "jpg" : contentType.includes("webp") ? "webp" : "png";
+              const bytes = new Uint8Array(await imgRes.arrayBuffer());
+              const path = `generated/${taskId}-${Date.now()}.${ext}`;
+              const upRes = await fetch(`${supabaseUrl}/storage/v1/object/collection-images/${path}`, {
+                method: "POST",
+                headers: {
+                  Authorization: `Bearer ${serviceKey}`,
+                  "Content-Type": contentType,
+                  "x-upsert": "true",
+                },
+                body: bytes,
+              });
+              if (upRes.ok) {
+                storedUrl = `${supabaseUrl}/storage/v1/object/public/collection-images/${path}`;
+              } else {
+                console.error("storage upload failed:", await upRes.text());
+              }
+            }
+          }
+        } catch (uploadErr) {
+          console.error("storage upload error:", uploadErr);
+        }
+
+        return new Response(JSON.stringify({ imageUrl: storedUrl, sourceUrl: imageUrl, taskId }), {
           headers: { ...corsHeaders, "Content-Type": "application/json" },
         });
       }
