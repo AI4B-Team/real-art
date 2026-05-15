@@ -3923,9 +3923,20 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
 
 function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
   const cardIndex = idx ?? (parseInt(item.id, 10) || 0);
+  const isPending = item.image_url.includes("placehold.co") && item.image_url.includes("Generating");
   const photo = item.image_url.includes("unsplash.com")
     ? item.image_url.replace(/https:\/\/images\.unsplash\.com\//, "").split("?")[0]
     : undefined;
+
+  if (isPending) {
+    return (
+      <div className="group relative rounded-2xl overflow-hidden bg-foreground/[0.04] aspect-square flex flex-col items-center justify-center text-center px-4">
+        <Loader2 className="w-7 h-7 text-primary animate-spin mb-2" />
+        <p className="text-[0.78rem] font-semibold text-foreground">Generating…</p>
+        <p className="text-[0.7rem] text-muted line-clamp-2 mt-1">{item.title || "Your creation"}</p>
+      </div>
+    );
+  }
 
   return (
     <Link to={`/image/${cardIndex}`} className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03] block no-underline">
@@ -4642,15 +4653,13 @@ export default App;`}</code>
                 <Loader2 className="w-7 h-7 text-muted animate-spin mx-auto mb-3" />
                 <p className="text-[0.84rem] text-muted">Loading your creations…</p>
               </div>
+            ) : filteredCreations.length === 0 ? (
+              <div className="text-center py-20">
+                <p className="text-[0.84rem] text-muted">No creations yet. Generate something above to get started.</p>
+              </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-                {(filteredCreations.length > 0 ? filteredCreations : []).map((item, i) => <CreationCard key={item.id} item={item} idx={i} />)}
-                {SAMPLE_CREATIONS.map((s, i) => (
-                  <Link key={s.id} to={`/image/${i}`} className="group relative rounded-2xl overflow-hidden block no-underline">
-                    <img src={`https://images.unsplash.com/${s.photo}?w=400&h=400&fit=crop&q=80`} alt={s.title} className="w-full aspect-square object-cover" />
-                    <ImageCardOverlay index={i} photo={s.photo} title={s.title} />
-                  </Link>
-                ))}
+                {filteredCreations.map((item, i) => <CreationCard key={item.id} item={item} idx={i} />)}
               </div>
             )}
           </div>
