@@ -4146,34 +4146,42 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
   const handleUse = () => {
     handlers?.onUse?.(prompt);
     setOpen(false);
+    toast({ title: "Prompt loaded", description: "Ready in the prompt box above." });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleRecreate = () => {
     handlers?.onRecreate?.(item);
     setOpen(false);
+    toast({ title: "Recreating…", description: "A new variation is being generated." });
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleEdit = () => {
     setOpen(false);
+    toast({ title: "Opening editor…" });
     navigate(`/editor?image=${encodeURIComponent(item.image_url)}&prompt=${encodeURIComponent(prompt)}`);
   };
 
   const handleUpscale = async () => {
     toast({ title: "Upscaling…", description: "This may take a moment." });
-    const { processImage } = await import("@/lib/aiToolsApi");
-    const res = await processImage("upscale", item.image_url);
-    if (res.error || !res.imageUrl) {
-      toast({ title: "Upscale failed", description: res.error || "Try again later.", variant: "destructive" });
-      return;
+    try {
+      const { processImage } = await import("@/lib/aiToolsApi");
+      const res = await processImage("upscale", item.image_url);
+      if (res.error || !res.imageUrl) {
+        toast({ title: "Upscale failed", description: res.error || "Try again later.", variant: "destructive" });
+        return;
+      }
+      toast({ title: "Upscaled!", description: "Opening result in new tab." });
+      window.open(res.imageUrl, "_blank", "noopener");
+    } catch (e) {
+      toast({ title: "Upscale failed", description: e instanceof Error ? e.message : "Try again later.", variant: "destructive" });
     }
-    toast({ title: "Upscaled!", description: "Opening result in new tab." });
-    window.open(res.imageUrl, "_blank", "noopener");
   };
 
   const handleAnimate = () => {
     setOpen(false);
+    toast({ title: "Switching to video mode" });
     navigate(`/create?type=video&prompt=${encodeURIComponent(prompt)}`);
   };
 
