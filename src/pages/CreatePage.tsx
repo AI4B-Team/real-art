@@ -4551,9 +4551,7 @@ export default function CreatePage() {
       toast({ title: "Deleted" });
     },
     onUse: (p: string) => {
-      const params = new URLSearchParams(window.location.search);
-      params.set("prompt", p);
-      navigate(`/create?${params.toString()}`, { replace: true });
+      window.dispatchEvent(new CustomEvent("create:setPrompt", { detail: p }));
     },
     onRecreate: (item: UserCreation) => {
       void handleGenerate({
