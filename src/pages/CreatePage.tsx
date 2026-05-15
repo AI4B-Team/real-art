@@ -3992,6 +3992,7 @@ function CreationCard({ item, idx, handlers }: { item: UserCreation; idx?: numbe
 
 function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: UserCreation; cardIndex: number; photo?: string; handlers?: CreationCardHandlers }) {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [open, setOpen] = useState(false);
   const [liked, setLiked] = useState(item.liked);
   const [bookmarked, setBookmarked] = useState(!!item.bookmarked);
