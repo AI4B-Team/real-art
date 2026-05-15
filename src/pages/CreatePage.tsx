@@ -252,6 +252,31 @@ type UserCreation = {
 };
 
 const PROCESSING_IMAGE_URL = "https://placehold.co/800x800/f1f5f9/94a3b8?text=Processing...";
+const CREATION_META_STORAGE_KEY = "realCreatorCreationMeta";
+
+const readCreationMeta = (): Record<string, Partial<UserCreation>> => {
+  try {
+    return JSON.parse(localStorage.getItem(CREATION_META_STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+};
+
+const rememberCreationMeta = (id: string, patch: Partial<UserCreation>) => {
+  try {
+    const meta = readCreationMeta();
+    meta[id] = { ...(meta[id] || {}), ...patch };
+    localStorage.setItem(CREATION_META_STORAGE_KEY, JSON.stringify(meta));
+  } catch {}
+};
+
+const forgetCreationMeta = (id: string) => {
+  try {
+    const meta = readCreationMeta();
+    delete meta[id];
+    localStorage.setItem(CREATION_META_STORAGE_KEY, JSON.stringify(meta));
+  } catch {}
+};
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
@@ -4081,6 +4106,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
   const downloadImage = async () => {
     try {
       const res = await fetch(item.image_url);
+      if (!res.ok) throw new Error("Image download failed");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -4096,12 +4122,16 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       a.href = item.image_url;
       a.target = "_blank";
       a.rel = "noopener";
+      a.download = `${(prompt || "creation").slice(0, 40).replace(/[^\w\-]+/g, "_")}.png`;
+      document.body.appendChild(a);
       a.click();
+      a.remove();
+      toast({ title: "Opened image", description: "Use your browser save option if download is blocked." });
     }
   };
 
   const printImage = () => {
-    const w = window.open("", "_blank", "noopener,noreferrer,width=900,height=900");
+    const w = window.open("", "_blank", "width=900,height=900");
     if (!w) { toast({ title: "Pop-up blocked", description: "Allow pop-ups to print.", variant: "destructive" }); return; }
     w.document.write(`<!doctype html><html><head><title>Print</title><style>body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#fff;}img{max-width:100%;max-height:100vh;}</style></head><body><img src="${item.image_url}" onload="setTimeout(()=>{window.print();window.close();},200)"/></body></html>`);
     w.document.close();
@@ -4120,7 +4150,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
     }
   };
 
-  const togglePublic = async () => {
+  const togglePublic = () => {
     const next = !isPublic;
     setIsPublic(next);
     handlers?.onTogglePublic?.(item.id, next);
@@ -4136,6 +4166,8 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       const updated = next ? Array.from(new Set([item.id, ...list])) : list.filter(i => i !== item.id);
       localStorage.setItem("likedCreations", JSON.stringify(updated));
     } catch {}
+    rememberCreationMeta(item.id, { liked: next });
+    toast({ title: next ? "Liked" : "Like removed" });
   };
 
   const toggleBookmark = () => {
@@ -4147,6 +4179,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       const updated = next ? Array.from(new Set([item.id, ...list])) : list.filter(i => i !== item.id);
       localStorage.setItem("savedCreations", JSON.stringify(updated));
     } catch {}
+    rememberCreationMeta(item.id, { bookmarked: next });
     toast({ title: next ? "Saved" : "Removed from saved" });
   };
 
@@ -4233,7 +4266,11 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
                 alt={prompt}
                 onLoad={(e) => {
                   const img = e.currentTarget;
-                  if (img.naturalWidth && img.naturalHeight) setDims({ w: img.naturalWidth, h: img.naturalHeight });
+                  if (img.naturalWidth && img.naturalHeight) {
+                    const nextDims = { w: img.naturalWidth, h: img.naturalHeight };
+                    setDims(nextDims);
+                    rememberCreationMeta(item.id, { width: nextDims.w, height: nextDims.h });
+                  }
                 }}
                 style={{ transform: `scale(${zoom / 100})` }}
                 className="relative max-h-[78vh] max-w-full object-contain rounded-xl shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.4)] transition-transform duration-200"
@@ -4286,7 +4323,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
               <div className="px-5 py-4 border-b border-foreground/[0.06] space-y-2.5 text-[0.82rem]">
                 {[
                   ["Created:", created],
-                  ["Model:", item.model || "Flux Pro"],
+                  ["Model:", item.model || "Kie AI"],
                   ["Dimensions:", dimensionsText],
                   ["Aspect Ratio:", aspectRatio],
                 ].map(([k, v]) => (
@@ -4474,7 +4511,8 @@ export default function CreatePage() {
             return;
           }
           if (persistedId) await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", persistedId);
-          setCreations(prev => prev.map(item => item.id === displayId ? { ...item, image_url: data.imageUrl } : item));
+          if (persistedId) rememberCreationMeta(persistedId, { model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto" });
+          setCreations(prev => prev.map(item => item.id === displayId ? { ...item, image_url: data.imageUrl, model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto" } : item));
           if (!persistedId && optimisticCreation) {
             persistGuestCreation({ ...optimisticCreation, id: displayId, image_url: data.imageUrl });
           }
@@ -4532,7 +4570,8 @@ export default function CreatePage() {
           return;
         }
         if (inserted?.id && optimisticCreation) {
-          setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id } : item));
+          rememberCreationMeta(inserted.id, { prompt, model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto", liked: false, bookmarked: false });
+          setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id, model: model || "Kie AI", aspect_ratio: aspectRatio || kie?.aspect_ratio || "auto" } : item));
         }
 
         // Background: call image generation and update row when ready
@@ -4551,6 +4590,7 @@ export default function CreatePage() {
   const creationHandlers: CreationCardHandlers = {
     onDelete: async (id: string) => {
       setCreations(prev => prev.filter(c => c.id !== id));
+      forgetCreationMeta(id);
       try {
         const raw = localStorage.getItem("guestCreations");
         if (raw) {
@@ -4576,6 +4616,8 @@ export default function CreatePage() {
       });
     },
     onTogglePublic: async (id: string, next: boolean) => {
+      rememberCreationMeta(id, { is_public: next });
+      setCreations(prev => prev.map(c => c.id === id ? { ...c, is_public: next } : c));
       if (id.startsWith("processing-")) return;
       try {
         const { data: img } = await supabase.from("collection_images").select("collection_id").eq("id", id).maybeSingle();
@@ -4632,6 +4674,12 @@ export default function CreatePage() {
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (!cancelled && data) {
+        const meta = readCreationMeta();
+        const readIdList = (key: string): string[] => {
+          try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch { return []; }
+        };
+        const likedIds = readIdList("likedCreations");
+        const savedIds = readIdList("savedCreations");
         const rows = data
           .filter(r => r.image_url && !r.image_url.includes("placehold.co"))
           .map(r => ({
@@ -4640,8 +4688,14 @@ export default function CreatePage() {
             title: r.title,
             created_at: r.created_at,
             type: "image" as MediaFilter,
-            liked: false,
+            liked: !!meta[r.id]?.liked || likedIds.includes(r.id),
+            bookmarked: !!meta[r.id]?.bookmarked || savedIds.includes(r.id),
+            is_public: !!meta[r.id]?.is_public,
             prompt: (r as { image_prompt?: string }).image_prompt || r.title || "",
+            model: meta[r.id]?.model || "Kie AI",
+            aspect_ratio: meta[r.id]?.aspect_ratio,
+            width: meta[r.id]?.width,
+            height: meta[r.id]?.height,
           }));
         setCreations(rows);
       }
