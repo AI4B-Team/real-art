@@ -4098,6 +4098,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
   const downloadImage = async () => {
     try {
       const res = await fetch(item.image_url);
+      if (!res.ok) throw new Error("Image download failed");
       const blob = await res.blob();
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -4113,7 +4114,11 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       a.href = item.image_url;
       a.target = "_blank";
       a.rel = "noopener";
+      a.download = `${(prompt || "creation").slice(0, 40).replace(/[^\w\-]+/g, "_")}.png`;
+      document.body.appendChild(a);
       a.click();
+      a.remove();
+      toast({ title: "Opened image", description: "Use your browser save option if download is blocked." });
     }
   };
 
@@ -4137,7 +4142,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
     }
   };
 
-  const togglePublic = async () => {
+  const togglePublic = () => {
     const next = !isPublic;
     setIsPublic(next);
     handlers?.onTogglePublic?.(item.id, next);
@@ -4153,6 +4158,8 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       const updated = next ? Array.from(new Set([item.id, ...list])) : list.filter(i => i !== item.id);
       localStorage.setItem("likedCreations", JSON.stringify(updated));
     } catch {}
+    rememberCreationMeta(item.id, { liked: next });
+    toast({ title: next ? "Liked" : "Like removed" });
   };
 
   const toggleBookmark = () => {
@@ -4164,6 +4171,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
       const updated = next ? Array.from(new Set([item.id, ...list])) : list.filter(i => i !== item.id);
       localStorage.setItem("savedCreations", JSON.stringify(updated));
     } catch {}
+    rememberCreationMeta(item.id, { bookmarked: next });
     toast({ title: next ? "Saved" : "Removed from saved" });
   };
 
