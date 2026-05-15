@@ -3933,7 +3933,14 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
 
 /* ─── Gallery card ───────────────────────────────────────────── */
 
-function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
+type CreationCardHandlers = {
+  onDelete?: (id: string) => void;
+  onUse?: (prompt: string) => void;
+  onRecreate?: (item: UserCreation) => void;
+  onTogglePublic?: (id: string, next: boolean) => void;
+};
+
+function CreationCard({ item, idx, handlers }: { item: UserCreation; idx?: number; handlers?: CreationCardHandlers }) {
   const cardIndex = idx ?? (parseInt(item.id, 10) || 0);
   const isPending = item.image_url === PROCESSING_IMAGE_URL;
   const photo = item.image_url.includes("unsplash.com")
