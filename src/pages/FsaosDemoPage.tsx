@@ -13,13 +13,16 @@
  * Route: /fsaos-demo
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   QueryClientProvider,
   queryClient as fsaosQueryClient,
   useAuth,
   useList,
   useCreate,
+  initSession,
+  setScope,
+  isScopeReady,
 } from "@fsaos/gateway";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,6 +37,22 @@ function FsaosDemoInner() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [scopeError, setScopeError] = useState<string | null>(null);
+
+  // After sign-in: resolve domain → scope, then activate scope so queries fire.
+  useEffect(() => {
+    if (!user || isScopeReady()) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const session = await initSession();
+        if (!cancelled) setScope(session.scope_path);
+      } catch (e: any) {
+        if (!cancelled) setScopeError(e?.message ?? String(e));
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
 
   if (loading) {
     return (
@@ -147,7 +166,12 @@ function FsaosDemoInner() {
             Refresh
           </Button>
         </div>
-        {list.isLoading && (
+        {scopeError && (
+          <p className="text-sm text-destructive font-['DM_Sans']">
+            Scope Init Failed: {scopeError}
+          </p>
+        )}
+        {list.isLoading && !scopeError && (
           <p className="text-sm text-muted-foreground font-['DM_Sans']">
             Loading…
           </p>

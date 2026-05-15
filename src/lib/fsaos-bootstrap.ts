@@ -25,10 +25,10 @@ declare global {
 
 if (typeof window !== "undefined" && !window.__FSAOS_CONFIG__) {
   window.__FSAOS_CONFIG__ = {
-    // Override here if you need non-default values, e.g.:
-    // gatewayUrl: "https://fsaos-mcp-gw-rust.fly.dev",
-    // hostname: "your-registered-vfs-domain.com",
-    // scopePath: "/your/scope",
+    // Override the hostname so the SDK doesn't try to resolve the Lovable
+    // preview domain (which isn't registered as a VFS domain).
+    // `fsaos.com` is the public root scope (/root) on the production gateway.
+    hostname: "fsaos.com",
   };
 }
 
