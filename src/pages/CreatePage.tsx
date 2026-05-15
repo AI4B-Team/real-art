@@ -4057,7 +4057,7 @@ export default function CreatePage() {
           }
 
           if (collectionId) {
-            const placeholderUrl = `https://picsum.photos/seed/${Date.now()}/800/800`;
+            const placeholderUrl = imageUrl || `https://picsum.photos/seed/${Date.now()}/800/800`;
             const creationType = type || "image";
             await supabase.from("collection_images").insert({
               collection_id: collectionId,
