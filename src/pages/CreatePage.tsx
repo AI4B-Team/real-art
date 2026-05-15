@@ -4675,8 +4675,11 @@ export default function CreatePage() {
         .order("created_at", { ascending: false });
       if (!cancelled && data) {
         const meta = readCreationMeta();
-        const likedIds: string[] = JSON.parse(localStorage.getItem("likedCreations") || "[]");
-        const savedIds: string[] = JSON.parse(localStorage.getItem("savedCreations") || "[]");
+        const readIdList = (key: string): string[] => {
+          try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch { return []; }
+        };
+        const likedIds = readIdList("likedCreations");
+        const savedIds = readIdList("savedCreations");
         const rows = data
           .filter(r => r.image_url && !r.image_url.includes("placehold.co"))
           .map(r => ({
@@ -4687,6 +4690,7 @@ export default function CreatePage() {
             type: "image" as MediaFilter,
             liked: !!meta[r.id]?.liked || likedIds.includes(r.id),
             bookmarked: !!meta[r.id]?.bookmarked || savedIds.includes(r.id),
+            is_public: !!meta[r.id]?.is_public,
             prompt: (r as { image_prompt?: string }).image_prompt || r.title || "",
             model: meta[r.id]?.model || "Kie AI",
             aspect_ratio: meta[r.id]?.aspect_ratio,
