@@ -16,8 +16,9 @@ import {
   Eye, Target, Languages, Repeat, PenTool, FolderOpen, Flag,
   Github, Smile, Rss, ShoppingCart,
   Minus, Settings, Upload, ArrowLeftRight, Briefcase, GraduationCap, RotateCcw,
-  Link as LinkChain,
+  Link as LinkChain, Printer, Share2, Trash2, Maximize2,
 } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 
 const ChainLinkIcon = ({ size = 14, className = "" }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -3969,16 +3970,168 @@ function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
     );
   }
 
-  return (
-    <a
-      href={item.image_url}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03] block no-underline"
+  return <CreationCardWithModal item={item} cardIndex={cardIndex} photo={photo} />;
+}
+
+function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation; cardIndex: number; photo?: string }) {
+  const [open, setOpen] = useState(false);
+  const [liked, setLiked] = useState(item.liked);
+  const [bookmarked, setBookmarked] = useState(false);
+  const [zoom, setZoom] = useState(100);
+  const [showFullPrompt, setShowFullPrompt] = useState(false);
+  const prompt = item.title || "Untitled creation";
+  const created = (() => {
+    try {
+      const d = new Date(item.created_at);
+      const diff = Date.now() - d.getTime();
+      if (diff < 60_000) return "Just now";
+      if (diff < 3_600_000) return `${Math.floor(diff / 60_000)}m ago`;
+      if (diff < 86_400_000) return `${Math.floor(diff / 3_600_000)}h ago`;
+      return d.toLocaleDateString();
+    } catch { return "Just now"; }
+  })();
+
+  const ActionIcon = ({ Icon, label, active, onClick }: { Icon: typeof Heart; label: string; active?: boolean; onClick?: () => void }) => (
+    <button
+      type="button"
+      onClick={onClick}
+      title={label}
+      aria-label={label}
+      className={`p-2 rounded-lg transition-all hover:bg-foreground/[0.08] ${active ? "text-accent" : "text-foreground/70 hover:text-foreground"}`}
     >
-      <img src={item.image_url} alt={item.title || "Creation"} className="w-full aspect-square object-cover" />
-      <ImageCardOverlay index={cardIndex} photo={photo} title={item.title || "Untitled"} />
-    </a>
+      <Icon size={17} className={active ? "fill-current" : ""} />
+    </button>
+  );
+
+  return (
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03] block w-full text-left"
+      >
+        <img src={item.image_url} alt={item.title || "Creation"} className="w-full aspect-square object-cover" />
+        <ImageCardOverlay index={cardIndex} photo={photo} title={item.title || "Untitled"} />
+      </button>
+
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="max-w-[1200px] w-[95vw] p-0 overflow-hidden border-foreground/10 bg-background rounded-2xl">
+          <DialogTitle className="sr-only">{prompt}</DialogTitle>
+          <div className="grid grid-cols-1 md:grid-cols-[1fr_400px] max-h-[88vh]">
+            {/* Image side */}
+            <div className="relative bg-[hsl(var(--background))] dark:bg-black flex items-center justify-center p-6 md:p-8 min-h-[420px]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.08),transparent_60%),radial-gradient(circle_at_80%_85%,hsl(var(--primary)/0.06),transparent_60%)]" />
+              <img
+                src={item.image_url}
+                alt={prompt}
+                style={{ transform: `scale(${zoom / 100})` }}
+                className="relative max-h-[78vh] max-w-full object-contain rounded-xl shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.4)] transition-transform duration-200"
+              />
+            </div>
+
+            {/* Right panel */}
+            <div className="flex flex-col bg-card border-l border-foreground/[0.08] overflow-y-auto">
+              {/* Top action bar */}
+              <div className="flex items-center justify-between px-3 py-3 border-b border-foreground/[0.06]">
+                <div className="flex items-center gap-0.5">
+                  <ActionIcon Icon={Heart} label="Like" active={liked} onClick={() => setLiked(v => !v)} />
+                  <ActionIcon Icon={Globe} label="Make Public" />
+                  <ActionIcon Icon={Bookmark} label="Save" active={bookmarked} onClick={() => setBookmarked(v => !v)} />
+                  <ActionIcon Icon={Download} label="Download" onClick={() => { const a = document.createElement("a"); a.href = item.image_url; a.download = `${prompt.slice(0,40)}.png`; a.target = "_blank"; a.click(); }} />
+                  <ActionIcon Icon={Printer} label="Print" onClick={() => window.open(item.image_url, "_blank")} />
+                  <ActionIcon Icon={Share2} label="Share" />
+                  <ActionIcon Icon={Trash2} label="Delete" />
+                </div>
+              </div>
+
+              {/* Prompt */}
+              <div className="px-5 pt-5 pb-4 border-b border-foreground/[0.06]">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="font-display font-bold text-foreground text-sm tracking-tight">Prompt</h3>
+                  <button
+                    type="button"
+                    onClick={() => navigator.clipboard?.writeText(prompt)}
+                    title="Copy Prompt"
+                    className="p-1.5 rounded-md hover:bg-foreground/[0.08] text-foreground/60 hover:text-foreground transition-colors"
+                  >
+                    <Copy size={14} />
+                  </button>
+                </div>
+                <p className={`text-[0.84rem] text-foreground/75 leading-relaxed ${showFullPrompt ? "" : "line-clamp-3"}`}>
+                  {prompt}
+                </p>
+                {prompt.length > 120 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowFullPrompt(v => !v)}
+                    className="text-[0.78rem] text-accent hover:underline mt-1.5 font-medium"
+                  >
+                    {showFullPrompt ? "see less" : "see more"}
+                  </button>
+                )}
+              </div>
+
+              {/* Metadata */}
+              <div className="px-5 py-4 border-b border-foreground/[0.06] space-y-2.5 text-[0.82rem]">
+                {[
+                  ["Created:", created],
+                  ["Model:", "Flux Pro"],
+                  ["Dimensions:", "1024x1024 px"],
+                  ["Aspect Ratio:", "1:1"],
+                ].map(([k, v]) => (
+                  <div key={k} className="flex justify-between">
+                    <span className="text-foreground/55">{k}</span>
+                    <span className="text-foreground font-medium">{v}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* Primary actions */}
+              <div className="px-5 py-4 space-y-2.5 border-b border-foreground/[0.06]">
+                <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground font-medium text-[0.86rem] transition-colors">
+                  <ImageIcon size={15} /> Use
+                </button>
+                <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground font-medium text-[0.86rem] transition-colors">
+                  <RefreshCw size={15} /> Recreate
+                </button>
+              </div>
+
+              {/* Zoom slider */}
+              <div className="px-5 py-4 border-b border-foreground/[0.06]">
+                <div className="flex items-center gap-3">
+                  <span className="text-[0.78rem] text-foreground/60 font-medium tabular-nums w-10">{zoom}%</span>
+                  <input
+                    type="range"
+                    min={50}
+                    max={200}
+                    step={5}
+                    value={zoom}
+                    onChange={(e) => setZoom(Number(e.target.value))}
+                    className="flex-1 accent-accent h-1"
+                  />
+                </div>
+              </div>
+
+              {/* Secondary actions */}
+              <div className="px-5 py-4 grid grid-cols-3 gap-2">
+                {[
+                  { icon: Pencil, label: "Edit" },
+                  { icon: Maximize2, label: "Upscale" },
+                  { icon: Play, label: "Animate" },
+                ].map(({ icon: Icon, label }) => (
+                  <button
+                    key={label}
+                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/10 bg-background hover:bg-foreground/[0.04] text-foreground text-[0.8rem] font-medium transition-colors"
+                  >
+                    <Icon size={13} /> {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 
