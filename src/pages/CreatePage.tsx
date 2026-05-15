@@ -4068,12 +4068,15 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
     toast({ title: next ? "Now public" : "Set to private" });
   };
 
-  const toggleLike = async () => {
+  const toggleLike = () => {
     const next = !liked;
     setLiked(next);
-    if (!item.id.startsWith("processing-")) {
-      try { await supabase.from("collection_images").update({ liked_count: next ? 1 : 0 }).eq("id", item.id); } catch {}
-    }
+    try {
+      const raw = localStorage.getItem("likedCreations");
+      const list: string[] = raw ? JSON.parse(raw) : [];
+      const updated = next ? Array.from(new Set([item.id, ...list])) : list.filter(i => i !== item.id);
+      localStorage.setItem("likedCreations", JSON.stringify(updated));
+    } catch {}
   };
 
   const toggleBookmark = () => {
