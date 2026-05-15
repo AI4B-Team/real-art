@@ -4131,7 +4131,7 @@ function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: Use
   };
 
   const printImage = () => {
-    const w = window.open("", "_blank", "noopener,noreferrer,width=900,height=900");
+    const w = window.open("", "_blank", "width=900,height=900");
     if (!w) { toast({ title: "Pop-up blocked", description: "Allow pop-ups to print.", variant: "destructive" }); return; }
     w.document.write(`<!doctype html><html><head><title>Print</title><style>body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#fff;}img{max-width:100%;max-height:100vh;}</style></head><body><img src="${item.image_url}" onload="setTimeout(()=>{window.print();window.close();},200)"/></body></html>`);
     w.document.close();
