@@ -4076,7 +4076,6 @@ export default function CreatePage() {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
           if (isPending && optimisticCreation) void runImageGeneration(optimisticId);
-          setGenerated(p => !p);
           return;
         }
 
