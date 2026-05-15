@@ -3989,13 +3989,18 @@ function CreationCard({ item, idx, handlers }: { item: UserCreation; idx?: numbe
   return <CreationCardWithModal item={item} cardIndex={cardIndex} photo={photo} handlers={handlers} />;
 }
 
-function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation; cardIndex: number; photo?: string }) {
+function CreationCardWithModal({ item, cardIndex, photo, handlers }: { item: UserCreation; cardIndex: number; photo?: string; handlers?: CreationCardHandlers }) {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const [liked, setLiked] = useState(item.liked);
-  const [bookmarked, setBookmarked] = useState(false);
+  const [bookmarked, setBookmarked] = useState(!!item.bookmarked);
+  const [isPublic, setIsPublic] = useState(!!item.is_public);
   const [zoom, setZoom] = useState(100);
   const [showFullPrompt, setShowFullPrompt] = useState(false);
-  const prompt = item.title || "Untitled creation";
+  const [dims, setDims] = useState<{ w: number; h: number } | null>(
+    item.width && item.height ? { w: item.width, h: item.height } : null
+  );
+  const prompt = item.prompt || item.title || "Untitled creation";
   const created = (() => {
     try {
       const d = new Date(item.created_at);
@@ -4006,6 +4011,121 @@ function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation;
       return d.toLocaleDateString();
     } catch { return "Just now"; }
   })();
+  const aspectRatio = item.aspect_ratio || (dims ? (() => {
+    const g = (a: number, b: number): number => b ? g(b, a % b) : a;
+    const d = g(dims.w, dims.h);
+    return `${dims.w / d}:${dims.h / d}`;
+  })() : "—");
+  const dimensionsText = dims ? `${dims.w}×${dims.h} px` : "—";
+
+  const downloadImage = async () => {
+    try {
+      const res = await fetch(item.image_url);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${(prompt || "creation").slice(0, 40).replace(/[^\w\-]+/g, "_")}.png`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast({ title: "Download started" });
+    } catch {
+      const a = document.createElement("a");
+      a.href = item.image_url;
+      a.target = "_blank";
+      a.rel = "noopener";
+      a.click();
+    }
+  };
+
+  const printImage = () => {
+    const w = window.open("", "_blank", "noopener,noreferrer,width=900,height=900");
+    if (!w) { toast({ title: "Pop-up blocked", description: "Allow pop-ups to print.", variant: "destructive" }); return; }
+    w.document.write(`<!doctype html><html><head><title>Print</title><style>body{margin:0;display:flex;align-items:center;justify-content:center;min-height:100vh;background:#fff;}img{max-width:100%;max-height:100vh;}</style></head><body><img src="${item.image_url}" onload="setTimeout(()=>{window.print();window.close();},200)"/></body></html>`);
+    w.document.close();
+  };
+
+  const shareImage = async () => {
+    const shareData = { title: "AI Creation", text: prompt, url: item.image_url };
+    try {
+      if (navigator.share) { await navigator.share(shareData); return; }
+    } catch { /* user cancelled */ }
+    try {
+      await navigator.clipboard.writeText(item.image_url);
+      toast({ title: "Link copied", description: "Image URL copied to clipboard." });
+    } catch {
+      toast({ title: "Share unavailable", variant: "destructive" });
+    }
+  };
+
+  const togglePublic = async () => {
+    const next = !isPublic;
+    setIsPublic(next);
+    handlers?.onTogglePublic?.(item.id, next);
+    toast({ title: next ? "Now public" : "Set to private" });
+  };
+
+  const toggleLike = async () => {
+    const next = !liked;
+    setLiked(next);
+    if (!item.id.startsWith("processing-")) {
+      try { await supabase.from("collection_images").update({ liked_count: next ? 1 : 0 }).eq("id", item.id); } catch {}
+    }
+  };
+
+  const toggleBookmark = () => {
+    const next = !bookmarked;
+    setBookmarked(next);
+    try {
+      const raw = localStorage.getItem("savedCreations");
+      const list: string[] = raw ? JSON.parse(raw) : [];
+      const updated = next ? Array.from(new Set([item.id, ...list])) : list.filter(i => i !== item.id);
+      localStorage.setItem("savedCreations", JSON.stringify(updated));
+    } catch {}
+    toast({ title: next ? "Saved" : "Removed from saved" });
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Delete this creation? This cannot be undone.")) return;
+    handlers?.onDelete?.(item.id);
+    setOpen(false);
+  };
+
+  const handleUse = () => {
+    handlers?.onUse?.(prompt);
+    setOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleRecreate = () => {
+    handlers?.onRecreate?.(item);
+    setOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleEdit = () => {
+    setOpen(false);
+    navigate(`/editor?image=${encodeURIComponent(item.image_url)}&prompt=${encodeURIComponent(prompt)}`);
+  };
+
+  const handleUpscale = async () => {
+    toast({ title: "Upscaling…", description: "This may take a moment." });
+    const { processImage } = await import("@/lib/aiToolsApi");
+    const res = await processImage("upscale", item.image_url);
+    if (res.error || !res.imageUrl) {
+      toast({ title: "Upscale failed", description: res.error || "Try again later.", variant: "destructive" });
+      return;
+    }
+    toast({ title: "Upscaled!", description: "Opening result in new tab." });
+    window.open(res.imageUrl, "_blank", "noopener");
+  };
+
+  const handleAnimate = () => {
+    setOpen(false);
+    navigate(`/create?type=video&prompt=${encodeURIComponent(prompt)}`);
+  };
 
   const ActionIcon = ({ Icon, label, active, onClick }: { Icon: typeof Heart; label: string; active?: boolean; onClick?: () => void }) => (
     <button
@@ -4040,6 +4160,10 @@ function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation;
               <img
                 src={item.image_url}
                 alt={prompt}
+                onLoad={(e) => {
+                  const img = e.currentTarget;
+                  if (img.naturalWidth && img.naturalHeight) setDims({ w: img.naturalWidth, h: img.naturalHeight });
+                }}
                 style={{ transform: `scale(${zoom / 100})` }}
                 className="relative max-h-[78vh] max-w-full object-contain rounded-xl shadow-[0_20px_60px_-20px_hsl(var(--foreground)/0.4)] transition-transform duration-200"
               />
@@ -4050,13 +4174,13 @@ function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation;
               {/* Top action bar */}
               <div className="flex items-center justify-between px-3 py-3 border-b border-foreground/[0.06]">
                 <div className="flex items-center gap-0.5">
-                  <ActionIcon Icon={Heart} label="Like" active={liked} onClick={() => setLiked(v => !v)} />
-                  <ActionIcon Icon={Globe} label="Make Public" />
-                  <ActionIcon Icon={Bookmark} label="Save" active={bookmarked} onClick={() => setBookmarked(v => !v)} />
-                  <ActionIcon Icon={Download} label="Download" onClick={() => { const a = document.createElement("a"); a.href = item.image_url; a.download = `${prompt.slice(0,40)}.png`; a.target = "_blank"; a.click(); }} />
-                  <ActionIcon Icon={Printer} label="Print" onClick={() => window.open(item.image_url, "_blank")} />
-                  <ActionIcon Icon={Share2} label="Share" />
-                  <ActionIcon Icon={Trash2} label="Delete" />
+                  <ActionIcon Icon={Heart} label="Like" active={liked} onClick={toggleLike} />
+                  <ActionIcon Icon={Globe} label={isPublic ? "Public" : "Make Public"} active={isPublic} onClick={togglePublic} />
+                  <ActionIcon Icon={Bookmark} label="Save" active={bookmarked} onClick={toggleBookmark} />
+                  <ActionIcon Icon={Download} label="Download" onClick={downloadImage} />
+                  <ActionIcon Icon={Printer} label="Print" onClick={printImage} />
+                  <ActionIcon Icon={Share2} label="Share" onClick={shareImage} />
+                  <ActionIcon Icon={Trash2} label="Delete" onClick={handleDelete} />
                 </div>
               </div>
 
@@ -4066,7 +4190,7 @@ function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation;
                   <h3 className="font-display font-bold text-foreground text-sm tracking-tight">Prompt</h3>
                   <button
                     type="button"
-                    onClick={() => navigator.clipboard?.writeText(prompt)}
+                    onClick={() => { navigator.clipboard?.writeText(prompt); toast({ title: "Prompt copied" }); }}
                     title="Copy Prompt"
                     className="p-1.5 rounded-md hover:bg-foreground/[0.08] text-foreground/60 hover:text-foreground transition-colors"
                   >
@@ -4091,9 +4215,9 @@ function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation;
               <div className="px-5 py-4 border-b border-foreground/[0.06] space-y-2.5 text-[0.82rem]">
                 {[
                   ["Created:", created],
-                  ["Model:", "Flux Pro"],
-                  ["Dimensions:", "1024x1024 px"],
-                  ["Aspect Ratio:", "1:1"],
+                  ["Model:", item.model || "Flux Pro"],
+                  ["Dimensions:", dimensionsText],
+                  ["Aspect Ratio:", aspectRatio],
                 ].map(([k, v]) => (
                   <div key={k} className="flex justify-between">
                     <span className="text-foreground/55">{k}</span>
@@ -4104,10 +4228,10 @@ function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation;
 
               {/* Primary actions */}
               <div className="px-5 py-4 space-y-2.5 border-b border-foreground/[0.06]">
-                <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground font-medium text-[0.86rem] transition-colors">
+                <button onClick={handleUse} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground font-medium text-[0.86rem] transition-colors">
                   <ImageIcon size={15} /> Use
                 </button>
-                <button className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground font-medium text-[0.86rem] transition-colors">
+                <button onClick={handleRecreate} className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-foreground/[0.06] hover:bg-foreground/[0.1] text-foreground font-medium text-[0.86rem] transition-colors">
                   <RefreshCw size={15} /> Recreate
                 </button>
               </div>
@@ -4130,18 +4254,15 @@ function CreationCardWithModal({ item, cardIndex, photo }: { item: UserCreation;
 
               {/* Secondary actions */}
               <div className="px-5 py-4 grid grid-cols-3 gap-2">
-                {[
-                  { icon: Pencil, label: "Edit" },
-                  { icon: Maximize2, label: "Upscale" },
-                  { icon: Play, label: "Animate" },
-                ].map(({ icon: Icon, label }) => (
-                  <button
-                    key={label}
-                    className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/10 bg-background hover:bg-foreground/[0.04] text-foreground text-[0.8rem] font-medium transition-colors"
-                  >
-                    <Icon size={13} /> {label}
-                  </button>
-                ))}
+                <button onClick={handleEdit} className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/10 bg-background hover:bg-foreground/[0.04] text-foreground text-[0.8rem] font-medium transition-colors">
+                  <Pencil size={13} /> Edit
+                </button>
+                <button onClick={handleUpscale} className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/10 bg-background hover:bg-foreground/[0.04] text-foreground text-[0.8rem] font-medium transition-colors">
+                  <Maximize2 size={13} /> Upscale
+                </button>
+                <button onClick={handleAnimate} className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg border border-foreground/10 bg-background hover:bg-foreground/[0.04] text-foreground text-[0.8rem] font-medium transition-colors">
+                  <Play size={13} /> Animate
+                </button>
               </div>
             </div>
           </div>
