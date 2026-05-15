@@ -4391,13 +4391,21 @@ export default function CreatePage() {
       }
       const { data } = await supabase
         .from("collection_images")
-        .select("id, image_url, title, created_at")
+        .select("id, image_url, title, created_at, image_prompt")
         .eq("user_id", user.id)
         .order("created_at", { ascending: false });
       if (!cancelled && data) {
         const rows = data
           .filter(r => r.image_url && !r.image_url.includes("placehold.co"))
-          .map(r => ({ ...r, type: "image" as MediaFilter, liked: false }));
+          .map(r => ({
+            id: r.id,
+            image_url: r.image_url,
+            title: r.title,
+            created_at: r.created_at,
+            type: "image" as MediaFilter,
+            liked: false,
+            prompt: (r as { image_prompt?: string }).image_prompt || r.title || "",
+          }));
         setCreations(rows);
       }
       if (!cancelled) setLoadingCreations(false);
