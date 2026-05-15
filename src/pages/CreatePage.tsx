@@ -3970,10 +3970,15 @@ function CreationCard({ item, idx }: { item: UserCreation; idx?: number }) {
   }
 
   return (
-    <Link to={`/image/${cardIndex}`} className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03] block no-underline">
+    <a
+      href={item.image_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group relative rounded-2xl overflow-hidden bg-foreground/[0.03] block no-underline"
+    >
       <img src={item.image_url} alt={item.title || "Creation"} className="w-full aspect-square object-cover" />
       <ImageCardOverlay index={cardIndex} photo={photo} title={item.title || "Untitled"} />
-    </Link>
+    </a>
   );
 }
 
