@@ -4048,11 +4048,34 @@ export default function CreatePage() {
         setCreations(prev => [optimisticCreation, ...prev]);
       }
 
+      const runImageGeneration = async (displayId: string, persistedId?: string) => {
+        try {
+          const { data, error } = await supabase.functions.invoke("kie-image-generate", {
+            body: { prompt, aspect_ratio: kie?.aspect_ratio || "auto" },
+          });
+          if (error || data?.error || !data?.imageUrl) {
+            toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
+            if (persistedId) await supabase.from("collection_images").delete().eq("id", persistedId);
+            setCreations(prev => prev.filter(item => item.id !== displayId));
+            return;
+          }
+          if (persistedId) await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", persistedId);
+          setCreations(prev => prev.map(item => item.id === displayId ? { ...item, image_url: data.imageUrl } : item));
+          toast({ title: "Generation complete!", description: "Your image is ready below." });
+          if (persistedId) setGenerated(p => !p);
+        } catch (e) {
+          console.error("kie generation failed:", e);
+          toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
+          if (persistedId) await supabase.from("collection_images").delete().eq("id", persistedId);
+          setCreations(prev => prev.filter(item => item.id !== displayId));
+        }
+      };
+
       // Save creation to database — show a processing card immediately, then resolve in background
       try {
         const { data: { user } } = await supabase.auth.getUser();
         if (!user) {
-          if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
+          if (isPending && optimisticCreation) void runImageGeneration(optimisticId);
           setGenerated(p => !p);
           return;
         }
@@ -4072,7 +4095,7 @@ export default function CreatePage() {
           if (newCol) collectionId = newCol.id;
         }
         if (!collectionId) {
-          if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
+          if (isPending && optimisticCreation) void runImageGeneration(optimisticId);
           return;
         }
 
@@ -4096,29 +4119,9 @@ export default function CreatePage() {
           setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id } : item));
         }
 
-        // Background: call kie.ai for GPT Image-2 and update row when ready
+        // Background: call image generation and update row when ready
         if (isPending && inserted?.id) {
-          (async () => {
-            try {
-              const { data, error } = await supabase.functions.invoke("kie-image-generate", {
-                body: { prompt, aspect_ratio: kie?.aspect_ratio || "auto" },
-              });
-              if (error || data?.error || !data?.imageUrl) {
-                toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
-                await supabase.from("collection_images").delete().eq("id", inserted.id);
-                setCreations(prev => prev.filter(item => item.id !== inserted.id));
-                return;
-              }
-              await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", inserted.id);
-              setCreations(prev => prev.map(item => item.id === inserted.id ? { ...item, image_url: data.imageUrl } : item));
-              toast({ title: "Generation complete!", description: "Your image is ready below." });
-              setGenerated(p => !p);
-            } catch (e) {
-              console.error("kie generation failed:", e);
-              toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
-              setCreations(prev => prev.filter(item => item.id !== inserted.id));
-            }
-          })();
+          void runImageGeneration(inserted.id, inserted.id);
         }
       } catch (e) {
         console.error("Failed to save creation:", e);
