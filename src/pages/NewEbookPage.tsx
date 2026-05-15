@@ -2436,6 +2436,39 @@ const NewEbookPage = () => {
       </div>
       <EbookShareModal open={showShareModal} onOpenChange={setShowShareModal} projectName={bookData.selectedTitle || "Untitled Book"} />
       <EbookInviteModal open={showInviteModal} onOpenChange={setShowInviteModal} />
+      <Dialog open={showBrandDialog} onOpenChange={setShowBrandDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Palette className="w-5 h-5 text-accent" />
+              Set Up Your Brand Profile
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 pt-2">
+            <p className="text-sm text-muted-foreground">
+              You don't have a brand profile yet. A brand profile lets the AI write your eBook in your unique voice, tone, and style — using your colors, fonts, and audience details.
+            </p>
+            <p className="text-xs text-muted-foreground">
+              You can still create eBooks without one — but setting it up makes every book feel unmistakably yours.
+            </p>
+            <div className="flex items-center justify-end gap-2 pt-2">
+              <button
+                onClick={() => setShowBrandDialog(false)}
+                className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-foreground/[0.05] transition-colors"
+              >
+                Maybe Later
+              </button>
+              <button
+                onClick={() => { setShowBrandDialog(false); navigate("/brand"); }}
+                className="px-4 py-2 rounded-lg text-sm font-medium bg-accent text-white hover:bg-accent/90 transition-colors flex items-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                Create Brand Profile
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
       <LockedPagesModal
         open={lockedPagesModal.open}
         onOpenChange={(open) => setLockedPagesModal(prev => ({ ...prev, open }))}
