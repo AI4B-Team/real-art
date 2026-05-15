@@ -4076,15 +4076,22 @@ export default function CreatePage() {
           return;
         }
 
-        const placeholderUrl = imageUrl || PROCESSING_IMAGE_URL;
+        const placeholderUrl = imageUrl || (isPending
+          ? PROCESSING_IMAGE_URL
+          : `https://picsum.photos/seed/${Date.now()}/800/800`);
         const creationType = type || "image";
-        const { data: inserted } = await supabase.from("collection_images").insert({
+        const { data: inserted, error: insertError } = await supabase.from("collection_images").insert({
           collection_id: collectionId,
           user_id: user.id,
           image_url: placeholderUrl,
           title: prompt.slice(0, 100) || `${creationType} creation`,
           image_prompt: prompt,
         }).select("id").single();
+        if (insertError || !inserted?.id) {
+          if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
+          toast({ title: "Generation failed", description: insertError?.message || "Please try again.", variant: "destructive" });
+          return;
+        }
         if (inserted?.id && optimisticCreation) {
           setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id } : item));
         }
