@@ -4030,10 +4030,31 @@ export default function CreatePage() {
         setAppPreviewContent(prompt);
       }, 3000);
     } else {
-      // Save creation to database — insert immediately with a pending state, then resolve in background
+      const isPending = type === "image" && !imageUrl;
+      const optimisticId = `processing-${Date.now()}`;
+      const optimisticCreation: UserCreation | null = isPending ? {
+        id: optimisticId,
+        image_url: PROCESSING_IMAGE_URL,
+        title: prompt.slice(0, 100) || "Image Creation",
+        type: "image",
+        created_at: new Date().toISOString(),
+        liked: false,
+      } : null;
+
+      if (optimisticCreation) {
+        setActiveTab("creations");
+        setLoadingCreations(false);
+        setCreations(prev => [optimisticCreation, ...prev]);
+      }
+
+      // Save creation to database — show a processing card immediately, then resolve in background
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { setGenerated(p => !p); return; }
+        if (!user) {
+          if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
+          setGenerated(p => !p);
+          return;
+        }
 
         // Get or create a default "My Creations" collection
         let collectionId: string | null = null;
@@ -4049,12 +4070,12 @@ export default function CreatePage() {
             .select("id").single();
           if (newCol) collectionId = newCol.id;
         }
-        if (!collectionId) return;
+        if (!collectionId) {
+          if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
+          return;
+        }
 
-        const isPending = !!kie && !imageUrl;
-        const placeholderUrl = imageUrl || (isPending
-          ? `https://placehold.co/800x800/f1f5f9/94a3b8?text=Generating...`
-          : `https://picsum.photos/seed/${Date.now()}/800/800`);
+        const placeholderUrl = imageUrl || PROCESSING_IMAGE_URL;
         const creationType = type || "image";
         const { data: inserted } = await supabase.from("collection_images").insert({
           collection_id: collectionId,
@@ -4063,32 +4084,37 @@ export default function CreatePage() {
           title: prompt.slice(0, 100) || `${creationType} creation`,
           image_prompt: prompt,
         }).select("id").single();
-        setGenerated(p => !p);
+        if (inserted?.id && optimisticCreation) {
+          setCreations(prev => prev.map(item => item.id === optimisticId ? { ...item, id: inserted.id } : item));
+        }
 
         // Background: call kie.ai for GPT Image-2 and update row when ready
-        if (isPending && inserted?.id && kie) {
+        if (isPending && inserted?.id) {
           (async () => {
             try {
               const { data, error } = await supabase.functions.invoke("kie-image-generate", {
-                body: { prompt, aspect_ratio: kie.aspect_ratio },
+                body: { prompt, aspect_ratio: kie?.aspect_ratio || "auto" },
               });
               if (error || data?.error || !data?.imageUrl) {
                 toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
                 await supabase.from("collection_images").delete().eq("id", inserted.id);
-                setGenerated(p => !p);
+                setCreations(prev => prev.filter(item => item.id !== inserted.id));
                 return;
               }
               await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", inserted.id);
+              setCreations(prev => prev.map(item => item.id === inserted.id ? { ...item, image_url: data.imageUrl } : item));
               toast({ title: "Generation complete!", description: "Your image is ready below." });
               setGenerated(p => !p);
             } catch (e) {
               console.error("kie generation failed:", e);
               toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
+              setCreations(prev => prev.filter(item => item.id !== inserted.id));
             }
           })();
         }
       } catch (e) {
         console.error("Failed to save creation:", e);
+        if (optimisticCreation) setCreations(prev => prev.filter(item => item.id !== optimisticId));
       }
     }
   };
