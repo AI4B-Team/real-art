@@ -3950,37 +3950,62 @@ function CreationCard({ item, idx, handlers }: { item: UserCreation; idx?: numbe
 
   if (isPending) {
     return (
-      <div className="group relative rounded-2xl overflow-hidden aspect-square border border-foreground/[0.08] bg-[linear-gradient(135deg,hsl(var(--background)),hsl(var(--muted)/0.4))]">
-        {/* Animated gradient mesh background */}
-        <div className="absolute inset-0 opacity-70">
-          <div className="absolute -inset-[20%] bg-[radial-gradient(circle_at_30%_20%,hsl(var(--accent)/0.35),transparent_55%),radial-gradient(circle_at_70%_80%,hsl(var(--primary)/0.25),transparent_55%)] animate-[spin_14s_linear_infinite]" />
+      <div className="group relative rounded-[20px] overflow-hidden aspect-square border border-foreground/[0.06] bg-[linear-gradient(155deg,hsl(var(--background))_0%,hsl(var(--muted)/0.35)_60%,hsl(var(--accent)/0.08)_100%)] shadow-[0_20px_60px_-30px_hsl(var(--accent)/0.45),inset_0_1px_0_0_hsl(var(--foreground)/0.04)]">
+        {/* Soft aurora mesh */}
+        <div className="absolute inset-0">
+          <div className="absolute -inset-[30%] bg-[radial-gradient(circle_at_25%_20%,hsl(var(--accent)/0.28),transparent_50%),radial-gradient(circle_at_80%_75%,hsl(var(--primary)/0.18),transparent_55%),radial-gradient(circle_at_50%_50%,hsl(var(--accent)/0.10),transparent_60%)] animate-[spin_22s_linear_infinite] blur-2xl" />
         </div>
+        {/* Fine grain noise overlay */}
+        <div className="absolute inset-0 opacity-[0.035] mix-blend-overlay" style={{ backgroundImage: "url(\"data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.6'/></svg>\")" }} />
         {/* Shimmer sweep */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -inset-y-4 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-foreground/[0.08] to-transparent skew-x-12 animate-[shimmer_2.2s_ease-in-out_infinite]" />
+          <div className="absolute -inset-y-4 -left-1/2 w-2/3 bg-gradient-to-r from-transparent via-foreground/[0.06] to-transparent skew-x-12 animate-[shimmer_2.6s_ease-in-out_infinite]" />
         </div>
+
+        {/* Top status pill */}
+        <div className="absolute top-3 left-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-background/70 backdrop-blur-md border border-foreground/[0.06] shadow-sm">
+          <span className="relative flex h-1.5 w-1.5">
+            <span className="absolute inline-flex h-full w-full rounded-full bg-accent opacity-75 animate-ping" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-accent" />
+          </span>
+          <span className="text-[0.6rem] font-semibold tracking-[0.14em] uppercase text-foreground/70">Generating</span>
+        </div>
+
         {/* Content */}
-        <div className="relative h-full w-full flex flex-col items-center justify-center text-center px-5 z-10">
-          <div className="relative mb-4">
-            <div className="absolute inset-0 rounded-full bg-accent/30 blur-xl animate-pulse" />
-            <div className="relative w-12 h-12 rounded-full bg-background/80 backdrop-blur-sm border border-accent/30 flex items-center justify-center shadow-[0_8px_24px_-6px_hsl(var(--accent)/0.4)]">
-              <Sparkles className="w-5 h-5 text-accent animate-pulse" />
+        <div className="relative h-full w-full flex flex-col items-center justify-center text-center px-6 z-10">
+          {/* Premium orbital spinner */}
+          <div className="relative mb-5 w-16 h-16">
+            <div className="absolute inset-0 rounded-full bg-accent/25 blur-2xl animate-pulse" />
+            <div className="absolute inset-0 rounded-full border border-foreground/[0.08]" />
+            <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-accent border-r-accent/40 animate-spin [animation-duration:1.6s]" />
+            <div className="absolute inset-1.5 rounded-full border border-transparent border-b-accent/60 animate-spin [animation-duration:2.4s] [animation-direction:reverse]" />
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-full bg-background/90 backdrop-blur-sm border border-foreground/[0.06] flex items-center justify-center shadow-[0_8px_20px_-6px_hsl(var(--accent)/0.5)]">
+                <Sparkles className="w-4 h-4 text-accent" />
+              </div>
             </div>
           </div>
-          <p className="text-[0.82rem] font-display font-semibold text-foreground tracking-tight flex items-center gap-1">
-            Crafting Your Vision
-            <span className="inline-flex gap-0.5 ml-0.5">
-              <span className="w-1 h-1 rounded-full bg-accent animate-[bounce_1s_infinite_0ms]" />
-              <span className="w-1 h-1 rounded-full bg-accent animate-[bounce_1s_infinite_150ms]" />
-              <span className="w-1 h-1 rounded-full bg-accent animate-[bounce_1s_infinite_300ms]" />
-            </span>
+
+          <p className="text-[0.78rem] font-display font-semibold text-foreground tracking-tight">
+            Crafting your vision
           </p>
-          <p className="text-[0.7rem] text-muted line-clamp-2 mt-1.5 max-w-[85%] italic">
+          <p className="text-[0.68rem] text-muted-foreground/70 line-clamp-2 mt-1.5 max-w-[85%] italic font-light leading-relaxed">
             "{item.title || "Your creation"}"
           </p>
+
           {/* Progress bar */}
-          <div className="absolute bottom-4 left-5 right-5 h-1 rounded-full bg-foreground/[0.06] overflow-hidden">
-            <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-accent/60 via-accent to-accent/60 animate-[slide_1.8s_ease-in-out_infinite]" />
+          <div className="absolute bottom-5 left-6 right-6">
+            <div className="h-[3px] rounded-full bg-foreground/[0.05] overflow-hidden">
+              <div className="h-full w-1/3 rounded-full bg-gradient-to-r from-transparent via-accent to-transparent animate-[slide_2s_ease-in-out_infinite]" />
+            </div>
+            <div className="mt-2 flex items-center justify-between text-[0.55rem] tracking-[0.18em] uppercase text-muted-foreground/60 font-medium">
+              <span>Rendering</span>
+              <span className="inline-flex gap-0.5">
+                <span className="w-0.5 h-0.5 rounded-full bg-accent animate-[bounce_1s_infinite_0ms]" />
+                <span className="w-0.5 h-0.5 rounded-full bg-accent animate-[bounce_1s_infinite_150ms]" />
+                <span className="w-0.5 h-0.5 rounded-full bg-accent animate-[bounce_1s_infinite_300ms]" />
+              </span>
+            </div>
           </div>
         </div>
       </div>
