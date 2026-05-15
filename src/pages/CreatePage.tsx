@@ -4199,7 +4199,7 @@ export default function CreatePage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [appConversation, appIsThinking]);
 
-  const handleGenerate = async ({ type, prompt, subMode, imageUrl, kie }: { type: ContentType | null; prompt: string; subMode: string | null; imageUrl?: string; kie?: { aspect_ratio: string } }) => {
+  const handleGenerate = async ({ type, prompt, subMode, imageUrl, model, aspectRatio, kie }: { type: ContentType | null; prompt: string; subMode: string | null; imageUrl?: string; model?: string; aspectRatio?: string; kie?: { aspect_ratio: string } }) => {
     // Ebook: redirect to Ebook Creator app with prompt data
     if (type === "document" && subMode === "ebook") {
       navigate("/ebook-creator/new?source=ai-generate", {
@@ -4235,6 +4235,9 @@ export default function CreatePage() {
         type: "image",
         created_at: new Date().toISOString(),
         liked: false,
+        prompt,
+        model: model || "Flux Pro",
+        aspect_ratio: aspectRatio || kie?.aspect_ratio || "1:1",
       } : null;
 
       if (optimisticCreation) {
