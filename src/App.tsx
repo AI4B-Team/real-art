@@ -65,6 +65,7 @@ import TranscriptDetailPage from "./pages/TranscriptDetailPage";
 import EditorPage from "./pages/EditorPage";
 import LandingPage from "./pages/LandingPage";
 import SharedEbookPage from "./pages/SharedEbookPage";
+import FsaosDemoPage from "./pages/FsaosDemoPage";
 
 const queryClient = new QueryClient();
 
@@ -148,6 +149,9 @@ const App = () => (
             <Route path="/transcribe" element={<TranscribePage />} />
             <Route path="/transcribe/:id" element={<TranscriptDetailPage />} />
             <Route path="/editor" element={<EditorPage />} />
+
+            {/* FSAOS Gateway SDK Demo */}
+            <Route path="/fsaos-demo" element={<FsaosDemoPage />} />
 
             {/* Landing (handled above, no 404) */}
             <Route path="/landing" element={null} />
