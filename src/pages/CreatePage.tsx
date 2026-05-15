@@ -4590,6 +4590,7 @@ export default function CreatePage() {
   const creationHandlers: CreationCardHandlers = {
     onDelete: async (id: string) => {
       setCreations(prev => prev.filter(c => c.id !== id));
+      forgetCreationMeta(id);
       try {
         const raw = localStorage.getItem("guestCreations");
         if (raw) {
@@ -4615,6 +4616,8 @@ export default function CreatePage() {
       });
     },
     onTogglePublic: async (id: string, next: boolean) => {
+      rememberCreationMeta(id, { is_public: next });
+      setCreations(prev => prev.map(c => c.id === id ? { ...c, is_public: next } : c));
       if (id.startsWith("processing-")) return;
       try {
         const { data: img } = await supabase.from("collection_images").select("collection_id").eq("id", id).maybeSingle();
