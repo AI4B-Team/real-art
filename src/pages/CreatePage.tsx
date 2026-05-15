@@ -252,6 +252,23 @@ type UserCreation = {
 };
 
 const PROCESSING_IMAGE_URL = "https://placehold.co/800x800/f1f5f9/94a3b8?text=Processing...";
+const CREATION_META_STORAGE_KEY = "realCreatorCreationMeta";
+
+const readCreationMeta = (): Record<string, Partial<UserCreation>> => {
+  try {
+    return JSON.parse(localStorage.getItem(CREATION_META_STORAGE_KEY) || "{}");
+  } catch {
+    return {};
+  }
+};
+
+const rememberCreationMeta = (id: string, patch: Partial<UserCreation>) => {
+  try {
+    const meta = readCreationMeta();
+    meta[id] = { ...(meta[id] || {}), ...patch };
+    localStorage.setItem(CREATION_META_STORAGE_KEY, JSON.stringify(meta));
+  } catch {}
+};
 
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
