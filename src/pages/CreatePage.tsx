@@ -270,6 +270,14 @@ const rememberCreationMeta = (id: string, patch: Partial<UserCreation>) => {
   } catch {}
 };
 
+const forgetCreationMeta = (id: string) => {
+  try {
+    const meta = readCreationMeta();
+    delete meta[id];
+    localStorage.setItem(CREATION_META_STORAGE_KEY, JSON.stringify(meta));
+  } catch {}
+};
+
 const DUMMY_APPS = [
   { id: "a1", icon: Bot,          name: "Prompt Enhancer",    desc: "Supercharge any prompt with AI",       users: "12.4k", color: "bg-emerald-50 text-emerald-600",  badge: "Popular" },
   { id: "a2", icon: Wand2,        name: "Style Transfer",     desc: "Apply any visual style to your images", users: "8.1k",  color: "bg-purple-50 text-purple-600",   badge: "New" },
