@@ -1515,6 +1515,22 @@ const NewEbookPage = () => {
                   </PopoverContent>
                 </Popover>
 
+                {/* Brand */}
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button onClick={handleBrandClick}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${brandActive ? "bg-accent text-white" : "bg-foreground/[0.05] text-foreground hover:bg-foreground/[0.08]"}`}>
+                      <Palette size={13} />
+                      Brand{brandActive ? ": On" : ""}
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {isBrandProfileSetup()
+                      ? (brandActive ? "Using your brand voice & style" : "Apply your brand voice & style")
+                      : "Set up your brand profile to write in your voice"}
+                  </TooltipContent>
+                </Tooltip>
+
                 <div className="flex-1" />
                 {/* Send button */}
                 <button id="ghost-ink-generate-btn" onClick={handleGenerate} disabled={isGenerating || !bookData.prompt.trim()}
