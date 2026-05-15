@@ -3990,7 +3990,7 @@ export default function CreatePage() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [appConversation, appIsThinking]);
 
-  const handleGenerate = async ({ type, prompt, subMode, imageUrl }: { type: ContentType | null; prompt: string; subMode: string | null; imageUrl?: string }) => {
+  const handleGenerate = async ({ type, prompt, subMode, imageUrl, kie }: { type: ContentType | null; prompt: string; subMode: string | null; imageUrl?: string; kie?: { aspect_ratio: string } }) => {
     // Ebook: redirect to Ebook Creator app with prompt data
     if (type === "document" && subMode === "ebook") {
       navigate("/ebook-creator/new?source=ai-generate", {
@@ -4017,39 +4017,68 @@ export default function CreatePage() {
         setAppPreviewContent(prompt);
       }, 3000);
     } else {
-      // Save creation to database
+      // Save creation to database — insert immediately with a pending state, then resolve in background
       try {
         const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          // Get or create a default "My Creations" collection
-          let collectionId: string | null = null;
-          const { data: existingCols } = await supabase
-            .from("collections")
-            .select("id")
-            .eq("user_id", user.id)
-            .eq("name", "My Creations")
-            .limit(1);
-          if (existingCols && existingCols.length > 0) {
-            collectionId = existingCols[0].id;
-          } else {
-            const { data: newCol } = await supabase
-              .from("collections")
-              .insert({ user_id: user.id, name: "My Creations", is_public: false })
-              .select("id")
-              .single();
-            if (newCol) collectionId = newCol.id;
-          }
+        if (!user) { setGenerated(p => !p); return; }
 
-          if (collectionId) {
-            const placeholderUrl = imageUrl || `https://picsum.photos/seed/${Date.now()}/800/800`;
-            const creationType = type || "image";
-            await supabase.from("collection_images").insert({
-              collection_id: collectionId,
-              user_id: user.id,
-              image_url: placeholderUrl,
-              title: prompt.slice(0, 100) || `${creationType} creation`,
-              image_prompt: prompt,
-            });
+        // Get or create a default "My Creations" collection
+        let collectionId: string | null = null;
+        const { data: existingCols } = await supabase
+          .from("collections").select("id")
+          .eq("user_id", user.id).eq("name", "My Creations").limit(1);
+        if (existingCols && existingCols.length > 0) {
+          collectionId = existingCols[0].id;
+        } else {
+          const { data: newCol } = await supabase
+            .from("collections")
+            .insert({ user_id: user.id, name: "My Creations", is_public: false })
+            .select("id").single();
+          if (newCol) collectionId = newCol.id;
+        }
+        if (!collectionId) return;
+
+        const isPending = !!kie && !imageUrl;
+        const placeholderUrl = imageUrl || (isPending
+          ? `https://placehold.co/800x800/f1f5f9/94a3b8?text=Generating...`
+          : `https://picsum.photos/seed/${Date.now()}/800/800`);
+        const creationType = type || "image";
+        const { data: inserted } = await supabase.from("collection_images").insert({
+          collection_id: collectionId,
+          user_id: user.id,
+          image_url: placeholderUrl,
+          title: prompt.slice(0, 100) || `${creationType} creation`,
+          image_prompt: prompt,
+        }).select("id").single();
+        setGenerated(p => !p);
+
+        // Background: call kie.ai for GPT Image-2 and update row when ready
+        if (isPending && inserted?.id && kie) {
+          (async () => {
+            try {
+              const { data, error } = await supabase.functions.invoke("kie-image-generate", {
+                body: { prompt, aspect_ratio: kie.aspect_ratio },
+              });
+              if (error || data?.error || !data?.imageUrl) {
+                toast({ title: "Generation failed", description: data?.error || error?.message || "Please try again.", variant: "destructive" });
+                await supabase.from("collection_images").delete().eq("id", inserted.id);
+                setGenerated(p => !p);
+                return;
+              }
+              await supabase.from("collection_images").update({ image_url: data.imageUrl }).eq("id", inserted.id);
+              toast({ title: "Generation complete!", description: "Your image is ready below." });
+              setGenerated(p => !p);
+            } catch (e) {
+              console.error("kie generation failed:", e);
+              toast({ title: "Generation failed", description: e instanceof Error ? e.message : "Please try again.", variant: "destructive" });
+            }
+          })();
+        }
+      } catch (e) {
+        console.error("Failed to save creation:", e);
+      }
+    }
+  };
           }
         }
       } catch (e) {
