@@ -560,8 +560,8 @@ const AccountPage = () => {
                     <div className="flex items-center gap-2 text-sm text-muted mb-2">
                       <Zap className="w-4 h-4 text-accent" /> Current Plan
                     </div>
-                    <div className="text-2xl font-bold mb-0.5">Pro</div>
-                    <p className="text-sm text-muted mb-4">$47/Month</p>
+                    <div className="text-2xl font-bold mb-0.5">{planData.name}</div>
+                    <p className="text-sm text-muted mb-4">{planData.price === 0 ? "Free" : `$${planData.price}/Month`}</p>
                     <div className="flex gap-2">
                       <Link to="/pricing">
                         <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Change Plan</button>
