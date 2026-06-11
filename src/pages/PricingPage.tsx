@@ -123,6 +123,7 @@ const PricingPage = () => {
       features: [
         { name: "Community Access", free: true, starter: true, creator: true, pro: true },
         { name: "Community Creation", free: false, starter: "1", creator: "5", pro: "Unlimited" },
+        { name: "Private Community Fee", free: false, starter: "+$5/mo each", creator: "+$5/mo each", pro: "+$5/mo each" },
         { name: "Challenge Participation", free: true, starter: true, creator: true, pro: true },
         { name: "Challenge Creation", free: false, starter: false, creator: true, pro: true },
         { name: "Leaderboard Access", free: true, starter: true, creator: true, pro: true },
