@@ -21,6 +21,15 @@ const perks = [
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const selectedPlan = searchParams.get("plan");
+
+  useEffect(() => {
+    if (selectedPlan && ["starter", "creator", "pro"].includes(selectedPlan)) {
+      try { sessionStorage.setItem("ra_pending_plan", selectedPlan); } catch {}
+    }
+  }, [selectedPlan]);
+
   const [step, setStep] = useState<"email" | "details" | "done">("email");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
