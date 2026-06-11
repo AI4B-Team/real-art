@@ -361,7 +361,7 @@ const CommunityDetailPage = () => {
                         >
                           <DollarSign className="w-4 h-4" /> Pay $29 — Unlock Now
                         </button>
-                        <p className="text-[0.72rem] text-muted text-center">Secure checkout. Money-back guarantee within 7 days if you're not happy.</p>
+                        <p className="text-[0.72rem] text-muted text-center">Secure checkout. 30-day money-back guarantee if you're not happy.</p>
                       </div>
                     )}
 
