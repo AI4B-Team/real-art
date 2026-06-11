@@ -465,7 +465,7 @@ const PricingPage = () => {
             </p>
             <Link to="/signup">
               <Button size="lg" className="bg-accent hover:bg-accent/90 text-white rounded-lg">
-                Start Free
+                Get Started Free
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>
