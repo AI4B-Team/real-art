@@ -160,8 +160,9 @@ const PricingPage = () => {
       ],
     },
     {
-      name: "Support & Extras",
+      name: "Team & Support",
       features: [
+        { name: "Team Members", free: "1 (solo)", starter: "1 (solo)", creator: "3", pro: "10" },
         { name: "Email Support", free: true, starter: true, creator: true, pro: true },
         { name: "Priority Support", free: false, starter: false, creator: true, pro: true },
         { name: "API Access", free: false, starter: false, creator: false, pro: true },
