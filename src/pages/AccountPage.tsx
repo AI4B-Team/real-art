@@ -176,12 +176,16 @@ const AccountPage = () => {
     toast({ title: "Email Added", description: "Additional recipient has been added." });
   };
 
+  // Plan resolution mirrors the planData block below — kept inline so the sidebar badge stays in sync.
+  const _sidebarPlanTier = (typeof window !== "undefined" && localStorage.getItem("ra_plan_tier")) || "free";
+  const _sidebarPlanName = ({ free: "Free", starter: "Starter", creator: "Creator", pro: "Pro" } as Record<string, string>)[_sidebarPlanTier] ?? "Free";
+
   const tabs: { id: TabId; label: string; icon: typeof User; badge?: string }[] = [
     { id: "profile", label: "Account", icon: Settings },
     { id: "admin", label: "Admin", icon: Shield },
     { id: "security", label: "Security", icon: Lock },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "subscription", label: "Subscription", icon: CreditCard, badge: "Pro" },
+    { id: "subscription", label: "Subscription", icon: CreditCard, badge: _sidebarPlanName },
     { id: "social", label: "Social", icon: Share2 },
     { id: "spaces", label: "Spaces", icon: LayoutGrid },
     { id: "agent", label: "Agent", icon: Bot },
