@@ -291,7 +291,13 @@ const PricingPage = () => {
                       )}
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
+                    <p className="text-sm text-muted-foreground mb-3">{plan.description}</p>
+
+                    {plan.trial && (
+                      <p className="text-xs font-medium text-accent mb-4 flex items-center gap-1.5">
+                        <Sparkles className="h-3 w-3" /> 7-day free trial · No card required
+                      </p>
+                    )}
 
                     <Link to={plan.href}>
                       <Button
