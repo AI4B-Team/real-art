@@ -241,7 +241,7 @@ const PricingPage = () => {
               </span>
               {isAnnual && (
                 <Badge variant="secondary" className="bg-accent/15 text-accent border-0">
-                  Save 20%
+                  Save Up To 20%
                 </Badge>
               )}
             </div>
