@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, Check, Download, DollarSign, Users, Eye, EyeOff } from "lucide-react";
 import MinimalHeader from "@/components/MinimalHeader";
 import LanguageSelector from "@/components/LanguageSelector";
@@ -21,6 +21,15 @@ const perks = [
 
 const SignUpPage = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const selectedPlan = searchParams.get("plan");
+
+  useEffect(() => {
+    if (selectedPlan && ["starter", "creator", "pro"].includes(selectedPlan)) {
+      try { sessionStorage.setItem("ra_pending_plan", selectedPlan); } catch {}
+    }
+  }, [selectedPlan]);
+
   const [step, setStep] = useState<"email" | "details" | "done">("email");
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
@@ -201,7 +210,7 @@ const SignUpPage = () => {
                 {errors.agreed && <p className="text-[0.75rem] text-red-500 mb-3">{errors.agreed}</p>}
 
                 <button
-                  onClick={() => { if (validateDetails()) { try { localStorage.setItem("ra_auth", "1"); localStorage.setItem("ra_username", username); const display = username.replace(/[._]/g, " ").replace(/\b\w/g, c => c.toUpperCase()); localStorage.setItem("ra_display", display); localStorage.setItem("ra_new_user", "1"); window.dispatchEvent(new Event("ra_auth_changed")); } catch {} setStep("done"); } }}
+                  onClick={() => { if (validateDetails()) { try { localStorage.setItem("ra_auth", "1"); localStorage.setItem("ra_username", username); const display = username.replace(/[._]/g, " ").replace(/\b\w/g, c => c.toUpperCase()); localStorage.setItem("ra_display", display); localStorage.setItem("ra_new_user", "1"); const pending = sessionStorage.getItem("ra_pending_plan"); if (pending) { localStorage.setItem("ra_plan_tier", pending); sessionStorage.removeItem("ra_pending_plan"); } window.dispatchEvent(new Event("ra_auth_changed")); } catch {} setStep("done"); } }}
                   className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mt-5 mb-5"
                 >
                   Create Account — Free

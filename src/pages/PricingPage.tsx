@@ -23,10 +23,11 @@ const PricingPage = () => {
       popular: false,
       href: "/signup",
       iconColor: "bg-blue-600",
+      trial: false,
       highlights: [
-        "10 AI images/month",
-        "2 AI videos/month",
+        "5 AI images/month",
         "Basic video editor",
+        "3 ebooks",
         "500 MB storage",
       ],
     },
@@ -36,14 +37,15 @@ const PricingPage = () => {
       monthlyPrice: 7,
       annualPrice: 6,
       description: "Great for individuals getting started",
-      buttonText: "Start Free",
+      buttonText: "Start Free Trial",
       buttonVariant: "outline" as const,
       popular: false,
       href: "/signup?plan=starter",
       iconColor: "bg-green-500",
+      trial: true,
       highlights: [
         "100 AI images/month",
-        "20 AI videos/month",
+        "10 AI videos/month",
         "Voice cloning (3 voices)",
         "5 GB storage",
       ],
@@ -54,14 +56,15 @@ const PricingPage = () => {
       monthlyPrice: 47,
       annualPrice: 38,
       description: "For creators who want to grow faster",
-      buttonText: "Start Free",
+      buttonText: "Start Free Trial",
       buttonVariant: "default" as const,
       popular: true,
       href: "/signup?plan=creator",
       iconColor: "bg-accent",
+      trial: true,
       highlights: [
         "500 AI images/month",
-        "100 AI videos/month",
+        "50 AI videos/month",
         "AI Agents (3 automations)",
         "50 GB storage",
       ],
@@ -72,11 +75,12 @@ const PricingPage = () => {
       monthlyPrice: 97,
       annualPrice: 78,
       description: "For professionals and teams",
-      buttonText: "Start Free",
+      buttonText: "Start Free Trial",
       buttonVariant: "outline" as const,
       popular: false,
       href: "/signup?plan=pro",
       iconColor: "bg-amber-500",
+      trial: true,
       highlights: [
         "Unlimited AI generation",
         "White label & API access",
@@ -93,6 +97,9 @@ const PricingPage = () => {
         { name: "AI Image Generation", free: "5/mo", starter: "100/mo", creator: "500/mo", pro: "Unlimited" },
         { name: "AI Video Generation", free: false, starter: "10/mo", creator: "50/mo", pro: "Unlimited" },
         { name: "AI Music Generation", free: false, starter: "5 tracks", creator: "30 tracks", pro: "Unlimited" },
+        { name: "Voice Cloning", free: false, starter: "3 voices", creator: "10 voices", pro: "Unlimited" },
+        { name: "AI Agents", free: false, starter: false, creator: "3 automations", pro: "Unlimited" },
+        { name: "Ebook Creation", free: "3 ebooks", starter: "20 ebooks", creator: "Unlimited", pro: "Unlimited" },
         { name: "Style Transfer", free: "3/mo", starter: "30/mo", creator: "Unlimited", pro: "Unlimited" },
         { name: "Image Upscaling", free: "3/mo", starter: "50/mo", creator: "Unlimited", pro: "Unlimited" },
         { name: "Prompt Library Access", free: "Basic", starter: "Full", creator: "Full + Packs", pro: "Full + Packs" },
@@ -116,6 +123,7 @@ const PricingPage = () => {
       features: [
         { name: "Community Access", free: true, starter: true, creator: true, pro: true },
         { name: "Community Creation", free: false, starter: "1", creator: "5", pro: "Unlimited" },
+        { name: "Private Community Fee", free: false, starter: "+$5/mo each", creator: "+$5/mo each", pro: "+$5/mo each" },
         { name: "Challenge Participation", free: true, starter: true, creator: true, pro: true },
         { name: "Challenge Creation", free: false, starter: false, creator: true, pro: true },
         { name: "Leaderboard Access", free: true, starter: true, creator: true, pro: true },
@@ -152,8 +160,9 @@ const PricingPage = () => {
       ],
     },
     {
-      name: "Support & Extras",
+      name: "Team & Support",
       features: [
+        { name: "Team Members", free: "1 (solo)", starter: "1 (solo)", creator: "3", pro: "10" },
         { name: "Email Support", free: true, starter: true, creator: true, pro: true },
         { name: "Priority Support", free: false, starter: false, creator: true, pro: true },
         { name: "API Access", free: false, starter: false, creator: false, pro: true },
@@ -174,7 +183,7 @@ const PricingPage = () => {
     },
     {
       question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards (Visa, MasterCard, American Express) and PayPal.",
+      answer: "We accept all major credit cards via Stripe (Visa, Mastercard, Amex, Discover), plus Apple Pay and Google Pay at checkout.",
     },
     {
       question: "What happens when I exceed my limits?",
@@ -232,7 +241,7 @@ const PricingPage = () => {
               </span>
               {isAnnual && (
                 <Badge variant="secondary" className="bg-accent/15 text-accent border-0">
-                  Save 20%
+                  Save Up To 20%
                 </Badge>
               )}
             </div>
@@ -282,7 +291,13 @@ const PricingPage = () => {
                       )}
                     </div>
 
-                    <p className="text-sm text-muted-foreground mb-6">{plan.description}</p>
+                    <p className="text-sm text-muted-foreground mb-3">{plan.description}</p>
+
+                    {plan.trial && (
+                      <p className="text-xs font-medium text-accent mb-4 flex items-center gap-1.5">
+                        <Sparkles className="h-3 w-3" /> 7-day free trial · No card required
+                      </p>
+                    )}
 
                     <Link to={plan.href}>
                       <Button
@@ -399,6 +414,31 @@ const PricingPage = () => {
           </div>
         </section>
 
+        {/* Add-Ons Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="font-display text-3xl font-bold text-center mb-4">Optional Add-Ons</h2>
+            <p className="text-muted-foreground text-center mb-10">Available on any paid plan when you need more.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-1">Credits Pack</h3>
+                <p className="text-2xl font-bold mb-2">$15<span className="text-base font-normal text-muted-foreground">/pack/mo</span></p>
+                <p className="text-sm text-muted-foreground">Top up your monthly AI generation quota whenever you run out.</p>
+              </Card>
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-1">Extra Space</h3>
+                <p className="text-2xl font-bold mb-2">$9<span className="text-base font-normal text-muted-foreground">/space/mo</span></p>
+                <p className="text-sm text-muted-foreground">Add an isolated workspace for a client or project beyond your plan's included spaces.</p>
+              </Card>
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-1">Private Community</h3>
+                <p className="text-2xl font-bold mb-2">$5<span className="text-base font-normal text-muted-foreground">/community/mo</span></p>
+                <p className="text-sm text-muted-foreground">Run a paid private community with Stripe-powered access. Billed per private community.</p>
+              </Card>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ Section */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
           <div className="max-w-3xl mx-auto">
@@ -425,7 +465,7 @@ const PricingPage = () => {
             </p>
             <Link to="/signup">
               <Button size="lg" className="bg-accent hover:bg-accent/90 text-white rounded-lg">
-                Start Free
+                Get Started Free
                 <ArrowRight className="h-4 w-4 ml-2" />
               </Button>
             </Link>

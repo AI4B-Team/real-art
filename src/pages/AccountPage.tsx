@@ -176,12 +176,16 @@ const AccountPage = () => {
     toast({ title: "Email Added", description: "Additional recipient has been added." });
   };
 
+  // Plan resolution mirrors the planData block below — kept inline so the sidebar badge stays in sync.
+  const _sidebarPlanTier = (typeof window !== "undefined" && localStorage.getItem("ra_plan_tier")) || "free";
+  const _sidebarPlanName = ({ free: "Free", starter: "Starter", creator: "Creator", pro: "Pro" } as Record<string, string>)[_sidebarPlanTier] ?? "Free";
+
   const tabs: { id: TabId; label: string; icon: typeof User; badge?: string }[] = [
     { id: "profile", label: "Account", icon: Settings },
     { id: "admin", label: "Admin", icon: Shield },
     { id: "security", label: "Security", icon: Lock },
     { id: "notifications", label: "Notifications", icon: Bell },
-    { id: "subscription", label: "Subscription", icon: CreditCard, badge: "Pro" },
+    { id: "subscription", label: "Subscription", icon: CreditCard, badge: _sidebarPlanName },
     { id: "social", label: "Social", icon: Share2 },
     { id: "spaces", label: "Spaces", icon: LayoutGrid },
     { id: "agent", label: "Agent", icon: Bot },
@@ -192,7 +196,15 @@ const AccountPage = () => {
   ];
 
   const BIO_MAX = 200;
-  const planData = { name: "Free", price: 0 };
+  // TODO: replace with fetch from profiles.plan_tier once backend wires up the subscription field.
+  const PLAN_CATALOG: Record<string, { name: string; price: number }> = {
+    free: { name: "Free", price: 0 },
+    starter: { name: "Starter", price: 7 },
+    creator: { name: "Creator", price: 47 },
+    pro: { name: "Pro", price: 97 },
+  };
+  const currentPlanTier = (typeof window !== "undefined" && localStorage.getItem("ra_plan_tier")) || "free";
+  const planData = PLAN_CATALOG[currentPlanTier] ?? PLAN_CATALOG.free;
   const credits = { used: 3, total: 5, refillDate: "Apr 1" };
   const creditPct = (credits.used / credits.total) * 100;
 
@@ -552,8 +564,8 @@ const AccountPage = () => {
                     <div className="flex items-center gap-2 text-sm text-muted mb-2">
                       <Zap className="w-4 h-4 text-accent" /> Current Plan
                     </div>
-                    <div className="text-2xl font-bold mb-0.5">Pro</div>
-                    <p className="text-sm text-muted mb-4">$47/Month</p>
+                    <div className="text-2xl font-bold mb-0.5">{planData.name}</div>
+                    <p className="text-sm text-muted mb-4">{planData.price === 0 ? "Free" : `$${planData.price}/Month`}</p>
                     <div className="flex gap-2">
                       <Link to="/pricing">
                         <button className="bg-accent hover:bg-accent/90 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">Change Plan</button>
