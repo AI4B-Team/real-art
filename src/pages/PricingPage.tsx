@@ -414,6 +414,31 @@ const PricingPage = () => {
           </div>
         </section>
 
+        {/* Add-Ons Section */}
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-5xl mx-auto">
+            <h2 className="font-display text-3xl font-bold text-center mb-4">Optional Add-Ons</h2>
+            <p className="text-muted-foreground text-center mb-10">Available on any paid plan when you need more.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-1">Credits Pack</h3>
+                <p className="text-2xl font-bold mb-2">$15<span className="text-base font-normal text-muted-foreground">/pack/mo</span></p>
+                <p className="text-sm text-muted-foreground">Top up your monthly AI generation quota whenever you run out.</p>
+              </Card>
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-1">Extra Space</h3>
+                <p className="text-2xl font-bold mb-2">$9<span className="text-base font-normal text-muted-foreground">/space/mo</span></p>
+                <p className="text-sm text-muted-foreground">Add an isolated workspace for a client or project beyond your plan's included spaces.</p>
+              </Card>
+              <Card className="p-6">
+                <h3 className="text-lg font-semibold mb-1">Private Community</h3>
+                <p className="text-2xl font-bold mb-2">$5<span className="text-base font-normal text-muted-foreground">/community/mo</span></p>
+                <p className="text-sm text-muted-foreground">Run a paid private community with Stripe-powered access. Billed per private community.</p>
+              </Card>
+            </div>
+          </div>
+        </section>
+
         {/* FAQ Section */}
         <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
           <div className="max-w-3xl mx-auto">
