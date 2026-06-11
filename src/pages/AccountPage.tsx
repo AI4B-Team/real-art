@@ -192,7 +192,15 @@ const AccountPage = () => {
   ];
 
   const BIO_MAX = 200;
-  const planData = { name: "Free", price: 0 };
+  // TODO: replace with fetch from profiles.plan_tier once backend wires up the subscription field.
+  const PLAN_CATALOG: Record<string, { name: string; price: number }> = {
+    free: { name: "Free", price: 0 },
+    starter: { name: "Starter", price: 7 },
+    creator: { name: "Creator", price: 47 },
+    pro: { name: "Pro", price: 97 },
+  };
+  const currentPlanTier = (typeof window !== "undefined" && localStorage.getItem("ra_plan_tier")) || "free";
+  const planData = PLAN_CATALOG[currentPlanTier] ?? PLAN_CATALOG.free;
   const credits = { used: 3, total: 5, refillDate: "Apr 1" };
   const creditPct = (credits.used / credits.total) * 100;
 
