@@ -183,7 +183,7 @@ const PricingPage = () => {
     },
     {
       question: "What payment methods do you accept?",
-      answer: "We accept all major credit cards (Visa, MasterCard, American Express) and PayPal.",
+      answer: "We accept all major credit cards via Stripe (Visa, Mastercard, Amex, Discover), plus Apple Pay and Google Pay at checkout.",
     },
     {
       question: "What happens when I exceed my limits?",
