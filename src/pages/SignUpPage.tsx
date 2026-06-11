@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowRight, Check, Download, DollarSign, Users, Eye, EyeOff } from "lucide-react";
 import MinimalHeader from "@/components/MinimalHeader";
 import LanguageSelector from "@/components/LanguageSelector";
