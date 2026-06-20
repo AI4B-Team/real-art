@@ -3973,6 +3973,13 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
           </div>
         )}
       </div>
+      <ImageToPromptModal
+        open={imageToPromptOpen}
+        onOpenChange={setImageToPromptOpen}
+        accept={selectedType === "video" ? "image/video" : "image"}
+        onPickFile={(file) => handleExtractPrompt(file)}
+        onPickUrl={(url) => handleExtractPrompt(url)}
+      />
     </TooltipProvider>
   );
 }
