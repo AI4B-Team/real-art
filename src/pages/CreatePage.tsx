@@ -1243,7 +1243,7 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      onClick={() => (selectedType === "image" || selectedType === "video") ? promptFileRef.current?.click() : undefined}
+                      onClick={() => (selectedType === "image" || selectedType === "video") ? setImageToPromptOpen(true) : undefined}
                       disabled={isExtractingPrompt}
                       className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors ${(selectedType === "image" || selectedType === "video") ? "cursor-pointer" : ""}`}
                     >
