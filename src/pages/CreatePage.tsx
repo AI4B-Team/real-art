@@ -917,18 +917,23 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     }
   };
 
-  const handleExtractPrompt = async (file: File) => {
+  const handleExtractPrompt = async (source: File | string) => {
     setIsExtractingPrompt(true);
     try {
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      let imageUrl: string;
+      if (typeof source === "string") {
+        imageUrl = source;
+      } else {
+        imageUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(source);
+        });
+      }
 
       const { data, error } = await supabase.functions.invoke("generate-prompts", {
-        body: { imageUrl: base64 },
+        body: { imageUrl },
       });
 
       if (error) throw error;
