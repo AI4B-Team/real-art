@@ -19,6 +19,7 @@ import {
   Link as LinkChain, Printer, Share2, Trash2, Maximize2,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import ImageToPromptModal from "@/components/create/ImageToPromptModal";
 
 const ChainLinkIcon = ({ size = 14, className = "" }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
@@ -389,6 +390,7 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
   const [isGenerating, setIsGenerating] = useState(false);
   const [isEnhancing, setIsEnhancing] = useState(false);
   const [isExtractingPrompt, setIsExtractingPrompt] = useState(false);
+  const [imageToPromptOpen, setImageToPromptOpen] = useState(false);
   const promptFileRef = useRef<HTMLInputElement>(null);
   const attachmentRef = useRef<HTMLInputElement>(null);
   const [attachments, setAttachments] = useState<{ name: string; url: string; type: string }[]>([]);
@@ -916,18 +918,23 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     }
   };
 
-  const handleExtractPrompt = async (file: File) => {
+  const handleExtractPrompt = async (source: File | string) => {
     setIsExtractingPrompt(true);
     try {
-      const base64 = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      let imageUrl: string;
+      if (typeof source === "string") {
+        imageUrl = source;
+      } else {
+        imageUrl = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(source);
+        });
+      }
 
       const { data, error } = await supabase.functions.invoke("generate-prompts", {
-        body: { imageUrl: base64 },
+        body: { imageUrl },
       });
 
       if (error) throw error;
@@ -1236,7 +1243,7 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
                   <TooltipTrigger asChild>
                     <button
                       type="button"
-                      onClick={() => (selectedType === "image" || selectedType === "video") ? promptFileRef.current?.click() : undefined}
+                      onClick={() => (selectedType === "image" || selectedType === "video") ? setImageToPromptOpen(true) : undefined}
                       disabled={isExtractingPrompt}
                       className={`p-1.5 rounded-lg bg-foreground/[0.06] ${typeCfg.color} hover:bg-foreground/[0.1] transition-colors ${(selectedType === "image" || selectedType === "video") ? "cursor-pointer" : ""}`}
                     >
@@ -3966,6 +3973,13 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
           </div>
         )}
       </div>
+      <ImageToPromptModal
+        open={imageToPromptOpen}
+        onOpenChange={setImageToPromptOpen}
+        accept={selectedType === "video" ? "image/video" : "image"}
+        onPickFile={(file) => handleExtractPrompt(file)}
+        onPickUrl={(url) => handleExtractPrompt(url)}
+      />
     </TooltipProvider>
   );
 }
