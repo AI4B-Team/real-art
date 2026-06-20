@@ -19,6 +19,7 @@ import {
   Link as LinkChain, Printer, Share2, Trash2, Maximize2,
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import ImageToPromptModal from "@/components/create/ImageToPromptModal";
 
 const ChainLinkIcon = ({ size = 14, className = "" }: { size?: number; className?: string }) => (
   <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
