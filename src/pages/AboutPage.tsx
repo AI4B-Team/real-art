@@ -22,7 +22,7 @@ const milestones = [
   { year: "Jan 2024", title: "Private beta", desc: "100 hand-picked creators. 12,000 images uploaded in the first month. The affiliate program was the feature they kept asking about." },
   { year: "Jun 2024", title: "Public launch", desc: "Opened to the public. 50,000 images uploaded in the first week. Downloads hit 100K within a month." },
   { year: "Dec 2024", title: "1M downloads", desc: "Hit 1 million downloads. Launched challenges, communities, and the leaderboard system." },
-  { year: "2025", title: "REAL CREATOR", desc: "Launched the AI creation suite. The flywheel between REAL CREATOR and REAL CREATOR began driving massive organic growth." },
+  { year: "2025", title: "REAL CREATOR", desc: "Launched the AI creation suite. The flywheel between the free image library and REAL CREATOR began driving massive organic growth." },
   { year: "2026", title: "Now", desc: "2.4M+ images. 84K+ creators. $284K paid out. And we're just getting started." },
 ];
 
