@@ -31,7 +31,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You write short, compelling collection descriptions for an AI art platform called REAL ART. Write 1-2 sentences max. Be vivid and enticing. Do not use quotes around the description. Do not mention the platform name. Just output the description text, nothing else.",
+            content: "You write short, compelling collection descriptions for an AI art platform called REAL CREATOR. Write 1-2 sentences max. Be vivid and enticing. Do not use quotes around the description. Do not mention the platform name. Just output the description text, nothing else.",
           },
           {
             role: "user",

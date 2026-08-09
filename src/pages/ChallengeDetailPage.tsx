@@ -21,7 +21,7 @@ const challengeData = {
     "Images must be original and generated specifically for this challenge",
     "All styles and AI tools welcome",
     "Up to 3 submissions per member",
-    "Must be a free REAL ART member to enter",
+    "Must be a free REAL CREATOR member to enter",
     "Judged on creativity, technical execution, and thematic adherence",
     "Winners announced 7 days after challenge closes",
   ],

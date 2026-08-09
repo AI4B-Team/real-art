@@ -11,7 +11,7 @@ const BottomCTA = () => {
           Your work<br />deserves to be <em className="italic font-normal text-accent">seen.</em>
         </h2>
         <p className="text-[0.9rem] text-primary-foreground/45 font-light leading-[1.65]">
-          Join 84,000+ creators sharing visuals, earning affiliate income, and building communities on REAL ART.
+          Join 84,000+ creators sharing visuals, earning affiliate income, and building communities on REAL CREATOR.
         </p>
       </div>
       <div className="flex flex-col gap-2.5">

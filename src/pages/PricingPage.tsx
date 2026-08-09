@@ -461,7 +461,7 @@ const PricingPage = () => {
           <div className="max-w-2xl mx-auto">
             <h2 className="font-display text-3xl font-bold mb-4">Ready to Create?</h2>
             <p className="text-muted-foreground mb-8">
-              Join thousands of creators already using Real Art to bring their visions to life.
+              Join thousands of creators already using Real Creator to bring their visions to life.
             </p>
             <Link to="/signup">
               <Button size="lg" className="bg-accent hover:bg-accent/90 text-white rounded-lg">

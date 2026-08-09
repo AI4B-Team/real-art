@@ -12,18 +12,18 @@ import { supabase } from "@/integrations/supabase/client";
 
 /* ── Static collection data ── */
 const staticCollections: Record<string, { name: string; curator: string; photo: string; count: number; description?: string; visibility?: string; price?: number; accessCode?: string }> = {
-  e1: { name: "CEO / Boss Babe", curator: "REAL ART", photo: "photo-1573496359142-b8d87734a5a2", count: 152, description: "Powerful portraits for the modern boss — editorial vibes, confidence, leadership." },
-  e2: { name: "Luxury Lifestyle", curator: "REAL ART", photo: "photo-1600210492486-724fe5c67fb0", count: 239, description: "High-end interiors, fashion, and aspirational living." },
+  e1: { name: "CEO / Boss Babe", curator: "REAL CREATOR", photo: "photo-1573496359142-b8d87734a5a2", count: 152, description: "Powerful portraits for the modern boss — editorial vibes, confidence, leadership." },
+  e2: { name: "Luxury Lifestyle", curator: "REAL CREATOR", photo: "photo-1600210492486-724fe5c67fb0", count: 239, description: "High-end interiors, fashion, and aspirational living." },
   e3: { name: "Cosmic Worlds", curator: "AI.Verse", photo: "photo-1618005182384-a83a8bd57fbe", count: 412, description: "Deep space visions, nebulas, and sci-fi dreamscapes." },
   e4: { name: "Digital Avatars", curator: "LuminaAI", photo: "photo-1579546929518-9e396f3cc809", count: 520, description: "AI-generated portraits and character art." },
-  e5: { name: "Street Fashion", curator: "REAL ART", photo: "photo-1509631179647-0177331693ae", count: 185 },
-  e6: { name: "Runway Inspired", curator: "REAL ART", photo: "photo-1558618666-fcd25c85cd64", count: 130 },
+  e5: { name: "Street Fashion", curator: "REAL CREATOR", photo: "photo-1509631179647-0177331693ae", count: 185 },
+  e6: { name: "Runway Inspired", curator: "REAL CREATOR", photo: "photo-1558618666-fcd25c85cd64", count: 130 },
   e7: { name: "Neon Cities", curator: "NeoPixel", photo: "photo-1557682250-33bd709cbe85", count: 267, description: "Cyberpunk cityscapes bathed in neon light.", visibility: "private", price: 499 },
   e8: { name: "Ancient Forests", curator: "DreamForge", photo: "photo-1470071459604-3b5ec3a7fe05", count: 198 },
   e9: { name: "Modern Architecture", curator: "ChromaLab", photo: "photo-1506905925346-21bda4d32df4", count: 344 },
   e10: { name: "Abstract Fluid", curator: "SpectraGen", photo: "photo-1541701494587-cb58502866ab", count: 189, visibility: "private", price: 299 },
   e11: { name: "Minimal Spaces", curator: "VoidArt", photo: "photo-1549880338-65ddcdfd017b", count: 143 },
-  e12: { name: "Retro Futures", curator: "REAL ART", photo: "photo-1547036967-23d11aacaee0", count: 231 },
+  e12: { name: "Retro Futures", curator: "REAL CREATOR", photo: "photo-1547036967-23d11aacaee0", count: 231 },
   b1: { name: "Cyberpunk Cities", curator: "VoidArt", photo: "photo-1557682250-33bd709cbe85", count: 128 },
   b2: { name: "Surreal Dreamscapes", curator: "DreamForge", photo: "photo-1579546929518-9e396f3cc809", count: 94 },
   b3: { name: "Dark Fantasy", curator: "NeoPixel", photo: "photo-1541701494587-cb58502866ab", count: 156, visibility: "private", price: 599 },

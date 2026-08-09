@@ -20,8 +20,8 @@ const ShareModal = ({ open, onClose, imageUrl, title, creator, prompt, recreatio
   if (!open) return null;
 
   const shareUrl = `https://realart.ai/image/${imageId}`;
-  const shareText = `${title} by ${creator.name} — Recreated ${recreations} times. Recreate this artwork on REAL ART`;
-  const promptShareText = `AI Prompt: "${prompt.slice(0, 120)}…" — View & recreate on REAL ART`;
+  const shareText = `${title} by ${creator.name} — Recreated ${recreations} times. Recreate this artwork on REAL CREATOR`;
+  const promptShareText = `AI Prompt: "${prompt.slice(0, 120)}…" — View & recreate on REAL CREATOR`;
 
   const socialLinks = [
     {
@@ -107,7 +107,7 @@ const ShareModal = ({ open, onClose, imageUrl, title, creator, prompt, recreatio
                   <img src={imageUrl} alt={title} className="w-full h-[200px] object-cover" />
                   {/* Watermark */}
                   <div className="absolute bottom-3 right-3 bg-foreground/50 backdrop-blur-sm text-primary-foreground text-[0.6rem] font-bold tracking-[0.16em] uppercase px-2.5 py-1 rounded-lg">
-                    REAL ART
+                    REAL CREATOR
                   </div>
                 </div>
                 <div className="p-4">
@@ -137,7 +137,7 @@ const ShareModal = ({ open, onClose, imageUrl, title, creator, prompt, recreatio
                   <ExternalLink className="w-3.5 h-3.5" /> View image & recreate →
                 </div>
                 <div className="mt-3 pt-3 border-t border-foreground/[0.06] flex items-center gap-2">
-                  <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted/40">REAL ART</div>
+                  <div className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted/40">REAL CREATOR</div>
                 </div>
               </div>
             )}

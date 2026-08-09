@@ -193,7 +193,7 @@ const CreatorPage = () => {
     handle: `@${loggedInUsername}`,
     avatar: loggedInDisplay.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase() || "U",
     color: "#4361ee",
-    bio: "Your creative profile on REAL ART.",
+    bio: "Your creative profile on REAL CREATOR.",
     followers: 0, following: 0, images: 0, downloads: "0", views: "0", remixes: "0",
     badges: [],
     photos: [],
@@ -697,7 +697,7 @@ const CreatorPage = () => {
                     <MessageCircle className="w-4 h-4 text-muted group-hover:text-accent transition-colors" />
                     <div className="flex-1 min-w-0 text-left">
                       <div className="text-[0.82rem] font-medium">Direct message</div>
-                      <div className="text-[0.72rem] text-muted">Send on REAL ART</div>
+                      <div className="text-[0.72rem] text-muted">Send on REAL CREATOR</div>
                     </div>
                   </button>
                 </div>
@@ -747,9 +747,9 @@ const CreatorPage = () => {
             </div>
             <div className="flex gap-2">
               {[
-                { label: "X", color: "#000", url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(`Check out ${creator.name} on REAL ART`)}` },
+                { label: "X", color: "#000", url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(`Check out ${creator.name} on REAL CREATOR`)}` },
                 { label: "f", color: "#1877F2", url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}` },
-                { label: "W", color: "#25D366", url: `https://wa.me/?text=${encodeURIComponent(`${creator.name} on REAL ART — ${window.location.href}`)}` },
+                { label: "W", color: "#25D366", url: `https://wa.me/?text=${encodeURIComponent(`${creator.name} on REAL CREATOR — ${window.location.href}`)}` },
                 { label: "✉", color: "hsl(var(--muted))", url: `mailto:?subject=${encodeURIComponent(`Check out ${creator.name}`)}&body=${encodeURIComponent(window.location.href)}` },
               ].map(s => (
                 <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer"

@@ -9,14 +9,14 @@ const categories = ["All", "Tutorials", "Product Updates", "Creator Stories", "I
 const allPosts = [
   {
     title: "How to write prompts that actually work in 2026",
-    excerpt: "The difference between a mediocre image and a stunning one is almost always the prompt. After analyzing 50,000+ downloads on REAL ART, we found the patterns that top creators use every time.",
+    excerpt: "The difference between a mediocre image and a stunning one is almost always the prompt. After analyzing 50,000+ downloads on REAL CREATOR, we found the patterns that top creators use every time.",
     author: "Anya Reyes", authorInit: "AR", authorColor: "#c9184a",
     date: "March 10, 2026", readTime: "8 min read", category: "Tutorials", featured: true,
     photo: "photo-1618005182384-a83a8bd57fbe",
   },
   {
     title: "Introducing Private Collection Codes: your art, your rules",
-    excerpt: "Today we're launching one of the most-requested features in REAL ART history. Lock your collection, share a code, control who sees your work.",
+    excerpt: "Today we're launching one of the most-requested features in REAL CREATOR history. Lock your collection, share a code, control who sees your work.",
     author: "Marcus Cole", authorInit: "MC", authorColor: "#4361ee",
     date: "March 5, 2026", readTime: "4 min read", category: "Product Updates", featured: true,
     photo: "photo-1557682250-33bd709cbe85",
@@ -44,20 +44,20 @@ const allPosts = [
   },
   {
     title: "Midjourney v7 vs DALL-E 4: which one actually wins?",
-    excerpt: "We generated the same 50 prompts in both tools and had 200 REAL ART creators vote on the results. The winner might surprise you.",
+    excerpt: "We generated the same 50 prompts in both tools and had 200 REAL CREATOR creators vote on the results. The winner might surprise you.",
     author: "Leo Vance", authorInit: "LV", authorColor: "#7209b7",
     date: "February 7, 2026", readTime: "10 min read", category: "Industry",
     photo: "photo-1604881991720-f91add269bed",
   },
   {
-    title: "The anatomy of a perfect portfolio on REAL ART",
+    title: "The anatomy of a perfect portfolio on REAL CREATOR",
     excerpt: "What separates the creators with 500 followers from those with 50,000? We studied 100 top creator profiles and found five things they all do.",
     author: "Priya Shah", authorInit: "PS", authorColor: "#e76f51",
     date: "January 30, 2026", readTime: "9 min read", category: "Tutorials",
     photo: "photo-1506905925346-21bda4d32df4",
   },
   {
-    title: "2025 in review: the numbers behind REAL ART's first year",
+    title: "2025 in review: the numbers behind REAL CREATOR's first year",
     excerpt: "1.2 million downloads. $284,000 paid to creators. 6 challenges. 12 product updates. Here's everything that happened in our first full year.",
     author: "Marcus Cole", authorInit: "MC", authorColor: "#4361ee",
     date: "January 15, 2026", readTime: "12 min read", category: "Product Updates",
@@ -89,7 +89,7 @@ const BlogPage = () => {
         <section className="px-6 md:px-12 pt-8 pb-10 max-w-[1440px] mx-auto">
           <div className="flex items-start md:items-center justify-between gap-4 flex-wrap">
             <div>
-              <h1 className="font-display text-[clamp(2.4rem,5vw,4.2rem)] font-black tracking-[-0.03em] leading-[1.02] mb-3">The REAL ART Blog</h1>
+              <h1 className="font-display text-[clamp(2.4rem,5vw,4.2rem)] font-black tracking-[-0.03em] leading-[1.02] mb-3">The REAL CREATOR Blog</h1>
               <p className="text-[0.94rem] text-muted">Creator stories, product updates, tutorials, and ideas.</p>
             </div>
             <div className="relative w-full md:w-72">

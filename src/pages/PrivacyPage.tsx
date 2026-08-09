@@ -10,19 +10,19 @@ const sections = [
     "**Cookies:** session cookies for authentication and preference cookies for your settings.",
   ]},
   { id: "use", title: "2. How we use your information", content: [
-    "Provide and improve the REAL ART platform and all its features.",
+    "Provide and improve the REAL CREATOR platform and all its features.",
     "Process uploads, manage your account, and deliver the services you request.",
     "Send transactional emails — account confirmation, password reset, payout notifications.",
     "Send product updates and newsletter communications (you can unsubscribe at any time).",
-    "Analyze usage patterns to understand how people use REAL ART and where we can improve.",
+    "Analyze usage patterns to understand how people use REAL CREATOR and where we can improve.",
     "Detect and prevent fraud, abuse, and violations of our terms of service.",
     "Calculate and pay affiliate commissions accurately.",
-  ], note: "We do not sell your personal data to third parties. We do not serve ads on REAL ART." },
+  ], note: "We do not sell your personal data to third parties. We do not serve ads on REAL CREATOR." },
   { id: "sharing", title: "3. Sharing your information", content: [
     "**Service providers:** We work with trusted third-party providers for hosting (AWS), payments (Stripe), email (Postmark), and analytics (Plausible — privacy-first). These providers only access data needed to perform their functions.",
     "**Affiliate tracking:** To calculate commissions, referral data is shared with REAL CREATOR, which is operated by the same company.",
     "**Legal requirements:** We may disclose information if required by law, subpoena, or valid legal process.",
-    "**Business transfers:** If REAL ART is acquired or merges with another company, your information may be transferred as part of that transaction. We will notify you before this happens.",
+    "**Business transfers:** If REAL CREATOR is acquired or merges with another company, your information may be transferred as part of that transaction. We will notify you before this happens.",
   ], note: "We will never sell, rent, or trade your personal information to marketing companies or data brokers." },
   { id: "retention", title: "4. Data retention", content: [
     "We retain your account information for as long as your account is active. If you delete your account, we delete your personal data within 30 days, with the exception of:",
@@ -33,7 +33,7 @@ const sections = [
     "**Authentication:** keeping you logged in between sessions.",
     "**Preferences:** remembering your filter and display settings.",
     "**Analytics:** understanding aggregate usage through Plausible Analytics, which does not use cross-site tracking or fingerprinting.",
-    "**Affiliate tracking:** tracking platform referral clicks (90-day cookie). External affiliate link clicks are tracked by the respective affiliate network, not by REAL ART.",
+    "**Affiliate tracking:** tracking platform referral clicks (90-day cookie). External affiliate link clicks are tracked by the respective affiliate network, not by REAL CREATOR.",
   ], note: "We do not use third-party advertising cookies. You can control cookie behavior in your browser settings." },
   { id: "security", title: "6. Security", content: [
     "HTTPS everywhere — all data in transit is encrypted.",
@@ -49,16 +49,16 @@ const sections = [
     "**Objection:** opt out of certain data processing, including marketing communications.",
   ], note: "To exercise any of these rights, email privacy@realart.ai or use the controls in your account settings. We will respond within 30 days." },
   { id: "children", title: "8. Children's privacy", content: [
-    "REAL ART is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, please contact us at privacy@realart.ai and we will delete it promptly.",
+    "REAL CREATOR is not directed at children under 13. We do not knowingly collect personal information from children under 13. If you believe a child under 13 has provided us with personal information, please contact us at privacy@realart.ai and we will delete it promptly.",
   ]},
   { id: "changes", title: "9. Changes to this policy", content: [
     "We may update this Privacy Policy from time to time. When we do, we will update the effective date at the top of this page and notify registered users via email if the changes are material.",
-    "Continued use of REAL ART after changes are posted constitutes your acceptance of the updated policy.",
+    "Continued use of REAL CREATOR after changes are posted constitutes your acceptance of the updated policy.",
   ]},
   { id: "contact", title: "10. Contact", content: [
     "If you have questions about this Privacy Policy or how we handle your data, contact us at:",
     "Email: privacy@realart.ai",
-    "Mailing address: REAL ART, Inc., 1234 Creator Ave, Suite 100, San Francisco, CA 94105",
+    "Mailing address: REAL CREATOR, Inc., 1234 Creator Ave, Suite 100, San Francisco, CA 94105",
   ]},
 ];
 
@@ -78,7 +78,7 @@ const PrivacyPage = () => {
           <p className="text-[0.84rem] text-muted mb-6">Last updated: March 1, 2026</p>
           <div className="bg-card border border-foreground/[0.08] rounded-xl p-5 max-w-[700px]">
             <p className="text-[0.88rem] text-muted leading-[1.7]">
-              The short version: We collect the minimum data needed to run REAL ART. We don't sell your data. We don't show ads. We're transparent about everything below.
+              The short version: We collect the minimum data needed to run REAL CREATOR. We don't sell your data. We don't show ads. We're transparent about everything below.
             </p>
           </div>
         </section>

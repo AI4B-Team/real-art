@@ -233,7 +233,7 @@ const ImagePage = () => {
     setCommentsOff(next);
     try { next ? localStorage.setItem(commentsKey, "1") : localStorage.removeItem(commentsKey); } catch {}
   };
-  const creditText = `AI artwork by ${creator.name} on REAL ART\nRecreate it at https://realart.ai/image/${id}`;
+  const creditText = `AI artwork by ${creator.name} on REAL CREATOR\nRecreate it at https://realart.ai/image/${id}`;
 
   const handleCopyCredit = () => {
     navigator.clipboard.writeText(creditText).catch(() => {});
@@ -314,7 +314,7 @@ const ImagePage = () => {
               <div className="grid grid-cols-3 gap-2 mt-2">
                 <a
                   href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
-                  download={`realart-${idx}.jpg`}
+                  download={`realcreator-${idx}.jpg`}
                   className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors no-underline text-foreground"
                 >
                   <Download className="w-3.5 h-3.5" /> Download
@@ -591,7 +591,7 @@ const ImagePage = () => {
                       <Eye className="w-5 h-5 text-muted opacity-40 mx-auto mb-3" />
                       <div className="font-display text-[1.1rem] font-bold mb-2">Unlock All Prompts</div>
                       <p className="text-[0.82rem] text-muted mb-4 max-w-[320px] mx-auto">
-                        Join REAL ART free to see the exact prompt, AI tool, and settings used to create every image.
+                        Join REAL CREATOR free to see the exact prompt, AI tool, and settings used to create every image.
                       </p>
                       <Link to="/signup" className="inline-flex items-center gap-2 bg-accent text-primary-foreground text-[0.82rem] font-semibold px-5 py-2.5 rounded-lg hover:bg-accent/85 transition-colors no-underline">
                         Join Free — Unlock Prompts
@@ -995,7 +995,7 @@ const ImagePage = () => {
               </button>
             </div>
             <div className="px-6 pt-5 pb-4">
-              <p className="text-[0.78rem] text-muted mb-4">Add this image to any website, blog, or Notion page. The embed links back to REAL ART and the creator.</p>
+              <p className="text-[0.78rem] text-muted mb-4">Add this image to any website, blog, or Notion page. The embed links back to REAL CREATOR and the creator.</p>
               <div className="bg-card border border-foreground/[0.06] rounded-xl p-4 mb-5">
                 <div className="rounded-lg overflow-hidden mb-3">
                   <img src={`https://images.unsplash.com/${photo}?w=500&h=300&fit=crop&q=80`} alt="" className="w-full block" />
@@ -1007,7 +1007,7 @@ const ImagePage = () => {
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-[0.68rem] text-accent font-semibold">Create your own version →</span>
-                    <span className="text-[0.65rem] font-bold text-muted tracking-[0.06em]">REAL ART</span>
+                    <span className="text-[0.65rem] font-bold text-muted tracking-[0.06em]">REAL CREATOR</span>
                   </div>
                 </div>
               </div>
@@ -1025,7 +1025,7 @@ const ImagePage = () => {
               </div>
             </div>
             <div className="px-6 py-4 border-t border-foreground/[0.06] bg-card/50 flex items-center justify-between">
-              <p className="text-[0.72rem] text-muted">Embeds include creator attribution and a link to REAL ART</p>
+              <p className="text-[0.72rem] text-muted">Embeds include creator attribution and a link to REAL CREATOR</p>
               <button onClick={() => setShowEmbed(false)} className="bg-foreground text-primary-foreground px-5 py-2 rounded-lg text-[0.82rem] font-semibold hover:bg-accent transition-colors">
                 Done
               </button>

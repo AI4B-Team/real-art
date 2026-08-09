@@ -23,7 +23,7 @@ const FeaturedArtworkSection = () => (
             <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Hand-Selected</span>
           </div>
           <h2 className="font-display text-[1.8rem] font-black tracking-[-0.03em] leading-none">Featured Artwork</h2>
-          <p className="text-[0.82rem] text-muted mt-1">Curated by the REAL ART team</p>
+          <p className="text-[0.82rem] text-muted mt-1">Curated by the REAL CREATOR team</p>
         </div>
         <Link to="/explore" className="flex items-center gap-1.5 text-[0.82rem] text-accent font-semibold hover:underline">
           View all <ArrowRight className="w-3.5 h-3.5" />

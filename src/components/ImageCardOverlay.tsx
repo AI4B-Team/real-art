@@ -205,7 +205,7 @@ const ImageCardOverlay = ({ index, isVideo = false, photo: photoProp, title: tit
               <TooltipTrigger asChild>
                 <a
                   href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
-                  download={`realart-${index}.jpg`}
+                  download={`realcreator-${index}.jpg`}
                   onClick={e => e.stopPropagation()}
                   className={`${iconBtn} no-underline`}
                 >

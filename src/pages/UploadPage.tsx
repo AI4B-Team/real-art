@@ -325,7 +325,7 @@ const UploadPage = () => {
             </div>
             <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] mb-3">Published!</h1>
             <p className="text-muted text-[0.88rem] leading-[1.7] mb-8">
-              Your {files.length} image{files.length > 1 ? "s are" : " is"} live on REAL ART. Your affiliate link is already attached to every image — start sharing.
+              Your {files.length} image{files.length > 1 ? "s are" : " is"} live on REAL CREATOR. Your affiliate link is already attached to every image — start sharing.
             </p>
             <div className="flex flex-col gap-3">
               <Link to="/explore">
@@ -924,7 +924,7 @@ const UploadPage = () => {
                       </div>
                       <div className="flex items-center gap-2 text-[0.72rem] text-muted">
                         <Info className="w-3.5 h-3.5 shrink-0 opacity-60" />
-                        Applies to all {files.length} image{files.length !== 1 ? "s" : ""} in this batch. You keep 100% of any commission — REAL ART takes nothing.
+                        Applies to all {files.length} image{files.length !== 1 ? "s" : ""} in this batch. You keep 100% of any commission — REAL CREATOR takes nothing.
                       </div>
                     </div>
                   )}

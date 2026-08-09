@@ -16,7 +16,7 @@ const streams = [
     tag: "Stream 1",
     title: "Your shop & product links",
     headline: "Sell anything. Keep everything.",
-    desc: "Add an affiliate or shop link to any image you upload — Etsy listings, courses, print shops, presets, gear, anything. When visitors click through and buy, you earn commission. REAL ART takes nothing. 0%. The full commission goes directly to you.",
+    desc: "Add an affiliate or shop link to any image you upload — Etsy listings, courses, print shops, presets, gear, anything. When visitors click through and buy, you earn commission. REAL CREATOR takes nothing. 0%. The full commission goes directly to you.",
     stats: [
       { value: "100%", label: "Commission to you", note: "We take nothing" },
       { value: "28+", label: "Partner brands", note: "Auto-detected on upload" },
@@ -27,7 +27,7 @@ const streams = [
   {
     icon: Users,
     tag: "Stream 2",
-    title: "REAL ART platform referrals",
+    title: "REAL CREATOR platform referrals",
     headline: "Your images recruit for you.",
     desc: "Every image you publish carries your unique referral link. When anyone discovers your art and signs up for a REAL CREATOR plan, you earn commission — automatically, without any extra setup. The more you post, the more surface area you have.",
     stats: [
@@ -40,7 +40,7 @@ const streams = [
 ];
 
 const howItWorks = [
-  { step: "01", icon: Package, title: "Upload your art", desc: "Post any image on REAL ART. Your affiliate link is automatically embedded — no setup, no code, no forms." },
+  { step: "01", icon: Package, title: "Upload your art", desc: "Post any image on REAL CREATOR. Your affiliate link is automatically embedded — no setup, no code, no forms." },
   { step: "02", icon: Users, title: "Someone discovers it", desc: "A visitor finds your image, clicks through, and signs up for REAL CREATOR. We track it back to you for 90 days." },
   { step: "03", icon: DollarSign, title: "You earn commission", desc: "Get paid up to 40% of every plan they purchase — monthly, annual, or lifetime. Commission scales with your referral volume." },
 ];
@@ -64,11 +64,11 @@ const platformTiers = [
 ];
 
 const faqs = [
-  { q: "How does the affiliate link work?", a: "Every image you publish on REAL ART automatically has your unique affiliate link embedded. When a visitor clicks on your image and signs up for REAL CREATOR, we track that referral back to you — no setup required." },
+  { q: "How does the affiliate link work?", a: "Every image you publish on REAL CREATOR automatically has your unique affiliate link embedded. When a visitor clicks on your image and signs up for REAL CREATOR, we track that referral back to you — no setup required." },
   { q: "When and how do I get paid?", a: "Starter creators are paid monthly via PayPal or Stripe. Creator and Pro tier creators unlock weekly payouts. Minimum payout threshold is $25." },
   { q: "What counts as a conversion?", a: "Any user who clicks through your affiliate link and purchases any REAL CREATOR plan within 90 days counts as your conversion. This includes monthly, annual, and lifetime plans." },
   { q: "Can I see which images are generating clicks?", a: "Yes. Your affiliate dashboard shows click-through rates, conversions, and earnings broken down by individual image so you can see what's working." },
-  { q: "What about my shop links?", a: "Your external shop and affiliate links (Etsy, Amazon, Gumroad, etc.) are separate from the platform referral program. You keep 100% of commissions from those links — REAL ART takes nothing." },
+  { q: "What about my shop links?", a: "Your external shop and affiliate links (Etsy, Amazon, Gumroad, etc.) are separate from the platform referral program. You keep 100% of commissions from those links — REAL CREATOR takes nothing." },
   { q: "What if someone upgrades their plan later?", a: "Pro tier creators earn commission on plan upgrades as well. If someone you referred starts on the free plan and upgrades 6 months later, you earn commission on that upgrade." },
 ];
 
@@ -228,7 +228,7 @@ const AffiliatesPage = () => {
             <div>
               <h3 className="font-display text-[1.4rem] font-black tracking-[-0.02em] mb-2">Transparency & FTC compliance</h3>
               <p className="text-[0.84rem] text-muted leading-[1.7]">
-                When you upload an image with an affiliate link, REAL ART automatically adds an "AD · Affiliate" disclosure badge to that image in compliance with FTC guidelines. You don't need to add your own disclosure text. We also disclose REAL ART's own referral program throughout the platform. We believe transparency builds trust — both with visitors and with regulators.
+                When you upload an image with an affiliate link, REAL CREATOR automatically adds an "AD · Affiliate" disclosure badge to that image in compliance with FTC guidelines. You don't need to add your own disclosure text. We also disclose REAL CREATOR's own referral program throughout the platform. We believe transparency builds trust — both with visitors and with regulators.
               </p>
             </div>
           </div>

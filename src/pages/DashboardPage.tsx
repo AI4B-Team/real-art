@@ -559,7 +559,7 @@ const AdsSection = () => {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-none">Sponsored Ads</h1>
-          <p className="text-[0.82rem] text-muted mt-1">Promote your images across REAL ART and reach millions of creators</p>
+          <p className="text-[0.82rem] text-muted mt-1">Promote your images across REAL CREATOR and reach millions of creators</p>
         </div>
         <button
           onClick={() => setView(view === "campaigns" ? "create" : "campaigns")}
@@ -834,7 +834,7 @@ const EarningsSection = () => {
             <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-muted">Stream 2</span>
           </div>
           <h3 className="font-display text-[1.1rem] font-bold mb-1">Platform referrals</h3>
-          <p className="text-[0.78rem] text-muted mb-4">REAL ART signups through your art — up to 40%</p>
+          <p className="text-[0.78rem] text-muted mb-4">REAL CREATOR signups through your art — up to 40%</p>
           <div className="font-display text-[2rem] font-black text-accent leading-none mb-2">$412.00</div>
           <div className="text-[0.75rem] text-muted mb-1">Paid Last Cycle</div>
           <div className="flex items-center gap-4 text-[0.75rem] text-muted mt-3">
@@ -994,7 +994,7 @@ const initialNotifications: Notification[] = [
   { id: "n7", title: "Digital Avatar 01 recreated 156×", body: "Your image is being remixed by the community", time: "1 day ago", read: true, icon: RefreshCw, color: "text-orange-500", link: "/image/3" },
   { id: "n8", title: "Achievement unlocked: 10K Downloads", body: "Your art has been downloaded over 10,000 times", time: "2 days ago", read: true, icon: Award, color: "text-accent", link: "/dashboard" },
   { id: "n9", title: "Community update: Avatar Architects", body: "3 new posts in your community", time: "2 days ago", read: true, icon: Users, color: "text-blue-500", link: "/communities/1" },
-  { id: "n10", title: 'Your collection "Cosmic Series" featured', body: "REAL ART featured your collection on the homepage", time: "3 days ago", read: true, icon: Star, color: "text-accent", link: "/collections" },
+  { id: "n10", title: 'Your collection "Cosmic Series" featured', body: "REAL CREATOR featured your collection on the homepage", time: "3 days ago", read: true, icon: Star, color: "text-accent", link: "/collections" },
 ];
 
 const NotificationsSection = () => {
@@ -1199,7 +1199,7 @@ const SettingsSection = () => {
             { label: "Comments", sub: "New comments on your images", v: notifComments, set: setNotifComments },
             { label: "New followers", sub: "When someone follows you", v: notifFollowers, set: setNotifFollowers },
             { label: "Earnings alerts", sub: "Commission and payout updates", v: notifEarnings, set: setNotifEarnings },
-            { label: "REAL ART newsletter", sub: "Product updates and tips", v: notifNewsletter, set: setNotifNewsletter },
+            { label: "REAL CREATOR newsletter", sub: "Product updates and tips", v: notifNewsletter, set: setNotifNewsletter },
           ].map(s => (
             <div key={s.label} className="flex items-center justify-between py-4 first:pt-0">
               <div>
