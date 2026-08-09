@@ -314,7 +314,7 @@ const ImagePage = () => {
               <div className="grid grid-cols-3 gap-2 mt-2">
                 <a
                   href={`https://images.unsplash.com/${photo}?w=4096&q=90`}
-                  download={`realart-${idx}.jpg`}
+                  download={`realcreator-${idx}.jpg`}
                   className="flex items-center justify-center gap-1.5 py-2.5 rounded-lg text-[0.8rem] font-medium border bg-card border-foreground/[0.12] hover:border-foreground/30 transition-colors no-underline text-foreground"
                 >
                   <Download className="w-3.5 h-3.5" /> Download
