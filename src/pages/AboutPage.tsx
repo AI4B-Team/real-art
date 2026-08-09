@@ -11,7 +11,7 @@ const stats = [
 ];
 
 const values = [
-  { icon: Heart, title: "Free, forever", desc: "Every image on REAL ART is free to download and use commercially. No attribution, no subscription, no tricks. We monetize through REAL CREATOR — not through the people downloading." },
+  { icon: Heart, title: "Free, forever", desc: "Every image on REAL CREATOR is free to download and use commercially. No attribution, no subscription, no tricks. We monetize through REAL CREATOR — not through the people downloading." },
   { icon: Users, title: "Creators first", desc: "We built the affiliate system, donation flow, and private vault features because creators deserve revenue. Every product decision starts with: does this help creators earn more?" },
   { icon: FileText, title: "No hidden terms", desc: "Our license is simple: download it, use it, modify it, sell products with it. One page. Plain English. No lawyer required." },
   { icon: Zap, title: "Radical simplicity", desc: "We obsessively remove complexity. Upload in seconds. Download in one click. No watermarks, no export settings, no hoops. Speed is a feature." },
@@ -22,15 +22,15 @@ const milestones = [
   { year: "Jan 2024", title: "Private beta", desc: "100 hand-picked creators. 12,000 images uploaded in the first month. The affiliate program was the feature they kept asking about." },
   { year: "Jun 2024", title: "Public launch", desc: "Opened to the public. 50,000 images uploaded in the first week. Downloads hit 100K within a month." },
   { year: "Dec 2024", title: "1M downloads", desc: "Hit 1 million downloads. Launched challenges, communities, and the leaderboard system." },
-  { year: "2025", title: "REAL CREATOR", desc: "Launched the AI creation suite. The flywheel between REAL ART and REAL CREATOR began driving massive organic growth." },
+  { year: "2025", title: "REAL CREATOR", desc: "Launched the AI creation suite. The flywheel between REAL CREATOR and REAL CREATOR began driving massive organic growth." },
   { year: "2026", title: "Now", desc: "2.4M+ images. 84K+ creators. $284K paid out. And we're just getting started." },
 ];
 
 const team = [
-  { name: "Marcus Cole", role: "Founder & CEO", initials: "MC", color: "#4361ee", bio: "Serial entrepreneur. Built three platforms before REAL ART. Believes the best creative tools should be free." },
+  { name: "Marcus Cole", role: "Founder & CEO", initials: "MC", color: "#4361ee", bio: "Serial entrepreneur. Built three platforms before REAL CREATOR. Believes the best creative tools should be free." },
   { name: "Anya Reyes", role: "Head of Product", initials: "AR", color: "#c9184a", bio: "Former product lead at a major design tool. Obsessed with removing friction between creators and their audience." },
   { name: "James Okafor", role: "Head of Engineering", initials: "JO", color: "#2a9d8f", bio: "Full-stack engineer. Built the first version in 6 weeks. Still writes code every day." },
-  { name: "Priya Shah", role: "Head of Community", initials: "PS", color: "#e76f51", bio: "Community architect. Grew three online creator communities to 100K+ members before joining REAL ART." },
+  { name: "Priya Shah", role: "Head of Community", initials: "PS", color: "#e76f51", bio: "Community architect. Grew three online creator communities to 100K+ members before joining REAL CREATOR." },
   { name: "Leo Vance", role: "Lead Designer", initials: "LV", color: "#7209b7", bio: "Obsessive about craft. Every pixel on this platform went through Leo twice." },
   { name: "Dani Kim", role: "Creator Partnerships", initials: "DK", color: "#f72585", bio: "Works directly with top creators to build the programs that keep them earning and engaged." },
 ];
@@ -54,7 +54,7 @@ const AboutPage = () => {
               <span className="text-muted">Creators should earn.</span>
             </h1>
             <p className="text-[0.94rem] text-muted leading-[1.75] mb-4">
-              REAL ART was built on a simple conviction: the best visuals in the world shouldn't sit behind a paywall. They should be free for anyone building something — and the people who made them should earn from the ecosystem, not from selling access.
+              REAL CREATOR was built on a simple conviction: the best visuals in the world shouldn't sit behind a paywall. They should be free for anyone building something — and the people who made them should earn from the ecosystem, not from selling access.
             </p>
             <p className="text-[0.94rem] text-muted leading-[1.75]">
               We're a team of creators, engineers, and community builders who got tired of the old model. So we built a new one.

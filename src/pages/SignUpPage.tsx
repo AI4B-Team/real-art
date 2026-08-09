@@ -228,7 +228,7 @@ const SignUpPage = () => {
                 <div className="w-16 h-16 rounded-full bg-accent/10 flex items-center justify-center mx-auto mb-5">
                   <Check className="w-9 h-9 text-accent" />
                 </div>
-                <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-3">Welcome To REAL ART</h1>
+                <h1 className="font-display text-[2rem] font-black tracking-[-0.03em] leading-[1.05] mb-3">Welcome To REAL CREATOR</h1>
                 <p className="text-[0.88rem] text-muted mb-8">Your account is ready. Start browsing, downloading, or upload your first image.</p>
                 <button onClick={() => navigate("/welcome")} className="w-full bg-foreground text-primary-foreground py-3.5 rounded-xl text-[0.9rem] font-semibold hover:bg-accent transition-colors mb-3">
                   Get Started

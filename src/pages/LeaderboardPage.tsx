@@ -58,7 +58,7 @@ const LeaderboardPage = () => {
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
             <div>
               <h1 className="font-display text-[3.2rem] font-black tracking-[-0.03em] leading-none mb-2">Leaderboard</h1>
-              <p className="text-[0.88rem] text-muted">The top creators on REAL ART ranked by downloads, likes, and engagement.</p>
+              <p className="text-[0.88rem] text-muted">The top creators on REAL CREATOR ranked by downloads, likes, and engagement.</p>
             </div>
             <div className="flex items-center gap-1 bg-card border border-foreground/[0.1] rounded-xl p-1">
               {periods.map(p => (

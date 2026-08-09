@@ -120,7 +120,7 @@ const AdsPage = () => {
               <span className="text-[0.65rem] font-bold tracking-[0.14em] uppercase text-accent">Advertising</span>
             </div>
             <h1 className="font-display text-[2.4rem] font-black tracking-[-0.03em] leading-none">Sponsored Ads</h1>
-            <p className="text-[0.83rem] text-muted mt-1.5">Promote your images across REAL ART and reach millions of creators</p>
+            <p className="text-[0.83rem] text-muted mt-1.5">Promote your images across REAL CREATOR and reach millions of creators</p>
           </div>
           <button
             onClick={() => setView(view === "campaigns" ? "create" : "campaigns")}

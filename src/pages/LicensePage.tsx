@@ -24,7 +24,7 @@ const notAllowed = [
 ];
 
 const noNeed = [
-  "Attribution or credit to REAL ART",
+  "Attribution or credit to REAL CREATOR",
   "Attribution or credit to the original creator",
   "Linking back to the source",
   "Asking for permission",
@@ -36,15 +36,15 @@ const useCases: { icon: React.ElementType; title: string; desc: string; ok: bool
   { icon: Briefcase, title: "Client Work", desc: "Use images in work you produce for clients — websites, ads, presentations, reports. No separate license needed.", ok: true },
   { icon: Download, title: "Print & Merch", desc: "Print images on t-shirts, posters, mugs, phone cases, and any other physical product you sell.", ok: true },
   { icon: Shield, title: "Editorial & Press", desc: "Use images in articles, blog posts, news pieces, and editorial publications without restriction.", ok: true },
-  { icon: AlertTriangle, title: "Reselling as Stock", desc: "You cannot package unmodified REAL ART images and sell them as your own stock photo collection.", ok: false },
+  { icon: AlertTriangle, title: "Reselling as Stock", desc: "You cannot package unmodified REAL CREATOR images and sell them as your own stock photo collection.", ok: false },
   { icon: X, title: "Defamatory Use", desc: "Images cannot be used in ways that defame, mislead about, or harm the reputation of real identifiable individuals.", ok: false },
 ];
 
-const fullLicense = `REAL ART FREE LICENSE — Version 1.0
+const fullLicense = `REAL CREATOR FREE LICENSE — Version 1.0
 Effective Date: January 1, 2024
 
 1. GRANT OF LICENSE
-REAL ART hereby grants you a worldwide, non-exclusive, royalty-free, perpetual license to download, copy, modify, distribute, perform, and use the images available on the REAL ART platform ("Content") for any lawful purpose, including commercial purposes, without attribution.
+REAL CREATOR hereby grants you a worldwide, non-exclusive, royalty-free, perpetual license to download, copy, modify, distribute, perform, and use the images available on the REAL CREATOR platform ("Content") for any lawful purpose, including commercial purposes, without attribution.
 
 2. PERMITTED USES
 You may use Content in:
@@ -62,13 +62,13 @@ You may not:
 (d) Use Content to defame or mislead about identifiable individuals
 
 4. NO WARRANTY
-Content is provided "as is" without warranty of any kind. REAL ART makes no representations regarding accuracy, completeness, or fitness for a particular purpose.
+Content is provided "as is" without warranty of any kind. REAL CREATOR makes no representations regarding accuracy, completeness, or fitness for a particular purpose.
 
 5. ATTRIBUTION
 Attribution is not required but always appreciated.
 
 6. MODIFICATIONS
-REAL ART reserves the right to update this license at any time. Continued use of Content following any update constitutes acceptance.`;
+REAL CREATOR reserves the right to update this license at any time. Continued use of Content following any update constitutes acceptance.`;
 
 const LicensePage = () => {
   return (
@@ -90,7 +90,7 @@ const LicensePage = () => {
             Simple License.<br /><span className="text-muted">Plain Language.</span>
           </h1>
           <p className="text-[0.94rem] text-muted leading-[1.75] max-w-[600px]">
-            All images on REAL ART are free to use. No attribution, no subscription, no lawyer.<br />
+            All images on REAL CREATOR are free to use. No attribution, no subscription, no lawyer.<br />
             This page explains exactly what that means.
           </p>
         </section>

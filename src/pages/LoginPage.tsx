@@ -86,7 +86,7 @@ const LoginPage = () => {
                 <h1 className="font-display text-[2.2rem] font-black tracking-[-0.03em] leading-[1.05] mb-2">
                   Welcome Back
                 </h1>
-                <p className="text-[0.88rem] text-muted mb-8">Log in to your REAL ART account.</p>
+                <p className="text-[0.88rem] text-muted mb-8">Log in to your REAL CREATOR account.</p>
 
                 <div className="relative">
                   {lastUsedMethod === "email" && (

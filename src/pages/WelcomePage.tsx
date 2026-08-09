@@ -141,7 +141,7 @@ const WelcomePage = () => {
         <div className="px-6 md:px-12 lg:px-16 py-16 max-w-[720px]">
           {/* Header */}
           <div className="flex items-center gap-2 text-accent text-[0.82rem] font-semibold mb-4">
-            <Sparkles className="w-3.5 h-3.5" /> Welcome to REAL ART
+            <Sparkles className="w-3.5 h-3.5" /> Welcome to REAL CREATOR
           </div>
 
           {username ? (

@@ -1,5 +1,5 @@
-// REAL ART Affiliate Network — Auto-detects affiliate programs from product URLs.
-// Creators keep 100% of their commission — REAL ART takes nothing.
+// REAL CREATOR Affiliate Network — Auto-detects affiliate programs from product URLs.
+// Creators keep 100% of their commission — REAL CREATOR takes nothing.
 
 export interface AffiliatePartner {
   id: string;

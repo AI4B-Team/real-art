@@ -20,9 +20,9 @@ const topicData: Record<string, {
     description: "Free AI-generated cyberpunk visuals you can download or recreate. Neon cities, rain-soaked streets, and holographic futures.",
     stats: { images: "12,400+", downloads: "3.2M", creators: "840" },
     seoArticle: [
-      { heading: "What is Cyberpunk Art?", paragraphs: ["Cyberpunk art draws from a dystopian future aesthetic — neon-lit megacities, augmented humans, and rain-drenched streets. Originating from the literary genre popularized by William Gibson and Philip K. Dick, cyberpunk visuals have become one of the most requested styles in AI-generated art.", "On REAL ART, cyberpunk images are free to download and use commercially. Every image includes a prompt you can remix in REAL CREATOR to build your own version."] },
+      { heading: "What is Cyberpunk Art?", paragraphs: ["Cyberpunk art draws from a dystopian future aesthetic — neon-lit megacities, augmented humans, and rain-drenched streets. Originating from the literary genre popularized by William Gibson and Philip K. Dick, cyberpunk visuals have become one of the most requested styles in AI-generated art.", "On REAL CREATOR, cyberpunk images are free to download and use commercially. Every image includes a prompt you can remix in REAL CREATOR to build your own version."] },
       { heading: "How to Create Cyberpunk AI Images", paragraphs: ["Start with a strong base prompt like \"cyberpunk city at night, neon signs, rain-soaked pavement.\" Add modifiers for lighting (\"volumetric fog\", \"neon glow\"), camera angle (\"wide shot\", \"street level\"), and detail level (\"8K\", \"ultra-detailed\").", "Use the \"Steal This Style\" feature on any cyberpunk image to preload the exact settings into REAL CREATOR. This is the fastest way to start generating professional cyberpunk art."] },
-      { heading: "Popular Cyberpunk Styles", paragraphs: ["The most popular sub-styles include Neon Noir (dark alleys with single-color neon), Cyber Tokyo (Japanese-inspired megacity), Blade Runner (industrial haze with amber lighting), and Synthwave Retro (80s-inspired gradients with chrome elements).", "Each style has its own dedicated topic page and prompt library on REAL ART."] },
+      { heading: "Popular Cyberpunk Styles", paragraphs: ["The most popular sub-styles include Neon Noir (dark alleys with single-color neon), Cyber Tokyo (Japanese-inspired megacity), Blade Runner (industrial haze with amber lighting), and Synthwave Retro (80s-inspired gradients with chrome elements).", "Each style has its own dedicated topic page and prompt library on REAL CREATOR."] },
     ],
   },
   "luxury-homes": {
@@ -31,7 +31,7 @@ const topicData: Record<string, {
     description: "Free AI-generated luxury interior and exterior visuals. Modern mansions, penthouses, and designer spaces.",
     stats: { images: "8,200+", downloads: "1.8M", creators: "420" },
     seoArticle: [
-      { heading: "What is Luxury Home Art?", paragraphs: ["AI-generated luxury home imagery brings architectural dreams to life — from minimalist Japanese villas to ultra-modern glass penthouses. These images are used by interior designers, real estate marketers, and content creators worldwide.", "Every image on REAL ART is free for commercial use, making it the perfect resource for presentations, mood boards, and social content."] },
+      { heading: "What is Luxury Home Art?", paragraphs: ["AI-generated luxury home imagery brings architectural dreams to life — from minimalist Japanese villas to ultra-modern glass penthouses. These images are used by interior designers, real estate marketers, and content creators worldwide.", "Every image on REAL CREATOR is free for commercial use, making it the perfect resource for presentations, mood boards, and social content."] },
       { heading: "How to Create Luxury Home AI Images", paragraphs: ["Focus on key elements: natural lighting, high-end materials (marble, wood, glass), and composition. Prompts like \"luxury modern living room, floor-to-ceiling windows, ocean view, warm lighting\" produce stunning results.", "Use REAL CREATOR's style transfer to apply a specific architectural aesthetic to any base image."] },
     ],
   },
@@ -53,7 +53,7 @@ const fallbackTopic = {
   description: "Free AI-generated visuals you can download or recreate. Browse thousands of styles and prompts.",
   stats: { images: "84,000+", downloads: "12M", creators: "4,200" },
   seoArticle: [
-    { heading: "What is AI Art?", paragraphs: ["AI art uses machine learning models to generate images from text prompts. On REAL ART, every image is free to download and use commercially."] },
+    { heading: "What is AI Art?", paragraphs: ["AI art uses machine learning models to generate images from text prompts. On REAL CREATOR, every image is free to download and use commercially."] },
   ],
 };
 
@@ -128,7 +128,7 @@ const TopicPage = () => {
     name: topic.longTitle,
     description: topic.description,
     url: `https://realart.ai/topic/${slug}`,
-    provider: { "@type": "Organization", name: "REAL ART", url: "https://realart.ai" },
+    provider: { "@type": "Organization", name: "REAL CREATOR", url: "https://realart.ai" },
   };
 
   return (
