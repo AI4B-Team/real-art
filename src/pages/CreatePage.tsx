@@ -3990,33 +3990,42 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
      measuring the actual container position (works with sidebars) ─── */
 const FullBleed = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const [style, setStyle] = useState<React.CSSProperties>({});
+  const marginRef = useRef(0);
+  const [, force] = useState(0);
 
   useEffect(() => {
     const update = () => {
       const el = ref.current;
       if (!el) return;
       const rect = el.getBoundingClientRect();
-      const vw = document.documentElement.clientWidth;
-      setStyle({
-        marginLeft: `${-rect.left}px`,
-        width: `${vw}px`,
-        maxWidth: `${vw}px`,
-        overflow: "hidden",
-      });
+      // Converging formula: works regardless of current margin / transient parent transforms
+      marginRef.current = marginRef.current - rect.left;
+      el.style.marginLeft = `${marginRef.current}px`;
+      el.style.width = `${document.documentElement.clientWidth}px`;
+      el.style.maxWidth = `${document.documentElement.clientWidth}px`;
+      el.style.overflowX = "clip";
     };
-    update();
+    // Measure across several frames so mount animations / late sidebar layout settle
+    let raf = 0;
+    let frames = 0;
+    const loop = () => {
+      update();
+      if (++frames < 30) raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
     window.addEventListener("resize", update);
-    const ro = new ResizeObserver(update);
-    if (ref.current) ro.observe(ref.current);
+    const t1 = setTimeout(update, 400);
+    const t2 = setTimeout(update, 1200);
     return () => {
+      cancelAnimationFrame(raf);
       window.removeEventListener("resize", update);
-      ro.disconnect();
+      clearTimeout(t1);
+      clearTimeout(t2);
     };
   }, []);
 
   return (
-    <div ref={ref} className={className} style={style}>
+    <div ref={ref} className={className}>
       {children}
     </div>
   );
