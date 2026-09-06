@@ -3966,11 +3966,13 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
           </div>
         )}
 
-        {/* Social content panel — always visible on social page, below other panels */}
+        {/* Social content panel — always visible on social page, below other panels.
+            FullBleed measures the real container offset so the panel fits the
+            viewport exactly without horizontal scrolling (sidebar shifts center). */}
         {showSocial && (
-          <div className="mt-3" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw' }}>
+          <FullBleed className="mt-3">
             <SocialContentPanel onClose={() => { if (activePanel === "social") setActivePanel(null); }} frequency={contentFrequency} />
-          </div>
+          </FullBleed>
         )}
       </div>
       <ImageToPromptModal
@@ -3983,6 +3985,51 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
     </TooltipProvider>
   );
 }
+
+/* ─── Full-bleed wrapper — stretches content to the true viewport width,
+     measuring the actual container position (works with sidebars) ─── */
+const FullBleed = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const marginRef = useRef(0);
+  const [, force] = useState(0);
+
+  useEffect(() => {
+    const update = () => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      // Converging formula: works regardless of current margin / transient parent transforms
+      marginRef.current = marginRef.current - rect.left;
+      el.style.marginLeft = `${marginRef.current}px`;
+      el.style.width = `${document.documentElement.clientWidth}px`;
+      el.style.maxWidth = `${document.documentElement.clientWidth}px`;
+      el.style.overflowX = "clip";
+    };
+    // Measure across several frames so mount animations / late sidebar layout settle
+    let raf = 0;
+    let frames = 0;
+    const loop = () => {
+      update();
+      if (++frames < 30) raf = requestAnimationFrame(loop);
+    };
+    raf = requestAnimationFrame(loop);
+    window.addEventListener("resize", update);
+    const t1 = setTimeout(update, 400);
+    const t2 = setTimeout(update, 1200);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", update);
+      clearTimeout(t1);
+      clearTimeout(t2);
+    };
+  }, []);
+
+  return (
+    <div ref={ref} className={className}>
+      {children}
+    </div>
+  );
+};
 
 /* ─── Gallery card ───────────────────────────────────────────── */
 
