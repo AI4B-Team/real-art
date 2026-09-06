@@ -3966,11 +3966,13 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
           </div>
         )}
 
-        {/* Social content panel — always visible on social page, below other panels */}
+        {/* Social content panel — always visible on social page, below other panels.
+            FullBleed measures the real container offset so the panel fits the
+            viewport exactly without horizontal scrolling (sidebar shifts center). */}
         {showSocial && (
-          <div className="mt-3" style={{ marginLeft: 'calc(-50vw + 50%)', marginRight: 'calc(-50vw + 50%)', width: '100vw' }}>
+          <FullBleed className="mt-3">
             <SocialContentPanel onClose={() => { if (activePanel === "social") setActivePanel(null); }} frequency={contentFrequency} />
-          </div>
+          </FullBleed>
         )}
       </div>
       <ImageToPromptModal
