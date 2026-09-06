@@ -3986,6 +3986,42 @@ function PromptBox({ onGenerate, onModeChange, onSaveTemplate }: { onGenerate: (
   );
 }
 
+/* ─── Full-bleed wrapper — stretches content to the true viewport width,
+     measuring the actual container position (works with sidebars) ─── */
+const FullBleed = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [style, setStyle] = useState<React.CSSProperties>({});
+
+  useEffect(() => {
+    const update = () => {
+      const el = ref.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const vw = document.documentElement.clientWidth;
+      setStyle({
+        marginLeft: `${-rect.left}px`,
+        width: `${vw}px`,
+        maxWidth: `${vw}px`,
+        overflow: "hidden",
+      });
+    };
+    update();
+    window.addEventListener("resize", update);
+    const ro = new ResizeObserver(update);
+    if (ref.current) ro.observe(ref.current);
+    return () => {
+      window.removeEventListener("resize", update);
+      ro.disconnect();
+    };
+  }, []);
+
+  return (
+    <div ref={ref} className={className} style={style}>
+      {children}
+    </div>
+  );
+};
+
 /* ─── Gallery card ───────────────────────────────────────────── */
 
 type CreationCardHandlers = {
